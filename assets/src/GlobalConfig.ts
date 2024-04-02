@@ -1,4 +1,4 @@
-import { Game, View, director, game, profiler, screen } from "cc";
+import { Game, Size, Vec2, View, director, game, profiler, screen } from "cc";
 import DebugConfig from "./DebugConfig";
 import FileUtil from "./util/FileUtil";
 import { InterfaceUtil } from "./util/InterfaceUtil";
@@ -18,7 +18,7 @@ export default class GlobalConfig {
     public static LOG_NAME:string = "chuangci.log";
     // public static ASSETS_DIR = "game/";
     public static WIN_RATE:number = 1.0;
-    public static WIN_SIZE:Vec2;
+    public static WIN_SIZE:Size;
 
     private static _isInit:boolean = false;
     public static init(){
