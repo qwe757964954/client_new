@@ -11,7 +11,7 @@
   },
   {
     "__type__": "cc.Scene",
-    "_name": "loadScene",
+    "_name": "LoadScene",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": null,
