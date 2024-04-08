@@ -80,7 +80,7 @@ export class BuildingModel {
 
     // 显示按钮
     public showBtnView():void {
-        LoadManager.loadPrefab(PrefabType.BuildingBtnView).then((prefab:Prefab) => {
+        LoadManager.loadPrefab(PrefabType.BuildingBtnView.path).then((prefab:Prefab) => {
             this._loadAssetAry.push(prefab);
             let node = instantiate(prefab);
             let buildingBtnView = node.getComponent(BuildingBtnView);
