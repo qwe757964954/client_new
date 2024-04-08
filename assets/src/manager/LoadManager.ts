@@ -56,6 +56,12 @@ export class LoadManager {
             }
         }
     }
+    public static releaseAssets(assets: Asset[]) {
+        if (!assets) return;
+        for (let i = 0; i < assets.length; i++) {
+            LoadManager.releaseAsset(assets[i]);
+        }
+    }
     // 强制释放资源
     public static forceReleaseAsset(asset: Asset) {
         assetManager.releaseAsset(asset);
