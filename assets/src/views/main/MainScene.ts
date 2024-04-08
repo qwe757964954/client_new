@@ -49,6 +49,8 @@ export class MainScene extends Component {
     /**=========================ui元素============================ */
     @property(Sprite)
     public btnTest:Sprite = null;//测试按钮
+    @property(Sprite)
+    public btnBackTest:Sprite = null;//测试按钮
 
     /**=========================变量============================ */
     private _loadAssetAry:Asset[] = [];//加载资源数组
@@ -62,17 +64,8 @@ export class MainScene extends Component {
     private _cameraMaxHeight:number = 1300;//地图摄像机最大高度
     private _mapMaxHeight:number = screen.windowSize.height;//地图最大高度
     private _mapMaxWidth:number = screen.windowSize.width;//地图最大宽度
-    private _touchMoveOffset:number = 1;//触摸误差
 
-    private _lastTouchPos:Vec2;//上一次触摸位置
-    private _lastTouchGrid:GridModel = null;//上一次触摸格子
-    private _isTouchMove:boolean = false;//是否触摸移动
-    private _touchBuilding:BuildingModel = null;//触摸建筑
-    private _selectBuilding:BuildingModel = null;//选中建筑
-
-    // private _landPosAry:Vec3[][] = [];//地块位置数组(y从上往下，x从右往左)
     private _gridAry:GridModel[][] = [];//格子数组(y从上往下，x从右往左)
-    // private _buildingNodeAry:Node[] = [];//建筑节点数组
 
     private _mapStatus:MapStatus = MapStatus.DEFAULT;//地图状态
     private _mapNormalCtl:MapNormalCtl = null;//普通地图控制器
@@ -107,8 +100,8 @@ export class MainScene extends Component {
         this._mapNormalCtl = new MapNormalCtl(this);
         this._mapEditCtl = new MapEditCtl(this);
         this._buildingEditCtl = new BuildEditCtl(this);
-        // this._landEditCtl = new LandEditCtl(this);
-        // this._recycleCtl = new RecycleCtl(this);
+        this._landEditCtl = new LandEditCtl(this);
+        this._recycleCtl = new RecycleCtl(this);
     }
     // 点击到格子
     getTouchGrid(x:number, y:number){
@@ -274,6 +267,7 @@ export class MainScene extends Component {
         this.touchCanvas.node.on(Node.EventType.TOUCH_CANCEL, this.onTouchCancel, this);
 
         CCUtil.onTouch(this.btnTest, this.onBtnTestClick, this);
+        CCUtil.onTouch(this.btnBackTest, this.onBtnBackTestClick, this);
         this._buildingBtnViewCloseHandle = EventManager.on(EventType.BuildingBtnView_Close, this.onBuildingBtnViewClose.bind(this));
     }
     // 移除事件
@@ -285,6 +279,7 @@ export class MainScene extends Component {
         this.touchCanvas.node.off(Node.EventType.TOUCH_CANCEL);
 
         CCUtil.offTouch(this.btnTest, this.onBtnTestClick, this);
+        CCUtil.offTouch(this.btnTest, this.onBtnBackTestClick, this);
         EventManager.off(EventType.BuildingBtnView_Close, this._buildingBtnViewCloseHandle);
     }
     // 移除加载资源
@@ -297,30 +292,21 @@ export class MainScene extends Component {
     }
     // 测试按钮点击事件
     onBtnTestClick(){
-        // console.log("onBtnTestClick");
-        this.lineLayer.active = !this.lineLayer.active;
-        this._mapStatus = this.lineLayer.active ? MapStatus.EDIT : MapStatus.DEFAULT;
+        this.getMapCtl().confirmEvent();
+        this.changeMapStatus(MapStatus.EDIT);
+    }
+    onBtnBackTestClick(){
+        this.getMapCtl().cancelEvent();
+        if(MapStatus.DEFAULT == this._mapStatus || MapStatus.EDIT == this._mapStatus){
+            this.changeMapStatus(MapStatus.DEFAULT);
+        }
+        else {
+            this.changeMapStatus(MapStatus.EDIT);
+        }
     }
     // 滚轮事件
     onMapMouseWheel(e:EventMouse){
-        if(MapStatus.DEFAULT == this._mapStatus){
-            this._mapNormalCtl.onMapMouseWheel(e);
-            return;
-        }
-        if(MapStatus.EDIT == this._mapStatus){
-            this._mapEditCtl.onMapMouseWheel(e);
-            return;
-        }
-        if(MapStatus.BUILD_EDIT == this._mapStatus){
-            this._buildingEditCtl.onMapMouseWheel(e);
-            return;
-        }
-        if(e.getScrollY()>0){
-            this.mapZoomIn();
-        }else{
-            this.mapZoomOut();
-        }
-        // console.log("onMapZoom",this._cameraHeight);
+        this.getMapCtl().onMapMouseWheel(e);
     }
     // 缩小地图
     mapZoomOut(){
@@ -371,147 +357,38 @@ export class MainScene extends Component {
     }
     // 点击开始
     onTouchStart(e:EventTouch){
-        if(MapStatus.DEFAULT == this._mapStatus){
-            this._mapNormalCtl.onTouchStart(e);
-            return;
-        }
-        if(MapStatus.EDIT == this._mapStatus){
-            this._mapEditCtl.onTouchStart(e);
-            return;
-        }
-        if(MapStatus.BUILD_EDIT == this._mapStatus){
-            this._buildingEditCtl.onTouchStart(e);
-            return;
-        }
-        this._lastTouchPos = e.getUILocation();
-        let pos = e.getLocation();//需要用屏幕坐标去转换点击事件
-        this._lastTouchGrid = this.getTouchGrid(pos.x, pos.y);
-        if(this._lastTouchGrid){
-            this._touchBuilding = this._lastTouchGrid.building;
-        }
-        // this._touchBuilding = this.isTouchBuilding(pos.x, pos.y);
+        this.getMapCtl().onTouchStart(e);
     }
     // 点击移动
     onTouchMove(e:EventTouch){
-        if(MapStatus.DEFAULT == this._mapStatus){
-            this._mapNormalCtl.onTouchMove(e);
-            return;
-        }
-        if(MapStatus.EDIT == this._mapStatus){
-            this._mapEditCtl.onTouchMove(e);
-            return;
-        }
-        if(MapStatus.BUILD_EDIT == this._mapStatus){
-            this._buildingEditCtl.onTouchMove(e);
-            return;
-        }
-        let touchPos = e.getUILocation();
-        if(!this._isTouchMove){
-            // 触摸误差
-            if(Math.abs(this._lastTouchPos.x - touchPos.x) < this._touchMoveOffset &&
-                Math.abs(this._lastTouchPos.y - touchPos.y) < this._touchMoveOffset){
-                return;
-            }
-        }
-        if(this._touchBuilding && this._selectBuilding && this._selectBuilding == this._touchBuilding){
-            let pos = e.getLocation();
-            let gridModel = this.getTouchGrid(pos.x, pos.y);
-            if(gridModel && gridModel != this._lastTouchGrid){
-                this.setBuildingGrid(this._selectBuilding, gridModel.x, gridModel.y);
-            }
-            this._lastTouchGrid = gridModel;
-            return;
-        }
-        this._isTouchMove = true;
-        this.mapMove((this._lastTouchPos.x - touchPos.x)*this._cameraRate, (this._lastTouchPos.y - touchPos.y)*this._cameraRate);
-        this._lastTouchPos = touchPos;
+        this.getMapCtl().onTouchMove(e);
     }
     // 点击结束
     onTouchEnd(e:EventTouch){
-        if(MapStatus.DEFAULT == this._mapStatus){
-            this._mapNormalCtl.onTouchEnd(e);
-            return;
-        }
-        if(MapStatus.EDIT == this._mapStatus){
-            this._mapEditCtl.onTouchEnd(e);
-            return;
-        }
-        if(MapStatus.BUILD_EDIT == this._mapStatus){
-            this._buildingEditCtl.onTouchEnd(e);
-            return;
-        }
-        if(!this._isTouchMove){
-            if(this._selectBuilding){
-                let pos = e.getLocation();
-                let gridModel = this.getTouchGrid(pos.x, pos.y);
-                if(gridModel){
-                    this.setBuildingGrid(this._selectBuilding, gridModel.x, gridModel.y);
-                }
-            }else{
-                this.onBuildingClick(this._touchBuilding);
-            }
-        }
-        this._lastTouchPos = null;
-        this._isTouchMove = false;
-        this._touchBuilding = null;
-        this._lastTouchGrid = null;
+        this.getMapCtl().onTouchEnd(e);
     }
     // 点击取消
     onTouchCancel(e:EventTouch){
-        if(MapStatus.DEFAULT == this._mapStatus){
-            this._mapNormalCtl.onTouchCancel(e);
-            return;
-        }
-        if(MapStatus.EDIT == this._mapStatus){
-            this._mapEditCtl.onTouchCancel(e);
-            return;
-        }
-        if(MapStatus.BUILD_EDIT == this._mapStatus){
-            this._buildingEditCtl.onTouchCancel(e);
-            return;
-        }
-        this._lastTouchPos = null;
-        this._isTouchMove = false;
-        this._touchBuilding = null;
-        this._lastTouchGrid = null;
+        this.getMapCtl().onTouchCancel(e);
     }
     // 销毁
     protected onDestroy(): void {
         this.removeEvent();
         this.removeLoadAsset();
-    }
-    // 是否点击到建筑
-    isTouchBuilding(x:number, y:number){
-        let gridModel = this.getTouchGrid(x,y);
-        if(!gridModel) return null;
-        // console.log("isTouchBuilding",x,y);
-        // for (let i = 0; i < this._buildingNodeAry.length; i++) {
-        //     let node = this._buildingNodeAry[i];
-        //     let transform = node.getComponent(UITransform);
-        //     if(transform.hitTest(new Vec2(x,y))) return node;
-        //     // let pos = this.mapCamera.screenToWorld(new Vec3(x,y,0));
-        //     // let size = transform.contentSize;
-        //     // console.log("isTouchBuilding",pos,node.getWorldPosition());
-        //     // transform.getBoundingBoxToWorld()
-        //     // Intersection2D.pointInPolygon()
-        // }
-        return gridModel.building;
+
     }
     // 建筑点击
-    onBuildingClick(buiding:BuildingModel){
-        if(!buiding) return;
-        console.log("onBuildingClick",buiding);
-        if(MapStatus.DEFAULT == this._mapStatus){
-
-        }else if(MapStatus.EDIT == this._mapStatus){
-            // this._selectBuilding = buiding;
-            // this._selectBuilding.showBtnView();
-            buiding.showBtnView();
+    onBuildingClick(building:BuildingModel){
+        if(!building) return;
+        console.log("onBuildingClick",building);
+        if(MapStatus.EDIT == this._mapStatus){
+            this._buildingEditCtl.selectBuilding = building;
+            this.changeMapStatus(MapStatus.BUILD_EDIT);
         }
     }
     // 建筑按钮界面关闭
     onBuildingBtnViewClose(){
-        this.cancelSelectBuilding();
+        this.changeMapStatus(MapStatus.EDIT);
     }
     // 设置建筑物格子
     setBuildingGrid(building:BuildingModel, gridX:number, gridY:number){
@@ -528,12 +405,52 @@ export class MainScene extends Component {
         }
         building.grids = grids;
     }
-    
-    // 取消选中建筑物
-    cancelSelectBuilding(){
-        if(this._selectBuilding){
-            this._selectBuilding = null;
+    // 场景状态切换
+    changeMapStatus(status:MapStatus){
+        let oldStatus = this._mapStatus;
+        if(status == oldStatus) return;
+        this.lineLayer.active = MapStatus.DEFAULT != status;
+        let ctl = this.getMapCtl();
+        ctl.clearData();
+        this._mapStatus = status;
+        EventManager.emit(EventType.MapStatus_Change,{oldStatus:oldStatus,status:status});
+    }
+    // 获取当前场景控制器
+    getMapCtl(){
+        if(MapStatus.DEFAULT == this._mapStatus){
+            return this._mapNormalCtl;
         }
+        if(MapStatus.EDIT == this._mapStatus){
+            return this._mapEditCtl;
+        }
+        if(MapStatus.BUILD_EDIT == this._mapStatus){
+            return this._buildingEditCtl;
+        }
+        if(MapStatus.LAND_EDIT == this._mapStatus){
+            return this._landEditCtl;
+        }
+        if(MapStatus.RECYCLE == this._mapStatus){
+            return this._recycleCtl;
+        }
+        return this._mapNormalCtl;
+    }
+    getMapCtlByStatus(status:MapStatus){
+        if(MapStatus.DEFAULT == status){
+            return this._mapNormalCtl;
+        }
+        if(MapStatus.EDIT == status){
+            return this._mapEditCtl;
+        }
+        if(MapStatus.BUILD_EDIT == status){
+            return this._buildingEditCtl;
+        }
+        if(MapStatus.LAND_EDIT == status){
+            return this._landEditCtl;
+        }
+        if(MapStatus.RECYCLE == status){
+            return this._recycleCtl;
+        }
+        return this._mapNormalCtl;
     }
 }
 

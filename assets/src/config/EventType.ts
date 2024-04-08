@@ -9,4 +9,5 @@ export const EventType = {
 
     Map_Scale : "MapScale",//地图缩放
     BuildingBtnView_Close : "BuildingBtnViewClose",//建筑按钮界面关闭
+    MapStatus_Change : "MapStatusChange",//地图状态改变
 }

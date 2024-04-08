@@ -86,9 +86,6 @@ export class BuildingBtnView extends Component {
         if(this._funcs && this._funcs[id]){
             this._funcs[id]();
         }
-        if(0 == id || 3 == id) return;
-        EventManager.emit(EventType.BuildingBtnView_Close);
-        this.node.destroy();
     }
 }
 
