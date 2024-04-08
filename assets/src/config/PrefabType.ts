@@ -6,5 +6,5 @@ export const SceneType = {
 }
 // 预制体类型
 export const PrefabType = {
-    
+    BuildingBtnView : "map/BuildingBtnView",
 }

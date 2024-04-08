@@ -32,6 +32,21 @@ export class LoadManager {
             });
         });
     }
+    public static loadPrefab(path: string): Promise<Prefab> {
+        return new Promise((resolve, reject) => {
+            resources.load("prefab/" + path, Prefab, (error: Error, assets: Prefab) => {
+                if (error) {
+                    console.log("load->resource loadPrefab failed:" + error.message);
+                    reject(error);
+                    return;
+                }
+
+                assets.addRef();//引用计数加一
+
+                resolve(assets);
+            });
+        });
+    }
     // 释放资源
     public static releaseAsset(asset: Asset) {
         if (asset) {

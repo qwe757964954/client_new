@@ -32,7 +32,7 @@ export default class EventManager {
         return key;
     }
 
-    public static off(type: string, handle: string) {
+    public static off(type: string, handle?: string) {
         EventManager.instance().off(type, handle);
     }
     private off(type: string, handle: string) {
@@ -45,7 +45,7 @@ export default class EventManager {
         }
     }
 
-    public static emit(type: string, data: any) {
+    public static emit(type: string, data?: any) {
         EventManager.instance().emit(type, data);
     }
     private emit(type: string, data: any) {

@@ -6,4 +6,7 @@ export const EventType = {
     Account_Info : "Account.Info",
     Account_Init : "Account.Init",
     /************************************socket消息类型end*********************************************/
+
+    Map_Scale : "MapScale",//地图缩放
+    BuildingBtnView_Close : "BuildingBtnViewClose",//建筑按钮界面关闭
 }
