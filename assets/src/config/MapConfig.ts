@@ -21,14 +21,13 @@ export const MapConfig = {
             329,
         ]
     },
-    landInfo : {
+    gridInfo : {
         dtX : 3,//格子X偏差
         dtY : 26,//格子Y偏差
-        width : 72,
-        height : 36,
-        col : 75,
-        row : 78,
-        path : "map/dikuai02/spriteFrame",
+        width : 72,//格子像素宽
+        height : 36,//格子像素高
+        col : 75,//格子列
+        row : 78,//格子行
         range : [//可编辑范围
             // 从下往上
             // {is : 18, ie : 57, js : 0, je : 9},
@@ -48,9 +47,15 @@ export const MapConfig = {
             {is : 18, ie : 57, js : 69, je : 78},
         ]
     },
-    buildingInfo : {//建筑装饰都必须是n*n的底
-        0 : {id:0, path:"map/zhuangshi1/spriteFrame",width:7},
-        1 : {id:1, path:"map/zhuangshi2/spriteFrame",width:7},
-        2 : {id:2, path:"map/zhuangshi3/spriteFrame",width:7},
+    landWidth:2,//地块宽度
+    landInfo : {//地块 必须是2*2的底（path路径 pathAry特殊地块图片数组）
+        0 : {id:0, path:"map/dikuai02/spriteFrame"},
+        1 : {id:1, path:"map/dikuai1/spriteFrame"},
+        2 : {id:2, path:"map/dikuai2/spriteFrame"},
+    },
+    buildingInfo : {//建筑装饰 必须是n*n的底
+        0 : {id:0, path:"map/zhuangshi1/spriteFrame",width:7,moveDt:1},
+        1 : {id:1, path:"map/zhuangshi2/spriteFrame",width:7,moveDt:1},
+        2 : {id:2, path:"map/zhuangshi3/spriteFrame",width:7,moveDt:1},
     }
 }

@@ -11,8 +11,16 @@ export class BuildEditCtl extends MapNormalCtl {
     
     // 设置选中建筑
     public set selectBuilding(building:BuildingModel){
+        if(!building) return;
         this._selectBuilding = building;
         this._selectBuilding.showBtnView();
+        this._selectBuilding.onCameraScale(this._mainScene.cameraRate);
+    }
+    // 摄像机缩放
+    public onCameraScale(rate:number):void {
+        if(this._selectBuilding){
+            this._selectBuilding.onCameraScale(this._mainScene.cameraRate);
+        }
     }
 
     //点击开始

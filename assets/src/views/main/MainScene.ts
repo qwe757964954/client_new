@@ -1,4 +1,4 @@
-import { _decorator, Asset, Camera, Canvas, Component, EventMouse, EventTouch, Graphics, instantiate, Intersection2D, Label, Node, Prefab, screen, Sprite, SpriteFrame, sys, Texture2D, UITransform, Vec2, Vec3, View } from 'cc';
+import { _decorator, Asset, Camera, Canvas, Color, Component, EventMouse, EventTouch, Graphics, instantiate, Intersection2D, Label, Node, Prefab, screen, Sprite, SpriteFrame, sys, Texture2D, UITransform, Vec2, Vec3, View } from 'cc';
 import { LoadManager } from '../../manager/LoadManager';
 import { ToolUtil } from '../../util/ToolUtil';
 import GlobalConfig from '../../GlobalConfig';
@@ -13,9 +13,12 @@ import { MapEditCtl } from '../map/MapEditCtl';
 import { LandEditCtl } from '../map/LandEditCtl';
 import { RecycleCtl } from '../map/RecycleCtl';
 import { BuildEditCtl } from '../map/BuildEditCtl';
+import { MainUICtl } from './MainUICtl';
+import { MainUIView } from './MainUIView';
+import { LandModel } from '../../models/LandModel';
 const { ccclass, property } = _decorator;
 
-enum MapStatus{//地图状态
+export enum MapStatus{//地图状态
     DEFAULT = 0,//默认状态
     EDIT = 1,//编辑状态
     BUILD_EDIT = 2,//建筑编辑状态
@@ -26,11 +29,11 @@ enum MapStatus{//地图状态
 @ccclass('MainScene')
 export class MainScene extends Component {
     @property(Prefab)
-    public gridView:Prefab = null;//格子地图
+    public mapGridView:Prefab = null;//格子地图
     @property(Prefab)
-    public landView:Prefab = null;//地块
+    public landModel:Prefab = null;//地块
     @property(Prefab)
-    public buildingView:Prefab = null;//建筑
+    public buildingModel:Prefab = null;//建筑
     @property(Node)
     public bgLayer:Node = null;//背景层
     @property(Node)
@@ -47,10 +50,12 @@ export class MainScene extends Component {
     public uiCamera:Camera = null;//ui摄像机
     
     /**=========================ui元素============================ */
-    @property(Sprite)
-    public btnTest:Sprite = null;//测试按钮
-    @property(Sprite)
-    public btnBackTest:Sprite = null;//测试按钮
+    @property(MainUIView)
+    public mainUIView:MainUIView = null;//主界面ui
+    // @property(Sprite)
+    // public btnTest:Sprite = null;//测试按钮
+    // @property(Sprite)
+    // public btnBackTest:Sprite = null;//测试按钮
 
     /**=========================变量============================ */
     private _loadAssetAry:Asset[] = [];//加载资源数组
@@ -73,6 +78,7 @@ export class MainScene extends Component {
     private _buildingEditCtl:BuildEditCtl = null;//建筑编辑控制器
     private _landEditCtl:LandEditCtl = null;//地块编辑控制器
     private _recycleCtl:RecycleCtl = null;//地图回收控制器
+    private _mainUICtl:MainUICtl = null;//主界面控制器
 
 
     /**=========================事件handle============================ */
@@ -81,7 +87,7 @@ export class MainScene extends Component {
     start() {
         this.initData();
         this.initEvent();
-        this.initLandData();
+        this.initGrid();
         this.initMap();
         this.initLand();
         this.initBuilding();
@@ -102,10 +108,12 @@ export class MainScene extends Component {
         this._buildingEditCtl = new BuildEditCtl(this);
         this._landEditCtl = new LandEditCtl(this);
         this._recycleCtl = new RecycleCtl(this);
+
+        this.mainUIView.mainScene = this;
     }
     // 点击到格子
     getTouchGrid(x:number, y:number){
-        let landInfo = MapConfig.landInfo;
+        let landInfo = MapConfig.gridInfo;
         let width = landInfo.width;
         let height = landInfo.height;
         let dtX = landInfo.dtX;
@@ -124,9 +132,21 @@ export class MainScene extends Component {
         }
         return null;
     }
-    // 初始化地块数据
-    initLandData(){
-        let landInfo = MapConfig.landInfo;
+    //是否是可编辑的格子
+    gridIsCanEdit(i:number, j:number){
+        let landInfo = MapConfig.gridInfo;
+        let range = landInfo.range;
+        for(let k=0;k<range.length;k++) {
+            let item = range[k];
+            if(i < landInfo.col && j < landInfo.row && item.is <= i && i < item.ie && item.js <= j && j < item.je){
+                return true;
+            }
+        }
+        return false;
+    }
+    // 初始化格子
+    initGrid(){
+        let landInfo = MapConfig.gridInfo;
         let width = landInfo.width;
         let height = landInfo.height;
         let col = landInfo.col;
@@ -137,7 +157,7 @@ export class MainScene extends Component {
             let ary = [];
             this._gridAry[i] = ary;
             for(let j=0;j<row;j++) {
-                if(!this.landIsCanEdit(i,j)) continue;
+                if(!this.gridIsCanEdit(i,j)) continue;
                 let pos = new Vec3((j - i)*0.5*width + dtX*width, (-i-j)*0.5*height + dtY*height, 0);
                 ary[j] = new GridModel(i, j, pos, width, height);
             }
@@ -164,7 +184,7 @@ export class MainScene extends Component {
         let time = sys.now();
         for(let i=0;i<col;i++) {
             for(let j=0;j<row;j++) {
-                let bg = instantiate(this.gridView);
+                let bg = instantiate(this.mapGridView);
                 let id = j*col+i+1;
                 let path = this.isCommonBg(id) ? bgInfo.commonPath : ToolUtil.replace(bgInfo.path, id);
                 LoadManager.load(path, SpriteFrame).then((spriteFrame:SpriteFrame) => {
@@ -183,79 +203,73 @@ export class MainScene extends Component {
         this._mapMaxHeight = height*row;
     }
     //是否是可编辑的地块
-    private landIsCanEdit(i:number, j:number){
-        let landInfo = MapConfig.landInfo;
-        let range = landInfo.range;
-        for(let k=0;k<range.length;k++) {
-            let item = range[k];
-            if(i < landInfo.col && j < landInfo.row && item.is <= i && i < item.ie && item.js <= j && j < item.je){
-                return true;
-            }
-        }
-        return false;
-    }
+    // private landIsCanEdit(i:number, j:number){
+    //     let landInfo = MapConfig.landBaseInfo;
+    //     let range = landInfo.range;
+    //     for(let k=0;k<range.length;k++) {
+    //         let item = range[k];
+    //         if(i < landInfo.col && j < landInfo.row && item.is <= i && i < item.ie && item.js <= j && j < item.je){
+    //             return true;
+    //         }
+    //     }
+    //     return false;
+    // }
     //初始化地块层
     initLand(){
-        let landInfo = MapConfig.landInfo;
-        let width = landInfo.width;
-        let height = landInfo.height;
-        let col = landInfo.col;
-        let row = landInfo.row;
+        let gridInfo = MapConfig.gridInfo;
+        let width = gridInfo.width;
+        let height = gridInfo.height;
+        let col = gridInfo.col;
+        let row = gridInfo.row;
+        let landWidth = MapConfig.landWidth;
         let g = this.lineLayer.getComponent(Graphics);
         this.lineLayer.active = false;
-        LoadManager.load(landInfo.path, SpriteFrame).then((spriteFrame:SpriteFrame) => {
-            this._loadAssetAry.push(spriteFrame);
-            let index = 1;
-            for(let i=0;i<col;i++) {
-                for(let j=0;j<row;j++) {
-                    let gridInfo = this.getGridInfo(i, j);
-                    if(!gridInfo) continue;
-                    let land = instantiate(this.landView);
-                    land.getComponent(Sprite).spriteFrame = spriteFrame;
-                    land.getChildByPath("Label").active = false;
-                    // land.getChildByPath("Label").getComponent(Label).string = ToolUtil.replace("({0},{1})",i,j);
-                    // land.getChildByPath("Label").getComponent(Label).string = index.toString();
-                    index++;
-                    let pos = gridInfo.pos;
-                    land.position = pos;
-                    this.landLayer.addChild(land);
-                    g.lineWidth = 2;
-                    g.moveTo(pos.x - 0.5*width, pos.y);
-                    g.lineTo(pos.x, pos.y + 0.5*height);
-                    g.lineTo(pos.x + 0.5*width, pos.y);
-                    if(!this.getGridInfo(i,j+1)){
-                        g.lineTo(pos.x, pos.y - 0.5*height);
-                        if(!this.getGridInfo(i + 1,j)){
-                            g.lineTo(pos.x - 0.5*width, pos.y);
-                        }
+        for(let i=0;i<col;i++) {
+            for(let j=0;j<row;j++) {
+                let gridInfo = this.getGridInfo(i, j);
+                if(!gridInfo || gridInfo.land) continue;
+                let land = instantiate(this.landModel);
+                this.landLayer.addChild(land);
+                let laneModel = land.getComponent(LandModel);
+                laneModel.initData(i,j,landWidth,MapConfig.landInfo[0]);
+                this.setLandGrid(laneModel, i, j);
+                laneModel.showLand();
+
+                let pos = gridInfo.pos;
+                g.lineWidth = 2;
+                g.strokeColor = Color.BLACK;
+                g.moveTo(pos.x - 0.5*width*landWidth, pos.y - 0.5*height*(landWidth-1));
+                g.lineTo(pos.x, pos.y + 0.5*height);
+                g.lineTo(pos.x + 0.5*width*landWidth, pos.y - 0.5*height*(landWidth-1));
+                if(!this.getGridInfo(i,j+1)){
+                    g.lineTo(pos.x, pos.y - 0.5*height*(2*landWidth-1));
+                    if(!this.getGridInfo(i + 1,j)){
+                        g.lineTo(pos.x - 0.5*width*landWidth, pos.y - 0.5*height*(landWidth-1));
                     }
-                    else if(!this.getGridInfo(i + 1,j)){
-                        g.moveTo(pos.x, pos.y - 0.5*height);
-                        g.lineTo(pos.x - 0.5*width, pos.y);
-                    }
-                    g.stroke();
-                    g.lineWidth = 1;
-                    g.moveTo(pos.x + 0.25*width, pos.y + 0.25*height);
-                    g.lineTo(pos.x - 0.25*width, pos.y - 0.25*height);
-                    g.moveTo(pos.x - 0.25*width, pos.y + 0.25*height);
-                    g.lineTo(pos.x + 0.25*width, pos.y - 0.25*height);
-                    g.stroke();
                 }
+                else if(!this.getGridInfo(i + 1,j)){
+                    g.moveTo(pos.x, pos.y - 0.5*height*(2*landWidth-1));
+                    g.lineTo(pos.x - 0.5*width*landWidth, pos.y - 0.5*height*(landWidth-1));
+                }
+                g.stroke();
+                g.lineWidth = 1;
+                g.moveTo(pos.x + 0.5*width, pos.y);
+                g.lineTo(pos.x - 0.5*width, pos.y - height);
+                g.moveTo(pos.x - 0.5*width, pos.y);
+                g.lineTo(pos.x + 0.5*width, pos.y - height);
+                g.stroke();
             }
-        });
+        }
     }
     // 初始化建筑
     initBuilding(){
         let buildingInfo = MapConfig.buildingInfo[1];
-        let buildingNode = instantiate(this.buildingView);
-        LoadManager.load(buildingInfo.path, SpriteFrame).then((spriteFrame:SpriteFrame) => {
-            buildingNode.getComponent(Sprite).spriteFrame = spriteFrame;
-        });
-        this.buildingLayer.addChild(buildingNode);
-
         let startX = 20;
         let startY = 20;
-        let buildingModel = new BuildingModel(startX, startY, buildingInfo.width, false, buildingNode);
+        let building = instantiate(this.buildingModel);
+        this.buildingLayer.addChild(building);
+        let buildingModel = building.getComponent(BuildingModel);
+        buildingModel.initData(startX, startY, buildingInfo.width, buildingInfo.path, false);
         this.setBuildingGrid(buildingModel, startX, startY);
     }
     // 初始化事件
@@ -266,8 +280,8 @@ export class MainScene extends Component {
         this.touchCanvas.node.on(Node.EventType.TOUCH_END, this.onTouchEnd, this);
         this.touchCanvas.node.on(Node.EventType.TOUCH_CANCEL, this.onTouchCancel, this);
 
-        CCUtil.onTouch(this.btnTest, this.onBtnTestClick, this);
-        CCUtil.onTouch(this.btnBackTest, this.onBtnBackTestClick, this);
+        // CCUtil.onTouch(this.btnTest, this.onBtnTestClick, this);
+        // CCUtil.onTouch(this.btnBackTest, this.onBtnBackTestClick, this);
         this._buildingBtnViewCloseHandle = EventManager.on(EventType.BuildingBtnView_Close, this.onBuildingBtnViewClose.bind(this));
     }
     // 移除事件
@@ -278,8 +292,8 @@ export class MainScene extends Component {
         this.touchCanvas.node.off(Node.EventType.TOUCH_END);
         this.touchCanvas.node.off(Node.EventType.TOUCH_CANCEL);
 
-        CCUtil.offTouch(this.btnTest, this.onBtnTestClick, this);
-        CCUtil.offTouch(this.btnTest, this.onBtnBackTestClick, this);
+        // CCUtil.offTouch(this.btnTest, this.onBtnTestClick, this);
+        // CCUtil.offTouch(this.btnTest, this.onBtnBackTestClick, this);
         EventManager.off(EventType.BuildingBtnView_Close, this._buildingBtnViewCloseHandle);
     }
     // 移除加载资源
@@ -293,7 +307,7 @@ export class MainScene extends Component {
     // 测试按钮点击事件
     onBtnTestClick(){
         this.getMapCtl().confirmEvent();
-        this.changeMapStatus(MapStatus.EDIT);
+        // this.changeMapStatus(MapStatus.EDIT);
     }
     onBtnBackTestClick(){
         this.getMapCtl().cancelEvent();
@@ -308,6 +322,10 @@ export class MainScene extends Component {
     onMapMouseWheel(e:EventMouse){
         this.getMapCtl().onMapMouseWheel(e);
     }
+    // 摄像头缩放大小
+    get cameraRate():number{
+        return this._cameraRate;
+    }
     // 缩小地图
     mapZoomOut(){
         this._cameraHeight += this._cameraZoomVal;
@@ -319,6 +337,9 @@ export class MainScene extends Component {
         this._cameraRate = this._cameraHeight / this._uiCameraHeight;
 
         this.mapMove(0,0);//限制map位置
+        // 摄像头缩放事件通知
+        this.getMapCtl().onCameraScale(this._cameraRate);
+        EventManager.emit(EventType.Map_Scale, this._cameraRate);
     }
     // 放大地图
     mapZoomIn(){
@@ -329,6 +350,9 @@ export class MainScene extends Component {
         }
         this.mapCamera.orthoHeight = this._cameraHeight;
         this._cameraRate = this._cameraHeight / this._uiCameraHeight;
+        // 摄像头缩放事件通知
+        this.getMapCtl().onCameraScale(this._cameraRate);
+        EventManager.emit(EventType.Map_Scale, this._cameraRate);
     }
     // 移动地图
     mapMove(dtX:number, dtY:number){
@@ -375,7 +399,6 @@ export class MainScene extends Component {
     protected onDestroy(): void {
         this.removeEvent();
         this.removeLoadAsset();
-
     }
     // 建筑点击
     onBuildingClick(building:BuildingModel){
@@ -405,10 +428,26 @@ export class MainScene extends Component {
         }
         building.grids = grids;
     }
+    // 设置地块格子
+    setLandGrid(land:LandModel, gridX:number, gridY:number){
+        let grids:GridModel[] = [];
+        for (let i = 0; i < land.width; i++) {
+            for (let j = 0; j < land.width; j++) {
+                let grid = this.getGridInfo(gridX + i, gridY + j);
+                if(!grid) {
+                    // console.log("setLandGrid error",gridX,gridY);
+                    return;
+                }
+                grids.push(grid);
+            }
+        }
+        land.grids = grids;
+    }
     // 场景状态切换
     changeMapStatus(status:MapStatus){
         let oldStatus = this._mapStatus;
         if(status == oldStatus) return;
+        console.log("changeMapStatus",oldStatus, status);
         this.lineLayer.active = MapStatus.DEFAULT != status;
         let ctl = this.getMapCtl();
         ctl.clearData();
