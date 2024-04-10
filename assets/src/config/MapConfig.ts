@@ -1,3 +1,10 @@
+export enum MapStatus{//地图状态
+    DEFAULT = 0,//默认状态
+    EDIT = 1,//编辑状态
+    BUILD_EDIT = 2,//建筑编辑状态
+    LAND_EDIT = 3,//地块编辑状态
+    RECYCLE = 4,//回收状态
+};
 
 export const MapConfig = {
     bgInfo : {

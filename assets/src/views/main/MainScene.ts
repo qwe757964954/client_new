@@ -2,7 +2,7 @@ import { _decorator, Asset, Camera, Canvas, Color, Component, EventMouse, EventT
 import { LoadManager } from '../../manager/LoadManager';
 import { ToolUtil } from '../../util/ToolUtil';
 import GlobalConfig from '../../GlobalConfig';
-import { MapConfig } from '../../config/MapConfig';
+import { MapConfig, MapStatus } from '../../config/MapConfig';
 import CCUtil from '../../util/CCUtil';
 import { GridModel } from '../../models/GridModel';
 import { BuildingModel } from '../../models/BuildingModel';
@@ -13,18 +13,12 @@ import { MapEditCtl } from '../map/MapEditCtl';
 import { LandEditCtl } from '../map/LandEditCtl';
 import { RecycleCtl } from '../map/RecycleCtl';
 import { BuildEditCtl } from '../map/BuildEditCtl';
-import { MainUICtl } from './MainUICtl';
+// import { MainUICtl } from './MainUICtl';
 import { MainUIView } from './MainUIView';
 import { LandModel } from '../../models/LandModel';
+import { EditUIView } from './EditUIView';
+import { ViewsManager } from '../../manager/ViewsManager';
 const { ccclass, property } = _decorator;
-
-export enum MapStatus{//地图状态
-    DEFAULT = 0,//默认状态
-    EDIT = 1,//编辑状态
-    BUILD_EDIT = 2,//建筑编辑状态
-    LAND_EDIT = 3,//地块编辑状态
-    RECYCLE = 4,//回收状态
-};
 
 @ccclass('MainScene')
 export class MainScene extends Component {
@@ -52,6 +46,16 @@ export class MainScene extends Component {
     /**=========================ui元素============================ */
     @property(MainUIView)
     public mainUIView:MainUIView = null;//主界面ui
+    @property(EditUIView)
+    public editUIView:EditUIView = null;//编辑界面ui
+    @property(Node)
+    public sceneLayer:Node = null;//场景层
+    @property(Node)
+    public popupLayer:Node = null;//弹窗层
+    @property(Node)
+    public tipLayer:Node = null;//提示层
+    @property(Node)
+    public loadingLayer:Node = null;//加载层
     // @property(Sprite)
     // public btnTest:Sprite = null;//测试按钮
     // @property(Sprite)
@@ -78,7 +82,7 @@ export class MainScene extends Component {
     private _buildingEditCtl:BuildEditCtl = null;//建筑编辑控制器
     private _landEditCtl:LandEditCtl = null;//地块编辑控制器
     private _recycleCtl:RecycleCtl = null;//地图回收控制器
-    private _mainUICtl:MainUICtl = null;//主界面控制器
+    // private _mainUICtl:MainUICtl = null;//主界面控制器
 
 
     /**=========================事件handle============================ */
@@ -110,6 +114,10 @@ export class MainScene extends Component {
         this._recycleCtl = new RecycleCtl(this);
 
         this.mainUIView.mainScene = this;
+        this.editUIView.mainScene = this;
+        this.editUIView.node.active = false;
+
+        ViewsManager.instance.initLayer(this.sceneLayer,this.popupLayer,this.tipLayer,this.loadingLayer);
     }
     // 点击到格子
     getTouchGrid(x:number, y:number){
@@ -449,6 +457,8 @@ export class MainScene extends Component {
         if(status == oldStatus) return;
         console.log("changeMapStatus",oldStatus, status);
         this.lineLayer.active = MapStatus.DEFAULT != status;
+        this.mainUIView.node.active = MapStatus.DEFAULT == status;
+        this.editUIView.node.active = (MapStatus.EDIT == status || MapStatus.BUILD_EDIT == status);
         let ctl = this.getMapCtl();
         ctl.clearData();
         this._mapStatus = status;
