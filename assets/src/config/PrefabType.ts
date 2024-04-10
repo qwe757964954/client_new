@@ -1,3 +1,5 @@
+import { path } from "cc"
+
 // 场景类型
 export const SceneType = {
     LoadingScene: "LoadingScene",
