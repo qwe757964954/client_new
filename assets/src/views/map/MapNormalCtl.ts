@@ -1,25 +1,13 @@
 import { EventMouse, EventTouch, Vec2 } from "cc";
-import { MainScene } from "../main/MainScene";
+import { MainUICtl } from "../main/MainUICtl";
 
 //普通地图处理
-export class MapNormalCtl {
+export class MapNormalCtl extends MainUICtl {
 
     private _touchMoveOffset:number = 1;//触摸误差
-
-    protected _mainScene:MainScene = null;//主场景
     protected _lastTouchPos:Vec2;//上一次触摸位置
     protected _isTouchMove:boolean = false;//是否触摸移动
 
-    constructor(mainScene:MainScene) {
-        this._mainScene = mainScene;
-
-        this.init();
-    }
-
-    // 初始化
-    public init():void {
-        
-    }
     // 触摸移动有效
     isTouchMoveEffective(dtX:number, dtY:number):boolean{
         if(Math.abs(dtX) < this._touchMoveOffset &&
