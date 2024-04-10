@@ -1,13 +1,14 @@
-import { _decorator, Component, EditBox, EventTouch, Label, Node, Sprite, sys, Toggle } from 'cc';
+import { _decorator, Component, director, EditBox, EventTouch, Label, Node, Sprite, sys, Toggle } from 'cc';
 import { LoadManager } from '../../manager/LoadManager';
 import StorageUtil from '../../util/StorageUtil';
 import { HttpManager } from '../../net/HttpManager';
 import { TimerMgr } from '../../util/TimerMgr';
+import { HTML5, NATIVE } from 'cc/env';
 const { ccclass, property } = _decorator;
 
 // 隐私协议是否勾选过
 const PRIVATE_HAS_CHECK_KEY = "private_has_check_key";
-// 登录token
+// 登录信息
 const LOGIN_INFO_KEY = "login_info_key";
 
 @ccclass('LoginView')
@@ -58,7 +59,7 @@ export class LoginView extends Component {
 
     protected onEnable(): void {
         this.middle.active = false;
-        // this.downLoadBox.active = false;
+        this.downLoadBox.active = false;
         // token检查
         this.checkToken();
     }
@@ -97,6 +98,15 @@ export class LoginView extends Component {
         let privateHasCheck = StorageUtil.getData(PRIVATE_HAS_CHECK_KEY, "0") == "0" ? false : true;
         (this.privacyAgreeBox.getComponent(Toggle)).isChecked = privateHasCheck;
         this.agreeTip.active = !privateHasCheck;
+        // 下载模块
+        if (this.downLoadBox.getChildByName("Goole")) {
+            this.downLoadBox.getChildByName("Goole").active = !HTML5;
+        }
+        this.appleQrCode.active = false;
+        // 微信登录按钮
+        if (this.middle.getChildByName("WxLogin")) {
+            this.middle.getChildByName("WxLogin").active = NATIVE;
+        }
     }
 
     update(deltaTime: number) {
@@ -305,6 +315,7 @@ export class LoginView extends Component {
         }));
         // 跳转主界面
         console.log("跳转主界面");
+        director.loadScene("MainScene");
         return true;
     }
 }
