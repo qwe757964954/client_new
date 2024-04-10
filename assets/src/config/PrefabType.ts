@@ -25,7 +25,7 @@ export class PrefabConfig {
 }
 
 // 预制体类型
-export const PrefabType: { [key: string]: PrefabConfig } = {
+export const PrefabType = {
     BuildingBtnView: { path: "map/BuildingBtnView", zindex: Hierarchy.SCENELAYER, tips: "界面名" },
     WorldMapView: { path: "adventure/WorldMapView", zindex: Hierarchy.SCENELAYER, tips: "大冒险 世界地图" },
 
