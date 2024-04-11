@@ -1,4 +1,4 @@
-import { Color, Graphics, Sprite, SpriteFrame, Vec3, instantiate, screen, sys } from "cc";
+import { Color, Graphics, Sprite, SpriteFrame, UITransform, Vec3, instantiate, screen, sys } from "cc";
 import { MainBaseCtl } from "../main/MainBaseCtl";
 import { GridModel } from "../../models/GridModel";
 import { MapConfig } from "../../config/MapConfig";
@@ -161,25 +161,25 @@ export class MapUICtl extends MainBaseCtl {
                 let pos = gridInfo.pos;
                 g.lineWidth = 2;
                 g.strokeColor = Color.BLACK;
-                g.moveTo(pos.x - 0.5*width*landWidth, pos.y - 0.5*height*(landWidth-1));
-                g.lineTo(pos.x, pos.y + 0.5*height);
-                g.lineTo(pos.x + 0.5*width*landWidth, pos.y - 0.5*height*(landWidth-1));
+                g.moveTo(pos.x - 0.5*width*landWidth, pos.y - 0.5*height*landWidth);
+                g.lineTo(pos.x, pos.y);
+                g.lineTo(pos.x + 0.5*width*landWidth, pos.y - 0.5*height*landWidth);
                 if(!this.getGridInfo(i,j+1)){
-                    g.lineTo(pos.x, pos.y - 0.5*height*(2*landWidth-1));
+                    g.lineTo(pos.x, pos.y - height*landWidth);
                     if(!this.getGridInfo(i + 1,j)){
-                        g.lineTo(pos.x - 0.5*width*landWidth, pos.y - 0.5*height*(landWidth-1));
+                        g.lineTo(pos.x - 0.5*width*landWidth, pos.y - 0.5*height*landWidth);
                     }
                 }
                 else if(!this.getGridInfo(i + 1,j)){
-                    g.moveTo(pos.x, pos.y - 0.5*height*(2*landWidth-1));
-                    g.lineTo(pos.x - 0.5*width*landWidth, pos.y - 0.5*height*(landWidth-1));
+                    g.moveTo(pos.x, pos.y - height*landWidth);
+                    g.lineTo(pos.x - 0.5*width*landWidth, pos.y - 0.5*height*landWidth);
                 }
                 g.stroke();
                 g.lineWidth = 1;
-                g.moveTo(pos.x + 0.5*width, pos.y);
-                g.lineTo(pos.x - 0.5*width, pos.y - height);
-                g.moveTo(pos.x - 0.5*width, pos.y);
-                g.lineTo(pos.x + 0.5*width, pos.y - height);
+                g.moveTo(pos.x + 0.5*width, pos.y - 0.5*height);
+                g.lineTo(pos.x - 0.5*width, pos.y - 1.5*height);
+                g.moveTo(pos.x - 0.5*width, pos.y - 0.5*height);
+                g.lineTo(pos.x + 0.5*width, pos.y - 1.5*height);
                 g.stroke();
             }
         }
@@ -259,10 +259,10 @@ export class MapUICtl extends MainBaseCtl {
         let height = landInfo.height;
         let dtX = landInfo.dtX;
         let dtY = landInfo.dtY;
-        let row = landInfo.row;
-        let pos = this._mainScene.mapCamera.screenToWorld(new Vec3(x,y,0));
-        let i = Math.floor(dtX*2 + dtY*2 - pos.x/width - pos.y/height + 0.5);
-        let j = Math.floor(dtY - dtX + pos.x/width - pos.y/height - 0.5);
+        let worldPos = this._mainScene.mapCamera.screenToWorld(new Vec3(x,y,0));
+        let pos = this._mainScene.landLayer.getComponent(UITransform).convertToNodeSpaceAR(worldPos);
+        let i = Math.floor(dtX + dtY - pos.x/width - pos.y/height);
+        let j = Math.floor(dtY - dtX + pos.x/width - pos.y/height);
         // console.log("getTouchGrid",i,j);
         return this.getGridInfo(i,j);
     }

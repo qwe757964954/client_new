@@ -45,8 +45,7 @@ export class LandModel  extends Component {
         this._landInfo = landInfo;
         this._dataLandInfo = landInfo;
 
-        // this.getComponentInChildren(Label).string = x.toString();
-        // this.getComponentInChildren(Label).string = y.toString();
+        // this.getComponentInChildren(Label).string = x.toString() + "," + y.toString();
         this.getComponentInChildren(Label).node.active = false;
     }
 
@@ -65,7 +64,7 @@ export class LandModel  extends Component {
         this._x = gridInfo.x;
         this._y = gridInfo.y;
         let gridPos = gridInfo.pos;
-        let pos = new Vec3(gridPos.x, gridPos.y - (this._width - 1)*0.5*gridInfo.height, 0);
+        let pos = new Vec3(gridPos.x, gridPos.y - 0.5*this._width*gridInfo.height, 0);
         this.node.position = pos;
     }
     //显示地块
