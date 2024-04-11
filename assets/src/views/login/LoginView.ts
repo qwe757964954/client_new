@@ -4,6 +4,7 @@ import StorageUtil from '../../util/StorageUtil';
 import { HttpManager } from '../../net/HttpManager';
 import { TimerMgr } from '../../util/TimerMgr';
 import { HTML5, NATIVE } from 'cc/env';
+import { NetConfig } from '../../config/NetConfig';
 const { ccclass, property } = _decorator;
 
 // 隐私协议是否勾选过
@@ -261,10 +262,10 @@ export class LoginView extends Component {
     btnUserXieyiOrYinsiFunc(data: Event, customEventData: string) {
         console.log("btnUserXieyiOrYinsiFunc customEventData = ", customEventData);
         if (customEventData == "xieyi") {
-            sys.openURL("https://www.chuangciyingyu.com/%E7%94%A8%E6%88%B7%E6%9C%8D%E5%8A%A1%E5%8D%8F%E8%AE%AE.htm");
+            sys.openURL(NetConfig.userAgreement);
         }
         else if (customEventData == "yinsi") {
-            sys.openURL("https://www.chuangciyingyu.com/%E9%9A%90%E7%A7%81%E6%94%BF%E7%AD%96.htm");
+            sys.openURL(NetConfig.privacyPage);
         }
     }
 
@@ -272,10 +273,10 @@ export class LoginView extends Component {
     btnDownLoadFunc(data: Event, customEventData: string) {
         console.log("btnDownLoadFunc customEventData = ", customEventData);
 		if (customEventData == "Goole") {
-			sys.openURL("https://www.google.cn/chrome/");
+			sys.openURL(NetConfig.gooleDown);
 		}
         else if (customEventData == "Android") {
-			sys.openURL("https://www.chuangciyingyu.com/chuangci_v20220720.apk");
+			sys.openURL(NetConfig.androidDown);
 		}
         else if (customEventData == "Apple") {
 			this.appleQrCode.active = !this.appleQrCode.active;
