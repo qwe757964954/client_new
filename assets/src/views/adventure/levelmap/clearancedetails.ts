@@ -36,6 +36,7 @@ export class Clearancedetails extends Component {
     }
     /**初始化UI */
     private initUI() {
+        this.node.active = false
         this.node.position = v3(900, 0, 0)
     }
 
@@ -45,6 +46,7 @@ export class Clearancedetails extends Component {
     }
     private onbtn_closeClick() {
         tween(this.node).to(0.3, { position: v3(900, 0, 0) }).call(() => {
+            this.node.active = false
         }).start()
     }
     update(deltaTime: number) {

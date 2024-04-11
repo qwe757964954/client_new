@@ -1707,7 +1707,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "word_0015_blue_6",
+    "_name": "word_0015_blue_5",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -2186,7 +2186,26 @@
     "__prefab": {
       "__id__": 95
     },
-    "nodeList": [],
+    "nodeList": [
+      {
+        "__id__": 10
+      },
+      {
+        "__id__": 22
+      },
+      {
+        "__id__": 34
+      },
+      {
+        "__id__": 46
+      },
+      {
+        "__id__": 58
+      },
+      {
+        "__id__": 70
+      }
+    ],
     "isSelect": [
       {
         "__uuid__": "c0a848cf-c425-4885-8fa3-507e374824bc@f9941",

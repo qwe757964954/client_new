@@ -50,6 +50,7 @@ export class WorldIsland extends Component {
     }
 
     private onBtnDetailsClick() {
+        this.panel.active = true;
         tween(this.panel).to(0.3, { position: v3(0, 0, 0) }).call(() => {
         }).start()
     }
