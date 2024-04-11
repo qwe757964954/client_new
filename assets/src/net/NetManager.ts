@@ -1,4 +1,4 @@
-import { c2sAccountInit } from "../models/NetModel";
+import { c2sAccountInit, c2sPropMyList } from "../models/NetModel";
 import EventManager from "../util/EventManager";
 import { Socket } from "./Socket";
 //消息服务管理类
@@ -95,6 +95,13 @@ export class NetManager {
     public reqInitData(){
         let para:c2sAccountInit = new c2sAccountInit;
         // para.MemberToken = 
+        this.sendMsg(para);
+    }
+    
+    // 请求我的道具列表
+    public reqMyListData(moduleId: number){
+        let para:c2sPropMyList = new c2sPropMyList;
+        para.ModuleId = moduleId;
         this.sendMsg(para);
     }
 

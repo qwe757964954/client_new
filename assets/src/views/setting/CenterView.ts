@@ -1,5 +1,7 @@
 import { _decorator, Button, Color, Component, Label, Node, Sprite, Vec3 } from 'cc';
 import CCUtil from '../../util/CCUtil';
+import { PrefabType } from '../../config/PrefabType';
+import { ViewsManager } from '../../manager/ViewsManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('CenterView')
@@ -29,6 +31,7 @@ export class CenterView extends Component {
     // 切换头像
     btnChangeHeadFunc() {
         console.log("btnChangeHeadFunc");
+        ViewsManager.instance.showView(PrefabType.ChangeHeadView);
     }
     // 修改名称
     btnChangeNameFunc() {

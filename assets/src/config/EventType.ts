@@ -5,6 +5,7 @@ export const EventType = {
     Account_Step: "Account.Step",
     Account_Info: "Account.Info",
     Account_Init: "Account.Init",
+    Prop_MyList : "Prop.MyList",    // 我的道具列表
     /************************************socket消息类型end*********************************************/
 
     Map_Scale: "MapScale",//地图缩放

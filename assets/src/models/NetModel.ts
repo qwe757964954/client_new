@@ -79,4 +79,10 @@ export class c2sAccountInit{
     MemberToken : string;//token
 }
 
+// 道具列表
+export class c2sPropMyList{
+    Path : string = EventType.Prop_MyList;
+    ModuleId : number;   // 道具类型
+}
+
 /*****************************************************************************/

@@ -1,5 +1,7 @@
 import { _decorator, Button, Color, Component, Label, Node, Sprite, Vec3 } from 'cc';
 import CCUtil from '../../util/CCUtil';
+import { ViewsManager } from '../../manager/ViewsManager';
+import { PrefabType } from '../../config/PrefabType';
 const { ccclass, property } = _decorator;
 
 @ccclass('SettingView')
@@ -91,9 +93,9 @@ export class SettingView extends Component {
     }
 
     // 返回主界面
-    btnCloseFunc(){
+    btnCloseFunc() {
         console.log("btnCloseFunc");
-        
+        ViewsManager.instance.closeView(PrefabType.SettingView);
     }
 }
 
