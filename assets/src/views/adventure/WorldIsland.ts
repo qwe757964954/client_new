@@ -1,5 +1,8 @@
-import { _decorator, Component, instantiate, Node, Prefab, v3 } from 'cc';
-import { map } from './levelmap/map';
+import { _decorator, Button, Component, instantiate, Node, Prefab, tween, v3 } from 'cc';
+import CCUtil from '../../util/CCUtil';
+import { EventType } from '../../config/EventType';
+import EventManager from '../../util/EventManager';
+import { clearancedetails } from './levelmap/clearancedetails';
 const { ccclass, property } = _decorator;
 
 /**魔法森林 何存发 2024年4月9日17:51:36 */
@@ -10,6 +13,14 @@ export class WorldIsland extends Component {
     public mapList: Node = null;
     @property({ type: Node, tooltip: "地图块" })
     public mapItem: Node = null;
+    @property({ type: Node, tooltip: "返回按钮" })
+    public back: Node = null;
+    @property({ type: Button, tooltip: "闯关详情" })
+    public btn_details: Button = null;
+    @property({ type: Button, tooltip: "我的位置" })
+    public btn_pos: Button = null;
+    @property({ type: Node, tooltip: "面板" })
+    public panel: Node = null;
     start() {
 
     }
@@ -19,6 +30,7 @@ export class WorldIsland extends Component {
     }
     protected onLoad(): void {
         this.initUI()
+        this.initEvent()
     }
 
     /**初始化UI */
@@ -28,14 +40,28 @@ export class WorldIsland extends Component {
 
     /**初始化监听事件 */
     private initEvent() {
+        CCUtil.onTouch(this.back, this.onBtnBackClick, this)
+        CCUtil.onTouch(this.btn_details, this.onBtnDetailsClick, this)
+
     }
     /**移除监听 */
-    private removeEvent() { }
+    private removeEvent() {
+        CCUtil.offTouch(this.back, this.onBtnBackClick, this)
+        CCUtil.offTouch(this.btn_details, this.onBtnDetailsClick, this)
+    }
+
+    private onBtnDetailsClick() {
+        tween(this.panel).to(0.3, { position: v3(0, 0, 0) }).call(() => {
+        }).start()
+    }
+    private onBtnBackClick() {
+        EventManager.emit(EventType.study_page_switching, [1, null, 6])
+
+    }
 
     /**初始化列表 */
     private initlist() {
         this.mapList.removeAllChildren()
-        let intx = -226
         for (let i = 0; i < 29; i++) {
             let node = instantiate(this.mapItem)
             this.mapList.insertChild(node, 0)
@@ -48,7 +74,7 @@ export class WorldIsland extends Component {
     }
 
     protected onDestroy(): void {
-
+        this.removeEvent()
     }
 
 }
