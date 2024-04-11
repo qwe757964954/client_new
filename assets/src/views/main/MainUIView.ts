@@ -84,7 +84,7 @@ export class MainUIView extends Component {
     }
     //头像点击
     public onClickHead(){
-        
+        ViewsManager.instance.showView(PrefabType.SettingView);
     }
     //菜单点击
     public onClickMenu(){
