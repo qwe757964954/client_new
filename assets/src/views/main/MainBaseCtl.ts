@@ -7,11 +7,6 @@ export class MainBaseCtl {
     constructor(mainScene:MainScene) {
         this._mainScene = mainScene;
     }
-
-    // 初始化
-    public init():void {
-        
-    }
     // 摄像机缩放
     public onCameraScale(rate:number):void {
         

@@ -1,4 +1,4 @@
-import { _decorator, Asset, Component, Sprite, SpriteFrame, Vec3 } from "cc";
+import { _decorator, Asset, Component, Label, Sprite, SpriteFrame, Vec3 } from "cc";
 import { GridModel } from "./GridModel";
 import { LoadManager } from "../manager/LoadManager";
 const { ccclass, property } = _decorator;
@@ -21,8 +21,14 @@ export class LandModel  extends Component {
     private _landInfo:LandInfo;//地块信息
     private _loadAssetAry:Asset[] = [];//加载资源数组
 
+    private _dataLandInfo:LandInfo;//数据地块信息
+
     // 销毁
     protected onDestroy(): void {
+        this.releaseAsset();
+    }
+    // 释放资源
+    public releaseAsset() {
         LoadManager.releaseAssets(this._loadAssetAry);
         this._loadAssetAry = [];
     }
@@ -37,11 +43,17 @@ export class LandModel  extends Component {
         this._width = width;
         // this._landID = landID;
         this._landInfo = landInfo;
+        this._dataLandInfo = landInfo;
+
+        // this.getComponentInChildren(Label).string = x.toString();
+        // this.getComponentInChildren(Label).string = y.toString();
+        this.getComponentInChildren(Label).node.active = false;
     }
 
     public set grids(grids:GridModel[]) {
         if(this._grids) return;
         if(grids.length != this._width*this._width){
+            console.log("grids error data");
             return;
         }
         // console.log("set grids",grids);
@@ -58,6 +70,7 @@ export class LandModel  extends Component {
     }
     //显示地块
     public showLand() {
+        this.releaseAsset();
         LoadManager.load(this._landInfo.path, SpriteFrame).then((spriteFrame:SpriteFrame) => {
             this.getComponent(Sprite).spriteFrame = spriteFrame;
             this._loadAssetAry.push(spriteFrame);
@@ -70,5 +83,27 @@ export class LandModel  extends Component {
         }
         this._landInfo = landInfo;
         this.showLand();
+    }
+    // 批量刷地块
+    public refreshLand(landInfo:LandInfo) {
+        if(!landInfo) return;
+        this.landInfo = landInfo;
+    }
+    // 单个刷地块
+    public refreshOneLand(landInfo:LandInfo) {
+        if(!landInfo) return;
+        if(landInfo.id == this._landInfo.id){
+            this.recover();
+            return;
+        }
+        this.landInfo = landInfo;
+    }
+    // 保存信息
+    public saveData() {
+        this._dataLandInfo = this._landInfo;
+    }
+    // 还原
+    public recover() {
+        this.landInfo = this._dataLandInfo;
     }
 }

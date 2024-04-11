@@ -1,10 +1,10 @@
 import { EventMouse, EventTouch } from "cc";
-import { MapNormalCtl } from "./MapNormalCtl";
+import { MapBaseCtl } from "./MapBaseCtl";
 import { GridModel } from "../../models/GridModel";
 import { BuildingModel } from "../../models/BuildingModel";
 
 //建筑编辑控制器
-export class BuildEditCtl extends MapNormalCtl {
+export class BuildEditCtl extends MapBaseCtl {
     private _lastTouchGrid:GridModel = null;//上一次触摸格子
     private _selectBuilding:BuildingModel = null;//选中建筑
     private _touchBuilding:BuildingModel = null;//触摸建筑
@@ -55,7 +55,7 @@ export class BuildEditCtl extends MapNormalCtl {
     }
     //点击结束
     public onTouchEnd(e: EventTouch): void {
-        if(!this._isTouchMove){
+        if(this._isTouchInSelf && !this._isTouchMove){
             let pos = e.getLocation();
             let gridModel = this._mainScene.getTouchGrid(pos.x, pos.y);
             if(gridModel){
@@ -79,12 +79,17 @@ export class BuildEditCtl extends MapNormalCtl {
     }
     // 清理数据
     clearData(): void {
-        this._selectBuilding = null;
+        if(this._selectBuilding){
+            this._selectBuilding.recoverData();
+            this._selectBuilding = null;
+        }
+        super.clearData();
     }
     // 取消事件
     cancelEvent(): void {
         if(this._selectBuilding){
-            this._selectBuilding.recover();
+            this._selectBuilding.recoverData();
+            this._selectBuilding = null;
         }
     }
 }

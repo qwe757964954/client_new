@@ -1,3 +1,10 @@
+export enum MapStatus{//地图状态
+    DEFAULT = 0,//默认状态
+    EDIT = 1,//编辑状态
+    BUILD_EDIT = 2,//建筑编辑状态
+    LAND_EDIT = 3,//地块编辑状态
+    RECYCLE = 4,//回收状态
+};
 
 export const MapConfig = {
     bgInfo : {
@@ -26,25 +33,16 @@ export const MapConfig = {
         dtY : 26,//格子Y偏差
         width : 72,//格子像素宽
         height : 36,//格子像素高
-        col : 75,//格子列
+        col : 72,//格子列
         row : 78,//格子行
         range : [//可编辑范围
-            // 从下往上
-            // {is : 18, ie : 57, js : 0, je : 9},
-            // {is : 0, ie : 63, js : 9, je : 18},
-            // {is : 63, ie : 75, js : 12, je : 33},
-            // {is : 6, ie : 63, js : 18, je : 36},
-            // {is : 12, ie : 63, js : 36, je : 54},
-            // {is : 15, ie : 63, js : 54, je : 69},
-            // {is : 27, ie : 63, js : 69, je : 78},
-            // 从上往下
-            {is : 12, ie : 48, js : 0, je : 9},
-            {is : 12, ie : 60, js : 9, je : 24},
-            {is : 12, ie : 63, js : 24, je : 42},
-            {is : 12, ie : 69, js : 42, je : 60},
-            {is : 0, ie : 12, js : 45, je : 66},
-            {is : 12, ie : 75, js : 60, je : 69},
-            {is : 18, ie : 57, js : 69, je : 78},
+            // 从上往下 i左边 j右边
+            {is : 12, ie : 48, js : 0, je : 12},
+            {is : 12, ie : 60, js : 12, je : 42},
+            {is : 12, ie : 66, js : 42, je : 60},
+            {is : 0, ie : 12, js : 48, je : 66},
+            {is : 12, ie : 72, js : 60, je : 72},
+            {is : 18, ie : 54, js : 72, je : 78},
         ]
     },
     landWidth:2,//地块宽度

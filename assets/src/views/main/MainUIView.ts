@@ -1,6 +1,10 @@
 import { _decorator, Component, Node, Sprite } from 'cc';
-import { MainScene, MapStatus } from './MainScene';
 import CCUtil from '../../util/CCUtil';
+import { MapStatus } from '../../config/MapConfig';
+import { MainScene } from './MainScene';
+import { ViewsManager } from '../../manager/ViewsManager';
+import { PrefabConfig, PrefabType } from '../../config/PrefabType';
+import { PopView } from '../common/PopView';
 const { ccclass, property } = _decorator;
 
 @ccclass('MainUIView')
@@ -101,7 +105,6 @@ export class MainUIView extends Component {
     //编辑点击
     public onClickEdit(){
         this._mainScene.changeMapStatus(MapStatus.EDIT);
-        this.node.active = false;
     }
     //BOSS点击
     public onClickBoss(){
@@ -121,7 +124,9 @@ export class MainUIView extends Component {
     }
     //学习点击
     public onClickStudy(){
-        
+        ViewsManager.instance.showView(PrefabType.PopView, (node:Node)=>{
+            node.getComponent(PopView).init("学习");
+        });
     }
 }
 

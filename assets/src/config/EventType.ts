@@ -14,4 +14,6 @@ export const EventType = {
     Energy_Update : "EnergyUpdate",//体力更新
     Coin_Update : "CoinUpdate",//金币更新
     Diamond_Update : "DiamondUpdate",//钻石更新
+
+    study_page_switching:"study_page_switching"//学习页面切换
 }
