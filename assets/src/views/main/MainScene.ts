@@ -1,6 +1,6 @@
 import { _decorator, Asset, Camera, Canvas, Color, Component, EventMouse, EventTouch, Graphics, instantiate, Intersection2D, Label, Node, Prefab, screen, Sprite, SpriteFrame, sys, Texture2D, UITransform, Vec2, Vec3, View } from 'cc';
 import { LoadManager } from '../../manager/LoadManager';
-import { MapStatus } from '../../config/MapConfig';
+import { EditInfo, EditType, MapStatus } from '../../config/MapConfig';
 import { BuildingModel } from '../../models/BuildingModel';
 import EventManager from '../../util/EventManager';
 import { EventType } from '../../config/EventType';
@@ -14,6 +14,7 @@ import { MainUIView } from './MainUIView';
 import { EditUIView } from './EditUIView';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { MapUICtl } from '../map/MapUICtl';
+import { LandEditUIIvew } from './LandEditUIIvew';
 const { ccclass, property } = _decorator;
 
 @ccclass('MainScene')
@@ -44,6 +45,8 @@ export class MainScene extends Component {
     public mainUIView:MainUIView = null;//主界面ui
     @property(EditUIView)
     public editUIView:EditUIView = null;//编辑界面ui
+    @property(LandEditUIIvew)
+    public landEditUIView:LandEditUIIvew = null;//编辑界面ui
     @property(Node)
     public sceneLayer:Node = null;//场景层
     @property(Node)
@@ -87,6 +90,8 @@ export class MainScene extends Component {
         this.mainUIView.mainScene = this;
         this.editUIView.mainScene = this;
         this.editUIView.node.active = false;
+        this.landEditUIView.mainScene = this;
+        this.landEditUIView.node.active = false;
 
         ViewsManager.instance.initLayer(this.sceneLayer,this.popupLayer,this.tipLayer,this.loadingLayer);
     }
@@ -165,6 +170,18 @@ export class MainScene extends Component {
             this.changeMapStatus(MapStatus.BUILD_EDIT);
         }
     }
+    // 新建建筑与地块
+    onBuidLandClick(data:EditInfo){
+        console.log("onBuidLandClick",data);
+        if(EditType.Land == data.type){
+            this._landEditCtl.selectLand = data;
+            this.changeMapStatus(MapStatus.LAND_EDIT);
+            return;
+        }
+        let building = this._mapUICtl.newBuildingInCamera(data);
+        this._buildingEditCtl.selectBuilding = building;
+        this.changeMapStatus(MapStatus.BUILD_EDIT);
+    }
     // 建筑按钮界面关闭
     onBuildingBtnViewClose(){
         this.changeMapStatus(MapStatus.EDIT);
@@ -177,31 +194,41 @@ export class MainScene extends Component {
         this.lineLayer.active = MapStatus.DEFAULT != status;
         this.mainUIView.node.active = MapStatus.DEFAULT == status;
         this.editUIView.node.active = (MapStatus.EDIT == status || MapStatus.BUILD_EDIT == status);
+        this.landEditUIView.node.active = MapStatus.LAND_EDIT == status;
         let ctl = this.getMapCtl();
         ctl.clearData();
         this._mapStatus = status;
         EventManager.emit(EventType.MapStatus_Change,{oldStatus:oldStatus,status:status});
     }
-    // 获取当前场景控制器
-    getMapCtl(){
-        if(MapStatus.DEFAULT == this._mapStatus){
-            return this._mapNormalCtl;
-        }
-        if(MapStatus.EDIT == this._mapStatus){
-            return this._mapEditCtl;
-        }
-        if(MapStatus.BUILD_EDIT == this._mapStatus){
-            return this._buildingEditCtl;
-        }
-        if(MapStatus.LAND_EDIT == this._mapStatus){
-            return this._landEditCtl;
-        }
-        if(MapStatus.RECYCLE == this._mapStatus){
-            return this._recycleCtl;
-        }
-        return this._mapNormalCtl;
+    // UI确定事件
+    confirmEvent(){
+        this.getMapCtl().confirmEvent();
     }
-    getMapCtlByStatus(status:MapStatus){
+    // UI取消事件
+    cancelEvent(){
+        this.getMapCtl().cancelEvent();
+    }
+    // 获取当前场景控制器
+    // getMapCtl(){
+    //     if(MapStatus.DEFAULT == this._mapStatus){
+    //         return this._mapNormalCtl;
+    //     }
+    //     if(MapStatus.EDIT == this._mapStatus){
+    //         return this._mapEditCtl;
+    //     }
+    //     if(MapStatus.BUILD_EDIT == this._mapStatus){
+    //         return this._buildingEditCtl;
+    //     }
+    //     if(MapStatus.LAND_EDIT == this._mapStatus){
+    //         return this._landEditCtl;
+    //     }
+    //     if(MapStatus.RECYCLE == this._mapStatus){
+    //         return this._recycleCtl;
+    //     }
+    //     return this._mapNormalCtl;
+    // }
+    getMapCtl(status?:MapStatus){
+        if(!status) status = this._mapStatus;
         if(MapStatus.DEFAULT == status){
             return this._mapNormalCtl;
         }

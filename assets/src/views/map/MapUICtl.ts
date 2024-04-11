@@ -1,7 +1,7 @@
 import { Color, Graphics, Sprite, SpriteFrame, UITransform, Vec3, instantiate, screen, sys } from "cc";
 import { MainBaseCtl } from "../main/MainBaseCtl";
 import { GridModel } from "../../models/GridModel";
-import { MapConfig } from "../../config/MapConfig";
+import { EditInfo, MapConfig } from "../../config/MapConfig";
 import { ToolUtil } from "../../util/ToolUtil";
 import { LoadManager } from "../../manager/LoadManager";
 import { LandModel } from "../../models/LandModel";
@@ -144,7 +144,8 @@ export class MapUICtl extends MainBaseCtl {
         let height = gridInfo.height;
         let col = gridInfo.col;
         let row = gridInfo.row;
-        let landWidth = MapConfig.landWidth;
+        let landInfo = MapConfig.editInfo[3];
+        let landWidth = landInfo.width;
         let g = this._mainScene.lineLayer.getComponent(Graphics);
         this._mainScene.lineLayer.active = false;
         for(let i=0;i<col;i++) {
@@ -154,7 +155,7 @@ export class MapUICtl extends MainBaseCtl {
                 let land = instantiate(this._mainScene.landModel);
                 this._mainScene.landLayer.addChild(land);
                 let laneModel = land.getComponent(LandModel);
-                laneModel.initData(i,j,landWidth,MapConfig.landInfo[0]);
+                laneModel.initData(i,j,landWidth,landInfo);
                 this.setLandGrid(laneModel, i, j);
                 laneModel.showLand();
 
@@ -186,14 +187,7 @@ export class MapUICtl extends MainBaseCtl {
     }
     // 初始化建筑
     initBuilding(){
-        let buildingInfo = MapConfig.buildingInfo[1];
-        let startX = 20;
-        let startY = 20;
-        let building = instantiate(this._mainScene.buildingModel);
-        this._mainScene.buildingLayer.addChild(building);
-        let buildingModel = building.getComponent(BuildingModel);
-        buildingModel.initData(startX, startY, buildingInfo.width, buildingInfo.path, false);
-        this.setBuildingGrid(buildingModel, startX, startY);
+        this.newBuildingInCamera(MapConfig.editInfo[1]);//TEST 测试数据
     }
     // 摄像头缩放大小
     get cameraRate():number{
@@ -295,5 +289,17 @@ export class MapUICtl extends MainBaseCtl {
             }
         }
         land.grids = grids;
+    }
+    // 新建建筑物
+    newBuilding(data:EditInfo, gridX:number, gridY:number, isFlip:boolean = false){
+        let building = instantiate(this._mainScene.buildingModel);
+        this._mainScene.buildingLayer.addChild(building);
+        let buildingModel = building.getComponent(BuildingModel);
+        buildingModel.initData(gridX, gridY, data.width, data.path, isFlip);
+        this.setBuildingGrid(buildingModel, gridX, gridY);
+        return buildingModel;
+    }
+    newBuildingInCamera(data:EditInfo){
+        return this.newBuilding(data, 20, 20);
     }
 }
