@@ -7,6 +7,8 @@ let baseUrl3 = "https://gameserver.chuangciyingyu.com:8995/account/";
 export const NetConfig = {
     privacyPage : "https://www.chuangciyingyu.com/%E9%9A%90%E7%A7%81%E6%94%BF%E7%AD%96.htm",//隐私政策
     userAgreement: "https://www.chuangciyingyu.com/%E7%94%A8%E6%88%B7%E6%9C%8D%E5%8A%A1%E5%8D%8F%E8%AE%AE.htm",//用户协议
+    gooleDown: "https://www.google.cn/chrome/",
+    androidDown: "https://www.chuangciyingyu.com/chuangci_v20220720.apk",
 
     checkNotice : baseUrl2 + "check_in",//公告检测
     tokenLogin : baseUrl + "tokenlogin",//token登录
