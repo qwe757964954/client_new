@@ -37,8 +37,8 @@ export const MapConfig = {
         row : 78,//格子行
         range : [//可编辑范围
             // 从上往下 i左边 j右边
-            {is : 12, ie : 48, js : 0, je : 6},
-            {is : 12, ie : 60, js : 6, je : 42},
+            {is : 12, ie : 48, js : 0, je : 12},
+            {is : 12, ie : 60, js : 12, je : 42},
             {is : 12, ie : 66, js : 42, je : 60},
             {is : 0, ie : 12, js : 48, je : 66},
             {is : 12, ie : 72, js : 60, je : 72},
