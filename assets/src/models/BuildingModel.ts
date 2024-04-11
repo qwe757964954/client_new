@@ -180,6 +180,14 @@ export class BuildingModel extends Component {
         this.node.active = true;
         this.closeBtnView();
     }
+    // 还原数据（不通知按钮界面关闭事件）
+    public recoverData():void {
+        this.resetData();
+        this.node.active = true;
+        if(this._btnView && this._btnView.active){
+            this._btnView.active = false;
+        }
+    }
     // 摄像头缩放事件
     public onCameraScale(rate:number):void {
         if(this._btnView){

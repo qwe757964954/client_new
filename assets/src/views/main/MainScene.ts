@@ -156,6 +156,15 @@ export class MainScene extends Component {
             this.changeMapStatus(MapStatus.BUILD_EDIT);
         }
     }
+    // 建筑长按
+    onBuildingLongClick(building:BuildingModel){
+        if(!building) return;
+        console.log("onBuildingLongClick",building);
+        if(MapStatus.DEFAULT == this._mapStatus){
+            this._buildingEditCtl.selectBuilding = building;
+            this.changeMapStatus(MapStatus.BUILD_EDIT);
+        }
+    }
     // 建筑按钮界面关闭
     onBuildingBtnViewClose(){
         this.changeMapStatus(MapStatus.EDIT);

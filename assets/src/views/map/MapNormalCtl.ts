@@ -1,63 +1,67 @@
 import { EventMouse, EventTouch, Vec2 } from "cc";
-import { MainUICtl } from "../main/MainUICtl";
+import { MapBaseCtl } from "../map/MapBaseCtl";
+import { BuildingModel } from "../../models/BuildingModel";
+import { TimerMgr } from "../../util/TimerMgr";
 
 //普通地图处理
-export class MapNormalCtl extends MainUICtl {
+export class MapNormalCtl extends MapBaseCtl {
 
-    private _touchMoveOffset:number = 1;//触摸误差
-    protected _lastTouchPos:Vec2;//上一次触摸位置
-    protected _isTouchMove:boolean = false;//是否触摸移动
+    private _touchBuilding:BuildingModel = null;//触摸建筑
+    private _timer:number = null;//计时器
 
-    // 触摸移动有效
-    isTouchMoveEffective(dtX:number, dtY:number):boolean{
-        if(Math.abs(dtX) < this._touchMoveOffset &&
-            Math.abs(dtY) < this._touchMoveOffset){
-            return false;
-        }
-        return true;
-    }
     // 点击开始
     onTouchStart(e:EventTouch){
-        this._lastTouchPos = e.getUILocation();
-        // let pos = e.getLocation();//需要用屏幕坐标去转换点击事件
-        // this._lastTouchGrid = this.getTouchGrid(pos.x, pos.y);
-        // if(this._lastTouchGrid){
-        //     this._touchBuilding = this._lastTouchGrid.building;
-        // }
-        // this._touchBuilding = this.isTouchBuilding(pos.x, pos.y);
-    }
-    // 点击移动
-    onTouchMove(e:EventTouch){
-        let touchPos = e.getUILocation();
-        let dtX = this._lastTouchPos.x - touchPos.x;
-        let dtY = this._lastTouchPos.y - touchPos.y;
-        if(!this.isTouchMoveEffective(dtX, dtY)){
-            return;
+        super.onTouchStart(e);
+        let pos = e.getLocation();//需要用屏幕坐标去转换点击事件
+        let grid = this._mainScene.getTouchGrid(pos.x, pos.y);
+        this._touchBuilding = grid?.building;
+        if(this._touchBuilding){
+            // 显示长按提示UI TODO
+            // 定时器触发
+            this._timer = TimerMgr.once(()=>{
+                if(this._touchBuilding){
+                    this._mainScene.onBuildingLongClick(this._touchBuilding);
+                    this._timer = null;
+                    this.onTouchCancel(e);
+                }
+            }, 1000);
         }
-        this._isTouchMove = true;
-        this._mainScene.mapMove(dtX, dtY);
-        this._lastTouchPos = touchPos;
     }
-    // 点击结束
-    onTouchEnd(e:EventTouch){
-        this._lastTouchPos = null;
-        this._isTouchMove = false;
-    }
-    // 点击取消
-    onTouchCancel(e:EventTouch){
-        this._lastTouchPos = null;
-        this._isTouchMove = false;
-    }
-    // 滚轮事件
-    onMapMouseWheel(e:EventMouse){
-        if(e.getScrollY()>0){
-            this._mainScene.mapZoomIn();
-        }else{
-            this._mainScene.mapZoomOut();
+    //点击移动
+    public onTouchMove(e: EventTouch): void {
+        super.onTouchMove(e);
+        if(this._isTouchMove && this._touchBuilding){
+            TimerMgr.stop(this._timer);
+            this._timer = null;
+            this._touchBuilding = null;
         }
+    }
+    //点击结束
+    public onTouchEnd(e: EventTouch): void {
+        if(this._timer){
+            TimerMgr.stop(this._timer);
+            this._timer = null;
+        }
+        this._touchBuilding = null;
+        super.onTouchEnd(e);
+    }
+    //点击取消
+    public onTouchCancel(e: EventTouch): void {
+        if(this._timer){
+            TimerMgr.stop(this._timer);
+            this._timer = null;
+        }
+        this._touchBuilding = null;
+        super.onTouchCancel(e);
+    }
+    //滚轮事件
+    public onMapMouseWheel(e: EventMouse): void {
+        super.onMapMouseWheel(e);
     }
     // 清理数据
     clearData(): void {
+        this._touchBuilding = null;
+        super.clearData();
     }
     // 确定事件
     confirmEvent(): void {

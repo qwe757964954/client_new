@@ -1,9 +1,9 @@
 import { EventMouse, EventTouch } from "cc";
-import { MapNormalCtl } from "./MapNormalCtl";
+import { MapBaseCtl } from "../map/MapBaseCtl";
 import { BuildingModel } from "../../models/BuildingModel";
 
 //地图编辑控制器
-export class MapEditCtl extends MapNormalCtl {
+export class MapEditCtl extends MapBaseCtl {
 
     private _touchBuilding:BuildingModel = null;//触摸建筑
 
@@ -41,6 +41,8 @@ export class MapEditCtl extends MapNormalCtl {
     }
     // 清理数据
     clearData(): void {
+        this._touchBuilding = null;
+        super.clearData();
     }
 
     // 取消事件

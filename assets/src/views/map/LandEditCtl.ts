@@ -1,10 +1,10 @@
 import { EventMouse, EventTouch } from "cc";
 import { LandInfo, LandModel } from "../../models/LandModel";
-import { MapNormalCtl } from "./MapNormalCtl";
+import { MapBaseCtl } from "./MapBaseCtl";
 import { MapConfig } from "../../config/MapConfig";
 
 //地块编辑控制器
-export class LandEditCtl extends MapNormalCtl {
+export class LandEditCtl extends MapBaseCtl {
 
     private _selectLand:LandInfo = null;//选中地块
 
@@ -56,6 +56,7 @@ export class LandEditCtl extends MapNormalCtl {
     // 清理数据
     clearData(): void {
         this._selectLand = null;
+        super.clearData();
     }
     // 确定事件
     confirmEvent(): void {

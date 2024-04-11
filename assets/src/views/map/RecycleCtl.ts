@@ -1,9 +1,9 @@
 import { EventMouse, EventTouch } from "cc";
-import { MapNormalCtl } from "./MapNormalCtl";
+import { MapBaseCtl } from "./MapBaseCtl";
 import { BuildingModel } from "../../models/BuildingModel";
 
 //回收模式控制器
-export class RecycleCtl extends MapNormalCtl {
+export class RecycleCtl extends MapBaseCtl {
 
     private _recycleBuildingAry:BuildingModel[] = [];//回收建筑数组
 
