@@ -1,7 +1,7 @@
 import { _decorator, Button, Component, Node, tween, v3 } from 'cc';
 import CCUtil from '../../../util/CCUtil';
-import { Characters } from '../../../config/charactersConfig';
-import { ClearancedetailsItem } from './clearancedetailsItem';
+import { Characters } from '../../../config/CharactersConfig';
+import { ClearancedetailsItem } from './ClearancedetailsItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('clearancedetails')
