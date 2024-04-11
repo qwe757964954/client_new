@@ -1,4 +1,4 @@
-export enum characters {
+export enum Characters {
     total = '总',
     complex = '复',
     read = '读',

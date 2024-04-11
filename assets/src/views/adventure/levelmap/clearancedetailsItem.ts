@@ -3,7 +3,7 @@ import CCUtil from '../../../util/CCUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('clearancedetailsItem')
-export class clearancedetailsItem extends Component {
+export class ClearancedetailsItem extends Component {
 
     @property({ type: Label, tooltip: "标题" })
     public title: Label = null;

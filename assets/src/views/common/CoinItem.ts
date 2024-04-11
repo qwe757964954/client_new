@@ -24,11 +24,11 @@ export class CoinItem extends Component {
         CCUtil.offTouch(this, this.onClick, this);
         EventManager.off(EventType.Coin_Update, this._coinUpdateHandle);
     }
-    //界面点击
+    //界面点击 TODO
     public onClick(){
         console.log("EnergyItem onClick");
     }
-    //金币更新
+    //金币更新 TODO
     public onCoinUpdate(){
         // this.label.string = GlobalConfig.energy.toString();
     }

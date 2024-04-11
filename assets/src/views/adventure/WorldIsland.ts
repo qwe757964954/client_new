@@ -2,7 +2,6 @@ import { _decorator, Button, Component, instantiate, Node, Prefab, tween, v3 } f
 import CCUtil from '../../util/CCUtil';
 import { EventType } from '../../config/EventType';
 import EventManager from '../../util/EventManager';
-import { clearancedetails } from './levelmap/clearancedetails';
 const { ccclass, property } = _decorator;
 
 /**魔法森林 何存发 2024年4月9日17:51:36 */

@@ -2,7 +2,7 @@ import { _decorator, Component, instantiate, Node, Sprite, SpriteAtlas, SpriteFr
 const { ccclass, property } = _decorator;
 
 @ccclass('map')
-export class map extends Component {
+export class Map extends Component {
     @property({ type: Node, tooltip: "默认图片" })
     public defaultImg: Node = null;
     @property({ type: [SpriteFrame], tooltip: "关卡图片" })
