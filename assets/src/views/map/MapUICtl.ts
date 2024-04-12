@@ -1,7 +1,7 @@
-import { Color, Graphics, Sprite, SpriteFrame, Vec3, instantiate, screen, sys } from "cc";
+import { Color, Graphics, Sprite, SpriteFrame, UITransform, Vec3, instantiate, screen, sys } from "cc";
 import { MainBaseCtl } from "../main/MainBaseCtl";
 import { GridModel } from "../../models/GridModel";
-import { MapConfig } from "../../config/MapConfig";
+import { EditInfo, MapConfig } from "../../config/MapConfig";
 import { ToolUtil } from "../../util/ToolUtil";
 import { LoadManager } from "../../manager/LoadManager";
 import { LandModel } from "../../models/LandModel";
@@ -144,7 +144,8 @@ export class MapUICtl extends MainBaseCtl {
         let height = gridInfo.height;
         let col = gridInfo.col;
         let row = gridInfo.row;
-        let landWidth = MapConfig.landWidth;
+        let landInfo = MapConfig.editInfo[3];
+        let landWidth = landInfo.width;
         let g = this._mainScene.lineLayer.getComponent(Graphics);
         this._mainScene.lineLayer.active = false;
         for(let i=0;i<col;i++) {
@@ -154,46 +155,39 @@ export class MapUICtl extends MainBaseCtl {
                 let land = instantiate(this._mainScene.landModel);
                 this._mainScene.landLayer.addChild(land);
                 let laneModel = land.getComponent(LandModel);
-                laneModel.initData(i,j,landWidth,MapConfig.landInfo[0]);
+                laneModel.initData(i,j,landWidth,landInfo);
                 this.setLandGrid(laneModel, i, j);
                 laneModel.showLand();
 
                 let pos = gridInfo.pos;
                 g.lineWidth = 2;
                 g.strokeColor = Color.BLACK;
-                g.moveTo(pos.x - 0.5*width*landWidth, pos.y - 0.5*height*(landWidth-1));
-                g.lineTo(pos.x, pos.y + 0.5*height);
-                g.lineTo(pos.x + 0.5*width*landWidth, pos.y - 0.5*height*(landWidth-1));
+                g.moveTo(pos.x - 0.5*width*landWidth, pos.y - 0.5*height*landWidth);
+                g.lineTo(pos.x, pos.y);
+                g.lineTo(pos.x + 0.5*width*landWidth, pos.y - 0.5*height*landWidth);
                 if(!this.getGridInfo(i,j+1)){
-                    g.lineTo(pos.x, pos.y - 0.5*height*(2*landWidth-1));
+                    g.lineTo(pos.x, pos.y - height*landWidth);
                     if(!this.getGridInfo(i + 1,j)){
-                        g.lineTo(pos.x - 0.5*width*landWidth, pos.y - 0.5*height*(landWidth-1));
+                        g.lineTo(pos.x - 0.5*width*landWidth, pos.y - 0.5*height*landWidth);
                     }
                 }
                 else if(!this.getGridInfo(i + 1,j)){
-                    g.moveTo(pos.x, pos.y - 0.5*height*(2*landWidth-1));
-                    g.lineTo(pos.x - 0.5*width*landWidth, pos.y - 0.5*height*(landWidth-1));
+                    g.moveTo(pos.x, pos.y - height*landWidth);
+                    g.lineTo(pos.x - 0.5*width*landWidth, pos.y - 0.5*height*landWidth);
                 }
                 g.stroke();
                 g.lineWidth = 1;
-                g.moveTo(pos.x + 0.5*width, pos.y);
-                g.lineTo(pos.x - 0.5*width, pos.y - height);
-                g.moveTo(pos.x - 0.5*width, pos.y);
-                g.lineTo(pos.x + 0.5*width, pos.y - height);
+                g.moveTo(pos.x + 0.5*width, pos.y - 0.5*height);
+                g.lineTo(pos.x - 0.5*width, pos.y - 1.5*height);
+                g.moveTo(pos.x - 0.5*width, pos.y - 0.5*height);
+                g.lineTo(pos.x + 0.5*width, pos.y - 1.5*height);
                 g.stroke();
             }
         }
     }
     // 初始化建筑
     initBuilding(){
-        let buildingInfo = MapConfig.buildingInfo[1];
-        let startX = 20;
-        let startY = 20;
-        let building = instantiate(this._mainScene.buildingModel);
-        this._mainScene.buildingLayer.addChild(building);
-        let buildingModel = building.getComponent(BuildingModel);
-        buildingModel.initData(startX, startY, buildingInfo.width, buildingInfo.path, false);
-        this.setBuildingGrid(buildingModel, startX, startY);
+        this.newBuildingInCamera(MapConfig.editInfo[1]);//TEST 测试数据
     }
     // 摄像头缩放大小
     get cameraRate():number{
@@ -259,10 +253,10 @@ export class MapUICtl extends MainBaseCtl {
         let height = landInfo.height;
         let dtX = landInfo.dtX;
         let dtY = landInfo.dtY;
-        let row = landInfo.row;
-        let pos = this._mainScene.mapCamera.screenToWorld(new Vec3(x,y,0));
-        let i = Math.floor(dtX*2 + dtY*2 - pos.x/width - pos.y/height + 0.5);
-        let j = Math.floor(dtY - dtX + pos.x/width - pos.y/height - 0.5);
+        let worldPos = this._mainScene.mapCamera.screenToWorld(new Vec3(x,y,0));
+        let pos = this._mainScene.landLayer.getComponent(UITransform).convertToNodeSpaceAR(worldPos);
+        let i = Math.floor(dtX + dtY - pos.x/width - pos.y/height);
+        let j = Math.floor(dtY - dtX + pos.x/width - pos.y/height);
         // console.log("getTouchGrid",i,j);
         return this.getGridInfo(i,j);
     }
@@ -295,5 +289,17 @@ export class MapUICtl extends MainBaseCtl {
             }
         }
         land.grids = grids;
+    }
+    // 新建建筑物
+    newBuilding(data:EditInfo, gridX:number, gridY:number, isFlip:boolean = false){
+        let building = instantiate(this._mainScene.buildingModel);
+        this._mainScene.buildingLayer.addChild(building);
+        let buildingModel = building.getComponent(BuildingModel);
+        buildingModel.initData(gridX, gridY, data.width, data.path, isFlip);
+        this.setBuildingGrid(buildingModel, gridX, gridY);
+        return buildingModel;
+    }
+    newBuildingInCamera(data:EditInfo){
+        return this.newBuilding(data, 20, 20);
     }
 }

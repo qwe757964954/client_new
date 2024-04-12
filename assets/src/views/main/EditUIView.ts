@@ -1,7 +1,8 @@
-import { _decorator, Component, Node, Sprite } from 'cc';
+import { _decorator, Component, instantiate, Node, Prefab, Sprite } from 'cc';
 import CCUtil from '../../util/CCUtil';
-import { MapStatus } from '../../config/MapConfig';
+import { MapConfig, MapStatus } from '../../config/MapConfig';
 import { MainScene } from './MainScene';
+import { EditItem } from '../map/EditItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('EditUIView')
@@ -18,6 +19,10 @@ export class EditUIView extends Component {
     public btnLand:Sprite = null;//标题地块按钮
     @property(Sprite)
     public btnClose:Sprite = null;//关闭按钮
+    @property(Prefab)
+    public editItem:Prefab = null;//编辑元素预制体
+    @property(Node)
+    public scrollView:Node = null;//滚动视图
 
 
     private _mainScene:MainScene = null;//主场景
@@ -69,11 +74,32 @@ export class EditUIView extends Component {
     }
     // 标题地块按钮点击 
     onBtnLandClick() {
-        this._mainScene.changeMapStatus(MapStatus.LAND_EDIT);
     }
     // 关闭按钮点击 
     onBtnCloseClick() {
         this._mainScene.changeMapStatus(MapStatus.DEFAULT);
+    }
+    protected onEnable(): void {
+        this.initData();
+    }
+    protected onDisable(): void {
+    }
+    // 初始化数据
+    initData() {
+        this.scrollView.removeAllChildren();
+        let editConfig = MapConfig.editInfo;
+        for (let key in editConfig) {
+            if (Object.prototype.hasOwnProperty.call(editConfig, key)) {
+                let info = editConfig[key];
+                let node = instantiate(this.editItem);
+                this.scrollView.addChild(node);
+                node.getComponent(EditItem).initData(info, this.onEditItemClick.bind(this));
+            }
+        }
+    }
+    // 编辑元素点击
+    onEditItemClick(editItem:EditItem){
+        this._mainScene.onBuidLandClick(editItem.data);
     }
 }
 

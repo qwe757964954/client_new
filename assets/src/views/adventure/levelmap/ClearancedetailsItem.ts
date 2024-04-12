@@ -2,7 +2,7 @@ import { _decorator, Button, Component, Label, Node, ProgressBar } from 'cc';
 import CCUtil from '../../../util/CCUtil';
 const { ccclass, property } = _decorator;
 
-@ccclass('clearancedetailsItem')
+@ccclass('ClearancedetailsItem')
 export class ClearancedetailsItem extends Component {
 
     @property({ type: Label, tooltip: "标题" })

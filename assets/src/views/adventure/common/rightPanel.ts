@@ -33,7 +33,8 @@ export class rightPanel extends Component {
 
     }
     /** 打开界面 */
-    private openView() {
+    private openView(param: any[]) {
+        console.log('接收到的参数=', param);
         this.node.active = true
         tween(this.node).to(0.3, { position: v3(-125, 125, 0) }).call(() => {
         }).start()

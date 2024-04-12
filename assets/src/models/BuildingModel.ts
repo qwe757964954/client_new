@@ -89,7 +89,7 @@ export class BuildingModel extends Component {
         this._x = gridInfo.x;
         this._y = gridInfo.y;
         let gridPos = gridInfo.pos;
-        let pos = new Vec3(gridPos.x, gridPos.y - (this._width - 1)*0.5*gridInfo.height, 0);
+        let pos = new Vec3(gridPos.x, gridPos.y - 0.5*this._width*gridInfo.height, 0);
         this.node.position = pos;
         if(!this._dataGrids){
             this._dataGrids = this._grids;

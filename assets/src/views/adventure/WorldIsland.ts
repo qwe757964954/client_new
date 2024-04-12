@@ -2,6 +2,7 @@ import { _decorator, Button, Component, instantiate, Node, Prefab, tween, v3 } f
 import CCUtil from '../../util/CCUtil';
 import { EventType } from '../../config/EventType';
 import EventManager from '../../util/EventManager';
+import { MapView } from './levelmap/MapView';
 const { ccclass, property } = _decorator;
 
 /**魔法森林 何存发 2024年4月9日17:51:36 */
@@ -66,8 +67,11 @@ export class WorldIsland extends Component {
             let node = instantiate(this.mapItem)
             this.mapList.insertChild(node, 0)
             node.position = v3(1, 347 * i, 0)
+            let com = node.getComponent(MapView)
             if (i >= 25) {
                 node.scale = v3(0.0001, 1, 0)
+            } else {
+                com.setMapData(i)
             }
         }
 

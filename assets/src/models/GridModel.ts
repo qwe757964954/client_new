@@ -4,8 +4,8 @@ import { LandModel } from "./LandModel";
 //格子模型
 export class GridModel {
     // y从上往下，x从右往左
-    private _x:number;//x格子坐标
-    private _y:number;//y格子坐标
+    private _x:number;//x格子坐标(上面尖角x)
+    private _y:number;//y格子坐标(上面尖角y)
     private _pos:Vec3;//位置
     private _width:number;//宽
     private _height:number;//高

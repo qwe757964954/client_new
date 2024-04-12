@@ -2,12 +2,12 @@
   "ver": "1.1.50",
   "importer": "prefab",
   "imported": true,
-  "uuid": "0220743e-b2a1-4d64-9493-392bd5f654e4",
+  "uuid": "bdce1bf0-b9c9-492d-b99c-084a760df933",
   "files": [
     ".json"
   ],
   "subMetas": {},
   "userData": {
-    "syncNodeName": "Clearancedetails"
+    "syncNodeName": "EditItem"
   }
 }

@@ -2,12 +2,12 @@
   "ver": "1.1.50",
   "importer": "prefab",
   "imported": true,
-  "uuid": "0220743e-b2a1-4d64-9493-392bd5f654e4",
+  "uuid": "457d796d-e21c-42a8-9b7d-f5ea69a52ed2",
   "files": [
     ".json"
   ],
   "subMetas": {},
   "userData": {
-    "syncNodeName": "Clearancedetails"
+    "syncNodeName": "LandEditUIIvew"
   }
 }
