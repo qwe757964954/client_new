@@ -1,11 +1,12 @@
-import { EventMouse, EventTouch, Vec2 } from "cc";
+import { EventMouse, EventTouch, Touch, Vec2 } from "cc";
 import { MainBaseCtl } from "../main/MainBaseCtl";
 
 //普通地图处理
 export class MapBaseCtl extends MainBaseCtl {
 
     private _touchMoveOffset:number = 1;//触摸误差
-    protected _lastTouchPos:Vec2;//上一次触摸位置
+    private _maxTouchCount:number = 2;//最大触摸数量
+    // protected _lastTouchPos:Vec2;//上一次触摸位置
     protected _isTouchMove:boolean = false;//是否触摸移动
     protected _isTouchInSelf:boolean = false;//是否触摸自身
 
@@ -19,32 +20,41 @@ export class MapBaseCtl extends MainBaseCtl {
     }
     // 点击开始
     onTouchStart(e:EventTouch){
-        this._lastTouchPos = e.getUILocation();
+        if(1 != e.getAllTouches().length) return false;
         this._isTouchInSelf = true;
+        return true;
     }
     // 点击移动
     onTouchMove(e:EventTouch){
-        let touchPos = e.getUILocation();
-        let dtX = this._lastTouchPos.x - touchPos.x;
-        let dtY = this._lastTouchPos.y - touchPos.y;
+        let touches = e.getAllTouches();
+        console.log("onTouchMove",touches.length);
+        if(touches.length > this._maxTouchCount) return false;
+        let delta = e.getUIDelta();
+        let dtX = -delta.x;
+        let dtY = -delta.y;
         if(!this.isTouchMoveEffective(dtX, dtY)){
-            return;
+            return false;
         }
         this._isTouchMove = true;
-        this._mainScene.mapMove(dtX, dtY);
-        this._lastTouchPos = touchPos;
+
+        if(1 == touches.length){
+            this._mainScene.mapMove(dtX, dtY);
+            return true;
+        }
+        this.mapZoomByTouches(touches[0], touches[1]);
+        return true;
     }
     // 点击结束
     onTouchEnd(e:EventTouch){
-        this._lastTouchPos = null;
         this._isTouchMove = false;
         this._isTouchInSelf = false;
+        return true;
     }
     // 点击取消
     onTouchCancel(e:EventTouch){
-        this._lastTouchPos = null;
         this._isTouchMove = false;
         this._isTouchInSelf = false;
+        return true;
     }
     // 滚轮事件
     onMapMouseWheel(e:EventMouse){
@@ -64,5 +74,28 @@ export class MapBaseCtl extends MainBaseCtl {
     }
     // 取消事件
     cancelEvent(): void {
+    }
+    // UI上一步
+    prevStepEvent(){
+    }
+    // UI下一步
+    nextStepEvent(){
+    }
+    // 两点缩放地图
+    public mapZoomByTouches(touch1:Touch, touch2:Touch){
+        let touchPos1 = touch1.getUILocation();
+        let touchPos2 = touch2.getUILocation();
+        let delta1 = touch1.getUIDelta();
+        let delta2 = touch2.getUIDelta();
+        let dt1 = touchPos1.subtract(touchPos2);
+        let dt2 = delta1.subtract(delta2);
+        let dis = 1.0;
+        if (Math.abs(dt1.x) > Math.abs(dt1.y)) {
+            dis = (dt1.x + dt2.x) / dt1.x;
+        }
+        else {
+            dis = (dt1.y + dt2.y) / dt1.y;
+        }
+        this._mainScene.mapZoom(1/dis);
     }
 }

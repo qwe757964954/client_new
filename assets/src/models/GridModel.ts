@@ -9,8 +9,10 @@ export class GridModel {
     private _pos:Vec3;//位置
     private _width:number;//宽
     private _height:number;//高
-    private _building:BuildingModel = null;//建筑
+    private _building:BuildingModel = null;//建筑（可能是临时的）
     private _land:LandModel = null;//地块
+
+    private _dataBuilding:BuildingModel = null;//数据建筑
 
     constructor(x:number, y:number, pos:Vec3, width:number, height:number) {
         this._x = x;
@@ -46,5 +48,19 @@ export class GridModel {
     }
     set land(model:LandModel) {
         this._land = model;
+    }
+    //保存数据
+    saveData() {
+        this._dataBuilding = this._building;
+    }
+    //恢复数据
+    recoverData() {
+        this._building = this._dataBuilding;
+    }
+    //是否建筑可以摆放
+    isCanBuilding() {
+        if(!this._dataBuilding) return true;
+        // console.log("isSameBuilding", this._building, this._dataBuilding);
+        return this._building === this._dataBuilding;
     }
 }

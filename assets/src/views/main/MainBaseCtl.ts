@@ -11,4 +11,7 @@ export class MainBaseCtl {
     public onCameraScale(rate:number):void {
         
     }
+    // 销毁
+    public dispose(): void {
+    }
 }

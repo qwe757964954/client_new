@@ -18,19 +18,18 @@ export class LandEditCtl extends MapBaseCtl {
 
     // 点击开始
     onTouchStart(e:EventTouch){
-        super.onTouchStart(e);
+        return super.onTouchStart(e);
     }
     // 点击移动
     onTouchMove(e:EventTouch){
-        if(!this._selectLand) return;
-        let touchPos = e.getUILocation();
-        let dtX = this._lastTouchPos.x - touchPos.x;
-        let dtY = this._lastTouchPos.y - touchPos.y;
+        if(!this._selectLand) return false;
+        let delta = e.getUIDelta();
+        let dtX = -delta.x;
+        let dtY = -delta.y;
         if(!this.isTouchMoveEffective(dtX, dtY)){
-            return;
+            return false;
         }
         this._isTouchMove = true;
-        this._lastTouchPos = touchPos;
 
         let pos = e.getLocation();
         let gridModel = this._mainScene.getTouchGrid(pos.x, pos.y);
@@ -38,10 +37,11 @@ export class LandEditCtl extends MapBaseCtl {
             gridModel.land.refreshLand(this._selectLand);
             this.cacheLand(gridModel.land);
         }
+        return true;
     }
     // 点击结束
     onTouchEnd(e:EventTouch){
-        if(!this._selectLand) return;
+        if(!this._selectLand) return false;
         if(!this._isTouchMove){
             let pos = e.getLocation();
             let gridModel = this._mainScene.getTouchGrid(pos.x, pos.y);
@@ -50,7 +50,7 @@ export class LandEditCtl extends MapBaseCtl {
                 this.cacheLand(gridModel.land);
             }
         }
-        super.onTouchEnd(e);
+        return super.onTouchEnd(e);
     }
     // 清理数据
     clearData(): void {

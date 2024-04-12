@@ -2,6 +2,7 @@ import { EventMouse, EventTouch } from "cc";
 import { MapBaseCtl } from "./MapBaseCtl";
 import { GridModel } from "../../models/GridModel";
 import { BuildingModel } from "../../models/BuildingModel";
+import { MapStatus } from "../../config/MapConfig";
 
 //建筑编辑控制器
 export class BuildEditCtl extends MapBaseCtl {
@@ -12,9 +13,12 @@ export class BuildEditCtl extends MapBaseCtl {
     // 设置选中建筑
     public set selectBuilding(building:BuildingModel){
         if(!building) return;
+        if(this._selectBuilding){//恢复上一次选中的建筑
+            this._selectBuilding.recoverData();
+            this._selectBuilding = null;
+        }
         this._selectBuilding = building;
-        this._selectBuilding.showBtnView();
-        this._selectBuilding.onCameraScale(this._mainScene.cameraRate);
+        this._selectBuilding.showBtnView(this._mainScene.cameraRate);
     }
     // 摄像机缩放
     public onCameraScale(rate:number):void {
@@ -24,20 +28,21 @@ export class BuildEditCtl extends MapBaseCtl {
     }
 
     //点击开始
-    public onTouchStart(e: EventTouch): void {
-        super.onTouchStart(e);
+    public onTouchStart(e: EventTouch) {
+        if(!super.onTouchStart(e)) return false;
         let pos = e.getLocation();//需要用屏幕坐标去转换点击事件
         let grid = this._mainScene.getTouchGrid(pos.x, pos.y);
         this._lastTouchGrid = grid;
         this._touchBuilding = grid?.building;
+        return true;
     }
     //点击移动
-    public onTouchMove(e: EventTouch): void {
-        let touchPos = e.getUILocation();
-        let dtX = this._lastTouchPos.x - touchPos.x;
-        let dtY = this._lastTouchPos.y - touchPos.y;
+    public onTouchMove(e: EventTouch) {
+        let delta = e.getUIDelta();
+        let dtX = -delta.x;
+        let dtY = -delta.y;
         if(!this.isTouchMoveEffective(dtX, dtY)){
-            return;
+            return false;
         }
         if(this._touchBuilding && this._selectBuilding && this._selectBuilding == this._touchBuilding){
             let pos = e.getLocation();
@@ -47,14 +52,14 @@ export class BuildEditCtl extends MapBaseCtl {
             }
 
             this._lastTouchGrid = gridModel;
-            return;
+            return true;
         }
         this._isTouchMove = true;
         this._mainScene.mapMove(dtX, dtY);
-        this._lastTouchPos = touchPos;
+        return true;
     }
     //点击结束
-    public onTouchEnd(e: EventTouch): void {
+    public onTouchEnd(e: EventTouch) {
         if(this._isTouchInSelf && !this._isTouchMove){
             let pos = e.getLocation();
             let gridModel = this._mainScene.getTouchGrid(pos.x, pos.y);
@@ -64,14 +69,14 @@ export class BuildEditCtl extends MapBaseCtl {
         }
         this._lastTouchGrid = null;
         this._touchBuilding = null;
-        super.onTouchEnd(e);
+        return super.onTouchEnd(e);
     }
 
     //点击取消
-    public onTouchCancel(e: EventTouch): void {
+    public onTouchCancel(e: EventTouch) {
         this._lastTouchGrid = null;
         this._touchBuilding = null;
-        super.onTouchCancel(e);
+        return super.onTouchCancel(e);
     }
     //滚轮事件
     public onMapMouseWheel(e: EventMouse): void {
@@ -91,5 +96,13 @@ export class BuildEditCtl extends MapBaseCtl {
             this._selectBuilding.recoverData();
             this._selectBuilding = null;
         }
+    }
+    // UI上一步
+    prevStepEvent(): void {
+        this._mainScene.changeMapStatus(MapStatus.EDIT);
+    }
+    // UI下一步
+    nextStepEvent(): void {
+        this._mainScene.changeMapStatus(MapStatus.EDIT);
     }
 }

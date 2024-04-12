@@ -9,18 +9,22 @@ export class RecycleCtl extends MapBaseCtl {
 
     // 点击开始
     onTouchStart(e:EventTouch){
+        return true;
     }
     // 点击移动
     onTouchMove(e:EventTouch){
         let pos = e.getLocation();
         let gridModel = this._mainScene.getTouchGrid(pos.x, pos.y);
         this.onBuildingRecycle(gridModel?.building);
+        return true;
     }
     // 点击结束
     onTouchEnd(e:EventTouch){
+        return true;
     }
     // 点击取消
     onTouchCancel(e:EventTouch){
+        return true;
     }
     // 滚轮事件
     onMapMouseWheel(e:EventMouse){
@@ -33,6 +37,7 @@ export class RecycleCtl extends MapBaseCtl {
     // 清理数据
     clearData(): void {
         this._recycleBuildingAry = [];
+        super.clearData();
     }
 
     // 建筑回收

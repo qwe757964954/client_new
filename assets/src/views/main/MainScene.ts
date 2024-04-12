@@ -85,7 +85,6 @@ export class MainScene extends Component {
         this._landEditCtl = new LandEditCtl(this);
         this._recycleCtl = new RecycleCtl(this);
         this._mapUICtl = new MapUICtl(this);
-        console.log("MainScene initData",this._mapUICtl);
 
         this.mainUIView.mainScene = this;
         this.editUIView.mainScene = this;
@@ -127,6 +126,15 @@ export class MainScene extends Component {
         }
         this._loadAssetAry = [];
     }
+    // 移除控制器
+    removeCtl(){
+        this._mapNormalCtl.dispose();
+        this._mapEditCtl.dispose();
+        this._buildingEditCtl.dispose();
+        this._landEditCtl.dispose();
+        this._recycleCtl.dispose();
+        this._mapUICtl.dispose();
+    }
     // 滚轮事件
     onMapMouseWheel(e:EventMouse){
         this.getMapCtl().onMapMouseWheel(e);
@@ -150,6 +158,7 @@ export class MainScene extends Component {
     // 销毁
     protected onDestroy(): void {
         this.removeEvent();
+        this.removeCtl();
         this.removeLoadAsset();
     }
     // 建筑点击
@@ -159,7 +168,9 @@ export class MainScene extends Component {
         if(MapStatus.EDIT == this._mapStatus){
             this._buildingEditCtl.selectBuilding = building;
             this.changeMapStatus(MapStatus.BUILD_EDIT);
+            return;
         }
+        // TODO 普通点击 展示建筑建造界面
     }
     // 建筑长按
     onBuildingLongClick(building:BuildingModel){
@@ -175,6 +186,7 @@ export class MainScene extends Component {
         console.log("onBuidLandClick",data);
         if(EditType.Land == data.type){
             this._landEditCtl.selectLand = data;
+            this.landEditUIView.initData(data);
             this.changeMapStatus(MapStatus.LAND_EDIT);
             return;
         }
@@ -208,6 +220,15 @@ export class MainScene extends Component {
     cancelEvent(){
         this.getMapCtl().cancelEvent();
     }
+    // UI上一步
+    prevStepEvent(){
+        this.getMapCtl().prevStepEvent();
+    }
+    // UI下一步
+    nextStepEvent(){
+        this.getMapCtl().nextStepEvent();
+    }
+
     // 获取当前场景控制器
     // getMapCtl(){
     //     if(MapStatus.DEFAULT == this._mapStatus){
@@ -261,6 +282,10 @@ export class MainScene extends Component {
     // 移动地图
     mapMove(dtX:number, dtY:number){
         this._mapUICtl.mapMove(dtX, dtY);
+    }
+    // 缩放地图
+    mapZoom(scale:number){
+        this._mapUICtl.mapZoom(scale);
     }
     // 放大地图
     mapZoomIn(){

@@ -1,4 +1,4 @@
-import { Color, Graphics, Sprite, SpriteFrame, UITransform, Vec3, instantiate, screen, sys } from "cc";
+import { Color, Graphics, Sprite, SpriteFrame, UITransform, Vec3, instantiate, math, screen, sys } from "cc";
 import { MainBaseCtl } from "../main/MainBaseCtl";
 import { GridModel } from "../../models/GridModel";
 import { EditInfo, MapConfig } from "../../config/MapConfig";
@@ -41,12 +41,12 @@ export class MapUICtl extends MainBaseCtl {
     }
     // 初始化数据
     initData(): void {
-        console.log("MapUICtl initData",this);
         this._cameraHeight = this._mainScene.mapCamera.orthoHeight;
         this._cameraPos = this._mainScene.mapCamera.node.position;
         this._uiCameraHeight = this._mainScene.uiCamera.orthoHeight;
         this._cameraRate = this._cameraHeight / this._uiCameraHeight;
         this._gridAry = [];
+        console.log("MapUICtl initData", this._cameraHeight);
     }
     // 获取格子信息
     getGridInfo(i:number, j:number){
@@ -110,13 +110,13 @@ export class MapUICtl extends MainBaseCtl {
                 let bg = instantiate(this._mainScene.mapGridView);
                 let id = j*col+i+1;
                 let path = this.isCommonBg(id) ? bgInfo.commonPath : ToolUtil.replace(bgInfo.path, id);
-                LoadManager.load(path, SpriteFrame).then((spriteFrame:SpriteFrame) => {
-                    this._mainScene.addLoadAsset(spriteFrame);
-                    bg.getComponent(Sprite).spriteFrame = spriteFrame;
-                    if(id == bgInfo.num){
-                        console.log("use time",sys.now() - time);
-                    }
-                })
+                // LoadManager.load(path, SpriteFrame).then((spriteFrame:SpriteFrame) => {
+                //     this._mainScene.addLoadAsset(spriteFrame);
+                //     bg.getComponent(Sprite).spriteFrame = spriteFrame;
+                //     if(id == bgInfo.num){
+                //         console.log("use time",sys.now() - time);
+                //     }
+                // })
                 bg.position = new Vec3((i-midCol+0.5)*width, (midRow-j-0.5)*height, 0);
                 // bg.setSiblingIndex(0); //设置层级
                 this._mainScene.bgLayer.addChild(bg);
@@ -187,11 +187,30 @@ export class MapUICtl extends MainBaseCtl {
     }
     // 初始化建筑
     initBuilding(){
-        this.newBuildingInCamera(MapConfig.editInfo[1]);//TEST 测试数据
+        this.newBuilding(MapConfig.editInfo[1], 30, 30, false, false);//TEST 测试数据
     }
     // 摄像头缩放大小
     get cameraRate():number{
         return this._cameraRate;
+    }
+    // 缩放地图
+    mapZoom(scale:number){
+        this._cameraHeight = Math.floor(this._cameraHeight*scale);
+        if(this._cameraHeight > this._cameraMaxHeight){
+            this._cameraHeight = this._cameraMaxHeight;
+            return;
+        }
+        if(this._cameraHeight < this._cameraMinHeight){
+            this._cameraHeight = this._cameraMinHeight;
+            return;
+        }
+        this._mainScene.mapCamera.orthoHeight = this._cameraHeight;
+        this._cameraRate = this._cameraHeight / this._uiCameraHeight;
+
+        this.mapMove(0,0);//限制map位置
+        // 摄像头缩放事件通知
+        this._mainScene.getMapCtl().onCameraScale(this._cameraRate);
+        EventManager.emit(EventType.Map_Scale, this._cameraRate);
     }
     // 缩小地图
     mapZoomOut(){
@@ -291,11 +310,11 @@ export class MapUICtl extends MainBaseCtl {
         land.grids = grids;
     }
     // 新建建筑物
-    newBuilding(data:EditInfo, gridX:number, gridY:number, isFlip:boolean = false){
+    newBuilding(data:EditInfo, gridX:number, gridY:number, isFlip:boolean = false, isNew:boolean = true){
         let building = instantiate(this._mainScene.buildingModel);
         this._mainScene.buildingLayer.addChild(building);
         let buildingModel = building.getComponent(BuildingModel);
-        buildingModel.initData(gridX, gridY, data.width, data.path, isFlip);
+        buildingModel.initData(gridX, gridY, data.width, data.path, isFlip, isNew);
         this.setBuildingGrid(buildingModel, gridX, gridY);
         return buildingModel;
     }

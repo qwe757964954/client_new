@@ -7,13 +7,6 @@ import EventManager from "../util/EventManager";
 import { EventType } from "../config/EventType";
 const { ccclass, property } = _decorator;
 
-class A {
-    private _a:Node = null;
-}
-class B {
-    private _c:Node = null;
-}
-
 //建筑模型
 @ccclass('BuildingModel')
 export class BuildingModel extends Component {
@@ -31,11 +24,14 @@ export class BuildingModel extends Component {
     private _grids:GridModel[];//格子
     // private _nodePos:Vec3;//节点位置
     private _isFlip:boolean = false;//是否翻转
+    private _isShow:boolean = false;//是否显示
+    private _isNew:boolean = false;//是否是新建
 
     // private _dataX:number;//数据x
     // private _dataY:number;//数据y
     private _dataGrids:GridModel[];//数据格子
     private _dataIsFlip:boolean = false;//数据是否翻转
+    private _dataIsShow:boolean = false;//数据是否显示
     private _loadAssetAry:Asset[] = [];//加载资源数组
     private _btnView:Node = null;//建筑按钮界面
 
@@ -50,12 +46,15 @@ export class BuildingModel extends Component {
         // EventManager.off(EventType.Map_Scale, this._mapScaleHandle);
     }
     // 初始化数据
-    initData(x:number, y:number, width:number, path:string, isFlip:boolean) {
+    initData(x:number, y:number, width:number, path:string, isFlip:boolean, isNew:boolean) {
         this._x = x;
         this._y = y;
         this._width = width;
         this.isFlip = isFlip;
         this._dataIsFlip = isFlip;
+        this._isShow = true;
+        this._dataIsShow = true;
+        this._isNew = isNew;
 
         LoadManager.load(path, SpriteFrame).then((spriteFrame:SpriteFrame) => {
             this.building.spriteFrame = spriteFrame;
@@ -72,15 +71,11 @@ export class BuildingModel extends Component {
     }
     // 设置所占格子。清理以前老数据，设置新数据，更新节点位置
     public set grids(grids:GridModel[]) {
+        // console.log("set grids",grids);
         if(grids.length != this._width*this._width){
             return;
         }
-        if(this._grids){
-            for (let i = 0; i < this._grids.length; i++) {
-                this._grids[i].building = null;
-            }
-        }
-        // console.log("set grids",grids);
+        this.recoverGrids();
         this._grids = grids;
         for (let i = 0; i < this._grids.length; i++) {
             this._grids[i].building = this;
@@ -94,6 +89,7 @@ export class BuildingModel extends Component {
         if(!this._dataGrids){
             this._dataGrids = this._grids;
         }
+        this.refreshBtnView();
     }
     // public get grids():GridModel[] {
     //     return this._grids;
@@ -108,9 +104,30 @@ export class BuildingModel extends Component {
     get isFlip():boolean {
         return this._isFlip;
     }
-
+    set isShow(isShow:boolean) {
+        this._isShow = isShow;
+        this.node.active = isShow;
+    }
+    set isNew(isNew:boolean) {
+        this._isNew = isNew;
+    }
+    // 格子数据还原
+    public recoverGrids() {
+        if(!this._grids) return;
+        for (let i = 0; i < this._grids.length; i++) {
+            // this._grids[i].building = null;
+            this._grids[i].recoverData();
+        }
+    }
+    // 格子数据保存
+    public saveGrids() {
+        if(!this._grids) return;
+        for (let i = 0; i < this._grids.length; i++) {
+            this._grids[i].saveData();
+        }
+    }
     // 显示按钮界面
-    public showBtnView():void {
+    public showBtnView(scale:number):void {
         if(this._btnView){
             this._btnView.active = true;
             return;
@@ -129,6 +146,8 @@ export class BuildingModel extends Component {
             ];
             buildingBtnView.registerClickCallback(funcs);
             this.node.addChild(this._btnView);
+            this.onCameraScale(scale);
+            this.refreshBtnView();
         });
     }
     // 关闭按钮界面
@@ -138,10 +157,25 @@ export class BuildingModel extends Component {
             EventManager.emit(EventType.BuildingBtnView_Close);
         }
     }
+    // 刷新按钮界面
+    public refreshBtnView():void {
+        if(!this._btnView || !this._btnView.active) return;
+        let canSure = true;
+        for (let i = 0; i < this._grids.length; i++) {
+            if(!this._grids[i].isCanBuilding()){
+                canSure = false;
+                break;
+            }
+        }
+        let buildingBtnView = this._btnView.getComponent(BuildingBtnView);
+        buildingBtnView.btnSure.node.active = canSure;
+        // buildingBtnView.btnSure.grayscale = !canSure;
+    }
     // 还原数据
     public resetData():void {
         this.grids = this._dataGrids;
         this.isFlip = this._dataIsFlip;
+        this.isShow = this._dataIsShow;
     }
     // 保存数据
     public saveData():void {
@@ -149,11 +183,14 @@ export class BuildingModel extends Component {
         // this._dataY = this._y;
         this._dataGrids = this._grids;
         this._dataIsFlip = this._isFlip;
-
+        this._dataIsShow = this._isShow;
+        this._isNew = false;
+        this.saveGrids();
         this.closeBtnView();
     }
     // 卖出
     public sell():void {
+        // TODO
         this.recycle();//与回收差别?，如不能还原则需修改逻辑
     }
     // 翻转
@@ -164,28 +201,34 @@ export class BuildingModel extends Component {
     public recycleBtnClick():void {
         this.recycle();
     }
+    // protected onDisable(): void {
+    //     console.log("onDisable");
+    // }
+    // protected onEnable(): void {
+    //     console.log("onEnable");
+    // }
     // 回收
     public recycle(){
-        if(this._grids){
-            for (let i = 0; i < this._grids.length; i++) {
-                this._grids[i].building = null;
-            }
-        }
-        this.node.active = false;
-        this.closeBtnView();
+        this.recoverGrids();
+        this.isShow = false;
+        this.saveData();
     }
     // 还原
     public recover(){
         this.resetData();
-        this.node.active = true;
         this.closeBtnView();
+        if(this._isNew){
+            this.removeFromScene();
+        }
     }
     // 还原数据（不通知按钮界面关闭事件）
     public recoverData():void {
         this.resetData();
-        this.node.active = true;
         if(this._btnView && this._btnView.active){
             this._btnView.active = false;
+        }
+        if(this._isNew){
+            this.removeFromScene();
         }
     }
     // 摄像头缩放事件
@@ -193,5 +236,10 @@ export class BuildingModel extends Component {
         if(this._btnView){
             this._btnView.scale = new Vec3(rate, rate, 1);
         }
+    }
+    // 画面中移除
+    public removeFromScene():void {
+        this.isShow = false;
+        EventManager.emit(EventType.BuidingModel_Remove, this);
     }
 }

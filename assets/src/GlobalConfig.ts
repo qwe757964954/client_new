@@ -1,4 +1,4 @@
-import { Game, Size, Vec2, View, director, game, profiler, screen } from "cc";
+import { Game, Size, Vec2, View, director, game, macro, profiler, screen, view } from "cc";
 import DebugConfig from "./DebugConfig";
 import FileUtil from "./util/FileUtil";
 import { InterfaceUtil } from "./util/InterfaceUtil";
@@ -24,6 +24,7 @@ export default class GlobalConfig {
     public static init(){
         if(this._isInit) return;
         this._isInit = true;
+        view.setOrientation(macro.ORIENTATION_LANDSCAPE);//横屏
         this.WIN_SIZE = View.instance.getVisibleSize();
         this.WIN_RATE = this.WIN_SIZE.width / this.WIN_SIZE.height;
         let tmplog = console.log;

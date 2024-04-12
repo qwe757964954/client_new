@@ -11,6 +11,7 @@ export const EventType = {
     Map_Scale: "MapScale",//地图缩放
     BuildingBtnView_Close: "BuildingBtnViewClose",//建筑按钮界面关闭
     MapStatus_Change: "MapStatusChange",//地图状态改变
+    BuidingModel_Remove: "BuildingModelRemove",//建筑模型移除
 
     Energy_Update: "EnergyUpdate",//体力更新
     Coin_Update: "CoinUpdate",//金币更新

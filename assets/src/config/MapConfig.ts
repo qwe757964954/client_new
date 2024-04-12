@@ -60,14 +60,14 @@ export const MapConfig = {
         ]
     },
     editInfo : {//编辑元素
-        0 : {id:0, path:"map/zhuangshi1/spriteFrame",type:EditType.Buiding,width:7,moveDt:1},
+        0 : {id:0, path:"map/zhuangshi2/spriteFrame",type:EditType.Buiding,width:7,moveDt:1},
         1 : {id:1, path:"map/zhuangshi2/spriteFrame",type:EditType.Buiding,width:7,moveDt:1},
         2 : {id:2, path:"map/zhuangshi3/spriteFrame",type:EditType.Buiding,width:7,moveDt:1},
         3 : {id:3, path:"map/dikuai02/spriteFrame",type:EditType.Land,width:2,moveDt:2},//默认地块
         4 : {id:4, path:"map/dikuai1/spriteFrame",type:EditType.Land,width:2,moveDt:2},
         5 : {id:5, path:"map/dikuai2/spriteFrame",type:EditType.Land,width:2,moveDt:2},
         //测试添加
-        6 : {id:6, path:"map/zhuangshi1/spriteFrame",type:EditType.Buiding,width:7,moveDt:1},
+        6 : {id:6, path:"map/zhuangshi2/spriteFrame",type:EditType.Buiding,width:7,moveDt:1},
         7 : {id:7, path:"map/zhuangshi2/spriteFrame",type:EditType.Buiding,width:7,moveDt:1},
         8 : {id:8, path:"map/zhuangshi3/spriteFrame",type:EditType.Buiding,width:7,moveDt:1},
         9 : {id:9, path:"map/dikuai02/spriteFrame",type:EditType.Land,width:2,moveDt:2},

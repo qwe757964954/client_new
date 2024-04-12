@@ -1,7 +1,7 @@
 [
   {
     "__type__": "cc.Prefab",
-    "_name": "Clearancedetails",
+    "_name": "clearancedetails",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_native": "",
@@ -13,7 +13,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Clearancedetails",
+    "_name": "clearancedetails",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": null,
