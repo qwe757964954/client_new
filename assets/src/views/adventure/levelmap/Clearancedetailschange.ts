@@ -1,11 +1,11 @@
 import { _decorator, Button, Component, Node, tween, v3 } from 'cc';
 import CCUtil from '../../../util/CCUtil';
-import { Characters } from '../../../config/CharactersConfig';
-import { ClearancedetailsItem } from './ClearancedetailsItem';
+import { Characterschange } from '../../../config/CharactersConfigchange';
+import { ClearancedetailsItemchange } from './ClearancedetailsItemchange';
 const { ccclass, property } = _decorator;
 
 @ccclass('clearancedetails')
-export class Clearancedetails extends Component {
+export class Clearancedetailschange extends Component {
     @property({ type: Button, tooltip: "关闭" })
     public btn_close: Button = null;
     @property({ type: Node, tooltip: "列表" })
@@ -23,9 +23,9 @@ export class Clearancedetails extends Component {
 
     //初始化列表
     private initlist() {
-        let nameArr = [Characters.total, Characters.complex, Characters.read, Characters.write];
+        let nameArr = [Characterschange.total, Characterschange.complex, Characterschange.read, Characterschange.write];
         for (let i in this.listItem) {
-            let com: ClearancedetailsItem = this.listItem[i].getComponent(ClearancedetailsItem)
+            let com: ClearancedetailsItemchange = this.listItem[i].getComponent(ClearancedetailsItemchange)
             com.setui(nameArr[i])
         }
 

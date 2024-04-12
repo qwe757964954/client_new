@@ -2,12 +2,12 @@
   "ver": "1.1.50",
   "importer": "prefab",
   "imported": true,
-  "uuid": "6d1fda66-0e84-4413-8971-938c651bb3ef",
+  "uuid": "fae67c05-e850-4c67-8427-92cdf009e5dd",
   "files": [
     ".json"
   ],
   "subMetas": {},
   "userData": {
-    "syncNodeName": "Clearancedetails"
+    "syncNodeName": "RightPanelchange"
   }
 }

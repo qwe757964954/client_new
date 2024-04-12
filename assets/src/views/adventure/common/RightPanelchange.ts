@@ -8,7 +8,7 @@ const { ccclass, property } = _decorator;
 
 /**右边选择关卡界面 何存发 2024年4月12日14:21:29 */
 @ccclass('rightPanel')
-export class rightPanel extends Component {
+export class rightPanelchange extends Component {
     @property({ type: Node, tooltip: "关闭按钮" })
     public btn_close: Node = null;
     @property({ type: Node, tooltip: "怪物模型" })
