@@ -19,4 +19,6 @@ export const EventType = {
     study_page_switching: "study_page_switching",//学习页面切换
 
     Expand_the_level_page: "Expand_the_level_page",//拓展关卡
+
+    enter_battle_view: "enter_battle_view",  //进入战斗界面  学习界面
 }

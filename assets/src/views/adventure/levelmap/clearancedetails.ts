@@ -44,11 +44,13 @@ export class Clearancedetails extends Component {
         CCUtil.offTouch(this.btn_close, this.onbtn_closeClick, this)
 
     }
-    private onbtn_closeClick() {
+    onbtn_closeClick() {
         tween(this.node).to(0.3, { position: v3(900, 0, 0) }).call(() => {
             this.node.active = false
         }).start()
     }
+
+
     update(deltaTime: number) {
 
     }

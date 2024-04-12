@@ -8,7 +8,25 @@ export class WordStudyDialog extends Component {
     }
 
     update(deltaTime: number) {
-        
+
+    }
+    initEvent() {
+
+    }
+    removeEvent() {
+
+    }
+    protected onLoad(): void {
+        this.initU();
+    }
+    initU() {
+
+    }
+
+
+    protected onDestroy(): void {
+
     }
 }
-
+
+
