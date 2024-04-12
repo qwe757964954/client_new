@@ -867,6 +867,9 @@
     "defaultImg": {
       "__id__": 2
     },
+    "labelLevel": {
+      "__id__": 23
+    },
     "imgArray": [
       {
         "__uuid__": "85350af3-c6d3-4311-a921-62207d35ca4c@f9941",

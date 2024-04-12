@@ -1,4 +1,4 @@
-import { _decorator, Component, instantiate, Node, Sprite, SpriteAtlas, SpriteFrame, v3 } from 'cc';
+import { _decorator, Component, instantiate, Label, Node, Sprite, SpriteAtlas, SpriteFrame, v3 } from 'cc';
 import CCUtil from '../../../util/CCUtil';
 import { EventType } from '../../../config/EventType';
 import EventManager from '../../../util/EventManager';
@@ -42,7 +42,7 @@ export class MapView extends Component {
      * 初始化UI
      */
     initUI() {
-// this.
+        this.labelLevel.getComponent(Label).string = (this._mapid + 1) + ''
     }
     initEvent() {
         for (let i in this.levelType) {
