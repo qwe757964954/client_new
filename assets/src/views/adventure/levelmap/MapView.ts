@@ -36,6 +36,9 @@ export class MapView extends Component {
         this.defaultImg.getComponent(Sprite).spriteFrame = this.imgArray[id];
 
     }
+    /**
+     * 加载
+     */
     onLoad(): void {
     }
     /**
@@ -44,6 +47,9 @@ export class MapView extends Component {
     initUI() {
         this.labelLevel.getComponent(Label).string = (this._mapid + 1) + ''
     }
+    /**
+     * 初始化事件
+     */
     initEvent() {
         for (let i in this.levelType) {
             let node: Node[] = this.levelType[i].children
@@ -52,10 +58,15 @@ export class MapView extends Component {
             }
         }
     }
+    /**
+     * 点击事件
+     */
     private onBtnClick(param: any[]) {
         EventManager.emit(EventType.Expand_the_level_page, param);
     }
-
+    /**
+     * 移除事件
+     */
     removeEvent() {
         for (let i in this.levelType) {
             let node: Node[] = this.levelType[i].children
@@ -64,6 +75,11 @@ export class MapView extends Component {
             }
         }
     }
+    
+
+    /**
+     * 销毁
+     */
     onDestroy(): void {
         this.removeEvent()
     }
