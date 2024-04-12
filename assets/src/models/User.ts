@@ -17,14 +17,16 @@ export class User {
 
     // 测试数据
     //// 头像数据
-    public curHeadPropId:number = 101;
-    public curHeadBoxPropId:number = 800;
+    public curHeadPropId:number = 101;  // 当前头像id
+    public curHeadBoxPropId:number = 800;   // 当前头像框id
     // 用户id、昵称、称号等信息
-    public userId:number = 12345;
-    public userName:string = "哈哈哈";
-    public roletitle:string = "高级";
-    public level:number = 101;
-    public currentExp:number = 35;
+    public userId:number = 12345;   // 用户id
+    public userName:string = "哈哈哈";  // 昵称
+    public roletitle:string = "高级";   // 称号文字
+    public level:number = 101;  // 称号等级
+    public currentExp:number = 35;  // 称号等级经验
+    // 修改昵称信息
+    public editRealNameNum:number = 0;  // 修改昵称次数
     
     private constructor() {
 
