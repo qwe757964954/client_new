@@ -14,6 +14,17 @@ export class User {
     private _mobile:string;         // 手机号
     private _platType:number;       // 平台类型
     private _sysType:number;        // 系统类型
+
+    // 测试数据
+    //// 头像数据
+    public curHeadPropId:number = 101;
+    public curHeadBoxPropId:number = 800;
+    // 用户id、昵称、称号等信息
+    public userId:number = 12345;
+    public userName:string = "哈哈哈";
+    public roletitle:string = "高级";
+    public level:number = 101;
+    public currentExp:number = 35;
     
     private constructor() {
 
