@@ -56,7 +56,7 @@ export class rightPanel extends Component {
     }
     //点击跳转到闯关界面 TODO
     private levelClick(i: number) {
-        EventManager.emit(EventType.study_page_switching, [7, null, 6])
+        EventManager.emit(EventType.study_page_switching, [7])
     }
     private touchNodeArr: Node[] = [];
 

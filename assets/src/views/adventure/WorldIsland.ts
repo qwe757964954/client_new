@@ -59,7 +59,7 @@ export class WorldIsland extends Component {
         }).start()
     }
     private onBtnBackClick() {
-        EventManager.emit(EventType.study_page_switching, [1, null, 6])
+        EventManager.emit(EventType.study_page_switching, [1])
 
     }
 

@@ -48,7 +48,7 @@ export class WorldMapView extends Component {
         // tween(this.mapView[i]).to(0.5, { scale: v3(0.85, 0.85) }).to(0.5, { scale: v3(0.8, 0.8) }).union().repeatForever().start()
         let _id: number = ~~i + 6
         console.error('_id', _id)
-        EventManager.emit(EventType.study_page_switching, [_id,null,1])
+        EventManager.emit(EventType.study_page_switching, [6])
 
 
     }
@@ -73,7 +73,7 @@ export class WorldMapView extends Component {
     }
     /**点击返回按钮 */
     onBtnBackClick() {
-        EventManager.emit(EventType.study_page_switching, [0, true])
+        EventManager.emit(EventType.study_page_switching, [0])
     }
 
     /**打开帮助页面 */
