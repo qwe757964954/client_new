@@ -1,22 +1,10 @@
-import { _decorator, Asset, Button, Color, Component, EditBox, Enum, instantiate, Label, Node, Size, Sprite, SpriteFrame, UITransform, Vec3 } from 'cc';
-import CCUtil from '../../util/CCUtil';
+import { _decorator, Component, EditBox, Enum, Label, Node} from 'cc';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { PrefabConfig, PrefabType } from '../../config/PrefabType';
-import { PbConst } from '../../config/PbConst';
-import ImgUtil from '../../util/ImgUtil';
-import { LoadManager } from '../../manager/LoadManager';
+import { PrefabType } from '../../config/PrefabType';
 import { User } from '../../models/User';
 import { PopView } from '../common/PopView';
 import { NetManager } from '../../net/NetManager';
 const { ccclass, property } = _decorator;
-
-const ChangeHeadTypeEnum = Enum({
-    Type_HeadBox: 1,
-    Type_Head: 2,
-})
-
-const DefaultHeadBoxId = 800;
-const DefaultHeadId = 101;
 
 @ccclass('ChangeNameView')
 export class ChangeNameView extends Component {
@@ -37,6 +25,7 @@ export class ChangeNameView extends Component {
     // 初始化UI
     initUI() {
         this.msgTxt.string = "本月剩余修改次数：" + (2 - User.instance.editRealNameNum);
+        this.editBox.string = User.instance.userName;
     }
 
     // 关闭

@@ -6,15 +6,8 @@ import { PbConst } from '../../config/PbConst';
 import ImgUtil from '../../util/ImgUtil';
 import { LoadManager } from '../../manager/LoadManager';
 import { User } from '../../models/User';
+import { ChangeHeadTypeEnum, SettingConfig } from '../../config/SettingConfig';
 const { ccclass, property } = _decorator;
-
-const ChangeHeadTypeEnum = Enum({
-    Type_HeadBox: 1,
-    Type_Head: 2,
-})
-
-const DefaultHeadBoxId = 800;
-const DefaultHeadId = 101;
 
 @ccclass('ChangeHeadView')
 export class ChangeHeadView extends Component {
@@ -175,12 +168,12 @@ export class ChangeHeadView extends Component {
         // 使用中判断
         let curPropId = type == ChangeHeadTypeEnum.Type_Head ? User.instance.curHeadPropId : User.instance.curHeadBoxPropId;
         if (type == ChangeHeadTypeEnum.Type_Head) {
-            using.active = !curPropId ? (data.PropId == DefaultHeadBoxId) : (data.PropId == curPropId);
+            using.active = !curPropId ? (data.PropId == SettingConfig.DefaultHeadBoxId) : (data.PropId == curPropId);
             lock.active = false;
         }
         else {
-            using.active = !curPropId ? (data.PropId == DefaultHeadId) : (data.PropId == curPropId);
-            lock.active = !this.checkHave(data.PropId, DefaultHeadId, PbConst.PropTypeEnum.Headbox);
+            using.active = !curPropId ? (data.PropId == SettingConfig.DefaultHeadId) : (data.PropId == curPropId);
+            lock.active = !this.checkHave(data.PropId, SettingConfig.DefaultHeadId, PbConst.PropTypeEnum.Headbox);
         }
         // using.active = false;
         data.isLock = lock.active;

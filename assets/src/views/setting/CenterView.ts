@@ -101,6 +101,7 @@ export class CenterView extends Component {
     // 我的表格
     btnMyTableFunc() {
         console.log("btnMyTableFunc");
+        ViewsManager.instance.showView(PrefabType.MyTableView);
     }
 }
 

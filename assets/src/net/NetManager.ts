@@ -1,4 +1,4 @@
-import { c2sAccountInit, c2sEditRealName, c2sPropMyList } from "../models/NetModel";
+import { c2sAccountEditRealName, c2sAccountInit, c2sAccountStudyWord, c2sPropMyList } from "../models/NetModel";
 import EventManager from "../util/EventManager";
 import { Socket } from "./Socket";
 //消息服务管理类
@@ -105,10 +105,16 @@ export class NetManager {
         this.sendMsg(para);
     }
     
-    // 修改名称
+    // 请求修改名称
     public reqChangeRealNameData(realName: string){
-        let para:c2sEditRealName = new c2sEditRealName;
+        let para:c2sAccountEditRealName = new c2sAccountEditRealName;
         para.RealName = realName;
+        this.sendMsg(para);
+    }
+    
+    // 请求学生通关单词
+    public reqStudyWordData(){
+        let para:c2sAccountStudyWord = new c2sAccountStudyWord;
         this.sendMsg(para);
     }
 
