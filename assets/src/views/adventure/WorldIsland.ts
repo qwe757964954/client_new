@@ -21,6 +21,8 @@ export class WorldIsland extends Component {
     public btn_pos: Button = null;
     @property({ type: Node, tooltip: "面板" })
     public panel: Node = null;
+    @property({ type: Node, tooltip: "关卡选择页面" })
+    public levelPanel: Node = null;
     start() {
 
     }
@@ -36,6 +38,7 @@ export class WorldIsland extends Component {
     /**初始化UI */
     private initUI() {
         this.initlist()
+        this.levelPanel.position = v3(900, 100, 0);
     }
 
     /**初始化监听事件 */
@@ -50,13 +53,13 @@ export class WorldIsland extends Component {
         CCUtil.offTouch(this.btn_details, this.onBtnDetailsClick, this)
     }
 
-    private onBtnDetailsClick() {
+    onBtnDetailsClick() {
         this.panel.active = true;
         tween(this.panel).to(0.3, { position: v3(0, 0, 0) }).call(() => {
         }).start()
     }
     private onBtnBackClick() {
-        EventManager.emit(EventType.study_page_switching, [1, null, 6])
+        EventManager.emit(EventType.study_page_switching, [1])
 
     }
 
@@ -76,6 +79,7 @@ export class WorldIsland extends Component {
         }
 
     }
+
 
     protected onDestroy(): void {
         this.removeEvent()

@@ -85,4 +85,15 @@ export class c2sPropMyList{
     ModuleId : number;   // 道具类型
 }
 
+// 修改名称
+export class c2sAccountEditRealName{
+    Path : string = EventType.Account_EditRealName;
+    RealName : string;   // 名称
+}
+
+// 学生通关单词
+export class c2sAccountStudyWord{
+    Path : string = EventType.Account_StudyWord;
+}
+
 /*****************************************************************************/

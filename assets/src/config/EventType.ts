@@ -6,6 +6,8 @@ export const EventType = {
     Account_Info: "Account.Info",
     Account_Init: "Account.Init",
     Prop_MyList : "Prop.MyList",    // 我的道具列表
+    Account_EditRealName : "Account.EditRealName",  // 修改名字
+    Account_StudyWord : "Account.StudyWord",  // 学生通关单词
     /************************************socket消息类型end*********************************************/
 
     Map_Scale: "MapScale",//地图缩放
@@ -20,4 +22,6 @@ export const EventType = {
     study_page_switching: "study_page_switching",//学习页面切换
 
     Expand_the_level_page: "Expand_the_level_page",//拓展关卡
+
+    enter_battle_view: "enter_battle_view",  //进入战斗界面  学习界面
 }

@@ -2,12 +2,12 @@
   "ver": "1.1.50",
   "importer": "prefab",
   "imported": true,
-  "uuid": "93a26301-60b6-4af0-8997-cb91ccafe583",
+  "uuid": "2bb4aaf3-0f59-45ed-9976-2aa7fb940340",
   "files": [
     ".json"
   ],
   "subMetas": {},
   "userData": {
-    "syncNodeName": "StudyView"
+    "syncNodeName": "ChangeNameView"
   }
 }

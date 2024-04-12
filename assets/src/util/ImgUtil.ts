@@ -13,6 +13,12 @@ export default class ImgUtil{
         // return NetConfig.assertUrl + "/assets/imgs/icon/prop/" + propId + ".png";
         return "icon/prop/" + propId + "/spriteFrame";
     }
+
+    //获取头像url
+    static getAvatarUrl = function (avatar) {
+        // return GameData.ASSETS_URL + "/assets/imgs/icon/avatar/" + avatar + ".png";
+        return "icon/avatar/" + avatar + "/spriteFrame";
+    }
 }
 
 /**
@@ -42,11 +48,6 @@ export default class ImgUtil{
 //     //获取称号url
 //     ImgUtil.getAchieveImgUrl = function (achieveId) {
 //         return GameData.ASSETS_URL + "/assets/imgs/icon/achieve/" + achieveId + ".png";
-//     }
-
-//     //获取头像url
-//     ImgUtil.getAvatarUrl = function (avatar) {
-//         return GameData.ASSETS_URL + "/assets/imgs/icon/avatar/" + avatar + ".png";
 //     }
 
 //     //【静态方法】显示宠物(睁眼)

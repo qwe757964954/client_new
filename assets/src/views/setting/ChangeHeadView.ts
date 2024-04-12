@@ -6,14 +6,8 @@ import { PbConst } from '../../config/PbConst';
 import ImgUtil from '../../util/ImgUtil';
 import { LoadManager } from '../../manager/LoadManager';
 import { User } from '../../models/User';
+import { ChangeHeadTypeEnum, SettingConfig } from '../../config/SettingConfig';
 const { ccclass, property } = _decorator;
-
-const ChangeHeadTypeEnum = Enum({
-    Type_HeadBox: 1,
-    Type_Head: 2,
-})
-
-const DefaultBoxId = 800;
 
 @ccclass('ChangeHeadView')
 export class ChangeHeadView extends Component {
@@ -40,7 +34,8 @@ export class ChangeHeadView extends Component {
     @property(Sprite)
     public preHead:Sprite = null;       // 预览的头像
 
-    private _myList: any = null;  // 
+    private _myList: any = null;  // 我的道具信息
+    private _curSwitchTab:number = ChangeHeadTypeEnum.Type_HeadBox; // 默认头像框
     
     private _loadAssetAry = new Map<string, Asset>(); // 加载资源数组
 
@@ -69,9 +64,10 @@ export class ChangeHeadView extends Component {
     // 初始化UI
     initUI() {
         // 默认头像框
-        this.switchUI(ChangeHeadTypeEnum.Type_HeadBox);
+        this.switchUI(this._curSwitchTab);
         // 头像/框预览
-        this.refreshPreHead(800);
+        this.refreshPreHead(User.instance.curHeadPropId);
+        this.refreshPreHeadBox(User.instance.curHeadBoxPropId);
     }
     //初始化事件
     public initEvent(){
@@ -103,16 +99,24 @@ export class ChangeHeadView extends Component {
     btnItemFunc(event: Event) {
         let btn = event.target as unknown as Button;
         console.log("btnHeadTabFunc btn.name = ", btn.name);
-        this.refreshPreHead(parseInt(btn.name));
+        if (this._curSwitchTab == ChangeHeadTypeEnum.Type_Head) {
+            this.refreshPreHead(parseInt(btn.name));
+        }
+        else {
+            this.refreshPreHeadBox(parseInt(btn.name));
+        }
     }
 
     // 预览头像/框
     refreshPreHead(propId: number) {
-        this.loadSpriteFrame(this.preHeadBox, propId);
-        this.loadSpriteFrame(this.preHead, propId);
+        this.loadSpriteFrame(this.preHead, propId, ChangeHeadTypeEnum.Type_Head);
+    }
+    refreshPreHeadBox(propId: number) {
+        this.loadSpriteFrame(this.preHeadBox, propId, ChangeHeadTypeEnum.Type_HeadBox);
     }
 
     switchUI(type: number) {
+        this._curSwitchTab = type;
         switch (type) {
             case ChangeHeadTypeEnum.Type_HeadBox:
                 this.headBoxBtn.interactable = false;
@@ -121,11 +125,11 @@ export class ChangeHeadView extends Component {
                 this.headBoxList.active = true;
                 const datas1 = [
                     {PropId: 800}, {PropId: 801}, {PropId: 802}, {PropId: 803}, {PropId: 804}, {PropId: 805}, {PropId: 806}, 
-                    {PropId: 800}, {PropId: 801}, {PropId: 802}, {PropId: 803}, {PropId: 804}, {PropId: 805}, {PropId: 806}, 
-                    {PropId: 800}, {PropId: 801}, {PropId: 802}, {PropId: 803}, {PropId: 804}, {PropId: 805}, {PropId: 806}, 
-                    {PropId: 800}, {PropId: 801}, {PropId: 802}, {PropId: 803}, {PropId: 804}, {PropId: 805}, {PropId: 806}, 
+                    // {PropId: 800}, {PropId: 801}, {PropId: 802}, {PropId: 803}, {PropId: 804}, {PropId: 805}, {PropId: 806}, 
+                    // {PropId: 800}, {PropId: 801}, {PropId: 802}, {PropId: 803}, {PropId: 804}, {PropId: 805}, {PropId: 806}, 
+                    // {PropId: 800}, {PropId: 801}, {PropId: 802}, {PropId: 803}, {PropId: 804}, {PropId: 805}, {PropId: 806}, 
                 ]
-                this.refreshListUI(this.headBoxContent, datas1);
+                this.refreshListUI(this.headBoxContent, datas1, type);
                 break;
             case ChangeHeadTypeEnum.Type_Head:
                 this.headBoxBtn.interactable = true;
@@ -133,43 +137,54 @@ export class ChangeHeadView extends Component {
                 this.headList.active = true;
                 this.headBoxList.active = false;
                 const datas2 = [
-                    {PropId: 800}, {PropId: 801}, {PropId: 802}, {PropId: 803}
+                    {PropId: 101}, {PropId: 102}
                 ]
-                this.refreshListUI(this.headContent, datas2);
+                this.refreshListUI(this.headContent, datas2, type);
                 break;
             default:
                 break;
         }
     }
 
-    refreshListUI(content: Node, datas: any) {
+    refreshListUI(content: Node, datas: any, type: number) {
         content.removeAllChildren();
         this.item.active = true;
         for (let index = 0; index < datas.length; index++) {
             let data = datas[index];
             let copy = instantiate(this.item);
             content.addChild(copy);
-            this.refreshItem(copy, data);
+            this.refreshItem(copy, data, type);
         }
         let height = Math.ceil(datas.length / 5) * 170 - 10;
         content.getComponent(UITransform).setContentSize(new Size(700, height));
         this.item.active = false;
     }
     
-    refreshItem(item: Node, data) {
+    refreshItem(item: Node, data, type: number) {
         item.name = data.PropId.toString();
         let icon = item.getChildByName("icon") as Node;
         let lock = item.getChildByName("lock") as Node;
         let using = item.getChildByName("using") as Node;
-        // using.active = !User.instance.userInfo. .userInfoModule.AvatarBox ? (data.PropId == DefaultBoxId) : (data.PropId == GameData.userInfoModule.AvatarBox);
-        using.active = false;
-        lock.active = !this.checkHave(data.PropId);
+        // 使用中判断
+        let curPropId = type == ChangeHeadTypeEnum.Type_Head ? User.instance.curHeadPropId : User.instance.curHeadBoxPropId;
+        if (type == ChangeHeadTypeEnum.Type_Head) {
+            using.active = !curPropId ? (data.PropId == SettingConfig.DefaultHeadBoxId) : (data.PropId == curPropId);
+            lock.active = false;
+        }
+        else {
+            using.active = !curPropId ? (data.PropId == SettingConfig.DefaultHeadId) : (data.PropId == curPropId);
+            lock.active = !this.checkHave(data.PropId, SettingConfig.DefaultHeadId, PbConst.PropTypeEnum.Headbox);
+        }
+        // using.active = false;
         data.isLock = lock.active;
-        this.loadSpriteFrame(icon.getComponent(Sprite), data.PropId);
+        this.loadSpriteFrame(icon.getComponent(Sprite), data.PropId, type);
     }
 
-    loadSpriteFrame(icon: Sprite, propId: number) {
+    loadSpriteFrame(icon: Sprite, propId: number, type: number) {
         let url = ImgUtil.getPropImgUrl(propId);
+        if (type == ChangeHeadTypeEnum.Type_Head) {
+            url = ImgUtil.getAvatarUrl(propId);
+        }
         if (this._loadAssetAry.get(url)) {
             icon.spriteFrame = (this._loadAssetAry.get(url) as SpriteFrame);
         }
@@ -183,11 +198,11 @@ export class ChangeHeadView extends Component {
         }
     }
     
-    checkHave(propId: number) {
-        if (propId == DefaultBoxId) return true;
+    checkHave(propId: number, id: number, propTypeEnum) {
+        if (propId == id) return true;
         if (!this._myList) return false;
         for (let i = 0; i < this._myList.length; i++) {
-            if (this._myList[i].ModuleId == PbConst.PropTypeEnum.Headbox && this._myList[i].PropID == propId) {
+            if (this._myList[i].ModuleId == propTypeEnum && this._myList[i].PropID == propId) {
                 return true;
             }
         }

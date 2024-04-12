@@ -1,4 +1,4 @@
-import { _decorator, Component, Node } from 'cc';
+import { _decorator, Component, instantiate, Node, Prefab } from 'cc';
 import { EventType } from '../../config/EventType';
 import EventManager from '../../util/EventManager';
 
@@ -7,10 +7,8 @@ const { ccclass, property } = _decorator;
 @ccclass('WorldMapViewManager')
 export class WorldMapViewManager extends Component {
 
-    @property({ type: [Node], tooltip: "页面" })
-    public levelArr: Node[] = [];
-    @property({ type: Node, tooltip: "默认页面" })
-    public defaultView: Node = null;
+    @property({ type: [Prefab], tooltip: "页面" })
+    public levelArr: Prefab[] = [];
     private _eveId: string;
     start() {
 
@@ -22,32 +20,25 @@ export class WorldMapViewManager extends Component {
     protected onLoad(): void {
         this.initUI()
         this.initEvent()
-        this.switchView([0]);
+        this.showView(0);
+
     }
     /**初始化UI */
     private initUI() {
-        for (let i = 0; i < this.levelArr.length; i++) {
-            if (this.levelArr[i]) {
-                this.levelArr[i].active = false;
-            }
-        }
+        // for (let i = 0; i < this.levelArr.length; i++) {
+        //     if (this.levelArr[i]) {
+        //         this.levelArr[i].active = false;
+        //     }
+        // }
     }
     /**切换页面 */
     private switchView(data = []) {
-        if (data[1]) {
-
-        } else if (!this.levelArr[data[0]]) {
+        if (!this.levelArr[data[0]]) {
             console.error("没有这个页面", data);
             return
         }
-        if (data[1]) {//返回主页面
-            this.showView(this.defaultView);
-        } else {//进入其他页面
-            this.showView(this.levelArr[data[0]], this.defaultView);
-        }
-        if (data[2]) {
-            this.levelArr[data[2]].active = false;
-        }
+        this.showView(data[0]);
+
 
     }
     /**初始化监听事件 */
@@ -71,10 +62,14 @@ export class WorldMapViewManager extends Component {
     /**
      * 显示视图
      */
-    showView(node: Node, closenode?: Node) {
-        node.active = true;
-        if (closenode) closenode.active = false;
+    showView(id: number) {
+        console.log("显示视图", this.currentNode);
+        if (this.currentNode) this.currentNode.parent.removeChild(this.currentNode);
+        let copynode = instantiate(this.levelArr[id])
+        this.currentNode = copynode
+        this.node.addChild(copynode)
     }
+    private currentNode: Node = null;
     /**隐藏视图 */
     hideView() {
 
