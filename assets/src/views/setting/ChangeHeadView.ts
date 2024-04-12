@@ -41,7 +41,7 @@ export class ChangeHeadView extends Component {
     @property(Sprite)
     public preHead:Sprite = null;       // 预览的头像
 
-    private _myList: any = null;  // 
+    private _myList: any = null;  // 我的道具信息
     private _curSwitchTab:number = ChangeHeadTypeEnum.Type_HeadBox; // 默认头像框
     
     private _loadAssetAry = new Map<string, Asset>(); // 加载资源数组

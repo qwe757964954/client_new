@@ -92,6 +92,7 @@ export class CenterView extends Component {
     // 修改名称
     btnChangeNameFunc() {
         console.log("btnChangeNameFunc");
+        ViewsManager.instance.showView(PrefabType.ChangeNameView);
     }
     // 称号信息
     btnLookTitleInfoFunc() {

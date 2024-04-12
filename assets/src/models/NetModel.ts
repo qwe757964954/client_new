@@ -85,4 +85,10 @@ export class c2sPropMyList{
     ModuleId : number;   // 道具类型
 }
 
+// 修改名称
+export class c2sEditRealName{
+    Path : string = EventType.Account_EditRealName;
+    RealName : string;   // 名称
+}
+
 /*****************************************************************************/
