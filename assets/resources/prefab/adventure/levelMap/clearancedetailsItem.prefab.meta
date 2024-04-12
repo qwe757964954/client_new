@@ -2,12 +2,12 @@
   "ver": "1.1.50",
   "importer": "prefab",
   "imported": true,
-  "uuid": "cc24cedd-2459-4763-bd2b-691330212c28",
+  "uuid": "912cb286-8800-41e8-951a-1c3304ba1231",
   "files": [
     ".json"
   ],
   "subMetas": {},
   "userData": {
-    "syncNodeName": "clearancedetailsItem"
+    "syncNodeName": "ClearancedetailsItem"
   }
 }
