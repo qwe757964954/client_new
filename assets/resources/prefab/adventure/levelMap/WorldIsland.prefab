@@ -1880,7 +1880,7 @@
       "__id__": 83
     },
     "asset": {
-      "__uuid__": "0220743e-b2a1-4d64-9493-392bd5f654e4",
+      "__uuid__": "6d1fda66-0e84-4413-8971-938c651bb3ef",
       "__expectedType__": "cc.Prefab"
     },
     "fileId": "c46/YsCPVOJYA4mWEpNYRx",
@@ -1891,7 +1891,7 @@
   },
   {
     "__type__": "cc.PrefabInstance",
-    "fileId": "93pN6vEfBAu6n0M8s+eJ3A",
+    "fileId": "a49aJLy8NH/ZWrwrOVuvds",
     "prefabRootNode": {
       "__id__": 1
     },
@@ -1919,14 +1919,9 @@
       "__id__": 87
     },
     "propertyPath": [
-      "_lpos"
+      "_name"
     ],
-    "value": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    }
+    "value": "Clearancedetailschange"
   },
   {
     "__type__": "cc.TargetInfo",
@@ -1940,9 +1935,14 @@
       "__id__": 87
     },
     "propertyPath": [
-      "_name"
+      "_lpos"
     ],
-    "value": "clearancedetails"
+    "value": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    }
   },
   {
     "__type__": "CCPropertyOverrideInfo",
