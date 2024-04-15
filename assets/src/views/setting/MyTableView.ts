@@ -1,4 +1,4 @@
-import { _decorator, Component, EditBox, Enum, Label, Node, Size, UITransform} from 'cc';
+import { _decorator, Component, Label, Node, Size, UITransform} from 'cc';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { PrefabType } from '../../config/PrefabType';
 import { User } from '../../models/User';

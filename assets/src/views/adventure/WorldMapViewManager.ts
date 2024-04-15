@@ -38,8 +38,6 @@ export class WorldMapViewManager extends Component {
             return
         }
         this.showView(data[0]);
-
-
     }
     /**初始化监听事件 */
     private initEvent() {

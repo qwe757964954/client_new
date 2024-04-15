@@ -1,12 +1,12 @@
-import { _decorator, Asset, Button, Color, Component, Enum, instantiate, Label, Node, Size, Sprite, SpriteFrame, UITransform, Vec3 } from 'cc';
-import CCUtil from '../../util/CCUtil';
+import { _decorator, Asset, Button, Component, instantiate, Label, Node, Size, Sprite, SpriteFrame, UITransform } from 'cc';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { PrefabConfig, PrefabType } from '../../config/PrefabType';
+import { PrefabType } from '../../config/PrefabType';
 import { PbConst } from '../../config/PbConst';
 import ImgUtil from '../../util/ImgUtil';
 import { LoadManager } from '../../manager/LoadManager';
 import { User } from '../../models/User';
 import { ChangeHeadTypeEnum, SettingConfig } from '../../config/SettingConfig';
+import { NetManager } from '../../net/NetManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('ChangeHeadView')
@@ -94,6 +94,10 @@ export class ChangeHeadView extends Component {
         console.log("btnHeadTabFunc");
         // 切换头像框UI
         this.switchUI(ChangeHeadTypeEnum.Type_Head);
+    }
+    // 保存按钮
+    btnSaveFunc() {
+        console.log("btnSaveFunc");
     }
     // item按钮
     btnItemFunc(event: Event) {
