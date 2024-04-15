@@ -1,5 +1,4 @@
-import { _decorator, Asset, Button, Color, Component, Label, Node, ProgressBar, Sprite, SpriteFrame, Vec3 } from 'cc';
-import CCUtil from '../../util/CCUtil';
+import { _decorator, Asset, Component, Label, ProgressBar, Sprite, SpriteFrame } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { LoadManager } from '../../manager/LoadManager';

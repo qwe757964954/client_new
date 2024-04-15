@@ -1,5 +1,4 @@
-import { _decorator, Button, Color, Component, Label, Node, Sprite, Vec3 } from 'cc';
-import CCUtil from '../../util/CCUtil';
+import { _decorator, Component, Node } from 'cc';
 const { ccclass, property } = _decorator;
 
 @ccclass('SoundView')
