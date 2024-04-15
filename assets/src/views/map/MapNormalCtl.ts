@@ -46,7 +46,6 @@ export class MapNormalCtl extends MapBaseCtl {
             TimerMgr.stop(this._timer);
             this._timer = null;
         }
-        console.log("onTouchEnd",this._touchBuilding,this._isLongClick);
         if(this._touchBuilding && !this._isLongClick){
             this._mainScene.onBuildingClick(this._touchBuilding);
         }

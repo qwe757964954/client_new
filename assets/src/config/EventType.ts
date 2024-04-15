@@ -14,6 +14,7 @@ export const EventType = {
     BuildingBtnView_Close: "BuildingBtnViewClose",//建筑按钮界面关闭
     MapStatus_Change: "MapStatusChange",//地图状态改变
     BuidingModel_Remove: "BuildingModelRemove",//建筑模型移除
+    Building_Need_Sort: "BuildingNeedSort",//建筑需要排序
 
     Energy_Update: "EnergyUpdate",//体力更新
     Coin_Update: "CoinUpdate",//金币更新

@@ -18,7 +18,8 @@ export default class GlobalConfig {
     public static LOG_NAME:string = "chuangci.log";
     // public static ASSETS_DIR = "game/";
     public static WIN_RATE:number = 1.0;
-    public static WIN_SIZE:Size;
+    public static WIN_SIZE:Size;//窗口大小（与设计分辨率一致，适配方案）
+    public static SCREEN_SIZE:Size;//屏幕大小
 
     private static _isInit:boolean = false;
     public static init(){
@@ -26,7 +27,9 @@ export default class GlobalConfig {
         this._isInit = true;
         view.setOrientation(macro.ORIENTATION_LANDSCAPE);//横屏
         this.WIN_SIZE = View.instance.getVisibleSize();
+        this.SCREEN_SIZE = screen.windowSize;
         this.WIN_RATE = this.WIN_SIZE.width / this.WIN_SIZE.height;
+        console.log("GlobalConfig init",this.WIN_SIZE,this.WIN_RATE);
         let tmplog = console.log;
 
         if(DebugConfig.NO_PRINT){

@@ -25,15 +25,21 @@ export class MapUICtl extends MainBaseCtl {
     private _mapMaxWidth:number = screen.windowSize.width;//地图最大宽度
 
     private _gridAry:GridModel[][] = [];//格子数组(y从上往下，x从右往左)
+    private _buidingSortHandler:string;//建筑需要重新排序handle
 
     constructor(mainScene:MainScene) {
         super(mainScene);
         this.init();
     }
+    // 销毁
+    public dispose(): void {
+        this.removeEvent();
+    }
 
     // 初始化
     public init(): void {
         this.initData();
+        this.initEvent();
         this.initGrid();
         this.initMap();
         this.initLand();
@@ -47,6 +53,14 @@ export class MapUICtl extends MainBaseCtl {
         this._cameraRate = this._cameraHeight / this._uiCameraHeight;
         this._gridAry = [];
         console.log("MapUICtl initData", this._cameraHeight);
+    }
+    // 初始化事件
+    initEvent() {
+        this._buidingSortHandler = EventManager.on(EventType.Building_Need_Sort, this.buildingSort.bind(this));
+    }
+    // 移除事件
+    removeEvent() {
+        EventManager.off(EventType.Building_Need_Sort, this._buidingSortHandler);
     }
     // 获取格子信息
     getGridInfo(i:number, j:number){
@@ -110,13 +124,13 @@ export class MapUICtl extends MainBaseCtl {
                 let bg = instantiate(this._mainScene.mapGridView);
                 let id = j*col+i+1;
                 let path = this.isCommonBg(id) ? bgInfo.commonPath : ToolUtil.replace(bgInfo.path, id);
-                // LoadManager.load(path, SpriteFrame).then((spriteFrame:SpriteFrame) => {
-                //     this._mainScene.addLoadAsset(spriteFrame);
-                //     bg.getComponent(Sprite).spriteFrame = spriteFrame;
-                //     if(id == bgInfo.num){
-                //         console.log("use time",sys.now() - time);
-                //     }
-                // })
+                LoadManager.load(path, SpriteFrame).then((spriteFrame:SpriteFrame) => {
+                    this._mainScene.addLoadAsset(spriteFrame);
+                    bg.getComponent(Sprite).spriteFrame = spriteFrame;
+                    if(id == bgInfo.num){
+                        console.log("use time",sys.now() - time);
+                    }
+                })
                 bg.position = new Vec3((i-midCol+0.5)*width, (midRow-j-0.5)*height, 0);
                 // bg.setSiblingIndex(0); //设置层级
                 this._mainScene.bgLayer.addChild(bg);
@@ -279,6 +293,33 @@ export class MapUICtl extends MainBaseCtl {
         // console.log("getTouchGrid",i,j);
         return this.getGridInfo(i,j);
     }
+    // getTouchGridEx(x:number, y:number){
+    //     let landInfo = MapConfig.gridInfo;
+    //     let width = landInfo.width;
+    //     let height = landInfo.height;
+    //     let dtX = landInfo.dtX;
+    //     let dtY = landInfo.dtY;
+    //     let pos = this._mainScene.mapCamera.convertToUINode(Vec3.ZERO, this._mainScene.landLayer);
+    //     // console.log("getTouchGrid",worldPos,pos);
+    //     let i = Math.floor(dtX + dtY - pos.x/width - pos.y/height);
+    //     let j = Math.floor(dtY - dtX + pos.x/width - pos.y/height);
+    //     // console.log("getTouchGrid",i,j);
+    //     return this.getGridInfo(i,j);
+    // }
+    // 建筑物层级排序
+    buildingSort(){
+        let children = this._mainScene.buildingLayer.children.concat();
+        children.sort((a,b)=>{
+            let aModel = a.getComponent(BuildingModel);
+            let bModel = b.getComponent(BuildingModel);
+            return aModel.ZIndex - bModel.ZIndex;
+        });
+        let maxLen = children.length;
+        for (const node of children) {
+            // console.log("buildingSort",node.getComponent(BuildingModel).ZIndex);
+            node.setSiblingIndex(maxLen);
+        }
+    }
     // 设置建筑物格子
     setBuildingGrid(building:BuildingModel, gridX:number, gridY:number){
         let grids:GridModel[] = [];
@@ -319,6 +360,11 @@ export class MapUICtl extends MainBaseCtl {
         return buildingModel;
     }
     newBuildingInCamera(data:EditInfo){
+        let winSize = GlobalConfig.SCREEN_SIZE;
+        let grid = this.getTouchGrid(winSize.width*0.5, winSize.height*0.5);
+        if(grid){
+            return this.newBuilding(data, grid.x, grid.y);
+        }
         return this.newBuilding(data, 20, 20);
     }
 }

@@ -57,10 +57,15 @@ export class GridModel {
     recoverData() {
         this._building = this._dataBuilding;
     }
+    // 置空数据
+    resetData() {
+        this._building = null;
+        this._dataBuilding = null;
+    }
     //是否建筑可以摆放
     isCanBuilding() {
-        if(!this._dataBuilding) return true;
         // console.log("isSameBuilding", this._building, this._dataBuilding);
+        if(!this._dataBuilding) return true;
         return this._building === this._dataBuilding;
     }
 }

@@ -1,4 +1,4 @@
-import { _decorator, Asset, Node, Component, Vec3, instantiate, Sprite, Prefab, SpriteFrame } from "cc";
+import { _decorator, Asset, Node, Component, Vec3, instantiate, Sprite, Prefab, SpriteFrame, Label, Color } from "cc";
 import { GridModel } from "./GridModel";
 import { LoadManager } from "../manager/LoadManager";
 import { PrefabType } from "../config/PrefabType";
@@ -14,6 +14,8 @@ export class BuildingModel extends Component {
     public building:Sprite = null;//建筑
     @property(Node)
     public btnView:Node = null;//建筑按钮界面节点
+    @property(Label)
+    public label:Label = null;//文本
 
 
     // y从上往下，x从右往左
@@ -36,6 +38,7 @@ export class BuildingModel extends Component {
     private _btnView:Node = null;//建筑按钮界面
 
     // private _mapScaleHandle:string//地图缩放事件句柄
+    private _zIndex:number = 0;//层级
 
     // 初始化事件
     public initEvent() {
@@ -86,9 +89,12 @@ export class BuildingModel extends Component {
         let gridPos = gridInfo.pos;
         let pos = new Vec3(gridPos.x, gridPos.y - 0.5*this._width*gridInfo.height, 0);
         this.node.position = pos;
-        if(!this._dataGrids){
-            this._dataGrids = this._grids;
-        }
+        // if(!this._dataGrids){
+        //     this._dataGrids = this._grids;
+        // }
+        let index = this._x * this._y;
+        this._zIndex = index;
+        this.label.string = index.toString();
         this.refreshBtnView();
     }
     // public get grids():GridModel[] {
@@ -111,8 +117,12 @@ export class BuildingModel extends Component {
     set isNew(isNew:boolean) {
         this._isNew = isNew;
     }
+    get ZIndex():number {
+        return this._zIndex;
+    }
     // 格子数据还原
     public recoverGrids() {
+        // console.log("recoverGrids",this._grids);
         if(!this._grids) return;
         for (let i = 0; i < this._grids.length; i++) {
             // this._grids[i].building = null;
@@ -121,13 +131,23 @@ export class BuildingModel extends Component {
     }
     // 格子数据保存
     public saveGrids() {
-        if(!this._grids) return;
-        for (let i = 0; i < this._grids.length; i++) {
-            this._grids[i].saveData();
+        if(this._grids){
+            this._grids.forEach((grid:GridModel) => {
+                grid.saveData();
+            });
+        }
+        if(this._dataGrids){
+            this._dataGrids.forEach((grid:GridModel) => {
+                if(!this._grids.find(obj => obj === grid)){
+                    grid.resetData();
+                }
+            });
         }
     }
     // 显示按钮界面
     public showBtnView(scale:number):void {
+        this.node.setSiblingIndex(-1);//放到最高层
+        this.building.color = new Color(255, 255, 255, 180);//半透明
         if(this._btnView){
             this._btnView.active = true;
             return;
@@ -153,8 +173,10 @@ export class BuildingModel extends Component {
     // 关闭按钮界面
     public closeBtnView():void {
         if(this._btnView && this._btnView.active){
+            this.building.color = Color.WHITE;
             this._btnView.active = false;
             EventManager.emit(EventType.BuildingBtnView_Close);
+            EventManager.emit(EventType.Building_Need_Sort);
         }
     }
     // 刷新按钮界面
@@ -181,11 +203,11 @@ export class BuildingModel extends Component {
     public saveData():void {
         // this._dataX = this._x;
         // this._dataY = this._y;
+        this.saveGrids();//先还原原来格子数据，再保存现在格子数据
         this._dataGrids = this._grids;
         this._dataIsFlip = this._isFlip;
         this._dataIsShow = this._isShow;
         this._isNew = false;
-        this.saveGrids();
         this.closeBtnView();
     }
     // 卖出

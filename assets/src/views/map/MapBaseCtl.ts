@@ -27,7 +27,6 @@ export class MapBaseCtl extends MainBaseCtl {
     // 点击移动
     onTouchMove(e:EventTouch){
         let touches = e.getAllTouches();
-        console.log("onTouchMove",touches.length);
         if(touches.length > this._maxTouchCount) return false;
         let delta = e.getUIDelta();
         let dtX = -delta.x;

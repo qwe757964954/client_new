@@ -15,6 +15,8 @@ import { EditUIView } from './EditUIView';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { MapUICtl } from '../map/MapUICtl';
 import { LandEditUIIvew } from './LandEditUIIvew';
+import { PrefabType } from '../../config/PrefabType';
+import { BuildingProduceView } from '../map/BuildingProduceView';
 const { ccclass, property } = _decorator;
 
 @ccclass('MainScene')
@@ -170,7 +172,14 @@ export class MainScene extends Component {
             this.changeMapStatus(MapStatus.BUILD_EDIT);
             return;
         }
-        // TODO 普通点击 展示建筑建造界面
+        else if(MapStatus.DEFAULT == this._mapStatus){// 普通点击 展示建筑建造界面
+            ViewsManager.instance.showView(PrefabType.BuildingProduceView,(node:Node)=>{
+                this.mainUIView.node.active = false;
+                node.getComponent(BuildingProduceView).initData(()=>{
+                    this.mainUIView.node.active = true;
+                });
+            });
+        }
     }
     // 建筑长按
     onBuildingLongClick(building:BuildingModel){
