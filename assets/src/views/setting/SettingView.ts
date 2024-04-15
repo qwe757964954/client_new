@@ -1,5 +1,4 @@
-import { _decorator, Button, Color, Component, Label, Node, Sprite, Vec3 } from 'cc';
-import CCUtil from '../../util/CCUtil';
+import { _decorator, Button, Color, Component, Label, Node } from 'cc';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { PrefabType } from '../../config/PrefabType';
 const { ccclass, property } = _decorator;
@@ -80,7 +79,7 @@ export class SettingView extends Component {
     // 关于我们
     btnAboutUsFunc() {
         console.log("btnAboutUsFunc");
-        
+        ViewsManager.instance.showView(PrefabType.VideoView);
     }
 
     changeTabStaus(view: Node, tab: Node, visible: boolean) {

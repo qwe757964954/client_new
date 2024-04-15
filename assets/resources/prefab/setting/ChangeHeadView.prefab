@@ -4576,10 +4576,12 @@
   },
   {
     "__type__": "cc.ClickEvent",
-    "target": null,
+    "target": {
+      "__id__": 1
+    },
     "component": "",
-    "_componentId": "",
-    "handler": "",
+    "_componentId": "3ad45wSzaVIAaEyZY1q7MsI",
+    "handler": "btnSaveFunc",
     "customEventData": ""
   },
   {
