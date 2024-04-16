@@ -11,8 +11,6 @@ export class WorldIsland extends Component {
 
     @property({ type: Node, tooltip: "列表" })
     public mapList: Node = null;
-    @property({ type: Node, tooltip: "地图块" })
-    public mapItem: Node = null;
     @property({ type: Node, tooltip: "返回按钮" })
     public back: Node = null;
     @property({ type: Button, tooltip: "闯关详情" })
@@ -65,19 +63,7 @@ export class WorldIsland extends Component {
 
     /**初始化列表 */
     private initlist() {
-        this.mapList.removeAllChildren()
-        for (let i = 0; i < 29; i++) {
-            let node = instantiate(this.mapItem)
-            this.mapList.insertChild(node, 0)
-            node.position = v3(1, 347 * i, 0)
-            let com = node.getComponent(MapView)
-            if (i >= 25) {
-                node.scale = v3(0.0001, 1, 0)
-            } else {
-                com.setMapData(i)
-            }
-        }
-
+       
     }
 
 

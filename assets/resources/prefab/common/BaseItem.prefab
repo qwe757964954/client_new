@@ -49,8 +49,8 @@
     },
     "_lscale": {
       "__type__": "cc.Vec3",
-      "x": 1,
-      "y": 1,
+      "x": 0.7,
+      "y": 0.7,
       "z": 1
     },
     "_mobility": 0,
@@ -441,7 +441,9 @@
     "__prefab": {
       "__id__": 19
     },
-    "bgType": null,
+    "bgType": {
+      "__id__": 13
+    },
     "bgRes": [
       {
         "__uuid__": "f27a2087-ba4b-496a-b163-6dad62c2740e@f9941",

@@ -30,7 +30,7 @@ export class WorldMapView extends Component {
     /**切换关卡 */
     private switchLevels(i: number) {
         console.log('切换关卡', i)
-        EventManager.emit(EventType.study_page_switching, [2])
+        EventManager.emit(EventType.study_page_switching, [6])
 
 
     }

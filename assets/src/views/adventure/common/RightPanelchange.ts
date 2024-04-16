@@ -2,7 +2,6 @@ import { _decorator, Component, instantiate, Node, Prefab, tween, v3 } from 'cc'
 import CCUtil from '../../../util/CCUtil';
 import EventManager from '../../../util/EventManager';
 import { EventType } from '../../../config/EventType';
-import { Equip_frame } from '../levelmap/Equip_frame';
 import { ViewsManager } from '../../../manager/ViewsManager';
 const { ccclass, property } = _decorator;
 
@@ -13,10 +12,7 @@ export class rightPanelchange extends Component {
     public btn_close: Node = null;
     @property({ type: Node, tooltip: "怪物模型" })
     public monster: Node = null;
-    @property({ type: Node, tooltip: "学习类型列表" })
-    public studyTypelist: Node = null;
-    @property({ type: Prefab, tooltip: "列表加载节点" })
-    public listItem: Prefab = null;
+
     private _eveId: string;
 
     start() {
@@ -33,27 +29,8 @@ export class rightPanelchange extends Component {
     }
 
     private initUI() {
-        this.initlist()
     }
-    /** 初始化列表 */
-    private initlist() {
-        this.studyTypelist.removeAllChildren();
-        let title = ["", "", "学", "译", "抄", "拼", "读", "写"];
-        for (let i = 0; i < 8; i++) {
-            let node = instantiate(this.listItem);
-            this.touchNodeArr[i] = node;
-            CCUtil.onTouch(node, this.levelClick.bind(this, i), this);
-            this.studyTypelist.addChild(node);
-            let com = node.getComponent(Equip_frame) as Equip_frame;
-            if (i <= 1) {
-                com.isshow(false)
-            }
-            com.ispass()
-            com.isshowgift()
-            com.settitle(title[i]);
-            com.setstar(false)
-        }
-    }
+
     //点击跳转到闯关界面 TODO
     private levelClick(i: number) {
         EventManager.emit(EventType.study_page_switching, [7])
