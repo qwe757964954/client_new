@@ -1,4 +1,4 @@
-import { Color, Graphics, Sprite, SpriteFrame, UITransform, Vec3, instantiate, math, screen, sys } from "cc";
+import { Color, Graphics, Rect, Sprite, SpriteFrame, UITransform, Vec3, instantiate, math, screen, sys } from "cc";
 import { MainBaseCtl } from "../main/MainBaseCtl";
 import { GridModel } from "../../models/GridModel";
 import { EditInfo, MapConfig } from "../../config/MapConfig";
@@ -10,6 +10,7 @@ import EventManager from "../../util/EventManager";
 import { EventType } from "../../config/EventType";
 import GlobalConfig from "../../GlobalConfig";
 import { MainScene } from "../main/MainScene";
+import { BgModel } from "../../models/BgModel";
 
 // 地图UI控制器
 export class MapUICtl extends MainBaseCtl {
@@ -25,6 +26,7 @@ export class MapUICtl extends MainBaseCtl {
     private _mapMaxWidth:number = screen.windowSize.width;//地图最大宽度
 
     private _gridAry:GridModel[][] = [];//格子数组(y从上往下，x从右往左)
+    private _bgModelAry:BgModel[] = [];//背景模型数组
     private _buidingSortHandler:string;//建筑需要重新排序handle
 
     constructor(mainScene:MainScene) {
@@ -33,6 +35,14 @@ export class MapUICtl extends MainBaseCtl {
     }
     // 销毁
     public dispose(): void {
+        // this._gridAry.forEach(element => {
+        //     element.dispose();
+        // });
+        this._gridAry = [];
+        this._bgModelAry.forEach(element => {
+            element.dispose();
+        });
+        this._bgModelAry = [];
         this.removeEvent();
     }
 
@@ -44,6 +54,8 @@ export class MapUICtl extends MainBaseCtl {
         this.initMap();
         this.initLand();
         this.initBuilding();
+
+        this.updateCameraVisible();
     }
     // 初始化数据
     initData(): void {
@@ -100,15 +112,6 @@ export class MapUICtl extends MainBaseCtl {
             }
         }
     }
-    private isCommonBg(id:number){
-        let ary = MapConfig.bgInfo.commonAry;
-        for(let i=0;i<ary.length;i++){
-            if(id == ary[i]){
-                return true;
-            }
-        }
-        return false;
-    }
     //初始化地图
     initMap() {
         let bgInfo = MapConfig.bgInfo;
@@ -116,24 +119,14 @@ export class MapUICtl extends MainBaseCtl {
         let height = bgInfo.height;
         let col = bgInfo.col;
         let row = bgInfo.row;
-        let midCol = col/2;
-        let midRow = row/2;
-        let time = sys.now();
         for(let i=0;i<col;i++) {
             for(let j=0;j<row;j++) {
-                let bg = instantiate(this._mainScene.mapGridView);
-                let id = j*col+i+1;
-                let path = this.isCommonBg(id) ? bgInfo.commonPath : ToolUtil.replace(bgInfo.path, id);
-                LoadManager.load(path, SpriteFrame).then((spriteFrame:SpriteFrame) => {
-                    this._mainScene.addLoadAsset(spriteFrame);
-                    bg.getComponent(Sprite).spriteFrame = spriteFrame;
-                    if(id == bgInfo.num){
-                        console.log("use time",sys.now() - time);
-                    }
-                })
-                bg.position = new Vec3((i-midCol+0.5)*width, (midRow-j-0.5)*height, 0);
-                // bg.setSiblingIndex(0); //设置层级
+                let bg = instantiate(this._mainScene.bgModel);
                 this._mainScene.bgLayer.addChild(bg);
+                let id = j*col+i+1;
+                let bgModel = bg.getComponent(BgModel);
+                bgModel.init(id,i,j);
+                this._bgModelAry.push(bgModel);
             }
         }
         this._mapMaxWidth = width*col;
@@ -260,6 +253,8 @@ export class MapUICtl extends MainBaseCtl {
             this._cameraPos.y = -maxY;
         }
         this._mainScene.mapCamera.node.position = this._cameraPos;
+
+        this.updateCameraVisible();
     }
     // 点击到格子
     getTouchGrid(x:number, y:number){
@@ -335,7 +330,6 @@ export class MapUICtl extends MainBaseCtl {
     // 新建建筑物
     newBuilding(data:EditInfo, gridX:number, gridY:number, isFlip:boolean = false, isNew:boolean = true){
         let building = instantiate(this._mainScene.buildingModel);
-        // this._mainScene.buildingLayer.addChild(building);
         let buildingModel = building.getComponent(BuildingModel);
         buildingModel.addToParent(this._mainScene.buildingLayer);
         buildingModel.initData(gridX, gridY, data.width, data.path, isFlip, isNew);
@@ -357,5 +351,23 @@ export class MapUICtl extends MainBaseCtl {
         // console.log("moveCameraToBuilding",pos.x, pos.y, plPos.x, plPos.y);
         this.mapMoveTo(pos.x - plPos.x, pos.y - plPos.y);
         this.mapZoomTo(this._uiCameraHeight);
+    }
+    // 更新摄像头可见范围内元素
+    updateCameraVisible(){
+        let visibleRect = new Rect();
+        let pos = this._cameraPos;
+        let winSize = GlobalConfig.WIN_SIZE;
+        visibleRect.x = pos.x - winSize.width*0.5*this._cameraRate;
+        visibleRect.y = pos.y - winSize.height*0.5*this._cameraRate;
+        visibleRect.width = winSize.width*this._cameraRate;
+        visibleRect.height = winSize.height*this._cameraRate;
+        // console.log("updateCameraVisible", visibleRect);
+        this._bgModelAry.forEach(element => {
+            if(!element.isLoad && visibleRect.intersects(element.getRect())){
+                element.show();
+            }
+        });
+        // TODO 地块动态加载
+        // TODO 建筑动态加载
     }
 }

@@ -39,6 +39,7 @@ export class BuildingModel extends Component {
 
     // private _mapScaleHandle:string//地图缩放事件句柄
     private _zIndex:number = 0;//层级
+    private _pos:Vec3 = new Vec3(0, 0, 0);//位置
 
     // 初始化事件
     public initEvent() {
@@ -90,7 +91,7 @@ export class BuildingModel extends Component {
         this._y = gridInfo.y;
         let gridPos = gridInfo.pos;
         let pos = new Vec3(gridPos.x, gridPos.y - 0.5*this._width*gridInfo.height, 0);
-        this.node.position = pos;
+        this.pos = pos;
         // if(!this._dataGrids){
         //     this._dataGrids = this._grids;
         // }
@@ -121,6 +122,13 @@ export class BuildingModel extends Component {
     }
     get ZIndex():number {
         return this._zIndex;
+    }
+    public get pos():Readonly<Vec3> {
+        return this._pos;
+    }
+    public set pos(pos:Vec3) {
+        this._pos = pos;
+        this.node.position = pos;
     }
     // 格子数据还原
     public recoverGrids() {
@@ -278,5 +286,8 @@ export class BuildingModel extends Component {
     // 设置摄像头类型
     public setCameraType(type:number):void {
         this.node.layer = type;
+        this.node.children.forEach(child => {
+            child.layer = type;
+        });
     }
 }

@@ -54,10 +54,15 @@ export default class GlobalConfig {
         }else{
             profiler?.hideStats();
         }
-        director
     }
 }
-
+// 游戏初始化
 game.once(Game.EVENT_GAME_INITED, () => {
     GlobalConfig.init();
 });
+// 监听窗口大小变化
+screen.on("window-resize", () => {
+    GlobalConfig.WIN_SIZE = View.instance.getVisibleSize();
+    GlobalConfig.SCREEN_SIZE = screen.windowSize;
+    GlobalConfig.WIN_RATE = GlobalConfig.WIN_SIZE.width / GlobalConfig.WIN_SIZE.height;
+})

@@ -1,7 +1,7 @@
 [
   {
     "__type__": "cc.Prefab",
-    "_name": "MapGridView",
+    "_name": "BgModel",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_native": "",
@@ -13,7 +13,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "MapGridView",
+    "_name": "BgModel",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": null,
@@ -25,10 +25,13 @@
       },
       {
         "__id__": 4
+      },
+      {
+        "__id__": 6
       }
     ],
     "_prefab": {
-      "__id__": 6
+      "__id__": 8
     },
     "_lpos": {
       "__type__": "cc.Vec3",
@@ -85,7 +88,7 @@
   },
   {
     "__type__": "cc.CompPrefabInfo",
-    "fileId": "29a+gGbOtPurG14C0DqrW3"
+    "fileId": "71kUVHzPpGtYtwf+FCQHZm"
   },
   {
     "__type__": "cc.Sprite",
@@ -127,7 +130,25 @@
   },
   {
     "__type__": "cc.CompPrefabInfo",
-    "fileId": "aaTM6/DcBDU62fNVg48/eF"
+    "fileId": "258jfIJxNNg77m3hLEpgcR"
+  },
+  {
+    "__type__": "7d0d775ZWxFqZVDxFJJUQcm",
+    "_name": "",
+    "_objFlags": 0,
+    "__editorExtras__": {},
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "__prefab": {
+      "__id__": 7
+    },
+    "_id": ""
+  },
+  {
+    "__type__": "cc.CompPrefabInfo",
+    "fileId": "c9MYiwoENO37eOWnGjOJ2G"
   },
   {
     "__type__": "cc.PrefabInfo",
