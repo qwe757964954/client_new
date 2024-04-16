@@ -25,7 +25,7 @@ export class WorldMapView extends Component {
     }
     /**初始化ui */
     private initUI() {
-      
+
     }
     /**切换关卡 */
     private switchLevels(i: number) {
@@ -62,11 +62,11 @@ export class WorldMapView extends Component {
     }
 
     update(deltaTime: number) {
-
     }
     onDestroy() {
         this.removeEvent()
     }
+   
 
 
 

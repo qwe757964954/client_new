@@ -1,6 +1,7 @@
 import { _decorator, Component, instantiate, Node, Prefab } from 'cc';
 import { EventType } from '../../config/EventType';
 import EventManager from '../../util/EventManager';
+import { WorldMapView } from './WorldMapView';
 
 const { ccclass, property } = _decorator;
 
@@ -21,7 +22,6 @@ export class WorldMapViewManager extends Component {
         this.initUI()
         this.initEvent()
         this.showView(0);
-
     }
     /**初始化UI */
     private initUI() {
