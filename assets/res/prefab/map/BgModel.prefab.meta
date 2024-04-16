@@ -2,12 +2,12 @@
   "ver": "1.1.50",
   "importer": "prefab",
   "imported": true,
-  "uuid": "94690285-7370-4c15-b5d5-74f5d4ac2383",
+  "uuid": "06b21c43-b9b1-4c08-9f81-78507f7970eb",
   "files": [
     ".json"
   ],
   "subMetas": {},
   "userData": {
-    "syncNodeName": "MapGridView"
+    "syncNodeName": "BgModel"
   }
 }

@@ -1,4 +1,4 @@
-import { _decorator, Component, Layers, Node, Sprite } from 'cc';
+import { _decorator, Component, Layers, Node, Sprite, Vec3 } from 'cc';
 import CCUtil from '../../util/CCUtil';
 import { BuildingModel } from '../../models/BuildingModel';
 const { ccclass, property } = _decorator;
@@ -49,6 +49,7 @@ export class BuildingProduceView extends Component {
         this._building = building;
         this._closeCallBack = callBack;
 
+        this._building.pos = Vec3.ZERO;
         this._building.addToParent(this.building);
         this._building.setCameraType(Layers.Enum.UI_2D);
     }

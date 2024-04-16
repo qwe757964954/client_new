@@ -17,12 +17,13 @@ import { MapUICtl } from '../map/MapUICtl';
 import { LandEditUIIvew } from './LandEditUIIvew';
 import { PrefabType } from '../../config/PrefabType';
 import { BuildingProduceView } from '../map/BuildingProduceView';
+import { BgModel } from '../../models/BgModel';
 const { ccclass, property } = _decorator;
 
 @ccclass('MainScene')
 export class MainScene extends Component {
     @property(Prefab)
-    public mapGridView:Prefab = null;//格子地图
+    public bgModel:Prefab = null;//格子地图
     @property(Prefab)
     public landModel:Prefab = null;//地块
     @property(Prefab)
@@ -177,9 +178,11 @@ export class MainScene extends Component {
                 this.mainUIView.node.active = false;
                 let buildingProduceView = node.getComponent(BuildingProduceView);
                 this._mapUICtl.moveCameraToBuilding(building, buildingProduceView.getBuildingPos());
+                let pos = building.pos;
                 building.removeFromParent();
                 buildingProduceView.initData(building,()=>{
                     building.addToParent(this.buildingLayer);
+                    building.pos = pos;
                     building.setCameraType(Layers.Enum.DEFAULT);
                     this.mainUIView.node.active = true;
                 });
