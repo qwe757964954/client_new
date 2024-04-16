@@ -208,8 +208,11 @@ export class MapUICtl extends MainBaseCtl {
         return this._cameraRate;
     }
     // 缩放地图
-    mapZoom(scale:number){
-        this._cameraHeight = Math.floor(this._cameraHeight*scale);
+    mapZoom(scale:number){//变化缩放
+        this.mapZoomTo(Math.floor(this._cameraHeight*scale));
+    }
+    mapZoomTo(value:number){//缩放到
+        this._cameraHeight = value;
         if(this._cameraHeight > this._cameraMaxHeight){
             this._cameraHeight = this._cameraMaxHeight;
             return;
@@ -220,7 +223,6 @@ export class MapUICtl extends MainBaseCtl {
         }
         this._mainScene.mapCamera.orthoHeight = this._cameraHeight;
         this._cameraRate = this._cameraHeight / this._uiCameraHeight;
-
         this.mapMove(0,0);//限制map位置
         // 摄像头缩放事件通知
         this._mainScene.getMapCtl().onCameraScale(this._cameraRate);
@@ -228,31 +230,11 @@ export class MapUICtl extends MainBaseCtl {
     }
     // 缩小地图
     mapZoomOut(){
-        this._cameraHeight += this._cameraZoomVal;
-        if(this._cameraHeight > this._cameraMaxHeight){
-            this._cameraHeight = this._cameraMaxHeight;
-            return;
-        }
-        this._mainScene.mapCamera.orthoHeight = this._cameraHeight;
-        this._cameraRate = this._cameraHeight / this._uiCameraHeight;
-
-        this.mapMove(0,0);//限制map位置
-        // 摄像头缩放事件通知
-        this._mainScene.getMapCtl().onCameraScale(this._cameraRate);
-        EventManager.emit(EventType.Map_Scale, this._cameraRate);
+        this.mapZoomTo(this._cameraHeight + this._cameraZoomVal);
     }
     // 放大地图
     mapZoomIn(){
-        this._cameraHeight -= this._cameraZoomVal;
-        if(this._cameraHeight < this._cameraMinHeight){
-            this._cameraHeight = this._cameraMinHeight;
-            return;
-        }
-        this._mainScene.mapCamera.orthoHeight = this._cameraHeight;
-        this._cameraRate = this._cameraHeight / this._uiCameraHeight;
-        // 摄像头缩放事件通知
-        this._mainScene.getMapCtl().onCameraScale(this._cameraRate);
-        EventManager.emit(EventType.Map_Scale, this._cameraRate);
+        this.mapZoomTo(this._cameraHeight - this._cameraZoomVal);
     }
     // 移动地图
     mapMove(dtX:number, dtY:number){
@@ -353,8 +335,9 @@ export class MapUICtl extends MainBaseCtl {
     // 新建建筑物
     newBuilding(data:EditInfo, gridX:number, gridY:number, isFlip:boolean = false, isNew:boolean = true){
         let building = instantiate(this._mainScene.buildingModel);
-        this._mainScene.buildingLayer.addChild(building);
+        // this._mainScene.buildingLayer.addChild(building);
         let buildingModel = building.getComponent(BuildingModel);
+        buildingModel.addToParent(this._mainScene.buildingLayer);
         buildingModel.initData(gridX, gridY, data.width, data.path, isFlip, isNew);
         this.setBuildingGrid(buildingModel, gridX, gridY);
         return buildingModel;
@@ -366,5 +349,13 @@ export class MapUICtl extends MainBaseCtl {
             return this.newBuilding(data, grid.x, grid.y);
         }
         return this.newBuilding(data, 20, 20);
+    }
+    // 摄像头移动到指定建筑
+    moveCameraToBuilding(building:BuildingModel, plPos:Vec3){
+        let pos = building.node.position;
+        let winSize = GlobalConfig.WIN_SIZE;
+        // console.log("moveCameraToBuilding",pos.x, pos.y, plPos.x, plPos.y);
+        this.mapMoveTo(pos.x - plPos.x, pos.y - plPos.y);
+        this.mapZoomTo(this._uiCameraHeight);
     }
 }

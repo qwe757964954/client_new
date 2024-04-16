@@ -1,4 +1,4 @@
-import { _decorator, Asset, Camera, Canvas, Color, Component, EventMouse, EventTouch, Graphics, instantiate, Intersection2D, Label, Node, Prefab, screen, Sprite, SpriteFrame, sys, Texture2D, UITransform, Vec2, Vec3, View } from 'cc';
+import { _decorator, Asset, Camera, Canvas, Color, Component, EventMouse, EventTouch, Graphics, instantiate, Intersection2D, Label, Layers, Node, Prefab, screen, Sprite, SpriteFrame, sys, Texture2D, UITransform, Vec2, Vec3, View } from 'cc';
 import { LoadManager } from '../../manager/LoadManager';
 import { EditInfo, EditType, MapStatus } from '../../config/MapConfig';
 import { BuildingModel } from '../../models/BuildingModel';
@@ -175,7 +175,12 @@ export class MainScene extends Component {
         else if(MapStatus.DEFAULT == this._mapStatus){// 普通点击 展示建筑建造界面
             ViewsManager.instance.showView(PrefabType.BuildingProduceView,(node:Node)=>{
                 this.mainUIView.node.active = false;
-                node.getComponent(BuildingProduceView).initData(()=>{
+                let buildingProduceView = node.getComponent(BuildingProduceView);
+                this._mapUICtl.moveCameraToBuilding(building, buildingProduceView.getBuildingPos());
+                building.removeFromParent();
+                buildingProduceView.initData(building,()=>{
+                    building.addToParent(this.buildingLayer);
+                    building.setCameraType(Layers.Enum.DEFAULT);
                     this.mainUIView.node.active = true;
                 });
             });
@@ -295,6 +300,9 @@ export class MainScene extends Component {
     // 缩放地图
     mapZoom(scale:number){
         this._mapUICtl.mapZoom(scale);
+    }
+    mapZoomTo(scale:number){
+        this._mapUICtl.mapZoomTo(scale);
     }
     // 放大地图
     mapZoomIn(){

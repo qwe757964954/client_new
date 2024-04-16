@@ -1,4 +1,4 @@
-import { _decorator, Asset, Node, Component, Vec3, instantiate, Sprite, Prefab, SpriteFrame, Label, Color } from "cc";
+import { _decorator, Asset, Node, Component, Vec3, instantiate, Sprite, Prefab, SpriteFrame, Label, Color, Layers } from "cc";
 import { GridModel } from "./GridModel";
 import { LoadManager } from "../manager/LoadManager";
 import { PrefabType } from "../config/PrefabType";
@@ -59,6 +59,8 @@ export class BuildingModel extends Component {
         this._dataIsShow = true;
         this._isNew = isNew;
 
+        this.label.node.active = false;
+
         LoadManager.load(path, SpriteFrame).then((spriteFrame:SpriteFrame) => {
             this.building.spriteFrame = spriteFrame;
             this._loadAssetAry.push(spriteFrame);
@@ -75,7 +77,7 @@ export class BuildingModel extends Component {
     // 设置所占格子。清理以前老数据，设置新数据，更新节点位置
     public set grids(grids:GridModel[]) {
         // console.log("set grids",grids);
-        if(grids.length != this._width*this._width){
+        if(!grids || grids.length != this._width*this._width){
             return;
         }
         this.recoverGrids();
@@ -150,6 +152,7 @@ export class BuildingModel extends Component {
         this.building.color = new Color(255, 255, 255, 180);//半透明
         if(this._btnView){
             this._btnView.active = true;
+            this.onCameraScale(scale);
             return;
         }
         LoadManager.loadPrefab(PrefabType.BuildingBtnView.path).then((prefab:Prefab) => {
@@ -263,5 +266,17 @@ export class BuildingModel extends Component {
     public removeFromScene():void {
         this.isShow = false;
         EventManager.emit(EventType.BuidingModel_Remove, this);
+    }
+    // 从父节点移除(对象、资源暂未删除)
+    public removeFromParent():void {
+        this.node.parent = null;
+    }
+    // 添加到父节点
+    public addToParent(parent:Node):void {
+        this.node.parent = parent;
+    }
+    // 设置摄像头类型
+    public setCameraType(type:number):void {
+        this.node.layer = type;
     }
 }
