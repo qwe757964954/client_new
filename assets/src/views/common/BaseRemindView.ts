@@ -16,6 +16,9 @@ export class BaseRemindView extends Component {
     start() {
 
     }
+    protected onLoad(): void {
+        this.initEvent()
+    }
     /**初始化监听事件 */
     initEvent() {
         CCUtil.onTouch(this.btn_cancel, this.oncancel, this)
@@ -23,7 +26,7 @@ export class BaseRemindView extends Component {
     }
     /**取消回调 */
     private oncancel() {
-        if (this.fun2) {
+        if (this.fun2 && this.fun1) {
             this.fun2()
         }
 
@@ -32,6 +35,7 @@ export class BaseRemindView extends Component {
     private ondetermine() {
         if (this.fun1) {
             this.fun1()
+            this.fun2()
         }
     }
     /**初始化方法
