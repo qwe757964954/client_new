@@ -2,6 +2,7 @@ import { _decorator, Component, instantiate, Node, Prefab } from 'cc';
 import { EventType } from '../../config/EventType';
 import EventManager from '../../util/EventManager';
 import { WorldMapView } from './WorldMapView';
+import { ViewsManager } from '../../manager/ViewsManager';
 
 const { ccclass, property } = _decorator;
 
@@ -10,6 +11,18 @@ export class WorldMapViewManager extends Component {
 
     @property({ type: [Prefab], tooltip: "页面" })
     public levelArr: Prefab[] = [];
+    @property({ type: Node, tooltip: "默认UI节点" })
+    public defaultNode: Node = null;
+
+
+    @property(Node)
+    public sceneLayer: Node = null;//场景层
+    @property(Node)
+    public popupLayer: Node = null;//弹窗层
+    @property(Node)
+    public tipLayer: Node = null;//提示层
+    @property(Node)
+    public loadingLayer: Node = null;//加载层
     private _eveId: string;
     start() {
 
@@ -25,11 +38,8 @@ export class WorldMapViewManager extends Component {
     }
     /**初始化UI */
     private initUI() {
-        // for (let i = 0; i < this.levelArr.length; i++) {
-        //     if (this.levelArr[i]) {
-        //         this.levelArr[i].active = false;
-        //     }
-        // }
+        ViewsManager.instance.initLayer(this.sceneLayer, this.popupLayer, this.tipLayer, this.loadingLayer);
+
     }
     /**切换页面 */
     private switchView(data = []) {
@@ -65,7 +75,7 @@ export class WorldMapViewManager extends Component {
         if (this.currentNode) this.currentNode.parent.removeChild(this.currentNode);
         let copynode = instantiate(this.levelArr[id])
         this.currentNode = copynode
-        this.node.addChild(copynode)
+        this.defaultNode.addChild(copynode)
     }
     private currentNode: Node = null;
     /**隐藏视图 */

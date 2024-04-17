@@ -2,6 +2,11 @@ import { _decorator, Button, Component, Node, Sprite } from 'cc';
 import CCUtil from '../../../util/CCUtil';
 import { EventType } from '../../../config/EventType';
 import EventManager from '../../../util/EventManager';
+import { ViewsManager } from '../../../manager/ViewsManager';
+import { PrefabType } from '../../../config/PrefabType';
+import { BaseComParse } from '../../../../../extensions/seek-miss/src/ComponentParse/BaseComParse';
+import { BaseRemindView } from '../../common/BaseRemindView';
+import { PopView } from '../../common/PopView';
 const { ccclass, property } = _decorator;
 
 /**学习模式页面 何存发 2024年4月15日15:38:41 */
@@ -14,7 +19,7 @@ export class StudyModeView extends Component {
     @property({ type: Node, tooltip: "收藏按钮" })
     public btn_collect: Node = null;
     @property({ type: Node, tooltip: "更多按钮" })
-    public btn_more : Node = null;
+    public btn_more: Node = null;
     start() {
 
     }
@@ -34,7 +39,17 @@ export class StudyModeView extends Component {
 
     }
     private closeView() {
-        EventManager.emit(EventType.study_page_switching, [1]);
+        ViewsManager.instance.showView(PrefabType.BaseRemindView, (node: Node) => {
+            node.getComponent(BaseRemindView).init("确定退出学习吗?", () => {
+                EventManager.emit(EventType.study_page_switching, [6]);
+            }, () => {
+                ViewsManager.instance.closeView(PrefabType.BaseRemindView);
+            });
+        });
+        // ViewsManager.instance.showView(PrefabType.BaseRemindView, (node: Node) => {
+        //     node.getComponent(BaseRemindView).init('确定退出学习吗?', () => {
+        //     })
+        // });
     }
     onDestroy(): void {
         this.removeEvent();
@@ -50,5 +65,4 @@ export class StudyModeView extends Component {
 
 
 }
-
 

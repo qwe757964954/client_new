@@ -29,6 +29,7 @@ export const PrefabType = {
     WorldMapView: { path: "adventure/WorldMapView", zindex: Hierarchy.SCENELAYER, tips: "大冒险 世界地图" },
 
     PopView: { path: "common/PopView", zindex: Hierarchy.TIPLAYER, tips: "弹窗" },
+    BaseRemindView: { path: "common/BaseRemindView", zindex: Hierarchy.TIPLAYER, tips: "二次提示界面" },
     
     // 设置相关
     SettingView: { path: "setting/SettingView", zindex: Hierarchy.POPUPLAYER, tips: "设置界面" },
