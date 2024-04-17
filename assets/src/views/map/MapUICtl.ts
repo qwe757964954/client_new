@@ -11,6 +11,7 @@ import { EventType } from "../../config/EventType";
 import GlobalConfig from "../../GlobalConfig";
 import { MainScene } from "../main/MainScene";
 import { BgModel } from "../../models/BgModel";
+import { RoleModel } from "../../models/RoleModel";
 
 // 地图UI控制器
 export class MapUICtl extends MainBaseCtl {
@@ -53,8 +54,10 @@ export class MapUICtl extends MainBaseCtl {
         this.initGrid();
         this.initMap();
         this.initLand();
-        this.initBuilding();
+        // this.initBuilding();
+        this.initRole();
 
+        this.buildingSort();
         this.updateCameraVisible();
     }
     // 初始化数据
@@ -167,23 +170,23 @@ export class MapUICtl extends MainBaseCtl {
                 laneModel.showLand();
 
                 let pos = gridInfo.pos;
-                g.lineWidth = 2;
+                g.lineWidth = 4;
                 g.strokeColor = Color.BLACK;
                 g.moveTo(pos.x - 0.5*width*landWidth, pos.y - 0.5*height*landWidth);
                 g.lineTo(pos.x, pos.y);
                 g.lineTo(pos.x + 0.5*width*landWidth, pos.y - 0.5*height*landWidth);
-                if(!this.getGridInfo(i,j+1)){
+                if(!this.getGridInfo(i,j+2)){
                     g.lineTo(pos.x, pos.y - height*landWidth);
-                    if(!this.getGridInfo(i + 1,j)){
+                    if(!this.getGridInfo(i + 2,j)){
                         g.lineTo(pos.x - 0.5*width*landWidth, pos.y - 0.5*height*landWidth);
                     }
                 }
-                else if(!this.getGridInfo(i + 1,j)){
+                else if(!this.getGridInfo(i + 2,j)){
                     g.moveTo(pos.x, pos.y - height*landWidth);
                     g.lineTo(pos.x - 0.5*width*landWidth, pos.y - 0.5*height*landWidth);
                 }
                 g.stroke();
-                g.lineWidth = 1;
+                g.lineWidth = 2;
                 g.moveTo(pos.x + 0.5*width, pos.y - 0.5*height);
                 g.lineTo(pos.x - 0.5*width, pos.y - 1.5*height);
                 g.moveTo(pos.x - 0.5*width, pos.y - 0.5*height);
@@ -194,7 +197,18 @@ export class MapUICtl extends MainBaseCtl {
     }
     // 初始化建筑
     initBuilding(){
+        // for test
         this.newBuilding(MapConfig.editInfo[1], 30, 30, false, false);//TEST 测试数据
+    }
+    // 初始化角色
+    initRole(){
+        // for test
+        let role = instantiate(this._mainScene.roleModel);
+        this._mainScene.buildingLayer.addChild(role);
+        let roleModel = role.getComponent(RoleModel);
+        roleModel.init(101, [9500,9700,9701,9702,9703]);
+        let grid = this.getGridInfo(20, 20);
+        role.position = grid.pos;
     }
     // 摄像头缩放大小
     get cameraRate():number{

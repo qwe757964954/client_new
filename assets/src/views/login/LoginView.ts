@@ -5,6 +5,7 @@ import { HttpManager } from '../../net/HttpManager';
 import { TimerMgr } from '../../util/TimerMgr';
 import { HTML5, NATIVE } from 'cc/env';
 import { NetConfig } from '../../config/NetConfig';
+import { DataMgr } from '../../manager/DataMgr';
 const { ccclass, property } = _decorator;
 
 // 隐私协议是否勾选过
@@ -63,6 +64,8 @@ export class LoginView extends Component {
         this.downLoadBox.active = false;
         // token检查
         this.checkToken();
+
+        DataMgr.instance.initData();
     }
 
     checkToken() {

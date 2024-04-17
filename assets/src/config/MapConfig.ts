@@ -20,6 +20,11 @@ export class EditInfo {//编辑元素配置
     moveDt : number;//移动格子数
 }
 
+export class RoleInfo {//角色配置
+    id : number;//id
+    spPath : string;//spine路径
+}
+
 export const MapConfig = {
     bgInfo : {
         num : 408,
@@ -70,8 +75,19 @@ export const MapConfig = {
         6 : {id:6, path:"map/zhuangshi2/spriteFrame",type:EditType.Buiding,width:7,moveDt:1},
         7 : {id:7, path:"map/zhuangshi2/spriteFrame",type:EditType.Buiding,width:7,moveDt:1},
         8 : {id:8, path:"map/zhuangshi3/spriteFrame",type:EditType.Buiding,width:7,moveDt:1},
-        9 : {id:9, path:"map/dikuai02/spriteFrame",type:EditType.Land,width:2,moveDt:2},
-        10 : {id:10, path:"map/dikuai1/spriteFrame",type:EditType.Land,width:2,moveDt:2},
+        9 : {id:9, path:"map/dikuai3/spriteFrame",type:EditType.Land,width:2,moveDt:2},
+        10 : {id:10, path:"map/dikuai4/spriteFrame",type:EditType.Land,width:2,moveDt:2},
         11 : {id:11, path:"map/dikuai2/spriteFrame",type:EditType.Land,width:2,moveDt:2},
     },
+    roleInfo : [//101 男孩2, 102 女孩1, 103 男孩1
+        {
+            id:101, spPath:"animtion/role/nanhai02",spNames:["Idle","Run"],
+        },
+        {
+            id:102, spPath:"animtion/role/nvhai01",spNames:["Idle","Run"],
+        },
+        {
+            id:103, spPath:"animtion/role/nanhai01",spNames:["Idle","Run"],
+        },
+    ],
 }

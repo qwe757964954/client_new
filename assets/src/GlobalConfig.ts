@@ -3,6 +3,7 @@ import DebugConfig from "./DebugConfig";
 import FileUtil from "./util/FileUtil";
 import { InterfaceUtil } from "./util/InterfaceUtil";
 import { APP_VERSION } from "./AppConfig";
+import { DataMgr } from "./manager/DataMgr";
 
 
 export default class GlobalConfig {
@@ -54,10 +55,12 @@ export default class GlobalConfig {
         }else{
             profiler?.hideStats();
         }
+
+        DataMgr.instance.initData();
     }
 }
 // 游戏初始化
-game.once(Game.EVENT_GAME_INITED, () => {
+game.once(Game.EVENT_POST_PROJECT_INIT, () => {
     GlobalConfig.init();
 });
 // 监听窗口大小变化

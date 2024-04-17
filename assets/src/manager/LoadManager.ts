@@ -32,6 +32,7 @@ export class LoadManager {
             });
         });
     }
+    // 加载预制体
     public static loadPrefab(path: string): Promise<Prefab> {
         return new Promise((resolve, reject) => {
             resources.load("prefab/" + path, Prefab, (error: Error, assets: Prefab) => {
@@ -44,6 +45,18 @@ export class LoadManager {
                 assets.addRef();//引用计数加一
 
                 resolve(assets);
+            });
+        });
+    }
+    //加载json资源
+    public static loadJson(name: string): Promise<any | undefined> {
+        return new Promise((resolve, reject) => {
+            resources.load(`config/${name}`, JsonAsset, (error: Error, assets: JsonAsset) => {
+                if (error) {
+                    console.log("loadJson->resource load failed:" + error.message);
+                    reject(error);
+                }
+                resolve(assets?.json);
             });
         });
     }

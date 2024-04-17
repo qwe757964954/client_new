@@ -28,6 +28,8 @@ export class MainScene extends Component {
     public landModel:Prefab = null;//地块
     @property(Prefab)
     public buildingModel:Prefab = null;//建筑
+    @property(Prefab)
+    public roleModel:Prefab = null;//角色
     @property(Node)
     public bgLayer:Node = null;//背景层
     @property(Node)
@@ -96,6 +98,9 @@ export class MainScene extends Component {
         this.landEditUIView.node.active = false;
 
         ViewsManager.instance.initLayer(this.sceneLayer,this.popupLayer,this.tipLayer,this.loadingLayer);
+        // for test
+        // this.changeMapStatus(MapStatus.EDIT);
+        // this.editUIView.node.active = false;
     }
     // 初始化事件
     initEvent(){
