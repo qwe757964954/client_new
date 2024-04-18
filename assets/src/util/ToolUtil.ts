@@ -1,4 +1,4 @@
-import { Vec2 } from "cc";
+import { Vec2, Vec3 } from "cc";
 
 
 export class ToolUtil {
@@ -19,6 +19,9 @@ export class ToolUtil {
     // 两个向量相减
     static vec2Sub(a: Vec2, b: Vec2): Vec2 {
         return new Vec2(a.x - b.x, a.y - b.y);
+    }
+    static vec3Sub(a: Vec3, b: Vec3): Vec3 {
+        return new Vec3(a.x - b.x, a.y - b.y, a.z - b.z);
     }
 
     // 将秒转换成时间格式

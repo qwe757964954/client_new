@@ -6,7 +6,7 @@ export class GridModel {
     // y从上往下，x从右往左
     private _x:number;//x格子坐标(上面尖角x)
     private _y:number;//y格子坐标(上面尖角y)
-    private _pos:Vec3;//位置
+    private _pos:Vec3;//位置(定点)
     private _width:number;//宽
     private _height:number;//高
     private _building:BuildingModel = null;//建筑（可能是临时的）

@@ -1,6 +1,6 @@
 import { _decorator, Asset, Camera, Canvas, Color, Component, EventMouse, EventTouch, Graphics, instantiate, Intersection2D, Label, Layers, Node, Prefab, screen, Sprite, SpriteFrame, sys, Texture2D, UITransform, Vec2, Vec3, View } from 'cc';
 import { LoadManager } from '../../manager/LoadManager';
-import { EditInfo, EditType, MapStatus } from '../../config/MapConfig';
+import { EditInfo, EditType, MapConfig, MapStatus } from '../../config/MapConfig';
 import { BuildingModel } from '../../models/BuildingModel';
 import EventManager from '../../util/EventManager';
 import { EventType } from '../../config/EventType';
@@ -18,72 +18,73 @@ import { LandEditUIIvew } from './LandEditUIIvew';
 import { PrefabType } from '../../config/PrefabType';
 import { BuildingProduceView } from '../map/BuildingProduceView';
 import { BgModel } from '../../models/BgModel';
+import { NetManager } from '../../net/NetManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('MainScene')
 export class MainScene extends Component {
     @property(Prefab)
-    public bgModel:Prefab = null;//格子地图
+    public bgModel: Prefab = null;//格子地图
     @property(Prefab)
-    public landModel:Prefab = null;//地块
+    public landModel: Prefab = null;//地块
     @property(Prefab)
-    public buildingModel:Prefab = null;//建筑
+    public buildingModel: Prefab = null;//建筑
     @property(Prefab)
-    public roleModel:Prefab = null;//角色
+    public roleModel: Prefab = null;//角色
     @property(Node)
-    public bgLayer:Node = null;//背景层
+    public bgLayer: Node = null;//背景层
     @property(Node)
-    public landLayer:Node = null;//地块层
+    public landLayer: Node = null;//地块层
     @property(Node)
-    public lineLayer:Node = null;//编辑层
+    public lineLayer: Node = null;//编辑层
     @property(Node)
-    public buildingLayer:Node = null;//建筑层
+    public buildingLayer: Node = null;//建筑层
     @property(Camera)
-    public mapCamera:Camera = null;//地图摄像机
+    public mapCamera: Camera = null;//地图摄像机
     @property(Canvas)
-    public touchCanvas:Canvas = null;//监听点击画布
+    public touchCanvas: Canvas = null;//监听点击画布
     @property(Camera)
-    public uiCamera:Camera = null;//ui摄像机
-    
+    public uiCamera: Camera = null;//ui摄像机
+
     /**=========================ui元素============================ */
     @property(MainUIView)
-    public mainUIView:MainUIView = null;//主界面ui
+    public mainUIView: MainUIView = null;//主界面ui
     @property(EditUIView)
-    public editUIView:EditUIView = null;//编辑界面ui
+    public editUIView: EditUIView = null;//编辑界面ui
     @property(LandEditUIIvew)
-    public landEditUIView:LandEditUIIvew = null;//编辑界面ui
+    public landEditUIView: LandEditUIIvew = null;//编辑界面ui
     @property(Node)
-    public sceneLayer:Node = null;//场景层
+    public sceneLayer: Node = null;//场景层
     @property(Node)
-    public popupLayer:Node = null;//弹窗层
+    public popupLayer: Node = null;//弹窗层
     @property(Node)
-    public tipLayer:Node = null;//提示层
+    public tipLayer: Node = null;//提示层
     @property(Node)
-    public loadingLayer:Node = null;//加载层
+    public loadingLayer: Node = null;//加载层
 
     /**=========================变量============================ */
-    private _loadAssetAry:Asset[] = [];//加载资源数组
+    private _loadAssetAry: Asset[] = [];//加载资源数组
 
-    private _mapStatus:MapStatus = MapStatus.DEFAULT;//地图状态
-    private _mapNormalCtl:MapNormalCtl = null;//普通地图控制器
-    private _mapEditCtl:MapEditCtl = null;//编辑地图控制器
-    private _buildingEditCtl:BuildEditCtl = null;//建筑编辑控制器
-    private _landEditCtl:LandEditCtl = null;//地块编辑控制器
-    private _recycleCtl:RecycleCtl = null;//地图回收控制器
+    private _mapStatus: MapStatus = MapStatus.DEFAULT;//地图状态
+    private _mapNormalCtl: MapNormalCtl = null;//普通地图控制器
+    private _mapEditCtl: MapEditCtl = null;//编辑地图控制器
+    private _buildingEditCtl: BuildEditCtl = null;//建筑编辑控制器
+    private _landEditCtl: LandEditCtl = null;//地块编辑控制器
+    private _recycleCtl: RecycleCtl = null;//地图回收控制器
     // private _mainUICtl:MainUICtl = null;//主界面控制器
-    private _mapUICtl:MapUICtl = null;//地图界面控制器
+    private _mapUICtl: MapUICtl = null;//地图界面控制器
 
 
     /**=========================事件handle============================ */
-    private _buildingBtnViewCloseHandle:string;//建筑按钮视图关闭事件
+    private _buildingBtnViewCloseHandle: string;//建筑按钮视图关闭事件
 
     start() {
         this.initData();
         this.initEvent();
     }
-    
+
     // 初始化数据
-    initData(){
+    initData() {
         this._mapNormalCtl = new MapNormalCtl(this);
         this._mapEditCtl = new MapEditCtl(this);
         this._buildingEditCtl = new BuildEditCtl(this);
@@ -97,13 +98,13 @@ export class MainScene extends Component {
         this.landEditUIView.mainScene = this;
         this.landEditUIView.node.active = false;
 
-        ViewsManager.instance.initLayer(this.sceneLayer,this.popupLayer,this.tipLayer,this.loadingLayer);
+        ViewsManager.instance.initLayer(this.sceneLayer, this.popupLayer, this.tipLayer, this.loadingLayer);
         // for test
         // this.changeMapStatus(MapStatus.EDIT);
         // this.editUIView.node.active = false;
     }
     // 初始化事件
-    initEvent(){
+    initEvent() {
         this.touchCanvas.node.on(Node.EventType.MOUSE_WHEEL, this.onMapMouseWheel, this);
         this.touchCanvas.node.on(Node.EventType.TOUCH_START, this.onTouchStart, this);
         this.touchCanvas.node.on(Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
@@ -113,29 +114,29 @@ export class MainScene extends Component {
         this._buildingBtnViewCloseHandle = EventManager.on(EventType.BuildingBtnView_Close, this.onBuildingBtnViewClose.bind(this));
     }
     // 移除事件
-    removeEvent(){
+    removeEvent() {
         this.touchCanvas.node.off(Node.EventType.MOUSE_WHEEL);
         this.touchCanvas.node.off(Node.EventType.TOUCH_START);
         this.touchCanvas.node.off(Node.EventType.TOUCH_MOVE);
         this.touchCanvas.node.off(Node.EventType.TOUCH_END);
         this.touchCanvas.node.off(Node.EventType.TOUCH_CANCEL);
-        
+
         EventManager.off(EventType.BuildingBtnView_Close, this._buildingBtnViewCloseHandle);
     }
     // 记录加载资源
-    addLoadAsset(asset:Asset){
+    addLoadAsset(asset: Asset) {
         this._loadAssetAry.push(asset);
     }
     // 移除加载资源
-    removeLoadAsset(){
-        for(let i=0;i<this._loadAssetAry.length;i++){
+    removeLoadAsset() {
+        for (let i = 0; i < this._loadAssetAry.length; i++) {
             let asset = this._loadAssetAry[i];
             LoadManager.releaseAsset(asset);
         }
         this._loadAssetAry = [];
     }
     // 移除控制器
-    removeCtl(){
+    removeCtl() {
         this._mapNormalCtl.dispose();
         this._mapEditCtl.dispose();
         this._buildingEditCtl.dispose();
@@ -144,23 +145,23 @@ export class MainScene extends Component {
         this._mapUICtl.dispose();
     }
     // 滚轮事件
-    onMapMouseWheel(e:EventMouse){
+    onMapMouseWheel(e: EventMouse) {
         this.getMapCtl().onMapMouseWheel(e);
     }
     // 点击开始
-    onTouchStart(e:EventTouch){
+    onTouchStart(e: EventTouch) {
         this.getMapCtl().onTouchStart(e);
     }
     // 点击移动
-    onTouchMove(e:EventTouch){
+    onTouchMove(e: EventTouch) {
         this.getMapCtl().onTouchMove(e);
     }
     // 点击结束
-    onTouchEnd(e:EventTouch){
+    onTouchEnd(e: EventTouch) {
         this.getMapCtl().onTouchEnd(e);
     }
     // 点击取消
-    onTouchCancel(e:EventTouch){
+    onTouchCancel(e: EventTouch) {
         this.getMapCtl().onTouchCancel(e);
     }
     // 销毁
@@ -170,22 +171,22 @@ export class MainScene extends Component {
         this.removeLoadAsset();
     }
     // 建筑点击
-    onBuildingClick(building:BuildingModel){
-        if(!building) return;
-        console.log("onBuildingClick",building);
-        if(MapStatus.EDIT == this._mapStatus){
+    onBuildingClick(building: BuildingModel) {
+        if (!building) return;
+        console.log("onBuildingClick", building);
+        if (MapStatus.EDIT == this._mapStatus) {
             this._buildingEditCtl.selectBuilding = building;
             this.changeMapStatus(MapStatus.BUILD_EDIT);
             return;
         }
-        else if(MapStatus.DEFAULT == this._mapStatus){// 普通点击 展示建筑建造界面
-            ViewsManager.instance.showView(PrefabType.BuildingProduceView,(node:Node)=>{
+        else if (MapStatus.DEFAULT == this._mapStatus) {// 普通点击 展示建筑建造界面
+            ViewsManager.instance.showView(PrefabType.BuildingProduceView, (node: Node) => {
                 this.mainUIView.node.active = false;
                 let buildingProduceView = node.getComponent(BuildingProduceView);
                 this._mapUICtl.moveCameraToBuilding(building, buildingProduceView.getBuildingPos());
                 let pos = building.pos;
                 building.removeFromParent();
-                buildingProduceView.initData(building,()=>{
+                buildingProduceView.initData(building, () => {
                     building.addToParent(this.buildingLayer);
                     building.pos = pos;
                     building.setCameraType(Layers.Enum.DEFAULT);
@@ -195,18 +196,18 @@ export class MainScene extends Component {
         }
     }
     // 建筑长按
-    onBuildingLongClick(building:BuildingModel){
-        if(!building) return;
-        console.log("onBuildingLongClick",building);
-        if(MapStatus.DEFAULT == this._mapStatus){
+    onBuildingLongClick(building: BuildingModel) {
+        if (!building) return;
+        console.log("onBuildingLongClick", building);
+        if (MapStatus.DEFAULT == this._mapStatus) {
             this._buildingEditCtl.selectBuilding = building;
             this.changeMapStatus(MapStatus.BUILD_EDIT);
         }
     }
     // 新建建筑与地块
-    onBuidLandClick(data:EditInfo){
-        console.log("onBuidLandClick",data);
-        if(EditType.Land == data.type){
+    onBuidLandClick(data: EditInfo) {
+        console.log("onBuidLandClick", data);
+        if (EditType.Land == data.type) {
             this._landEditCtl.selectLand = data;
             this.landEditUIView.initData(data);
             this.changeMapStatus(MapStatus.LAND_EDIT);
@@ -217,37 +218,38 @@ export class MainScene extends Component {
         this.changeMapStatus(MapStatus.BUILD_EDIT);
     }
     // 建筑按钮界面关闭
-    onBuildingBtnViewClose(){
+    onBuildingBtnViewClose() {
         this.changeMapStatus(MapStatus.EDIT);
     }
     // 场景状态切换
-    changeMapStatus(status:MapStatus){
+    changeMapStatus(status: MapStatus) {
         let oldStatus = this._mapStatus;
-        if(status == oldStatus) return;
-        console.log("changeMapStatus",oldStatus, status);
+        if (status == oldStatus) return;
+        console.log("changeMapStatus", oldStatus, status);
         this.lineLayer.active = MapStatus.DEFAULT != status;
         this.mainUIView.node.active = MapStatus.DEFAULT == status;
         this.editUIView.node.active = (MapStatus.EDIT == status || MapStatus.BUILD_EDIT == status);
         this.landEditUIView.node.active = MapStatus.LAND_EDIT == status;
+        this._mapUICtl.roleIsShow = MapStatus.DEFAULT == status;
         let ctl = this.getMapCtl();
         ctl.clearData();
         this._mapStatus = status;
-        EventManager.emit(EventType.MapStatus_Change,{oldStatus:oldStatus,status:status});
+        EventManager.emit(EventType.MapStatus_Change, { oldStatus: oldStatus, status: status });
     }
     // UI确定事件
-    confirmEvent(){
+    confirmEvent() {
         this.getMapCtl().confirmEvent();
     }
     // UI取消事件
-    cancelEvent(){
+    cancelEvent() {
         this.getMapCtl().cancelEvent();
     }
     // UI上一步
-    prevStepEvent(){
+    prevStepEvent() {
         this.getMapCtl().prevStepEvent();
     }
     // UI下一步
-    nextStepEvent(){
+    nextStepEvent() {
         this.getMapCtl().nextStepEvent();
     }
 
@@ -270,55 +272,65 @@ export class MainScene extends Component {
     //     }
     //     return this._mapNormalCtl;
     // }
-    getMapCtl(status?:MapStatus){
-        if(!status) status = this._mapStatus;
-        if(MapStatus.DEFAULT == status){
+    getMapCtl(status?: MapStatus) {
+        if (!status) status = this._mapStatus;
+        if (MapStatus.DEFAULT == status) {
             return this._mapNormalCtl;
         }
-        if(MapStatus.EDIT == status){
+        if (MapStatus.EDIT == status) {
             return this._mapEditCtl;
         }
-        if(MapStatus.BUILD_EDIT == status){
+        if (MapStatus.BUILD_EDIT == status) {
             return this._buildingEditCtl;
         }
-        if(MapStatus.LAND_EDIT == status){
+        if (MapStatus.LAND_EDIT == status) {
             return this._landEditCtl;
         }
-        if(MapStatus.RECYCLE == status){
+        if (MapStatus.RECYCLE == status) {
             return this._recycleCtl;
         }
         return this._mapNormalCtl;
     }
     // 摄像头缩放大小
-    get cameraRate():number{
+    get cameraRate(): number {
         return this._mapUICtl.cameraRate;
     }
     // 点击到格子
-    getTouchGrid(x:number, y:number){
+    getTouchGrid(x: number, y: number) {
         return this._mapUICtl.getTouchGrid(x, y);
     }
+    // 点击到角色
+    getTouchRole(x: number, y: number) {
+        return this._mapUICtl.getTouchRole(x, y);
+    }
     // 设置建筑物格子
-    setBuildingGrid(building:BuildingModel, gridX:number, gridY:number){
+    setBuildingGrid(building: BuildingModel, gridX: number, gridY: number) {
         this._mapUICtl.setBuildingGrid(building, gridX, gridY);
     }
     // 移动地图
-    mapMove(dtX:number, dtY:number){
+    mapMove(dtX: number, dtY: number) {
         this._mapUICtl.mapMove(dtX, dtY);
     }
     // 缩放地图
-    mapZoom(scale:number){
+    mapZoom(scale: number) {
         this._mapUICtl.mapZoom(scale);
     }
-    mapZoomTo(scale:number){
+    mapZoomTo(scale: number) {
         this._mapUICtl.mapZoomTo(scale);
     }
     // 放大地图
-    mapZoomIn(){
+    mapZoomIn() {
         this._mapUICtl.mapZoomIn();
     }
     // 缩小地图
-    mapZoomOut(){
+    mapZoomOut() {
         this._mapUICtl.mapZoomOut();
+    }
+    /** 屏幕坐标转换成地图层坐标 */
+    screenPosToMapPos(x: number, y: number) {
+        let worldPos = this.mapCamera.screenToWorld(new Vec3(x, y, 0));
+        let pos = this.landLayer.getComponent(UITransform).convertToNodeSpaceAR(worldPos);
+        return pos;
     }
 }
 
