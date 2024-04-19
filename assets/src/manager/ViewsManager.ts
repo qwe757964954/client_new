@@ -1,6 +1,8 @@
-import { Node, Prefab, instantiate } from "cc";
-import { Hierarchy, PrefabConfig } from "../config/PrefabType";
+import { Node, Prefab, instantiate, isValid } from "cc";
+import { Hierarchy, PrefabConfig, PrefabType } from "../config/PrefabType";
 import { LoadManager } from "./LoadManager";
+import { PopView } from "../views/common/PopView";
+import { TipView } from "../views/common/TipView";
 
 //界面管理类
 export class ViewsManager {
@@ -49,18 +51,19 @@ export class ViewsManager {
         LoadManager.loadPrefab(viewConfig.path).then((prefab: Prefab) => {
             let node = instantiate(prefab);
             node.name = viewConfig.path.replace("/", "_");
-            parent.addChild(node);
 
             if (this._loadingPrefabMap.hasOwnProperty(viewConfig.path)) {
                 this._loadingPrefabMap[viewConfig.path]--;
             }
+            if (!parent || !isValid(parent, true)) return;//如果父类不存或已经被销毁则直接返回
+            parent.addChild(node);
             if (callBack) callBack(node);
         });
     }
     // 关闭界面
     public closeView(viewConfig: PrefabConfig) {
         let parent = this.getParentNode(viewConfig.zindex);
-        parent.getChildByName(viewConfig.path.replace("/", "_"))?.destroy();
+        parent?.getChildByName(viewConfig.path.replace("/", "_"))?.destroy();
     }
     // 是否存在界面
     public isExistView(viewConfig: PrefabConfig): boolean {
@@ -72,5 +75,17 @@ export class ViewsManager {
             return true;
         }
         return false;
+    }
+    // 显示弹框
+    showAlert(content: string, callBack?: Function) {
+        this.showView(PrefabType.PopView, (node: Node) => {
+            node.getComponent(PopView).init(content, callBack);
+        });
+    }
+    // 显示提示
+    showTip(content: string, callBack?: Function) {
+        this.showView(PrefabType.TipView, (node: Node) => {
+            node.getComponent(TipView).init(content, callBack);
+        });
     }
 }
