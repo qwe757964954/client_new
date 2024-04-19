@@ -5,6 +5,7 @@ export const SceneType = {
     LoadingScene: "LoadingScene",
     LoginScene: "LoginScene",
     MainScene: "MainScene",
+    WorldMapScene: "WorldMapViewManager",
 }
 /**窗口层级 */
 export enum Hierarchy {
@@ -30,6 +31,7 @@ export const PrefabType = {
 
     PopView: { path: "common/PopView", zindex: Hierarchy.TIPLAYER, tips: "弹窗" },
     BaseRemindView: { path: "common/BaseRemindView", zindex: Hierarchy.TIPLAYER, tips: "二次提示界面" },
+    TipView: { path: "common/TipView", zindex: Hierarchy.TIPLAYER, tips: "提示界面" },
 
     // 设置相关
     SettingView: { path: "setting/SettingView", zindex: Hierarchy.POPUPLAYER, tips: "设置界面" },
@@ -37,6 +39,8 @@ export const PrefabType = {
     ChangeHeadView: { path: "setting/ChangeHeadView", zindex: Hierarchy.POPUPLAYER, tips: "头像调整" },
     ChangeNameView: { path: "setting/ChangeNameView", zindex: Hierarchy.POPUPLAYER, tips: "设置昵称" },
     MyTableView: { path: "setting/MyTableView", zindex: Hierarchy.POPUPLAYER, tips: "我的表格" },
+    SubscribeView: { path: "setting/SubscribeView", zindex: Hierarchy.POPUPLAYER, tips: "订阅学习周报" },
+    AccountActivationView: { path: "setting/AccountActivationView", zindex: Hierarchy.POPUPLAYER, tips: "账号激活中心" },
     // 设置相关END
 
     /*********************************************地图相关start***********************************************************/

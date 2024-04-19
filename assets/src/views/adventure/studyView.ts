@@ -1,6 +1,6 @@
 import { _decorator, Component, director, Node, view } from 'cc';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { PrefabType } from '../../config/PrefabType';
+import { PrefabType, SceneType } from '../../config/PrefabType';
 import CCUtil from '../../util/CCUtil';
 import EventManager from '../../util/EventManager';
 import { EventType } from '../../config/EventType';
@@ -35,7 +35,7 @@ export class studyView extends Component {
     }
     /**关闭页面 TODO*/
     private closeView() {
-
+        director.loadScene(SceneType.MainScene);
     }
     /**初始化监听事件 */
     initEvent() {

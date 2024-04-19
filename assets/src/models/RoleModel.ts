@@ -8,12 +8,15 @@ import { EventType } from '../config/EventType';
 import { GridModel } from './GridModel';
 import { TimerMgr } from '../util/TimerMgr';
 import { BaseComponent } from '../script/BaseComponent';
+import { ViewsManager } from '../manager/ViewsManager';
+import { TextConfig } from '../config/TextConfig';
 const { ccclass, property } = _decorator;
 
 enum RoleState {//角色状态
     none = 0,
     idle = 1,
     walk = 2,
+    drag = 3,
 }
 
 @ccclass('RoleModel')
@@ -31,7 +34,9 @@ export class RoleModel extends BaseComponent {
     private _scale: number = 0.8;//角色缩放
     private _isMoving: boolean = false;//是否正在移动
     private _timer: number = 0;//计时器
-    private _isActive: boolean = false;//是否激活
+    // private _isActive: boolean = false;//是否激活
+    private _dataPos: Vec3;//数据坐标
+
 
     private _roleID: number;//角色id
     private _propID: number[];//道具id
@@ -53,6 +58,10 @@ export class RoleModel extends BaseComponent {
         this.removeEvent();
         LoadManager.releaseAssets(this._loadAssetAry);
         this._loadAssetAry = [];
+        if (this._timer) {
+            TimerMgr.stopLoop(this._timer);
+            this._timer = null;
+        }
     }
     // 初始化
     public async init(roleID: number, propID: number[]) {
@@ -91,7 +100,7 @@ export class RoleModel extends BaseComponent {
         roleSlot.slots.forEach(slotName => {
             if (-1 == showSlot.indexOf(slotName)) {
                 let slot = this.role.findSlot(slotName);
-                slot.setAttachment(null);
+                slot?.setAttachment(null);//有些插槽是不存在的
             }
         });
     }
@@ -117,6 +126,13 @@ export class RoleModel extends BaseComponent {
         this._roleState = RoleState.walk;
         let roleInfo: RoleInfo = MapConfig.roleInfo[this._roleID];
         this.role.setAnimation(0, roleInfo.spNames[1], true);
+    }
+    // 拖拽动作
+    public drag() {
+        if (this._roleState == RoleState.drag) return;
+        this._roleState = RoleState.drag;
+        let roleInfo: RoleInfo = MapConfig.roleInfo[this._roleID];
+        this.role.setAnimation(0, roleInfo.spNames[0], true);
     }
     // 设置格子
     public set grid(grid: GridModel) {
@@ -168,8 +184,14 @@ export class RoleModel extends BaseComponent {
         this._lastPos = this.pos;
         tween(this.node).delay(0.5).call(() => {
             EventManager.emit(EventType.Role_Need_Move, this);
-        })
-            .start();
+        }).start();
+    }
+    /** 原地拖拽 */
+    public dragStandby() {
+        this.drag();
+        Tween.stopAllByTarget(this.node);
+        this._isMoving = false;
+        this._lastPos = this.pos;
     }
     // 通知层级更新
     public notifyZOrderUpdate() {
@@ -184,8 +206,6 @@ export class RoleModel extends BaseComponent {
         let pos = this.node.position;
         rect.x += pos.x;
         rect.y += pos.y;
-        console.log("isTouchSelf", pos, rect);
-        console.log(rect.contains);
         return rect.contains(new Vec2(x, y));
     }
     /** 是否显示在屏幕上 */
@@ -196,6 +216,32 @@ export class RoleModel extends BaseComponent {
         } else {
             TweenSystem.instance.ActionManager.pauseTarget(this.node);
         }
+    }
+    /** 点击显示 */
+    public onClickShow() {
+        this.standby();
+        ViewsManager.showAlert(TextConfig.Role_Text1);//TODO 效果
+    }
+    /** 拖拽开始 */
+    public onDragStart() {
+        this.dragStandby();
+        this._dataPos = this.node.position.clone();
+    }
+    /** 拖拽 */
+    public onDrag(x: number, y: number) {
+        let pos = this.node.position.clone();
+        pos.x += x;
+        pos.y += y;
+        this.node.position = pos;
+    }
+    /** 拖拽结束 */
+    public onDragEnd(x: number, y: number) {
+        this.node.position = new Vec3(x, y, 0);
+        this.standby();
+    }
+    public onDragEndEx() {//还原回去
+        this.node.position = this._dataPos;
+        this.standby();
     }
 }
 

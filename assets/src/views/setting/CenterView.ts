@@ -102,6 +102,12 @@ export class CenterView extends Component {
         console.log("btnMyTableFunc");
         ViewsManager.instance.showView(PrefabType.MyTableView);
     }
+
+    /**点击订阅学习周报事件 */
+    btnSubscribeFunc() {
+        console.log("btnSubscribeFunc");
+        ViewsManager.instance.showView(PrefabType.SubscribeView);
+    }
 }
 
 
