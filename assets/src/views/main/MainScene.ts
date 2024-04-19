@@ -20,6 +20,7 @@ import { BuildingProduceView } from '../map/BuildingProduceView';
 import { BgModel } from '../../models/BgModel';
 import { NetManager } from '../../net/NetManager';
 import { RoleModel } from '../../models/RoleModel';
+import { TextConfig } from '../../config/TextConfig';
 const { ccclass, property } = _decorator;
 
 @ccclass('MainScene')
@@ -116,11 +117,11 @@ export class MainScene extends Component {
     }
     // 移除事件
     removeEvent() {
-        this.touchCanvas.node.off(Node.EventType.MOUSE_WHEEL);
-        this.touchCanvas.node.off(Node.EventType.TOUCH_START);
-        this.touchCanvas.node.off(Node.EventType.TOUCH_MOVE);
-        this.touchCanvas.node.off(Node.EventType.TOUCH_END);
-        this.touchCanvas.node.off(Node.EventType.TOUCH_CANCEL);
+        this.touchCanvas.node?.off(Node.EventType.MOUSE_WHEEL);
+        this.touchCanvas.node?.off(Node.EventType.TOUCH_START);
+        this.touchCanvas.node?.off(Node.EventType.TOUCH_MOVE);
+        this.touchCanvas.node?.off(Node.EventType.TOUCH_END);
+        this.touchCanvas.node?.off(Node.EventType.TOUCH_CANCEL);
 
         EventManager.off(EventType.BuildingBtnView_Close, this._buildingBtnViewCloseHandle);
     }
@@ -232,6 +233,7 @@ export class MainScene extends Component {
         if (grid) {
             role.onDragEnd(pos.x, pos.y);
         } else {
+            ViewsManager.instance.showTip(TextConfig.Role_Text2);
             role.onDragEndEx();
         }
     }

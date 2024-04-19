@@ -8,6 +8,8 @@ import { EventType } from '../config/EventType';
 import { GridModel } from './GridModel';
 import { TimerMgr } from '../util/TimerMgr';
 import { BaseComponent } from '../script/BaseComponent';
+import { ViewsManager } from '../manager/ViewsManager';
+import { TextConfig } from '../config/TextConfig';
 const { ccclass, property } = _decorator;
 
 enum RoleState {//角色状态
@@ -56,6 +58,10 @@ export class RoleModel extends BaseComponent {
         this.removeEvent();
         LoadManager.releaseAssets(this._loadAssetAry);
         this._loadAssetAry = [];
+        if (this._timer) {
+            TimerMgr.stopLoop(this._timer);
+            this._timer = null;
+        }
     }
     // 初始化
     public async init(roleID: number, propID: number[]) {
@@ -214,6 +220,7 @@ export class RoleModel extends BaseComponent {
     /** 点击显示 */
     public onClickShow() {
         this.standby();
+        ViewsManager.instance.showAlert(TextConfig.Role_Text1);//TODO 效果
     }
     /** 拖拽开始 */
     public onDragStart() {

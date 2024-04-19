@@ -1,10 +1,9 @@
-import { _decorator, Component, Node, Sprite } from 'cc';
+import { _decorator, Component, director, Node, Sprite } from 'cc';
 import CCUtil from '../../util/CCUtil';
 import { MapStatus } from '../../config/MapConfig';
 import { MainScene } from './MainScene';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { PrefabConfig, PrefabType } from '../../config/PrefabType';
-import { PopView } from '../common/PopView';
+import { PrefabConfig, PrefabType, SceneType } from '../../config/PrefabType';
 const { ccclass, property } = _decorator;
 
 @ccclass('MainUIView')
@@ -44,7 +43,7 @@ export class MainUIView extends Component {
     }
     //销毁
     protected onDestroy(): void {
-        this.destoryEvent();
+        this.removeEvent();
     }
     //初始化
     public init(): void {
@@ -68,8 +67,8 @@ export class MainUIView extends Component {
         CCUtil.onTouch(this.btnTaskGo, this.onClickTaskGo, this);
         CCUtil.onTouch(this.btnStudy, this.onClickStudy, this);
     }
-    //销毁事件
-    public destoryEvent() {
+    //移除事件
+    public removeEvent() {
         CCUtil.offTouch(this.btnHead, this.onClickHead, this);
         CCUtil.offTouch(this.btnMenu, this.onClickMenu, this);
         CCUtil.offTouch(this.btnOnlineGift, this.onClickOnlineGift, this);
@@ -124,9 +123,7 @@ export class MainUIView extends Component {
     }
     //学习点击
     public onClickStudy() {
-        ViewsManager.instance.showView(PrefabType.PopView, (node: Node) => {
-            node.getComponent(PopView).init("学习");
-        });
+        director.loadScene(SceneType.WorldMapScene);
     }
 }
 
