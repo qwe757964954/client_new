@@ -2,6 +2,7 @@ import { EventMouse, EventTouch, Vec2 } from "cc";
 import { MapBaseCtl } from "../map/MapBaseCtl";
 import { BuildingModel } from "../../models/BuildingModel";
 import { TimerMgr } from "../../util/TimerMgr";
+import { RoleModel } from "../../models/RoleModel";
 
 //普通地图处理
 export class MapNormalCtl extends MapBaseCtl {
@@ -10,12 +11,25 @@ export class MapNormalCtl extends MapBaseCtl {
     private _timer: number = null;//计时器
     private _isLongClick: boolean = false;//是否长按点击
 
-    // 点击开始
+    private _touchRole: RoleModel = null;//触摸角色
+
+
+    /** 点击开始 */
     onTouchStart(e: EventTouch) {
         if (!super.onTouchStart(e)!) return false;
         let pos = e.getLocation();//需要用屏幕坐标去转换点击事件
-        let role = this._mainScene.getTouchRole(pos.x, pos.y);
-        console.log("onTouchStart", role);
+        this._touchRole = this._mainScene.getTouchRole(pos.x, pos.y);
+        if (this._touchRole) {
+            // 定时器触发
+            this._timer = TimerMgr.once(() => {
+                if (this._touchRole) {
+                    this._isLongClick = true;
+                    this._timer = null;
+                    this._mainScene.onRoleDragStart(this._touchRole);
+                }
+            }, 100);
+            return true;
+        }
         let grid = this._mainScene.getTouchGrid(pos.x, pos.y);
         this._touchBuilding = grid?.building;
         if (this._touchBuilding) {
@@ -34,12 +48,33 @@ export class MapNormalCtl extends MapBaseCtl {
     }
     //点击移动
     public onTouchMove(e: EventTouch) {
-        if (!super.onTouchMove(e)) return false;
-        if (this._isTouchMove && this._touchBuilding) {
-            TimerMgr.stop(this._timer);
-            this._timer = null;
+        let touches = e.getAllTouches();
+        if (touches.length > this._maxTouchCount) return false;
+        let delta = e.getUIDelta();
+        let dtX = -delta.x;
+        let dtY = -delta.y;
+        if (!this.isTouchMoveEffective(dtX, dtY)) {
+            return false;
+        }
+        this._isTouchMove = true;
+
+        if (this._isTouchMove) {
+            if (this._timer) {
+                TimerMgr.stop(this._timer);
+                this._timer = null;
+            }
             this._touchBuilding = null;
         }
+
+        if (1 == touches.length) {
+            if (this._isLongClick) {
+                this._mainScene.onRoleDrag(this._touchRole, delta.x, delta.y);
+                return true;
+            }
+            this._mainScene.mapMove(dtX, dtY);
+            return true;
+        }
+        this.mapZoomByTouches(touches[0], touches[1]);
         return true;
     }
     //点击结束
@@ -48,10 +83,20 @@ export class MapNormalCtl extends MapBaseCtl {
             TimerMgr.stop(this._timer);
             this._timer = null;
         }
+        if (this._touchRole) {
+            if (this._isLongClick) {
+                this._mainScene.onRoleDragEnd(this._touchRole);
+            } else {
+                this._mainScene.onRoleClick(this._touchRole);
+            }
+        }
         if (this._touchBuilding && !this._isLongClick) {
             this._mainScene.onBuildingClick(this._touchBuilding);
         }
+
         this._touchBuilding = null;
+        this._isLongClick = false;
+        this._touchRole = null;
         return super.onTouchEnd(e);
     }
     //点击取消
@@ -61,6 +106,8 @@ export class MapNormalCtl extends MapBaseCtl {
             this._timer = null;
         }
         this._touchBuilding = null;
+        this._isLongClick = false;
+        this._touchRole = null;
         return super.onTouchCancel(e);
     }
     //滚轮事件
@@ -75,6 +122,7 @@ export class MapNormalCtl extends MapBaseCtl {
         }
         this._touchBuilding = null;
         this._isLongClick = false;
+        this._touchRole = null;
         super.clearData();
     }
     // 确定事件

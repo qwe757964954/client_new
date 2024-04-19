@@ -10,52 +10,52 @@ const { ccclass, property } = _decorator;
 @ccclass('MainUIView')
 export class MainUIView extends Component {
     @property(Node)
-    public btnHead:Node = null;//头像
+    public btnHead: Node = null;//头像
     @property(Sprite)
-    public btnMenu:Sprite = null;//菜单
+    public btnMenu: Sprite = null;//菜单
     @property(Sprite)
-    public btnOnlineGift:Sprite = null;//在线礼包
+    public btnOnlineGift: Sprite = null;//在线礼包
     @property(Sprite)
-    public btnReview:Sprite = null;//复习计划
+    public btnReview: Sprite = null;//复习计划
     @property(Sprite)
-    public btnTranslate:Sprite = null;//翻译查词
+    public btnTranslate: Sprite = null;//翻译查词
     @property(Sprite)
-    public btnEdit:Sprite = null;//编辑
+    public btnEdit: Sprite = null;//编辑
     @property(Sprite)
-    public btnBoss:Sprite = null;//BOSS
+    public btnBoss: Sprite = null;//BOSS
     @property(Sprite)
-    public btnShop:Sprite = null;//商店
+    public btnShop: Sprite = null;//商店
     @property(Sprite)
-    public btnTask:Sprite = null;//任务
+    public btnTask: Sprite = null;//任务
     @property(Sprite)
-    public btnTaskGo:Sprite = null;//任务前往
+    public btnTaskGo: Sprite = null;//任务前往
     @property(Sprite)
-    public btnStudy:Sprite = null;//学习
+    public btnStudy: Sprite = null;//学习
 
 
-    private _mainScene:MainScene = null;//主场景
+    private _mainScene: MainScene = null;//主场景
 
     start() {
         this.init();
     }
 
     update(deltaTime: number) {
-        
+
     }
     //销毁
     protected onDestroy(): void {
         this.destoryEvent();
     }
     //初始化
-    public init():void {
+    public init(): void {
         this.initEvent();
     }
     //设置主场景
-    public set mainScene(mainScene:MainScene){
+    public set mainScene(mainScene: MainScene) {
         this._mainScene = mainScene;
     }
     //初始化事件
-    public initEvent(){
+    public initEvent() {
         CCUtil.onTouch(this.btnHead, this.onClickHead, this);
         CCUtil.onTouch(this.btnMenu, this.onClickMenu, this);
         CCUtil.onTouch(this.btnOnlineGift, this.onClickOnlineGift, this);
@@ -69,7 +69,7 @@ export class MainUIView extends Component {
         CCUtil.onTouch(this.btnStudy, this.onClickStudy, this);
     }
     //销毁事件
-    public destoryEvent(){
+    public destoryEvent() {
         CCUtil.offTouch(this.btnHead, this.onClickHead, this);
         CCUtil.offTouch(this.btnMenu, this.onClickMenu, this);
         CCUtil.offTouch(this.btnOnlineGift, this.onClickOnlineGift, this);
@@ -83,48 +83,48 @@ export class MainUIView extends Component {
         CCUtil.offTouch(this.btnStudy, this.onClickStudy, this);
     }
     //头像点击
-    public onClickHead(){
+    public onClickHead() {
         ViewsManager.instance.showView(PrefabType.SettingView);
     }
     //菜单点击
-    public onClickMenu(){
-        
+    public onClickMenu() {
+
     }
     //在线礼包点击
-    public onClickOnlineGift(){
-        
+    public onClickOnlineGift() {
+
     }
     //复习计划点击
-    public onClickReview(){
-        
+    public onClickReview() {
+
     }
     //翻译查词点击
-    public onClickTranslate(){
-        
+    public onClickTranslate() {
+
     }
     //编辑点击
-    public onClickEdit(){
+    public onClickEdit() {
         this._mainScene.changeMapStatus(MapStatus.EDIT);
     }
     //BOSS点击
-    public onClickBoss(){
-        
+    public onClickBoss() {
+
     }
     //商店点击
-    public onClickShop(){
-        
+    public onClickShop() {
+
     }
     //任务点击
-    public onClickTask(){
-        
+    public onClickTask() {
+
     }
     //任务前往点击
-    public onClickTaskGo(){
-        
+    public onClickTaskGo() {
+
     }
     //学习点击
-    public onClickStudy(){
-        ViewsManager.instance.showView(PrefabType.PopView, (node:Node)=>{
+    public onClickStudy() {
+        ViewsManager.instance.showView(PrefabType.PopView, (node: Node) => {
             node.getComponent(PopView).init("学习");
         });
     }

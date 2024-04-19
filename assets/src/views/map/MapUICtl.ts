@@ -216,14 +216,36 @@ export class MapUICtl extends MainBaseCtl {
     /** 初始化角色 */
     public async initRole() {
         // for test
-        let role = instantiate(this._mainScene.roleModel);
-        this._mainScene.buildingLayer.addChild(role);
-        let roleModel = role.getComponent(RoleModel);
-        await roleModel.init(101, [9500, 9700, 9701, 9702, 9703]);
-        let grid = this.getGridInfo(20, 20);
-        roleModel.grid = grid;
-        this.roleMove(roleModel);
-        this._roleModelAry.push(roleModel);
+        {
+            let role = instantiate(this._mainScene.roleModel);
+            this._mainScene.buildingLayer.addChild(role);
+            let roleModel = role.getComponent(RoleModel);
+            await roleModel.init(101, [9500, 9700, 9701, 9702, 9703]);
+            let grid = this.getGridInfo(20, 20);
+            roleModel.grid = grid;
+            this.roleMove(roleModel);
+            this._roleModelAry.push(roleModel);
+        }
+        {
+            let role = instantiate(this._mainScene.roleModel);
+            this._mainScene.buildingLayer.addChild(role);
+            let roleModel = role.getComponent(RoleModel);
+            await roleModel.init(102, [9550, 9800, 9801, 9802, 9803, 9805]);
+            let grid = this.getGridInfo(30, 30);
+            roleModel.grid = grid;
+            this.roleMove(roleModel);
+            this._roleModelAry.push(roleModel);
+        }
+        {
+            let role = instantiate(this._mainScene.roleModel);
+            this._mainScene.buildingLayer.addChild(role);
+            let roleModel = role.getComponent(RoleModel);
+            await roleModel.init(103, [9600, 9900, 9901, 9902, 9903]);
+            let grid = this.getGridInfo(20, 40);
+            roleModel.grid = grid;
+            this.roleMove(roleModel);
+            this._roleModelAry.push(roleModel);
+        }
     }
     // 摄像头缩放大小
     get cameraRate(): number {
@@ -301,12 +323,11 @@ export class MapUICtl extends MainBaseCtl {
     /** 点击到角色 */
     getTouchRole(x: number, y: number) {
         let pos = this._mainScene.screenPosToMapPos(x, y);
-        console.log("getTouchRole", pos);
-        this._roleModelAry.forEach(element => {
+        for (const element of this._roleModelAry) {
             if (element.isTouchSelf(pos.x, pos.y)) {
                 return element;
             }
-        });
+        }
         return null;
     }
     /**

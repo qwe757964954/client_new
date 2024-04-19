@@ -4,62 +4,62 @@ import { MainBaseCtl } from "../main/MainBaseCtl";
 //普通地图处理
 export class MapBaseCtl extends MainBaseCtl {
 
-    private _touchMoveOffset:number = 1;//触摸误差
-    private _maxTouchCount:number = 2;//最大触摸数量
+    private _touchMoveOffset: number = 1;//触摸误差
+    protected _maxTouchCount: number = 2;//最大触摸数量
     // protected _lastTouchPos:Vec2;//上一次触摸位置
-    protected _isTouchMove:boolean = false;//是否触摸移动
-    protected _isTouchInSelf:boolean = false;//是否触摸自身
+    protected _isTouchMove: boolean = false;//是否触摸移动
+    protected _isTouchInSelf: boolean = false;//是否触摸自身
 
     // 触摸移动有效
-    isTouchMoveEffective(dtX:number, dtY:number):boolean{
-        if(Math.abs(dtX) < this._touchMoveOffset &&
-            Math.abs(dtY) < this._touchMoveOffset){
+    isTouchMoveEffective(dtX: number, dtY: number): boolean {
+        if (Math.abs(dtX) < this._touchMoveOffset &&
+            Math.abs(dtY) < this._touchMoveOffset) {
             return false;
         }
         return true;
     }
-    // 点击开始
-    onTouchStart(e:EventTouch){
-        if(1 != e.getAllTouches().length) return false;
+    /** 点击开始 */
+    onTouchStart(e: EventTouch) {
+        if (1 != e.getAllTouches().length) return false;
         this._isTouchInSelf = true;
         return true;
     }
-    // 点击移动
-    onTouchMove(e:EventTouch){
+    /** 点击移动 */
+    onTouchMove(e: EventTouch) {
         let touches = e.getAllTouches();
-        if(touches.length > this._maxTouchCount) return false;
+        if (touches.length > this._maxTouchCount) return false;
         let delta = e.getUIDelta();
         let dtX = -delta.x;
         let dtY = -delta.y;
-        if(!this.isTouchMoveEffective(dtX, dtY)){
+        if (!this.isTouchMoveEffective(dtX, dtY)) {
             return false;
         }
         this._isTouchMove = true;
 
-        if(1 == touches.length){
+        if (1 == touches.length) {
             this._mainScene.mapMove(dtX, dtY);
             return true;
         }
         this.mapZoomByTouches(touches[0], touches[1]);
         return true;
     }
-    // 点击结束
-    onTouchEnd(e:EventTouch){
+    /** 点击结束 */
+    onTouchEnd(e: EventTouch) {
         this._isTouchMove = false;
         this._isTouchInSelf = false;
         return true;
     }
     // 点击取消
-    onTouchCancel(e:EventTouch){
+    onTouchCancel(e: EventTouch) {
         this._isTouchMove = false;
         this._isTouchInSelf = false;
         return true;
     }
     // 滚轮事件
-    onMapMouseWheel(e:EventMouse){
-        if(e.getScrollY()>0){
+    onMapMouseWheel(e: EventMouse) {
+        if (e.getScrollY() > 0) {
             this._mainScene.mapZoomIn();
-        }else{
+        } else {
             this._mainScene.mapZoomOut();
         }
     }
@@ -69,19 +69,19 @@ export class MapBaseCtl extends MainBaseCtl {
     }
     // 确定事件
     confirmEvent(): void {
-        
+
     }
     // 取消事件
     cancelEvent(): void {
     }
     // UI上一步
-    prevStepEvent(){
+    prevStepEvent() {
     }
     // UI下一步
-    nextStepEvent(){
+    nextStepEvent() {
     }
     // 两点缩放地图
-    public mapZoomByTouches(touch1:Touch, touch2:Touch){
+    public mapZoomByTouches(touch1: Touch, touch2: Touch) {
         let touchPos1 = touch1.getUILocation();
         let touchPos2 = touch2.getUILocation();
         let delta1 = touch1.getUIDelta();
@@ -95,6 +95,6 @@ export class MapBaseCtl extends MainBaseCtl {
         else {
             dis = (dt1.y + dt2.y) / dt1.y;
         }
-        this._mainScene.mapZoom(1/dis);
+        this._mainScene.mapZoom(1 / dis);
     }
 }
