@@ -20,4 +20,5 @@ export const EventType = {
     Expand_the_level_page: "Expand_the_level_page",//拓展关卡
 
     enter_battle_view: "enter_battle_view",  //进入战斗界面  学习界面
+    exit_world_island: "exit_world_island",  //退出岛屿界面
 }

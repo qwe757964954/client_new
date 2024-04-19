@@ -4,7 +4,6 @@ import { EventType } from '../../../config/EventType';
 import EventManager from '../../../util/EventManager';
 import { ViewsManager } from '../../../manager/ViewsManager';
 import { PrefabType } from '../../../config/PrefabType';
-import { BaseComParse } from '../../../../../extensions/seek-miss/src/ComponentParse/BaseComParse';
 import { BaseRemindView } from '../../common/BaseRemindView';
 import { PopView } from '../../common/PopView';
 const { ccclass, property } = _decorator;

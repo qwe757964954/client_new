@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, view } from 'cc';
+import { _decorator, Component, director, Node, view } from 'cc';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { PrefabType } from '../../config/PrefabType';
 import CCUtil from '../../util/CCUtil';
@@ -14,7 +14,7 @@ export class studyView extends Component {
 
     @property({ type: [Node], tooltip: "关卡选择" })
     public levelArr: Node[] = [];
-    
+
     @property({ type: Node, tooltip: "关闭按钮" })
     public closeBtn: Node = null;
     start() {
@@ -35,19 +35,24 @@ export class studyView extends Component {
     }
     /**关闭页面 TODO*/
     private closeView() {
-        
+
     }
     /**初始化监听事件 */
     initEvent() {
         for (let i = 0; i < this.levelArr.length; i++) {
-            CCUtil.onTouch(this.levelArr[i], this.levelClick.bind(this, i), this);
+            CCUtil.onTouch(this.levelArr[i], this.levelClick.bind(this, this.levelArr[i].name), this);
         }
         CCUtil.onTouch(this.closeBtn, this.closeView, this)
     }
-    private levelClick(i: number) {
-        console.log(i)
-        EventManager.emit(EventType.study_page_switching, [i]);
-     
+    private levelClick(name: string) {
+        console.log(name);
+        switch (name) {
+            case "wordAdventure": //单词大冒险
+                director.loadScene("WorldMapViewManager");
+                break;
+        }
+        // EventManager.emit(EventType.study_page_switching, [i]);
+
     }
     /**移除监听 */
     removeEvent() {

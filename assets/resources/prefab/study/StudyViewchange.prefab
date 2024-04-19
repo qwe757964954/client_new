@@ -153,7 +153,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": -800,
-      "y": 400,
+      "y": 421.664,
       "z": 0
     },
     "_lrot": {
@@ -289,7 +289,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": -676,
-      "y": 400,
+      "y": 421.664,
       "z": 0
     },
     "_lrot": {
@@ -427,8 +427,8 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 775.5,
-      "y": 376.5,
+      "x": 808.725,
+      "y": 429.66,
       "z": 0
     },
     "_lrot": {
@@ -542,8 +542,8 @@
     "_alignFlags": 33,
     "_target": null,
     "_left": 0,
-    "_right": 80,
-    "_top": 90,
+    "_right": 46.77499999999998,
+    "_top": 36.839999999999975,
     "_bottom": 0,
     "_horizontalCenter": 0,
     "_verticalCenter": 0,
@@ -865,7 +865,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "item_1",
+    "_name": "wordAdventure",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -1001,7 +1001,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "item_2",
+    "_name": "bookWord",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -1137,7 +1137,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "item_3",
+    "_name": "phonics",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -1273,7 +1273,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "item_4",
+    "_name": "symbol",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -1409,7 +1409,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "item_5",
+    "_name": "grammar",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -1545,7 +1545,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "item_6",
+    "_name": "pictureBook",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {

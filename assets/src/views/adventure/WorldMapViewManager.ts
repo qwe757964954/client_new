@@ -24,6 +24,7 @@ export class WorldMapViewManager extends Component {
     @property(Node)
     public loadingLayer: Node = null;//加载层
     private _eveId: string;
+    private _exitIslandEveId: string;
     start() {
 
     }
@@ -32,32 +33,32 @@ export class WorldMapViewManager extends Component {
 
     }
     protected onLoad(): void {
-        this.initUI()
-        this.initEvent()
-        this.showView(0);
+        this.initUI();
+        this.initEvent();
     }
     /**初始化UI */
     private initUI() {
         ViewsManager.instance.initLayer(this.sceneLayer, this.popupLayer, this.tipLayer, this.loadingLayer);
 
     }
-    /**切换页面 */
-    private switchView(data = []) {
+    /**切换岛屿 */
+    private switchIsland(data = []) {
         if (!this.levelArr[data[0]]) {
             console.error("没有这个页面", data);
             return
         }
-        this.showView(data[0]);
+        this.showIsland(data[0]);
     }
     /**初始化监听事件 */
     private initEvent() {
-        this._eveId = EventManager.on(EventType.study_page_switching, this.switchView.bind(this));
+        this._eveId = EventManager.on(EventType.study_page_switching, this.switchIsland.bind(this));
+        this._exitIslandEveId = EventManager.on(EventType.exit_world_island, this.hideIsland.bind(this));
 
     }
     /**移除监听 */
     private removeEvent() {
         EventManager.off(EventType.study_page_switching, this._eveId);
-
+        EventManager.off(EventType.study_page_switching, this._exitIslandEveId);
     }
 
     /**销毁 */
@@ -70,17 +71,20 @@ export class WorldMapViewManager extends Component {
     /**
      * 显示视图
      */
-    showView(id: number) {
-        console.log("显示视图", this.currentNode);
-        if (this.currentNode) this.currentNode.parent.removeChild(this.currentNode);
+    showIsland(id: number) {
+        if (this.currentNode) {
+            this.currentNode.removeFromParent();
+        }
         let copynode = instantiate(this.levelArr[id])
         this.currentNode = copynode
         this.defaultNode.addChild(copynode)
     }
     private currentNode: Node = null;
     /**隐藏视图 */
-    hideView() {
-
+    hideIsland() {
+        if (this.currentNode) {
+            this.currentNode.removeFromParent();
+        }
     }
     /**关闭视图 */
     closeView() {

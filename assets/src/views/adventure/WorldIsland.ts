@@ -40,7 +40,7 @@ export class WorldIsland extends Component {
     private initEvent() {
         CCUtil.onTouch(this.back, this.onBtnBackClick, this)
         CCUtil.onTouch(this.btn_details, this.onBtnDetailsClick, this)
-        CCUtil.onTouch(this.btn_pos,this.openLevelView,this)
+        CCUtil.onTouch(this.btn_pos, this.openLevelView, this)
 
 
     }
@@ -49,31 +49,31 @@ export class WorldIsland extends Component {
         CCUtil.offTouch(this.back, this.onBtnBackClick, this)
         CCUtil.offTouch(this.btn_details, this.onBtnDetailsClick, this)
 
-        CCUtil.offTouch(this.btn_pos,this.openLevelView,this)
+        CCUtil.offTouch(this.btn_pos, this.openLevelView, this)
     }
 
     onBtnDetailsClick() {
-  
+
     }
 
     /**打开闯关界面 */
-    openLevelView(){
-        EventManager.emit(EventType.study_page_switching, [2])
+    openLevelView() {
+
     }
     /**返回关卡模式 */
     private onBtnBackClick() {
-        EventManager.emit(EventType.study_page_switching, [1])
-
+        EventManager.emit(EventType.exit_world_island);
     }
 
     /**初始化列表 */
     private initlist() {
-       
+
     }
 
 
     protected onDestroy(): void {
         this.removeEvent()
+        console.log('销毁')
     }
 
 }
