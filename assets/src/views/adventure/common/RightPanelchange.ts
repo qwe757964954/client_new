@@ -19,6 +19,7 @@ export class rightPanelchange extends Component {
 
     }
 
+    /** 更新 */
     update(deltaTime: number) {
 
     }

@@ -642,7 +642,7 @@
     "node": {
       "__id__": 3
     },
-    "_enabled": true,
+    "_enabled": false,
     "__prefab": {
       "__id__": 25
     },
@@ -664,7 +664,7 @@
     "node": {
       "__id__": 3
     },
-    "_enabled": true,
+    "_enabled": false,
     "__prefab": {
       "__id__": 27
     },
@@ -2503,7 +2503,6 @@
     "btn_pos": {
       "__id__": 106
     },
-    "panel": null,
     "levelPanel": {
       "__id__": 51
     },

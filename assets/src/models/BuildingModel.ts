@@ -5,11 +5,12 @@ import { PrefabType } from "../config/PrefabType";
 import { BuildingBtnView } from "../views/map/BuildingBtnView";
 import EventManager from "../util/EventManager";
 import { EventType } from "../config/EventType";
+import { BaseComponent } from "../script/BaseComponent";
 const { ccclass, property } = _decorator;
 
 //建筑模型
 @ccclass('BuildingModel')
-export class BuildingModel extends Component {
+export class BuildingModel extends BaseComponent {
     @property(Sprite)
     public building:Sprite = null;//建筑
     @property(Node)
@@ -22,9 +23,7 @@ export class BuildingModel extends Component {
     private _x:number;//x格子坐标
     private _y:number;//y格子坐标
     private _width:number;//宽
-    // private _node:Node = null;//节点
     private _grids:GridModel[];//格子
-    // private _nodePos:Vec3;//节点位置
     private _isFlip:boolean = false;//是否翻转
     private _isShow:boolean = false;//是否显示
     private _isNew:boolean = false;//是否是新建
@@ -38,7 +37,6 @@ export class BuildingModel extends Component {
     private _btnView:Node = null;//建筑按钮界面
 
     // private _mapScaleHandle:string//地图缩放事件句柄
-    private _zIndex:number = 0;//层级
     private _pos:Vec3 = new Vec3(0, 0, 0);//位置
 
     // 初始化事件
@@ -95,7 +93,7 @@ export class BuildingModel extends Component {
         // if(!this._dataGrids){
         //     this._dataGrids = this._grids;
         // }
-        let index = this._x * this._y;
+        let index = -pos.y;//(this._x + this._width*0.5) * (this._y + this._width*0.5);
         this._zIndex = index;
         this.label.string = index.toString();
         this.refreshBtnView();
@@ -119,9 +117,6 @@ export class BuildingModel extends Component {
     }
     set isNew(isNew:boolean) {
         this._isNew = isNew;
-    }
-    get ZIndex():number {
-        return this._zIndex;
     }
     public get pos():Readonly<Vec3> {
         return this._pos;
