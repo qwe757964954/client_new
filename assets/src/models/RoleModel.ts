@@ -220,7 +220,7 @@ export class RoleModel extends BaseComponent {
     /** 点击显示 */
     public onClickShow() {
         this.standby();
-        ViewsManager.instance.showAlert(TextConfig.Role_Text1);//TODO 效果
+        ViewsManager.showAlert(TextConfig.Role_Text1);//TODO 效果
     }
     /** 拖拽开始 */
     public onDragStart() {

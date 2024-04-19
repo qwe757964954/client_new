@@ -233,7 +233,7 @@ export class MainScene extends Component {
         if (grid) {
             role.onDragEnd(pos.x, pos.y);
         } else {
-            ViewsManager.instance.showTip(TextConfig.Role_Text2);
+            ViewsManager.showTip(TextConfig.Role_Text2);
             role.onDragEndEx();
         }
     }

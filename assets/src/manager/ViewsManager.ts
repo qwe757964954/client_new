@@ -77,14 +77,14 @@ export class ViewsManager {
         return false;
     }
     // 显示弹框
-    showAlert(content: string, callBack?: Function) {
-        this.showView(PrefabType.PopView, (node: Node) => {
+    static showAlert(content: string, callBack?: Function) {
+        ViewsManager.instance.showView(PrefabType.PopView, (node: Node) => {
             node.getComponent(PopView).init(content, callBack);
         });
     }
     // 显示提示
-    showTip(content: string, callBack?: Function) {
-        this.showView(PrefabType.TipView, (node: Node) => {
+    static showTip(content: string, callBack?: Function) {
+        ViewsManager.instance.showView(PrefabType.TipView, (node: Node) => {
             node.getComponent(TipView).init(content, callBack);
         });
     }
