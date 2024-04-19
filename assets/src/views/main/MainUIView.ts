@@ -5,6 +5,7 @@ import { MainScene } from './MainScene';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { PrefabConfig, PrefabType } from '../../config/PrefabType';
 import { PopView } from '../common/PopView';
+import { TipView } from '../common/TipView';
 const { ccclass, property } = _decorator;
 
 @ccclass('MainUIView')
@@ -124,8 +125,8 @@ export class MainUIView extends Component {
     }
     //学习点击
     public onClickStudy() {
-        ViewsManager.instance.showView(PrefabType.PopView, (node: Node) => {
-            node.getComponent(PopView).init("学习");
+        ViewsManager.instance.showView(PrefabType.TipView, (node: Node) => {
+            node.getComponent(TipView).init("测试学习测试学习测试学习测试学习测试学习");
         });
     }
 }
