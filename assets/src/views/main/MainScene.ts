@@ -19,6 +19,7 @@ import { PrefabType } from '../../config/PrefabType';
 import { BuildingProduceView } from '../map/BuildingProduceView';
 import { BgModel } from '../../models/BgModel';
 import { NetManager } from '../../net/NetManager';
+import { RoleModel } from '../../models/RoleModel';
 const { ccclass, property } = _decorator;
 
 @ccclass('MainScene')
@@ -204,6 +205,36 @@ export class MainScene extends Component {
             this.changeMapStatus(MapStatus.BUILD_EDIT);
         }
     }
+    /** 角色点击 */
+    onRoleClick(role: RoleModel) {
+        if (!role) return;
+        console.log("onRoleClick", role);
+        role.onClickShow();
+    }
+    /** 角色拖动开始 */
+    onRoleDragStart(role: RoleModel) {
+        if (!role) return;
+        console.log("onRoleDragStart", role);
+        role.onDragStart();
+    }
+    /** 角色拖动 */
+    onRoleDrag(role: RoleModel, dtX: number, dtY: number) {
+        if (!role) return;
+        // console.log("onRoleDrag", role, x, y);
+        role.onDrag(dtX * this.cameraRate, dtY * this.cameraRate);
+    }
+    /** 角色拖动结束 */
+    onRoleDragEnd(role: RoleModel) {
+        if (!role) return;
+        console.log("onRoleDragEnd", role);
+        let pos = role.pos;
+        let grid = this._mapUICtl.getGridByPos(pos.x, pos.y);
+        if (grid) {
+            role.onDragEnd(pos.x, pos.y);
+        } else {
+            role.onDragEndEx();
+        }
+    }
     // 新建建筑与地块
     onBuidLandClick(data: EditInfo) {
         console.log("onBuidLandClick", data);
@@ -253,25 +284,7 @@ export class MainScene extends Component {
         this.getMapCtl().nextStepEvent();
     }
 
-    // 获取当前场景控制器
-    // getMapCtl(){
-    //     if(MapStatus.DEFAULT == this._mapStatus){
-    //         return this._mapNormalCtl;
-    //     }
-    //     if(MapStatus.EDIT == this._mapStatus){
-    //         return this._mapEditCtl;
-    //     }
-    //     if(MapStatus.BUILD_EDIT == this._mapStatus){
-    //         return this._buildingEditCtl;
-    //     }
-    //     if(MapStatus.LAND_EDIT == this._mapStatus){
-    //         return this._landEditCtl;
-    //     }
-    //     if(MapStatus.RECYCLE == this._mapStatus){
-    //         return this._recycleCtl;
-    //     }
-    //     return this._mapNormalCtl;
-    // }
+    /** 获取当前场景控制器 */
     getMapCtl(status?: MapStatus) {
         if (!status) status = this._mapStatus;
         if (MapStatus.DEFAULT == status) {
@@ -291,7 +304,7 @@ export class MainScene extends Component {
         }
         return this._mapNormalCtl;
     }
-    // 摄像头缩放大小
+    /** 摄像头缩放大小 */
     get cameraRate(): number {
         return this._mapUICtl.cameraRate;
     }
