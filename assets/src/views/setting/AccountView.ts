@@ -47,6 +47,7 @@ export class AccountView extends Component {
     // 会员中心
     btnVipCenterFunc() {
         console.log("btnVipCenterFunc");
+        ViewsManager.instance.showView(PrefabType.MemberCentreView);
     }
     // 意见反馈
     btnFanKuiFunc() {

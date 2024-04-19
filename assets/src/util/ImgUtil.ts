@@ -18,6 +18,11 @@ export default class ImgUtil {
         // return GameData.ASSETS_URL + "/assets/imgs/icon/avatar/" + avatar + ".png";
         return "icon/avatar/" + avatar + "/spriteFrame";
     }
+
+    static getActiveUrl = function (active) {
+        
+    }
+
 }
 
 /**

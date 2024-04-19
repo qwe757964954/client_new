@@ -40,7 +40,7 @@ export default class NetConfig {
     public static wechatLogin = this.getCurrentUrl() + "/api/wechatlogin";//微信登录
     public static accountLogin = this.getCurrentUrl() + "/api/account_login";//账号密码登录
     public static selectServer = baseUrl3 + "/select_server"; //测试服选择服务器
-
+    
     private static getCurrentUrl() {
         return this.currentUrl;
     }
