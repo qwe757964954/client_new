@@ -5,6 +5,7 @@ export const SceneType = {
     LoadingScene: "LoadingScene",
     LoginScene: "LoginScene",
     MainScene: "MainScene",
+    WorldMapScene: "WorldMapViewManager",
 }
 /**窗口层级 */
 export enum Hierarchy {

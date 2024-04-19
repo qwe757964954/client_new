@@ -56,6 +56,10 @@ export class RoleModel extends BaseComponent {
         this.removeEvent();
         LoadManager.releaseAssets(this._loadAssetAry);
         this._loadAssetAry = [];
+        if (this._timer) {
+            TimerMgr.stopLoop(this._timer);
+            this._timer = null;
+        }
     }
     // 初始化
     public async init(roleID: number, propID: number[]) {

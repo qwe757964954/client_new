@@ -116,11 +116,11 @@ export class MainScene extends Component {
     }
     // 移除事件
     removeEvent() {
-        this.touchCanvas.node.off(Node.EventType.MOUSE_WHEEL);
-        this.touchCanvas.node.off(Node.EventType.TOUCH_START);
-        this.touchCanvas.node.off(Node.EventType.TOUCH_MOVE);
-        this.touchCanvas.node.off(Node.EventType.TOUCH_END);
-        this.touchCanvas.node.off(Node.EventType.TOUCH_CANCEL);
+        this.touchCanvas.node?.off(Node.EventType.MOUSE_WHEEL);
+        this.touchCanvas.node?.off(Node.EventType.TOUCH_START);
+        this.touchCanvas.node?.off(Node.EventType.TOUCH_MOVE);
+        this.touchCanvas.node?.off(Node.EventType.TOUCH_END);
+        this.touchCanvas.node?.off(Node.EventType.TOUCH_CANCEL);
 
         EventManager.off(EventType.BuildingBtnView_Close, this._buildingBtnViewCloseHandle);
     }

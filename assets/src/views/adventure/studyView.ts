@@ -1,6 +1,6 @@
-import { _decorator, Component, Node, view } from 'cc';
+import { _decorator, Component, director, Node, view } from 'cc';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { PrefabType } from '../../config/PrefabType';
+import { PrefabType, SceneType } from '../../config/PrefabType';
 import CCUtil from '../../util/CCUtil';
 import EventManager from '../../util/EventManager';
 import { EventType } from '../../config/EventType';
@@ -14,7 +14,7 @@ export class studyView extends Component {
 
     @property({ type: [Node], tooltip: "关卡选择" })
     public levelArr: Node[] = [];
-    
+
     @property({ type: Node, tooltip: "关闭按钮" })
     public closeBtn: Node = null;
     start() {
@@ -35,7 +35,7 @@ export class studyView extends Component {
     }
     /**关闭页面 TODO*/
     private closeView() {
-        
+        director.loadScene(SceneType.MainScene);
     }
     /**初始化监听事件 */
     initEvent() {
@@ -47,7 +47,7 @@ export class studyView extends Component {
     private levelClick(i: number) {
         console.log(i)
         EventManager.emit(EventType.study_page_switching, [i]);
-     
+
     }
     /**移除监听 */
     removeEvent() {

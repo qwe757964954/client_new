@@ -44,12 +44,12 @@ export class MapUICtl extends MainBaseCtl {
         // this._gridAry.forEach(element => {
         //     element.dispose();
         // });
-        this._bgModelAry.forEach(element => {
-            element.dispose();
-        });
-        this._roleModelAry.forEach(element => {
-            element.dispose();
-        });
+        // this._bgModelAry.forEach(element => {
+        //     element.dispose();
+        // });
+        // this._roleModelAry.forEach(element => {
+        //     element.dispose();
+        // });
         this._gridAry = [];
         this._bgModelAry = [];
         this._roleModelAry = [];
