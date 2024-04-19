@@ -1,4 +1,6 @@
 import { _decorator, Component } from 'cc';
+import { ViewsManager } from '../../manager/ViewsManager';
+import { PrefabType } from '../../config/PrefabType';
 const { ccclass, property } = _decorator;
 
 @ccclass('AccountView')
@@ -28,6 +30,7 @@ export class AccountView extends Component {
     // 激活码激活
     btnJiHuoFunc() {
         console.log("btnJiHuoFunc");
+        ViewsManager.instance.showView(PrefabType.AccountActivationView);
     }
     // 充值
     btnChongZhiFunc() {
