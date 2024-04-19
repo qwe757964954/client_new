@@ -1,3 +1,4 @@
+import { EventType } from "../config/EventType";
 import { c2sAccountEditRealName, c2sAccountInit, c2sAccountStudyWord, c2sPropMyList } from "../models/NetModel";
 import EventManager from "../util/EventManager";
 import { Socket } from "./Socket";
@@ -5,6 +6,8 @@ import { Socket } from "./Socket";
 export class NetManager {
     public serverUrl: string;//服务器地址
     public serverPort: number;//服务器端口
+    public webPort: number = 8080;//web服务器端口
+    public memberToken: string;//用户token
 
     private _socket: Socket = null;
     private _reconnceTime: number;//重连次数
@@ -57,6 +60,7 @@ export class NetManager {
     public onConnect() {
         console.log("onConnect");
         this._reconnceTime = 0;
+        EventManager.emit(EventType.Socket_Connect);
     }
     //socket接收消息
     public onRecvMsg(data: string) {

@@ -1,11 +1,19 @@
-import { _decorator, Component, director, EditBox, EventTouch, Label, Node, Sprite, sys, Toggle } from 'cc';
+import { _decorator, Component, director, EditBox, EventTouch, instantiate, Label, log, Node, Prefab, Sprite, sys, Toggle } from 'cc';
 import { LoadManager } from '../../manager/LoadManager';
 import StorageUtil from '../../util/StorageUtil';
 import { HttpManager } from '../../net/HttpManager';
 import { TimerMgr } from '../../util/TimerMgr';
 import { HTML5, NATIVE } from 'cc/env';
-import { NetConfig } from '../../config/NetConfig';
 import { DataMgr } from '../../manager/DataMgr';
+import NetConfig from '../../config/NetConfig';
+import { ServerItem } from './ServerItem';
+import { ViewsManager } from '../../manager/ViewsManager';
+import { PrefabType } from '../../config/PrefabType';
+import { PopView } from '../common/PopView';
+import { NetManager } from '../../net/NetManager';
+import EventManager from '../../util/EventManager';
+import { EventType } from '../../config/EventType';
+import ServiceManager from '../../net/ServiceManager';
 const { ccclass, property } = _decorator;
 
 // 隐私协议是否勾选过
@@ -16,47 +24,56 @@ const LOGIN_INFO_KEY = "login_info_key";
 @ccclass('LoginView')
 export class LoginView extends Component {
     @property(Node)
-    public middle:Node = null;              // middle节点
+    public middle: Node = null;              // middle节点
 
     @property(Node)
-    public downLoadBox:Node = null;         // downLoadBox
+    public downLoadBox: Node = null;         // downLoadBox
     @property(Node)
-    public appleQrCode:Node = null;         // qrCode-apple
+    public appleQrCode: Node = null;         // qrCode-apple
 
     @property(Node)
-    public loginBox:Node = null;            // 账号密码节点
+    public loginBox: Node = null;            // 账号密码节点
     @property(EditBox)
-    public userNameEdit:EditBox = null;     // 用户名输入框
+    public userNameEdit: EditBox = null;     // 用户名输入框
     @property(EditBox)
-    public pwdEdit:EditBox = null;          // 密码输入框
+    public pwdEdit: EditBox = null;          // 密码输入框
     @property(Node)
-    public eyeHide:Node = null;             // btnEye节点
+    public eyeHide: Node = null;             // btnEye节点
     @property(Node)
-    public eyeShow:Node = null;             // btnEye节点
+    public eyeShow: Node = null;             // btnEye节点
 
     @property(Node)
-    public inputPhoneBox:Node = null;       // 手机号输入框节点
+    public inputPhoneBox: Node = null;       // 手机号输入框节点
     @property(EditBox)
-    public phoneEdit:EditBox = null;        // 手机号输入框
+    public phoneEdit: EditBox = null;        // 手机号输入框
     @property(Node)
-    public getCodeBox:Node = null;          // 验证码输入框节点
+    public getCodeBox: Node = null;          // 验证码输入框节点
     @property(EditBox)
-    public codeEdit:EditBox = null;         // 验证码输入框
+    public codeEdit: EditBox = null;         // 验证码输入框
     @property(Node)
-    public codeButton:Node = null;          // 验证码重新获取按钮
+    public codeButton: Node = null;          // 验证码重新获取按钮
     @property(Label)
-    public codeTime:Label = null;           // 验证码倒计时
+    public codeTime: Label = null;           // 验证码倒计时
 
     @property(Node)
-    public privacyAgreeBox:Node = null;     // 隐私协议节点
+    public privacyAgreeBox: Node = null;     // 隐私协议节点
     @property(Node)
-    public agreeTip:Node = null;            // 提示节点
+    public agreeTip: Node = null;            // 提示节点
 
-    private _codeTime:number = 60;          // 验证码时间
-    private _loopID:number = 0;             // 验证码循环id
+    @property(Prefab)
+    serverItemPrefab: Prefab = null;        // 服务器item
+    @property(Node)
+    serverContent: Node = null;              // 服务器列表content
+    serverItemList: Node[] = [];             // 服务器item列表
+
+    private _codeTime: number = 60;          // 验证码时间
+    private _loopID: number = 0;             // 验证码循环id
+
+    private _isRequest: boolean = false;      // 是否正在请求
+    private _socketConnectHandler: string; // socket连接回调事件
 
     start() {
-        
+
     }
 
     protected onEnable(): void {
@@ -65,7 +82,39 @@ export class LoginView extends Component {
         // token检查
         this.checkToken();
 
+        HttpManager.reqSelectServer((obj) => {
+            console.log("reqSelectServer obj = ", obj);
+            let available_server = obj.available_server;
+            for (let k in available_server) {
+                let serverItem = instantiate(this.serverItemPrefab);
+                if (serverItem) {
+                    serverItem.getComponent(ServerItem).setData(k, available_server[k]);
+                    serverItem.parent = this.serverContent;
+                    serverItem.on(Node.EventType.TOUCH_END, this.onServerItemClick, this);
+                    this.serverItemList.push(serverItem);
+                }
+            }
+            if (this.serverItemList.length > 0) {
+                this.serverItemList[0].getComponent(ServerItem).selected = true;
+            }
+        }, () => {
+            console.log("reqSelectServer failed");
+        });
+
         DataMgr.instance.initData();
+    }
+
+    onServerItemClick(event: EventTouch) {
+        let item = event.target;
+        for (let i = 0; i < this.serverItemList.length; i++) {
+            let serverItem = this.serverItemList[i];
+            if (serverItem == item) {
+                serverItem.getComponent(ServerItem).selected = true;
+            }
+            else {
+                serverItem.getComponent(ServerItem).selected = false;
+            }
+        }
     }
 
     checkToken() {
@@ -77,11 +126,18 @@ export class LoginView extends Component {
         }
         try {
             let loginInfo = JSON.parse(loginInfoStr);
+            if (loginInfo.AccountName && loginInfo.LoginPwd) {
+                this.userNameEdit.string = loginInfo.AccountName;
+                this.pwdEdit.string = loginInfo.LoginPwd;
+            }
+            this._isRequest = true;
             HttpManager.reqTokenLogin(loginInfo?.LoginToken, (obj) => {
+                this._isRequest = false;
                 if (!this.loginSuc(obj)) {
                     this.initUI();
                 }
             }, () => {
+                this._isRequest = false;
                 this.initUI();
             });
         } catch (error) {
@@ -114,7 +170,7 @@ export class LoginView extends Component {
     }
 
     update(deltaTime: number) {
-        
+
     }
 
     // 密码眼睛切换文本
@@ -154,6 +210,7 @@ export class LoginView extends Component {
 
     // 账号密码登录
     btnLoginFunc() {
+        if (this._isRequest) return;
         let isChecked = (this.privacyAgreeBox.getComponent(Toggle)).isChecked;
         console.log("btnLoginFunc isChecked = ", isChecked);
         if (!isChecked) {
@@ -166,10 +223,13 @@ export class LoginView extends Component {
             console.log("账号密码不能为空");
             return;
         }
+        this._isRequest = true;
         HttpManager.reqAccountLogin(userName, pwd, 0, (obj) => {
             this.loginSuc(obj);
+            this._isRequest = false;
         }, () => {
             console.log("账号密码登录失败");
+            this._isRequest = false;
         })
     }
 
@@ -275,15 +335,15 @@ export class LoginView extends Component {
     // 下载
     btnDownLoadFunc(data: Event, customEventData: string) {
         console.log("btnDownLoadFunc customEventData = ", customEventData);
-		if (customEventData == "Goole") {
-			sys.openURL(NetConfig.gooleDown);
-		}
+        if (customEventData == "Goole") {
+            sys.openURL(NetConfig.gooleDown);
+        }
         else if (customEventData == "Android") {
-			sys.openURL(NetConfig.androidDown);
-		}
+            sys.openURL(NetConfig.androidDown);
+        }
         else if (customEventData == "Apple") {
-			this.appleQrCode.active = !this.appleQrCode.active;
-		}
+            this.appleQrCode.active = !this.appleQrCode.active;
+        }
     }
 
     // {
@@ -310,16 +370,39 @@ export class LoginView extends Component {
             console.log(obj.Msg);
             return false;
         }
-        // 登录成功
-        console.log("登录成功");
+        if (obj.op_code == "disable") {
+            alert("账号已被禁用，请联系客服！");
+            return false;
+        } else if (obj.op_code == "die") {
+            alert("账号或密码错误！");
+            return false;
+        }
         StorageUtil.saveData(LOGIN_INFO_KEY, JSON.stringify({
             LoginToken: obj.LoginToken,
             MemberToken: obj.MemberToken,
-            Mobile: obj.Mobile
+            Mobile: obj.Mobile,
+            AccountName: this.userNameEdit.string,
+            LoginPwd: this.pwdEdit.string
         }));
+
+        NetManager.instance().webPort = obj["WebPort"];
+        NetManager.instance().memberToken = obj["MemberToken"];
+        NetManager.instance().setServer(obj["WebSocketAddr"], obj["WebSocketPort"]);
+        this._socketConnectHandler = EventManager.on(EventType.Socket_Connect, this.onSocketConnect.bind(this));
+        NetManager.instance().connectNet();
+        return true;
+    }
+
+    // socket连接成功
+    onSocketConnect() {
+        ServiceManager.i.accountService.accountInit(NetManager.instance().memberToken);
         // 跳转主界面
         console.log("跳转主界面");
         director.loadScene("MainScene");
-        return true;
+    }
+
+    onDestroy() {
+        if (this._socketConnectHandler)
+            EventManager.off(EventType.Socket_Connect, this._socketConnectHandler);
     }
 }
