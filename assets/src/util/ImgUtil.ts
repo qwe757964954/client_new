@@ -1,9 +1,8 @@
-import { NetConfig } from "../config/NetConfig";
 
 /**
  * 图片工具类
  */
-export default class ImgUtil{
+export default class ImgUtil {
 
     //【静态方法】获取道具Url
     static getPropImgUrl = function (propId) {

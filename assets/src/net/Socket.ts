@@ -8,47 +8,43 @@ import { NetManager } from "./NetManager";
 
 export class Socket {
 
-    private ip:string;
+    private ip: string;
     private timer;
-    private noRecvMsgTimes:number = 0;
+    private noRecvMsgTimes: number = 0;
 
-    private _socket:WebSocket;
+    private _socket: WebSocket;
     public closeFun: ((this: Socket) => any) | null;
     public errorFun: ((this: Socket) => any) | null;
-    public recvFun: ((this: Socket, data:string) => any) | null;
+    public recvFun: ((this: Socket, data: string) => any) | null;
     public openFun: ((this: Socket) => any) | null;
 
-    public isConnected(){
-        if(this._socket && this._socket.readyState == WebSocket.CONNECTING){
+    public isConnected() {
+        if (this._socket && this._socket.readyState == WebSocket.CONNECTING) {
             return true;
         }
         return false;
     }
 
-    private clearTimer(){
-        if(this.timer){
+    private clearTimer() {
+        if (this.timer) {
             clearInterval(this.timer);
             this.timer = null;
         }
     }
 
-    private sendHeartMsg(){
+    private sendHeartMsg() {
 
     }
 
-    public closeSocket(){
-        if(this._socket){
+    public closeSocket() {
+        if (this._socket) {
             this._socket.close();
             this._socket = null;
         }
-        this.openFun = null;
-        this.recvFun = null;
-        this.errorFun = null;
-        this.closeFun = null;
     }
 
     //ip like ws://192.168.2.31:8083
-    public connect(ip:string){
+    public connect(ip: string) {
         this.ip = ip;
         this.noRecvMsgTimes = 0;
 
@@ -73,33 +69,33 @@ export class Socket {
         //     }
         // },10000);
     }
-    
-    public sendMsg(msg?:string){
-        if(this._socket && this._socket.readyState === WebSocket.OPEN){
+
+    public sendMsg(msg?: string) {
+        if (this._socket && this._socket.readyState === WebSocket.OPEN) {
             this._socket.send(msg);
         }
     }
 
-    private onOpen(){
-        if(this.openFun){
+    private onOpen() {
+        if (this.openFun) {
             this.openFun();
         }
     }
-    private onMessage(msg){
+    private onMessage(msg) {
         this.noRecvMsgTimes = 0;
-        let buffer:string = msg.data;
-        if(!buffer) { return; }
-        if(this.recvFun){
+        let buffer: string = msg.data;
+        if (!buffer) { return; }
+        if (this.recvFun) {
             this.recvFun(buffer);
         }
     }
-    private onError(){
-        if(this.errorFun){
+    private onError() {
+        if (this.errorFun) {
             this.errorFun();
         }
     }
-    private onClose(){
-        if(this.closeFun){
+    private onClose() {
+        if (this.closeFun) {
             this.closeFun();
         }
     }
