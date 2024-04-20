@@ -1,6 +1,6 @@
 import { _decorator, Asset, Camera, Canvas, Color, Component, EventMouse, EventTouch, Graphics, instantiate, Intersection2D, Label, Layers, Node, Prefab, screen, Sprite, SpriteFrame, sys, Texture2D, UITransform, Vec2, Vec3, View } from 'cc';
 import { LoadManager } from '../../manager/LoadManager';
-import { EditInfo, EditType, MapConfig, MapStatus } from '../../config/MapConfig';
+import { MapStatus } from '../../config/MapConfig';
 import { BuildingModel } from '../../models/BuildingModel';
 import EventManager from '../../util/EventManager';
 import { EventType } from '../../config/EventType';
@@ -21,6 +21,7 @@ import { BgModel } from '../../models/BgModel';
 import { NetManager } from '../../net/NetManager';
 import { RoleModel } from '../../models/RoleModel';
 import { TextConfig } from '../../config/TextConfig';
+import { EditInfo, EditType } from '../../manager/DataMgr';
 const { ccclass, property } = _decorator;
 
 @ccclass('MainScene')
@@ -39,6 +40,8 @@ export class MainScene extends Component {
     public landLayer: Node = null;//地块层
     @property(Node)
     public lineLayer: Node = null;//编辑层
+    @property(Node)
+    public graphicsLayer: Node = null;//绘画层
     @property(Node)
     public buildingLayer: Node = null;//建筑层
     @property(Camera)
@@ -193,6 +196,7 @@ export class MainScene extends Component {
                     building.pos = pos;
                     building.setCameraType(Layers.Enum.DEFAULT);
                     this.mainUIView.node.active = true;
+                    this._mapUICtl.buildingSort();
                 });
             });
         }
@@ -263,6 +267,7 @@ export class MainScene extends Component {
         this.mainUIView.node.active = MapStatus.DEFAULT == status;
         this.editUIView.node.active = (MapStatus.EDIT == status || MapStatus.BUILD_EDIT == status);
         this.landEditUIView.node.active = MapStatus.LAND_EDIT == status;
+        this.graphicsLayer.active = MapStatus.BUILD_EDIT == status;
         this._mapUICtl.roleIsShow = MapStatus.DEFAULT == status;
         let ctl = this.getMapCtl();
         ctl.clearData();

@@ -4,17 +4,17 @@ import { LandModel } from "./LandModel";
 //格子模型
 export class GridModel {
     // y从上往下，x从右往左
-    private _x:number;//x格子坐标(上面尖角x)
-    private _y:number;//y格子坐标(上面尖角y)
-    private _pos:Vec3;//位置(定点)
-    private _width:number;//宽
-    private _height:number;//高
-    private _building:BuildingModel = null;//建筑（可能是临时的）
-    private _land:LandModel = null;//地块
+    private _x: number;//x格子坐标(上面尖角x)
+    private _y: number;//y格子坐标(上面尖角y)
+    private _pos: Vec3;//位置(顶点)
+    private _width: number;//宽
+    private _height: number;//高
+    private _building: BuildingModel = null;//建筑（可能是临时的）
+    private _land: LandModel = null;//地块
 
-    private _dataBuilding:BuildingModel = null;//数据建筑
+    private _dataBuilding: BuildingModel = null;//数据建筑
 
-    constructor(x:number, y:number, pos:Vec3, width:number, height:number) {
+    constructor(x: number, y: number, pos: Vec3, width: number, height: number) {
         this._x = x;
         this._y = y;
         this._pos = pos;
@@ -22,31 +22,31 @@ export class GridModel {
         this._height = height;
     }
 
-    get pos():Readonly<Vec3> {
+    get pos(): Readonly<Vec3> {
         return this._pos;
     }
-    get x():number {
+    get x(): number {
         return this._x;
     }
-    get y():number {
+    get y(): number {
         return this._y;
     }
-    get width():number {
+    get width(): number {
         return this._width;
     }
-    get height():number {
+    get height(): number {
         return this._height;
     }
-    get building():BuildingModel {
+    get building(): BuildingModel {
         return this._building;
     }
-    set building(model:BuildingModel) {
+    set building(model: BuildingModel) {
         this._building = model;
     }
-    get land():LandModel {
+    get land(): LandModel {
         return this._land;
     }
-    set land(model:LandModel) {
+    set land(model: LandModel) {
         this._land = model;
     }
     //保存数据
@@ -65,7 +65,7 @@ export class GridModel {
     //是否建筑可以摆放
     isCanBuilding() {
         // console.log("isSameBuilding", this._building, this._dataBuilding);
-        if(!this._dataBuilding) return true;
+        if (!this._dataBuilding) return true;
         return this._building === this._dataBuilding;
     }
 }

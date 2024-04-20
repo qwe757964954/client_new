@@ -1,23 +1,25 @@
 import { _decorator, Asset, Component, Label, Sprite, SpriteFrame, Vec3 } from "cc";
 import { GridModel } from "./GridModel";
 import { LoadManager } from "../manager/LoadManager";
-import { EditInfo } from "../config/MapConfig";
+import { DataMgr, EditInfo } from "../manager/DataMgr";
+import { ToolUtil } from "../util/ToolUtil";
+import { TextConfig } from "../config/TextConfig";
 const { ccclass, property } = _decorator;
 
 //地块模型
 @ccclass('LandModel')
-export class LandModel  extends Component {
+export class LandModel extends Component {
     // y从上往下，x从右往左
-    private _x:number;//x格子坐标
-    private _y:number;//y格子坐标
-    private _width:number;//宽
-    private _grids:GridModel[];//格子
+    private _x: number;//x格子坐标
+    private _y: number;//y格子坐标
+    private _width: number;//宽
+    private _grids: GridModel[];//格子
 
     // private _landID:number;//地块id
-    private _landInfo:EditInfo;//地块信息
-    private _loadAssetAry:Asset[] = [];//加载资源数组
+    private _landInfo: EditInfo;//地块信息
+    private _loadAssetAry: Asset[] = [];//加载资源数组
 
-    private _dataLandInfo:EditInfo;//数据地块信息
+    private _dataLandInfo: EditInfo;//数据地块信息
 
     // 销毁
     protected onDestroy(): void {
@@ -28,18 +30,18 @@ export class LandModel  extends Component {
         LoadManager.releaseAssets(this._loadAssetAry);
         this._loadAssetAry = [];
     }
-    get x():number {
+    get x(): number {
         return this._x;
     }
-    get y():number {
+    get y(): number {
         return this._y;
     }
-    get width():number {
+    get width(): number {
         return this._width;
     }
 
     // 初始化数据
-    public initData(x:number, y:number, width:number, landInfo:EditInfo) {
+    public initData(x: number, y: number, width: number, landInfo: EditInfo) {
         this._x = x;
         this._y = y;
         this._width = width;
@@ -51,9 +53,9 @@ export class LandModel  extends Component {
         this.getComponentInChildren(Label).node.active = false;
     }
 
-    public set grids(grids:GridModel[]) {
-        if(this._grids) return;
-        if(grids.length != this._width*this._width){
+    public set grids(grids: GridModel[]) {
+        if (this._grids) return;
+        if (grids.length != this._width * this._width) {
             console.log("grids error data");
             return;
         }
@@ -66,34 +68,34 @@ export class LandModel  extends Component {
         this._x = gridInfo.x;
         this._y = gridInfo.y;
         let gridPos = gridInfo.pos;
-        let pos = new Vec3(gridPos.x, gridPos.y - this._width*gridInfo.height, 0);
+        let pos = new Vec3(gridPos.x, gridPos.y - this._width * gridInfo.height, 0);
         this.node.position = pos;
     }
     //显示地块
     public showLand() {
         this.releaseAsset();
-        LoadManager.load(this._landInfo.path, SpriteFrame).then((spriteFrame:SpriteFrame) => {
+        LoadManager.load(DataMgr.getEditPng(this._landInfo), SpriteFrame).then((spriteFrame: SpriteFrame) => {
             this.getComponent(Sprite).spriteFrame = spriteFrame;
             this._loadAssetAry.push(spriteFrame);
         });
     }
     // 设置地块
-    public set landInfo(landInfo:EditInfo) {
-        if(landInfo.id == this._landInfo.id){
+    public set landInfo(landInfo: EditInfo) {
+        if (landInfo.id == this._landInfo.id) {
             return;
         }
         this._landInfo = landInfo;
         this.showLand();
     }
     // 批量刷地块
-    public refreshLand(landInfo:EditInfo) {
-        if(!landInfo) return;
+    public refreshLand(landInfo: EditInfo) {
+        if (!landInfo) return;
         this.landInfo = landInfo;
     }
     // 单个刷地块
-    public refreshOneLand(landInfo:EditInfo) {
-        if(!landInfo) return;
-        if(landInfo.id == this._landInfo.id){
+    public refreshOneLand(landInfo: EditInfo) {
+        if (!landInfo) return;
+        if (landInfo.id == this._landInfo.id) {
             this.recover();
             return;
         }
