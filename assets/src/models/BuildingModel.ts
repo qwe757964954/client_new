@@ -8,6 +8,7 @@ import { EventType } from "../config/EventType";
 import { BaseComponent } from "../script/BaseComponent";
 import { ViewsManager } from "../manager/ViewsManager";
 import { BuildingInfoView } from "../views/map/BuildingInfoView";
+import { DataMgr, EditInfo } from "../manager/DataMgr";
 const { ccclass, property } = _decorator;
 
 //建筑模型
@@ -20,6 +21,7 @@ export class BuildingModel extends BaseComponent {
     @property(Label)
     public label: Label = null;//文本
 
+    private _editInfo: EditInfo;//编辑信息
 
     // y从上往下，x从右往左
     private _x: number;//x格子坐标
@@ -40,6 +42,7 @@ export class BuildingModel extends BaseComponent {
 
     // private _mapScaleHandle:string//地图缩放事件句柄
     private _pos: Vec3 = new Vec3(0, 0, 0);//位置
+    private _isFixImgPos: boolean = false;//是否固定图片位置
 
     // 初始化事件
     public initEvent() {
@@ -50,10 +53,11 @@ export class BuildingModel extends BaseComponent {
         // EventManager.off(EventType.Map_Scale, this._mapScaleHandle);
     }
     // 初始化数据
-    initData(x: number, y: number, width: number, path: string, isFlip: boolean, isNew: boolean) {
+    initData(x: number, y: number, editInfo: EditInfo, isFlip: boolean, isNew: boolean) {
+        this._editInfo = editInfo;
         this._x = x;
         this._y = y;
-        this._width = width;
+        this._width = editInfo.width;
         this.isFlip = isFlip;
         this._dataIsFlip = isFlip;
         this._isShow = true;
@@ -62,7 +66,7 @@ export class BuildingModel extends BaseComponent {
 
         this.label.node.active = false;
 
-        LoadManager.load(path, SpriteFrame).then((spriteFrame: SpriteFrame) => {
+        LoadManager.load(DataMgr.getEditPng(this._editInfo), SpriteFrame).then((spriteFrame: SpriteFrame) => {
             this.building.spriteFrame = spriteFrame;
             this._loadAssetAry.push(spriteFrame);
         });
@@ -92,6 +96,10 @@ export class BuildingModel extends BaseComponent {
         let gridPos = gridInfo.pos;
         let pos = new Vec3(gridPos.x, gridPos.y - 0.5 * this._width * gridInfo.height, 0);
         this.pos = pos;
+        if (!this._isFixImgPos) {
+            this.building.node.position = new Vec3(0, -0.5 * this._width * gridInfo.height, 0);
+            this._isFixImgPos = true;
+        }
         // if(!this._dataGrids){
         //     this._dataGrids = this._grids;
         // }
@@ -99,10 +107,11 @@ export class BuildingModel extends BaseComponent {
         this._zIndex = index;
         this.label.string = index.toString();
         this.refreshBtnView();
+        EventManager.emit(EventType.GridRect_Need_Draw, this);
     }
-    // public get grids():GridModel[] {
-    //     return this._grids;
-    // }
+    public get grids(): GridModel[] {
+        return this._grids;
+    }
     get width(): number {
         return this._width;
     }
@@ -153,6 +162,7 @@ export class BuildingModel extends BaseComponent {
     }
     // 显示按钮界面
     public showBtnView(scale: number): void {
+        this.topZIndex = true;
         this.node.setSiblingIndex(-1);//放到最高层
         this.building.color = new Color(255, 255, 255, 180);//半透明
         if (this._btnView) {
@@ -183,6 +193,7 @@ export class BuildingModel extends BaseComponent {
         if (this._btnView && this._btnView.active) {
             this.building.color = Color.WHITE;
             this._btnView.active = false;
+            this.topZIndex = false;
             EventManager.emit(EventType.BuildingBtnView_Close);
             EventManager.emit(EventType.Building_Need_Sort);
         }
@@ -263,6 +274,7 @@ export class BuildingModel extends BaseComponent {
         if (this._btnView && this._btnView.active) {
             this.building.color = Color.WHITE;
             this._btnView.active = false;
+            this.topZIndex = false;
         }
         if (this._isNew) {
             this.removeFromScene();

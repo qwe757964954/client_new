@@ -3,34 +3,35 @@ import CCUtil from '../../util/CCUtil';
 import { MapConfig, MapStatus } from '../../config/MapConfig';
 import { MainScene } from './MainScene';
 import { EditItem } from '../map/EditItem';
+import { DataMgr } from '../../manager/DataMgr';
 const { ccclass, property } = _decorator;
 
 @ccclass('EditUIView')
 export class EditUIView extends Component {
     @property(Sprite)
-    public btnAll:Sprite = null;//标题所有按钮
+    public btnAll: Sprite = null;//标题所有按钮
     @property(Sprite)
-    public btnSpecial:Sprite = null;//标题特殊按钮
+    public btnSpecial: Sprite = null;//标题特殊按钮
     @property(Sprite)
-    public btnBuiding:Sprite = null;//标题建筑按钮
+    public btnBuiding: Sprite = null;//标题建筑按钮
     @property(Sprite)
-    public btnDecoration:Sprite = null;//标题装饰按钮
+    public btnDecoration: Sprite = null;//标题装饰按钮
     @property(Sprite)
-    public btnLand:Sprite = null;//标题地块按钮
+    public btnLand: Sprite = null;//标题地块按钮
     @property(Sprite)
-    public btnClose:Sprite = null;//关闭按钮
+    public btnClose: Sprite = null;//关闭按钮
     @property(Prefab)
-    public editItem:Prefab = null;//编辑元素预制体
+    public editItem: Prefab = null;//编辑元素预制体
     @property(Node)
-    public scrollView:Node = null;//滚动视图
+    public scrollView: Node = null;//滚动视图
 
 
-    private _mainScene:MainScene = null;//主场景
+    private _mainScene: MainScene = null;//主场景
     start() {
         this.initEvent();
     }
     //设置主场景
-    public set mainScene(mainScene:MainScene){
+    public set mainScene(mainScene: MainScene) {
         this._mainScene = mainScene;
     }
     // 初始化事件
@@ -58,19 +59,19 @@ export class EditUIView extends Component {
     }
     // 标题所有按钮点击 
     onBtnAllClick() {
-        
+
     }
     // 标题特殊按钮点击 
     onBtnSpecialClick() {
-        
+
     }
     // 标题建筑按钮点击 
     onBtnBuidingClick() {
-        
+
     }
     // 标题装饰按钮点击 
     onBtnDecorationClick() {
-        
+
     }
     // 标题地块按钮点击 
     onBtnLandClick() {
@@ -87,7 +88,7 @@ export class EditUIView extends Component {
     // 初始化数据
     initData() {
         this.scrollView.removeAllChildren();
-        let editConfig = MapConfig.editInfo;
+        let editConfig = DataMgr.instance.editInfo;
         for (let key in editConfig) {
             if (Object.prototype.hasOwnProperty.call(editConfig, key)) {
                 let info = editConfig[key];
@@ -98,7 +99,7 @@ export class EditUIView extends Component {
         }
     }
     // 编辑元素点击
-    onEditItemClick(editItem:EditItem){
+    onEditItemClick(editItem: EditItem) {
         this._mainScene.onBuidLandClick(editItem.data);
     }
 }

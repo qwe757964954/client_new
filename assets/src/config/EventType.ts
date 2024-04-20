@@ -10,6 +10,7 @@ export const EventType = {
     Building_Need_Sort: "BuildingNeedSort",//建筑需要排序
     Role_Need_Move: "RoleNeedMove",//角色需要移动
     Role_Need_Sort: "RoleNeedSort",//角色需要排序
+    GridRect_Need_Draw: "GridRectNeedDraw",//格子需要绘制
 
     Energy_Update: "EnergyUpdate",//体力更新
     Coin_Update: "CoinUpdate",//金币更新
