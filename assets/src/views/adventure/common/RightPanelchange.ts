@@ -1,4 +1,4 @@
-import { _decorator, Component, instantiate, Node, Prefab, tween, v3 } from 'cc';
+import { _decorator, Component, instantiate, Label, Node, Prefab, tween, v3 } from 'cc';
 import CCUtil from '../../../util/CCUtil';
 import EventManager from '../../../util/EventManager';
 import { EventType } from '../../../config/EventType';
@@ -12,7 +12,18 @@ export class rightPanelchange extends Component {
     public btn_close: Node = null;
     @property({ type: Node, tooltip: "怪物模型" })
     public monster: Node = null;
+    @property({ type: [Node], tooltip: "星星" })
+    public stars: Node[] = [];
+    @property(Label)
+    public levelTxt: Label = null;
+    @property(Label)
+    monsterNameTxt: Label = null;
+    @property(Node)
+    btn_start: Node = null;
+    @property(Node)
+    btn_test: Node = null;
 
+    private _data: any = null;
     private _eveId: string;
 
     start() {
@@ -33,26 +44,33 @@ export class rightPanelchange extends Component {
     }
 
     //点击跳转到闯关界面 TODO
-    private levelClick(i: number) {
-        EventManager.emit(EventType.study_page_switching, [7])
+    private levelClick() {
+        EventManager.emit(EventType.Enter_Island_Level, this._data);
     }
     private touchNodeArr: Node[] = [];
 
     initEvent() {
-        CCUtil.onTouch(this.btn_close, this.onBtnCloseClick, this);
+        CCUtil.onTouch(this.btn_close, this.hideView, this);
+        CCUtil.onTouch(this.btn_start, this.levelClick, this);
         this._eveId = EventManager.on(EventType.Expand_the_level_page, this.openView.bind(this));
 
     }
     /** 打开界面 */
-    private openView(param: any[]) {
+    openView(param: any = null) {
         console.log('接收到的参数=', param);
+        this._data = param;
+        this.updateView();
         this.node.active = true
         tween(this.node).to(0.3, { position: v3(178, 100, 0) }).call(() => {
         }).start()
 
     }
 
-    onBtnCloseClick() {
+    updateView() {
+        this.levelTxt.string = this._data.bigId + '-' + this._data.smallId;
+    }
+
+    hideView() {
         tween(this.node).to(0.3, { position: v3(900, 100, 0) }).call(() => {
             this.node.active = false
         }).start()
@@ -61,11 +79,9 @@ export class rightPanelchange extends Component {
     }
 
     removeEvent() {
-        CCUtil.offTouch(this.btn_close, this.onBtnCloseClick, this);
+        CCUtil.offTouch(this.btn_close, this.hideView, this);
+        CCUtil.offTouch(this.btn_start, this.levelClick, this);
         EventManager.off(EventType.Expand_the_level_page, this._eveId);
-        for (let i in this.touchNodeArr) {
-            CCUtil.offTouch(this.touchNodeArr[i], this.levelClick.bind(this, i), this);
-        }
 
     }
 

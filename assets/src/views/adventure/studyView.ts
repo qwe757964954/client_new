@@ -51,7 +51,7 @@ export class studyView extends Component {
                 director.loadScene(SceneType.WorldMapScene);
                 break;
         }
-        // EventManager.emit(EventType.study_page_switching, [i]);
+        // EventManager.emit(EventType.Study_Page_Switching, [i]);
 
     }
     /**移除监听 */

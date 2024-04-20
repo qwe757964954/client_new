@@ -30,17 +30,17 @@ export class StudyModeView extends Component {
 
     }
     private initEvent(): void {
-
         CCUtil.onTouch(this.btn_close.node, this.closeView, this);
     }
     private removeEvent(): void {
+        console.log('移除事件', this.btn_close);
         CCUtil.offTouch(this.btn_close.node, this.closeView, this);
 
     }
     private closeView() {
         ViewsManager.instance.showView(PrefabType.BaseRemindView, (node: Node) => {
             node.getComponent(BaseRemindView).init("确定退出学习吗?", () => {
-                EventManager.emit(EventType.study_page_switching, [6]);
+                ViewsManager.instance.closeView(PrefabType.StudyModeView);
             }, () => {
                 ViewsManager.instance.closeView(PrefabType.BaseRemindView);
             });

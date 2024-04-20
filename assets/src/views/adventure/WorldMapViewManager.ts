@@ -1,8 +1,9 @@
-import { _decorator, Component, instantiate, Node, Prefab } from 'cc';
+import { _decorator, Component, instantiate, Node, Prefab, view } from 'cc';
 import { EventType } from '../../config/EventType';
 import EventManager from '../../util/EventManager';
 import { WorldMapView } from './WorldMapView';
 import { ViewsManager } from '../../manager/ViewsManager';
+import { PrefabType } from '../../config/PrefabType';
 
 const { ccclass, property } = _decorator;
 
@@ -23,8 +24,11 @@ export class WorldMapViewManager extends Component {
     public tipLayer: Node = null;//提示层
     @property(Node)
     public loadingLayer: Node = null;//加载层
-    private _eveId: string;
-    private _exitIslandEveId: string;
+
+    //自定义事件
+    private _eveId: string; //切换岛屿
+    private _exitIslandEveId: string; //退出岛屿
+    private _enterLevelEveId: string; //进入关卡
     start() {
 
     }
@@ -49,16 +53,25 @@ export class WorldMapViewManager extends Component {
         }
         this.showIsland(data[0]);
     }
+
+    //进入关卡
+    private enterLevel(data: any) {
+        console.log('进入关卡', data);
+        ViewsManager.instance.showView(PrefabType.StudyModeView, (node: Node) => {
+            console.log(node.name);
+        });
+    }
     /**初始化监听事件 */
     private initEvent() {
-        this._eveId = EventManager.on(EventType.study_page_switching, this.switchIsland.bind(this));
-        this._exitIslandEveId = EventManager.on(EventType.exit_world_island, this.hideIsland.bind(this));
+        this._eveId = EventManager.on(EventType.Study_Page_Switching, this.switchIsland.bind(this));
+        this._exitIslandEveId = EventManager.on(EventType.Exit_World_Island, this.hideIsland.bind(this));
+        this._enterLevelEveId = EventManager.on(EventType.Enter_Island_Level, this.enterLevel.bind(this));
 
     }
     /**移除监听 */
     private removeEvent() {
-        EventManager.off(EventType.study_page_switching, this._eveId);
-        EventManager.off(EventType.study_page_switching, this._exitIslandEveId);
+        EventManager.off(EventType.Study_Page_Switching, this._eveId);
+        EventManager.off(EventType.Study_Page_Switching, this._exitIslandEveId);
     }
 
     /**销毁 */

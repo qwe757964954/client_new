@@ -1,7 +1,10 @@
-import { _decorator, Button, Component, instantiate, Node, Prefab, tween, v3 } from 'cc';
+import { _decorator, Button, Component, instantiate, Node, Prefab, ScrollView, tween, UITransform, v3 } from 'cc';
 import CCUtil from '../../util/CCUtil';
 import { EventType } from '../../config/EventType';
 import EventManager from '../../util/EventManager';
+import { MapPointItem } from './levelmap/MapPointItem';
+import { rightPanelchange } from './common/RightPanelchange';
+import GlobalConfig from '../../GlobalConfig';
 const { ccclass, property } = _decorator;
 
 /**魔法森林 何存发 2024年4月9日17:51:36 */
@@ -16,24 +19,38 @@ export class WorldIsland extends Component {
     public btn_details: Button = null;
     @property({ type: Button, tooltip: "我的位置" })
     public btn_pos: Button = null;
-    @property({ type: Node, tooltip: "关卡选择页面" })
-    public levelPanel: Node = null;
-    start() {
+    @property({ type: rightPanelchange, tooltip: "关卡选择页面" })
+    public levelPanel: rightPanelchange = null;
 
+    @property(ScrollView)
+    public scrollView: ScrollView = null;
+
+    @property({ type: Node, tooltip: "地图容器" })
+    public pointContainer: Node = null;
+
+    private _pointList: MapPointItem[] = [];
+    private _bigId: number = 1; //岛屿id
+    start() {
+        this.initUI();
+        this.initEvent();
+    }
+
+    mapPointClick(target: MapPointItem) {
+        console.log('点击了地图点', target.data);
+        this.levelPanel.openView(target.data);
     }
 
     update(deltaTime: number) {
 
     }
-    protected onLoad(): void {
-        this.initUI()
-        this.initEvent()
-    }
 
     /**初始化UI */
     private initUI() {
-        this.initlist()
-        this.levelPanel.position = v3(900, 100, 0);
+        let winssize = GlobalConfig.WIN_SIZE;
+        console.log('屏幕尺寸', winssize);
+        this.node.getComponent(UITransform).width = this.scrollView.getComponent(UITransform).width = this.scrollView.node.getChildByName("view").getComponent(UITransform).width = winssize.width;
+        this.initlist();
+        this.levelPanel.hideView();
     }
 
     /**初始化监听事件 */
@@ -50,6 +67,10 @@ export class WorldIsland extends Component {
         CCUtil.offTouch(this.btn_details, this.onBtnDetailsClick, this)
 
         CCUtil.offTouch(this.btn_pos, this.openLevelView, this)
+
+        for (let i in this._pointList) {
+            CCUtil.offTouch(this._pointList[i].node, this.mapPointClick.bind(this, this._pointList[i]), this);
+        }
     }
 
     onBtnDetailsClick() {
@@ -62,12 +83,20 @@ export class WorldIsland extends Component {
     }
     /**返回关卡模式 */
     private onBtnBackClick() {
-        EventManager.emit(EventType.exit_world_island);
+        EventManager.emit(EventType.Exit_World_Island);
     }
 
     /**初始化列表 */
     private initlist() {
-
+        for (let i = 0; i < 25; i++) {
+            let point = this.pointContainer.getChildByName("point" + (i + 1));
+            if (point) {
+                let poingItem = point.getComponent(MapPointItem);
+                poingItem.setData({ smallId: i + 1, bigId: this._bigId });
+                CCUtil.onTouch(point, this.mapPointClick.bind(this, poingItem), this);
+                this._pointList.push(poingItem);
+            }
+        }
     }
 
 

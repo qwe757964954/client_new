@@ -27,7 +27,11 @@ export class PrefabConfig {
 
 // 预制体类型
 export const PrefabType = {
+    //**学习模式相关 */
     StudyView: { path: "study/StudyViewchange", zindex: Hierarchy.POPUPLAYER, tips: "学习模块选择" },
+    StudyModeView: { path: "studyModes/StudyModeView", zindex: Hierarchy.SCENELAYER, tips: "关卡学模式" },
+
+    //**学习模式相关 end*/
 
     PopView: { path: "common/PopView", zindex: Hierarchy.TIPLAYER, tips: "弹窗" },
     BaseRemindView: { path: "common/BaseRemindView", zindex: Hierarchy.TIPLAYER, tips: "二次提示界面" },
