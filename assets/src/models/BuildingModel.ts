@@ -221,7 +221,7 @@ export class BuildingModel extends BaseComponent {
     /** 信息按钮 */
     public showInfo(): void {
         ViewsManager.instance.showView(PrefabType.BuildingInfoView, (node: Node) => {
-            node.getComponent(BuildingInfoView).initData();
+            node.getComponent(BuildingInfoView).initData(this._editInfo);
         });
     }
     // 保存数据

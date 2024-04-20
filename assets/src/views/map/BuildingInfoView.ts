@@ -1,6 +1,8 @@
-import { _decorator, Component, Label, Node, Sprite } from 'cc';
+import { _decorator, Component, Label, Node, Sprite, SpriteFrame, UITransform, Vec3 } from 'cc';
 import { BuildingModel } from '../../models/BuildingModel';
 import CCUtil from '../../util/CCUtil';
+import { DataMgr, EditInfo } from '../../manager/DataMgr';
+import { LoadManager } from '../../manager/LoadManager';
 const { ccclass, property } = _decorator;
 /** 建筑信息 */
 @ccclass('BuildingInfoView')
@@ -42,12 +44,28 @@ export class BuildingInfoView extends Component {
     }
 
     /** 初始化数据 */
-    public initData() {
+    public initData(editInfo: EditInfo) {
+        this.labelName.string = editInfo.name;
+        this.labelDesc.string = editInfo.description;
+        this.labelFunction.string = editInfo.function;
 
+        LoadManager.load(DataMgr.getEditPng(editInfo), SpriteFrame).then((spriteFrame: SpriteFrame) => {
+            this.img.spriteFrame = spriteFrame;
+
+            this.resetImgSize();
+        });
     }
     /** 关闭按钮 */
     public onClickClose() {
         this.dispose();
+    }
+    /** 重设图片大小 */
+    public resetImgSize() {
+        let size = this.imgNode.getComponent(UITransform).contentSize;
+        let scale = size.width / this.img.spriteFrame.originalSize.width;
+        console.log("resetImgSize", scale, size.width, this.img.spriteFrame.originalSize);
+        if (scale >= 1.0) return;
+        this.img.node.scale = new Vec3(scale, scale, 1.0);
     }
 }
 

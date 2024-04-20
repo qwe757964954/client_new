@@ -41,11 +41,11 @@ export class BuildingProduceView extends Component {
     // 关闭按钮
     onClickClose() {
         this.removeBuilding();
-        if(this._closeCallBack) this._closeCallBack();
+        if (this._closeCallBack) this._closeCallBack();
         this.dispose();
     }
     // 初始化数据
-    initData(building:BuildingModel, callBack:Function) {
+    initData(building: BuildingModel, callBack: Function) {
         this._building = building;
         this._closeCallBack = callBack;
 
@@ -59,7 +59,7 @@ export class BuildingProduceView extends Component {
     }
     // 移除建筑
     removeBuilding() {
-        if(this._building){
+        if (this._building) {
             this._building.removeFromParent();
             this._building = null;
         }

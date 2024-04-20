@@ -64,6 +64,9 @@ export class MapNormalCtl extends MapBaseCtl {
                 this._timer = null;
             }
             this._touchBuilding = null;
+            if (!this._isLongClick) {
+                this._touchRole = null;
+            }
         }
 
         if (1 == touches.length) {
