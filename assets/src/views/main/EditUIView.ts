@@ -3,7 +3,7 @@ import CCUtil from '../../util/CCUtil';
 import { MapConfig, MapStatus } from '../../config/MapConfig';
 import { MainScene } from './MainScene';
 import { EditItem } from '../map/EditItem';
-import { DataMgr } from '../../manager/DataMgr';
+import { DataMgr, EditType } from '../../manager/DataMgr';
 const { ccclass, property } = _decorator;
 
 @ccclass('EditUIView')
@@ -59,7 +59,21 @@ export class EditUIView extends Component {
     }
     // 标题所有按钮点击 
     onBtnAllClick() {
-
+        this.scrollView.removeAllChildren();
+        let editConfig = DataMgr.instance.editInfo;
+        editConfig.forEach(info => {
+            let node = instantiate(this.editItem);
+            this.scrollView.addChild(node);
+            node.getComponent(EditItem).initData(info, this.onEditItemClick.bind(this));
+        });
+        // for (let key in editConfig) {
+        //     if (Object.prototype.hasOwnProperty.call(editConfig, key)) {
+        //         let info = editConfig[key];
+        //         let node = instantiate(this.editItem);
+        //         this.scrollView.addChild(node);
+        //         node.getComponent(EditItem).initData(info, this.onEditItemClick.bind(this));
+        //     }
+        // }
     }
     // 标题特殊按钮点击 
     onBtnSpecialClick() {
@@ -75,6 +89,14 @@ export class EditUIView extends Component {
     }
     // 标题地块按钮点击 
     onBtnLandClick() {
+        this.scrollView.removeAllChildren();
+        let editConfig = DataMgr.instance.editInfo;
+        editConfig.forEach(info => {
+            if (EditType.Land != info.type) return;
+            let node = instantiate(this.editItem);
+            this.scrollView.addChild(node);
+            node.getComponent(EditItem).initData(info, this.onEditItemClick.bind(this));
+        });
     }
     // 关闭按钮点击 
     onBtnCloseClick() {
@@ -87,16 +109,7 @@ export class EditUIView extends Component {
     }
     // 初始化数据
     initData() {
-        this.scrollView.removeAllChildren();
-        let editConfig = DataMgr.instance.editInfo;
-        for (let key in editConfig) {
-            if (Object.prototype.hasOwnProperty.call(editConfig, key)) {
-                let info = editConfig[key];
-                let node = instantiate(this.editItem);
-                this.scrollView.addChild(node);
-                node.getComponent(EditItem).initData(info, this.onEditItemClick.bind(this));
-            }
-        }
+        this.onBtnAllClick();
     }
     // 编辑元素点击
     onEditItemClick(editItem: EditItem) {

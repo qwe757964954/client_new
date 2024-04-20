@@ -619,7 +619,7 @@
     "sell": 0,
     "enable": 1,
     "width": 2,
-    "png": "dikuai02",
+    "png": "dikuai2",
     "description": "",
     "function": ""
   },
@@ -659,6 +659,32 @@
     "enable": 1,
     "width": 2,
     "png": "dikuai5",
+    "description": "",
+    "function": ""
+  },
+  "51": {
+    "id": 51,
+    "name": "格子2",
+    "theme": 1,
+    "type": 2,
+    "buy": 0,
+    "sell": 0,
+    "enable": 1,
+    "width": 2,
+    "png": "dikuai6",
+    "description": "",
+    "function": ""
+  },
+  "52": {
+    "id": 52,
+    "name": "格子3",
+    "theme": 1,
+    "type": 2,
+    "buy": 0,
+    "sell": 0,
+    "enable": 1,
+    "width": 2,
+    "png": "dikuai7",
     "description": "",
     "function": ""
   }
