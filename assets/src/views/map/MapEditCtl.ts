@@ -1,16 +1,16 @@
 import { EventMouse, EventTouch } from "cc";
-import { MapBaseCtl } from "../map/MapBaseCtl";
+import { EventType } from "../../config/EventType";
 import { BuildingModel } from "../../models/BuildingModel";
 import EventManager from "../../util/EventManager";
-import { EventType } from "../../config/EventType";
+import { MapBaseCtl } from "../map/MapBaseCtl";
 
 //地图编辑控制器
 export class MapEditCtl extends MapBaseCtl {
 
-    private _touchBuilding:BuildingModel = null;//触摸建筑
+    private _touchBuilding: BuildingModel = null;//触摸建筑
 
-    private _step:number = 0;//步骤
-    private _cacheDataAry:BuildingModel[] = [];//缓存数据
+    private _step: number = 0;//步骤
+    private _cacheDataAry: BuildingModel[] = [];//缓存数据
 
     //构造函数
     constructor(mainScene) {
@@ -19,7 +19,7 @@ export class MapEditCtl extends MapBaseCtl {
     }
     // 初始化
     public init(): void {
-        
+
     }
     // 初始化事件
     public initEvent(): void {
@@ -32,10 +32,11 @@ export class MapEditCtl extends MapBaseCtl {
     }
     //点击开始
     public onTouchStart(e: EventTouch) {
-        if(!super.onTouchStart(e)) return false;
+        if (!super.onTouchStart(e)) return false;
         let pos = e.getLocation();//需要用屏幕坐标去转换点击事件
-        let grid = this._mainScene.getTouchGrid(pos.x, pos.y);
-        this._touchBuilding = grid?.building;
+        // let grid = this._mainScene.getTouchGrid(pos.x, pos.y);
+        // this._touchBuilding = grid?.building;
+        this._touchBuilding = this._mainScene.getTouchBuilding(pos.x, pos.y);
         return true;
     }
     //点击移动
@@ -44,7 +45,7 @@ export class MapEditCtl extends MapBaseCtl {
     }
     //点击结束
     public onTouchEnd(e: EventTouch) {
-        if(!this._isTouchMove){
+        if (!this._isTouchMove) {
             this._mainScene.onBuildingClick(this._touchBuilding);
         }
         this._touchBuilding = null;
@@ -68,24 +69,24 @@ export class MapEditCtl extends MapBaseCtl {
 
     // 取消事件
     cancelEvent(): void {
-        
+
     }
     // UI上一步
     prevStepEvent(): void {
-        if(this._step<=0) return;
+        if (this._step <= 0) return;
         this._step--;
         // TODO
     }
     // UI下一步
     nextStepEvent(): void {
-        if(this._step>=this._cacheDataAry.length) return;
+        if (this._step >= this._cacheDataAry.length) return;
         this._step++;
         // TODO
     }
     // 建筑移除事件
-    onBuildingRemove(building:BuildingModel):void{
+    onBuildingRemove(building: BuildingModel): void {
         // TODO 上一步下一步保存
-        if(building.isNew){
+        if (building.isNew) {
             building.node.destroy();
             return;
         }

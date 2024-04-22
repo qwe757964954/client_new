@@ -1,4 +1,4 @@
-import { _decorator, Asset, Rect, sp, Tween, tween, TweenSystem, UITransform, Vec2, Vec3 } from 'cc';
+import { _decorator, Asset, Rect, sp, Tween, tween, TweenSystem, Vec2, Vec3 } from 'cc';
 import { EventType } from '../config/EventType';
 import { MapConfig, RoleInfo } from '../config/MapConfig';
 import { TextConfig } from '../config/TextConfig';
@@ -195,7 +195,6 @@ export class RoleBaseModel extends BaseComponent {
     }
     // 是否点击到自己
     public isTouchSelf(x: number, y: number): boolean {
-        let transform = this.role.getComponent(UITransform);
         let rect: Rect = this._roleInfo.rect;
         rect = rect.clone();
         let pos = this.node.position;

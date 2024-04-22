@@ -67,7 +67,7 @@ export class MapUICtl extends MainBaseCtl {
         this.initBuilding();
         this.initRole();
 
-        this.buildingSort();
+        this.buildingRoleSort();
         this.updateCameraVisible();
     }
     // 初始化数据
@@ -214,7 +214,7 @@ export class MapUICtl extends MainBaseCtl {
     // 初始化建筑
     initBuilding() {
         // for test
-        // this.newBuilding(MapConfig.editInfo[1], 30, 30, false, false);//TEST 测试数据
+        this.newBuilding(DataMgr.instance.editInfo[0], 30, 30, false, false);//TEST 测试数据
     }
     /** 初始化角色 */
     public async initRole() {
@@ -353,6 +353,23 @@ export class MapUICtl extends MainBaseCtl {
         let j = Math.floor(dtY - dtX + pos.x / width - pos.y / height);
         // console.log("getTouchGrid",i,j);
         return this.getGridInfo(i, j);
+    }
+    /**点击到建筑 */
+    getTouchBuilding(x: number, y: number) {
+        let worldPos = this._mainScene.mapCamera.screenToWorld(new Vec3(x, y, 0));
+        let children = this._mainScene.buildingLayer.children;
+        for (let i = children.length - 1; i >= 0; i--) {
+            const element = children[i];
+            let model = element.getComponent(BuildingModel);
+            if (model) {
+                if (model.isTouchSelf(worldPos)) {
+                    return model;
+                }
+                // console.log("building worldPos", pos.x, pos.y);
+            }
+        }
+        // console.log("getTouchBuilding", worldPos.x, worldPos.y, children.length);
+        return null;
     }
     /** 点击到角色 */
     getTouchRole(x: number, y: number) {

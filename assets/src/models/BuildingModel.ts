@@ -1,14 +1,15 @@
-import { _decorator, Asset, Node, Component, Vec3, instantiate, Sprite, Prefab, SpriteFrame, Label, Color, Layers } from "cc";
-import { GridModel } from "./GridModel";
-import { LoadManager } from "../manager/LoadManager";
-import { PrefabType } from "../config/PrefabType";
-import { BuildingBtnView } from "../views/map/BuildingBtnView";
-import EventManager from "../util/EventManager";
+import { Asset, Color, Label, Node, Prefab, Rect, Sprite, SpriteFrame, UITransform, Vec2, Vec3, _decorator, instantiate } from "cc";
 import { EventType } from "../config/EventType";
-import { BaseComponent } from "../script/BaseComponent";
-import { ViewsManager } from "../manager/ViewsManager";
-import { BuildingInfoView } from "../views/map/BuildingInfoView";
+import { PrefabType } from "../config/PrefabType";
 import { DataMgr, EditInfo } from "../manager/DataMgr";
+import { LoadManager } from "../manager/LoadManager";
+import { ViewsManager } from "../manager/ViewsManager";
+import { BaseComponent } from "../script/BaseComponent";
+import CCUtil from "../util/CCUtil";
+import EventManager from "../util/EventManager";
+import { BuildingBtnView } from "../views/map/BuildingBtnView";
+import { BuildingInfoView } from "../views/map/BuildingInfoView";
+import { GridModel } from "./GridModel";
 const { ccclass, property } = _decorator;
 
 //建筑模型
@@ -305,5 +306,25 @@ export class BuildingModel extends BaseComponent {
         this.node.children.forEach(child => {
             child.layer = type;
         });
+    }
+    /**是否点击到自己 像素点击，可能会出现性能问题*/
+    public isTouchSelf(worldPos: Vec3): boolean {
+        let transform = this.building.getComponent(UITransform);
+        let rect: Rect = new Rect(0, 0, transform.width, transform.height);
+        rect.x = -transform.anchorX * transform.width;
+        rect.y = -transform.anchorY * transform.height;
+        let pos = transform.convertToNodeSpaceAR(worldPos);
+        if (!rect.contains(new Vec2(pos.x, pos.y))) {
+            return false;
+        }
+        let buffer = CCUtil.readPixels(this.building.spriteFrame, false);
+        // console.log("transform.anchorX", transform.anchorX, transform.anchorY);
+        // console.log("isTouchSelf 1", pos.x, pos.y, buffer.length, transform.width, transform.height);
+        let x = pos.x - transform.anchorX * transform.width;
+        let y = (1 - transform.anchorY) * transform.height - pos.y;
+        let index = transform.width * 4 * Math.floor(y) + 4 * Math.floor(x);
+        let colors = buffer.subarray(index, index + 4);
+        // console.log("isTouchSelf 2", index, colors[0], colors[1], colors[2], colors[3]);
+        return colors[3] >= 50;
     }
 }

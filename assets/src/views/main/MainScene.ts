@@ -319,6 +319,10 @@ export class MainScene extends Component {
     getTouchGrid(x: number, y: number) {
         return this._mapUICtl.getTouchGrid(x, y);
     }
+    /**点击到建筑 */
+    getTouchBuilding(x: number, y: number) {
+        return this._mapUICtl.getTouchBuilding(x, y);
+    }
     // 点击到角色
     getTouchRole(x: number, y: number) {
         return this._mapUICtl.getTouchRole(x, y);
