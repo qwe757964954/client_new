@@ -1,27 +1,25 @@
-import { _decorator, Asset, Camera, Canvas, Color, Component, EventMouse, EventTouch, Graphics, instantiate, Intersection2D, Label, Layers, Node, Prefab, screen, Sprite, SpriteFrame, sys, Texture2D, UITransform, Vec2, Vec3, View } from 'cc';
-import { LoadManager } from '../../manager/LoadManager';
+import { _decorator, Asset, Camera, Canvas, Component, EventMouse, EventTouch, Layers, Node, Prefab, UITransform, Vec3 } from 'cc';
+import { EventType } from '../../config/EventType';
 import { MapStatus } from '../../config/MapConfig';
+import { LoadManager } from '../../manager/LoadManager';
 import { BuildingModel } from '../../models/BuildingModel';
 import EventManager from '../../util/EventManager';
-import { EventType } from '../../config/EventType';
-import { MapNormalCtl } from '../map/MapNormalCtl';
-import { MapEditCtl } from '../map/MapEditCtl';
-import { LandEditCtl } from '../map/LandEditCtl';
-import { RecycleCtl } from '../map/RecycleCtl';
 import { BuildEditCtl } from '../map/BuildEditCtl';
+import { LandEditCtl } from '../map/LandEditCtl';
+import { MapEditCtl } from '../map/MapEditCtl';
+import { MapNormalCtl } from '../map/MapNormalCtl';
+import { RecycleCtl } from '../map/RecycleCtl';
 // import { MainUICtl } from './MainUICtl';
-import { MainUIView } from './MainUIView';
-import { EditUIView } from './EditUIView';
-import { ViewsManager } from '../../manager/ViewsManager';
-import { MapUICtl } from '../map/MapUICtl';
-import { LandEditUIIvew } from './LandEditUIIvew';
 import { PrefabType } from '../../config/PrefabType';
-import { BuildingProduceView } from '../map/BuildingProduceView';
-import { BgModel } from '../../models/BgModel';
-import { NetManager } from '../../net/NetManager';
-import { RoleModel } from '../../models/RoleModel';
 import { TextConfig } from '../../config/TextConfig';
 import { EditInfo, EditType } from '../../manager/DataMgr';
+import { ViewsManager } from '../../manager/ViewsManager';
+import { RoleBaseModel } from '../../models/RoleBaseModel';
+import { BuildingProduceView } from '../map/BuildingProduceView';
+import { MapUICtl } from '../map/MapUICtl';
+import { EditUIView } from './EditUIView';
+import { LandEditUIIvew } from './LandEditUIIvew';
+import { MainUIView } from './MainUIView';
 const { ccclass, property } = _decorator;
 
 @ccclass('MainScene')
@@ -34,6 +32,8 @@ export class MainScene extends Component {
     public buildingModel: Prefab = null;//建筑
     @property(Prefab)
     public roleModel: Prefab = null;//角色
+    @property(Prefab)
+    public petModel: Prefab = null;//精灵
     @property(Node)
     public bgLayer: Node = null;//背景层
     @property(Node)
@@ -211,25 +211,25 @@ export class MainScene extends Component {
         }
     }
     /** 角色点击 */
-    onRoleClick(role: RoleModel) {
+    onRoleClick(role: RoleBaseModel) {
         if (!role) return;
         console.log("onRoleClick", role);
         role.onClickShow();
     }
     /** 角色拖动开始 */
-    onRoleDragStart(role: RoleModel) {
+    onRoleDragStart(role: RoleBaseModel) {
         if (!role) return;
         console.log("onRoleDragStart", role);
         role.onDragStart();
     }
     /** 角色拖动 */
-    onRoleDrag(role: RoleModel, dtX: number, dtY: number) {
+    onRoleDrag(role: RoleBaseModel, dtX: number, dtY: number) {
         if (!role) return;
         // console.log("onRoleDrag", role, x, y);
         role.onDrag(dtX * this.cameraRate, dtY * this.cameraRate);
     }
     /** 角色拖动结束 */
-    onRoleDragEnd(role: RoleModel) {
+    onRoleDragEnd(role: RoleBaseModel) {
         if (!role) return;
         console.log("onRoleDragEnd", role);
         let pos = role.pos;

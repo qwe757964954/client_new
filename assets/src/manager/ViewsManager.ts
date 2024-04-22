@@ -1,8 +1,8 @@
 import { Node, Prefab, instantiate, isValid } from "cc";
 import { Hierarchy, PrefabConfig, PrefabType } from "../config/PrefabType";
-import { LoadManager } from "./LoadManager";
 import { PopView } from "../views/common/PopView";
 import { TipView } from "../views/common/TipView";
+import { LoadManager } from "./LoadManager";
 
 //界面管理类
 export class ViewsManager {

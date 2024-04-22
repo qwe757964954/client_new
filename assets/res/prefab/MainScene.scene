@@ -860,6 +860,10 @@
       "__uuid__": "80fd3ca8-20bc-4718-91da-cbb70251a5e8",
       "__expectedType__": "cc.Prefab"
     },
+    "petModel": {
+      "__uuid__": "1d26e9ff-9c72-4aa5-a2f9-310ae87fc823",
+      "__expectedType__": "cc.Prefab"
+    },
     "bgLayer": {
       "__id__": 9
     },
