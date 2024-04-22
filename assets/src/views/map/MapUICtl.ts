@@ -1,9 +1,7 @@
 import { Color, Graphics, Rect, Sprite, SpriteFrame, UITransform, Vec3, instantiate, math, screen, sys } from "cc";
 import { MainBaseCtl } from "../main/MainBaseCtl";
 import { GridModel } from "../../models/GridModel";
-import { EditInfo, MapConfig } from "../../config/MapConfig";
-import { ToolUtil } from "../../util/ToolUtil";
-import { LoadManager } from "../../manager/LoadManager";
+import { MapConfig } from "../../config/MapConfig";
 import { LandModel } from "../../models/LandModel";
 import { BuildingModel } from "../../models/BuildingModel";
 import EventManager from "../../util/EventManager";
@@ -13,6 +11,7 @@ import { MainScene } from "../main/MainScene";
 import { BgModel } from "../../models/BgModel";
 import { RoleModel } from "../../models/RoleModel";
 import { BaseComponent } from "../../script/BaseComponent";
+import { DataMgr, EditInfo } from "../../manager/DataMgr";
 
 // 地图UI控制器
 export class MapUICtl extends MainBaseCtl {
@@ -34,6 +33,7 @@ export class MapUICtl extends MainBaseCtl {
     private _roleMoveHandler: string;//角色需要移动handle
     private _roleSortHandler: string;//角色需要重新排序handle
     private _roleIsShow: boolean = true;//角色是否显示
+    private _gridRectDrawHandle: string;//格子绘制handle
 
     constructor(mainScene: MainScene) {
         super(mainScene);
@@ -63,7 +63,7 @@ export class MapUICtl extends MainBaseCtl {
         this.initGrid();
         this.initMap();
         this.initLand();
-        // this.initBuilding();
+        this.initBuilding();
         this.initRole();
 
         this.buildingSort();
@@ -83,12 +83,14 @@ export class MapUICtl extends MainBaseCtl {
         this._buidingSortHandler = EventManager.on(EventType.Building_Need_Sort, this.buildingSort.bind(this));
         this._roleMoveHandler = EventManager.on(EventType.Role_Need_Move, this.roleMove.bind(this));
         this._roleSortHandler = EventManager.on(EventType.Role_Need_Sort, this.roleSort.bind(this));
+        this._gridRectDrawHandle = EventManager.on(EventType.GridRect_Need_Draw, this.drawGridRect.bind(this));
     }
     // 移除事件
     removeEvent() {
         EventManager.off(EventType.Building_Need_Sort, this._buidingSortHandler);
         EventManager.off(EventType.Role_Need_Move, this._roleMoveHandler);
         EventManager.off(EventType.Role_Need_Sort, this._roleSortHandler);
+        EventManager.off(EventType.GridRect_Need_Draw, this._gridRectDrawHandle);
     }
     // 获取格子信息
     getGridInfo(i: number, j: number) {
@@ -167,7 +169,7 @@ export class MapUICtl extends MainBaseCtl {
         let height = gridInfo.height;
         let col = gridInfo.col;
         let row = gridInfo.row;
-        let landInfo = MapConfig.editInfo[3];
+        let landInfo = DataMgr.instance.defaultLand;
         let landWidth = landInfo.width;
         let g = this._mainScene.lineLayer.getComponent(Graphics);
         this._mainScene.lineLayer.active = false;
@@ -184,7 +186,7 @@ export class MapUICtl extends MainBaseCtl {
 
                 let pos = gridInfo.pos;
                 g.lineWidth = 4;
-                g.strokeColor = Color.BLACK;
+                g.strokeColor = new Color(255, 255, 255, 200);
                 g.moveTo(pos.x - 0.5 * width * landWidth, pos.y - 0.5 * height * landWidth);
                 g.lineTo(pos.x, pos.y);
                 g.lineTo(pos.x + 0.5 * width * landWidth, pos.y - 0.5 * height * landWidth);
@@ -211,7 +213,7 @@ export class MapUICtl extends MainBaseCtl {
     // 初始化建筑
     initBuilding() {
         // for test
-        this.newBuilding(MapConfig.editInfo[1], 30, 30, false, false);//TEST 测试数据
+        // this.newBuilding(MapConfig.editInfo[1], 30, 30, false, false);//TEST 测试数据
     }
     /** 初始化角色 */
     public async initRole() {
@@ -423,7 +425,7 @@ export class MapUICtl extends MainBaseCtl {
         let building = instantiate(this._mainScene.buildingModel);
         let buildingModel = building.getComponent(BuildingModel);
         buildingModel.addToParent(this._mainScene.buildingLayer);
-        buildingModel.initData(gridX, gridY, data.width, data.path, isFlip, isNew);
+        buildingModel.initData(gridX, gridY, data, isFlip, isNew);
         this.setBuildingGrid(buildingModel, gridX, gridY);
         return buildingModel;
     }
@@ -514,6 +516,8 @@ export class MapUICtl extends MainBaseCtl {
         children.sort((a, b) => {
             let aModel = a.getComponent(BaseComponent);
             let bModel = b.getComponent(BaseComponent);
+            if (aModel.topZIndex) return 1;
+            if (bModel.topZIndex) return -1;
             return aModel.ZIndex - bModel.ZIndex;
         });
         let maxLen = children.length;
@@ -527,6 +531,21 @@ export class MapUICtl extends MainBaseCtl {
         this._roleIsShow = isShow;
         this._roleModelAry.forEach(element => {
             element.isActive = isShow;
+        });
+    }
+    /** 画格子区域 */
+    public drawGridRect(building: BuildingModel) {
+        let grids = building.grids;
+        let g = this._mainScene.graphicsLayer.getComponent(Graphics);
+        g.clear();
+        grids.forEach(grid => {
+            g.fillColor = grid.isCanBuilding() ? Color.YELLOW : Color.RED;
+            let pos = grid.pos;
+            g.moveTo(pos.x, pos.y);
+            g.lineTo(pos.x + 0.5 * grid.width, pos.y - 0.5 * grid.height);
+            g.lineTo(pos.x, pos.y - grid.height);
+            g.lineTo(pos.x - 0.5 * grid.width, pos.y - 0.5 * grid.height);
+            g.fill();
         });
     }
 }

@@ -1,8 +1,9 @@
-import { _decorator, Component, instantiate, Node, Prefab } from 'cc';
+import { _decorator, Component, instantiate, Node, Prefab, view } from 'cc';
 import { EventType } from '../../config/EventType';
 import EventManager from '../../util/EventManager';
 import { WorldMapView } from './WorldMapView';
 import { ViewsManager } from '../../manager/ViewsManager';
+import { PrefabType } from '../../config/PrefabType';
 
 const { ccclass, property } = _decorator;
 
@@ -23,7 +24,11 @@ export class WorldMapViewManager extends Component {
     public tipLayer: Node = null;//提示层
     @property(Node)
     public loadingLayer: Node = null;//加载层
-    private _eveId: string;
+
+    //自定义事件
+    private _eveId: string; //切换岛屿
+    private _exitIslandEveId: string; //退出岛屿
+    private _enterLevelEveId: string; //进入关卡
     start() {
 
     }
@@ -32,32 +37,41 @@ export class WorldMapViewManager extends Component {
 
     }
     protected onLoad(): void {
-        this.initUI()
-        this.initEvent()
-        this.showView(0);
+        this.initUI();
+        this.initEvent();
     }
     /**初始化UI */
     private initUI() {
         ViewsManager.instance.initLayer(this.sceneLayer, this.popupLayer, this.tipLayer, this.loadingLayer);
 
     }
-    /**切换页面 */
-    private switchView(data = []) {
+    /**切换岛屿 */
+    private switchIsland(data = []) {
         if (!this.levelArr[data[0]]) {
             console.error("没有这个页面", data);
             return
         }
-        this.showView(data[0]);
+        this.showIsland(data[0]);
+    }
+
+    //进入关卡
+    private enterLevel(data: any) {
+        console.log('进入关卡', data);
+        ViewsManager.instance.showView(PrefabType.StudyModeView, (node: Node) => {
+            console.log(node.name);
+        });
     }
     /**初始化监听事件 */
     private initEvent() {
-        this._eveId = EventManager.on(EventType.study_page_switching, this.switchView.bind(this));
+        this._eveId = EventManager.on(EventType.Study_Page_Switching, this.switchIsland.bind(this));
+        this._exitIslandEveId = EventManager.on(EventType.Exit_World_Island, this.hideIsland.bind(this));
+        this._enterLevelEveId = EventManager.on(EventType.Enter_Island_Level, this.enterLevel.bind(this));
 
     }
     /**移除监听 */
     private removeEvent() {
-        EventManager.off(EventType.study_page_switching, this._eveId);
-
+        EventManager.off(EventType.Study_Page_Switching, this._eveId);
+        EventManager.off(EventType.Study_Page_Switching, this._exitIslandEveId);
     }
 
     /**销毁 */
@@ -70,17 +84,20 @@ export class WorldMapViewManager extends Component {
     /**
      * 显示视图
      */
-    showView(id: number) {
-        console.log("显示视图", this.currentNode);
-        if (this.currentNode) this.currentNode.parent.removeChild(this.currentNode);
+    showIsland(id: number) {
+        if (this.currentNode) {
+            this.currentNode.removeFromParent();
+        }
         let copynode = instantiate(this.levelArr[id])
         this.currentNode = copynode
         this.defaultNode.addChild(copynode)
     }
     private currentNode: Node = null;
     /**隐藏视图 */
-    hideView() {
-
+    hideIsland() {
+        if (this.currentNode) {
+            this.currentNode.removeFromParent();
+        }
     }
     /**关闭视图 */
     closeView() {

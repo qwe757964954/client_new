@@ -45,10 +45,19 @@ export class ViewsManager {
 
     // 显示界面
     public showView(viewConfig: PrefabConfig, callBack?: Function) {
-        if (this.isExistView(viewConfig)) return;
+        if (this.isExistView(viewConfig)) {
+            console.log("显示界面 已存在", viewConfig.path);
+            return;
+        }
+        console.log("显示界面 load", viewConfig.path);
         let parent = this.getParentNode(viewConfig.zindex);
-        this._loadingPrefabMap[viewConfig.path]++;
+        if (this._loadingPrefabMap.hasOwnProperty(viewConfig.path)) {
+            this._loadingPrefabMap[viewConfig.path]++;
+        } else {
+            this._loadingPrefabMap[viewConfig.path] = 1;
+        }
         LoadManager.loadPrefab(viewConfig.path).then((prefab: Prefab) => {
+            console.log("显示界面", viewConfig.path);
             let node = instantiate(prefab);
             node.name = viewConfig.path.replace("/", "_");
 

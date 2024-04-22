@@ -380,10 +380,10 @@ export class LoginView extends Component {
             return false;
         }
         if (obj.op_code == "disable") {
-            alert("账号已被禁用，请联系客服！");
+            ViewsManager.showTip("账号已被禁用，请联系客服！");
             return false;
         } else if (obj.op_code == "die") {
-            alert("账号或密码错误！");
+            ViewsManager.showTip("账号或密码错误！");
             return false;
         }
         StorageUtil.saveData(LOGIN_INFO_KEY, JSON.stringify({

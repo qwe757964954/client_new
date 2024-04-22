@@ -30,9 +30,7 @@ export class WorldMapView extends Component {
     /**切换关卡 */
     private switchLevels(i: number) {
         console.log('切换关卡', i)
-        EventManager.emit(EventType.study_page_switching, [6])
-
-
+        EventManager.emit(EventType.Study_Page_Switching, [i])
     }
 
     /**初始化监听事件 */
@@ -53,7 +51,7 @@ export class WorldMapView extends Component {
     }
     /**点击返回按钮 */
     onBtnBackClick() {
-        EventManager.emit(EventType.study_page_switching, [0])
+        // EventManager.emit(EventType.Study_Page_Switching, [0])
     }
 
     /**打开帮助页面 */
@@ -66,7 +64,7 @@ export class WorldMapView extends Component {
     onDestroy() {
         this.removeEvent()
     }
-   
+
 
 
 

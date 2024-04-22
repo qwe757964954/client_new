@@ -40,13 +40,18 @@ export class studyView extends Component {
     /**初始化监听事件 */
     initEvent() {
         for (let i = 0; i < this.levelArr.length; i++) {
-            CCUtil.onTouch(this.levelArr[i], this.levelClick.bind(this, i), this);
+            CCUtil.onTouch(this.levelArr[i], this.levelClick.bind(this, this.levelArr[i].name), this);
         }
         CCUtil.onTouch(this.closeBtn, this.closeView, this)
     }
-    private levelClick(i: number) {
-        console.log(i)
-        EventManager.emit(EventType.study_page_switching, [i]);
+    private levelClick(name: string) {
+        console.log(name);
+        switch (name) {
+            case "wordAdventure": //单词大冒险
+                director.loadScene(SceneType.WorldMapScene);
+                break;
+        }
+        // EventManager.emit(EventType.Study_Page_Switching, [i]);
 
     }
     /**移除监听 */

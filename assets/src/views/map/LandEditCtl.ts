@@ -1,51 +1,52 @@
 import { EventMouse, EventTouch } from "cc";
 import { MapBaseCtl } from "./MapBaseCtl";
-import { EditInfo, MapConfig, MapStatus } from "../../config/MapConfig";
+import { MapStatus } from "../../config/MapConfig";
 import { LandModel } from "../../models/LandModel";
 import { ToolUtil } from "../../util/ToolUtil";
+import { EditInfo } from "../../manager/DataMgr";
 
 //地块编辑控制器
 export class LandEditCtl extends MapBaseCtl {
 
-    private _selectLand:EditInfo = null;//选中地块
-    private _landCache:Map<string,LandModel> = new Map();//地块缓存
+    private _selectLand: EditInfo = null;//选中地块
+    private _landCache: Map<string, LandModel> = new Map();//地块缓存
 
     //设置选中地块
-    public set selectLand(land:EditInfo){
-        if(!land) return;
+    public set selectLand(land: EditInfo) {
+        if (!land) return;
         this._selectLand = land;
     }
 
     // 点击开始
-    onTouchStart(e:EventTouch){
+    onTouchStart(e: EventTouch) {
         return super.onTouchStart(e);
     }
     // 点击移动
-    onTouchMove(e:EventTouch){
-        if(!this._selectLand) return false;
+    onTouchMove(e: EventTouch) {
+        if (!this._selectLand) return false;
         let delta = e.getUIDelta();
         let dtX = -delta.x;
         let dtY = -delta.y;
-        if(!this.isTouchMoveEffective(dtX, dtY)){
+        if (!this.isTouchMoveEffective(dtX, dtY)) {
             return false;
         }
         this._isTouchMove = true;
 
         let pos = e.getLocation();
         let gridModel = this._mainScene.getTouchGrid(pos.x, pos.y);
-        if(gridModel && gridModel.land){
+        if (gridModel && gridModel.land) {
             gridModel.land.refreshLand(this._selectLand);
             this.cacheLand(gridModel.land);
         }
         return true;
     }
     // 点击结束
-    onTouchEnd(e:EventTouch){
-        if(!this._selectLand) return false;
-        if(!this._isTouchMove){
+    onTouchEnd(e: EventTouch) {
+        if (!this._selectLand) return false;
+        if (!this._isTouchMove) {
             let pos = e.getLocation();
             let gridModel = this._mainScene.getTouchGrid(pos.x, pos.y);
-            if(gridModel && gridModel.land){
+            if (gridModel && gridModel.land) {
                 gridModel.land.refreshOneLand(this._selectLand);
                 this.cacheLand(gridModel.land);
             }
@@ -70,8 +71,8 @@ export class LandEditCtl extends MapBaseCtl {
         this._mainScene.changeMapStatus(MapStatus.EDIT);
     }
     // 缓存修改地块
-    cacheLand(land:LandModel): void {
-        this._landCache.set(ToolUtil.replace("{0}_{1}",land.x,land.y), land);
+    cacheLand(land: LandModel): void {
+        this._landCache.set(ToolUtil.replace("{0}_{1}", land.x, land.y), land);
     }
     // 缓存地块还原
     recoverLand(): void {

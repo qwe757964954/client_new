@@ -8,19 +8,13 @@ export enum MapStatus {//地图状态
     RECYCLE = 4,//回收状态
 };
 
-export enum EditType {//编辑元素类型
-    Buiding = 0,//建筑
-    Decoration = 1,//装饰
-    Land = 2,//地块
-}
-
-export class EditInfo {//编辑元素配置
-    id: number;//id
-    path: string;//路径
-    type: EditType;//类型
-    width: number;//宽
-    moveDt: number;//移动格子数
-}
+// export class EditInfo {//编辑元素配置
+//     id: number;//id
+//     path: string;//路径
+//     type: EditType;//类型
+//     width: number;//宽
+//     moveDt: number;//移动格子数
+// }
 
 export class RoleInfo {//角色配置
     id: number;//id
@@ -68,21 +62,21 @@ export const MapConfig = {
             { is: 18, ie: 54, js: 72, je: 78 },
         ]
     },
-    editInfo: {//编辑元素
-        0: { id: 0, path: "map/zhuangshi2/spriteFrame", type: EditType.Buiding, width: 7, moveDt: 1 },
-        1: { id: 1, path: "map/zhuangshi2/spriteFrame", type: EditType.Buiding, width: 7, moveDt: 1 },
-        2: { id: 2, path: "map/zhuangshi3/spriteFrame", type: EditType.Buiding, width: 7, moveDt: 1 },
-        3: { id: 3, path: "map/dikuai02/spriteFrame", type: EditType.Land, width: 2, moveDt: 2 },//默认地块
-        4: { id: 4, path: "map/dikuai1/spriteFrame", type: EditType.Land, width: 2, moveDt: 2 },
-        5: { id: 5, path: "map/dikuai2/spriteFrame", type: EditType.Land, width: 2, moveDt: 2 },
-        //测试添加
-        6: { id: 6, path: "map/zhuangshi2/spriteFrame", type: EditType.Buiding, width: 7, moveDt: 1 },
-        7: { id: 7, path: "map/zhuangshi2/spriteFrame", type: EditType.Buiding, width: 7, moveDt: 1 },
-        8: { id: 8, path: "map/zhuangshi3/spriteFrame", type: EditType.Buiding, width: 7, moveDt: 1 },
-        9: { id: 9, path: "map/dikuai3/spriteFrame", type: EditType.Land, width: 2, moveDt: 2 },
-        10: { id: 10, path: "map/dikuai4/spriteFrame", type: EditType.Land, width: 2, moveDt: 2 },
-        11: { id: 11, path: "map/dikuai2/spriteFrame", type: EditType.Land, width: 2, moveDt: 2 },
-    },
+    // editInfo: {//编辑元素
+    //     0: { id: 0, path: "map/zhuangshi2/spriteFrame", type: EditType.Buiding, width: 7, moveDt: 1 },
+    //     1: { id: 1, path: "map/zhuangshi2/spriteFrame", type: EditType.Buiding, width: 7, moveDt: 1 },
+    //     2: { id: 2, path: "map/zhuangshi3/spriteFrame", type: EditType.Buiding, width: 7, moveDt: 1 },
+    //     3: { id: 3, path: "map/dikuai02/spriteFrame", type: EditType.Land, width: 2, moveDt: 2 },//默认地块
+    //     4: { id: 4, path: "map/dikuai1/spriteFrame", type: EditType.Land, width: 2, moveDt: 2 },
+    //     5: { id: 5, path: "map/dikuai2/spriteFrame", type: EditType.Land, width: 2, moveDt: 2 },
+    //     //测试添加
+    //     6: { id: 6, path: "map/zhuangshi2/spriteFrame", type: EditType.Buiding, width: 7, moveDt: 1 },
+    //     7: { id: 7, path: "map/zhuangshi2/spriteFrame", type: EditType.Buiding, width: 7, moveDt: 1 },
+    //     8: { id: 8, path: "map/zhuangshi3/spriteFrame", type: EditType.Buiding, width: 7, moveDt: 1 },
+    //     9: { id: 9, path: "map/dikuai3/spriteFrame", type: EditType.Land, width: 2, moveDt: 2 },
+    //     10: { id: 10, path: "map/dikuai4/spriteFrame", type: EditType.Land, width: 2, moveDt: 2 },
+    //     11: { id: 11, path: "map/dikuai5/spriteFrame", type: EditType.Land, width: 2, moveDt: 2 },
+    // },
     roleInfo: {//101 男孩2, 102 女孩1, 103 男孩1
         101: {
             id: 101, spPath: "animtion/role/nanhai02", spNames: ["Idle", "Run"], rect: new Rect(-90, -10, 180, 280),

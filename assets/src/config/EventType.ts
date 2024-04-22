@@ -10,14 +10,16 @@ export const EventType = {
     Building_Need_Sort: "BuildingNeedSort",//建筑需要排序
     Role_Need_Move: "RoleNeedMove",//角色需要移动
     Role_Need_Sort: "RoleNeedSort",//角色需要排序
+    GridRect_Need_Draw: "GridRectNeedDraw",//格子需要绘制
 
     Energy_Update: "EnergyUpdate",//体力更新
     Coin_Update: "CoinUpdate",//金币更新
     Diamond_Update: "DiamondUpdate",//钻石更新
 
-    study_page_switching: "study_page_switching",//学习页面切换
+    Study_Page_Switching: "Study_Page_Switching",//学习页面切换
 
     Expand_the_level_page: "Expand_the_level_page",//拓展关卡
 
-    enter_battle_view: "enter_battle_view",  //进入战斗界面  学习界面
+    Enter_Island_Level: "Enter_Island_Level",  //进入大冒险关卡
+    Exit_World_Island: "Exit_World_Island",  //退出岛屿界面
 }
