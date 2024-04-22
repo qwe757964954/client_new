@@ -1,4 +1,4 @@
-import { _decorator, Component, ImageAsset, Label, Node, Sprite, SpriteFrame, Texture2D, UITransform } from 'cc';
+import { _decorator, Label, Node, resources, Sprite, SpriteFrame, UITransform } from 'cc';
 import ListItem from '../../util/list/ListItem';
 import { AmoutItemData, AmoutType } from './TopAmoutView';
 const { ccclass, property } = _decorator;
@@ -27,26 +27,26 @@ export class AmoutItem extends ListItem {
             case AmoutType.Coin:
                 this.aliveIcon.getComponent(UITransform).width = 53.9;
                 this.aliveIcon.getComponent(UITransform).height = 56.7;
-                addUrl = "res/img/common/word_0022_icon/spriteFrame";
-                activeUrl = "res/img/common/gold/spriteFrame";
+                addUrl = "common/word_0022_icon/spriteFrame";
+                activeUrl = "common/gold/spriteFrame";
                 break;
             case AmoutType.Diamond:
                 this.aliveIcon.getComponent(UITransform).width = 61.6;
                 this.aliveIcon.getComponent(UITransform).height = 52.5;
-                addUrl = "res/img/common/add/spriteFrame";
-                activeUrl = "res/img/common/stone/spriteFrame";
+                addUrl = "common/add/spriteFrame";
+                activeUrl = "common/stone/spriteFrame";
                 break;
             case AmoutType.Energy:
                 this.aliveIcon.getComponent(UITransform).width = 46.9;
                 this.aliveIcon.getComponent(UITransform).height = 59.5;
-                addUrl = "res/img/common/word_0023_icon/spriteFrame";
-                activeUrl = "res/img/common/alive/spriteFrame";
+                addUrl = "common/word_0023_icon/spriteFrame";
+                activeUrl = "common/alive/spriteFrame";
                 break;
             default:
                 break;
         }
         this.updateStatic(addUrl,this.addIcon);
-        // this.updateStatic(activeUrl,this.aliveIcon);
+        this.updateStatic(activeUrl,this.aliveIcon);
     }
     /**
      * 
@@ -54,16 +54,27 @@ export class AmoutItem extends ListItem {
      * @param node 节点
      */
     updateStatic(url:string,node:Node){
-        let image = new Image();
-        image.src = url;
-        image.onload = ()=>{
-            let texture = new Texture2D();
-            let spriteFrame = new SpriteFrame();
-            let imgAsset = new ImageAsset(image);
-            texture.image = imgAsset
-            spriteFrame.texture = texture;
-            node.getComponent(Sprite).spriteFrame = spriteFrame
-        }
+        resources.load(url, SpriteFrame, (err, spriteFrame) => {
+            if (!err) {
+                node.getComponent(Sprite).spriteFrame = spriteFrame;
+            }else{
+                console.log(err);
+            }
+        });
+
+
+        // AssetManager.
+
+        // let image = new Image();
+        // image.src = url;
+        // image.onload = ()=>{
+        //     let texture = new Texture2D();
+        //     let spriteFrame = new SpriteFrame();
+        //     let imgAsset = new ImageAsset(image);
+        //     texture.image = imgAsset
+        //     spriteFrame.texture = texture;
+        //     node.getComponent(Sprite).spriteFrame = spriteFrame
+        // }
     }
 }
 
