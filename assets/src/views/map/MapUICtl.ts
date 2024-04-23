@@ -30,6 +30,7 @@ export class MapUICtl extends MainBaseCtl {
     private _gridAry: GridModel[][] = [];//格子数组(y从上往下，x从右往左)
     private _bgModelAry: BgModel[] = [];//背景模型数组
     private _roleModelAry: RoleBaseModel[] = [];//角色模型数组
+    private _isNeedSort: boolean = false;//是否需要重新排序
     private _buidingSortHandler: string;//建筑需要重新排序handle
     private _roleMoveHandler: string;//角色需要移动handle
     private _roleSortHandler: string;//角色需要重新排序handle
@@ -58,16 +59,15 @@ export class MapUICtl extends MainBaseCtl {
     }
 
     // 初始化
-    public init(): void {
+    public async init() {
         this.initData();
         this.initEvent();
         this.initGrid();
         this.initMap();
         this.initLand();
         this.initBuilding();
-        this.initRole();
+        await this.initRole();
 
-        this.buildingRoleSort();
         this.updateCameraVisible();
     }
     // 初始化数据
@@ -228,16 +228,18 @@ export class MapUICtl extends MainBaseCtl {
             roleModel.grid = grid;
             this.roleMove(roleModel);
             this._roleModelAry.push(roleModel);
+            this.buildingRoleSort();
         }
         {
             let role = instantiate(this._mainScene.roleModel);
             this._mainScene.buildingLayer.addChild(role);
             let roleModel = role.getComponent(RoleBaseModel);
             await roleModel.init(102, 1, [9550, 9800, 9801, 9802, 9803, 9805]);
-            let grid = this.getGridInfo(30, 30);
+            let grid = this.getGridInfo(34, 34);
             roleModel.grid = grid;
             this.roleMove(roleModel);
             this._roleModelAry.push(roleModel);
+            this.buildingRoleSort();
         }
         {
             let role = instantiate(this._mainScene.roleModel);
@@ -248,6 +250,7 @@ export class MapUICtl extends MainBaseCtl {
             roleModel.grid = grid;
             this.roleMove(roleModel);
             this._roleModelAry.push(roleModel);
+            this.buildingRoleSort();
         }
         // for test 精灵
         {
@@ -259,6 +262,7 @@ export class MapUICtl extends MainBaseCtl {
             roleModel.grid = grid;
             this.roleMove(roleModel);
             this._roleModelAry.push(roleModel);
+            this.buildingRoleSort();
         }
         {
             let role = instantiate(this._mainScene.petModel);
@@ -269,6 +273,7 @@ export class MapUICtl extends MainBaseCtl {
             roleModel.grid = grid;
             this.roleMove(roleModel);
             this._roleModelAry.push(roleModel);
+            this.buildingRoleSort();
         }
         {
             let role = instantiate(this._mainScene.petModel);
@@ -279,6 +284,7 @@ export class MapUICtl extends MainBaseCtl {
             roleModel.grid = grid;
             this.roleMove(roleModel);
             this._roleModelAry.push(roleModel);
+            this.buildingRoleSort();
         }
     }
     // 摄像头缩放大小
@@ -561,6 +567,9 @@ export class MapUICtl extends MainBaseCtl {
     }
     // 建筑与角色排序
     buildingRoleSort() {
+        this._isNeedSort = true;//统一排序
+    }
+    buildingRoleSortEx() {
         let children = this._mainScene.buildingLayer.children.concat();
         children.sort((a, b) => {
             let aModel = a.getComponent(BaseComponent);
@@ -596,5 +605,12 @@ export class MapUICtl extends MainBaseCtl {
             g.lineTo(pos.x - 0.5 * grid.width, pos.y - 0.5 * grid.height);
             g.fill();
         });
+    }
+    /**每帧更新 */
+    update(dt: number): void {
+        if (this._isNeedSort) {
+            this.buildingRoleSortEx();
+            this._isNeedSort = false;
+        }
     }
 }

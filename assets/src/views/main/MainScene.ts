@@ -88,6 +88,10 @@ export class MainScene extends Component {
         this.initEvent();
     }
 
+    protected update(dt: number): void {
+        this._mapUICtl?.update(dt);
+    }
+
     // 初始化数据
     initData() {
         this._mapNormalCtl = new MapNormalCtl(this);

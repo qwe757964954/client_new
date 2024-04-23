@@ -55,7 +55,7 @@ export class BuildingModel extends BaseComponent {
     }
     // 初始化数据
     initData(x: number, y: number, editInfo: EditInfo, isFlip: boolean, isNew: boolean) {
-        console.log("initData", x, y, editInfo, isFlip, isNew);
+        // console.log("initData", x, y, editInfo, isFlip, isNew);
         this._editInfo = editInfo;
         this._x = x;
         this._y = y;
@@ -93,7 +93,7 @@ export class BuildingModel extends BaseComponent {
             this._grids[i].building = this;
             if (!this.isNew && !this._dataGrids) {//初始化已有建筑
                 this._grids[i].saveData();
-                console.log("set grids saveData", i, this.isNew);
+                // console.log("set grids saveData", i, this.isNew);
             }
         }
         let gridInfo = this._grids[0];
@@ -108,7 +108,7 @@ export class BuildingModel extends BaseComponent {
         }
         if (!this.isNew && !this._dataGrids) {//初始化已有建筑
             this._dataGrids = this._grids;
-            console.log("set grids this._dataGrids");
+            // console.log("set grids this._dataGrids");
         }
         let index = -pos.y;//(this._x + this._width*0.5) * (this._y + this._width*0.5);
         this._zIndex = index;

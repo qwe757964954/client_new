@@ -134,10 +134,11 @@ export class RoleBaseModel extends BaseComponent {
         if (!grid) return;
         this._x = grid.x;
         this._y = grid.y;
-        // this._zIndex = this._x * this._y;
-        this._zIndex = grid.height * 0.5 - grid.pos.y;
-        if (this._lastPos) return;
         let gridPos = grid.pos;
+        // this._zIndex = this._x * this._y;
+        // this._zIndex = -(gridPos.y - grid.height * 0.5);
+        this._zIndex = -this.pos.y;
+        if (this._lastPos) return;
         let pos = new Vec3(gridPos.x, gridPos.y - grid.height * 0.5, 0);
         this.node.position = pos;
         this._lastPos = pos;
