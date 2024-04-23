@@ -100,10 +100,25 @@ export class ViewsManager {
             node.getComponent(TipView).init(content, callBack);
         });
     }
-
-    static addNavigation(path: string, parent: Node, left: number, top: number): Promise<NavTitleView> {
+    /**
+     * 导航栏公共模块
+     * @param parent 父节点
+     * @param left widget 左
+     * @param top widget 上
+     * @returns 
+     * 
+     * 示例代码
+     * 
+     * ViewsManager.addNavigation(this.top_layout,0,0).then((navScript: NavTitleView) => {
+            navScript.updateNavigationProps("会员中心",()=>{
+                ViewsManager.instance.closeView(PrefabType.MemberCentreView);
+            });
+        });
+     */
+    static addNavigation(parent: Node, left: number, top: number): Promise<NavTitleView> {
+        
         return new Promise((resolve, reject) => {
-            ResLoader.instance.load(`prefab/${path}`, Prefab, (err: Error | null, prefab: Prefab) => {
+            ResLoader.instance.load(`prefab/${PrefabType.NavTitleView.path}`, Prefab, (err: Error | null, prefab: Prefab) => {
                 if (err) {
                     reject(err);
                     return;
@@ -132,9 +147,25 @@ export class ViewsManager {
         });
     }
     // 添加数值公共模块
-    static addAmout(path: string, parent: Node, verticalCenter: number, right: number): Promise<TopAmoutView> {
+    /**
+     * 
+     * @param parent 父节点
+     * @param verticalCenter  widget垂直居中 
+     * @param right widget右
+     * @returns 
+     * 
+     * 示例代码
+     * 
+     * ViewsManager.addAmout(this.top_layout,15.78,22.437).then((amoutScript: TopAmoutView) => {
+            let dataArr:AmoutItemData[] = [{type:AmoutType.Diamond,num:0},
+                {type:AmoutType.Coin,num:0},
+                {type:AmoutType.Energy,num:0}];
+            amoutScript.loadAmoutData(dataArr);
+        });
+     */
+    static addAmout(parent: Node, verticalCenter: number, right: number): Promise<TopAmoutView> {
         return new Promise((resolve, reject) => {
-            ResLoader.instance.load(`prefab/${path}`, Prefab, (err: Error | null, prefab: Prefab) => {
+            ResLoader.instance.load(`prefab/${PrefabType.TopAmoutView.path}`, Prefab, (err: Error | null, prefab: Prefab) => {
                 if (err) {
                     reject(err);
                     return;
