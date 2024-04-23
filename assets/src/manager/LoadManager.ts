@@ -1,5 +1,5 @@
 /** 资源加载单例 */
-import { AnimationClip, Asset, AssetManager, EffectAsset, JsonAsset, Material, Prefab, SpriteAtlas, SpriteFrame, TTFFont, Texture2D, assetManager, resources, sp } from "cc"
+import { Asset, AssetManager, EffectAsset, JsonAsset, Material, Prefab, SpriteAtlas, SpriteFrame, TTFFont, Texture2D, assetManager, error, resources, sp } from "cc";
 
 export class LoadManager {
     // private _assetManagerMap:Map<string, Asset>;//资源管理器map<资源名,资源>
@@ -79,8 +79,28 @@ export class LoadManager {
     public static forceReleaseAsset(asset: Asset) {
         assetManager.releaseAsset(asset);
     }
-    
-    
+    /**
+     * 加载资源包
+     * @param url       资源地址
+     * @param complete  完成事件
+     * @param v         资源MD5版本号
+     * @example
+    var serverUrl = "http://192.168.1.8:8080/";         // 服务器地址
+    var RemoteBundle = "RemoteBundleName";
+    var md5 = "8e5c0";                                  // Cocos Creator 构建后的MD5字符
+    await LoadManager.loadBundle(RemoteBundle,md5);        //远程用法
+    await LoadManager.loadBundle("resources");        //本地bundle
+     */
+    public static loadBundle(url: string, v?: string) {
+        return new Promise<AssetManager.Bundle>((resolve, reject) => {
+            assetManager.loadBundle(url, { version: v }, (err, bundle: AssetManager.Bundle) => {
+                if (err) {
+                    return error(err);
+                }
+                resolve(bundle);
+            });
+        });
+    }
 
     // //按名称加载spine动画
     // public static loadSpineByName(name: string): Promise<sp.SkeletonData | undefined> {

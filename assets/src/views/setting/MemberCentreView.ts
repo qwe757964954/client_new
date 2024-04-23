@@ -1,8 +1,8 @@
-import { _decorator, Component, instantiate, isValid, Node, Prefab, Widget } from 'cc';
+import { _decorator, Component, Node } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
-import { LoadManager } from '../../manager/LoadManager';
 import { ViewsManager } from '../../manager/ViewsManager';
 import List from '../../util/list/List';
+import { NavTitleView } from '../common/NavTitleView';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { BottomItem, BottomItemData, ButtomSelectType } from './BottomItem';
 import { MemberItem, MemberPriceData } from './MemberItem';
@@ -31,25 +31,22 @@ export class MemberCentreView extends Component {
         this.initUI();
     }
     protected initUI(){
+        this.initNavTitle();
         this.initAmout();
         this.initBottom();
         this.initVipPrice();
     }
+    /**初始化导航栏 */
+    initNavTitle(){
+        ViewsManager.addNavigation(`${PrefabType.NavTitleView.path}`,this.top_layout,0,0).then((navScript: NavTitleView) => {
+            navScript.updateNavigationProps("会员中心",()=>{
+                ViewsManager.instance.closeView(PrefabType.MemberCentreView);
+            });
+        });
+    }
     /**初始化游戏数值 */
     initAmout(){
-        LoadManager.loadPrefab(PrefabType.TopAmoutView.path).then((prefab: Prefab) => {
-            let node = instantiate(prefab);
-            this.top_layout.addChild(node);
-            let widgetCom = node.getComponent(Widget);
-            if(!isValid(widgetCom)){
-                widgetCom = node.addComponent(Widget);
-                widgetCom.isAlignRight = true;
-                widgetCom.isAlignVerticalCenter = true;
-            }
-            widgetCom.right = 22.437;
-            widgetCom.verticalCenter = 15.78;
-            widgetCom.updateAlignment();
-            let amoutScript = node.getComponent(TopAmoutView);
+        ViewsManager.addAmout(`${PrefabType.TopAmoutView.path}`,this.top_layout,15.78,22.437).then((amoutScript: TopAmoutView) => {
             let dataArr:AmoutItemData[] = [{type:AmoutType.Diamond,num:0},
                 {type:AmoutType.Coin,num:0},
                 {type:AmoutType.Energy,num:0}];
@@ -68,7 +65,7 @@ export class MemberCentreView extends Component {
             {bottomType:ButtomSelectType.NewWordRecord},
             {bottomType:ButtomSelectType.AcademicRecord},
             {bottomType:ButtomSelectType.PhonicsGame},
-            {bottomType:ButtomSelectType.GrammarLearning}];;
+            {bottomType:ButtomSelectType.GrammarLearning}];
         this.bottomScroll.numItems = this._bottomDataArr.length;
         this.bottomScroll.update();
     }
@@ -95,12 +92,6 @@ export class MemberCentreView extends Component {
         let amountItemScript:BottomItem = item.getComponent(BottomItem);
         let itemInfo:BottomItemData = this._bottomDataArr[idx];
         amountItemScript.updateItemProps(idx,itemInfo);
-    }
-    
-    // 关闭
-    btnCloseFunc() {
-        console.log("btnCloseFunc");
-        ViewsManager.instance.closeView(PrefabType.MemberCentreView);
     }
 }
 
