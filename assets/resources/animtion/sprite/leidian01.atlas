@@ -1,0 +1,265 @@
+
+leidian01.png
+size: 512,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+ed01
+  rotate: false
+  xy: 2, 39
+  size: 122, 72
+  orig: 122, 72
+  offset: 0, 0
+  index: -1
+ed02
+  rotate: false
+  xy: 142, 132
+  size: 72, 122
+  orig: 72, 122
+  offset: 0, 0
+  index: -1
+effect/Mix_19_comp_00025
+  rotate: false
+  xy: 361, 186
+  size: 20, 10
+  orig: 20, 10
+  offset: 0, 0
+  index: -1
+effect/Mix_19_comp_00026
+  rotate: false
+  xy: 126, 101
+  size: 23, 10
+  orig: 23, 10
+  offset: 0, 0
+  index: -1
+effect/Mix_19_comp_00027
+  rotate: false
+  xy: 336, 185
+  size: 23, 11
+  orig: 23, 11
+  offset: 0, 0
+  index: -1
+effect/Mix_19_comp_00028
+  rotate: true
+  xy: 424, 208
+  size: 23, 12
+  orig: 23, 12
+  offset: 0, 0
+  index: -1
+effect/Mix_19_comp_00030
+  rotate: false
+  xy: 164, 115
+  size: 18, 15
+  orig: 18, 15
+  offset: 0, 0
+  index: -1
+effect/Mix_19_comp_00031
+  rotate: false
+  xy: 312, 178
+  size: 22, 18
+  orig: 22, 18
+  offset: 0, 0
+  index: -1
+effect/Mix_19_comp_00032
+  rotate: true
+  xy: 105, 15
+  size: 22, 18
+  orig: 22, 18
+  offset: 0, 0
+  index: -1
+effect/Mix_19_comp_00033
+  rotate: false
+  xy: 468, 239
+  size: 18, 15
+  orig: 18, 15
+  offset: 0, 0
+  index: -1
+effect/energy_02_00001
+  rotate: false
+  xy: 184, 115
+  size: 16, 15
+  orig: 16, 15
+  offset: 0, 0
+  index: -1
+effect/energy_02_00002
+  rotate: false
+  xy: 125, 23
+  size: 14, 14
+  orig: 14, 14
+  offset: 0, 0
+  index: -1
+effect/energy_02_00003
+  rotate: false
+  xy: 383, 182
+  size: 14, 14
+  orig: 14, 14
+  offset: 0, 0
+  index: -1
+effect/energy_02_00004
+  rotate: false
+  xy: 262, 137
+  size: 14, 13
+  orig: 14, 13
+  offset: 0, 0
+  index: -1
+effect/guangyun
+  rotate: false
+  xy: 424, 233
+  size: 21, 21
+  orig: 21, 21
+  offset: 0, 0
+  index: -1
+effect/qc1
+  rotate: false
+  xy: 126, 85
+  size: 19, 14
+  orig: 19, 14
+  offset: 0, 0
+  index: -1
+effect/qc2
+  rotate: false
+  xy: 447, 238
+  size: 19, 16
+  orig: 19, 16
+  offset: 0, 0
+  index: -1
+effect/qc3
+  rotate: false
+  xy: 142, 113
+  size: 20, 17
+  orig: 20, 17
+  offset: 0, 0
+  index: -1
+effect/qc4
+  rotate: false
+  xy: 286, 158
+  size: 20, 17
+  orig: 20, 17
+  offset: 0, 0
+  index: -1
+effect/wargolem_002
+  rotate: false
+  xy: 64, 2
+  size: 14, 9
+  orig: 14, 9
+  offset: 0, 0
+  index: -1
+effect/wargolem_003
+  rotate: false
+  xy: 126, 39
+  size: 15, 11
+  orig: 15, 11
+  offset: 0, 0
+  index: -1
+effect/wargolem_004
+  rotate: true
+  xy: 202, 114
+  size: 16, 13
+  orig: 16, 13
+  offset: 0, 0
+  index: -1
+effect/wargolem_005
+  rotate: false
+  xy: 488, 240
+  size: 17, 14
+  orig: 17, 14
+  offset: 0, 0
+  index: -1
+effect/wargolem_006
+  rotate: false
+  xy: 126, 69
+  size: 17, 14
+  orig: 17, 14
+  offset: 0, 0
+  index: -1
+effect/wargolem_007
+  rotate: false
+  xy: 126, 52
+  size: 15, 15
+  orig: 15, 15
+  offset: 0, 0
+  index: -1
+effect/wargolem_008
+  rotate: false
+  xy: 438, 217
+  size: 14, 14
+  orig: 14, 14
+  offset: 0, 0
+  index: -1
+effect/wargolem_009
+  rotate: false
+  xy: 80, 4
+  size: 10, 7
+  orig: 10, 7
+  offset: 0, 0
+  index: -1
+effect/yan0004
+  rotate: false
+  xy: 424, 201
+  size: 7, 5
+  orig: 7, 5
+  offset: 0, 0
+  index: -1
+sh
+  rotate: false
+  xy: 105, 2
+  size: 26, 11
+  orig: 26, 11
+  offset: 0, 0
+  index: -1
+st01
+  rotate: false
+  xy: 312, 198
+  size: 86, 56
+  orig: 86, 56
+  offset: 0, 0
+  index: -1
+t
+  rotate: false
+  xy: 2, 113
+  size: 138, 141
+  orig: 138, 141
+  offset: 0, 0
+  index: -1
+t01
+  rotate: false
+  xy: 262, 152
+  size: 22, 23
+  orig: 22, 23
+  offset: 0, 0
+  index: -1
+t02
+  rotate: true
+  xy: 2, 7
+  size: 30, 60
+  orig: 30, 60
+  offset: 0, 0
+  index: -1
+t03
+  rotate: false
+  xy: 400, 200
+  size: 22, 54
+  orig: 22, 54
+  offset: 0, 0
+  index: -1
+wb
+  rotate: false
+  xy: 216, 177
+  size: 94, 77
+  orig: 94, 77
+  offset: 0, 0
+  index: -1
+y01
+  rotate: false
+  xy: 64, 13
+  size: 39, 24
+  orig: 39, 24
+  offset: 0, 0
+  index: -1
+y02
+  rotate: false
+  xy: 216, 142
+  size: 44, 33
+  orig: 44, 33
+  offset: 0, 0
+  index: -1

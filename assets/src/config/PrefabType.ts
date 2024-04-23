@@ -1,4 +1,3 @@
-import { path } from "cc"
 
 // 场景类型
 export const SceneType = {
@@ -6,6 +5,7 @@ export const SceneType = {
     LoginScene: "LoginScene",
     MainScene: "MainScene",
     WorldMapScene: "WorldMapViewManager",
+    TextbookScene: "TextbookScene",
 }
 /**窗口层级 */
 export enum Hierarchy {
@@ -36,8 +36,10 @@ export const PrefabType = {
     PopView: { path: "common/PopView", zindex: Hierarchy.TIPLAYER, tips: "弹窗" },
     BaseRemindView: { path: "common/BaseRemindView", zindex: Hierarchy.TIPLAYER, tips: "二次提示界面" },
     TipView: { path: "common/TipView", zindex: Hierarchy.TIPLAYER, tips: "提示界面" },
-    //公共相关
+    /*********************************************公共相关start***********************************************************/
     TopAmoutView: { path: "common/TopAmoutView", zindex: Hierarchy.POPUPLAYER, tips: "数值公共模块" },
+    NavTitleView: { path: "common/NavTitleView", zindex: Hierarchy.POPUPLAYER, tips: "导航公共模块" },
+    /*********************************************公共相关end*************************************************************/
     // 设置相关
     SettingView: { path: "setting/SettingView", zindex: Hierarchy.POPUPLAYER, tips: "设置界面" },
     VideoView: { path: "setting/VideoView", zindex: Hierarchy.POPUPLAYER, tips: "视频播放界面" },
@@ -48,7 +50,11 @@ export const PrefabType = {
     AccountActivationView: { path: "setting/AccountActivationView", zindex: Hierarchy.POPUPLAYER, tips: "账号激活中心" },
     MemberCentreView: { path: "setting/MemberCentreView", zindex: Hierarchy.POPUPLAYER, tips: "会员中心" },
     // 设置相关END
-
+    /**教材单词相关 */
+    /*********************************************教材单词相关start***********************************************************/
+    SelectWordView: { path: "textbook/SelectWordView", zindex: Hierarchy.POPUPLAYER, tips: "选择教材单词模块" },
+    TabContentView: { path: "textbook/TabContentView", zindex: Hierarchy.POPUPLAYER, tips: "选择教材tab模块" },
+    /*********************************************教材单词相关end*************************************************************/
     /*********************************************地图相关start***********************************************************/
     BuildingBtnView: { path: "map/BuildingBtnView", zindex: Hierarchy.POPUPLAYER, tips: "建筑按钮界面" },
     BuildingProduceView: { path: "map/BuildingProduceView", zindex: Hierarchy.POPUPLAYER, tips: "建筑生产界面" },

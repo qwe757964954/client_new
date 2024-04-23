@@ -17,7 +17,7 @@ export enum MapStatus {//地图状态
 // }
 
 export class RoleInfo {//角色配置
-    id: number;//id
+    level: number;//等级(从1开始)
     spPath: string;//spine路径
     spNames: string[];//spine名字
     rect: Rect;//[x,y,width,height]
@@ -78,14 +78,40 @@ export const MapConfig = {
     //     11: { id: 11, path: "map/dikuai5/spriteFrame", type: EditType.Land, width: 2, moveDt: 2 },
     // },
     roleInfo: {//101 男孩2, 102 女孩1, 103 男孩1
-        101: {
-            id: 101, spPath: "animtion/role/nanhai02", spNames: ["Idle", "Run"], rect: new Rect(-90, -10, 180, 280),
-        },
-        102: {
-            id: 102, spPath: "animtion/role/nvhai01", spNames: ["Idle", "Run"], rect: new Rect(-70, -10, 140, 260),
-        },
-        103: {
-            id: 103, spPath: "animtion/role/nanhai01", spNames: ["Idle", "Run"], rect: new Rect(-80, -10, 160, 260),
-        },
+        101: [
+            { level: 1, spPath: "animtion/role/nanhai02", spNames: ["Idle", "Run"], rect: new Rect(-90, -10, 180, 280), }
+        ],
+        102: [
+            { level: 1, spPath: "animtion/role/nvhai01", spNames: ["Idle", "Run"], rect: new Rect(-70, -10, 140, 260), }
+        ],
+        103: [
+            { level: 1, spPath: "animtion/role/nanhai01", spNames: ["Idle", "Run"], rect: new Rect(-80, -10, 160, 260), }
+        ],
     },
+    spriteInfo: {//101雷电 102狐狸 103龙
+        101: [
+            { level: 1, spPath: "animtion/sprite/leidian01", spNames: ["idle", "run", "action", "attack", "skill"], rect: new Rect(-14, 0, 80, 90), },
+            { level: 2, spPath: "animtion/sprite/leidian02", spNames: ["idle", "run", "action", "attack", "skill"], rect: new Rect(-14, -14, 160, 160), },
+            { level: 3, spPath: "animtion/sprite/leidian03", spNames: ["idle", "run", "action", "attack", "skill"], rect: new Rect(-10, -14, 180, 200), },
+            { level: 4, spPath: "animtion/sprite/leidian04", spNames: ["idle", "run", "action", "attack", "skill"], rect: new Rect(-10, -20, 240, 240), },
+            { level: 5, spPath: "animtion/sprite/leidian05", spNames: ["idle", "run", "action", "attack", "skill"], rect: new Rect(-20, -30, 260, 260), },
+            { level: 6, spPath: "animtion/sprite/leidian06", spNames: ["idle", "run", "action", "attack", "skill"], rect: new Rect(10, -10, 200, 350), },
+        ],
+        102: [
+            { level: 1, spPath: "animtion/sprite/huli01", spNames: ["idle", "run", "action", "attack", "skill"], rect: new Rect(-60, 0, 120, 110), },
+            { level: 2, spPath: "animtion/sprite/huli02", spNames: ["idle", "run", "action", "attack", "skill"], rect: new Rect(-10, 0, 160, 200), },
+            { level: 3, spPath: "animtion/sprite/huli03", spNames: ["idle", "run", "action", "attack", "skill"], rect: new Rect(0, 0, 200, 260), },
+            { level: 4, spPath: "animtion/sprite/huli04", spNames: ["idle", "run", "action", "attack", "skill"], rect: new Rect(-20, 0, 200, 300), },
+            { level: 5, spPath: "animtion/sprite/huli05", spNames: ["idle", "run", "action", "attack", "skill"], rect: new Rect(-60, -10, 320, 340), },
+            { level: 6, spPath: "animtion/sprite/huli06", spNames: ["idle", "run", "action", "attack", "skill"], rect: new Rect(-20, 0, 340, 380), },
+        ],
+        103: [
+            { level: 1, spPath: "animtion/sprite/long01", spNames: ["idle", "run", "action", "attack", "skill"], rect: new Rect(0, 0, 100, 120), },
+            { level: 2, spPath: "animtion/sprite/long02", spNames: ["idle", "run", "action", "attack", "skill"], rect: new Rect(0, 0, 120, 160), },
+            { level: 3, spPath: "animtion/sprite/long03", spNames: ["idle", "run", "action", "attack", "skill"], rect: new Rect(0, -10, 160, 260), },
+            { level: 4, spPath: "animtion/sprite/long04", spNames: ["idle", "run", "action", "attack", "skill"], rect: new Rect(0, -10, 200, 280), },
+            { level: 5, spPath: "animtion/sprite/long05", spNames: ["idle", "run", "action", "attack", "skill"], rect: new Rect(0, 0, 200, 320), },
+            { level: 6, spPath: "animtion/sprite/long06", spNames: ["idle", "run", "action", "attack", "skill"], rect: new Rect(0, -20, 220, 350), },
+        ],
+    }
 }
