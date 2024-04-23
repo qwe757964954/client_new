@@ -1,3 +1,5 @@
+import { ImageAsset, Node, Sprite, SpriteFrame, Texture2D, UITransform, isValid } from "cc";
+import { ResLoader } from "../manager/ResLoader";
 
 /**
  * 图片工具类
@@ -22,7 +24,31 @@ export default class ImgUtil {
     static getActiveUrl = function (active) {
         
     }
-
+    /**
+     * 
+     * @param imgUrl 远端图片地址
+     * @param imgNode 图片节点
+     * @param width 实际显示宽
+     * @param height 实际显示高
+     * 
+     * 代码示例
+     * ImgUtil.loadRemoteImage(itemInfo.imgUrl,this.item_img,125.507,172.979)
+     */
+    public static loadRemoteImage(imgUrl: string, imgNode:Node,width: number, height: number) {
+        ResLoader.instance.loadRemote<ImageAsset>(imgUrl, null, (err, data) => {
+            const texture = new Texture2D();
+            texture.image = data;
+            const spriteFrame = new SpriteFrame();
+            spriteFrame.texture = texture;
+            let sprite = imgNode.getComponent(Sprite);
+            if(!isValid(sprite)){
+                sprite = imgNode.addComponent(Sprite);
+            }
+            sprite.spriteFrame = spriteFrame;
+            imgNode.getComponent(UITransform).width = width;
+            imgNode.getComponent(UITransform).height = height;
+        })
+    }
 }
 
 /**

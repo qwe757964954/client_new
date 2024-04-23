@@ -53,7 +53,9 @@ export const PrefabType = {
     /**教材单词相关 */
     /*********************************************教材单词相关start***********************************************************/
     SelectWordView: { path: "textbook/SelectWordView", zindex: Hierarchy.POPUPLAYER, tips: "选择教材单词模块" },
-    TabContentView: { path: "textbook/TabContentView", zindex: Hierarchy.POPUPLAYER, tips: "选择教材tab模块" },
+    TabTopView: { path: "textbook/TabTopView", zindex: Hierarchy.POPUPLAYER, tips: "选择教材tab模块" },
+    RightMonster: { path: "textbook/RightMonster", zindex: Hierarchy.POPUPLAYER, tips: "我的词库右侧怪物模块" },
+    RightNavView: { path: "textbook/RightNavView", zindex: Hierarchy.POPUPLAYER, tips: "选择教材右侧导航模块" },
     /*********************************************教材单词相关end*************************************************************/
     /*********************************************地图相关start***********************************************************/
     BuildingBtnView: { path: "map/BuildingBtnView", zindex: Hierarchy.POPUPLAYER, tips: "建筑按钮界面" },
