@@ -348,5 +348,11 @@ export class MainScene extends Component {
         let pos = this.landLayer.getComponent(UITransform).convertToNodeSpaceAR(worldPos);
         return pos;
     }
+    /** 地图层坐标转换成屏幕坐标 */
+    mapPosToScreenPos(x: number, y: number) {
+        let worldPos = this.landLayer.getComponent(UITransform).convertToWorldSpaceAR(new Vec3(x, y, 0));
+        let pos = this.mapCamera.worldToScreen(worldPos);
+        return pos;
+    }
 }
 

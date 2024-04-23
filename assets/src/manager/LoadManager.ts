@@ -86,10 +86,10 @@ export class LoadManager {
     // 释放资源
     public static releaseAsset(asset: Asset) {
         if (asset) {
-            // console.log("releaseAsset", asset.name);
+            console.log("releaseAsset", asset.name);
             asset.decRef();
             if (0 == asset.refCount) {
-                // console.log("releaseAsset 2", asset.name);
+                console.log("releaseAsset 2", asset.name);
                 assetManager.releaseAsset(asset);
             }
         }
