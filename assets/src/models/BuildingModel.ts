@@ -149,6 +149,13 @@ export class BuildingModel extends BaseComponent {
             this._grids[i].recoverData();
         }
     }
+    /**格子数据置空 */
+    public resetGrids() {
+        if (!this._grids) return;
+        for (let i = 0; i < this._grids.length; i++) {
+            this._grids[i].resetData();
+        }
+    }
     // 格子数据保存
     public saveGrids() {
         if (this._grids) {
@@ -176,6 +183,7 @@ export class BuildingModel extends BaseComponent {
         }
         LoadManager.loadPrefab(PrefabType.BuildingBtnView.path, this.node).then((node: Node) => {
             this._btnView = node;
+            this._btnView.position = new Vec3(0, 0.5 * this._width * this._grids[0].height, 0);
             let buildingBtnView = this._btnView.getComponent(BuildingBtnView);
             let funcs = [//信息、保存、卖出、反转、回收、还原
                 this.showInfo.bind(this),
@@ -250,24 +258,20 @@ export class BuildingModel extends BaseComponent {
     public recycleBtnClick(): void {
         this.recycle();
     }
-    // protected onDisable(): void {
-    //     console.log("onDisable");
-    // }
-    // protected onEnable(): void {
-    //     console.log("onEnable");
-    // }
     // 回收
     public recycle() {
-        this.recoverGrids();
+        this.resetGrids();
         this.isShow = false;
         this.saveData();
+
+        this.removeFromScene(true);
     }
     // 还原
     public recover() {
         this.resetData();
         this.closeBtnView();
         if (this._isNew) {
-            this.removeFromScene();
+            this.removeFromScene(true);
         }
     }
     // 还原数据（不通知按钮界面关闭事件）
@@ -279,7 +283,7 @@ export class BuildingModel extends BaseComponent {
             this.topZIndex = false;
         }
         if (this._isNew) {
-            this.removeFromScene();
+            this.removeFromScene(true);
         }
     }
     // 摄像头缩放事件
@@ -289,9 +293,12 @@ export class BuildingModel extends BaseComponent {
         }
     }
     // 画面中移除
-    public removeFromScene(): void {
+    public removeFromScene(isDestory: boolean = false): void {
         this.isShow = false;
         EventManager.emit(EventType.BuidingModel_Remove, this);
+        if (isDestory) {
+            this.node.destroy();
+        }
     }
     // 从父节点移除(对象、资源暂未删除)
     public removeFromParent(): void {
