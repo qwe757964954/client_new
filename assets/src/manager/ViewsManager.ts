@@ -1,11 +1,8 @@
-import { Node, Prefab, Widget, instantiate, isValid } from "cc";
+import { Node, Prefab, instantiate, isValid } from "cc";
 import { Hierarchy, PrefabConfig, PrefabType } from "../config/PrefabType";
-import { NavTitleView } from "../views/common/NavTitleView";
 import { PopView } from "../views/common/PopView";
 import { TipView } from "../views/common/TipView";
-import { TopAmoutView } from "../views/common/TopAmoutView";
 import { LoadManager } from "./LoadManager";
-import { ResLoader } from "./ResLoader";
 
 //界面管理类
 export class ViewsManager {
@@ -100,65 +97,4 @@ export class ViewsManager {
             node.getComponent(TipView).init(content, callBack);
         });
     }
-    // 添加导航
-    static addNavigation(path: string, parent: Node, left: number, top: number): Promise<NavTitleView> {
-        return new Promise((resolve, reject) => {
-            ResLoader.instance.load(`prefab/${path}`, Prefab, (err: Error | null, prefab: Prefab) => {
-                if (err) {
-                    reject(err);
-                    return;
-                }
-    
-                let node = instantiate(prefab);
-                parent.addChild(node);
-    
-                let widgetCom = node.getComponent(Widget);
-                if (!isValid(widgetCom)) {
-                    widgetCom = node.addComponent(Widget);
-                    widgetCom.isAlignTop = true;
-                    widgetCom.isAlignLeft = true;
-                }
-                widgetCom.top = left;
-                widgetCom.left = top;
-                widgetCom.updateAlignment();
-    
-                let navTitleView = node.getComponent(NavTitleView);
-                if (navTitleView) {
-                    resolve(navTitleView);
-                } else {
-                    reject(new Error('NavTitleView component not found'));
-                }
-            });
-        });
-    }
-    // 添加数值公共模块
-    static addAmout(path: string, parent: Node, verticalCenter: number, right: number): Promise<TopAmoutView> {
-        return new Promise((resolve, reject) => {
-            ResLoader.instance.load(`prefab/${path}`, Prefab, (err: Error | null, prefab: Prefab) => {
-                if (err) {
-                    reject(err);
-                    return;
-                }
-                let node = instantiate(prefab);
-                parent.addChild(node);
-                let widgetCom = node.getComponent(Widget);
-                if (!isValid(widgetCom)) {
-                    widgetCom = node.addComponent(Widget);
-                    widgetCom.isAlignRight = true;
-                    widgetCom.isAlignVerticalCenter = true;
-                }
-                widgetCom.right = right;
-                widgetCom.verticalCenter = verticalCenter;
-                widgetCom.updateAlignment();
-    
-                let amoutScript = node.getComponent(TopAmoutView);
-                if (amoutScript) {
-                    resolve(amoutScript);
-                } else {
-                    reject(new Error('addAmout component not found'));
-                }
-            });
-        });
-    }
-
 }

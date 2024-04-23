@@ -1,14 +1,15 @@
-import { _decorator, Asset, Node, Component, Vec3, instantiate, Sprite, Prefab, SpriteFrame, Label, Color, Layers } from "cc";
-import { GridModel } from "./GridModel";
-import { LoadManager } from "../manager/LoadManager";
-import { PrefabType } from "../config/PrefabType";
-import { BuildingBtnView } from "../views/map/BuildingBtnView";
-import EventManager from "../util/EventManager";
+import { Asset, Color, Label, Node, Prefab, Rect, Sprite, SpriteFrame, UITransform, Vec2, Vec3, _decorator, instantiate } from "cc";
 import { EventType } from "../config/EventType";
-import { BaseComponent } from "../script/BaseComponent";
-import { ViewsManager } from "../manager/ViewsManager";
-import { BuildingInfoView } from "../views/map/BuildingInfoView";
+import { PrefabType } from "../config/PrefabType";
 import { DataMgr, EditInfo } from "../manager/DataMgr";
+import { LoadManager } from "../manager/LoadManager";
+import { ViewsManager } from "../manager/ViewsManager";
+import { BaseComponent } from "../script/BaseComponent";
+import CCUtil from "../util/CCUtil";
+import EventManager from "../util/EventManager";
+import { BuildingBtnView } from "../views/map/BuildingBtnView";
+import { BuildingInfoView } from "../views/map/BuildingInfoView";
+import { GridModel } from "./GridModel";
 const { ccclass, property } = _decorator;
 
 //建筑模型
@@ -54,6 +55,7 @@ export class BuildingModel extends BaseComponent {
     }
     // 初始化数据
     initData(x: number, y: number, editInfo: EditInfo, isFlip: boolean, isNew: boolean) {
+        console.log("initData", x, y, editInfo, isFlip, isNew);
         this._editInfo = editInfo;
         this._x = x;
         this._y = y;
@@ -89,6 +91,10 @@ export class BuildingModel extends BaseComponent {
         this._grids = grids;
         for (let i = 0; i < this._grids.length; i++) {
             this._grids[i].building = this;
+            if (!this.isNew && !this._dataGrids) {//初始化已有建筑
+                this._grids[i].saveData();
+                console.log("set grids saveData", i, this.isNew);
+            }
         }
         let gridInfo = this._grids[0];
         this._x = gridInfo.x;
@@ -100,9 +106,10 @@ export class BuildingModel extends BaseComponent {
             this.building.node.position = new Vec3(0, -0.5 * this._width * gridInfo.height, 0);
             this._isFixImgPos = true;
         }
-        // if(!this._dataGrids){
-        //     this._dataGrids = this._grids;
-        // }
+        if (!this.isNew && !this._dataGrids) {//初始化已有建筑
+            this._dataGrids = this._grids;
+            console.log("set grids this._dataGrids");
+        }
         let index = -pos.y;//(this._x + this._width*0.5) * (this._y + this._width*0.5);
         this._zIndex = index;
         this.label.string = index.toString();
@@ -128,6 +135,9 @@ export class BuildingModel extends BaseComponent {
     }
     set isNew(isNew: boolean) {
         this._isNew = isNew;
+    }
+    get isNew(): boolean {
+        return this._isNew;
     }
     public get pos(): Readonly<Vec3> {
         return this._pos;
@@ -305,5 +315,25 @@ export class BuildingModel extends BaseComponent {
         this.node.children.forEach(child => {
             child.layer = type;
         });
+    }
+    /**是否点击到自己 像素点击，可能会出现性能问题*/
+    public isTouchSelf(worldPos: Vec3): boolean {
+        let transform = this.building.getComponent(UITransform);
+        let rect: Rect = new Rect(0, 0, transform.width, transform.height);
+        rect.x = -transform.anchorX * transform.width;
+        rect.y = -transform.anchorY * transform.height;
+        let pos = transform.convertToNodeSpaceAR(worldPos);
+        if (!rect.contains(new Vec2(pos.x, pos.y))) {
+            return false;
+        }
+        let buffer = CCUtil.readPixels(this.building.spriteFrame, false);
+        // console.log("transform.anchorX", transform.anchorX, transform.anchorY);
+        // console.log("isTouchSelf 1", pos.x, pos.y, buffer.length, transform.width, transform.height);
+        let x = pos.x - transform.anchorX * transform.width;
+        let y = (1 - transform.anchorY) * transform.height - pos.y;
+        let index = transform.width * 4 * Math.floor(y) + 4 * Math.floor(x);
+        let colors = buffer.subarray(index, index + 4);
+        // console.log("isTouchSelf 2", index, colors[0], colors[1], colors[2], colors[3]);
+        return colors[3] >= 50;
     }
 }

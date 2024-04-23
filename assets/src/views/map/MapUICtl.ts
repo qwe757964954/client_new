@@ -1,17 +1,18 @@
-import { Color, Graphics, Rect, Sprite, SpriteFrame, UITransform, Vec3, instantiate, math, screen, sys } from "cc";
-import { MainBaseCtl } from "../main/MainBaseCtl";
-import { GridModel } from "../../models/GridModel";
-import { MapConfig } from "../../config/MapConfig";
-import { LandModel } from "../../models/LandModel";
-import { BuildingModel } from "../../models/BuildingModel";
-import EventManager from "../../util/EventManager";
-import { EventType } from "../../config/EventType";
+import { Color, Graphics, Rect, Vec3, instantiate, screen } from "cc";
 import GlobalConfig from "../../GlobalConfig";
-import { MainScene } from "../main/MainScene";
+import { EventType } from "../../config/EventType";
+import { MapConfig } from "../../config/MapConfig";
+import { DataMgr, EditInfo } from "../../manager/DataMgr";
 import { BgModel } from "../../models/BgModel";
+import { BuildingModel } from "../../models/BuildingModel";
+import { GridModel } from "../../models/GridModel";
+import { LandModel } from "../../models/LandModel";
+import { RoleBaseModel } from "../../models/RoleBaseModel";
 import { RoleModel } from "../../models/RoleModel";
 import { BaseComponent } from "../../script/BaseComponent";
-import { DataMgr, EditInfo } from "../../manager/DataMgr";
+import EventManager from "../../util/EventManager";
+import { MainBaseCtl } from "../main/MainBaseCtl";
+import { MainScene } from "../main/MainScene";
 
 // 地图UI控制器
 export class MapUICtl extends MainBaseCtl {
@@ -28,7 +29,7 @@ export class MapUICtl extends MainBaseCtl {
 
     private _gridAry: GridModel[][] = [];//格子数组(y从上往下，x从右往左)
     private _bgModelAry: BgModel[] = [];//背景模型数组
-    private _roleModelAry: RoleModel[] = [];//角色模型数组
+    private _roleModelAry: RoleBaseModel[] = [];//角色模型数组
     private _buidingSortHandler: string;//建筑需要重新排序handle
     private _roleMoveHandler: string;//角色需要移动handle
     private _roleSortHandler: string;//角色需要重新排序handle
@@ -66,7 +67,7 @@ export class MapUICtl extends MainBaseCtl {
         this.initBuilding();
         this.initRole();
 
-        this.buildingSort();
+        this.buildingRoleSort();
         this.updateCameraVisible();
     }
     // 初始化数据
@@ -213,16 +214,16 @@ export class MapUICtl extends MainBaseCtl {
     // 初始化建筑
     initBuilding() {
         // for test
-        // this.newBuilding(MapConfig.editInfo[1], 30, 30, false, false);//TEST 测试数据
+        this.newBuilding(DataMgr.instance.editInfo[0], 30, 30, false, false);//TEST 测试数据
     }
     /** 初始化角色 */
     public async initRole() {
-        // for test
+        // for test 人物角色
         {
             let role = instantiate(this._mainScene.roleModel);
             this._mainScene.buildingLayer.addChild(role);
-            let roleModel = role.getComponent(RoleModel);
-            await roleModel.init(101, [9500, 9700, 9701, 9702, 9703]);
+            let roleModel = role.getComponent(RoleBaseModel);
+            await roleModel.init(101, 1, [9500, 9700, 9701, 9702, 9703]);
             let grid = this.getGridInfo(20, 20);
             roleModel.grid = grid;
             this.roleMove(roleModel);
@@ -231,8 +232,8 @@ export class MapUICtl extends MainBaseCtl {
         {
             let role = instantiate(this._mainScene.roleModel);
             this._mainScene.buildingLayer.addChild(role);
-            let roleModel = role.getComponent(RoleModel);
-            await roleModel.init(102, [9550, 9800, 9801, 9802, 9803, 9805]);
+            let roleModel = role.getComponent(RoleBaseModel);
+            await roleModel.init(102, 1, [9550, 9800, 9801, 9802, 9803, 9805]);
             let grid = this.getGridInfo(30, 30);
             roleModel.grid = grid;
             this.roleMove(roleModel);
@@ -241,9 +242,40 @@ export class MapUICtl extends MainBaseCtl {
         {
             let role = instantiate(this._mainScene.roleModel);
             this._mainScene.buildingLayer.addChild(role);
-            let roleModel = role.getComponent(RoleModel);
-            await roleModel.init(103, [9600, 9900, 9901, 9902, 9903]);
+            let roleModel = role.getComponent(RoleBaseModel);
+            await roleModel.init(103, 1, [9600, 9900, 9901, 9902, 9903]);
             let grid = this.getGridInfo(20, 40);
+            roleModel.grid = grid;
+            this.roleMove(roleModel);
+            this._roleModelAry.push(roleModel);
+        }
+        // for test 精灵
+        {
+            let role = instantiate(this._mainScene.petModel);
+            this._mainScene.buildingLayer.addChild(role);
+            let roleModel = role.getComponent(RoleBaseModel);
+            await roleModel.init(101, 1);
+            let grid = this.getGridInfo(21, 21);
+            roleModel.grid = grid;
+            this.roleMove(roleModel);
+            this._roleModelAry.push(roleModel);
+        }
+        {
+            let role = instantiate(this._mainScene.petModel);
+            this._mainScene.buildingLayer.addChild(role);
+            let roleModel = role.getComponent(RoleBaseModel);
+            await roleModel.init(102, 1);
+            let grid = this.getGridInfo(31, 31);
+            roleModel.grid = grid;
+            this.roleMove(roleModel);
+            this._roleModelAry.push(roleModel);
+        }
+        {
+            let role = instantiate(this._mainScene.petModel);
+            this._mainScene.buildingLayer.addChild(role);
+            let roleModel = role.getComponent(RoleBaseModel);
+            await roleModel.init(103, 1);
+            let grid = this.getGridInfo(21, 41);
             roleModel.grid = grid;
             this.roleMove(roleModel);
             this._roleModelAry.push(roleModel);
@@ -321,6 +353,23 @@ export class MapUICtl extends MainBaseCtl {
         let j = Math.floor(dtY - dtX + pos.x / width - pos.y / height);
         // console.log("getTouchGrid",i,j);
         return this.getGridInfo(i, j);
+    }
+    /**点击到建筑 */
+    getTouchBuilding(x: number, y: number) {
+        let worldPos = this._mainScene.mapCamera.screenToWorld(new Vec3(x, y, 0));
+        let children = this._mainScene.buildingLayer.children;
+        for (let i = children.length - 1; i >= 0; i--) {
+            const element = children[i];
+            let model = element.getComponent(BuildingModel);
+            if (model) {
+                if (model.isTouchSelf(worldPos)) {
+                    return model;
+                }
+                // console.log("building worldPos", pos.x, pos.y);
+            }
+        }
+        // console.log("getTouchBuilding", worldPos.x, worldPos.y, children.length);
+        return null;
     }
     /** 点击到角色 */
     getTouchRole(x: number, y: number) {
@@ -464,7 +513,7 @@ export class MapUICtl extends MainBaseCtl {
         // TODO 建筑动态加载
     }
     // 角色移动
-    roleMove(roleModel: RoleModel) {
+    roleMove(roleModel: RoleBaseModel) {
         let pos = roleModel.pos;
         let grid = this.getGridByPosEx(pos.x, pos.y);
         if (!grid) {

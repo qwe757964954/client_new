@@ -1,6 +1,6 @@
 import { _decorator, Component, Layers, Node, Sprite, Vec3 } from 'cc';
-import CCUtil from '../../util/CCUtil';
 import { BuildingModel } from '../../models/BuildingModel';
+import CCUtil from '../../util/CCUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('BuildingProduceView')

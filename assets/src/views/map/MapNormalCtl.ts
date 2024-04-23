@@ -1,8 +1,8 @@
-import { EventMouse, EventTouch, Vec2 } from "cc";
-import { MapBaseCtl } from "../map/MapBaseCtl";
+import { EventMouse, EventTouch } from "cc";
 import { BuildingModel } from "../../models/BuildingModel";
+import { RoleBaseModel } from "../../models/RoleBaseModel";
 import { TimerMgr } from "../../util/TimerMgr";
-import { RoleModel } from "../../models/RoleModel";
+import { MapBaseCtl } from "../map/MapBaseCtl";
 
 //普通地图处理
 export class MapNormalCtl extends MapBaseCtl {
@@ -11,7 +11,7 @@ export class MapNormalCtl extends MapBaseCtl {
     private _timer: number = null;//计时器
     private _isLongClick: boolean = false;//是否长按点击
 
-    private _touchRole: RoleModel = null;//触摸角色
+    private _touchRole: RoleBaseModel = null;//触摸角色
 
 
     /** 点击开始 */
@@ -30,8 +30,9 @@ export class MapNormalCtl extends MapBaseCtl {
             }, 100);
             return true;
         }
-        let grid = this._mainScene.getTouchGrid(pos.x, pos.y);
-        this._touchBuilding = grid?.building;
+        this._touchBuilding = this._mainScene.getTouchBuilding(pos.x, pos.y);//for test
+        // let grid = this._mainScene.getTouchGrid(pos.x, pos.y);
+        // this._touchBuilding = grid?.building;
         if (this._touchBuilding) {
             // 显示长按提示UI TODO
             // 定时器触发

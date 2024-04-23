@@ -1,5 +1,5 @@
 /** 资源加载单例 */
-import { Asset, AssetManager, EffectAsset, JsonAsset, Material, Prefab, SpriteAtlas, SpriteFrame, TTFFont, Texture2D, assetManager, error, resources, sp } from "cc";
+import { Asset, EffectAsset, JsonAsset, Material, Prefab, SpriteAtlas, SpriteFrame, TTFFont, Texture2D, assetManager, resources, sp } from "cc";
 
 export class LoadManager {
     // private _assetManagerMap:Map<string, Asset>;//资源管理器map<资源名,资源>
@@ -21,7 +21,8 @@ export class LoadManager {
         return new Promise((resolve, reject) => {
             resources.load(path, type, (error: Error, assets: Asset) => {
                 if (error) {
-                    console.log("load->resource load failed:" + error.message);
+                    console.log("load->resource load failed:" + path);
+                    console.log("failed msg:" + error.message);
                     reject(error);
                     return;
                 }
@@ -37,7 +38,8 @@ export class LoadManager {
         return new Promise((resolve, reject) => {
             resources.load("prefab/" + path, Prefab, (error: Error, assets: Prefab) => {
                 if (error) {
-                    console.log("load->resource loadPrefab failed:" + error.message);
+                    console.log("load->resource loadPrefab failed:" + path);
+                    console.log("failed msg:" + error.message);
                     reject(error);
                     return;
                 }
@@ -53,7 +55,8 @@ export class LoadManager {
         return new Promise((resolve, reject) => {
             resources.load(`config/${name}`, JsonAsset, (error: Error, assets: JsonAsset) => {
                 if (error) {
-                    console.log("loadJson->resource load failed:" + error.message);
+                    console.log("load->resource loadJson failed:" + name);
+                    console.log("failed msg:" + error.message);
                     reject(error);
                 }
                 resolve(assets?.json);
@@ -64,7 +67,7 @@ export class LoadManager {
     public static releaseAsset(asset: Asset) {
         if (asset) {
             asset.decRef();
-            if(0 == asset.refCount) {
+            if (0 == asset.refCount) {
                 assetManager.releaseAsset(asset);
             }
         }
@@ -79,28 +82,8 @@ export class LoadManager {
     public static forceReleaseAsset(asset: Asset) {
         assetManager.releaseAsset(asset);
     }
-    /**
-     * 加载资源包
-     * @param url       资源地址
-     * @param complete  完成事件
-     * @param v         资源MD5版本号
-     * @example
-    var serverUrl = "http://192.168.1.8:8080/";         // 服务器地址
-    var RemoteBundle = "RemoteBundleName";
-    var md5 = "8e5c0";                                  // Cocos Creator 构建后的MD5字符
-    await LoadManager.loadBundle(RemoteBundle,md5);        //远程用法
-    await LoadManager.loadBundle("resources");        //本地bundle
-     */
-    public static loadBundle(url: string, v?: string) {
-        return new Promise<AssetManager.Bundle>((resolve, reject) => {
-            assetManager.loadBundle(url, { version: v }, (err, bundle: AssetManager.Bundle) => {
-                if (err) {
-                    return error(err);
-                }
-                resolve(bundle);
-            });
-        });
-    }
+
+
 
     // //按名称加载spine动画
     // public static loadSpineByName(name: string): Promise<sp.SkeletonData | undefined> {
@@ -199,55 +182,55 @@ export class LoadManager {
     //         });
     //     });
     // }
-    
+
 
 
     // 获取资源包名
-    public static getBundleName(uuid:string){
+    public static getBundleName(uuid: string) {
         let ret = "";
         let map = assetManager.bundles;
         map.forEach((value, key) => {
-            if("" == ret && value.getAssetInfo(uuid)){
+            if ("" == ret && value.getAssetInfo(uuid)) {
                 ret = key;
             }
         });
         return ret;
     }
     //打印内存中占有资源
-    public static dumpResInfo(){
+    public static dumpResInfo() {
         let map = {};
         let prefabMap = {};
         let spMap = {};
         let ary = [];
         let assets = assetManager.assets;
         assets.forEach((value, key) => {
-            if(value instanceof SpriteFrame){
+            if (value instanceof SpriteFrame) {
                 let name = this.getBundleName(key);
-                if("" != name){
+                if ("" != name) {
                     map[name] ||= [];
                     map[name].push(value.name);
                 }
-            }else if(value instanceof Prefab){
+            } else if (value instanceof Prefab) {
                 let name = this.getBundleName(key);
-                if("" != name){
+                if ("" != name) {
                     prefabMap[name] ||= [];
                     prefabMap[name].push(value.name);
                 }
-            }else if(value instanceof sp.SkeletonData){
+            } else if (value instanceof sp.SkeletonData) {
                 let name = this.getBundleName(key);
-                if("" != name){
+                if ("" != name) {
                     spMap[name] ||= [];
                     spMap[name].push(value.name);
                 }
-            }else if(value instanceof Texture2D || value instanceof EffectAsset || value instanceof Material ||
-                value instanceof SpriteAtlas || value instanceof TTFFont ){
+            } else if (value instanceof Texture2D || value instanceof EffectAsset || value instanceof Material ||
+                value instanceof SpriteAtlas || value instanceof TTFFont) {
 
-            }else{
+            } else {
                 ary.push(value);
             }
         });
         console.log(assets);
-        console.log(map,prefabMap,spMap);
+        console.log(map, prefabMap, spMap);
         console.log(ary);
         return true;
     }
