@@ -59,17 +59,19 @@ export class ViewsManager {
         } else {
             this._loadingPrefabMap[viewConfig.path] = 1;
         }
-        LoadManager.loadPrefab(viewConfig.path).then((prefab: Prefab) => {
+        LoadManager.loadPrefab(viewConfig.path, parent).then((node: Node) => {
             console.log("显示界面", viewConfig.path);
-            let node = instantiate(prefab);
             node.name = viewConfig.path.replace("/", "_");
 
             if (this._loadingPrefabMap.hasOwnProperty(viewConfig.path)) {
                 this._loadingPrefabMap[viewConfig.path]--;
             }
-            if (!parent || !isValid(parent, true)) return;//如果父类不存或已经被销毁则直接返回
-            parent.addChild(node);
             if (callBack) callBack(node);
+        }).catch((error) => {
+            console.log("显示界面 error", error);
+            if (this._loadingPrefabMap.hasOwnProperty(viewConfig.path)) {
+                this._loadingPrefabMap[viewConfig.path]--;
+            }
         });
     }
     // 关闭界面
@@ -123,10 +125,10 @@ export class ViewsManager {
                     reject(err);
                     return;
                 }
-    
+
                 let node = instantiate(prefab);
                 parent.addChild(node);
-    
+
                 let widgetCom = node.getComponent(Widget);
                 if (!isValid(widgetCom)) {
                     widgetCom = node.addComponent(Widget);
@@ -136,7 +138,7 @@ export class ViewsManager {
                 widgetCom.top = left;
                 widgetCom.left = top;
                 widgetCom.updateAlignment();
-    
+
                 let navTitleView = node.getComponent(NavTitleView);
                 if (navTitleView) {
                     resolve(navTitleView);
@@ -181,7 +183,7 @@ export class ViewsManager {
                 widgetCom.right = right;
                 widgetCom.verticalCenter = verticalCenter;
                 widgetCom.updateAlignment();
-    
+
                 let amoutScript = node.getComponent(TopAmoutView);
                 if (amoutScript) {
                     resolve(amoutScript);

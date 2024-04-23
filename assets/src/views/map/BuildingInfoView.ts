@@ -1,8 +1,7 @@
 import { _decorator, Component, Label, Node, Sprite, SpriteFrame, UITransform, Vec3 } from 'cc';
-import { BuildingModel } from '../../models/BuildingModel';
-import CCUtil from '../../util/CCUtil';
 import { DataMgr, EditInfo } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
+import CCUtil from '../../util/CCUtil';
 const { ccclass, property } = _decorator;
 /** 建筑信息 */
 @ccclass('BuildingInfoView')
@@ -49,9 +48,7 @@ export class BuildingInfoView extends Component {
         this.labelDesc.string = editInfo.description;
         this.labelFunction.string = editInfo.function;
 
-        LoadManager.load(DataMgr.getEditPng(editInfo), SpriteFrame).then((spriteFrame: SpriteFrame) => {
-            this.img.spriteFrame = spriteFrame;
-
+        LoadManager.loadSprite(DataMgr.getEditPng(editInfo), this.img).then((spriteFrame: SpriteFrame) => {
             this.resetImgSize();
         });
     }
