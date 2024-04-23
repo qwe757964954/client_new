@@ -116,7 +116,7 @@ export class LoadManager {
                 }
                 //如果父节点不存或已经被销毁则直接返回
                 if (!skeleton || !isValid(skeleton, true)) {
-                    reject();
+                    reject(new Error("parent is null or invalid"));
                     return;
                 }
                 skeleton.skeletonData = assets;
@@ -139,7 +139,7 @@ export class LoadManager {
                 }
                 //如果父节点不存或已经被销毁则直接返回
                 if (!sprite || !isValid(sprite, true)) {
-                    reject();
+                    reject(new Error("parent is null or invalid"));
                     return;
                 }
                 sprite.spriteFrame = assets;
@@ -162,7 +162,7 @@ export class LoadManager {
                 }
                 //如果父节点不存或已经被销毁则直接返回
                 if (!parent || !isValid(parent, true)) {
-                    reject();
+                    reject(new Error("parent is null or invalid"));
                     return;
                 }
                 let node = instantiate(assets);

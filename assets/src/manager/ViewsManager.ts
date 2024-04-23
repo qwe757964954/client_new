@@ -67,6 +67,11 @@ export class ViewsManager {
                 this._loadingPrefabMap[viewConfig.path]--;
             }
             if (callBack) callBack(node);
+        }).catch((error) => {
+            console.log("显示界面 error", error);
+            if (this._loadingPrefabMap.hasOwnProperty(viewConfig.path)) {
+                this._loadingPrefabMap[viewConfig.path]--;
+            }
         });
     }
     // 关闭界面
