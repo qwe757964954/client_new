@@ -1,7 +1,7 @@
-import { _decorator, Asset, Component, Node, Sprite, SpriteFrame, UITransform, Vec3 } from 'cc';
+import { _decorator, Component, Sprite, SpriteFrame, UITransform, Vec3 } from 'cc';
+import { DataMgr, EditInfo } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
 import CCUtil from '../../util/CCUtil';
-import { DataMgr, EditInfo } from '../../manager/DataMgr';
 const { ccclass, property } = _decorator;
 
 @ccclass('EditItem')
@@ -11,7 +11,6 @@ export class EditItem extends Component {
 
     private _data: EditInfo = null;//数据
     private _clickCall: Function = null;//点击回调
-    private _loadAssetAry: Asset[] = [];//加载资源数组
 
     start(): void {
         this.initEvent();
@@ -30,17 +29,13 @@ export class EditItem extends Component {
     // 销毁
     protected onDestroy(): void {
         this.removeEvent();
-        LoadManager.releaseAssets(this._loadAssetAry);
-        this._loadAssetAry = [];
     }
 
     // 初始化
     public initData(info: EditInfo, clickCall: Function): void {
         this._data = info;
         this._clickCall = clickCall;
-        LoadManager.load(DataMgr.getEditPng(info), SpriteFrame).then((spriteFrame: SpriteFrame) => {
-            this.img.spriteFrame = spriteFrame;
-            this._loadAssetAry.push(spriteFrame);
+        LoadManager.loadSprite(DataMgr.getEditPng(info), this.img).then((spriteFrame: SpriteFrame) => {
             this.fixImg();
         });
     }

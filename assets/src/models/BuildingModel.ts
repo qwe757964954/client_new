@@ -1,4 +1,4 @@
-import { Asset, Color, Label, Node, Prefab, Rect, Sprite, SpriteFrame, UITransform, Vec2, Vec3, _decorator, instantiate } from "cc";
+import { Color, Label, Node, Rect, Sprite, UITransform, Vec2, Vec3, _decorator } from "cc";
 import { EventType } from "../config/EventType";
 import { PrefabType } from "../config/PrefabType";
 import { DataMgr, EditInfo } from "../manager/DataMgr";
@@ -38,7 +38,6 @@ export class BuildingModel extends BaseComponent {
     private _dataGrids: GridModel[];//数据格子
     private _dataIsFlip: boolean = false;//数据是否翻转
     private _dataIsShow: boolean = false;//数据是否显示
-    private _loadAssetAry: Asset[] = [];//加载资源数组
     private _btnView: Node = null;//建筑按钮界面
 
     // private _mapScaleHandle:string//地图缩放事件句柄
@@ -68,18 +67,13 @@ export class BuildingModel extends BaseComponent {
 
         this.label.node.active = false;
 
-        LoadManager.load(DataMgr.getEditPng(this._editInfo), SpriteFrame).then((spriteFrame: SpriteFrame) => {
-            this.building.spriteFrame = spriteFrame;
-            this._loadAssetAry.push(spriteFrame);
-        });
+        LoadManager.loadSprite(DataMgr.getEditPng(this._editInfo), this.building);
 
         this.initEvent();
     }
     // 销毁
     protected onDestroy(): void {
         this.destoryEvent();
-        LoadManager.releaseAssets(this._loadAssetAry);
-        this._loadAssetAry = [];
     }
     // 设置所占格子。清理以前老数据，设置新数据，更新节点位置
     public set grids(grids: GridModel[]) {
@@ -180,9 +174,8 @@ export class BuildingModel extends BaseComponent {
             this.onCameraScale(scale);
             return;
         }
-        LoadManager.loadPrefab(PrefabType.BuildingBtnView.path).then((prefab: Prefab) => {
-            this._loadAssetAry.push(prefab);
-            this._btnView = instantiate(prefab);
+        LoadManager.loadPrefab(PrefabType.BuildingBtnView.path, this.node).then((node: Node) => {
+            this._btnView = node;
             let buildingBtnView = this._btnView.getComponent(BuildingBtnView);
             let funcs = [//信息、保存、卖出、反转、回收、还原
                 this.showInfo.bind(this),
@@ -193,7 +186,6 @@ export class BuildingModel extends BaseComponent {
                 this.recover.bind(this),
             ];
             buildingBtnView.registerClickCallback(funcs);
-            this.node.addChild(this._btnView);
             this.onCameraScale(scale);
             this.refreshBtnView();
         });

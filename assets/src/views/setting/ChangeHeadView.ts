@@ -1,47 +1,44 @@
-import { _decorator, Asset, Button, Component, instantiate, Label, Node, Size, Sprite, SpriteFrame, UITransform } from 'cc';
-import { ViewsManager } from '../../manager/ViewsManager';
-import { PrefabType } from '../../config/PrefabType';
+import { _decorator, Button, Component, instantiate, Node, Size, Sprite, UITransform } from 'cc';
 import { PbConst } from '../../config/PbConst';
-import ImgUtil from '../../util/ImgUtil';
-import { LoadManager } from '../../manager/LoadManager';
-import { User } from '../../models/User';
+import { PrefabType } from '../../config/PrefabType';
 import { ChangeHeadTypeEnum, SettingConfig } from '../../config/SettingConfig';
-import { NetManager } from '../../net/NetManager';
+import { LoadManager } from '../../manager/LoadManager';
+import { ViewsManager } from '../../manager/ViewsManager';
+import { User } from '../../models/User';
+import ImgUtil from '../../util/ImgUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('ChangeHeadView')
 export class ChangeHeadView extends Component {
-    
+
     @property(Button)
-    public headBtn:Button = null;       // 头像按钮
+    public headBtn: Button = null;       // 头像按钮
     @property(Button)
-    public headBoxBtn:Button = null;    // 头像框按钮
-    
+    public headBoxBtn: Button = null;    // 头像框按钮
+
     @property(Node)
-    public headList:Node = null;        // 头像节点
+    public headList: Node = null;        // 头像节点
     @property(Node)
-    public headBoxList:Node = null;     // 头像框节点
+    public headBoxList: Node = null;     // 头像框节点
     @property(Node)
-    public headContent:Node = null;     // 头像容器节点
+    public headContent: Node = null;     // 头像容器节点
     @property(Node)
-    public headBoxContent:Node = null;  // 头像框容器节点
-    
+    public headBoxContent: Node = null;  // 头像框容器节点
+
     @property(Node)
-    public item:Node = null;            // item
-    
+    public item: Node = null;            // item
+
     @property(Sprite)
-    public preHeadBox:Sprite = null;    // 预览的头像框
+    public preHeadBox: Sprite = null;    // 预览的头像框
     @property(Sprite)
-    public preHead:Sprite = null;       // 预览的头像
+    public preHead: Sprite = null;       // 预览的头像
 
     private _myList: any = null;  // 我的道具信息
-    private _curSwitchTab:number = ChangeHeadTypeEnum.Type_HeadBox; // 默认头像框
-    
-    private _loadAssetAry = new Map<string, Asset>(); // 加载资源数组
+    private _curSwitchTab: number = ChangeHeadTypeEnum.Type_HeadBox; // 默认头像框
 
     start() {
         this._myList = [
-            {ModuleId: 4, PropID: 800}, {ModuleId: 4, PropID: 801}, 
+            { ModuleId: 4, PropID: 800 }, { ModuleId: 4, PropID: 801 },
         ]
         this.init();
     }
@@ -52,13 +49,9 @@ export class ChangeHeadView extends Component {
     }
     // 释放资源
     public releaseAsset() {
-        for (const iterator of this._loadAssetAry) {
-            LoadManager.releaseAsset(iterator[1]);
-        }
-        this._loadAssetAry.clear();
     }
     //初始化
-    public init():void {
+    public init(): void {
         this.initUI();
     }
     // 初始化UI
@@ -70,12 +63,12 @@ export class ChangeHeadView extends Component {
         this.refreshPreHeadBox(User.instance.curHeadBoxPropId);
     }
     //初始化事件
-    public initEvent(){
-        
+    public initEvent() {
+
     }
     //销毁事件
-    public destoryEvent(){
-        
+    public destoryEvent() {
+
     }
 
     // 关闭
@@ -128,7 +121,7 @@ export class ChangeHeadView extends Component {
                 this.headList.active = false;
                 this.headBoxList.active = true;
                 const datas1 = [
-                    {PropId: 800}, {PropId: 801}, {PropId: 802}, {PropId: 803}, {PropId: 804}, {PropId: 805}, {PropId: 806}, 
+                    { PropId: 800 }, { PropId: 801 }, { PropId: 802 }, { PropId: 803 }, { PropId: 804 }, { PropId: 805 }, { PropId: 806 },
                     // {PropId: 800}, {PropId: 801}, {PropId: 802}, {PropId: 803}, {PropId: 804}, {PropId: 805}, {PropId: 806}, 
                     // {PropId: 800}, {PropId: 801}, {PropId: 802}, {PropId: 803}, {PropId: 804}, {PropId: 805}, {PropId: 806}, 
                     // {PropId: 800}, {PropId: 801}, {PropId: 802}, {PropId: 803}, {PropId: 804}, {PropId: 805}, {PropId: 806}, 
@@ -141,7 +134,7 @@ export class ChangeHeadView extends Component {
                 this.headList.active = true;
                 this.headBoxList.active = false;
                 const datas2 = [
-                    {PropId: 101}, {PropId: 102}
+                    { PropId: 101 }, { PropId: 102 }
                 ]
                 this.refreshListUI(this.headContent, datas2, type);
                 break;
@@ -163,7 +156,7 @@ export class ChangeHeadView extends Component {
         content.getComponent(UITransform).setContentSize(new Size(700, height));
         this.item.active = false;
     }
-    
+
     refreshItem(item: Node, data, type: number) {
         item.name = data.PropId.toString();
         let icon = item.getChildByName("icon") as Node;
@@ -189,19 +182,9 @@ export class ChangeHeadView extends Component {
         if (type == ChangeHeadTypeEnum.Type_Head) {
             url = ImgUtil.getAvatarUrl(propId);
         }
-        if (this._loadAssetAry.get(url)) {
-            icon.spriteFrame = (this._loadAssetAry.get(url) as SpriteFrame);
-        }
-        else {
-            LoadManager.load(url, SpriteFrame).then((spriteFrame:SpriteFrame) => {
-                if (ViewsManager.instance.isExistView(PrefabType.ChangeHeadView) && icon) {
-                    icon.spriteFrame = spriteFrame;
-                }
-                this._loadAssetAry.set(url, spriteFrame);
-            });
-        }
+        LoadManager.loadSprite(url, icon);
     }
-    
+
     checkHave(propId: number, id: number, propTypeEnum) {
         if (propId == id) return true;
         if (!this._myList) return false;

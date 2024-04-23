@@ -1,4 +1,4 @@
-import { _decorator, Asset, Rect, sp, Tween, tween, TweenSystem, Vec2, Vec3 } from 'cc';
+import { _decorator, Rect, sp, Tween, tween, TweenSystem, Vec2, Vec3 } from 'cc';
 import { EventType } from '../config/EventType';
 import { MapConfig, RoleInfo } from '../config/MapConfig';
 import { TextConfig } from '../config/TextConfig';
@@ -31,7 +31,6 @@ export class RoleBaseModel extends BaseComponent {
 
     private _x: number;//x格子坐标
     private _y: number;//y格子坐标
-    private _loadAssetAry: Asset[] = [];//加载资源数组
     private _lastPos: Vec3;//上一次停留位置
     private _toPos: Vec3;//目标位置
     private _roleState: RoleState = RoleState.none;//角色状态
@@ -64,8 +63,6 @@ export class RoleBaseModel extends BaseComponent {
     }
     protected onDestroy(): void {
         this.removeEvent();
-        LoadManager.releaseAssets(this._loadAssetAry);
-        this._loadAssetAry = [];
         if (this._timer) {
             TimerMgr.stopLoop(this._timer);
             this._timer = null;
@@ -88,10 +85,7 @@ export class RoleBaseModel extends BaseComponent {
     // 初始化角色
     public async initRole() {
         this.role.node.scale = new Vec3(this._scale, this._scale, 1);
-        await LoadManager.load(this._roleInfo.spPath, sp.SkeletonData).then((skeletonData: sp.SkeletonData) => {
-            this.role.skeletonData = skeletonData;
-            this._loadAssetAry.push(skeletonData);
-
+        await LoadManager.loadSpine(this._roleInfo.spPath, this.role).then((skeletonData: sp.SkeletonData) => {
             this.idle();
         });
     }

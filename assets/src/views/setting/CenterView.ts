@@ -1,33 +1,31 @@
-import { _decorator, Asset, Component, Label, ProgressBar, Sprite, SpriteFrame } from 'cc';
+import { _decorator, Component, Label, ProgressBar, Sprite } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
-import { ViewsManager } from '../../manager/ViewsManager';
 import { LoadManager } from '../../manager/LoadManager';
-import ImgUtil from '../../util/ImgUtil';
+import { ViewsManager } from '../../manager/ViewsManager';
 import { User } from '../../models/User';
+import ImgUtil from '../../util/ImgUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('CenterView')
 export class CenterView extends Component {
-    
+
     @property(Sprite)
-    public headBox:Sprite = null;    // 预览的头像框
+    public headBox: Sprite = null;    // 预览的头像框
     @property(Sprite)
-    public head:Sprite = null;       // 预览的头像
+    public head: Sprite = null;       // 预览的头像
 
     @property(Label)
-    public idTxt:Label = null;              // id
+    public idTxt: Label = null;              // id
     @property(Label)
-    public nameTxt:Label = null;            // 昵称
+    public nameTxt: Label = null;            // 昵称
     @property(Label)
-    public roletitleTxt:Label = null;       // 称号
+    public roletitleTxt: Label = null;       // 称号
     @property(Label)
-    public levelTxt:Label = null;           // 称号等级
+    public levelTxt: Label = null;           // 称号等级
     @property(Label)
-    public currentExpTxt:Label = null;      // 称号经验
+    public currentExpTxt: Label = null;      // 称号经验
     @property(ProgressBar)
-    public roleTitleProgress:ProgressBar = null;  // 称号进度条
-
-    private _loadAssetAry:Asset[] = [];//加载资源数组
+    public roleTitleProgress: ProgressBar = null;  // 称号进度条
 
     start() {
         this.init();
@@ -36,12 +34,10 @@ export class CenterView extends Component {
     //销毁
     protected onDestroy(): void {
         // this.destoryEvent();
-        LoadManager.releaseAssets(this._loadAssetAry);
-        this._loadAssetAry = [];
     }
 
     //初始化
-    public init():void {
+    public init(): void {
         this.initHead();
         this.initUserInfo();
         // this.initEvent();
@@ -50,18 +46,8 @@ export class CenterView extends Component {
     public initHead() {
         let headBoxUrl = ImgUtil.getPropImgUrl(User.instance.curHeadBoxPropId);
         let headUrl = ImgUtil.getAvatarUrl(User.instance.curHeadPropId);
-        LoadManager.load(headBoxUrl, SpriteFrame).then((spriteFrame:SpriteFrame) => {
-            if (ViewsManager.instance.isExistView(PrefabType.SettingView) && this.headBox) {
-                this.headBox.spriteFrame = spriteFrame;
-            }
-            this._loadAssetAry.push(spriteFrame);
-        });
-        LoadManager.load(headUrl, SpriteFrame).then((spriteFrame:SpriteFrame) => {
-            if (ViewsManager.instance.isExistView(PrefabType.SettingView) && this.head) {
-                this.head.spriteFrame = spriteFrame;
-            }
-            this._loadAssetAry.push(spriteFrame);
-        });
+        LoadManager.loadSprite(headBoxUrl, this.headBox);
+        LoadManager.loadSprite(headUrl, this.head);
     }
     // 初始化用户id、昵称、称号等信息
     public initUserInfo() {
@@ -75,11 +61,11 @@ export class CenterView extends Component {
     }
 
     //初始化事件
-    public initEvent(){
+    public initEvent() {
         // CCUtil.onTouch(this.centerTab, this.onClickCenter, this);
     }
     //销毁事件
-    public destoryEvent(){
+    public destoryEvent() {
         // CCUtil.offTouch(this.btnHead, this.onClickHead, this);
     }
 
