@@ -7,6 +7,7 @@ const ConfigPath = {
     RoleSlot: "role_slots",
     RoleSlotConfig: "dress_up",
     EditInfo: "building",
+    WordSplit: "word_split",
 }
 
 //角色插槽
@@ -50,6 +51,7 @@ export class DataMgr {
     public roleSlot: RoleSlot[] = [];//角色插槽
     public roleSlotConfig: RoleSlotConfig[] = [];//角色插槽配置
     public editInfo: EditInfo[] = [];//编辑信息
+    public wordSplitConfig: any = null;
 
     private _isInit: boolean = false;
     public defaultLand: EditInfo = null;//默认地块
@@ -111,6 +113,12 @@ export class DataMgr {
         }
     }
 
+    //获取导学模式单词拆分配置
+    public async getWordSplitConfig() {
+        if (this.wordSplitConfig != null) return this.wordSplitConfig;
+        this.wordSplitConfig = await LoadManager.loadJson(ConfigPath.WordSplit);
+        return this.wordSplitConfig;
+    }
 
 
     /**获取编辑图片 */
