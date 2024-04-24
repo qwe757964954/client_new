@@ -1,4 +1,4 @@
-import { Color, Label, Node, Rect, Sprite, UITransform, Vec2, Vec3, _decorator } from "cc";
+import { Color, Graphics, Label, Node, Rect, Sprite, UITransform, Vec2, Vec3, _decorator } from "cc";
 import { EventType } from "../config/EventType";
 import { PrefabType } from "../config/PrefabType";
 import { DataMgr, EditInfo } from "../manager/DataMgr";
@@ -21,6 +21,8 @@ export class BuildingModel extends BaseComponent {
     public btnView: Node = null;//建筑按钮界面节点
     @property(Label)
     public label: Label = null;//文本
+    @property(Graphics)
+    public graphics: Graphics = null;//格子图层
 
     private _editInfo: EditInfo;//编辑信息
 
@@ -66,6 +68,7 @@ export class BuildingModel extends BaseComponent {
         this._isNew = isNew;
 
         this.label.node.active = false;
+        this.graphics.node.active = false;
 
         LoadManager.loadSprite(DataMgr.getEditPng(this._editInfo), this.building);
 
@@ -108,7 +111,7 @@ export class BuildingModel extends BaseComponent {
         this._zIndex = index;
         this.label.string = index.toString();
         this.refreshBtnView();
-        EventManager.emit(EventType.GridRect_Need_Draw, this);
+        this.drawGridRect();
     }
     public get grids(): GridModel[] {
         return this._grids;
@@ -175,6 +178,7 @@ export class BuildingModel extends BaseComponent {
     public showBtnView(scale: number): void {
         this.topZIndex = true;
         this.node.setSiblingIndex(-1);//放到最高层
+        this.graphics.node.active = true;//画图层显示
         this.building.color = new Color(255, 255, 255, 180);//半透明
         if (this._btnView) {
             this._btnView.active = true;
@@ -196,6 +200,7 @@ export class BuildingModel extends BaseComponent {
             buildingBtnView.registerClickCallback(funcs);
             this.onCameraScale(scale);
             this.refreshBtnView();
+            this.drawGridRect();
         });
     }
     // 关闭按钮界面
@@ -207,6 +212,7 @@ export class BuildingModel extends BaseComponent {
             EventManager.emit(EventType.BuildingBtnView_Close);
             EventManager.emit(EventType.Building_Need_Sort);
         }
+        this.graphics.node.active = false;
     }
     // 刷新按钮界面
     public refreshBtnView(): void {
@@ -282,6 +288,7 @@ export class BuildingModel extends BaseComponent {
             this._btnView.active = false;
             this.topZIndex = false;
         }
+        this.graphics.node.active = false;
         if (this._isNew) {
             this.removeFromScene(true);
         }
@@ -334,5 +341,27 @@ export class BuildingModel extends BaseComponent {
         let colors = buffer.subarray(index, index + 4);
         // console.log("isTouchSelf 2", index, colors[0], colors[1], colors[2], colors[3]);
         return colors[3] >= 50;
+    }
+    /** 画格子区域 */
+    public drawGridRect() {
+        if (!this.graphics.node.active) return;
+        let g = this.graphics;
+        g.clear();
+        let grids = this._grids;
+        if (!grids || grids.length < 1) return;
+        let pos0 = grids[0].pos.clone();
+        pos0.y = pos0.y - 0.5 * this._width * grids[0].height;
+        g.fillColor = new Color(99, 210, 198, 180);
+        grids.forEach(grid => {
+            if (grid.isCanBuilding()) return;
+            let pos = grid.pos;
+            let x = pos.x - pos0.x;
+            let y = pos.y - pos0.y;
+            g.moveTo(x, y);
+            g.lineTo(x + 0.5 * grid.width, y - 0.5 * grid.height);
+            g.lineTo(x, y - grid.height);
+            g.lineTo(x - 0.5 * grid.width, y - 0.5 * grid.height);
+        });
+        g.fill();
     }
 }

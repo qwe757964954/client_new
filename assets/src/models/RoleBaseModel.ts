@@ -213,6 +213,7 @@ export class RoleBaseModel extends BaseComponent {
     }
     /** 拖拽开始 */
     public onDragStart() {
+        this.topZIndex = true;//置顶
         this.dragStandby();
         this._dataPos = this.node.position.clone();
     }
@@ -227,10 +228,12 @@ export class RoleBaseModel extends BaseComponent {
     public onDragEnd(x: number, y: number) {
         this.node.position = new Vec3(x, y, 0);
         this.standby();
+        this.topZIndex = false;//取消置顶
     }
     public onDragEndEx() {//还原回去
         this.node.position = this._dataPos;
         this.standby();
+        this.topZIndex = false;//取消置顶
     }
 }
 
