@@ -1,9 +1,10 @@
-import { Game, Size, Vec2, View, director, game, macro, profiler, screen, view } from "cc";
+import { Game, Size, View, game, macro, profiler, screen, view } from "cc";
+import { APP_VERSION } from "./AppConfig";
 import DebugConfig from "./DebugConfig";
+import { DataMgr } from "./manager/DataMgr";
+import { SpineAniManager } from "./manager/SpineAniManager";
 import FileUtil from "./util/FileUtil";
 import { InterfaceUtil } from "./util/InterfaceUtil";
-import { APP_VERSION } from "./AppConfig";
-import { DataMgr } from "./manager/DataMgr";
 
 
 export default class GlobalConfig {
@@ -32,7 +33,7 @@ export default class GlobalConfig {
         this.WIN_RATE = this.WIN_SIZE.width / this.WIN_SIZE.height;
         console.log("GlobalConfig init",this.WIN_SIZE,this.WIN_RATE);
         let tmplog = console.log;
-
+        SpineAniManager.getInstance().preLoadSkinAniDir("resources","Spine");
         if(DebugConfig.NO_PRINT){
             console.log = function(){};
         }

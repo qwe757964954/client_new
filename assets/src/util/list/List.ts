@@ -380,7 +380,7 @@ export default class List extends Component {
     private _thisNodeUt: UITransform;
 
     //----------------------------------------------------------------------------
-
+    
     onLoad() {
         this._init();
     }

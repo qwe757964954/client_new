@@ -22,4 +22,6 @@ export const EventType = {
 
     Enter_Island_Level: "Enter_Island_Level",  //进入大冒险关卡
     Exit_World_Island: "Exit_World_Island",  //退出岛屿界面
+    Sys_Ani_Play:"Sys_Ani_Play",//播放动画
+    Sys_Ani_Stop:"Sys_Ani_Stop",//停止动画
 }

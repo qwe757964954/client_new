@@ -1,4 +1,4 @@
-import { ImageAsset, Node, Sprite, SpriteFrame, Texture2D, UITransform, isValid } from "cc";
+import { ImageAsset, Layers, Node, Sprite, SpriteFrame, Texture2D, UITransform, Vec2, isValid } from "cc";
 import { ResLoader } from "../manager/ResLoader";
 
 /**
@@ -49,6 +49,25 @@ export default class ImgUtil {
             imgNode.getComponent(UITransform).height = height;
         })
     }
+
+    
+	/**
+	 * 创建一个2D节点
+	 * @param name 节点名称
+	 * @returns 
+	 */
+	public static create_2DNode(name: string = null): Node {
+		if (name != null) {
+			name = String(name);
+		}
+		let node = new Node(name);
+		node.layer = Layers.Enum.UI_2D;
+
+		let uiTrans: UITransform = node.addComponent(UITransform);
+		uiTrans.anchorPoint = new Vec2(0.5, 0.5);
+		uiTrans.enabled = true;
+		return node;
+	}
 }
 
 /**

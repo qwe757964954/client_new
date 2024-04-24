@@ -401,7 +401,7 @@
     },
     "component": "",
     "_componentId": "729fbln3MhDsqBAixK+NCDG",
-    "handler": "",
+    "handler": "onClickArrowBtn",
     "customEventData": ""
   },
   {
@@ -967,7 +967,7 @@
     "pageChangeEvent": {
       "__id__": 46
     },
-    "_virtual": true,
+    "_virtual": false,
     "cyclic": false,
     "lackCenter": false,
     "lackSlide": false,

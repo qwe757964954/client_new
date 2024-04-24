@@ -69,6 +69,10 @@ export class SelectWordView extends Component {
                 {name:"剑桥国际少儿",isSelected:false},
                 {name:"1000 Bacsic",isSelected:false},
                 {name:"2000 Core",isSelected:false},
+                {name:"新概念青少版(新)2",isSelected:false},
+                {name:"剑桥国际少儿2",isSelected:false},
+                {name:"1000 Bacsic2",isSelected:false},
+                {name:"2000 Core2",isSelected:false},
             ];
             navScript.loadNavListData(dataArr,(selectId:number)=>{
                 console.log("nav selectId = ",selectId);

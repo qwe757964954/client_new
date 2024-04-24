@@ -11,6 +11,8 @@ export class RightNavView extends Component {
     private _navDataArr :RightNavItemData[] = [];
     
     private callSelectCallback:(selectId:number)=>void = null;
+
+
     start() {
         console.log("RightNavView  start");
     }
@@ -55,7 +57,8 @@ export class RightNavView extends Component {
         }
     }
     onClickArrowBtn(){
-
+        console.log("onClickArrowBtn");
+        this.navScroll.scrollTo(this._navDataArr.length - 1);
     }
 
 }

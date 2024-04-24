@@ -14,7 +14,6 @@ export class TabTopView extends Component {
     public tabScroll:List = null;
     @property(Button)
     public myTextbookBtn:Button = null;
-    
     private _dataArr:TabItemData[] = [];
     private callSelectCallback:(selectId:number)=>void = null;
     start() {
