@@ -1,13 +1,12 @@
-import { Label, Node, ProgressBar, _decorator } from 'cc';
+import { Component, Label, Node, ProgressBar, _decorator } from 'cc';
 import { GameRes } from '../../GameRes';
 import { EventType } from '../../config/EventType';
 import { inf_SpineAniCreate } from '../../manager/InterfaceDefines';
-import { BaseComponent } from '../../script/BaseComponent';
 import { EventMgr } from '../../util/EventManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('RightMonsterView')
-export class RightMonsterView extends BaseComponent {
+export class RightMonsterView extends Component {
     @property(Label)
     public monsterName: Label = null;
     @property(Label)
