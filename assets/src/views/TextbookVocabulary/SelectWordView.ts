@@ -99,20 +99,6 @@ export class SelectWordView extends Component {
             widgetCom.right = 176.599;
             widgetCom.bottom = 7.1935;
             widgetCom.updateAlignment();
-            // let tabScript = node.getComponent(TabTopView);
-            // let dataArr:TabItemData[] = [
-            //     {name:"小阶段",isSelected:false},
-            //     {name:"中阶段",isSelected:false},
-            //     {name:"高阶段",isSelected:false},
-            //     {name:"教辅",isSelected:false},
-            //     {name:"考级",isSelected:false},
-            //     {name:"基础",isSelected:false},
-            //     {name:"专业",isSelected:false},
-            // ];
-            // tabScript.loadTabData(dataArr,(selectId:number)=>{
-            //     console.log("selectId = ",selectId);
-            //     this.updateShowTextBook(selectId);
-            // });
         });
     }
 
@@ -194,6 +180,7 @@ export class SelectWordView extends Component {
         this._myTextbookDataArr = myTextbookDataArr;
         this.myScrollView.numItems = this._myTextbookDataArr.length;
         this.myScrollView.update();
+        this.myScrollView.selectedId = 0;
     }
     onLoadMyTextBookVerticalList(item:Node, idx:number){
         let myTextbookItemScript:MyContentItem = item.getComponent(MyContentItem);
@@ -211,6 +198,11 @@ export class SelectWordView extends Component {
             
         });
     }
+
+    onMyTextBookVerticalSelected(item: any, selectedId: number, lastSelectedId: number, val: number){
+        console.log("onMyTextBookVerticalSelected",item,selectedId);
+    }
+
     updateShowTextBook(selectId:number){
         this.vocabularyLayout.active = selectId!==-1;
         this.myTextbookLayout.active = selectId===-1;
@@ -227,6 +219,12 @@ export class SelectWordView extends Component {
         this.myScrollEmpty.active = this._myTextbookDataArr.length === 0;
         this.myScrollView.node.active = this._myTextbookDataArr.length !== 0;
     }
+
+    onClickHelp(){
+        console.log("onClickHelp");
+        ViewsManager.instance.showView(PrefabType.SelectWordHelp);
+    }
+
     protected onDestroy(): void {
         console.log("SelectWordView  onDestroy");
     }
