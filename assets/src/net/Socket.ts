@@ -1,11 +1,4 @@
 
-
-// 数据头
-// 1数据类型 1校验字段 2数据大小 2消息ID 2主命令 2子命令
-let SOCKET_VER = 6//数据类型
-
-import { NetManager } from "./NetManager";
-
 export class Socket {
 
     private ip: string;
