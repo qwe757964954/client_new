@@ -1,6 +1,6 @@
 import { assetManager, AudioClip } from "cc";
 import { ResLoader } from "./ResLoader";
-import AudioUtl from "../util/AudioUtl";
+import AudioUtil from "../util/AudioUtil";
 
 export default class RemoteSoundManager {
     private static _instance: RemoteSoundManager = null;
@@ -32,7 +32,7 @@ export default class RemoteSoundManager {
                 if (durationTime == 0) {
                     resolve(true);
                 } else {
-                    AudioUtl.instance.playEffect(audioclip);
+                    AudioUtil.instance.playEffect(audioclip);
                     setTimeout(() => {
                         resolve(true);
                     }, durationTime * 1000);

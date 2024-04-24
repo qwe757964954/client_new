@@ -9,7 +9,6 @@ import { PopView } from '../../common/PopView';
 import { DataMgr } from '../../../manager/DataMgr';
 import ServiceManager from '../../../net/ServiceManager';
 import { WordSplitItem } from './items/WordSplitItem';
-import AudioUtl from '../../../util/AudioUtl';
 import RemoteSoundManager from '../../../manager/RemoteSoundManager';
 import NetConfig from '../../../config/NetConfig';
 const { ccclass, property } = _decorator;
