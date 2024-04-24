@@ -45,6 +45,7 @@ export class NetManager {
     //发送消息
     public sendMsg(pbobj?: any) {
         if (this._socket) {
+            console.log("sendMsg", pbobj.Path);
             let buffer = pbobj ? JSON.stringify(pbobj) : pbobj;//pb对象转数据
             this._socket.sendMsg(buffer);
         }

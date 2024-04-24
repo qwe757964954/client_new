@@ -25,8 +25,8 @@ export class ResLoader {
     defaultBundleName: string = "resources";
     //单例
     private static _instance: ResLoader = null;
-    public static get instance():ResLoader{
-        if(!this._instance){
+    public static get instance(): ResLoader {
+        if (!this._instance) {
             this._instance = new ResLoader();
         }
         return this._instance;
@@ -207,7 +207,7 @@ ResLoader.instance.loadDir("game", onProgressCallback, onCompleteCallback);
         if (bundle) {
             var asset = bundle.get(path);
             if (asset) {
-                this.releasePrefabtDepsRecursively(asset._uuid);
+                this.releasePrefabtDepsRecursively(asset.uuid);
             }
         }
     }

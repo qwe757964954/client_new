@@ -1,5 +1,5 @@
 /** 资源加载单例 */
-import { Asset, EffectAsset, JsonAsset, Material, Prefab, SpriteAtlas, SpriteFrame, TTFFont, Texture2D, assetManager, resources, sp } from "cc";
+import { Asset, EffectAsset, JsonAsset, Material, Node, Prefab, Sprite, SpriteAtlas, SpriteFrame, TTFFont, Texture2D, assetManager, instantiate, isValid, resources, sp } from "cc";
 
 export class LoadManager {
     // private _assetManagerMap:Map<string, Asset>;//资源管理器map<资源名,资源>
@@ -17,39 +17,44 @@ export class LoadManager {
     // }
 
     // 加载资源
-    public static load(path: string, type: typeof Asset): Promise<Asset> {
-        return new Promise((resolve, reject) => {
-            resources.load(path, type, (error: Error, assets: Asset) => {
-                if (error) {
-                    console.log("load->resource load failed:" + path);
-                    console.log("failed msg:" + error.message);
-                    reject(error);
-                    return;
-                }
+    // public static load(path: string, type: typeof Asset): Promise<Asset> {
+    //     return new Promise((resolve, reject) => {
+    //         resources.load(path, type, (error: Error, assets: Asset) => {
+    //             if (error) {
+    //                 console.log("load->resource load failed:" + path);
+    //                 console.log("failed msg:" + error.message);
+    //                 reject(error);
+    //                 return;
+    //             }
 
-                assets.addRef();//引用计数加一
+    //             assets.addRef();//引用计数加一
 
-                resolve(assets);
-            });
-        });
-    }
+    //             resolve(assets);
+    //         });
+    //     });
+    // }
     // 加载预制体
-    public static loadPrefab(path: string): Promise<Prefab> {
-        return new Promise((resolve, reject) => {
-            resources.load("prefab/" + path, Prefab, (error: Error, assets: Prefab) => {
-                if (error) {
-                    console.log("load->resource loadPrefab failed:" + path);
-                    console.log("failed msg:" + error.message);
-                    reject(error);
-                    return;
-                }
+    // public static loadPrefab(path: string): Promise<Prefab> {
+    //     return new Promise((resolve, reject) => {
+    //         resources.load("prefab/" + path, Prefab, (error: Error, assets: Prefab) => {
+    //             if (error) {
+    //                 console.log("load->resource loadPrefab failed:" + path);
+    //                 console.log("failed msg:" + error.message);
+    //                 reject(error);
 
-                assets.addRef();//引用计数加一
 
-                resolve(assets);
-            });
-        });
-    }
+    //                 return;
+    //             }
+
+    //             assets.addRef();//引用计数加一
+    //             // let node = instantiate(assets);
+    //             // node.once(Node.EventType.NODE_DESTROYED, () => {
+    //             //     console.log("load->resource loadPrefab destroy:" + path);
+    //             // });
+    //             resolve(assets);
+    //         });
+    //     });
+    // }
     //加载json资源
     public static loadJson(name: string): Promise<any | undefined> {
         return new Promise((resolve, reject) => {
@@ -58,16 +63,33 @@ export class LoadManager {
                     console.log("load->resource loadJson failed:" + name);
                     console.log("failed msg:" + error.message);
                     reject(error);
+                    return;
                 }
                 resolve(assets?.json);
+            });
+        });
+    }
+    /**加载远程资源 url需要有扩展名*/
+    public static loadRemote(url: string): Promise<any | undefined> {
+        return new Promise((resolve, reject) => {
+            assetManager.loadRemote(url, (error: Error, assets: any) => {
+                if (error) {
+                    console.log("load->resource loadRemote failed:" + url);
+                    console.log("failed msg:" + error.message);
+                    reject(error);
+                    return;
+                }
+                resolve(assets);
             });
         });
     }
     // 释放资源
     public static releaseAsset(asset: Asset) {
         if (asset) {
+            console.log("releaseAsset", asset.name);
             asset.decRef();
             if (0 == asset.refCount) {
+                console.log("releaseAsset 2", asset.name);
                 assetManager.releaseAsset(asset);
             }
         }
@@ -83,6 +105,78 @@ export class LoadManager {
         assetManager.releaseAsset(asset);
     }
 
+    /**加载并显示spine */
+    public static loadSpine(path: string, skeleton: sp.Skeleton): Promise<any | undefined> {
+        return new Promise((resolve, reject) => {
+            resources.load(path, sp.SkeletonData, (error: Error, assets: sp.SkeletonData) => {
+                if (error) {
+                    console.log("loadShowSpine->resource load failed:" + path + "," + error.message);
+                    reject(error);
+                    return;
+                }
+                //如果父节点不存或已经被销毁则直接返回
+                if (!skeleton || !isValid(skeleton, true)) {
+                    reject(new Error("parent is null or invalid"));
+                    return;
+                }
+                skeleton.skeletonData = assets;
+                skeleton.node.once(Node.EventType.NODE_DESTROYED, () => {
+                    LoadManager.releaseAsset(assets);
+                });
+                assets.addRef();
+                resolve(assets);
+            });
+        });
+    }
+    /**加载并显示sprite */
+    public static loadSprite(path: string, sprite: Sprite): Promise<any | undefined> {
+        return new Promise((resolve, reject) => {
+            resources.load(path, SpriteFrame, (error: Error, assets: SpriteFrame) => {
+                if (error) {
+                    console.log("loadShowSprite->resource load failed:" + path + "," + error.message);
+                    reject(error);
+                    return;
+                }
+                //如果父节点不存或已经被销毁则直接返回
+                if (!sprite || !isValid(sprite, true)) {
+                    reject(new Error("parent is null or invalid"));
+                    return;
+                }
+                sprite.spriteFrame = assets;
+                sprite.node.once(Node.EventType.NODE_DESTROYED, () => {
+                    LoadManager.releaseAsset(assets);
+                });
+                assets.addRef();
+                resolve(assets);
+            });
+        });
+    }
+    /**加载并显示prefab */
+    public static loadPrefab(path: string, parent: Node): Promise<any | undefined> {
+        return new Promise((resolve, reject) => {
+            resources.load("prefab/" + path, Prefab, (error: Error, assets: Prefab) => {
+                if (error) {
+                    console.log("loadShowPrefab->resource load failed:" + path + "," + error.message);
+                    reject(error);
+                    return;
+                }
+                //如果父节点不存或已经被销毁则直接返回
+                if (!parent || !isValid(parent, true)) {
+                    reject(new Error("parent is null or invalid"));
+                    return;
+                }
+                let node = instantiate(assets);
+                parent.addChild(node);
+                node.once(Node.EventType.NODE_DESTROYED, () => {
+                    LoadManager.releaseAsset(assets);
+                });
+                assets.addRef();
+                resolve(node);
+            });
+        });
+    }
+
+    /**button */
 
 
     // //按名称加载spine动画

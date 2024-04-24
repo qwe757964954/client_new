@@ -1,14 +1,17 @@
 import { Button, Label, Node, ProgressBar, _decorator } from 'cc';
+import ImgUtil from '../../util/ImgUtil';
 import ListItem from '../../util/list/ListItem';
 const { ccclass, property } = _decorator;
 
 
 export interface MyTextbookItemData {
-    img: string,
+    imgUrl: string,
     name: string,
     desc: string,
     collect_count: number,
+    total_collect: number,
     already_learned_count: number,
+    total_already_learned: number,
     isLearned: boolean
 }   
 
@@ -34,18 +37,33 @@ export class MyContentItem extends ListItem {
 
     @property(Node)
     public flagBg:Node = null;
+
+    private idx:number = 0;
+    private delCallback:(idx:number) => void = null;
     start() {
 
     }
 
-    update(deltaTime: number) {
-        
+    setClickCallback(callback) {
+        this.delCallback = callback;
     }
 
     updateMyContentItemProps(idx: number,itemInfo:MyTextbookItemData) {
-        
+        this.idx = idx;
+        this.item_name.string = itemInfo.name;
+        this.desc_text.string = itemInfo.desc;
+        this.flagBg.active = itemInfo.isLearned;
+        this.collect_text.string = `已收集${itemInfo.collect_count}/${itemInfo.total_collect}!`;
+        this.already_learned_text.string = `已学单词${itemInfo.already_learned_count}/${itemInfo.total_already_learned}!`;
+        ImgUtil.loadRemoteImage(itemInfo.imgUrl,this.item_img,124.77,162.291);
     }
 
-}
+    onDelMyTextbookClick(){
+        if(this.delCallback){
+            this.delCallback(this.idx);
+        }
+    }
+
+}   
 
 

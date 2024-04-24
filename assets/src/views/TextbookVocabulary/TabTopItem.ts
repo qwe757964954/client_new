@@ -1,17 +1,20 @@
-import { _decorator, Color, Component, Label, Node } from 'cc';
-import { TabItemData } from './TabContentView';
+import { _decorator, Color, Label, Node } from 'cc';
+import ListItem from '../../util/list/ListItem';
+import { TabItemData } from './TabTopView';
 const { ccclass, property } = _decorator;
 
 @ccclass('TabTopItem')
-export class TabTopItem extends Component {
+export class TabTopItem extends ListItem {
     @property(Label)
     public tab_name:Label = null;          // tab名字
     @property(Node)
     public tab_focus:Node = null;          // tab标签
+    public idx:number = 0; //
     start() {
 
     }
     updateItemProps(idx: number,itemInfo:TabItemData) {
+        this.idx = idx;
         this.tab_name.string = itemInfo.name;
         this.tab_focus.active = itemInfo.isSelected;
         this.tab_name.color = itemInfo.isSelected? Color.WHITE  : Color.GREEN;

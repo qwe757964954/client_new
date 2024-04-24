@@ -12,6 +12,8 @@ export class MapEditCtl extends MapBaseCtl {
     private _step: number = 0;//步骤
     private _cacheDataAry: BuildingModel[] = [];//缓存数据
 
+    private _buildingRemoveHandle: string;//建筑移除事件
+
     //构造函数
     constructor(mainScene) {
         super(mainScene);
@@ -23,11 +25,11 @@ export class MapEditCtl extends MapBaseCtl {
     }
     // 初始化事件
     public initEvent(): void {
-        EventManager.on(EventType.BuidingModel_Remove, this.onBuildingRemove.bind(this));
+        this._buildingRemoveHandle = EventManager.on(EventType.BuidingModel_Remove, this.onBuildingRemove.bind(this));
     }
     // 销毁
     public dispose(): void {
-        EventManager.off(EventType.BuidingModel_Remove, this.onBuildingRemove.bind(this));
+        EventManager.off(EventType.BuidingModel_Remove, this._buildingRemoveHandle);
         this._cacheDataAry = [];
     }
     //点击开始

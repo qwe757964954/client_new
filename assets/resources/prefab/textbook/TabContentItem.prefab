@@ -979,11 +979,11 @@
     "book_name": {
       "__id__": 19
     },
-    "book_num_text": {
+    "word_num_text": {
       "__id__": 27
     },
     "item_img": {
-      "__id__": 2
+      "__id__": 30
     },
     "addBtn": {
       "__id__": 13

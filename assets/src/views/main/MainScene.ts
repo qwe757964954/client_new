@@ -1,7 +1,6 @@
-import { _decorator, Asset, Camera, Canvas, Component, EventMouse, EventTouch, Layers, Node, Prefab, UITransform, Vec3 } from 'cc';
+import { _decorator, Camera, Canvas, Component, EventMouse, EventTouch, Layers, Node, Prefab, UITransform, Vec3 } from 'cc';
 import { EventType } from '../../config/EventType';
 import { MapStatus } from '../../config/MapConfig';
-import { LoadManager } from '../../manager/LoadManager';
 import { BuildingModel } from '../../models/BuildingModel';
 import EventManager from '../../util/EventManager';
 import { BuildEditCtl } from '../map/BuildEditCtl';
@@ -41,8 +40,6 @@ export class MainScene extends Component {
     @property(Node)
     public lineLayer: Node = null;//编辑层
     @property(Node)
-    public graphicsLayer: Node = null;//绘画层
-    @property(Node)
     public buildingLayer: Node = null;//建筑层
     @property(Camera)
     public mapCamera: Camera = null;//地图摄像机
@@ -68,8 +65,6 @@ export class MainScene extends Component {
     public loadingLayer: Node = null;//加载层
 
     /**=========================变量============================ */
-    private _loadAssetAry: Asset[] = [];//加载资源数组
-
     private _mapStatus: MapStatus = MapStatus.DEFAULT;//地图状态
     private _mapNormalCtl: MapNormalCtl = null;//普通地图控制器
     private _mapEditCtl: MapEditCtl = null;//编辑地图控制器
@@ -86,6 +81,10 @@ export class MainScene extends Component {
     start() {
         this.initData();
         this.initEvent();
+    }
+
+    protected update(dt: number): void {
+        this._mapUICtl?.update(dt);
     }
 
     // 初始化数据
@@ -128,17 +127,8 @@ export class MainScene extends Component {
 
         EventManager.off(EventType.BuildingBtnView_Close, this._buildingBtnViewCloseHandle);
     }
-    // 记录加载资源
-    addLoadAsset(asset: Asset) {
-        this._loadAssetAry.push(asset);
-    }
     // 移除加载资源
     removeLoadAsset() {
-        for (let i = 0; i < this._loadAssetAry.length; i++) {
-            let asset = this._loadAssetAry[i];
-            LoadManager.releaseAsset(asset);
-        }
-        this._loadAssetAry = [];
     }
     // 移除控制器
     removeCtl() {
@@ -267,7 +257,6 @@ export class MainScene extends Component {
         this.mainUIView.node.active = MapStatus.DEFAULT == status;
         this.editUIView.node.active = (MapStatus.EDIT == status || MapStatus.BUILD_EDIT == status);
         this.landEditUIView.node.active = MapStatus.LAND_EDIT == status;
-        this.graphicsLayer.active = MapStatus.BUILD_EDIT == status;
         this._mapUICtl.roleIsShow = MapStatus.DEFAULT == status;
         let ctl = this.getMapCtl();
         ctl.clearData();
@@ -354,6 +343,12 @@ export class MainScene extends Component {
     screenPosToMapPos(x: number, y: number) {
         let worldPos = this.mapCamera.screenToWorld(new Vec3(x, y, 0));
         let pos = this.landLayer.getComponent(UITransform).convertToNodeSpaceAR(worldPos);
+        return pos;
+    }
+    /** 地图层坐标转换成屏幕坐标 */
+    mapPosToScreenPos(x: number, y: number) {
+        let worldPos = this.landLayer.getComponent(UITransform).convertToWorldSpaceAR(new Vec3(x, y, 0));
+        let pos = this.mapCamera.worldToScreen(worldPos);
         return pos;
     }
 }

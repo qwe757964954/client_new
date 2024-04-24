@@ -1,9 +1,7 @@
-import { _decorator, Asset, Component, Label, Sprite, SpriteFrame, Vec3 } from "cc";
-import { GridModel } from "./GridModel";
-import { LoadManager } from "../manager/LoadManager";
+import { _decorator, Component, Label, Sprite, Vec3 } from "cc";
 import { DataMgr, EditInfo } from "../manager/DataMgr";
-import { ToolUtil } from "../util/ToolUtil";
-import { TextConfig } from "../config/TextConfig";
+import { LoadManager } from "../manager/LoadManager";
+import { GridModel } from "./GridModel";
 const { ccclass, property } = _decorator;
 
 //地块模型
@@ -17,7 +15,6 @@ export class LandModel extends Component {
 
     // private _landID:number;//地块id
     private _landInfo: EditInfo;//地块信息
-    private _loadAssetAry: Asset[] = [];//加载资源数组
 
     private _dataLandInfo: EditInfo;//数据地块信息
 
@@ -27,8 +24,6 @@ export class LandModel extends Component {
     }
     // 释放资源
     public releaseAsset() {
-        LoadManager.releaseAssets(this._loadAssetAry);
-        this._loadAssetAry = [];
     }
     get x(): number {
         return this._x;
@@ -74,10 +69,7 @@ export class LandModel extends Component {
     //显示地块
     public showLand() {
         this.releaseAsset();
-        LoadManager.load(DataMgr.getEditPng(this._landInfo), SpriteFrame).then((spriteFrame: SpriteFrame) => {
-            this.getComponent(Sprite).spriteFrame = spriteFrame;
-            this._loadAssetAry.push(spriteFrame);
-        });
+        LoadManager.loadSprite(DataMgr.getEditPng(this._landInfo), this.getComponent(Sprite));
     }
     // 设置地块
     public set landInfo(landInfo: EditInfo) {

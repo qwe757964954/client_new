@@ -38,7 +38,7 @@ export class MemberCentreView extends Component {
     }
     /**初始化导航栏 */
     initNavTitle(){
-        ViewsManager.addNavigation(`${PrefabType.NavTitleView.path}`,this.top_layout,0,0).then((navScript: NavTitleView) => {
+        ViewsManager.addNavigation(this.top_layout,0,0).then((navScript: NavTitleView) => {
             navScript.updateNavigationProps("会员中心",()=>{
                 ViewsManager.instance.closeView(PrefabType.MemberCentreView);
             });
@@ -46,7 +46,7 @@ export class MemberCentreView extends Component {
     }
     /**初始化游戏数值 */
     initAmout(){
-        ViewsManager.addAmout(`${PrefabType.TopAmoutView.path}`,this.top_layout,15.78,22.437).then((amoutScript: TopAmoutView) => {
+        ViewsManager.addAmout(this.top_layout,15.78,22.437).then((amoutScript: TopAmoutView) => {
             let dataArr:AmoutItemData[] = [{type:AmoutType.Diamond,num:0},
                 {type:AmoutType.Coin,num:0},
                 {type:AmoutType.Energy,num:0}];

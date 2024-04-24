@@ -30,11 +30,11 @@ export class MapUICtl extends MainBaseCtl {
     private _gridAry: GridModel[][] = [];//格子数组(y从上往下，x从右往左)
     private _bgModelAry: BgModel[] = [];//背景模型数组
     private _roleModelAry: RoleBaseModel[] = [];//角色模型数组
+    private _isNeedSort: boolean = false;//是否需要重新排序
     private _buidingSortHandler: string;//建筑需要重新排序handle
     private _roleMoveHandler: string;//角色需要移动handle
     private _roleSortHandler: string;//角色需要重新排序handle
     private _roleIsShow: boolean = true;//角色是否显示
-    private _gridRectDrawHandle: string;//格子绘制handle
 
     constructor(mainScene: MainScene) {
         super(mainScene);
@@ -58,16 +58,15 @@ export class MapUICtl extends MainBaseCtl {
     }
 
     // 初始化
-    public init(): void {
+    public async init() {
         this.initData();
         this.initEvent();
         this.initGrid();
         this.initMap();
         this.initLand();
         this.initBuilding();
-        this.initRole();
+        await this.initRole();
 
-        this.buildingRoleSort();
         this.updateCameraVisible();
     }
     // 初始化数据
@@ -84,14 +83,12 @@ export class MapUICtl extends MainBaseCtl {
         this._buidingSortHandler = EventManager.on(EventType.Building_Need_Sort, this.buildingSort.bind(this));
         this._roleMoveHandler = EventManager.on(EventType.Role_Need_Move, this.roleMove.bind(this));
         this._roleSortHandler = EventManager.on(EventType.Role_Need_Sort, this.roleSort.bind(this));
-        this._gridRectDrawHandle = EventManager.on(EventType.GridRect_Need_Draw, this.drawGridRect.bind(this));
     }
     // 移除事件
     removeEvent() {
         EventManager.off(EventType.Building_Need_Sort, this._buidingSortHandler);
         EventManager.off(EventType.Role_Need_Move, this._roleMoveHandler);
         EventManager.off(EventType.Role_Need_Sort, this._roleSortHandler);
-        EventManager.off(EventType.GridRect_Need_Draw, this._gridRectDrawHandle);
     }
     // 获取格子信息
     getGridInfo(i: number, j: number) {
@@ -228,16 +225,18 @@ export class MapUICtl extends MainBaseCtl {
             roleModel.grid = grid;
             this.roleMove(roleModel);
             this._roleModelAry.push(roleModel);
+            this.buildingRoleSort();
         }
         {
             let role = instantiate(this._mainScene.roleModel);
             this._mainScene.buildingLayer.addChild(role);
             let roleModel = role.getComponent(RoleBaseModel);
             await roleModel.init(102, 1, [9550, 9800, 9801, 9802, 9803, 9805]);
-            let grid = this.getGridInfo(30, 30);
+            let grid = this.getGridInfo(35, 40);
             roleModel.grid = grid;
             this.roleMove(roleModel);
             this._roleModelAry.push(roleModel);
+            this.buildingRoleSort();
         }
         {
             let role = instantiate(this._mainScene.roleModel);
@@ -248,6 +247,7 @@ export class MapUICtl extends MainBaseCtl {
             roleModel.grid = grid;
             this.roleMove(roleModel);
             this._roleModelAry.push(roleModel);
+            this.buildingRoleSort();
         }
         // for test 精灵
         {
@@ -259,16 +259,18 @@ export class MapUICtl extends MainBaseCtl {
             roleModel.grid = grid;
             this.roleMove(roleModel);
             this._roleModelAry.push(roleModel);
+            this.buildingRoleSort();
         }
         {
             let role = instantiate(this._mainScene.petModel);
             this._mainScene.buildingLayer.addChild(role);
             let roleModel = role.getComponent(RoleBaseModel);
             await roleModel.init(102, 1);
-            let grid = this.getGridInfo(31, 31);
+            let grid = this.getGridInfo(35, 30);
             roleModel.grid = grid;
             this.roleMove(roleModel);
             this._roleModelAry.push(roleModel);
+            this.buildingRoleSort();
         }
         {
             let role = instantiate(this._mainScene.petModel);
@@ -279,6 +281,7 @@ export class MapUICtl extends MainBaseCtl {
             roleModel.grid = grid;
             this.roleMove(roleModel);
             this._roleModelAry.push(roleModel);
+            this.buildingRoleSort();
         }
     }
     // 摄像头缩放大小
@@ -561,6 +564,9 @@ export class MapUICtl extends MainBaseCtl {
     }
     // 建筑与角色排序
     buildingRoleSort() {
+        this._isNeedSort = true;//统一排序
+    }
+    buildingRoleSortEx() {
         let children = this._mainScene.buildingLayer.children.concat();
         children.sort((a, b) => {
             let aModel = a.getComponent(BaseComponent);
@@ -582,19 +588,11 @@ export class MapUICtl extends MainBaseCtl {
             element.isActive = isShow;
         });
     }
-    /** 画格子区域 */
-    public drawGridRect(building: BuildingModel) {
-        let grids = building.grids;
-        let g = this._mainScene.graphicsLayer.getComponent(Graphics);
-        g.clear();
-        grids.forEach(grid => {
-            g.fillColor = grid.isCanBuilding() ? Color.YELLOW : Color.RED;
-            let pos = grid.pos;
-            g.moveTo(pos.x, pos.y);
-            g.lineTo(pos.x + 0.5 * grid.width, pos.y - 0.5 * grid.height);
-            g.lineTo(pos.x, pos.y - grid.height);
-            g.lineTo(pos.x - 0.5 * grid.width, pos.y - 0.5 * grid.height);
-            g.fill();
-        });
+    /**每帧更新 */
+    update(dt: number): void {
+        if (this._isNeedSort) {
+            this.buildingRoleSortEx();
+            this._isNeedSort = false;
+        }
     }
 }

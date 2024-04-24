@@ -1,8 +1,8 @@
-import { _decorator, Asset, Component, Node, Sprite, SpriteFrame } from 'cc';
+import { _decorator, Component, Sprite } from 'cc';
+import { DataMgr, EditInfo } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
 import CCUtil from '../../util/CCUtil';
 import { MainScene } from './MainScene';
-import { DataMgr, EditInfo } from '../../manager/DataMgr';
 const { ccclass, property } = _decorator;
 
 @ccclass('LandEditUIIvew')
@@ -15,7 +15,6 @@ export class LandEditUIIvew extends Component {
     public img: Sprite = null;//图片
 
     private _mainScene: MainScene = null;//主场景
-    private _loadAssetAry: Asset[] = [];//加载资源数组
 
     start() {
         this.initEvent();
@@ -34,15 +33,10 @@ export class LandEditUIIvew extends Component {
     }
     //清理资源
     clearLoadAsset() {
-        LoadManager.releaseAssets(this._loadAssetAry);
-        this._loadAssetAry = [];
     }
     //初始化数据
     initData(landInfo: EditInfo) {
-        LoadManager.load(DataMgr.getEditPng(landInfo), SpriteFrame).then((spriteFrame: SpriteFrame) => {
-            this.img.spriteFrame = spriteFrame;
-            this._loadAssetAry.push(spriteFrame);
-        });
+        LoadManager.loadSprite(DataMgr.getEditPng(landInfo), this.img);
     }
     //初始化事件
     initEvent() {
