@@ -74,6 +74,7 @@ export class SelectWordView extends Component {
                 console.log("nav selectId = ",selectId);
                 // this.updateShowTextBook(selectId);
             });
+            
         });
     }
     /**右侧怪物列表 */

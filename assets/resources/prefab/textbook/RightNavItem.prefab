@@ -217,7 +217,7 @@
       "__id__": 1
     },
     "_children": [],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 9
@@ -564,7 +564,7 @@
     "__prefab": {
       "__id__": 25
     },
-    "selectedMode": 0,
+    "selectedMode": 1,
     "selectedFlag": {
       "__id__": 8
     },
