@@ -927,7 +927,7 @@
     },
     "bounceDuration": 0.23,
     "brake": 0.75,
-    "elastic": true,
+    "elastic": false,
     "inertia": true,
     "horizontal": false,
     "vertical": true,
@@ -971,12 +971,12 @@
     "cyclic": false,
     "lackCenter": false,
     "lackSlide": false,
-    "_updateRate": 1,
+    "_updateRate": 0,
     "frameByFrameRenderNum": 0,
     "renderEvent": {
       "__id__": 47
     },
-    "selectedMode": 0,
+    "selectedMode": 1,
     "selectedEvent": {
       "__id__": 48
     },
@@ -1007,10 +1007,12 @@
   },
   {
     "__type__": "cc.ClickEvent",
-    "target": null,
+    "target": {
+      "__id__": 1
+    },
     "component": "",
-    "_componentId": "",
-    "handler": "",
+    "_componentId": "729fbln3MhDsqBAixK+NCDG",
+    "handler": "onNavListSelected",
     "customEventData": ""
   },
   {

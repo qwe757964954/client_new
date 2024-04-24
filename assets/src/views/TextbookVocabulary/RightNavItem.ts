@@ -25,6 +25,7 @@ export class RightNavItem extends ListItem {
     updateNavProps(idx:number,itemInfo:RightNavItemData){
         this.idx = idx;
         this.itemName.string = itemInfo.name;
+        // this.itembg.active = !itemInfo.isSelected;
         // this.itemSelect.active = itemInfo.isSelected;
     }}
 
