@@ -1,5 +1,4 @@
-import { _decorator, Component, director, Label, Node, ProgressBar, sp } from 'cc';
-import GlobalConfig from '../GlobalConfig';
+import { _decorator, Component, director, Label, Node, ProgressBar } from 'cc';
 import { SceneType } from '../config/PrefabType';
 import { ViewsManager } from '../manager/ViewsManager';
 const { ccclass, property } = _decorator;
@@ -23,7 +22,7 @@ export class LoadingScene extends Component {
     label: Label = null;
 
     private _time: number = 0;//加载时间
-    private _maxtime: number = 5.0;//最大加载时间
+    private _maxtime: number = 1.0;//最大加载时间
 
     start() {
         ViewsManager.instance.initLayer(this.sceneLayer, this.popupLayer, this.tipLayer, this.loadingLayer);
@@ -50,7 +49,7 @@ export class LoadingScene extends Component {
         this.progressBar.progress = 0;
 
         this._time = 0;
-        this._maxtime = 3.0;
+        this._maxtime = 1.0;
     }
     //版本检测完成
     checkVersionOver() {

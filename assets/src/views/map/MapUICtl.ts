@@ -232,7 +232,7 @@ export class MapUICtl extends MainBaseCtl {
             this._mainScene.buildingLayer.addChild(role);
             let roleModel = role.getComponent(RoleBaseModel);
             await roleModel.init(102, 1, [9550, 9800, 9801, 9802, 9803, 9805]);
-            let grid = this.getGridInfo(34, 34);
+            let grid = this.getGridInfo(35, 40);
             roleModel.grid = grid;
             this.roleMove(roleModel);
             this._roleModelAry.push(roleModel);
@@ -266,7 +266,7 @@ export class MapUICtl extends MainBaseCtl {
             this._mainScene.buildingLayer.addChild(role);
             let roleModel = role.getComponent(RoleBaseModel);
             await roleModel.init(102, 1);
-            let grid = this.getGridInfo(31, 31);
+            let grid = this.getGridInfo(35, 30);
             roleModel.grid = grid;
             this.roleMove(roleModel);
             this._roleModelAry.push(roleModel);
