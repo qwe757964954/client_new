@@ -35,17 +35,22 @@ export default class CCUtil {
 
     //像素点击
     public static readPixels(spriteFrame: SpriteFrame, flipY = true): Uint8Array {
-        const texture = spriteFrame!.texture;
-        const { width, height } = texture;
-        const gfxTexture = texture.getGFXTexture();
-        // const gfxDevice = texture['_getGFXDevice']();
+        // RenderTexture
+        const rect = spriteFrame.rect;
+        const size = spriteFrame.originalSize;
+        const width = size.width;
+        const height = size.height;
+        // console.log("readPixels", width, height);
+        // console.log("readPixels 2", rect.x, rect.y, rect.width, rect.height);
+        const gfxTexture = spriteFrame.getGFXTexture();
         const bufferViews = [];
         const region = new gfx.BufferTextureCopy;
         const buffer = new Uint8Array(width * height * 4);
-        region.texExtent.width = width;
-        region.texExtent.height = height;
+        region.texOffset.x = rect.x;
+        region.texOffset.y = rect.y;
+        region.texExtent.width = rect.width;
+        region.texExtent.height = rect.height;
         bufferViews.push(buffer);
-        // gfxDevice?.copyTextureToBuffers(gfxTexture, bufferViews, [region]);
         director.root.device.copyTextureToBuffers(gfxTexture, bufferViews, [region]);
         if (flipY) {
             let i = 0, len1 = height / 2, len2 = width * 4, j: number, idx0: number, idx1: number;
