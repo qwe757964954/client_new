@@ -1,6 +1,6 @@
 import AccountService from "../service/AccountService";
 
-export default class ServiceManager {
+class ServiceManager {
     private static _instance: ServiceManager = null;
     public accountService: AccountService = null;
 
@@ -17,3 +17,5 @@ export default class ServiceManager {
         this.accountService = new AccountService();
     }
 }
+/**ServiceManager单例 */
+export const ServiceMgr = ServiceManager.i;

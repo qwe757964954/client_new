@@ -5,4 +5,6 @@ export const TextConfig = {
 
     Role_Text1: "点我做啥",
     Role_Text2: "不能移动的位置",
+
+    Net_Error: "网络异常，请检查后再试",
 }
