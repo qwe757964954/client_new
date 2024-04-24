@@ -29,7 +29,7 @@ export default class NetConfig {
     public static gooleDown = "https://www.google.cn/chrome/"; // 谷歌下载
     public static androidDown = "https://www.chuangciyingyu.com/chuangci_v20220720.apk"; // 安卓下载
 
-    public static assertUrl = "https://www.chuangciyingyu.com"; // 资源url
+    public static assertUrl = "https://www.chuangciyingyu.com/assets"; // 资源url
     public static currentUrl = baseUrl2; // 当前使用的地址
 
     public static checkNotice = this.getCurrentUrl() + "/api/check_in";//公告检测
@@ -40,7 +40,7 @@ export default class NetConfig {
     public static wechatLogin = this.getCurrentUrl() + "/api/wechatlogin";//微信登录
     public static accountLogin = this.getCurrentUrl() + "/api/account_login";//账号密码登录
     public static selectServer = baseUrl3 + "/select_server"; //测试服选择服务器
-    
+
     private static getCurrentUrl() {
         return this.currentUrl;
     }
