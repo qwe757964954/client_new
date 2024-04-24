@@ -40,6 +40,8 @@ export interface inf_SpineAniCreate {
     resConf: { bundle: string, path: string },
     /** 动画名 */
     aniName: string,
+    /** 动画节点key */
+    aniKey?: string,
     /** 父节点 Node */
     parentNode?: Node,
     /** 帧位置 number */

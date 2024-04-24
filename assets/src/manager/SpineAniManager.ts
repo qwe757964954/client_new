@@ -1,6 +1,6 @@
 import { Node, Vec3, _decorator, assetManager, error, sp } from 'cc';
 import { EventType } from '../config/EventType';
-import { BaseComponent } from '../script/BaseComponent';
+import { BaseControll } from '../script/BaseControll';
 import ImgUtil from '../util/ImgUtil';
 import { ObjectUtil } from '../util/ObjectUtil';
 import { inf_SpineAniCreate, inf_UIConfig } from './InterfaceDefines';
@@ -17,7 +17,7 @@ const { ccclass } = _decorator;
  */
 
 @ccclass('SpineAniManager')
-export class SpineAniManager extends BaseComponent {
+export class SpineAniManager extends BaseControll {
 
 	private static _instance: SpineAniManager;
 	public static getInstance(): SpineAniManager {
@@ -157,7 +157,8 @@ export class SpineAniManager extends BaseComponent {
 			param.callEndFunc,
 			param.oneLoopEndcallFunc,
 			param.processCallFunc,
-			param.frameNum
+			param.frameNum,
+			param.aniKey
 		);
 	}
 	/** 停止动画 */
@@ -216,8 +217,8 @@ export class SpineAniManager extends BaseComponent {
 	 * @param processCallFunc 执行过程中的动作监听
 	 * @param frameNum 帧刷
 	 */
-	public setSpineAni(aniNode: Node, resData, trackIndex: number, name: string, loop: boolean = false, premultipliedAlpha: boolean = false, skin: string = null, pos: Vec3 = null, startCallFunc: Function = null, endCallFunc: Function = null, oneLoopEndCallFunc: Function = null, processCallFunc: Function = null, frameNum: number = null): Node {
-		let key = resData.bundle + "|" + resData.path + "|" + name;
+	public setSpineAni(aniNode: Node, resData, trackIndex: number, name: string, loop: boolean = false, premultipliedAlpha: boolean = false, skin: string = null, pos: Vec3 = null, startCallFunc: Function = null, endCallFunc: Function = null, oneLoopEndCallFunc: Function = null, processCallFunc: Function = null, frameNum: number = null,aniKey: string = ""): Node {
+		let key = `${resData.bundle}|${resData.path}|${name}|${aniKey}`;
 		if (!aniNode || aniNode.isValid == false) {
 			error("设置动画节点 节点不存在或已销毁 资源Key = " + key)
 			return;
@@ -253,7 +254,6 @@ export class SpineAniManager extends BaseComponent {
 		}
 
 		let skinData = this._skinAniMapping[key];
-
 		const self = this;
 		let isEndCallback = false;
 		let doCallback = function () {

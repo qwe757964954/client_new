@@ -139,7 +139,8 @@ export default class EventManager {
             return;
         }
         for (let i = 0; i < observers.length; i++) {
-            observers[i].notify(...args);
+            let observer = observers[i];
+            observer.notify(...args);
         }
     }
 }
