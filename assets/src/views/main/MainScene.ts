@@ -40,8 +40,6 @@ export class MainScene extends Component {
     @property(Node)
     public lineLayer: Node = null;//编辑层
     @property(Node)
-    public graphicsLayer: Node = null;//绘画层
-    @property(Node)
     public buildingLayer: Node = null;//建筑层
     @property(Camera)
     public mapCamera: Camera = null;//地图摄像机
@@ -259,7 +257,6 @@ export class MainScene extends Component {
         this.mainUIView.node.active = MapStatus.DEFAULT == status;
         this.editUIView.node.active = (MapStatus.EDIT == status || MapStatus.BUILD_EDIT == status);
         this.landEditUIView.node.active = MapStatus.LAND_EDIT == status;
-        this.graphicsLayer.active = MapStatus.BUILD_EDIT == status;
         this._mapUICtl.roleIsShow = MapStatus.DEFAULT == status;
         let ctl = this.getMapCtl();
         ctl.clearData();

@@ -35,7 +35,6 @@ export class MapUICtl extends MainBaseCtl {
     private _roleMoveHandler: string;//角色需要移动handle
     private _roleSortHandler: string;//角色需要重新排序handle
     private _roleIsShow: boolean = true;//角色是否显示
-    private _gridRectDrawHandle: string;//格子绘制handle
 
     constructor(mainScene: MainScene) {
         super(mainScene);
@@ -84,14 +83,12 @@ export class MapUICtl extends MainBaseCtl {
         this._buidingSortHandler = EventManager.on(EventType.Building_Need_Sort, this.buildingSort.bind(this));
         this._roleMoveHandler = EventManager.on(EventType.Role_Need_Move, this.roleMove.bind(this));
         this._roleSortHandler = EventManager.on(EventType.Role_Need_Sort, this.roleSort.bind(this));
-        this._gridRectDrawHandle = EventManager.on(EventType.GridRect_Need_Draw, this.drawGridRect.bind(this));
     }
     // 移除事件
     removeEvent() {
         EventManager.off(EventType.Building_Need_Sort, this._buidingSortHandler);
         EventManager.off(EventType.Role_Need_Move, this._roleMoveHandler);
         EventManager.off(EventType.Role_Need_Sort, this._roleSortHandler);
-        EventManager.off(EventType.GridRect_Need_Draw, this._gridRectDrawHandle);
     }
     // 获取格子信息
     getGridInfo(i: number, j: number) {
@@ -589,21 +586,6 @@ export class MapUICtl extends MainBaseCtl {
         this._roleIsShow = isShow;
         this._roleModelAry.forEach(element => {
             element.isActive = isShow;
-        });
-    }
-    /** 画格子区域 */
-    public drawGridRect(building: BuildingModel) {
-        let grids = building.grids;
-        let g = this._mainScene.graphicsLayer.getComponent(Graphics);
-        g.clear();
-        grids.forEach(grid => {
-            g.fillColor = grid.isCanBuilding() ? Color.YELLOW : Color.RED;
-            let pos = grid.pos;
-            g.moveTo(pos.x, pos.y);
-            g.lineTo(pos.x + 0.5 * grid.width, pos.y - 0.5 * grid.height);
-            g.lineTo(pos.x, pos.y - grid.height);
-            g.lineTo(pos.x - 0.5 * grid.width, pos.y - 0.5 * grid.height);
-            g.fill();
         });
     }
     /**每帧更新 */
