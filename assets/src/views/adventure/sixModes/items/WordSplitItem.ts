@@ -20,6 +20,10 @@ export class WordSplitItem extends Component {
         this.select_bg.active = false;
         this.node.getComponent(UITransform).width = this.sp_bg.getComponent(UITransform).width = this.select_bg.getComponent(UITransform).width = this.lb_word.getComponent(UITransform).width + 100;
     }
+
+    select() {
+        this.select_bg.active = true;
+    }
 }
 
 

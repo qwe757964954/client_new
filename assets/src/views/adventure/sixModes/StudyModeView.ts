@@ -1,4 +1,4 @@
-import { _decorator, Button, Component, instantiate, Label, Node, Prefab, Sprite } from 'cc';
+import { _decorator, Button, Component, instantiate, Label, Layout, Node, Prefab, Sprite, tween, UITransform, Vec3 } from 'cc';
 import CCUtil from '../../../util/CCUtil';
 import { EventType } from '../../../config/EventType';
 import EventManager from '../../../util/EventManager';
@@ -10,6 +10,8 @@ import { DataMgr } from '../../../manager/DataMgr';
 import ServiceManager from '../../../net/ServiceManager';
 import { WordSplitItem } from './items/WordSplitItem';
 import AudioUtl from '../../../util/AudioUtl';
+import RemoteSoundManager from '../../../manager/RemoteSoundManager';
+import NetConfig from '../../../config/NetConfig';
 const { ccclass, property } = _decorator;
 
 /**学习模式页面 何存发 2024年4月15日15:38:41 */
@@ -33,6 +35,10 @@ export class StudyModeView extends Component {
     cnLabel: Label = null;
     @property(Node)
     splitNode: Node = null;
+    @property(Node)
+    wholeWordNode: Node = null;
+    @property(Label)
+    wholeWordLabel: Label = null;
 
     private _spilitData: any = null;
     private _wordsData: any = null;
@@ -41,6 +47,9 @@ export class StudyModeView extends Component {
     private _spliteItems: Node[] = []; //当前单词拆分节点
     //事件
     private _getWordsEveId: string;
+
+    private _isSplitPlaying: boolean = false; //正在播放拆分音频
+    private _currentSplitIdx: number = 0; //当前播放拆分音频的索引
     start() {
 
     }
@@ -88,9 +97,12 @@ export class StudyModeView extends Component {
         let wordData = this._wordsData[this._wordIndex];
         console.log('word', wordData);
         let word = wordData.word;
-        this.wordLabel.string = word;
+        this.wordLabel.string = this.wholeWordLabel.string = word;
+        this.wholeWordNode.getComponent(UITransform).width = this.wholeWordLabel.getComponent(UITransform).width + 100;
         this.symbolLabel.string = wordData.Symbol;
         this.cnLabel.string = wordData.Cn;
+        this.splitNode.active = true;
+        this.wholeWordNode.active = false;
 
         let phonics = "";
         let splitData = this._spilitData[word];
@@ -100,9 +112,11 @@ export class StudyModeView extends Component {
             phonics = word;
         }
         this.initSplitNode();
+        this.playWordSound();
     }
 
     initSplitNode() {
+        this._currentSplitIdx = 0;
         let splits = this._splits[this._wordIndex];
         console.log('splits', splits);
         if (splits.length == 0) {
@@ -112,20 +126,62 @@ export class StudyModeView extends Component {
             let item = instantiate(this.wordSplitItem);
             item.getComponent(WordSplitItem).init(splits[i]);
             item.parent = this.splitNode;
-            CCUtil.onTouch(item, this.onSplitItemClick.bind(this, item), this);
+            CCUtil.onTouch(item, this.onSplitItemClick.bind(this, item, i), this);
             this._spliteItems.push(item);
         }
+
     }
 
-    onSplitItemClick(item: Node) {
-        console.log('item', item);
-        let splitWord = item.getComponent(WordSplitItem).word;
-        let url = "https://www.chuangciyingyu.com/assets/sounds/splitwords/" + this._wordsData[this._wordIndex].word + "/" + splitWord;
-        if (this._splits[this._wordIndex].length == 0) {
-            url = "https://www.chuangciyingyu.com/assets/sounds/glossary/words/en/" + this._wordsData[this._wordIndex].word;
+    playWordSound() {
+        let word = this._wordsData[this._wordIndex].word;
+        let wordSoundUrl = "";
+        if (this._spilitData[word] || this._spilitData[word] === "") { //配置中有
+            let dirWord = word;
+            wordSoundUrl = "/sounds/splitwords/" + dirWord + "/" + word + ".wav";
+        } else {
+            wordSoundUrl = "/sounds/glossary/words/en/" + word + ".wav";
         }
-        AudioUtl.playEffect(url + ".wav");
-        // SoundUtil.playSound(url + ".wav");
+
+        RemoteSoundManager.i.playSound(NetConfig.assertUrl + wordSoundUrl);
+    }
+
+    onSplitItemClick(item: Node, idx: number) {
+        if (this._isSplitPlaying) return;
+        if (idx != this._currentSplitIdx) return;
+        this._isSplitPlaying = true;
+        console.log('item', item);
+        let wordSplitItem = item.getComponent(WordSplitItem);
+        let splitWord = wordSplitItem.word;
+        wordSplitItem.select();
+        let url = NetConfig.assertUrl + "/sounds/splitwords/" + this._wordsData[this._wordIndex].word + "/" + splitWord;
+        if (this._splits[this._wordIndex].length == 0) {
+            url = NetConfig.assertUrl + "/sounds/glossary/words/en/" + this._wordsData[this._wordIndex].word;
+        }
+        RemoteSoundManager.i.playSound(url + ".wav").then(() => {
+            this._isSplitPlaying = false;
+            this._currentSplitIdx++;
+            if (this._currentSplitIdx == this._splits[this._wordIndex].length) {
+                this.playWordSound();
+                this.combineWord();
+            }
+        });
+    }
+
+    combineWord() {
+        let targetX: number;
+        let total = this._spliteItems.length;
+        let halfIdx = (total % 2 == 0) ? (Math.ceil(total / 2) - 0.5) : ((total + 1) / 2 - 1);
+        for (let i = 0; i < this._spliteItems.length; i++) {
+            if (total % 2 != 0 && i == halfIdx) continue;
+            let oldPos = this._spliteItems[i].position;
+            targetX = i < halfIdx ? (oldPos.x + 35 * (halfIdx - i)) : (oldPos.x - 35 * (i - halfIdx));
+            let pos = new Vec3(targetX, oldPos.y, 0);
+            tween(this._spliteItems[i]).to(0.3, { position: pos }).start();
+        }
+        this.scheduleOnce(() => {
+            this.wholeWordNode.active = true;
+            this.splitNode.active = false;
+        }, 0.3);
     }
 
     private initEvent(): void {
