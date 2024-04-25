@@ -59,8 +59,8 @@ export class ChangeHeadView extends Component {
         // 默认头像框
         this.switchUI(this._curSwitchTab);
         // 头像/框预览
-        this.refreshPreHead(User.instance.curHeadPropId);
-        this.refreshPreHeadBox(User.instance.curHeadBoxPropId);
+        this.refreshPreHead(User.curHeadPropId);
+        this.refreshPreHeadBox(User.curHeadBoxPropId);
     }
     //初始化事件
     public initEvent() {
@@ -163,7 +163,7 @@ export class ChangeHeadView extends Component {
         let lock = item.getChildByName("lock") as Node;
         let using = item.getChildByName("using") as Node;
         // 使用中判断
-        let curPropId = type == ChangeHeadTypeEnum.Type_Head ? User.instance.curHeadPropId : User.instance.curHeadBoxPropId;
+        let curPropId = type == ChangeHeadTypeEnum.Type_Head ? User.curHeadPropId : User.curHeadBoxPropId;
         if (type == ChangeHeadTypeEnum.Type_Head) {
             using.active = !curPropId ? (data.PropId == SettingConfig.DefaultHeadBoxId) : (data.PropId == curPropId);
             lock.active = false;

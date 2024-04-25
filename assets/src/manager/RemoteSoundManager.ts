@@ -1,10 +1,10 @@
 import { assetManager, AudioClip } from "cc";
-import { ResLoader } from "./ResLoader";
 import AudioUtil from "../util/AudioUtil";
 
-export default class RemoteSoundManager {
-    private static _instance: RemoteSoundManager = null;
+class RemoteSoundManager {
+    private _cacheAsset: Map<string, AudioClip> = new Map();
 
+    private static _instance: RemoteSoundManager = null;
     public static get i(): RemoteSoundManager {
         if (this._instance == null) {
             this._instance = new RemoteSoundManager();
@@ -27,6 +27,7 @@ export default class RemoteSoundManager {
                     resolve(false);
                     return;
                 }
+                this._cacheAsset.set(url, audioclip);
                 let durationTime = audioclip ? audioclip.getDuration() : 0;
                 console.log('durationTime', durationTime);
                 if (durationTime == 0) {
@@ -40,4 +41,14 @@ export default class RemoteSoundManager {
             });
         })
     }
+
+    /**清理音频资源 */
+    clearAudio() {
+        this._cacheAsset.forEach(asset => {
+            assetManager.releaseAsset(asset);
+        });
+        this._cacheAsset.clear();
+    }
 }
+
+export const RemoteSoundMgr = RemoteSoundManager.i;

@@ -74,6 +74,9 @@ export class BuildingModel extends BaseComponent {
         // LoadManager.loadSprite(DataMgr.getEditPng(this._editInfo), this.building);
 
         this.initEvent();
+        if (isNew) {
+            this.show(true);
+        }
     }
     // 销毁
     protected onDestroy(): void {
