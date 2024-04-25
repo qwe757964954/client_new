@@ -1,7 +1,7 @@
 import { _decorator, Component, director, EditBox, EventTouch, instantiate, Label, Node, Prefab, sys, Toggle } from 'cc';
 import { HTML5, NATIVE } from 'cc/env';
 import { EventType } from '../../config/EventType';
-import NetConfig from '../../config/NetConfig';
+import { NetConfig } from '../../config/NetConfig';
 import { SceneType } from '../../config/PrefabType';
 import { DataMgr } from '../../manager/DataMgr';
 import { ViewsManager } from '../../manager/ViewsManager';

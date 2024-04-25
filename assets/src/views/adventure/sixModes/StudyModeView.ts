@@ -1,16 +1,15 @@
-import { _decorator, Button, Component, instantiate, Label, Layout, Node, Prefab, Sprite, tween, UITransform, Vec3 } from 'cc';
-import CCUtil from '../../../util/CCUtil';
+import { _decorator, Button, Component, instantiate, Label, Node, Prefab, Sprite, tween, UITransform, Vec3 } from 'cc';
 import { EventType } from '../../../config/EventType';
-import EventManager from '../../../util/EventManager';
-import { ViewsManager } from '../../../manager/ViewsManager';
+import { NetConfig } from '../../../config/NetConfig';
 import { PrefabType } from '../../../config/PrefabType';
-import { BaseRemindView } from '../../common/BaseRemindView';
-import { PopView } from '../../common/PopView';
 import { DataMgr } from '../../../manager/DataMgr';
-import ServiceManager from '../../../net/ServiceManager';
-import { WordSplitItem } from './items/WordSplitItem';
 import RemoteSoundManager from '../../../manager/RemoteSoundManager';
-import NetConfig from '../../../config/NetConfig';
+import { ViewsManager } from '../../../manager/ViewsManager';
+import { ServiceMgr } from '../../../net/ServiceManager';
+import CCUtil from '../../../util/CCUtil';
+import EventManager from '../../../util/EventManager';
+import { BaseRemindView } from '../../common/BaseRemindView';
+import { WordSplitItem } from './items/WordSplitItem';
 const { ccclass, property } = _decorator;
 
 /**学习模式页面 何存发 2024年4月15日15:38:41 */
@@ -59,7 +58,7 @@ export class StudyModeView extends Component {
 
     async initData() {
         this._spilitData = await DataMgr.instance.getWordSplitConfig();
-        ServiceManager.i.studyService.getWordGameWords(1, 1, 1, 0);
+        ServiceMgr.studyService.getWordGameWords(1, 1, 1, 0);
         this.initUI();
 
     }

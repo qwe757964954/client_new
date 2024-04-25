@@ -49,18 +49,20 @@ export class Socket {
         this._socket.onerror = this.onError.bind(this);
         this._socket.onclose = this.onClose.bind(this);
 
-        // this.clearTimer();
-        // this.timer = setInterval(()=>{
-        //     if(this.isConnected()){
+        this.clearTimer();
+        // TODO 每10秒发送一次心跳 服务器后端增加后放开
+        // this.timer = setInterval(() => {
+        //     if (this.isConnected()) {
         //         this.sendHeartMsg();
         //     }
         //     this.noRecvMsgTimes = this.noRecvMsgTimes + 1;
-        //     if(this.noRecvMsgTimes > 2){
+        //     if (this.noRecvMsgTimes > 2) {
         //         // net time out
         //         this.closeSocket();
         //         this.clearTimer();
+        //         this.onError();
         //     }
-        // },10000);
+        // }, 10000);
     }
 
     public sendMsg(msg?: string) {

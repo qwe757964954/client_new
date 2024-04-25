@@ -514,11 +514,11 @@ export class MapUICtl extends MainBaseCtl {
         this._bgModelAry.forEach(element => {
             element.show(visibleRect.intersects(element.getRect()));
         });
-        // TODO 地块动态加载
+        //地块动态加载
         this._landModelAry.forEach(element => {
             element.show(visibleRect.intersects(element.getRect()));
         });
-        // TODO 建筑动态加载
+        //建筑动态加载
         this._mainScene.buildingLayer.children.forEach(element => {
             let building = element.getComponent(BuildingModel);
             if (!building) {

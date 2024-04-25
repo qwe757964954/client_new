@@ -1,4 +1,4 @@
-import NetConfig from "../config/NetConfig";
+import { NetConfig } from "../config/NetConfig";
 import GlobalConfig from "../GlobalConfig";
 import { c2sAccountLogin, c2sCheckNotice, c2sMobileLogin, c2sReqSms, c2sSmsLogin, c2sTokenLogin, c2sWechatLogin } from "../models/NetModel";
 import HttpUtil from "../util/HttpUtil";

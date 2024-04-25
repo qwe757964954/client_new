@@ -71,7 +71,11 @@ class NetManager {
     //socket接收消息
     public onRecvMsg(data: string) {
         let obj = JSON.parse(data);
-        console.log("onRecvMsg", obj.Path);
+        if (obj.Path)
+            console.log("onRecvMsg", obj.Path);
+        else
+            console.log("onRecvMsg no path", obj);
+
         EventManager.emit(obj.Path, obj);
     }
     //socket错误回调
