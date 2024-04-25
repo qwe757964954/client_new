@@ -1,4 +1,4 @@
-import { _decorator, Button, Color, Component, isValid, Node } from 'cc';
+import { _decorator, Button, color, Component, isValid, Node } from 'cc';
 import List from '../../util/list/List';
 import { TabTopItem } from './TabTopItem';
 const { ccclass, property } = _decorator;
@@ -25,6 +25,7 @@ export class TabTopView extends Component {
         this._dataArr = data;
         this.tabScroll.numItems = this._dataArr.length;
         this.tabScroll.update();
+        this.tabScroll.selectedId = 0;
     }
 
     onTabListHorizontalRender(item:Node, idx:number){
@@ -36,7 +37,7 @@ export class TabTopView extends Component {
     onTabListHorizontalSelected(item: any, selectedId: number, lastSelectedId: number, val: number){
         this.clearTopItemColor();
         let tabItemScript:TabTopItem = item.getComponent(TabTopItem);
-        tabItemScript.tab_name.color = tabItemScript.idx === selectedId ? Color.WHITE : Color.GREEN;
+        tabItemScript.tab_name.color = tabItemScript.idx === selectedId ? color("#f9b600") : color("#DFC49F");
         if(this.callSelectCallback){
             this.callSelectCallback(selectedId);
         }
@@ -47,7 +48,7 @@ export class TabTopView extends Component {
             let item = this.tabScroll.getItemByListId(index);
             if(isValid(item)){
                 let tabItemScript:TabTopItem = item.getComponent(TabTopItem);
-                tabItemScript.tab_name.color = Color.GREEN;
+                tabItemScript.tab_name.color = color("#DFC49F");
             }
         }
     }

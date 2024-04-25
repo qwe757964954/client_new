@@ -2,7 +2,7 @@ import { EventType } from "../config/EventType";
 import { TextConfig } from "../config/TextConfig";
 import { ViewsManager } from "../manager/ViewsManager";
 import { c2sAccountEditRealName, c2sAccountInit, c2sAccountStudyWord, c2sPropMyList } from "../models/NetModel";
-import EventManager from "../util/EventManager";
+import EventManager, { EventMgr } from "../util/EventManager";
 import { ServiceMgr } from "./ServiceManager";
 import { Socket } from "./Socket";
 //消息服务管理类
@@ -77,6 +77,7 @@ class NetManager {
             console.log("onRecvMsg no path", obj);
 
         EventManager.emit(obj.Path, obj);
+        EventMgr.dispatch(obj.Path, obj);
     }
     //socket错误回调
     public onError() {

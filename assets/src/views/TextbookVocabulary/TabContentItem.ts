@@ -30,8 +30,8 @@ export class TabContentItem extends ListItem {
     updateItemProps(idx:number,itemInfo:VocabularyItemData){
         this.book_name.string = itemInfo.name;
         this.word_num_text.string = `单词数量：${itemInfo.word_count}`;
-        ImgUtil.loadRemoteImage(itemInfo.imgUrl,this.item_img,125.507,172.979);
-        this.addBtn.node.active = itemInfo.isCollect;
+        ImgUtil.loadRemoteImage(itemInfo.imgUrl,this.item_img,186.797,252.651);
+        // this.addBtn.node.active = itemInfo.isCollect;
     }
 }
 

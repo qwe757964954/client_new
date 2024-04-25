@@ -51,11 +51,11 @@ export class MyContentItem extends ListItem {
     updateMyContentItemProps(idx: number,itemInfo:MyTextbookItemData) {
         this.idx = idx;
         this.item_name.string = itemInfo.name;
-        this.desc_text.string = itemInfo.desc;
+        // this.desc_text.string = itemInfo.desc;
         this.flagBg.active = itemInfo.isLearned;
         this.collect_text.string = `已收集${itemInfo.collect_count}/${itemInfo.total_collect}!`;
         this.already_learned_text.string = `已学单词${itemInfo.already_learned_count}/${itemInfo.total_already_learned}!`;
-        ImgUtil.loadRemoteImage(itemInfo.imgUrl,this.item_img,124.77,162.291);
+        ImgUtil.loadRemoteImage(itemInfo.imgUrl,this.item_img,188.156,256.998);
     }
 
     onDelMyTextbookClick(){

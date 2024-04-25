@@ -1,6 +1,5 @@
 /***************************************HTTP**********************************/
 
-import { EventType } from "../config/EventType";
 import { InterfacePath } from "../net/InterfacePath";
 
 //公告检测
