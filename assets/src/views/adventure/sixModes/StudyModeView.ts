@@ -3,7 +3,7 @@ import { EventType } from '../../../config/EventType';
 import { NetConfig } from '../../../config/NetConfig';
 import { PrefabType } from '../../../config/PrefabType';
 import { DataMgr } from '../../../manager/DataMgr';
-import RemoteSoundManager from '../../../manager/RemoteSoundManager';
+import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { ViewsManager } from '../../../manager/ViewsManager';
 import { ServiceMgr } from '../../../net/ServiceManager';
 import CCUtil from '../../../util/CCUtil';
@@ -140,7 +140,7 @@ export class StudyModeView extends Component {
             wordSoundUrl = "/sounds/glossary/words/en/" + word + ".wav";
         }
 
-        RemoteSoundManager.i.playSound(NetConfig.assertUrl + wordSoundUrl);
+        RemoteSoundMgr.playSound(NetConfig.assertUrl + wordSoundUrl);
     }
 
     onSplitItemClick(item: Node, idx: number) {
@@ -155,7 +155,7 @@ export class StudyModeView extends Component {
         if (this._splits[this._wordIndex].length == 0) {
             url = NetConfig.assertUrl + "/sounds/glossary/words/en/" + this._wordsData[this._wordIndex].word;
         }
-        RemoteSoundManager.i.playSound(url + ".wav").then(() => {
+        RemoteSoundMgr.playSound(url + ".wav").then(() => {
             this._isSplitPlaying = false;
             this._currentSplitIdx++;
             if (this._currentSplitIdx == this._splits[this._wordIndex].length) {
