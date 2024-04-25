@@ -86,7 +86,9 @@ export class LoadManager {
     // 释放资源
     public static releaseAsset(asset: Asset) {
         if (asset) {
-            console.log("releaseAsset", asset.name);
+            // if ("default_sprite_splash" == asset.name) return;
+            if (asset.isDefault) return;//默认资源不移除
+            // console.log("releaseAsset", asset.name);
             asset.decRef();
             if (0 == asset.refCount) {
                 console.log("releaseAsset 2", asset.name);
@@ -119,6 +121,9 @@ export class LoadManager {
                     reject(new Error("parent is null or invalid"));
                     return;
                 }
+                if (skeleton.skeletonData) {
+                    LoadManager.releaseAsset(skeleton.skeletonData);
+                }
                 skeleton.skeletonData = assets;
                 skeleton.node.once(Node.EventType.NODE_DESTROYED, () => {
                     LoadManager.releaseAsset(assets);
@@ -141,6 +146,9 @@ export class LoadManager {
                 if (!sprite || !isValid(sprite, true)) {
                     reject(new Error("parent is null or invalid"));
                     return;
+                }
+                if (sprite.spriteFrame) {
+                    LoadManager.releaseAsset(sprite.spriteFrame);
                 }
                 sprite.spriteFrame = assets;
                 sprite.node.once(Node.EventType.NODE_DESTROYED, () => {

@@ -45,6 +45,7 @@ export class BuildingModel extends BaseComponent {
     // private _mapScaleHandle:string//地图缩放事件句柄
     private _pos: Vec3 = new Vec3(0, 0, 0);//位置
     private _isFixImgPos: boolean = false;//是否固定图片位置
+    private _isLoad: boolean = false;//是否加载图片
 
     // 初始化事件
     public initEvent() {
@@ -70,7 +71,7 @@ export class BuildingModel extends BaseComponent {
         this.label.node.active = false;
         this.graphics.node.active = false;
 
-        LoadManager.loadSprite(DataMgr.getEditPng(this._editInfo), this.building);
+        // LoadManager.loadSprite(DataMgr.getEditPng(this._editInfo), this.building);
 
         this.initEvent();
     }
@@ -329,17 +330,13 @@ export class BuildingModel extends BaseComponent {
         rect.x = -transform.anchorX * transform.width;
         rect.y = -transform.anchorY * transform.height;
         let pos = transform.convertToNodeSpaceAR(worldPos);
+        // console.log("isTouchSelf:", pos.x, pos.y);
         if (!rect.contains(new Vec2(pos.x, pos.y))) {
             return false;
         }
-        let buffer = CCUtil.readPixels(this.building.spriteFrame, false);
-        // console.log("transform.anchorX", transform.anchorX, transform.anchorY);
-        // console.log("isTouchSelf 1", pos.x, pos.y, buffer.length, transform.width, transform.height);
-        let x = pos.x - transform.anchorX * transform.width;
-        let y = (1 - transform.anchorY) * transform.height - pos.y;
-        let index = transform.width * 4 * Math.floor(y) + 4 * Math.floor(x);
-        let colors = buffer.subarray(index, index + 4);
-        // console.log("isTouchSelf 2", index, colors[0], colors[1], colors[2], colors[3]);
+        let x = Math.floor(pos.x + transform.anchorX * transform.width);
+        let y = Math.floor(pos.y + transform.anchorY * transform.height);
+        let colors = CCUtil.readPixels(this.building.spriteFrame, x, y);
         return colors[3] >= 50;
     }
     /** 画格子区域 */
@@ -363,5 +360,17 @@ export class BuildingModel extends BaseComponent {
             g.lineTo(x - 0.5 * grid.width, y - 0.5 * grid.height);
         });
         g.fill();
+    }
+    /**显示与否 */
+    public show(isShow: boolean) {
+        if (isShow && !this._isLoad) {
+            this._isLoad = true;
+            LoadManager.loadSprite(DataMgr.getEditPng(this._editInfo), this.building);
+        }
+        this.node.active = isShow;
+    }
+    /**获取显示范围 */
+    public getRect() {
+        return this.node.getComponent(UITransform).getBoundingBox();
     }
 }

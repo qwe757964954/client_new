@@ -45,13 +45,19 @@ export class BgModel extends Component {
         }
         return false;
     }
-    // 显示
-    public show() {
-        if (this._isLoad) return;
-        this._isLoad = true;
-        let bgInfo = MapConfig.bgInfo;
-        let path = this.isCommonBg(this._bgID) ? bgInfo.commonPath : ToolUtil.replace(bgInfo.path, this._bgID);
-        LoadManager.loadSprite(path, this.getComponent(Sprite));
+    /**显示与否 */
+    public show(isShow: boolean) {
+        if (isShow && !this._isLoad) {
+            this._isLoad = true;
+            let bgInfo = MapConfig.bgInfo;
+            let path = this.isCommonBg(this._bgID) ? bgInfo.commonPath : ToolUtil.replace(bgInfo.path, this._bgID);
+            LoadManager.loadSprite(path, this.getComponent(Sprite));
+        }
+        this.node.active = isShow;
+    }
+    /**获取显示范围 */
+    public getRect() {
+        return this.node.getComponent(UITransform).getBoundingBox();
     }
     // 销毁
     public dispose() {
@@ -62,10 +68,6 @@ export class BgModel extends Component {
     }
     // 释放资源
     public releaseAsset() {
-    }
-    // 获取范围
-    public getRect() {
-        return this.node.getComponent(UITransform).getBoundingBox();
     }
 }
 

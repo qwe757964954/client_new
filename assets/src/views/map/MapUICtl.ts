@@ -29,6 +29,7 @@ export class MapUICtl extends MainBaseCtl {
 
     private _gridAry: GridModel[][] = [];//格子数组(y从上往下，x从右往左)
     private _bgModelAry: BgModel[] = [];//背景模型数组
+    private _landModelAry: LandModel[] = [];//地块模型数组
     private _roleModelAry: RoleBaseModel[] = [];//角色模型数组
     private _isNeedSort: boolean = false;//是否需要重新排序
     private _buidingSortHandler: string;//建筑需要重新排序handle
@@ -53,6 +54,7 @@ export class MapUICtl extends MainBaseCtl {
         // });
         this._gridAry = [];
         this._bgModelAry = [];
+        this._landModelAry = [];
         this._roleModelAry = [];
         this.removeEvent();
     }
@@ -180,7 +182,7 @@ export class MapUICtl extends MainBaseCtl {
                 let laneModel = land.getComponent(LandModel);
                 laneModel.initData(i, j, landWidth, landInfo);
                 this.setLandGrid(laneModel, i, j);
-                laneModel.showLand();
+                this._landModelAry.push(laneModel);
 
                 let pos = gridInfo.pos;
                 g.lineWidth = 4;
@@ -232,7 +234,7 @@ export class MapUICtl extends MainBaseCtl {
             this._mainScene.buildingLayer.addChild(role);
             let roleModel = role.getComponent(RoleBaseModel);
             await roleModel.init(102, 1, [9550, 9800, 9801, 9802, 9803, 9805]);
-            let grid = this.getGridInfo(34, 34);
+            let grid = this.getGridInfo(35, 40);
             roleModel.grid = grid;
             this.roleMove(roleModel);
             this._roleModelAry.push(roleModel);
@@ -266,7 +268,7 @@ export class MapUICtl extends MainBaseCtl {
             this._mainScene.buildingLayer.addChild(role);
             let roleModel = role.getComponent(RoleBaseModel);
             await roleModel.init(102, 1);
-            let grid = this.getGridInfo(31, 31);
+            let grid = this.getGridInfo(35, 30);
             roleModel.grid = grid;
             this.roleMove(roleModel);
             this._roleModelAry.push(roleModel);
@@ -502,18 +504,31 @@ export class MapUICtl extends MainBaseCtl {
         let visibleRect = new Rect();
         let pos = this._cameraPos;
         let winSize = GlobalConfig.WIN_SIZE;
-        visibleRect.x = pos.x - winSize.width * 0.5 * this._cameraRate;
-        visibleRect.y = pos.y - winSize.height * 0.5 * this._cameraRate;
-        visibleRect.width = winSize.width * this._cameraRate;
-        visibleRect.height = winSize.height * this._cameraRate;
+        let width = winSize.width * this._cameraRate + 200;//额外增加显示区域
+        let height = winSize.height * this._cameraRate + 150;//额外增加显示区域
+        visibleRect.x = pos.x - width * 0.5;
+        visibleRect.y = pos.y - height * 0.5;
+        visibleRect.width = width;
+        visibleRect.height = height;
         // console.log("updateCameraVisible", visibleRect);
         this._bgModelAry.forEach(element => {
-            if (!element.isLoad && visibleRect.intersects(element.getRect())) {
-                element.show();
-            }
+            element.show(visibleRect.intersects(element.getRect()));
         });
-        // TODO 地块动态加载
-        // TODO 建筑动态加载
+        //地块动态加载
+        this._landModelAry.forEach(element => {
+            element.show(visibleRect.intersects(element.getRect()));
+        });
+        //建筑动态加载
+        this._mainScene.buildingLayer.children.forEach(element => {
+            let building = element.getComponent(BuildingModel);
+            if (!building) {
+                let role = element.getComponent(RoleBaseModel);
+                if (!role) return;
+                // TODO 角色动态加载
+                return;
+            };
+            building.show(visibleRect.intersects(building.getRect()));
+        });
     }
     // 角色移动
     roleMove(roleModel: RoleBaseModel) {

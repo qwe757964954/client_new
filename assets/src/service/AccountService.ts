@@ -1,6 +1,7 @@
 import { c2sAccountInit } from "../models/NetModel";
+import { User } from "../models/User";
 import { InterfacePath } from "../net/InterfacePath";
-import { NetManager } from "../net/NetManager";
+import { NetMgr } from "../net/NetManager";
 import EventManager from "../util/EventManager";
 
 //用户信息服务
@@ -14,10 +15,10 @@ export default class AccountService {
     }
 
     //账号初始化
-    accountInit(memberToken: string) {
+    accountInit() {
         let para: c2sAccountInit = new c2sAccountInit();
-        para.MemberToken = memberToken;
-        NetManager.instance().sendMsg(para);
+        para.MemberToken = User.memberToken;
+        NetMgr.sendMsg(para);
     }
     onAccountInit(data: any) {
         console.log("AccountService onAccountInit", data);
