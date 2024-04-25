@@ -1,10 +1,10 @@
-import { _decorator, Component, Label, Sprite, Vec3 } from "cc";
+import { _decorator, Component, Label, Sprite, UITransform, Vec3 } from "cc";
 import { DataMgr, EditInfo } from "../manager/DataMgr";
 import { LoadManager } from "../manager/LoadManager";
 import { GridModel } from "./GridModel";
 const { ccclass, property } = _decorator;
 
-//地块模型
+//地块模型 sprite大小必须设置为2*2的格子大小
 @ccclass('LandModel')
 export class LandModel extends Component {
     // y从上往下，x从右往左
@@ -17,6 +17,7 @@ export class LandModel extends Component {
     private _landInfo: EditInfo;//地块信息
 
     private _dataLandInfo: EditInfo;//数据地块信息
+    private _isLoad: boolean = false;//是否加载图片
 
     // 销毁
     protected onDestroy(): void {
@@ -100,5 +101,17 @@ export class LandModel extends Component {
     // 还原
     public recover() {
         this.landInfo = this._dataLandInfo;
+    }
+    /**显示与否 */
+    public show(isShow: boolean) {
+        if (isShow && !this._isLoad) {
+            this._isLoad = true;
+            this.showLand();
+        }
+        this.node.active = isShow;
+    }
+    /**获取显示范围 */
+    public getRect() {
+        return this.node.getComponent(UITransform).getBoundingBox();
     }
 }

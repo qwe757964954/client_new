@@ -45,6 +45,7 @@ export class BuildingModel extends BaseComponent {
     // private _mapScaleHandle:string//地图缩放事件句柄
     private _pos: Vec3 = new Vec3(0, 0, 0);//位置
     private _isFixImgPos: boolean = false;//是否固定图片位置
+    private _isLoad: boolean = false;//是否加载图片
 
     // 初始化事件
     public initEvent() {
@@ -70,7 +71,7 @@ export class BuildingModel extends BaseComponent {
         this.label.node.active = false;
         this.graphics.node.active = false;
 
-        LoadManager.loadSprite(DataMgr.getEditPng(this._editInfo), this.building);
+        // LoadManager.loadSprite(DataMgr.getEditPng(this._editInfo), this.building);
 
         this.initEvent();
     }
@@ -359,5 +360,17 @@ export class BuildingModel extends BaseComponent {
             g.lineTo(x - 0.5 * grid.width, y - 0.5 * grid.height);
         });
         g.fill();
+    }
+    /**显示与否 */
+    public show(isShow: boolean) {
+        if (isShow && !this._isLoad) {
+            this._isLoad = true;
+            LoadManager.loadSprite(DataMgr.getEditPng(this._editInfo), this.building);
+        }
+        this.node.active = isShow;
+    }
+    /**获取显示范围 */
+    public getRect() {
+        return this.node.getComponent(UITransform).getBoundingBox();
     }
 }
