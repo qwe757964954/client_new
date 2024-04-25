@@ -44,14 +44,14 @@ export class CenterView extends Component {
     }
     // 初始化头像/框
     public initHead() {
-        let headBoxUrl = ImgUtil.getPropImgUrl(User.instance.curHeadBoxPropId);
-        let headUrl = ImgUtil.getAvatarUrl(User.instance.curHeadPropId);
+        let headBoxUrl = ImgUtil.getPropImgUrl(User.curHeadBoxPropId);
+        let headUrl = ImgUtil.getAvatarUrl(User.curHeadPropId);
         LoadManager.loadSprite(headBoxUrl, this.headBox);
         LoadManager.loadSprite(headUrl, this.head);
     }
     // 初始化用户id、昵称、称号等信息
     public initUserInfo() {
-        let user = User.instance;
+        let user = User;
         this.idTxt.string = user.userId.toString();
         this.nameTxt.string = user.userName;
         this.roletitleTxt.string = user.roletitle;
