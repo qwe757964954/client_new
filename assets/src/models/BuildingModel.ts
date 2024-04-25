@@ -333,12 +333,13 @@ export class BuildingModel extends BaseComponent {
         rect.x = -transform.anchorX * transform.width;
         rect.y = -transform.anchorY * transform.height;
         let pos = transform.convertToNodeSpaceAR(worldPos);
-        // console.log("isTouchSelf:", pos.x, pos.y);
         if (!rect.contains(new Vec2(pos.x, pos.y))) {
             return false;
         }
+        // console.log("isTouchSelf 1:", pos.x, pos.y);
         let x = Math.floor(pos.x + transform.anchorX * transform.width);
         let y = Math.floor(pos.y + transform.anchorY * transform.height);
+        // console.log("isTouchSelf 2:", x, y);
         let colors = CCUtil.readPixels(this.building.spriteFrame, x, y);
         return colors[3] >= 50;
     }
