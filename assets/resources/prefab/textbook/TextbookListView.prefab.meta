@@ -2,12 +2,12 @@
   "ver": "1.1.50",
   "importer": "prefab",
   "imported": true,
-  "uuid": "f0a59254-464b-4e88-bb7f-675b65c9d8cd",
+  "uuid": "4bd1ced2-8b41-4144-8f05-b3bf74d9ce69",
   "files": [
     ".json"
   ],
   "subMetas": {},
   "userData": {
-    "syncNodeName": "SelectWordView"
+    "syncNodeName": "TextbookListView"
   }
 }

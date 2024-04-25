@@ -2,6 +2,7 @@ import { _decorator, Component, error, instantiate, isValid, Node, Prefab, Widge
 import { PrefabType } from '../../config/PrefabType';
 import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
+import { TBServer } from '../../service/TextbookService';
 import List from '../../util/list/List';
 import { NavTitleView } from '../common/NavTitleView';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
@@ -35,13 +36,14 @@ export class SelectWordView extends Component {
     }
     protected initUI(){
         this.initNavTitle();
-        this.initAmout();
+        // this.initAmout();
         this.initTabContent();
-        this.loadRightMonster();
+        // this.loadRightMonster();
         this.loadRightNav();
-        this.loadMyTextBookData();
+        // this.loadMyTextBookData();
         this.loadTextBookData();
-        this.updateShowTextBook(-1);
+        // this.updateShowTextBook(-1);
+        TBServer.reqBookStatus();
     }
     /**加载右侧导航 */
     loadRightNav(){
@@ -55,11 +57,11 @@ export class SelectWordView extends Component {
             let widgetCom = node.getComponent(Widget);
             if (!isValid(widgetCom)) {
                 widgetCom = node.addComponent(Widget);
-                widgetCom.isAlignRight = true;
-                widgetCom.isAlignBottom = true;
+                widgetCom.isAlignLeft = true;
+                widgetCom.isAlignVerticalCenter = true;
             }
-            widgetCom.right = 270.266;
-            widgetCom.bottom = -10.057;
+            widgetCom.left = 34.1095;
+            widgetCom.verticalCenter = -22.884;
             widgetCom.updateAlignment();
             let navScript = node.getComponent(RightNavView);
             let dataArr:TabItemData[] = [
@@ -134,18 +136,17 @@ export class SelectWordView extends Component {
                 widgetCom.isAlignTop = true;
                 widgetCom.isAlignHorizontalCenter = true;
             }
-            widgetCom.top = 140.033;
+            widgetCom.top = 117.027;
             widgetCom.horizontalCenter = 0;
             widgetCom.updateAlignment();
             let tabScript = node.getComponent(TabTopView);
             let dataArr:TabItemData[] = [
-                {name:"小阶段",isSelected:false},
-                {name:"中阶段",isSelected:false},
-                {name:"高阶段",isSelected:false},
-                {name:"教辅",isSelected:false},
+                {name:"小学",isSelected:false},
+                {name:"初中",isSelected:false},
+                {name:"高中",isSelected:false},
                 {name:"考级",isSelected:false},
-                {name:"基础",isSelected:false},
-                {name:"专业",isSelected:false},
+                {name:"其他",isSelected:false},
+                {name:"另外",isSelected:false},
             ];
             tabScript.loadTabData(dataArr,(selectId:number)=>{
                 console.log("selectId = ",selectId);

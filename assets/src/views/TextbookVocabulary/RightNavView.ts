@@ -1,4 +1,4 @@
-import { _decorator, Component, isValid, Node } from 'cc';
+import { _decorator, color, Component, isValid, Node } from 'cc';
 import List from '../../util/list/List';
 import { RightNavItem, RightNavItemData } from './RightNavItem';
 const { ccclass, property } = _decorator;
@@ -19,14 +19,15 @@ export class RightNavView extends Component {
 
     protected onLoad(): void {
         console.log("RightNavView  onLoad");
-        this.navScroll.numItems = this._navDataArr.length;
-        this.navScroll.update();
-        this.navScroll.selectedId = 0;
+        
     }
 
     loadNavListData(data:RightNavItemData[],callBack:(selectId:number)=>void){
         this.callSelectCallback = callBack;
         this._navDataArr = data;
+        this.navScroll.numItems = this._navDataArr.length;
+        this.navScroll.update();
+        this.navScroll.selectedId = 0;
     }
 
     onNavListVerticalRender(item:Node, idx:number){
@@ -40,8 +41,7 @@ export class RightNavView extends Component {
             return;
         this.clearTopItemColor();
         let navItemScript:RightNavItem = item.getComponent(RightNavItem);
-        navItemScript.itembg.active = navItemScript.idx !== selectedId;
-        navItemScript.itemSelect.active = navItemScript.idx === selectedId;
+        navItemScript.itemName.color = navItemScript.idx === selectedId ? color("#ffffff"): color("#dfc49f");
         if(this.callSelectCallback){
             this.callSelectCallback(selectedId);
         }
@@ -51,8 +51,7 @@ export class RightNavView extends Component {
             let item = this.navScroll.getItemByListId(index);
             if(isValid(item)){
                 let navItemScript:RightNavItem = item.getComponent(RightNavItem);
-                navItemScript.itembg.active = true;
-                navItemScript.itemSelect.active = false;
+                navItemScript.itemName.color = color("#dfc49f");
             }
         }
     }

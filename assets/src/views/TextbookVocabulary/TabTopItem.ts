@@ -1,4 +1,4 @@
-import { _decorator, Color, Label, Node } from 'cc';
+import { _decorator, Label, Node } from 'cc';
 import ListItem from '../../util/list/ListItem';
 import { TabItemData } from './TabTopView';
 const { ccclass, property } = _decorator;
@@ -17,7 +17,7 @@ export class TabTopItem extends ListItem {
         this.idx = idx;
         this.tab_name.string = itemInfo.name;
         this.tab_focus.active = itemInfo.isSelected;
-        this.tab_name.color = itemInfo.isSelected? Color.WHITE  : Color.GREEN;
+        // this.tab_name.color = itemInfo.isSelected? color("#f9b600") : color("#DFC49F");
     }
     update(deltaTime: number) {
         
