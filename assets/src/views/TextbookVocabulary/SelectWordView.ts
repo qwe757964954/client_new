@@ -50,10 +50,15 @@ export class SelectWordView extends BaseView {
 		this.addModelListener(NetNotify.Classification_List,this.onBookList);
         this.addModelListener(NetNotify.Classification_SchoolBook,this.onSchoolBookList);
         this.addModelListener(NetNotify.Classification_SchoolGrade,this.onSchoolGradeList);
+        this.addModelListener(NetNotify.Classification_BookAdd,this.onBookAdd);
 	}
+    onBookAdd(){
+        ViewsManager.instance.showView(PrefabType.TextbookChallengeView);
+    }
     onSchoolGradeList(data:SchoolBookGradeItemData[]){
         this._schoolGradeListDataArr = data;
         this.textBookScrollView.numItems = this._schoolGradeListDataArr.length;
+        this.textBookScrollView.selectedId = -1;
         this.textBookScrollView.update();
     }
     onSchoolBookList(data:SchoolBookListItemData[]){
@@ -135,10 +140,14 @@ export class SelectWordView extends BaseView {
     }
     onTextBookVerticalSelected(item: any, selectedId: number, lastSelectedId: number, val: number){
         console.log("onTextBookVerticalSelected",item,selectedId);
+        if(selectedId === -1){return}
         ViewsManager.instance.showView(PrefabType.SettingPlanView,(node: Node) => {
             let planScript:SettingPlanView = node.getComponent(SettingPlanView);
             planScript.setOperationCallback((isSave:boolean)=>{
                 ViewsManager.instance.closeView(PrefabType.SettingPlanView);
+                if(isSave){
+                    TBServer.reqBookAdd(this._bookTabDataArr[this._tabIndex].TypeName,this._schoolBookListDataArr[this._leftNavIndex].Name,this._schoolGradeListDataArr[selectedId].Name);
+                }
             })
         });
     }

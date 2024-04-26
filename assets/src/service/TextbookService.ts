@@ -1,4 +1,4 @@
-import { BookListItemData, MyTextbookStatus, SchoolBookGradeItemData, SchoolBookListItemData, c2sBookStatus, c2sDelBookStatus, c2sSchoolBook, c2sSchoolBookGrade, c2sSearchBookList } from "../models/TextbookModel";
+import { BookListItemData, MyTextbookStatus, SchoolBookGradeItemData, SchoolBookListItemData, c2sAddBookStatus, c2sBookStatus, c2sDelBookStatus, c2sSchoolBook, c2sSchoolBookGrade, c2sSearchBookList } from "../models/TextbookModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
 import { NetNotify } from "../net/NetNotify";
@@ -21,6 +21,7 @@ export default class _TextbookService extends BaseControll{
 	protected onInitModuleEvent() {
 		this.addModelListener(InterfacePath.Classification_BookStatus,this.onBookStatus);
         this.addModelListener(InterfacePath.Classification_BookDel,this.onBookDel);
+        this.addModelListener(InterfacePath.Classification_BookAdd,this.onBookAdd);
         this.addModelListener(InterfacePath.Classification_List,this.onBookList);
         this.addModelListener(InterfacePath.Classification_SchoolBook,this.onSchoolBook);
         this.addModelListener(InterfacePath.Classification_SchoolGrade,this.onSchoolBookGrade);
@@ -68,6 +69,21 @@ export default class _TextbookService extends BaseControll{
             return
         }
         EventMgr.dispatch(NetNotify.Classification_BookDel,data);
+    }
+    reqBookAdd(BookName: string,Grade: string,TypeName: string){
+        let param:c2sAddBookStatus = new c2sAddBookStatus();
+        param.BookName = BookName;
+        param.Grade = Grade;
+        param.TypeName = TypeName;
+        NetMgr.sendMsg(param);
+    }
+    onBookAdd(data: any){
+        console.log("onBookAdd",data);
+        if(data.Code !== 200){
+            console.log(data.Msg);
+            return
+        }
+        EventMgr.dispatch(NetNotify.Classification_BookAdd,data);
     }
     reqBookList(){
         let param:c2sSearchBookList = new c2sSearchBookList();

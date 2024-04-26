@@ -41,7 +41,14 @@ export class c2sDelBookStatus {
     BookName:string;
     Grade:string;
 }
+//添加我的词书
 
+export class c2sAddBookStatus {
+    Path: string = InterfacePath.Classification_BookAdd;
+    TypeName:string;
+    BookName:string;
+    Grade:string;
+}
 //获取分类汇总列表
 export class c2sSearchBookList{
     Path: string = InterfacePath.Classification_List;
@@ -58,3 +65,4 @@ export class c2sSchoolBookGrade{
     TypeName:string;
     BookName:string;
 }
+
