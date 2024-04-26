@@ -48,7 +48,8 @@ export class studyView extends Component {
         console.log(name);
         switch (name) {
             case "wordAdventure": //单词大冒险
-                director.loadScene(SceneType.WorldMapScene);
+                // director.loadScene(SceneType.WorldMapScene);
+                ViewsManager.instance.showView(PrefabType.WorldMapView);
                 break;
         }
         // EventManager.emit(EventType.Study_Page_Switching, [i]);

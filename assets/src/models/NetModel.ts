@@ -106,4 +106,10 @@ export class c2sWordGameWords {
     GameMode: number;
 }
 
+//获取单词详情
+export class c2sClassificationWord {
+    Path: string = InterfacePath.Classification_Word;
+    Word: string;
+}
+
 /*****************************************************************************/
