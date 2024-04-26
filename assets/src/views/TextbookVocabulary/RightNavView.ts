@@ -24,11 +24,15 @@ export class RightNavView extends Component {
     }
 
     loadNavListData(data:BookListItemData[],callBack:(selectId:number)=>void){
+        console.log("loadNavListData",data);
         this.callSelectCallback = callBack;
         this._navDataArr = data;
         this.navScroll.numItems = this._navDataArr.length;
         this.navScroll.update();
         this.navScroll.selectedId = 0;
+        if(this.callSelectCallback){
+            this.callSelectCallback(0);
+        }
     }
 
     onNavListVerticalRender(item:Node, idx:number){
@@ -38,6 +42,7 @@ export class RightNavView extends Component {
     }
     //当列表项被选择...
     onNavListSelected(item: any, selectedId: number, lastSelectedId: number, val: number) {
+        console.log("onNavListSelected",selectedId);
         if (!item)
             return;
         this.clearTopItemColor();

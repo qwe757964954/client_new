@@ -30,6 +30,7 @@ export const PrefabType = {
     //**学习模式相关 */
     StudyView: { path: "study/StudyViewchange", zindex: Hierarchy.POPUPLAYER, tips: "学习模块选择" },
     StudyModeView: { path: "studyModes/StudyModeView", zindex: Hierarchy.SCENELAYER, tips: "关卡学模式" },
+    WorldMapView: { path: "adventure/WorldMapView", zindex: Hierarchy.SCENELAYER, tips: "单词大冒险岛屿选择" },
 
     //**学习模式相关 end*/
 

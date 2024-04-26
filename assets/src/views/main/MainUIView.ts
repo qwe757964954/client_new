@@ -1,4 +1,4 @@
-import { _decorator, Button, Component, director, Node, Sprite } from 'cc';
+import { _decorator, Component, director, Node, Sprite } from 'cc';
 import { MapStatus } from '../../config/MapConfig';
 import { PrefabType, SceneType } from '../../config/PrefabType';
 import { ViewsManager } from '../../manager/ViewsManager';
@@ -30,8 +30,6 @@ export class MainUIView extends Component {
     public btnTaskGo: Sprite = null;//任务前往
     @property(Sprite)
     public btnStudy: Sprite = null;//学习
-    @property(Button)
-    public btnTextbook: Button = null;//教材单词
 
     private _mainScene: MainScene = null;//主场景
 
@@ -125,11 +123,6 @@ export class MainUIView extends Component {
     //学习点击
     public onClickStudy() {
         director.loadScene(SceneType.WorldMapScene);
-    }
-    /**点击教材单词事件 */
-    protected async onTextbookClick() {
-        console.log("点击教材单词");
-        ViewsManager.instance.showView(PrefabType.SelectWordView);
     }
 }
 
