@@ -1,6 +1,7 @@
 import { Color, Graphics, Label, Node, Rect, Sprite, UITransform, Vec2, Vec3, _decorator } from "cc";
 import { EventType } from "../config/EventType";
 import { PrefabType } from "../config/PrefabType";
+import { TextConfig } from "../config/TextConfig";
 import { DataMgr, EditInfo } from "../manager/DataMgr";
 import { LoadManager } from "../manager/LoadManager";
 import { ViewsManager } from "../manager/ViewsManager";
@@ -201,6 +202,7 @@ export class BuildingModel extends BaseComponent {
                 this.recycleBtnClick.bind(this),
                 this.recover.bind(this),
             ];
+            buildingBtnView.sellBtnStatus = this._editInfo.sell > 0;
             buildingBtnView.registerClickCallback(funcs);
             this.onCameraScale(scale);
             this.refreshBtnView();
@@ -229,8 +231,7 @@ export class BuildingModel extends BaseComponent {
             }
         }
         let buildingBtnView = this._btnView.getComponent(BuildingBtnView);
-        buildingBtnView.btnSure.node.active = canSure;
-        // buildingBtnView.btnSure.grayscale = !canSure;
+        buildingBtnView.sureBtnStatus = canSure;
     }
     // 还原数据
     public resetData(): void {
@@ -245,7 +246,11 @@ export class BuildingModel extends BaseComponent {
         });
     }
     // 保存数据
-    public saveData(): void {
+    public saveData(status: boolean = true): void {
+        if (!status) {
+            ViewsManager.showTip(TextConfig.Building_Sure_Tip);
+            return;
+        }
         // this._dataX = this._x;
         // this._dataY = this._y;
         this.saveGrids();//先还原原来格子数据，再保存现在格子数据
@@ -256,8 +261,11 @@ export class BuildingModel extends BaseComponent {
         this.closeBtnView();
     }
     // 卖出
-    public sell(): void {
-        // TODO
+    public sell(canCell: boolean): void {
+        if (!canCell) {
+            ViewsManager.showTip(TextConfig.Building_Cell_Tip);
+            return;
+        }
         this.recycle();//与回收差别?，如不能还原则需修改逻辑
     }
     // 翻转

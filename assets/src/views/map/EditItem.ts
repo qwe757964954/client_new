@@ -1,5 +1,6 @@
-import { _decorator, Component, Sprite, SpriteFrame, UITransform, Vec3 } from 'cc';
-import { DataMgr, EditInfo } from '../../manager/DataMgr';
+import { _decorator, Component, Label, Sprite, SpriteFrame, UITransform, Vec3 } from 'cc';
+import { MapConfig } from '../../config/MapConfig';
+import { DataMgr, EditInfo, EditType } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
 import CCUtil from '../../util/CCUtil';
 const { ccclass, property } = _decorator;
@@ -8,11 +9,18 @@ const { ccclass, property } = _decorator;
 export class EditItem extends Component {
     @property(Sprite)
     public img: Sprite = null;//图片
+    @property(Sprite)
+    public imgIcon: Sprite = null;//国王分图标
+    @property(Label)
+    public label: Label = null;//文本
 
     private _data: EditInfo = null;//数据
     private _clickCall: Function = null;//点击回调
 
-    start(): void {
+    onLoad(): void {
+        this.imgIcon.node.active = false;
+        this.label.node.active = false;
+
         this.initEvent();
     }
     get data(): EditInfo {
@@ -34,8 +42,10 @@ export class EditItem extends Component {
     // 初始化
     public initData(info: EditInfo, clickCall: Function): void {
         this._data = info;
+        // TODO 国王分显示
         this._clickCall = clickCall;
         LoadManager.loadSprite(DataMgr.getEditPng(info), this.img).then((spriteFrame: SpriteFrame) => {
+            this.fixPos();
             this.fixImg();
         });
     }
@@ -57,6 +67,14 @@ export class EditItem extends Component {
         scale.x *= minScale;
         scale.y *= minScale;
         this.img.node.scale = scale;
+    }
+    /**修复位置 */
+    public fixPos(): void {
+        if (EditType.Land != this._data.type) return;
+        let size = this.getComponent(UITransform).contentSize;
+        // let imgSize = this.img.getComponent(UITransform).contentSize;
+        let y = size.height * 0.5 - MapConfig.gridInfo.height;
+        this.img.node.position = new Vec3(0, y, 0);
     }
 }
 
