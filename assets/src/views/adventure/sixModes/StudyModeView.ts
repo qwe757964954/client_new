@@ -12,6 +12,7 @@ import { WordSplitItem } from './items/WordSplitItem';
 import RemoteImageManager from '../../../manager/RemoteImageManager';
 import { WordDetailView } from '../../common/WordDetailView';
 import { NetConfig } from '../../../config/NetConfig';
+import { RoleBaseModel } from '../../../models/RoleBaseModel';
 const { ccclass, property } = _decorator;
 
 /**学习模式页面 何存发 2024年4月15日15:38:41 */
@@ -47,6 +48,14 @@ export class StudyModeView extends Component {
     btn_hideDetail: Node = null;
     @property({ type: Node, tooltip: "主面板" })
     mainNode: Node = null;
+    @property(Prefab)
+    public roleModel: Prefab = null;//角色动画
+    @property({ type: Node, tooltip: "角色容器" })
+    public roleContainer: Node = null;
+    @property({ type: Node, tooltip: "精灵容器" })
+    public petContainer: Node = null;
+    @property({ type: Prefab, tooltip: "精灵预制体" })
+    public petModel: Prefab = null;
 
     private _spilitData: any = null;
     private _wordsData: any = null;
@@ -60,28 +69,38 @@ export class StudyModeView extends Component {
 
     private _isSplitPlaying: boolean = false; //正在播放拆分音频
     private _currentSplitIdx: number = 0; //当前播放拆分音频的索引
+    private _isCombine: boolean = false; //是否已经合并单词
 
     private _nodePool: NodePool = new NodePool("wordSplitItem");
     start() {
-
+        this.initRole(); //初始化角色
+        this.initPet(); //初始化精灵
     }
     onLoad(): void {
         this.initEvent();
     }
 
-    async initData(bigId: number, smallId: number) {
+    async initData(data: any) {
         this._spilitData = await DataMgr.instance.getWordSplitConfig();
-        ServiceMgr.studyService.getWordGameWords(bigId, smallId, 1, 0);
+        this.initWords(data);
+    }
 
+    async initRole() {
+        let role = instantiate(this.roleModel);
+        this.roleContainer.addChild(role);
+        let roleModel = role.getComponent(RoleBaseModel);
+        await roleModel.init(101, 1, [9500, 9700, 9701, 9702, 9703]);
+    }
+    async initPet() {
+        let pet = instantiate(this.petModel);
+        this.petContainer.addChild(pet);
+        let roleModel = pet.getComponent(RoleBaseModel);
+        await roleModel.init(101, 1);
     }
     //获取关卡单词回包
-    onWordGameWords(data: any) {
-        console.log('wordsData', data);
-        if (data.Code != 200) {
-            ViewsManager.showTip('获取单词失败');
-            return;
-        }
-        this._wordsData = data.Data;
+    initWords(data: any) {
+        console.log('initWords', data);
+        this._wordsData = data;
         let splits = [];
         for (let i = 0; i < this._wordsData.length; i++) {
             let word = this._wordsData[i].word;
@@ -103,6 +122,7 @@ export class StudyModeView extends Component {
 
     //显示当前单词
     showCurrentWord() {
+        this._isCombine = false;
         let wordData = this._wordsData[this._wordIndex];
         console.log('word', wordData);
         let word = wordData.word;
@@ -201,6 +221,7 @@ export class StudyModeView extends Component {
     }
     //拆分点击结束合并单词
     combineWord() {
+        this._isCombine = true;
         let targetX: number;
         let total = this._spliteItems.length;
         let halfIdx = (total % 2 == 0) ? (Math.ceil(total / 2) - 0.5) : ((total + 1) / 2 - 1);
@@ -229,7 +250,7 @@ export class StudyModeView extends Component {
     }
 
     showWordDetail() {
-
+        if (this._isCombine || this._isSplitPlaying) return;
         if (!this._detailData) {
             ViewsManager.showTip("未获取到单词详情数据");
             return;
@@ -239,6 +260,7 @@ export class StudyModeView extends Component {
         this.splitNode.active = false;
         this.wordDetailNode.active = true;
         this.btn_hideDetail.active = true;
+        this.btn_more.active = false;
 
         this.wordDetailNode.getComponent(WordDetailView).init(this._wordsData[this._wordIndex].word, this._detailData);
         this.mainNode.setPosition(pos.x, -360, 0);
@@ -249,6 +271,7 @@ export class StudyModeView extends Component {
         this.splitNode.active = true;
         this.wordDetailNode.active = false;
         this.btn_hideDetail.active = false;
+        this.btn_more.active = true;
         let pos = this.mainNode.position;
         tween(this.mainNode).to(0.2, { position: new Vec3(pos.x, -360, 0) }).start();
     }
@@ -266,7 +289,6 @@ export class StudyModeView extends Component {
         CCUtil.onTouch(this.btn_close.node, this.closeView, this);
         CCUtil.onTouch(this.btn_more, this.showWordDetail, this);
         CCUtil.onTouch(this.btn_hideDetail, this.hideWordDetail, this);
-        this._getWordsEveId = EventManager.on(EventType.WordGame_Words, this.onWordGameWords.bind(this));
         this._wordDetailEveId = EventManager.on(EventType.Classification_Word, this.onClassificationWord.bind(this));
     }
     private removeEvent(): void {
@@ -274,7 +296,6 @@ export class StudyModeView extends Component {
         CCUtil.offTouch(this.btn_close.node, this.closeView, this);
         CCUtil.offTouch(this.btn_more, this.showWordDetail, this);
         CCUtil.offTouch(this.btn_hideDetail, this.hideWordDetail, this);
-        EventManager.off(EventType.WordGame_Words, this._getWordsEveId);
         EventManager.off(EventType.Classification_Word, this._wordDetailEveId);
         for (let i = 0; i < this._spliteItems.length; i++) {
             CCUtil.offTouch(this._spliteItems[i], this.onSplitItemClick.bind(this, this._spliteItems[i]), this);
@@ -289,10 +310,6 @@ export class StudyModeView extends Component {
                 ViewsManager.instance.closeView(PrefabType.BaseRemindView);
             });
         });
-        // ViewsManager.instance.showView(PrefabType.BaseRemindView, (node: Node) => {
-        //     node.getComponent(BaseRemindView).init('确定退出学习吗?', () => {
-        //     })
-        // });
     }
     onDestroy(): void {
         this.removeEvent();

@@ -6,6 +6,7 @@ import { ViewsManager } from '../../manager/ViewsManager';
 import { Hierarchy, PrefabType } from '../../config/PrefabType';
 import { StudyModeView } from './sixModes/StudyModeView';
 import GlobalConfig from '../../GlobalConfig';
+import { ServiceMgr } from '../../net/ServiceManager';
 const { ccclass, property } = _decorator;
 /**大冒险 世界地图 何存发 2024年4月8日14:45:44 */
 @ccclass('WorldMapView')
@@ -29,6 +30,7 @@ export class WorldMapView extends Component {
     private _eveId: string; //切换岛屿
     private _exitIslandEveId: string; //退出岛屿
     private _enterLevelEveId: string; //进入关卡
+    private _getWordsEveId: string; //获取单词
     start() {
         let winssize = GlobalConfig.WIN_SIZE;
         this.islandContainer.position = v3(-winssize.width / 2, 0, 0);
@@ -72,9 +74,17 @@ export class WorldMapView extends Component {
     //进入关卡
     private enterLevel(data: { smallId: number, bigId: number }) {
         console.log('进入关卡', data);
+        ServiceMgr.studyService.getWordGameWords(data.bigId, data.smallId, 1, 0);
+    }
+
+    //获取关卡单词回包
+    onWordGameWords(data: any) {
+        if (data.Code != 200) {
+            ViewsManager.showTip('获取单词失败');
+            return;
+        }
         ViewsManager.instance.showView(PrefabType.StudyModeView, (node: Node) => {
-            // console.log(node.name);
-            node.getComponent(StudyModeView).initData(data.bigId, data.smallId);
+            node.getComponent(StudyModeView).initData(data.Data);
         });
     }
 
@@ -85,6 +95,7 @@ export class WorldMapView extends Component {
         }
         this._exitIslandEveId = EventManager.on(EventType.Exit_World_Island, this.hideIsland.bind(this));
         this._enterLevelEveId = EventManager.on(EventType.Enter_Island_Level, this.enterLevel.bind(this));
+        this._getWordsEveId = EventManager.on(EventType.WordGame_Words, this.onWordGameWords.bind(this));
         CCUtil.onTouch(this.btn_back.node, this.onBtnBackClick, this)
 
     }

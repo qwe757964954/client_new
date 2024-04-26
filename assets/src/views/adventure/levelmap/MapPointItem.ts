@@ -1,4 +1,4 @@
-import { _decorator, Component, Node } from 'cc';
+import { _decorator, Component, Label, Node } from 'cc';
 const { ccclass, property } = _decorator;
 
 @ccclass('MapPointItem')
@@ -7,6 +7,8 @@ export class MapPointItem extends Component {
     public stars: Node[] = [];
     @property({ type: Node, tooltip: "底盘" })
     public bgNode: Node = null;
+    @property({ type: Label, tooltip: "关卡Label" })
+    public levelLabel: Label = null;
 
     public data: { bigId: number, smallId: number } = null;
     start() {
@@ -15,6 +17,7 @@ export class MapPointItem extends Component {
 
     setData(data: { bigId: number, smallId: number }) {
         this.data = data;
+        this.levelLabel.string = this.data.bigId + "-" + this.data.smallId;
     }
 }
 
