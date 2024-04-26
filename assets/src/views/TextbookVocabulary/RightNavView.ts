@@ -1,6 +1,7 @@
 import { _decorator, color, Component, isValid, Node } from 'cc';
+import { BookListItemData } from '../../models/TextbookModel';
 import List from '../../util/list/List';
-import { RightNavItem, RightNavItemData } from './RightNavItem';
+import { RightNavItem } from './RightNavItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('RightNavView')
@@ -8,7 +9,7 @@ export class RightNavView extends Component {
     @property(List)
     public navScroll: List = null;
 
-    private _navDataArr :RightNavItemData[] = [];
+    private _navDataArr :BookListItemData[] = [];
     
     private callSelectCallback:(selectId:number)=>void = null;
 
@@ -22,7 +23,7 @@ export class RightNavView extends Component {
         
     }
 
-    loadNavListData(data:RightNavItemData[],callBack:(selectId:number)=>void){
+    loadNavListData(data:BookListItemData[],callBack:(selectId:number)=>void){
         this.callSelectCallback = callBack;
         this._navDataArr = data;
         this.navScroll.numItems = this._navDataArr.length;
@@ -32,7 +33,7 @@ export class RightNavView extends Component {
 
     onNavListVerticalRender(item:Node, idx:number){
         let navItemScript:RightNavItem = item.getComponent(RightNavItem);
-        let itemInfo:RightNavItemData = this._navDataArr[idx];
+        let itemInfo:BookListItemData = this._navDataArr[idx];
         navItemScript.updateNavProps(idx,itemInfo);
     }
     //当列表项被选择...

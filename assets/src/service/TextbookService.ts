@@ -1,4 +1,4 @@
-import { MyTextbookStatus, c2sBookStatus, c2sDelBookStatus } from "../models/TextbookModel";
+import { BookListItemData, MyTextbookStatus, SchoolBookGradeItemData, SchoolBookListItemData, c2sBookStatus, c2sDelBookStatus, c2sSchoolBook, c2sSchoolBookGrade, c2sSearchBookList } from "../models/TextbookModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
 import { NetNotify } from "../net/NetNotify";
@@ -21,6 +21,9 @@ export default class _TextbookService extends BaseControll{
 	protected onInitModuleEvent() {
 		this.addModelListener(InterfacePath.Classification_BookStatus,this.onBookStatus);
         this.addModelListener(InterfacePath.Classification_BookDel,this.onBookDel);
+        this.addModelListener(InterfacePath.Classification_List,this.onBookList);
+        this.addModelListener(InterfacePath.Classification_SchoolBook,this.onSchoolBook);
+        this.addModelListener(InterfacePath.Classification_SchoolGrade,this.onSchoolBookGrade);
 	}
     reqBookStatus(){
         let para: c2sBookStatus = new c2sBookStatus();
@@ -65,7 +68,77 @@ export default class _TextbookService extends BaseControll{
             return
         }
         EventMgr.dispatch(NetNotify.Classification_BookDel,data);
-    }  
+    }
+    reqBookList(){
+        let param:c2sSearchBookList = new c2sSearchBookList();
+        NetMgr.sendMsg(param);
+    }
+    onBookList(data:any){
+        console.log("onBookList",data);
+        if(data.Code!== 200){
+            console.log(data.Msg);
+            return
+        }
+        let dataArr:BookListItemData[] = [];
+        for (let index = 0; index < data.Data.length; index++) {
+            const element = data.Data[index];
+            let obj:BookListItemData = {
+                Name:element.Name,
+                Num:element.Num,
+                SortNo:element.SortNo,
+                TypeName:element.TypeName
+            }
+            dataArr.push(obj);
+        }
+        EventMgr.dispatch(NetNotify.Classification_List,dataArr);
+    }
+    reqSchoolBook(TypeName:string){
+        let param:c2sSchoolBook = new c2sSchoolBook();
+        param.TypeName = TypeName;
+        NetMgr.sendMsg(param);
+    }
+    onSchoolBook(data:any){
+        if(data.Code!== 200){
+            console.log(data.Msg);
+            return;
+        }
+        let dataArr:SchoolBookListItemData[] = [];
+        for (let index = 0; index < data.Data.length; index++) {
+            const element = data.Data[index];
+            let obj:SchoolBookListItemData = {
+                Name:element.Name,
+                Num:element.Num,
+                SortNo:element.SortNo,
+                TypeName:element.TypeName
+            }
+            dataArr.push(obj);
+        }
+        EventMgr.dispatch(NetNotify.Classification_SchoolBook,dataArr);
+    }
+
+    reqSchoolBookGrade(TypeName:string,BookName:string){
+        let param:c2sSchoolBookGrade = new c2sSchoolBookGrade();
+        param.TypeName = TypeName;
+        param.BookName = BookName;
+        NetMgr.sendMsg(param);
+    }
+    onSchoolBookGrade(data:any){
+        if(data.Code!== 200){
+            console.log(data.Msg);
+            return;
+        }
+        let dataArr:SchoolBookGradeItemData[] = [];
+        for (let index = 0; index < data.Data.length; index++) {
+            const element = data.Data[index];
+            let obj:SchoolBookGradeItemData = {
+                Name:element.Name,
+                Num:element.Num
+            }
+            dataArr.push(obj);
+        }
+        console.log(dataArr);
+        EventMgr.dispatch(NetNotify.Classification_SchoolGrade,dataArr);
+    }
 };
 
 export const TBServer = _TextbookService.getInstance();

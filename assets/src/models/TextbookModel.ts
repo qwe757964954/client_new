@@ -12,8 +12,23 @@ export interface MyTextbookStatus {
     createtime:string,
     id:number,
 } 
+export interface BookListItemData{
+    Name:string,
+    Num:number,
+    SortNo:number,
+    TypeName:string
+}
 
-
+export interface SchoolBookListItemData{
+    Name:string,
+    Num:number,
+    SortNo:number,
+    TypeName:string
+}
+export interface SchoolBookGradeItemData{
+    Name:string,
+    Num:number,
+}
 // 我的词书
 export class c2sBookStatus {
     Path: string = InterfacePath.Classification_BookStatus;
@@ -25,4 +40,21 @@ export class c2sDelBookStatus {
     TypeName:string;
     BookName:string;
     Grade:string;
+}
+
+//获取分类汇总列表
+export class c2sSearchBookList{
+    Path: string = InterfacePath.Classification_List;
+}
+
+//获取教材课本
+export class c2sSchoolBook{
+    Path: string = InterfacePath.Classification_SchoolBook;
+    TypeName:string;
+}
+//教材课本-年级
+export class c2sSchoolBookGrade{
+    Path: string = InterfacePath.Classification_SchoolGrade;
+    TypeName:string;
+    BookName:string;
 }

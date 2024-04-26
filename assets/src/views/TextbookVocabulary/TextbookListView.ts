@@ -79,7 +79,8 @@ export class TextbookListView extends BaseView {
     }
 
     onClickAddTextbook(){
-
+        console.log("onClickAddTextbook");
+        ViewsManager.instance.showView(PrefabType.SelectWordView);
     }
 }
 
