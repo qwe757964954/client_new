@@ -815,36 +815,6 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "levelArr": [
-      {
-        "__uuid__": "061198ae-bd6a-40a4-b81f-0e082cf51135",
-        "__expectedType__": "cc.Prefab"
-      },
-      {
-        "__uuid__": "061198ae-bd6a-40a4-b81f-0e082cf51135",
-        "__expectedType__": "cc.Prefab"
-      },
-      {
-        "__uuid__": "061198ae-bd6a-40a4-b81f-0e082cf51135",
-        "__expectedType__": "cc.Prefab"
-      },
-      {
-        "__uuid__": "061198ae-bd6a-40a4-b81f-0e082cf51135",
-        "__expectedType__": "cc.Prefab"
-      },
-      {
-        "__uuid__": "061198ae-bd6a-40a4-b81f-0e082cf51135",
-        "__expectedType__": "cc.Prefab"
-      },
-      {
-        "__uuid__": "061198ae-bd6a-40a4-b81f-0e082cf51135",
-        "__expectedType__": "cc.Prefab"
-      },
-      {
-        "__uuid__": "061198ae-bd6a-40a4-b81f-0e082cf51135",
-        "__expectedType__": "cc.Prefab"
-      }
-    ],
     "defaultNode": {
       "__id__": 13
     },
