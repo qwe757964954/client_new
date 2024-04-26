@@ -73,9 +73,11 @@ export default class CCUtil {
         if (x > size.width || y > size.height) return null;
         const rect = spriteFrame.rect;
         const offset = spriteFrame.offset;
-        // console.log("readPixels start", x, y, rect.x, rect.y, rect.width, rect.height, offset.x, offset.y);
-        const px = x - offset.x;
-        const py = y - offset.y;
+        // console.log("readPixels start", x, y, size.width, size.height, spriteFrame.width, spriteFrame.height);
+        // console.log("spriteFrame.rect offset", rect.x, rect.y, rect.width, rect.height, offset.x, offset.y, spriteFrame.rotated);
+        // console.log("spriteFrame original", spriteFrame.original);
+        const px = x - offset.x + (rect.width - size.width) / 2;
+        const py = y - offset.y + (rect.height - size.height) / 2;
         // console.log("readPixels 1:", px, py);
         const gfxTexture = spriteFrame.getGFXTexture();
         const bufferViews = [];
