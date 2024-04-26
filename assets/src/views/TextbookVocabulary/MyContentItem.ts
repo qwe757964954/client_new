@@ -1,19 +1,12 @@
 import { Button, Label, Node, ProgressBar, _decorator } from 'cc';
+import { NetConfig } from '../../config/NetConfig';
+import { MyTextbookStatus } from '../../models/TextbookModel';
 import ImgUtil from '../../util/ImgUtil';
 import ListItem from '../../util/list/ListItem';
 const { ccclass, property } = _decorator;
 
 
-export interface MyTextbookItemData {
-    imgUrl: string,
-    name: string,
-    desc: string,
-    collect_count: number,
-    total_collect: number,
-    already_learned_count: number,
-    total_already_learned: number,
-    isLearned: boolean
-}   
+  
 
 @ccclass('MyContentItem')
 export class MyContentItem extends ListItem {
@@ -39,28 +32,30 @@ export class MyContentItem extends ListItem {
     public flagBg:Node = null;
 
     private idx:number = 0;
-    private delCallback:(idx:number) => void = null;
+    private _bookStatus:MyTextbookStatus = null; // null
+    private delCallback:(idx:number,bookStatus:MyTextbookStatus) => void = null;
     start() {
 
     }
 
-    setClickCallback(callback) {
+    setDeleteClickCallback(callback) {
         this.delCallback = callback;
     }
-
-    updateMyContentItemProps(idx: number,itemInfo:MyTextbookItemData) {
+    updateMyContentItemProps(idx: number,itemInfo:MyTextbookStatus) {
         this.idx = idx;
-        this.item_name.string = itemInfo.name;
+        this._bookStatus = itemInfo;
+        this.item_name.string = `${itemInfo.BookName}(${itemInfo.Grade})`;
         // this.desc_text.string = itemInfo.desc;
-        this.flagBg.active = itemInfo.isLearned;
-        this.collect_text.string = `已收集${itemInfo.collect_count}/${itemInfo.total_collect}!`;
-        this.already_learned_text.string = `已学单词${itemInfo.already_learned_count}/${itemInfo.total_already_learned}!`;
-        ImgUtil.loadRemoteImage(itemInfo.imgUrl,this.item_img,188.156,256.998);
+        // this.flagBg.active = itemInfo.isLearned;
+        // this.collect_text.string = `已收集${itemInfo.collect_count}/${itemInfo.total_collect}!`;
+        this.already_learned_text.string = `已学${itemInfo.StudyWordNum}/${itemInfo.TotalWordNum}`;
+        let bookImgUrl = `${NetConfig.assertUrl}/imgs/bookcover/${itemInfo.BookName}/${itemInfo.Grade}.jpg`;
+        ImgUtil.loadRemoteImage(bookImgUrl,this.item_img,188.156,256.998);
     }
 
     onDelMyTextbookClick(){
         if(this.delCallback){
-            this.delCallback(this.idx);
+            this.delCallback(this.idx,this._bookStatus);
         }
     }
 

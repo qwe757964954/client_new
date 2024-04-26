@@ -1,4 +1,4 @@
-import { Layers, Node, Sprite, UITransform, Vec2 } from "cc";
+import { Layers, Node, Sprite, UITransform, Vec2, isValid } from "cc";
 import { LoadManager } from "../manager/LoadManager";
 
 /**
@@ -35,19 +35,25 @@ export default class ImgUtil {
      * ImgUtil.loadRemoteImage(itemInfo.imgUrl,this.item_img,125.507,172.979)
      */
     public static loadRemoteImage(imgUrl: string, imgNode: Node, width: number, height: number) {
-        // ResLoader.instance.loadRemote<ImageAsset>(imgUrl, null, (err, data) => {
-        //     const texture = new Texture2D();
-        //     texture.image = data;
-        //     const spriteFrame = new SpriteFrame();
-        //     spriteFrame.texture = texture;
-        //     let sprite = imgNode.getComponent(Sprite);
-        //     if(!isValid(sprite)){
-        //         sprite = imgNode.addComponent(Sprite);
-        //     }
-        //     sprite.spriteFrame = spriteFrame;
-        //     imgNode.getComponent(UITransform).width = width;
-        //     imgNode.getComponent(UITransform).height = height;
-        // })
+        /*
+        ResLoader.instance.loadRemote<ImageAsset>(imgUrl, null, (err, data) => {
+            const texture = new Texture2D();
+            texture.image = data;
+            const spriteFrame = new SpriteFrame();
+            spriteFrame.texture = texture;
+            let sprite = imgNode.getComponent(Sprite);
+            if(!isValid(sprite)){
+                sprite = imgNode.addComponent(Sprite);
+            }
+            sprite.spriteFrame = spriteFrame;
+            imgNode.getComponent(UITransform).width = width;
+            imgNode.getComponent(UITransform).height = height;
+        })
+        */
+        let sprite = imgNode.getComponent(Sprite);
+        if(!isValid(sprite)){
+            sprite = imgNode.addComponent(Sprite);
+        }
         LoadManager.loadRemoteSprite(imgUrl, imgNode.getComponent(Sprite)).then(() => {
             imgNode.getComponent(UITransform).width = width;
             imgNode.getComponent(UITransform).height = height;
