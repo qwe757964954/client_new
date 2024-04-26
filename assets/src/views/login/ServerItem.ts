@@ -1,5 +1,5 @@
-import { _decorator, Color, Component, Label, Node } from 'cc';
-import NetConfig from '../../config/NetConfig';
+import { _decorator, Color, Component, Label } from 'cc';
+import { NetConfig } from '../../config/NetConfig';
 const { ccclass, property } = _decorator;
 
 @ccclass('ServerItem')

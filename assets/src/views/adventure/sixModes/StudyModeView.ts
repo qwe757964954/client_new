@@ -1,18 +1,17 @@
 import { _decorator, Button, Component, instantiate, Label, Layout, Node, NodePool, Prefab, Sprite, tween, UITransform, Vec3 } from 'cc';
 import CCUtil from '../../../util/CCUtil';
 import { EventType } from '../../../config/EventType';
-import EventManager from '../../../util/EventManager';
-import { ViewsManager } from '../../../manager/ViewsManager';
 import { PrefabType } from '../../../config/PrefabType';
-import { BaseRemindView } from '../../common/BaseRemindView';
-import { PopView } from '../../common/PopView';
 import { DataMgr } from '../../../manager/DataMgr';
-import ServiceManager from '../../../net/ServiceManager';
+import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
+import { ViewsManager } from '../../../manager/ViewsManager';
+import { ServiceMgr } from '../../../net/ServiceManager';
+import EventManager from '../../../util/EventManager';
+import { BaseRemindView } from '../../common/BaseRemindView';
 import { WordSplitItem } from './items/WordSplitItem';
-import RemoteSoundManager from '../../../manager/RemoteSoundManager';
-import NetConfig from '../../../config/NetConfig';
 import RemoteImageManager from '../../../manager/RemoteImageManager';
 import { WordDetailView } from '../../common/WordDetailView';
+import { NetConfig } from '../../../config/NetConfig';
 const { ccclass, property } = _decorator;
 
 /**学习模式页面 何存发 2024年4月15日15:38:41 */
@@ -72,7 +71,7 @@ export class StudyModeView extends Component {
 
     async initData(bigId: number, smallId: number) {
         this._spilitData = await DataMgr.instance.getWordSplitConfig();
-        ServiceManager.i.studyService.getWordGameWords(bigId, smallId, 1, 0);
+        ServiceMgr.studyService.getWordGameWords(bigId, smallId, 1, 0);
 
     }
     //获取关卡单词回包
@@ -130,7 +129,7 @@ export class StudyModeView extends Component {
 
     //初始化单词详情
     initWordDetail(word: string) {
-        ServiceManager.i.studyService.getClassificationWord(word);
+        ServiceMgr.studyService.getClassificationWord(word);
     }
     //初始化拆分节点
     initSplitNode() {
@@ -176,7 +175,7 @@ export class StudyModeView extends Component {
             wordSoundUrl = "/sounds/glossary/words/en/" + word + ".wav";
         }
 
-        return RemoteSoundManager.i.playSound(NetConfig.assertUrl + wordSoundUrl);
+        return RemoteSoundMgr.playSound(NetConfig.assertUrl + wordSoundUrl);
     }
 
     //拆分部分点击
@@ -192,7 +191,7 @@ export class StudyModeView extends Component {
         if (this._splits[this._wordIndex].length == 0) {
             url = NetConfig.assertUrl + "/sounds/glossary/words/en/" + this._wordsData[this._wordIndex].word;
         }
-        RemoteSoundManager.i.playSound(url + ".wav").then(() => {
+        RemoteSoundMgr.playSound(url + ".wav").then(() => {
             this._isSplitPlaying = false;
             this._currentSplitIdx++;
             if (this._currentSplitIdx == this._splits[this._wordIndex].length) {

@@ -45,6 +45,7 @@ export class BuildingModel extends BaseComponent {
     // private _mapScaleHandle:string//地图缩放事件句柄
     private _pos: Vec3 = new Vec3(0, 0, 0);//位置
     private _isFixImgPos: boolean = false;//是否固定图片位置
+    private _isLoad: boolean = false;//是否加载图片
 
     // 初始化事件
     public initEvent() {
@@ -70,9 +71,12 @@ export class BuildingModel extends BaseComponent {
         this.label.node.active = false;
         this.graphics.node.active = false;
 
-        LoadManager.loadSprite(DataMgr.getEditPng(this._editInfo), this.building);
+        // LoadManager.loadSprite(DataMgr.getEditPng(this._editInfo), this.building);
 
         this.initEvent();
+        if (isNew) {
+            this.show(true);
+        }
     }
     // 销毁
     protected onDestroy(): void {
@@ -329,12 +333,13 @@ export class BuildingModel extends BaseComponent {
         rect.x = -transform.anchorX * transform.width;
         rect.y = -transform.anchorY * transform.height;
         let pos = transform.convertToNodeSpaceAR(worldPos);
-        // console.log("isTouchSelf:", pos.x, pos.y);
         if (!rect.contains(new Vec2(pos.x, pos.y))) {
             return false;
         }
+        // console.log("isTouchSelf 1:", pos.x, pos.y);
         let x = Math.floor(pos.x + transform.anchorX * transform.width);
         let y = Math.floor(pos.y + transform.anchorY * transform.height);
+        // console.log("isTouchSelf 2:", x, y);
         let colors = CCUtil.readPixels(this.building.spriteFrame, x, y);
         return colors[3] >= 50;
     }
@@ -359,5 +364,17 @@ export class BuildingModel extends BaseComponent {
             g.lineTo(x - 0.5 * grid.width, y - 0.5 * grid.height);
         });
         g.fill();
+    }
+    /**显示与否 */
+    public show(isShow: boolean) {
+        if (isShow && !this._isLoad) {
+            this._isLoad = true;
+            LoadManager.loadSprite(DataMgr.getEditPng(this._editInfo), this.building);
+        }
+        this.node.active = isShow;
+    }
+    /**获取显示范围 */
+    public getRect() {
+        return this.node.getComponent(UITransform).getBoundingBox();
     }
 }

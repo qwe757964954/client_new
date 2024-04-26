@@ -1,7 +1,7 @@
 import { EventType } from "../config/EventType";
 import { c2sClassificationWord, c2sWordGameWords } from "../models/NetModel";
 import { InterfacePath } from "../net/InterfacePath";
-import { NetManager } from "../net/NetManager";
+import { NetMgr } from "../net/NetManager";
 import EventManager from "../util/EventManager";
 
 export default class StudyService {
@@ -31,7 +31,7 @@ export default class StudyService {
         para.SmallId = smallId;
         para.MicroId = microId;
         para.GameMode = gameMode;
-        NetManager.instance().sendMsg(para);
+        NetMgr.sendMsg(para);
     }
     onWordGameWords(data: any) {
         EventManager.emit(EventType.WordGame_Words, data);

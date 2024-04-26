@@ -29,10 +29,20 @@ export class ToolUtil {
         // let hours = Math.floor(seconds / 3600);
         let minutes = Math.floor((seconds % 3600) / 60);
         let secs = seconds % 60;
-     
+
         // hours = hours < 10 ? '0' + hours : hours;
         // return hours + ':' + minutes + ':' + secs;
-        
+
         return (minutes < 10 ? '0' + minutes : minutes) + ':' + (secs < 10 ? '0' + secs : secs);
+    }
+
+    private static _objectIdCounter = 0;
+    private static _objectIdMap = new WeakMap<object, number>();
+    /**获取对象唯一标识 */
+    static getObjectId(obj: object): number {
+        if (!ToolUtil._objectIdMap.has(obj)) {
+            ToolUtil._objectIdMap.set(obj, ++ToolUtil._objectIdCounter);
+        }
+        return ToolUtil._objectIdMap.get(obj)!;
     }
 }

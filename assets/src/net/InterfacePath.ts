@@ -10,6 +10,30 @@ export const InterfacePath = {
     Classification_Word: "Classification.Word",//单个单词详情
 
     //大冒险学习模式相关
-    WordGame_Words: "WordGame.Words"  // 获取单词
+    WordGame_Words: "WordGame.Words",  // 获取单词
+    /***********************************************选择词书 begin*********************************************/
+    Classification_BookStatus:"Classification.BookStatus", //我的词书-列表
+    Classification_BookAdd:"Classification.BookAdd", //我的词书-添加词书
+    Classification_BookDel:"Classification.BookDel", //我的词书-删除词书
+    Classification_List:"Classification.List", //获取分类汇总列表
+    Classification_SchoolBook:"Classification.SchoolBook", //获取教材课本
+    Classification_SchoolGrade:"Classification.SchoolGrade", //教材课本-年级
+    Classification_SchoolUnit:"Classification.SchoolUnit", //教材课本-年级-单元
+    Classification_SchoolWord:"Classification.SchoolWord", //教材课本-年级-单元-词汇
+    Classification_UnitListStatus:"Classification.UnitListStatus", //书年级单元列表
+    Classification_UnitStatus:"Classification.UnitStatus", //书年级单元学习情况列表
+    Classification_UnitWordList:"Classification.UnitWordList", // 单元单词列表
+    Classification_GameResultUp:"Classification.GameResultUp", //结果上报
+    Classification_Word:"Classification.Word", //单个单词详情
+    Classification_GameSubmit:"Classification.GameSubmit", //单个单词学习提交
+    Classification_TypeNameStatus:"Classification.TypeNameStatus", //大分类信息
+    Classification_BookAwardList:"Classification.BookAwardList", // 教材单词课本奖励列表
+    Classification_RecBookAward:"Classification.RecBookAward", //教材单词领取课本单词奖励
+    Classification_SoundCommit:"Classification.SoundCommit", //教材单词语音评测上报
+    Classification_WordSentence:"Classification.WordSentence", //通过单词获取句子
+    NewWord_List:"NewWord.List", //我的生词列表
+    NewWord_Add:"NewWord.Add", //添加到我的生词本
+    NewWord_Del:"NewWord.Del", //移除生词本
+    /***********************************************选择词书 end*********************************************/
     /************************************socket消息类型end*********************************************/
 }

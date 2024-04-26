@@ -129,7 +129,7 @@ export class MainUIView extends Component {
     /**点击教材单词事件 */
     protected async onTextbookClick() {
         console.log("点击教材单词");
-        ViewsManager.instance.showView(PrefabType.SelectWordView);
+        ViewsManager.instance.showView(PrefabType.TextbookListView);
     }
 }
 

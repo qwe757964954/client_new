@@ -1,13 +1,16 @@
 import { EventType } from "../config/EventType";
+import { TextConfig } from "../config/TextConfig";
+import { ViewsManager } from "../manager/ViewsManager";
 import { c2sAccountEditRealName, c2sAccountInit, c2sAccountStudyWord, c2sPropMyList } from "../models/NetModel";
-import EventManager from "../util/EventManager";
+import EventManager, { EventMgr } from "../util/EventManager";
+import { ServiceMgr } from "./ServiceManager";
 import { Socket } from "./Socket";
 //消息服务管理类
-export class NetManager {
-    public serverUrl: string;//服务器地址
-    public serverPort: number;//服务器端口
-    public webPort: number = 8080;//web服务器端口
-    public memberToken: string;//用户token
+class NetManager {
+    private _serverUrl: string;//服务器地址
+    private _serverPort: number;//服务器端口
+    private _webPort: number;//web服务器端口
+    // public memberToken: string;//用户token
 
     private _socket: Socket = null;
     private _reconnceTime: number;//重连次数
@@ -24,9 +27,10 @@ export class NetManager {
         this._reconnceTime = 0;
     }
     //设置服务器信息
-    public setServer(serverUrl: string, serverPort: number) {
-        this.serverUrl = serverUrl;
-        this.serverPort = serverPort;
+    public setServer(serverUrl: string, serverPort: number, webPort: number = 8080) {
+        this._serverUrl = serverUrl;
+        this._serverPort = serverPort;
+        this._webPort = webPort;
     }
     //连接服务器
     public connectNet() {
@@ -40,7 +44,7 @@ export class NetManager {
         this._socket.recvFun = this.onRecvMsg.bind(this);
         this._socket.errorFun = this.onError.bind(this);
         this._socket.closeFun = this.onClose.bind(this);
-        this._socket.connect("wss://" + this.serverUrl + ":" + this.serverPort);
+        this._socket.connect("wss://" + this._serverUrl + ":" + this._serverPort);
     }
     //发送消息
     public sendMsg(pbobj?: any) {
@@ -62,12 +66,18 @@ export class NetManager {
         console.log("onConnect");
         this._reconnceTime = 0;
         EventManager.emit(EventType.Socket_Connect);
+        ServiceMgr.accountService.accountInit();
     }
     //socket接收消息
     public onRecvMsg(data: string) {
         let obj = JSON.parse(data);
-        console.log("onRecvMsg", obj.Path);
+        if (obj.Path)
+            console.log("onRecvMsg", obj.Path);
+        else
+            console.log("onRecvMsg no path", obj);
+
         EventManager.emit(obj.Path, obj);
+        EventMgr.dispatch(obj.Path, obj);
     }
     //socket错误回调
     public onError() {
@@ -83,7 +93,10 @@ export class NetManager {
     }
     // 弹出重连提示
     public showReconnectTips() {
-
+        ViewsManager.showAlert(TextConfig.Net_Error, () => {
+            this._reconnceTime = 0;
+            this.connectNet();
+        });
     }
     //重连
     public reConnect() {
@@ -125,3 +138,5 @@ export class NetManager {
 
     /********************************消息接口end****************************************/
 }
+/**NetManager单例 */
+export const NetMgr = NetManager.instance();

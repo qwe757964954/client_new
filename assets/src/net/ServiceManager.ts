@@ -1,7 +1,7 @@
 import AccountService from "../service/AccountService";
 import StudyService from "../service/StudyService";
 
-export default class ServiceManager {
+class ServiceManager {
     private static _instance: ServiceManager = null;
     public accountService: AccountService = null;
     public studyService: StudyService = null;
@@ -20,3 +20,5 @@ export default class ServiceManager {
         this.studyService = new StudyService();
     }
 }
+/**ServiceManager单例 */
+export const ServiceMgr = ServiceManager.i;

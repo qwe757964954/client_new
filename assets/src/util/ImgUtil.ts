@@ -1,5 +1,5 @@
-import { ImageAsset, Layers, Node, Sprite, SpriteFrame, Texture2D, UITransform, Vec2, isValid } from "cc";
-import { ResLoader } from "../manager/ResLoader";
+import { Layers, Node, Sprite, UITransform, Vec2, isValid } from "cc";
+import { LoadManager } from "../manager/LoadManager";
 
 /**
  * 图片工具类
@@ -22,7 +22,7 @@ export default class ImgUtil {
     }
 
     static getActiveUrl = function (active) {
-        
+
     }
     /**
      * 
@@ -34,7 +34,8 @@ export default class ImgUtil {
      * 代码示例
      * ImgUtil.loadRemoteImage(itemInfo.imgUrl,this.item_img,125.507,172.979)
      */
-    public static loadRemoteImage(imgUrl: string, imgNode:Node,width: number, height: number) {
+    public static loadRemoteImage(imgUrl: string, imgNode: Node, width: number, height: number) {
+        /*
         ResLoader.instance.loadRemote<ImageAsset>(imgUrl, null, (err, data) => {
             const texture = new Texture2D();
             texture.image = data;
@@ -48,26 +49,35 @@ export default class ImgUtil {
             imgNode.getComponent(UITransform).width = width;
             imgNode.getComponent(UITransform).height = height;
         })
+        */
+        let sprite = imgNode.getComponent(Sprite);
+        if(!isValid(sprite)){
+            sprite = imgNode.addComponent(Sprite);
+        }
+        LoadManager.loadRemoteSprite(imgUrl, imgNode.getComponent(Sprite)).then(() => {
+            imgNode.getComponent(UITransform).width = width;
+            imgNode.getComponent(UITransform).height = height;
+        });
     }
 
-    
-	/**
-	 * 创建一个2D节点
-	 * @param name 节点名称
-	 * @returns 
-	 */
-	public static create_2DNode(name: string = null): Node {
-		if (name != null) {
-			name = String(name);
-		}
-		let node = new Node(name);
-		node.layer = Layers.Enum.UI_2D;
 
-		let uiTrans: UITransform = node.addComponent(UITransform);
-		uiTrans.anchorPoint = new Vec2(0.5, 0.5);
-		uiTrans.enabled = true;
-		return node;
-	}
+    /**
+     * 创建一个2D节点
+     * @param name 节点名称
+     * @returns 
+     */
+    public static create_2DNode(name: string = null): Node {
+        if (name != null) {
+            name = String(name);
+        }
+        let node = new Node(name);
+        node.layer = Layers.Enum.UI_2D;
+
+        let uiTrans: UITransform = node.addComponent(UITransform);
+        uiTrans.anchorPoint = new Vec2(0.5, 0.5);
+        uiTrans.enabled = true;
+        return node;
+    }
 }
 
 /**

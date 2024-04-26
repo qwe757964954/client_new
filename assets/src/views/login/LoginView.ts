@@ -1,19 +1,17 @@
-import { _decorator, Component, director, EditBox, EventTouch, instantiate, Label, log, Node, Prefab, Sprite, sys, Toggle } from 'cc';
-import { LoadManager } from '../../manager/LoadManager';
-import StorageUtil from '../../util/StorageUtil';
-import { HttpManager } from '../../net/HttpManager';
-import { TimerMgr } from '../../util/TimerMgr';
+import { _decorator, Component, director, EditBox, EventTouch, instantiate, Label, Node, Prefab, sys, Toggle } from 'cc';
 import { HTML5, NATIVE } from 'cc/env';
-import { DataMgr } from '../../manager/DataMgr';
-import NetConfig from '../../config/NetConfig';
-import { ServerItem } from './ServerItem';
-import { ViewsManager } from '../../manager/ViewsManager';
-import { PrefabType } from '../../config/PrefabType';
-import { PopView } from '../common/PopView';
-import { NetManager } from '../../net/NetManager';
-import EventManager from '../../util/EventManager';
 import { EventType } from '../../config/EventType';
-import ServiceManager from '../../net/ServiceManager';
+import { NetConfig } from '../../config/NetConfig';
+import { SceneType } from '../../config/PrefabType';
+import { DataMgr } from '../../manager/DataMgr';
+import { ViewsManager } from '../../manager/ViewsManager';
+import { User } from '../../models/User';
+import { HttpManager } from '../../net/HttpManager';
+import { NetMgr } from '../../net/NetManager';
+import EventManager from '../../util/EventManager';
+import StorageUtil from '../../util/StorageUtil';
+import { TimerMgr } from '../../util/TimerMgr';
+import { ServerItem } from './ServerItem';
 const { ccclass, property } = _decorator;
 
 // 隐私协议是否勾选过
@@ -394,20 +392,18 @@ export class LoginView extends Component {
             LoginPwd: this.pwdEdit.string
         }));
 
-        NetManager.instance().webPort = obj["WebPort"];
-        NetManager.instance().memberToken = obj["MemberToken"];
-        NetManager.instance().setServer(obj["WebSocketAddr"], obj["WebSocketPort"]);
+        User.memberToken = obj["MemberToken"];
+        NetMgr.setServer(obj["WebSocketAddr"], obj["WebSocketPort"], obj["WebPort"]);
         this._socketConnectHandler = EventManager.on(EventType.Socket_Connect, this.onSocketConnect.bind(this));
-        NetManager.instance().connectNet();
+        NetMgr.connectNet();
         return true;
     }
 
     // socket连接成功
     onSocketConnect() {
-        ServiceManager.i.accountService.accountInit(NetManager.instance().memberToken);
         // 跳转主界面
         console.log("跳转主界面");
-        director.loadScene("MainScene");
+        director.loadScene(SceneType.MainScene);
     }
 
     onDestroy() {
