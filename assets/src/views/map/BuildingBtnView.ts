@@ -1,29 +1,31 @@
-import { _decorator, Component, Sprite } from 'cc';
+import { _decorator, Component, Node, Sprite } from 'cc';
 import CCUtil from '../../util/CCUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('BuildingBtnView')
 export class BuildingBtnView extends Component {
-    @property(Sprite)
-    public btnInfo: Sprite = null;//信息按钮
-    @property(Sprite)
-    public btnSure: Sprite = null;//确定按钮
-    @property(Sprite)
-    public btnSell: Sprite = null;//卖出按钮
-    @property(Sprite)
-    public btnTurn: Sprite = null;//翻转按钮
-    @property(Sprite)
-    public btnBack: Sprite = null;//回收按钮
-    @property(Sprite)
-    public btnClose: Sprite = null;//关闭按钮
+    @property(Node)
+    public btnInfo: Node = null;//信息按钮
+    @property(Node)
+    public btnSure: Node = null;//确定按钮
+    @property(Node)
+    public btnSell: Node = null;//卖出按钮
+    @property(Node)
+    public btnTurn: Node = null;//翻转按钮
+    @property(Node)
+    public btnBack: Node = null;//回收按钮
+    @property(Node)
+    public btnClose: Node = null;//关闭按钮
+    @property(Node)
+    public imgSureBg: Node = null;//确定按钮背景
 
     private _funcs: Function[] = [];//回调函数
+    private _isCanSell: boolean = false;//是否可以卖出
 
-    start() {
+    onLoad() {
         this.init();
     }
     protected onDestroy(): void {
-        console.log("BuildingBtnView onDestroy");
         this.removeEvent();
     }
 
@@ -32,6 +34,7 @@ export class BuildingBtnView extends Component {
     }
     // 初始化
     init() {
+        this.imgSureBg.active = false;
         this.initEvent();
     }
     // 初始化事件
@@ -62,11 +65,11 @@ export class BuildingBtnView extends Component {
     }
     // 点击确定按钮
     onBtnSureClick() {
-        this.onBtnClick(1);
+        this.onBtnClick(1, this.imgSureBg.active);
     }
     // 点击卖出按钮
     onBtnSellClick() {
-        this.onBtnClick(2);
+        this.onBtnClick(2, this._isCanSell);
     }
     // 点击翻转按钮
     onBtnTurnClick() {
@@ -81,10 +84,19 @@ export class BuildingBtnView extends Component {
         this.onBtnClick(5);
     }
     // 点击按钮
-    onBtnClick(id) {
+    onBtnClick(id: number, arg?: any) {
         if (this._funcs && this._funcs[id]) {
-            this._funcs[id]();
+            this._funcs[id](arg);
         }
+    }
+    /**确定按钮状态 */
+    set sureBtnStatus(state: boolean) {
+        this.imgSureBg.active = state;
+    }
+    /**出售按钮状态 */
+    set sellBtnStatus(state: boolean) {
+        this._isCanSell = state;
+        this.btnSell.getChildByName("Sprite").getComponent(Sprite).grayscale = !state;
     }
 }
 
