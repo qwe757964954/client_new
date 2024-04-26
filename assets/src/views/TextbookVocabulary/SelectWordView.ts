@@ -9,6 +9,7 @@ import { TBServer } from '../../service/TextbookService';
 import List from '../../util/list/List';
 import { NavTitleView } from '../common/NavTitleView';
 import { RightNavView } from './RightNavView';
+import { SettingPlanView } from './SettingPlanView';
 import { TabContentItem } from './TabContentItem';
 import { TabTopView } from './TabTopView';
 const { ccclass, property } = _decorator;
@@ -53,8 +54,6 @@ export class SelectWordView extends BaseView {
     onSchoolGradeList(data:SchoolBookGradeItemData[]){
         this._schoolGradeListDataArr = data;
         this.textBookScrollView.numItems = this._schoolGradeListDataArr.length;
-        this.textBookScrollView.selectedId = -1;
-        this.textBookScrollView.selectedId = 0;
         this.textBookScrollView.update();
     }
     onSchoolBookList(data:SchoolBookListItemData[]){
@@ -136,6 +135,12 @@ export class SelectWordView extends BaseView {
     }
     onTextBookVerticalSelected(item: any, selectedId: number, lastSelectedId: number, val: number){
         console.log("onTextBookVerticalSelected",item,selectedId);
+        ViewsManager.instance.showView(PrefabType.SettingPlanView,(node: Node) => {
+            let planScript:SettingPlanView = node.getComponent(SettingPlanView);
+            planScript.setOperationCallback((isSave:boolean)=>{
+                ViewsManager.instance.closeView(PrefabType.SettingPlanView);
+            })
+        });
     }
 }
 
