@@ -297,6 +297,7 @@ export class StudyModeView extends Component {
     onDestroy(): void {
         this.removeEvent();
         this._nodePool.clear();
+        RemoteSoundMgr.clearAudio();
     }
 
     update(deltaTime: number) {

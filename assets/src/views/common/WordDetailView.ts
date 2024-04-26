@@ -1,6 +1,5 @@
 import { _decorator, Component, Node } from 'cc';
 import CCUtil from '../../util/CCUtil';
-import ServiceManager from '../../net/ServiceManager';
 import EventManager from '../../util/EventManager';
 import { EventType } from '../../config/EventType';
 import List from '../../util/list/List';

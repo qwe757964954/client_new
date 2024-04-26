@@ -18,7 +18,7 @@ export default class StudyService {
     getClassificationWord(word: string) {
         let para: c2sClassificationWord = new c2sClassificationWord();
         para.Word = word;
-        NetManager.instance().sendMsg(para);
+        NetMgr.sendMsg(para);
     }
     onClassificationWord(data: any) {
         EventManager.emit(EventType.Classification_Word, data);

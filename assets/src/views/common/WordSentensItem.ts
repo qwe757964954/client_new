@@ -1,7 +1,7 @@
 import { _decorator, Component, Label, Node } from 'cc';
 import CCUtil from '../../util/CCUtil';
-import RemoteSoundManager from '../../manager/RemoteSoundManager';
-import NetConfig from '../../config/NetConfig';
+import { NetConfig } from '../../config/NetConfig';
+import { RemoteSoundMgr } from '../../manager/RemoteSoundManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordSentensItem')
@@ -20,7 +20,7 @@ export class WordSentensItem extends Component {
 
     onHornClick() {
         let url = NetConfig.assertUrl + "/sounds/glossary/sentence_tts/Emily/" + this._data.Id + ".wav";
-        RemoteSoundManager.i.playSound(url);
+        RemoteSoundMgr.playSound(url);
     }
 
     addEvent() {
