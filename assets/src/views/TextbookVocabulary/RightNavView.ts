@@ -13,26 +13,22 @@ export class RightNavView extends Component {
     
     private callSelectCallback:(selectId:number)=>void = null;
 
-
     start() {
         console.log("RightNavView  start");
     }
 
     protected onLoad(): void {
         console.log("RightNavView  onLoad");
-        
     }
 
     loadNavListData(data:BookListItemData[],callBack:(selectId:number)=>void){
-        console.log("loadNavListData",data);
+        console.log("loadNavListData",data,this.navScroll.selectedId);
         this.callSelectCallback = callBack;
         this._navDataArr = data;
         this.navScroll.numItems = this._navDataArr.length;
-        this.navScroll.update();
+        this.navScroll.selectedId = -1;
         this.navScroll.selectedId = 0;
-        if(this.callSelectCallback){
-            this.callSelectCallback(0);
-        }
+        this.navScroll.update();
     }
 
     onNavListVerticalRender(item:Node, idx:number){

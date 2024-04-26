@@ -53,13 +53,17 @@ export class SelectWordView extends BaseView {
     onSchoolGradeList(data:SchoolBookGradeItemData[]){
         this._schoolGradeListDataArr = data;
         this.textBookScrollView.numItems = this._schoolGradeListDataArr.length;
+        this.textBookScrollView.selectedId = -1;
+        this.textBookScrollView.selectedId = 0;
         this.textBookScrollView.update();
     }
     onSchoolBookList(data:SchoolBookListItemData[]){
         this._schoolBookListDataArr = data;
         this._rightNav.loadNavListData(this._schoolBookListDataArr,(selectId:number)=>{
-            this._leftNavIndex = selectId;
-            TBServer.reqSchoolBookGrade(this._bookTabDataArr[this._tabIndex].TypeName,this._schoolBookListDataArr[this._leftNavIndex].Name);
+            if(selectId >= 0){
+                this._leftNavIndex = selectId;
+                TBServer.reqSchoolBookGrade(this._bookTabDataArr[this._tabIndex].TypeName,this._schoolBookListDataArr[this._leftNavIndex].Name);
+            }
         });
     }
     onBookList(data:BookListItemData[]){
