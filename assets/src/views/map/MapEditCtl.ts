@@ -13,16 +13,6 @@ export class MapEditCtl extends MapBaseCtl {
     private _cacheDataAry: BuildingModel[] = [];//缓存数据
 
     private _buildingRemoveHandle: string;//建筑移除事件
-
-    //构造函数
-    constructor(mainScene) {
-        super(mainScene);
-        this.init();
-    }
-    // 初始化
-    public init(): void {
-
-    }
     // 初始化事件
     public initEvent(): void {
         this._buildingRemoveHandle = EventManager.on(EventType.BuidingModel_Remove, this.onBuildingRemove.bind(this));

@@ -37,8 +37,12 @@ export class MapUICtl extends MainBaseCtl {
     private _roleSortHandler: string;//角色需要重新排序handle
     private _roleIsShow: boolean = true;//角色是否显示
 
-    constructor(mainScene: MainScene) {
+    private _callBack: Function = null;//加载完成回调
+    private _loadCount: number = 0;//加载计数
+
+    constructor(mainScene: MainScene, callBack?: Function) {
         super(mainScene);
+        this._callBack = callBack;
         this.init();
     }
     // 销毁
@@ -67,7 +71,7 @@ export class MapUICtl extends MainBaseCtl {
         this.initMap();
         this.initLand();
         this.initBuilding();
-        await this.initRole();
+        this.initRole();
 
         this.updateCameraVisible();
     }
@@ -222,7 +226,7 @@ export class MapUICtl extends MainBaseCtl {
             let role = instantiate(this._mainScene.roleModel);
             this._mainScene.buildingLayer.addChild(role);
             let roleModel = role.getComponent(RoleBaseModel);
-            await roleModel.init(101, 1, [9500, 9700, 9701, 9702, 9703]);
+            roleModel.init(101, 1, [9500, 9700, 9701, 9702, 9703]);
             let grid = this.getGridInfo(20, 20);
             roleModel.grid = grid;
             this.roleMove(roleModel);
@@ -233,7 +237,7 @@ export class MapUICtl extends MainBaseCtl {
             let role = instantiate(this._mainScene.roleModel);
             this._mainScene.buildingLayer.addChild(role);
             let roleModel = role.getComponent(RoleBaseModel);
-            await roleModel.init(102, 1, [9550, 9800, 9801, 9802, 9803, 9805]);
+            roleModel.init(102, 1, [9550, 9800, 9801, 9802, 9803, 9805]);
             let grid = this.getGridInfo(35, 40);
             roleModel.grid = grid;
             this.roleMove(roleModel);
@@ -244,7 +248,7 @@ export class MapUICtl extends MainBaseCtl {
             let role = instantiate(this._mainScene.roleModel);
             this._mainScene.buildingLayer.addChild(role);
             let roleModel = role.getComponent(RoleBaseModel);
-            await roleModel.init(103, 1, [9600, 9900, 9901, 9902, 9903]);
+            roleModel.init(103, 1, [9600, 9900, 9901, 9902, 9903]);
             let grid = this.getGridInfo(20, 40);
             roleModel.grid = grid;
             this.roleMove(roleModel);
@@ -256,7 +260,7 @@ export class MapUICtl extends MainBaseCtl {
             let role = instantiate(this._mainScene.petModel);
             this._mainScene.buildingLayer.addChild(role);
             let roleModel = role.getComponent(RoleBaseModel);
-            await roleModel.init(101, 1);
+            roleModel.init(101, 1);
             let grid = this.getGridInfo(21, 21);
             roleModel.grid = grid;
             this.roleMove(roleModel);
@@ -267,7 +271,7 @@ export class MapUICtl extends MainBaseCtl {
             let role = instantiate(this._mainScene.petModel);
             this._mainScene.buildingLayer.addChild(role);
             let roleModel = role.getComponent(RoleBaseModel);
-            await roleModel.init(102, 1);
+            roleModel.init(102, 1);
             let grid = this.getGridInfo(35, 30);
             roleModel.grid = grid;
             this.roleMove(roleModel);
@@ -278,7 +282,7 @@ export class MapUICtl extends MainBaseCtl {
             let role = instantiate(this._mainScene.petModel);
             this._mainScene.buildingLayer.addChild(role);
             let roleModel = role.getComponent(RoleBaseModel);
-            await roleModel.init(103, 1);
+            roleModel.init(103, 1);
             let grid = this.getGridInfo(21, 41);
             roleModel.grid = grid;
             this.roleMove(roleModel);
@@ -512,11 +516,11 @@ export class MapUICtl extends MainBaseCtl {
         visibleRect.height = height;
         // console.log("updateCameraVisible", visibleRect);
         this._bgModelAry.forEach(element => {
-            element.show(visibleRect.intersects(element.getRect()));
+            element.show(visibleRect.intersects(element.getRect()), this.getLoadOverCall());
         });
         //地块动态加载
         this._landModelAry.forEach(element => {
-            element.show(visibleRect.intersects(element.getRect()));
+            element.show(visibleRect.intersects(element.getRect()), this.getLoadOverCall());
         });
         //建筑动态加载
         this._mainScene.buildingLayer.children.forEach(element => {
@@ -524,10 +528,10 @@ export class MapUICtl extends MainBaseCtl {
             if (!building) {
                 let role = element.getComponent(RoleBaseModel);
                 if (!role) return;
-                // TODO 角色动态加载
+                role.show(visibleRect.intersects(role.getRect()), this.getLoadOverCall());
                 return;
             };
-            building.show(visibleRect.intersects(building.getRect()));
+            building.show(visibleRect.intersects(building.getRect()), this.getLoadOverCall());
         });
     }
     // 角色移动
@@ -609,5 +613,21 @@ export class MapUICtl extends MainBaseCtl {
             this.buildingRoleSortEx();
             this._isNeedSort = false;
         }
+    }
+    /**加载回调 */
+    loadOverCall() {
+        this._loadCount--;
+        if (this._loadCount <= 0) {
+            this._loadCount = 0;
+            if (this._callBack) {
+                this._callBack();
+                this._callBack = null;
+            }
+        }
+    }
+    /**获取加载回调 */
+    getLoadOverCall() {
+        this._loadCount++;
+        return this.loadOverCall.bind(this);
     }
 }

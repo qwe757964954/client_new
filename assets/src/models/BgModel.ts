@@ -46,14 +46,18 @@ export class BgModel extends Component {
         return false;
     }
     /**显示与否 */
-    public show(isShow: boolean) {
+    public show(isShow: boolean, callBack?: Function) {
+        this.node.active = isShow;
         if (isShow && !this._isLoad) {
             this._isLoad = true;
             let bgInfo = MapConfig.bgInfo;
             let path = this.isCommonBg(this._bgID) ? bgInfo.commonPath : ToolUtil.replace(bgInfo.path, this._bgID);
-            LoadManager.loadSprite(path, this.getComponent(Sprite));
+            LoadManager.loadSprite(path, this.getComponent(Sprite)).then((sprite: Sprite) => {
+                if (callBack) callBack();
+            });
+        } else {
+            if (callBack) callBack();
         }
-        this.node.active = isShow;
     }
     /**获取显示范围 */
     public getRect() {

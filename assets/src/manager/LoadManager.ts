@@ -76,7 +76,7 @@ export class LoadManager {
                 texture.image = assets;
                 const spriteFrame = new SpriteFrame();
                 spriteFrame.texture = texture;
-                
+
                 obj.spriteFrame = spriteFrame;
             } else if (assets instanceof SpriteFrame) {
                 // if (obj.spriteFrame) {
@@ -90,7 +90,7 @@ export class LoadManager {
             LoadManager.releaseAsset(assets);
         });
         assets.addRef();
-        resolve(assets);
+        resolve(obj);
     }
 
     /**加载并显示spine */
