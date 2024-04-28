@@ -1,4 +1,5 @@
 import { _decorator, error, instantiate, isValid, Node, Prefab, view, Widget } from 'cc';
+import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
@@ -43,6 +44,16 @@ export class TextbookChallengeView extends BaseView {
 
     onInitModuleEvent(){
         this.addModelListener(NetNotify.Classification_UnitListStatus,this.onUnitListStatus);
+        this.addModelListener(EventType.Select_Word_Plan,this.onSelectWordPlan);
+        
+    }
+
+    onSelectWordPlan(params:any){
+        ViewsManager.instance.closeView(PrefabType.SettingPlanView);
+        if(params.isSave){
+            let curUnitStatus:UnitListItemStatus = this._unitListArr[this._currentUnitIndex];
+            TBServer.reqBookAdd(curUnitStatus.typename,curUnitStatus.bookname,curUnitStatus.grade);
+        }
     }
 
     getCurrentUnit(){
@@ -77,7 +88,9 @@ export class TextbookChallengeView extends BaseView {
     initNavTitle(){
         ViewsManager.addNavigation(this.top_layout,0,0).then((navScript: NavTitleView) => {
             navScript.updateNavigationProps("我的词书",()=>{
-                ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);
+                ViewsManager.instance.showView(PrefabType.SelectWordView, (node: Node) => {
+                    ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);
+                });
             });
         });
     }
@@ -109,6 +122,9 @@ export class TextbookChallengeView extends BaseView {
             }
             widgetCom.verticalCenter = 62.308;
             widgetCom.right = 62.308;
+            this._unitDetailView.setModifyCallback((isSave:boolean)=>{
+
+            });
         });
     }
     /**下方单元进度模块 */

@@ -24,10 +24,17 @@ export class RightUnitView extends Component {
 
     @property(Node)
     public current_img:Node = null;
+
+    private _curUnitStatus:UnitListItemStatus = null;
+
+    private _modifyCallback:(isSave:boolean)=>void = null;
+
     start() {
 
     }
     updateUnitProps(unitData:UnitListItemStatus){
+        console.log("updateUnitProps",unitData);
+        this._curUnitStatus = unitData;
         this.title_label.string = unitData.bookname;
         this.grade_label.string = unitData.grade;
         this.study_label.string = unitData.studywordnum.toString();
@@ -36,6 +43,11 @@ export class RightUnitView extends Component {
         let bookImgUrl = `${NetConfig.assertUrl}/imgs/bookcover/${unitData.bookname}/${unitData.grade}.jpg`;
         ImgUtil.loadRemoteImage(bookImgUrl,this.current_img,188.573,255.636);
     }
+
+    setModifyCallback(callback:(isSave:boolean)=>void){
+        this._modifyCallback = callback;
+    }
+
     onReviewClick(){
 
     }
@@ -48,11 +60,12 @@ export class RightUnitView extends Component {
 
     }
     onModifyPlanClick(){
-
+        ViewsManager.instance.showView(PrefabType.SettingPlanView,(node: Node) => {
+        });
     }
     onChangeTextbookClick(){
         ViewsManager.instance.showView(PrefabType.TextbookListView, (node: Node) => {
-
+            ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);
         });
     }
 }

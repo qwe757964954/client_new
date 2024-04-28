@@ -30,5 +30,5 @@ export const EventType = {
     Classification_Word: "Classification_Word",//单个单词详情
 
     /**选择词书模块相关事件 */
-
+    Select_Word_Plan: "Select_Word_Plan",//选择计划
 }
