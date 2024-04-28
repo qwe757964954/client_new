@@ -374,12 +374,16 @@ export class BuildingModel extends BaseComponent {
         g.fill();
     }
     /**显示与否 */
-    public show(isShow: boolean) {
+    public show(isShow: boolean, callBack?: Function) {
+        this.node.active = isShow;
         if (isShow && !this._isLoad) {
             this._isLoad = true;
-            LoadManager.loadSprite(DataMgr.getEditPng(this._editInfo), this.building);
+            LoadManager.loadSprite(DataMgr.getEditPng(this._editInfo), this.building).then(() => {
+                if (callBack) callBack();
+            });
+        } else {
+            if (callBack) callBack();
         }
-        this.node.active = isShow;
     }
     /**获取显示范围 */
     public getRect() {

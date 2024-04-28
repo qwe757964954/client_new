@@ -47,6 +47,8 @@ export class MainScene extends Component {
     public touchCanvas: Canvas = null;//监听点击画布
     @property(Camera)
     public uiCamera: Camera = null;//ui摄像机
+    @property(Node)
+    public loadingNode: Node = null;//加载节点
 
     /**=========================ui元素============================ */
     @property(Node)
@@ -71,7 +73,7 @@ export class MainScene extends Component {
     // private _mainUICtl:MainUICtl = null;//主界面控制器
     private _mapUICtl: MapUICtl = null;//地图界面控制器
 
-
+    private _loadCount: number = 0;//加载计数
     /**=========================事件handle============================ */
     private _buildingBtnViewCloseHandle: string;//建筑按钮视图关闭事件
 
@@ -83,23 +85,37 @@ export class MainScene extends Component {
     protected update(dt: number): void {
         this._mapUICtl?.update(dt);
     }
-
+    /**加载回调 */
+    loadOverCall() {
+        this._loadCount--;
+        if (this._loadCount <= 0) {
+            this._loadCount = 0;
+            this.loadingNode.active = false;
+        }
+    }
+    /**获取加载回调 */
+    getLoadOverCall() {
+        this._loadCount++;
+        return this.loadOverCall.bind(this);
+    }
     // 初始化数据
     initData() {
         ViewsMgr.initLayer(this.sceneLayer, this.popupLayer, this.tipLayer, this.loadingLayer);
 
-        this._mapNormalCtl = new MapNormalCtl(this);
-        this._mapEditCtl = new MapEditCtl(this);
-        this._buildingEditCtl = new BuildEditCtl(this);
-        this._landEditCtl = new LandEditCtl(this);
-        this._recycleCtl = new RecycleCtl(this);
-        this._mapUICtl = new MapUICtl(this);
-
+        let call = this.getLoadOverCall();
         ViewsMgr.showView(PrefabType.MainUIView, (node: Node) => {
             let view = node.getComponent(MainUIView);
             this._mainUIView = view;
             this._mainUIView.mainScene = this;
+            if (call) call();
         });
+
+        this._mapNormalCtl = new MapNormalCtl(this, this.getLoadOverCall());
+        this._mapEditCtl = new MapEditCtl(this, this.getLoadOverCall());
+        this._buildingEditCtl = new BuildEditCtl(this, this.getLoadOverCall());
+        this._landEditCtl = new LandEditCtl(this, this.getLoadOverCall());
+        this._recycleCtl = new RecycleCtl(this, this.getLoadOverCall());
+        this._mapUICtl = new MapUICtl(this, this.getLoadOverCall());
     }
     // 初始化事件
     initEvent() {

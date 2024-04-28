@@ -7,8 +7,7 @@ const { ccclass, property } = _decorator;
 export class RoleModel extends RoleBaseModel {
     // 初始化
     public async init(roleID: number, level: number = 1, slots: number[] = []) {
-        await super.init(roleID, level, slots, RoleType.role);
-        this.updateSpineSlot();
+        await super.init(roleID, level, slots, RoleType.role, this.updateSpineSlot.bind(this));
     }
     // 更新spine插槽
     public updateSpineSlot() {

@@ -68,9 +68,11 @@ export class LandModel extends Component {
         this.node.position = pos;
     }
     //显示地块
-    public showLand() {
+    public showLand(callBack?: Function) {
         this.releaseAsset();
-        LoadManager.loadSprite(DataMgr.getEditPng(this._landInfo), this.getComponent(Sprite));
+        LoadManager.loadSprite(DataMgr.getEditPng(this._landInfo), this.getComponent(Sprite)).then(() => {
+            if (callBack) callBack();
+        });
     }
     // 设置地块
     public set landInfo(landInfo: EditInfo) {
@@ -103,12 +105,14 @@ export class LandModel extends Component {
         this.landInfo = this._dataLandInfo;
     }
     /**显示与否 */
-    public show(isShow: boolean) {
+    public show(isShow: boolean, callBack?: Function) {
+        this.node.active = isShow;
         if (isShow && !this._isLoad) {
             this._isLoad = true;
-            this.showLand();
+            this.showLand(callBack);
+        } else {
+            if (callBack) callBack();
         }
-        this.node.active = isShow;
     }
     /**获取显示范围 */
     public getRect() {
