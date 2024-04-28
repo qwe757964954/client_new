@@ -7,6 +7,7 @@ import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
 import List from '../../util/list/List';
+import { TextbookChallengeView } from '../Challenge/TextbookChallengeView';
 import { NavTitleView } from '../common/NavTitleView';
 import { RightNavView } from './RightNavView';
 import { SettingPlanView } from './SettingPlanView';
@@ -37,6 +38,7 @@ export class SelectWordView extends BaseView {
     private _rightNav:RightNavView = null;/**左侧导航 */
     private _tabIndex:number = 0;
     private _leftNavIndex:number = 0; /**左侧导航索引 */
+    private _gradeSelectId:number = 0;
     start() {
         this.initUI();
     }
@@ -53,7 +55,9 @@ export class SelectWordView extends BaseView {
         this.addModelListener(NetNotify.Classification_BookAdd,this.onBookAdd);
 	}
     onBookAdd(){
-        ViewsManager.instance.showView(PrefabType.TextbookChallengeView);
+        ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
+            node.getComponent(TextbookChallengeView).initData(this._bookTabDataArr[this._tabIndex], this._schoolBookListDataArr[this._leftNavIndex],this._schoolGradeListDataArr[this._gradeSelectId]);
+        });
     }
     onSchoolGradeList(data:SchoolBookGradeItemData[]){
         this._schoolGradeListDataArr = data;
@@ -146,6 +150,7 @@ export class SelectWordView extends BaseView {
             planScript.setOperationCallback((isSave:boolean)=>{
                 ViewsManager.instance.closeView(PrefabType.SettingPlanView);
                 if(isSave){
+                    this._gradeSelectId = selectedId;
                     TBServer.reqBookAdd(this._bookTabDataArr[this._tabIndex].TypeName,this._schoolBookListDataArr[this._leftNavIndex].Name,this._schoolGradeListDataArr[selectedId].Name);
                 }
             })
