@@ -1,7 +1,7 @@
 [
   {
     "__type__": "cc.Prefab",
-    "_name": "LandEditUIIvew",
+    "_name": "LandEditUIView",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_native": "",
@@ -13,7 +13,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "LandEditUIIvew",
+    "_name": "LandEditUIView",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": null,
@@ -142,8 +142,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 121,
-      "height": 121
+      "width": 38,
+      "height": 30
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -337,8 +337,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 121,
-      "height": 121
+      "width": 36,
+      "height": 37
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
