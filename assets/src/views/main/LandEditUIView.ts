@@ -5,8 +5,8 @@ import CCUtil from '../../util/CCUtil';
 import { MainScene } from './MainScene';
 const { ccclass, property } = _decorator;
 
-@ccclass('LandEditUIIvew')
-export class LandEditUIIvew extends Component {
+@ccclass('LandEditUIView')
+export class LandEditUIView extends Component {
     @property(Sprite)
     public btnSure: Sprite = null;//确定按钮
     @property(Sprite)

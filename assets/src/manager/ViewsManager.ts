@@ -118,7 +118,7 @@ export class ViewsManager {
         });
      */
     static addNavigation(parent: Node, left: number, top: number): Promise<NavTitleView> {
-        
+
         return new Promise((resolve, reject) => {
             ResLoader.instance.load(`prefab/${PrefabType.NavTitleView.path}`, Prefab, (err: Error | null, prefab: Prefab) => {
                 if (err) {
@@ -194,3 +194,5 @@ export class ViewsManager {
         });
     }
 }
+
+export const ViewsMgr = ViewsManager.instance;

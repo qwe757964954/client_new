@@ -1,9 +1,9 @@
 import { _decorator, Component, instantiate, Node, Prefab, Sprite } from 'cc';
-import CCUtil from '../../util/CCUtil';
-import { MapConfig, MapStatus } from '../../config/MapConfig';
-import { MainScene } from './MainScene';
-import { EditItem } from '../map/EditItem';
+import { MapStatus } from '../../config/MapConfig';
 import { DataMgr, EditType } from '../../manager/DataMgr';
+import CCUtil from '../../util/CCUtil';
+import { EditItem } from '../map/EditItem';
+import { MainScene } from './MainScene';
 const { ccclass, property } = _decorator;
 
 @ccclass('EditUIView')
@@ -113,7 +113,7 @@ export class EditUIView extends Component {
     }
     // 编辑元素点击
     onEditItemClick(editItem: EditItem) {
-        this._mainScene.onBuidLandClick(editItem.data);
+        this._mainScene.onBuildLandClick(editItem.data);
     }
 }
 
