@@ -1,0 +1,272 @@
+
+06ziyanfei.png
+size: 2048,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+03HYF_21
+  rotate: true
+  xy: 1872, 101
+  size: 52, 90
+  orig: 52, 90
+  offset: 0, 0
+  index: -1
+03HYF_22
+  rotate: true
+  xy: 755, 64
+  size: 44, 91
+  orig: 44, 91
+  offset: 0, 0
+  index: -1
+03HYF_23
+  rotate: false
+  xy: 1991, 387
+  size: 52, 123
+  orig: 52, 123
+  offset: 0, 0
+  index: -1
+03HYF_24
+  rotate: false
+  xy: 658, 9
+  size: 72, 54
+  orig: 72, 54
+  offset: 0, 0
+  index: -1
+03HYF_25
+  rotate: false
+  xy: 517, 5
+  size: 47, 59
+  orig: 47, 59
+  offset: 0, 0
+  index: -1
+03HYF_26
+  rotate: false
+  xy: 1898, 330
+  size: 27, 19
+  orig: 29, 21
+  offset: 1, 1
+  index: -1
+03HYF_27
+  rotate: false
+  xy: 426, 85
+  size: 20, 16
+  orig: 22, 18
+  offset: 1, 1
+  index: -1
+03HYF_28
+  rotate: false
+  xy: 566, 6
+  size: 90, 57
+  orig: 92, 59
+  offset: 1, 1
+  index: -1
+03HYF_29
+  rotate: false
+  xy: 1625, 317
+  size: 271, 193
+  orig: 271, 193
+  offset: 0, 0
+  index: -1
+03HYF_30
+  rotate: false
+  xy: 848, 63
+  size: 38, 45
+  orig: 40, 47
+  offset: 1, 1
+  index: -1
+03HYF_31
+  rotate: true
+  xy: 1991, 351
+  size: 34, 42
+  orig: 36, 44
+  offset: 1, 1
+  index: -1
+03HYF_32
+  rotate: false
+  xy: 426, 67
+  size: 20, 16
+  orig: 22, 18
+  offset: 1, 1
+  index: -1
+h/huo_00
+  rotate: false
+  xy: 358, 5
+  size: 66, 96
+  orig: 70, 105
+  offset: 2, 3
+  index: -1
+h/huo_01
+  rotate: false
+  xy: 1018, 69
+  size: 69, 105
+  orig: 70, 105
+  offset: 1, 0
+  index: -1
+h/huo_02
+  rotate: true
+  xy: 1158, 222
+  size: 70, 89
+  orig: 70, 105
+  offset: 0, 2
+  index: -1
+h/huo_03
+  rotate: true
+  xy: 426, 2
+  size: 62, 89
+  orig: 70, 105
+  offset: 4, 2
+  index: -1
+h/huo_04
+  rotate: true
+  xy: 1066, 222
+  size: 70, 90
+  orig: 70, 105
+  offset: 0, 2
+  index: -1
+tx/action-action3_00
+  rotate: true
+  xy: 1373, 264
+  size: 246, 250
+  orig: 684, 1216
+  offset: 254, 504
+  index: -1
+tx/action-action3_02
+  rotate: false
+  xy: 1625, 122
+  size: 245, 193
+  orig: 684, 1216
+  offset: 295, 550
+  index: -1
+tx/action-action3_04
+  rotate: false
+  xy: 1066, 294
+  size: 305, 216
+  orig: 684, 1216
+  offset: 268, 545
+  index: -1
+tx/action-action3_06
+  rotate: false
+  xy: 733, 279
+  size: 331, 231
+  orig: 684, 1216
+  offset: 243, 541
+  index: -1
+tx/action-action3_08
+  rotate: false
+  xy: 733, 279
+  size: 331, 231
+  orig: 684, 1216
+  offset: 243, 541
+  index: -1
+tx/action-action3_10
+  rotate: false
+  xy: 375, 267
+  size: 356, 243
+  orig: 684, 1216
+  offset: 224, 536
+  index: -1
+tx/action-action3_12
+  rotate: false
+  xy: 2, 262
+  size: 371, 248
+  orig: 684, 1216
+  offset: 213, 535
+  index: -1
+tx/action-action3_14
+  rotate: false
+  xy: 2, 5
+  size: 354, 255
+  orig: 684, 1216
+  offset: 205, 530
+  index: -1
+ty
+  rotate: false
+  xy: 1249, 255
+  size: 68, 37
+  orig: 68, 37
+  offset: 0, 0
+  index: -1
+y/smoke0001
+  rotate: true
+  xy: 716, 84
+  size: 82, 37
+  orig: 200, 150
+  offset: 118, 0
+  index: -1
+y/smoke0002
+  rotate: false
+  xy: 757, 110
+  size: 135, 73
+  orig: 200, 150
+  offset: 64, 0
+  index: -1
+y/smoke0003
+  rotate: true
+  xy: 358, 103
+  size: 157, 88
+  orig: 200, 150
+  offset: 42, 0
+  index: -1
+y/smoke0004
+  rotate: true
+  xy: 1872, 155
+  size: 160, 88
+  orig: 200, 150
+  offset: 39, 0
+  index: -1
+y/smoke0005
+  rotate: true
+  xy: 1898, 351
+  size: 159, 91
+  orig: 200, 150
+  offset: 40, 0
+  index: -1
+y/smoke0006
+  rotate: false
+  xy: 757, 185
+  size: 156, 92
+  orig: 200, 150
+  offset: 43, 0
+  index: -1
+y/smoke0007
+  rotate: false
+  xy: 448, 168
+  size: 153, 97
+  orig: 200, 150
+  offset: 46, 0
+  index: -1
+y/smoke0008
+  rotate: false
+  xy: 603, 168
+  size: 152, 97
+  orig: 200, 150
+  offset: 47, 0
+  index: -1
+y/smoke0009
+  rotate: false
+  xy: 915, 176
+  size: 145, 101
+  orig: 200, 150
+  offset: 55, 0
+  index: -1
+y/smoke0010
+  rotate: false
+  xy: 448, 66
+  size: 136, 100
+  orig: 200, 150
+  offset: 63, 25
+  index: -1
+y/smoke0011
+  rotate: false
+  xy: 586, 65
+  size: 128, 101
+  orig: 200, 150
+  offset: 71, 0
+  index: -1
+y/smoke0012
+  rotate: false
+  xy: 894, 73
+  size: 122, 101
+  orig: 200, 150
+  offset: 77, 0
+  index: -1

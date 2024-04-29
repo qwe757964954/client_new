@@ -13,6 +13,10 @@ import RemoteImageManager from '../../../manager/RemoteImageManager';
 import { WordDetailView } from '../../common/WordDetailView';
 import { NetConfig } from '../../../config/NetConfig';
 import { RoleBaseModel } from '../../../models/RoleBaseModel';
+import { SmallMonsterModel } from '../../common/SmallMonsterModel';
+import { LoadManager } from '../../../manager/LoadManager';
+import { PetModel } from '../../../models/PetModel';
+import { MonsterModel } from '../common/MonsterModel';
 const { ccclass, property } = _decorator;
 
 /**学习模式页面 何存发 2024年4月15日15:38:41 */
@@ -56,6 +60,18 @@ export class StudyModeView extends Component {
     public petContainer: Node = null;
     @property({ type: Prefab, tooltip: "精灵预制体" })
     public petModel: Prefab = null;
+    @property({ type: Node, tooltip: "所有怪物容器" })
+    public monsterContainer: Node = null;
+    @property({ type: Prefab, tooltip: "小怪物预制体" })
+    public smallMonsterModel: Prefab = null;
+    @property({ type: Node, tooltip: "主怪物容器" })
+    public monster: Node = null;
+    @property(Prefab)
+    public monsterModel: Prefab = null;//怪物动画
+
+    private _pet: Node = null; //精灵
+    private _role: Node = null; //人物
+    private _smallMonsters: Node[] = []; //小怪物
 
     private _spilitData: any = null;
     private _wordsData: any = null;
@@ -63,6 +79,7 @@ export class StudyModeView extends Component {
     private _splits: any[] = null; //当前单词拆分数据
     private _spliteItems: Node[] = []; //当前单词拆分节点
     private _detailData: any = null; //当前单词详情数据
+    private _levelData: any = null; //当前关卡配置
     //事件
     private _getWordsEveId: string;
     private _wordDetailEveId: string;
@@ -70,6 +87,7 @@ export class StudyModeView extends Component {
     private _isSplitPlaying: boolean = false; //正在播放拆分音频
     private _currentSplitIdx: number = 0; //当前播放拆分音频的索引
     private _isCombine: boolean = false; //是否已经合并单词
+    private _monster: Node = null; //主怪动画节点
 
     private _nodePool: NodePool = new NodePool("wordSplitItem");
     start() {
@@ -80,22 +98,44 @@ export class StudyModeView extends Component {
         this.initEvent();
     }
 
-    async initData(data: any) {
+    async initData(wordsdata: any, levelData: any) {
         this._spilitData = await DataMgr.instance.getWordSplitConfig();
-        this.initWords(data);
+        this.initWords(wordsdata);
+        this._levelData = levelData;
+        this.initMonster(); //初始化怪物
     }
 
     async initRole() {
-        let role = instantiate(this.roleModel);
-        this.roleContainer.addChild(role);
-        let roleModel = role.getComponent(RoleBaseModel);
+        this._role = instantiate(this.roleModel);
+        this.roleContainer.addChild(this._role);
+        let roleModel = this._role.getComponent(RoleBaseModel);
         await roleModel.init(101, 1, [9500, 9700, 9701, 9702, 9703]);
     }
     async initPet() {
-        let pet = instantiate(this.petModel);
-        this.petContainer.addChild(pet);
-        let roleModel = pet.getComponent(RoleBaseModel);
+        this._pet = instantiate(this.petModel);
+        this.petContainer.addChild(this._pet);
+        let roleModel = this._pet.getComponent(RoleBaseModel);
         await roleModel.init(101, 1);
+    }
+    async initMonster() {
+        // let monsterId = this._monsterData.monsterId;
+        // LoadManager.loadSprite("adventure/monster/" + monsterId + "/spriteFrame", this.monster.getComponent(Sprite));
+        this._monster = instantiate(this.monsterModel);
+        this.monster.addChild(this._monster);
+        let monsterModel = this._monster.getComponent(MonsterModel);
+        monsterModel.init("spine/monster/adventure/" + this._levelData.monsterAni);
+        let len = this._wordsData.length - 1;
+        if (len > 4) {
+            len = 4;
+        }
+        for (let i = 0; i < len; i++) {
+            let sPoint = this.monsterContainer.getChildByName("spoint" + (i + 1));
+            let monster = instantiate(this.smallMonsterModel);
+            sPoint.addChild(monster);
+            let monsterModel = monster.getComponent(SmallMonsterModel);
+            monsterModel.init("spine/monster/adventure/" + this._levelData.miniMonsterAni);
+            this._smallMonsters.push(monster);
+        }
     }
     //获取关卡单词回包
     initWords(data: any) {
@@ -235,18 +275,52 @@ export class StudyModeView extends Component {
         this.scheduleOnce(() => {
             this.wholeWordNode.active = true;
             let labelWidth = this.wholeWordLabel.getComponent(UITransform).contentSize.width;
-            console.log('labelWidth', labelWidth);
-            this.wholeWordNode.getComponent(UITransform).width = labelWidth + 200;
+            this.wholeWordNode.getComponent(UITransform).width = labelWidth + 150;
             this.splitNode.active = false;
             this.playWordSound().then(() => {
                 this._wordIndex++;
-                if (this._wordIndex == this._wordsData.length) {
-                    console.log('学习完成');
-                } else {
-                    this.showCurrentWord();
-                }
+                this.attackMonster().then(() => {
+                    if (this._wordIndex == this._wordsData.length) {
+                        console.log('学习完成,跳转词意模式');
+                        this.monsterEscape().then(() => {
+                            // ViewsManager.instance.showView(PrefabType.WordMeaningView, (node: Node) => {
+                            //     node.getComponent(WordMeaningView).initData(this._wordsData, this._levelData);
+                            // });
+                        });
+                    } else {
+                        this.showCurrentWord();
+                    }
+                });
             });
         }, 0.3);
+    }
+
+    //怪物逃跑
+    monsterEscape() {
+        return new Promise((resolve, reject) => {
+            let pos = this.monster.position;
+            let scale = this.monster.getScale();
+            this.monster.scale = new Vec3(-scale.x, scale.y, 1);
+            tween(this.monster).to(1, { position: new Vec3(pos.x + 1000, pos.y, pos.z) }).call(() => {
+                resolve(true);
+            }).start();
+        });
+    }
+
+    //精灵攻击
+    attackMonster() {
+        return new Promise((resolve, reject) => {
+            this._pet.getComponent(PetModel).hit().then(() => {
+                if (this._wordIndex == this._wordsData.length) { //最后一个单词攻击主怪
+                    this._monster.getComponent(MonsterModel).injury().then(() => {
+                        resolve(true);
+                    });
+                } else { //小怪受到攻击
+                    this._smallMonsters[this._wordIndex - 1].getComponent(SmallMonsterModel).hit();
+                    resolve(true);
+                }
+            });
+        });
     }
 
     showWordDetail() {

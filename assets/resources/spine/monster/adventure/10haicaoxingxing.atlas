@@ -1,0 +1,279 @@
+
+10haicaoxingxing.png
+size: 2048,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+10HCXX_20
+  rotate: true
+  xy: 955, 177
+  size: 38, 15
+  orig: 40, 17
+  offset: 1, 1
+  index: -1
+10HCXX_21
+  rotate: true
+  xy: 818, 310
+  size: 87, 169
+  orig: 87, 169
+  offset: 0, 0
+  index: -1
+10HCXX_22
+  rotate: true
+  xy: 99, 5
+  size: 49, 73
+  orig: 51, 75
+  offset: 1, 1
+  index: -1
+10HCXX_23
+  rotate: false
+  xy: 1497, 366
+  size: 35, 52
+  orig: 35, 52
+  offset: 0, 0
+  index: -1
+10HCXX_24
+  rotate: false
+  xy: 174, 39
+  size: 26, 15
+  orig: 28, 17
+  offset: 1, 1
+  index: -1
+10HCXX_25
+  rotate: true
+  xy: 2036, 496
+  size: 12, 9
+  orig: 14, 11
+  offset: 1, 1
+  index: -1
+10HCXX_26
+  rotate: false
+  xy: 989, 274
+  size: 106, 123
+  orig: 108, 125
+  offset: 1, 1
+  index: -1
+10HCXX_27
+  rotate: false
+  xy: 2, 2
+  size: 95, 52
+  orig: 95, 52
+  offset: 0, 0
+  index: -1
+10HCXX_28
+  rotate: false
+  xy: 546, 123
+  size: 115, 143
+  orig: 115, 143
+  offset: 0, 0
+  index: -1
+10HCXX_29
+  rotate: true
+  xy: 979, 198
+  size: 74, 118
+  orig: 74, 118
+  offset: 0, 0
+  index: -1
+h/huo_00
+  rotate: false
+  xy: 1221, 321
+  size: 66, 96
+  orig: 70, 105
+  offset: 2, 3
+  index: -1
+h/huo_01
+  rotate: true
+  xy: 793, 71
+  size: 69, 105
+  orig: 70, 105
+  offset: 1, 0
+  index: -1
+h/huo_02
+  rotate: false
+  xy: 1361, 329
+  size: 70, 89
+  orig: 70, 105
+  offset: 0, 2
+  index: -1
+h/huo_03
+  rotate: false
+  xy: 1433, 329
+  size: 62, 89
+  orig: 70, 105
+  offset: 4, 2
+  index: -1
+h/huo_04
+  rotate: false
+  xy: 1289, 328
+  size: 70, 90
+  orig: 70, 105
+  offset: 0, 2
+  index: -1
+tx/489 ZDLWZ anblk_chuanci_1_00
+  rotate: false
+  xy: 663, 75
+  size: 128, 92
+  orig: 271, 170
+  offset: 62, 27
+  index: -1
+tx/489 ZDLWZ anblk_chuanci_1_01
+  rotate: false
+  xy: 274, 116
+  size: 270, 111
+  orig: 271, 170
+  offset: 0, 9
+  index: -1
+tx/489 ZDLWZ anblk_chuanci_1_02
+  rotate: false
+  xy: 274, 229
+  size: 270, 128
+  orig: 271, 170
+  offset: 0, 9
+  index: -1
+tx/489 ZDLWZ anblk_chuanci_1_03
+  rotate: false
+  xy: 2, 207
+  size: 270, 149
+  orig: 271, 170
+  offset: 0, 9
+  index: -1
+tx/489 ZDLWZ anblk_chuanci_1_04
+  rotate: false
+  xy: 274, 359
+  size: 270, 149
+  orig: 271, 170
+  offset: 0, 9
+  index: -1
+tx/489 ZDLWZ anblk_chuanci_1_05
+  rotate: false
+  xy: 2, 56
+  size: 270, 149
+  orig: 271, 170
+  offset: 0, 9
+  index: -1
+tx/489 ZDLWZ anblk_chuanci_1_06
+  rotate: false
+  xy: 2, 358
+  size: 270, 150
+  orig: 271, 170
+  offset: 0, 8
+  index: -1
+tx/489 ZDLWZ anblk_chuanci_1_07
+  rotate: false
+  xy: 546, 381
+  size: 270, 127
+  orig: 271, 170
+  offset: 0, 9
+  index: -1
+tx/489 ZDLWZ anblk_chuanci_1_08
+  rotate: false
+  xy: 546, 268
+  size: 270, 111
+  orig: 271, 170
+  offset: 0, 10
+  index: -1
+tx/489 ZDLWZ anblk_chuanci_1_09
+  rotate: false
+  xy: 818, 399
+  size: 268, 109
+  orig: 271, 170
+  offset: 1, 10
+  index: -1
+tx/489 ZDLWZ anblk_chuanci_1_10
+  rotate: false
+  xy: 1088, 419
+  size: 166, 89
+  orig: 271, 170
+  offset: 42, 29
+  index: -1
+ty
+  rotate: true
+  xy: 900, 72
+  size: 68, 37
+  orig: 68, 37
+  offset: 0, 0
+  index: -1
+y/smoke0001
+  rotate: false
+  xy: 1097, 277
+  size: 82, 37
+  orig: 200, 150
+  offset: 118, 0
+  index: -1
+y/smoke0002
+  rotate: false
+  xy: 818, 142
+  size: 135, 73
+  orig: 200, 150
+  offset: 64, 0
+  index: -1
+y/smoke0003
+  rotate: false
+  xy: 1418, 420
+  size: 157, 88
+  orig: 200, 150
+  offset: 42, 0
+  index: -1
+y/smoke0004
+  rotate: false
+  xy: 1256, 420
+  size: 160, 88
+  orig: 200, 150
+  offset: 39, 0
+  index: -1
+y/smoke0005
+  rotate: false
+  xy: 818, 217
+  size: 159, 91
+  orig: 200, 150
+  offset: 40, 0
+  index: -1
+y/smoke0006
+  rotate: false
+  xy: 1577, 416
+  size: 156, 92
+  orig: 200, 150
+  offset: 43, 0
+  index: -1
+y/smoke0007
+  rotate: false
+  xy: 663, 169
+  size: 153, 97
+  orig: 200, 150
+  offset: 46, 0
+  index: -1
+y/smoke0008
+  rotate: false
+  xy: 1735, 411
+  size: 152, 97
+  orig: 200, 150
+  offset: 47, 0
+  index: -1
+y/smoke0009
+  rotate: false
+  xy: 1889, 407
+  size: 145, 101
+  orig: 200, 150
+  offset: 55, 0
+  index: -1
+y/smoke0010
+  rotate: false
+  xy: 274, 14
+  size: 136, 100
+  orig: 200, 150
+  offset: 63, 25
+  index: -1
+y/smoke0011
+  rotate: false
+  xy: 412, 13
+  size: 128, 101
+  orig: 200, 150
+  offset: 71, 0
+  index: -1
+y/smoke0012
+  rotate: false
+  xy: 1097, 316
+  size: 122, 101
+  orig: 200, 150
+  offset: 77, 0
+  index: -1

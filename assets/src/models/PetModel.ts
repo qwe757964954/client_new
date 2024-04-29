@@ -8,6 +8,17 @@ export class PetModel extends RoleBaseModel {
     public async init(roleID: number, level: number = 1, slots: number[] = []) {
         await super.init(roleID, level, slots, RoleType.sprite);
     }
+
+    public hit() {
+        return new Promise((resolve) => {
+            this.role.setCompleteListener(() => {
+                this.role.setCompleteListener(null);
+                this.role.setAnimation(0, 'idle', true);
+                resolve(true);
+            })
+            this.role.setAnimation(0, 'skill', false);
+        });
+    }
 }
 
 

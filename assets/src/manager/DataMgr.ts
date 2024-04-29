@@ -8,6 +8,7 @@ const ConfigPath = {
     RoleSlotConfig: "dress_up",
     EditInfo: "building",
     WordSplit: "word_split",
+    AdventureLevel: "adventure_level",
 }
 
 //角色插槽
@@ -44,6 +45,15 @@ export class EditInfo {
     function: string;//功能描述
 }
 
+export class AdvLevelConfig {
+    islandId: number;
+    levelId: number;
+    type: number;
+    monsterName: string;
+    monsterAni: string;
+    miniMonsterAni: string;
+}
+
 
 //数据管理器
 export class DataMgr {
@@ -52,6 +62,7 @@ export class DataMgr {
     public roleSlotConfig: RoleSlotConfig[] = [];//角色插槽配置
     public editInfo: EditInfo[] = [];//编辑信息
     public wordSplitConfig: any = null;
+    public adventureLevelConfig: AdvLevelConfig[] = null;
 
     private _isInit: boolean = false;
     public defaultLand: EditInfo = null;//默认地块
@@ -120,6 +131,21 @@ export class DataMgr {
         return this.wordSplitConfig;
     }
 
+    //获取大冒险关卡数据
+    public async getAdventureLevelConfig() {
+        if (this.adventureLevelConfig != null) return this.adventureLevelConfig;
+        this.adventureLevelConfig = await LoadManager.loadJson(ConfigPath.AdventureLevel);
+        return this.adventureLevelConfig;
+    }
+
+    //获取指定关卡配置
+    public getAdvLevelConfig(islandId: number, levelId: number): AdvLevelConfig {
+        if (this.adventureLevelConfig == null) return null;
+        let cfgData = this.adventureLevelConfig.find((cfg) => {
+            return cfg.islandId == islandId && cfg.levelId == levelId;
+        });
+        return cfgData;
+    }
 
     /**获取编辑图片 */
     static getEditPng(editInfo: EditInfo): string {

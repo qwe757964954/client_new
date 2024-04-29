@@ -7,6 +7,7 @@ import { Hierarchy, PrefabType } from '../../config/PrefabType';
 import { StudyModeView } from './sixModes/StudyModeView';
 import GlobalConfig from '../../GlobalConfig';
 import { ServiceMgr } from '../../net/ServiceManager';
+import { DataMgr } from '../../manager/DataMgr';
 const { ccclass, property } = _decorator;
 /**大冒险 世界地图 何存发 2024年4月8日14:45:44 */
 @ccclass('WorldMapView')
@@ -31,18 +32,21 @@ export class WorldMapView extends Component {
     private _exitIslandEveId: string; //退出岛屿
     private _enterLevelEveId: string; //进入关卡
     private _getWordsEveId: string; //获取单词
+
+    private _currentIslandID: number = 0;//当前岛屿id
+    private _currentLevelID: number = 0;//当前关卡id
     start() {
         let winssize = GlobalConfig.WIN_SIZE;
         this.islandContainer.position = v3(-winssize.width / 2, 0, 0);
     }
 
     onLoad(): void {
-        this.initUI()
-        this.initEvent();
+        this.initData()
     }
-    /**初始化ui */
-    private initUI() {
-
+    /**初始化数据 */
+    private async initData() {
+        await DataMgr.instance.getAdventureLevelConfig();
+        this.initEvent();
     }
     /**切换关卡 */
     private switchLevels(i: number) {
@@ -74,6 +78,8 @@ export class WorldMapView extends Component {
     //进入关卡
     private enterLevel(data: { smallId: number, bigId: number }) {
         console.log('进入关卡', data);
+        this._currentIslandID = data.bigId;
+        this._currentLevelID = data.smallId;
         ServiceMgr.studyService.getWordGameWords(data.bigId, data.smallId, 1, 0);
     }
 
@@ -84,7 +90,8 @@ export class WorldMapView extends Component {
             return;
         }
         ViewsManager.instance.showView(PrefabType.StudyModeView, (node: Node) => {
-            node.getComponent(StudyModeView).initData(data.Data);
+            let levelData = DataMgr.instance.getAdvLevelConfig(this._currentIslandID, this._currentLevelID);
+            node.getComponent(StudyModeView).initData(data.Data, levelData);
         });
     }
 

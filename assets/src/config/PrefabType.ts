@@ -31,6 +31,7 @@ export const PrefabType = {
     StudyView: { path: "study/StudyViewchange", zindex: Hierarchy.POPUPLAYER, tips: "学习模块选择" },
     StudyModeView: { path: "studyModes/StudyModeView", zindex: Hierarchy.SCENELAYER, tips: "关卡学模式" },
     WorldMapView: { path: "adventure/WorldMapView", zindex: Hierarchy.SCENELAYER, tips: "单词大冒险岛屿选择" },
+    WordMeaningView: { path: "studyModes/WordMeaningView", zindex: Hierarchy.SCENELAYER, tips: "词意模式" },
 
     //**学习模式相关 end*/
 
@@ -63,7 +64,7 @@ export const PrefabType = {
     FloorsAutoView: { path: "textbook/FloorsAutoView", zindex: Hierarchy.POPUPLAYER, tips: "下方自动滚动角色模块" },
     ChallengeBottomView: { path: "textbook/ChallengeBottomView", zindex: Hierarchy.POPUPLAYER, tips: "下方单元进度模块" },
     RightUnitView: { path: "textbook/RightUnitView", zindex: Hierarchy.POPUPLAYER, tips: "右侧单元详情模块" },
-    
+
     /*********************************************教材单词相关end*************************************************************/
     /*********************************************地图相关start***********************************************************/
     BuildingBtnView: { path: "map/BuildingBtnView", zindex: Hierarchy.POPUPLAYER, tips: "建筑按钮界面" },

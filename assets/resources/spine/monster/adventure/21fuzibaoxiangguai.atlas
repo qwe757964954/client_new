@@ -1,0 +1,258 @@
+
+21fuzibaoxiangguai.png
+size: 2048,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+19HDBXG_2
+  rotate: true
+  xy: 659, 2
+  size: 11, 18
+  orig: 13, 20
+  offset: 1, 1
+  index: -1
+19HDBXG_31
+  rotate: false
+  xy: 956, 407
+  size: 172, 103
+  orig: 172, 103
+  offset: 0, 0
+  index: -1
+19HDBXG_32
+  rotate: false
+  xy: 812, 165
+  size: 124, 56
+  orig: 126, 58
+  offset: 1, 1
+  index: -1
+19HDBXG_33
+  rotate: false
+  xy: 2, 31
+  size: 144, 114
+  orig: 201, 166
+  offset: 8, 50
+  index: -1
+19HDBXG_34
+  rotate: false
+  xy: 255, 2
+  size: 30, 42
+  orig: 31, 43
+  offset: 0, 1
+  index: -1
+19HDBXG_36
+  rotate: true
+  xy: 588, 8
+  size: 164, 69
+  orig: 165, 72
+  offset: 1, 1
+  index: -1
+19HDBXG_37
+  rotate: true
+  xy: 385, 47
+  size: 100, 39
+  orig: 102, 42
+  offset: 1, 2
+  index: -1
+19HDBXG_38
+  rotate: false
+  xy: 659, 90
+  size: 142, 94
+  orig: 149, 94
+  offset: 7, 0
+  index: -1
+19HDBXG_39
+  rotate: true
+  xy: 1847, 320
+  size: 87, 65
+  orig: 87, 65
+  offset: 0, 0
+  index: -1
+19HDBXG_40
+  rotate: false
+  xy: 2, 12
+  size: 16, 17
+  orig: 18, 19
+  offset: 1, 1
+  index: -1
+h/huo_00
+  rotate: true
+  xy: 1657, 350
+  size: 66, 96
+  orig: 70, 105
+  offset: 2, 3
+  index: -1
+h/huo_01
+  rotate: true
+  xy: 1550, 347
+  size: 69, 105
+  orig: 70, 105
+  offset: 1, 0
+  index: -1
+h/huo_02
+  rotate: true
+  xy: 1914, 338
+  size: 70, 89
+  orig: 70, 105
+  offset: 0, 2
+  index: -1
+h/huo_03
+  rotate: true
+  xy: 1914, 274
+  size: 62, 89
+  orig: 70, 105
+  offset: 4, 2
+  index: -1
+h/huo_04
+  rotate: true
+  xy: 1755, 337
+  size: 70, 90
+  orig: 70, 105
+  offset: 0, 2
+  index: -1
+tx/action-action3_03
+  rotate: false
+  xy: 812, 223
+  size: 142, 287
+  orig: 444, 610
+  offset: 174, 244
+  index: -1
+tx/action-action3_04
+  rotate: false
+  xy: 2, 147
+  size: 221, 363
+  orig: 444, 610
+  offset: 76, 123
+  index: -1
+tx/action-action3_05
+  rotate: false
+  xy: 225, 149
+  size: 203, 361
+  orig: 444, 610
+  offset: 77, 101
+  index: -1
+tx/action-action3_06
+  rotate: false
+  xy: 430, 174
+  size: 206, 336
+  orig: 444, 610
+  offset: 72, 123
+  index: -1
+tx/action-action3_07
+  rotate: false
+  xy: 638, 186
+  size: 172, 324
+  orig: 444, 610
+  offset: 101, 133
+  index: -1
+tx/action-action3_08
+  rotate: false
+  xy: 148, 29
+  size: 105, 116
+  orig: 444, 610
+  offset: 141, 232
+  index: -1
+tx/action-action3_09
+  rotate: false
+  xy: 430, 2
+  size: 156, 170
+  orig: 444, 610
+  offset: 81, 230
+  index: -1
+tx/action-action3_10
+  rotate: true
+  xy: 1439, 333
+  size: 87, 109
+  orig: 444, 610
+  offset: 150, 230
+  index: -1
+ty
+  rotate: true
+  xy: 2005, 340
+  size: 68, 37
+  orig: 68, 37
+  offset: 0, 0
+  index: -1
+y/smoke0001
+  rotate: false
+  xy: 796, 23
+  size: 82, 37
+  orig: 200, 150
+  offset: 118, 0
+  index: -1
+y/smoke0002
+  rotate: false
+  xy: 659, 15
+  size: 135, 73
+  orig: 200, 150
+  offset: 64, 0
+  index: -1
+y/smoke0003
+  rotate: false
+  xy: 956, 224
+  size: 157, 88
+  orig: 200, 150
+  offset: 42, 0
+  index: -1
+y/smoke0004
+  rotate: false
+  xy: 1439, 422
+  size: 160, 88
+  orig: 200, 150
+  offset: 39, 0
+  index: -1
+y/smoke0005
+  rotate: false
+  xy: 956, 314
+  size: 159, 91
+  orig: 200, 150
+  offset: 40, 0
+  index: -1
+y/smoke0006
+  rotate: false
+  xy: 1601, 418
+  size: 156, 92
+  orig: 200, 150
+  offset: 43, 0
+  index: -1
+y/smoke0007
+  rotate: false
+  xy: 1130, 413
+  size: 153, 97
+  orig: 200, 150
+  offset: 46, 0
+  index: -1
+y/smoke0008
+  rotate: false
+  xy: 1285, 413
+  size: 152, 97
+  orig: 200, 150
+  offset: 47, 0
+  index: -1
+y/smoke0009
+  rotate: false
+  xy: 1759, 409
+  size: 145, 101
+  orig: 200, 150
+  offset: 55, 0
+  index: -1
+y/smoke0010
+  rotate: false
+  xy: 1906, 410
+  size: 136, 100
+  orig: 200, 150
+  offset: 63, 25
+  index: -1
+y/smoke0011
+  rotate: false
+  xy: 255, 46
+  size: 128, 101
+  orig: 200, 150
+  offset: 71, 0
+  index: -1
+y/smoke0012
+  rotate: false
+  xy: 803, 62
+  size: 122, 101
+  orig: 200, 150
+  offset: 77, 0
+  index: -1
