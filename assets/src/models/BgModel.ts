@@ -51,7 +51,8 @@ export class BgModel extends Component {
         if (isShow && !this._isLoad) {
             this._isLoad = true;
             let bgInfo = MapConfig.bgInfo;
-            let path = this.isCommonBg(this._bgID) ? bgInfo.commonPath : ToolUtil.replace(bgInfo.path, this._bgID);
+            // let path = this.isCommonBg(this._bgID) ? bgInfo.commonPath : ToolUtil.replace(bgInfo.path, this._bgID);
+            let path = ToolUtil.replace(bgInfo.path, this._bgID);
             LoadManager.loadSprite(path, this.getComponent(Sprite)).then((sprite: Sprite) => {
                 if (callBack) callBack();
             });

@@ -1,14 +1,17 @@
-import { _decorator, Component, director, EditBox, EventTouch, instantiate, Label, Node, Prefab, sys, Toggle } from 'cc';
+import { _decorator, director, EditBox, Event, EventTouch, instantiate, Label, Node, Prefab, sys, Toggle } from 'cc';
 import { HTML5, NATIVE } from 'cc/env';
 import { EventType } from '../../config/EventType';
+import { KeyConfig } from '../../config/KeyConfig';
 import { NetConfig } from '../../config/NetConfig';
 import { SceneType } from '../../config/PrefabType';
 import { DataMgr } from '../../manager/DataMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
+import { s2cAccountLogin } from '../../models/NetModel';
 import { User } from '../../models/User';
 import { HttpManager } from '../../net/HttpManager';
+import { InterfacePath } from '../../net/InterfacePath';
 import { NetMgr } from '../../net/NetManager';
-import EventManager from '../../util/EventManager';
+import { BaseView } from '../../script/BaseView';
 import StorageUtil from '../../util/StorageUtil';
 import { TimerMgr } from '../../util/TimerMgr';
 import { ServerItem } from './ServerItem';
@@ -20,7 +23,7 @@ const PRIVATE_HAS_CHECK_KEY = "private_has_check_key";
 const LOGIN_INFO_KEY = "login_info_key";
 
 @ccclass('LoginView')
-export class LoginView extends Component {
+export class LoginView extends BaseView {
     @property(Node)
     public sceneLayer: Node = null;//场景层
     @property(Node)
@@ -81,6 +84,13 @@ export class LoginView extends Component {
 
     start() {
         ViewsManager.instance.initLayer(this.sceneLayer, this.popupLayer, this.tipLayer, this.loadingLayer);
+
+        // this._socketConnectHandler = EventManager.on(EventType.Socket_Connect, this.onSocketConnect.bind(this));
+    }
+    //初始化事件
+    onInitModuleEvent() {
+        this.addModelListener(InterfacePath.c2sAccountLogin, this.onAccountLogin.bind(this));
+        this.addModelListener(EventType.Socket_ReconnectFail, this.onSocketDis.bind(this));
     }
 
     protected onEnable(): void {
@@ -125,32 +135,41 @@ export class LoginView extends Component {
     }
 
     checkToken() {
+        let account = StorageUtil.getData(KeyConfig.Last_Login_Account);
+        let password = StorageUtil.getData(KeyConfig.Last_Login_Pwd);
+        if (account && password) {
+            this.userNameEdit.string = account;
+            this.pwdEdit.string = password;
+            this.btnLoginFunc();
+        }
+        this.initUI();
+
         // 有token且登录成功直接进入主界面，否则初始化UI
-        let loginInfoStr = StorageUtil.getData(LOGIN_INFO_KEY);
-        if (!loginInfoStr) {
-            this.initUI();
-            return;
-        }
-        try {
-            let loginInfo = JSON.parse(loginInfoStr);
-            if (loginInfo.AccountName && loginInfo.LoginPwd) {
-                this.userNameEdit.string = loginInfo.AccountName;
-                this.pwdEdit.string = loginInfo.LoginPwd;
-            }
-            this._isRequest = true;
-            HttpManager.reqTokenLogin(loginInfo?.LoginToken, (obj) => {
-                this._isRequest = false;
-                if (!this.loginSuc(obj)) {
-                    this.initUI();
-                }
-            }, () => {
-                this._isRequest = false;
-                this.initUI();
-            });
-        } catch (error) {
-            console.error(error);
-            this.initUI();
-        }
+        // let loginInfoStr = StorageUtil.getData(LOGIN_INFO_KEY);
+        // if (!loginInfoStr) {
+        //     this.initUI();
+        //     return;
+        // }
+        // try {
+        //     let loginInfo = JSON.parse(loginInfoStr);
+        //     if (loginInfo.AccountName && loginInfo.LoginPwd) {
+        //         this.userNameEdit.string = loginInfo.AccountName;
+        //         this.pwdEdit.string = loginInfo.LoginPwd;
+        //     }
+        //     this._isRequest = true;
+        //     HttpManager.reqTokenLogin(loginInfo?.LoginToken, (obj) => {
+        //         this._isRequest = false;
+        //         if (!this.loginSuc(obj)) {
+        //             this.initUI();
+        //         }
+        //     }, () => {
+        //         this._isRequest = false;
+        //         this.initUI();
+        //     });
+        // } catch (error) {
+        //     console.error(error);
+        //     this.initUI();
+        // }
     }
 
     initUI() {
@@ -231,13 +250,18 @@ export class LoginView extends Component {
             return;
         }
         this._isRequest = true;
-        HttpManager.reqAccountLogin(userName, pwd, 0, (obj) => {
-            this.loginSuc(obj);
-            this._isRequest = false;
-        }, () => {
-            console.log("账号密码登录失败");
-            this._isRequest = false;
-        })
+
+        User.account = userName;
+        User.password = pwd;
+        NetMgr.setServer(NetConfig.server, NetConfig.port);
+        NetMgr.connectNet();
+        // HttpManager.reqAccountLogin(userName, pwd, 0, (obj) => {
+        //     this.loginSuc(obj);
+        //     this._isRequest = false;
+        // }, () => {
+        //     console.log("账号密码登录失败");
+        //     this._isRequest = false;
+        // })
     }
 
     // 手机号下一步
@@ -394,7 +418,6 @@ export class LoginView extends Component {
 
         User.memberToken = obj["MemberToken"];
         NetMgr.setServer(obj["WebSocketAddr"], obj["WebSocketPort"], obj["WebPort"]);
-        this._socketConnectHandler = EventManager.on(EventType.Socket_Connect, this.onSocketConnect.bind(this));
         NetMgr.connectNet();
         return true;
     }
@@ -407,7 +430,22 @@ export class LoginView extends Component {
     }
 
     onDestroy() {
-        if (this._socketConnectHandler)
-            EventManager.off(EventType.Socket_Connect, this._socketConnectHandler);
+        super.onDestroy();
+        // if (this._socketConnectHandler)
+        //     EventManager.off(EventType.Socket_Connect, this._socketConnectHandler);
+    }
+    /**登录结果 */
+    onAccountLogin(data: s2cAccountLogin) {
+        this._isRequest = false;
+        if (200 != data.Code) {
+            ViewsManager.showAlert(data.Msg);
+            return;
+        }
+        console.log("登录成功");
+        director.loadScene(SceneType.MainScene);
+    }
+    /**连接断开 */
+    onSocketDis() {
+        this._isRequest = false;
     }
 }

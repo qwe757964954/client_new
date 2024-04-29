@@ -17,14 +17,21 @@ export class RoleInfo {//角色配置
 
 export const MapConfig = {
     bgInfo: {
-        num: 408,
+        // num: 408,
+        // width: 256,
+        // height: 256,
+        // col: 24,
+        // row: 17,
+        // midCol: 12,
+        // midRow: 8,
+        // path: "map/bg/bg{0}/spriteFrame",
+        maxWidth: 6507,
+        maxHeight: 4774,
         width: 256,
         height: 256,
-        col: 24,
-        row: 17,
-        midCol: 12,
-        midRow: 8,
-        path: "map/bg/bg{0}/spriteFrame",
+        col: 26,
+        row: 19,
+        path: "map/newbg/bg{0}/spriteFrame",
         commonPath: "map/bg/bg154/spriteFrame",
         commonAry: [
             155, 156, 157, 176, 177, 178, 179, 180, 181, 182,
