@@ -29,6 +29,18 @@ export interface SchoolBookGradeItemData{
     Name:string,
     Num:number,
 }
+export interface UnitListItemStatus{
+    GameModes:string,
+    Id:number,
+    bookname:string,
+    grade:string,
+    score:number,
+    studywordnum:number,
+    totalwordnum:number,
+    typename:string,
+    unit:string,
+}
+
 // 我的词书
 export class c2sBookStatus {
     Path: string = InterfacePath.Classification_BookStatus;
@@ -66,3 +78,11 @@ export class c2sSchoolBookGrade{
     BookName:string;
 }
 
+//书年级单元列表
+
+export class c2sUnitListStatus{
+    Path:string = InterfacePath.Classification_UnitListStatus;
+    TypeName:string;
+    BookName:string;
+    Grade:string;
+}

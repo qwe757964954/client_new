@@ -31,6 +31,7 @@ export class TabContentItem extends ListItem {
         this.book_name.string = itemInfo.Name;
         this.word_num_text.string = `单词数量：${itemInfo.Num}`;
         let bookImgUrl = `${NetConfig.assertUrl}/imgs/bookcover/${dataSource.Name}/${itemInfo.Name}.jpg`;
+        
         // item.getChildByName("bookImg").skin = GameData.ASSETS_URL + "/assets/imgs/bookcover/" + this.currentEditionItem.dataSource.Name + "/" + data.Name + ".jpg";
         ImgUtil.loadRemoteImage(bookImgUrl,this.item_img,186.797,252.651);
     }

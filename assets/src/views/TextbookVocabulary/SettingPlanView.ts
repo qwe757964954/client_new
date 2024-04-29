@@ -1,6 +1,8 @@
 import { _decorator, Component, Label, Node } from 'cc';
+import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { ViewsManager } from '../../manager/ViewsManager';
+import { EventMgr } from '../../util/EventManager';
 import List from '../../util/list/List';
 const { ccclass, property } = _decorator;
 
@@ -11,21 +13,10 @@ export class SettingPlanView extends Component {
     @property(List)
     public rightScroll:List = null
 
-    private _opCallback:(isSave:boolean)=>void = null
-
     start() {
         this.leftScroll.numItems = 20;
         this.rightScroll.numItems = 7;
     }
-
-    update(deltaTime: number) {
-        
-    }
-    
-    setOperationCallback(callback:(isSave:boolean)=>void){
-        this._opCallback = callback;
-    }
-
     onLoadLeftVerticalList(item:Node, idx:number){
         console.log("onLoadLeftVerticalList",item,idx);
         let label = item.getComponent(Label);
@@ -43,18 +34,14 @@ export class SettingPlanView extends Component {
     }
     onClickCancel(){
         console.log("onClickCancel");
-        if(this._opCallback){
-            this._opCallback(false);
-        }
         ViewsManager.instance.closeView(PrefabType.SettingPlanView);
+        EventMgr.dispatch(EventType.Select_Word_Plan,{isSave:false});
     }
 
     onClickSave(){
         console.log("onClickSave");
-        if(this._opCallback){
-          
-            this._opCallback(true);
-        }
+        ViewsManager.instance.closeView(PrefabType.SettingPlanView);
+        EventMgr.dispatch(EventType.Select_Word_Plan,{isSave:true});
     }
 }
 
