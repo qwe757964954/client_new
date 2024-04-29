@@ -2,15 +2,18 @@ import { Color, Graphics, Rect, Vec3, instantiate, screen } from "cc";
 import GlobalConfig from "../../GlobalConfig";
 import { EventType } from "../../config/EventType";
 import { MapConfig } from "../../config/MapConfig";
-import { DataMgr, EditInfo } from "../../manager/DataMgr";
+import { DataMgr, EditInfo, EditType } from "../../manager/DataMgr";
 import { BgModel } from "../../models/BgModel";
 import { BuildingModel } from "../../models/BuildingModel";
 import { GridModel } from "../../models/GridModel";
 import { LandModel } from "../../models/LandModel";
+import { s2cBuildingList } from "../../models/NetModel";
 import { RoleBaseModel } from "../../models/RoleBaseModel";
 import { RoleModel } from "../../models/RoleModel";
+import { InterfacePath } from "../../net/InterfacePath";
+import { ServiceMgr } from "../../net/ServiceManager";
 import { BaseComponent } from "../../script/BaseComponent";
-import EventManager from "../../util/EventManager";
+import EventManager, { EventMgr } from "../../util/EventManager";
 import { MainBaseCtl } from "../main/MainBaseCtl";
 import { MainScene } from "../main/MainScene";
 
@@ -35,6 +38,7 @@ export class MapUICtl extends MainBaseCtl {
     private _buidingSortHandler: string;//建筑需要重新排序handle
     private _roleMoveHandler: string;//角色需要移动handle
     private _roleSortHandler: string;//角色需要重新排序handle
+    private _buildingListHandle: string;//建筑列表handle
     private _roleIsShow: boolean = true;//角色是否显示
 
     private _callBack: Function = null;//加载完成回调
@@ -69,11 +73,12 @@ export class MapUICtl extends MainBaseCtl {
         this.initEvent();
         this.initGrid();
         this.initMap();
-        this.initLand();
-        this.initBuilding();
-        this.initRole();
+        // this.initLand();
+        // this.initBuilding();
+        // this.initRole();
 
-        this.updateCameraVisible();
+        ServiceMgr.buildingService.reqBuildingList();
+        // this.updateCameraVisible();
     }
     // 初始化数据
     initData(): void {
@@ -86,15 +91,17 @@ export class MapUICtl extends MainBaseCtl {
     }
     // 初始化事件
     initEvent() {
-        this._buidingSortHandler = EventManager.on(EventType.Building_Need_Sort, this.buildingSort.bind(this));
-        this._roleMoveHandler = EventManager.on(EventType.Role_Need_Move, this.roleMove.bind(this));
-        this._roleSortHandler = EventManager.on(EventType.Role_Need_Sort, this.roleSort.bind(this));
+        this._buidingSortHandler = EventMgr.on(EventType.Building_Need_Sort, this.buildingSort.bind(this));
+        this._roleMoveHandler = EventMgr.on(EventType.Role_Need_Move, this.roleMove.bind(this));
+        this._roleSortHandler = EventMgr.on(EventType.Role_Need_Sort, this.roleSort.bind(this));
+        this._buildingListHandle = EventMgr.on(InterfacePath.c2sBuildingList, this.onBuildingList.bind(this));
     }
     // 移除事件
     removeEvent() {
-        EventManager.off(EventType.Building_Need_Sort, this._buidingSortHandler);
-        EventManager.off(EventType.Role_Need_Move, this._roleMoveHandler);
-        EventManager.off(EventType.Role_Need_Sort, this._roleSortHandler);
+        EventMgr.off(EventType.Building_Need_Sort, this._buidingSortHandler);
+        EventMgr.off(EventType.Role_Need_Move, this._roleMoveHandler);
+        EventMgr.off(EventType.Role_Need_Sort, this._roleSortHandler);
+        EventMgr.off(InterfacePath.c2sBuildingList, this._buildingListHandle);
     }
     // 获取格子信息
     getGridInfo(i: number, j: number) {
@@ -151,30 +158,18 @@ export class MapUICtl extends MainBaseCtl {
                 this._bgModelAry.push(bgModel);
             }
         }
-        this._mapMaxWidth = width * col;
-        this._mapMaxHeight = height * row;
+        this._mapMaxWidth = bgInfo.maxWidth;
+        this._mapMaxHeight = bgInfo.maxHeight;
     }
-    //是否是可编辑的地块
-    // private landIsCanEdit(i:number, j:number){
-    //     let landInfo = MapConfig.landBaseInfo;
-    //     let range = landInfo.range;
-    //     for(let k=0;k<range.length;k++) {
-    //         let item = range[k];
-    //         if(i < landInfo.col && j < landInfo.row && item.is <= i && i < item.ie && item.js <= j && j < item.je){
-    //             return true;
-    //         }
-    //     }
-    //     return false;
-    // }
     //初始化地块层
-    initLand() {
+    initLand(list: s2cBuildingList[]) {
         let gridInfo = MapConfig.gridInfo;
         let width = gridInfo.width;
         let height = gridInfo.height;
         let col = gridInfo.col;
         let row = gridInfo.row;
-        let landInfo = DataMgr.instance.defaultLand;
-        let landWidth = landInfo.width;
+        let defaultInfo = DataMgr.instance.defaultLand;
+        let landWidth = defaultInfo.width;
         let g = this._mainScene.lineLayer.getComponent(Graphics);
         this._mainScene.lineLayer.active = false;
         for (let i = 0; i < col; i++) {
@@ -184,6 +179,19 @@ export class MapUICtl extends MainBaseCtl {
                 let land = instantiate(this._mainScene.landModel);
                 this._mainScene.landLayer.addChild(land);
                 let laneModel = land.getComponent(LandModel);
+                let landInfo = defaultInfo;
+                if (list) {
+                    //需要优化数据结构，遍历查找可能会出现性能问题
+                    let data = list.find(obj => {
+                        if (obj.x == i && obj.y == j) {
+                            return true;
+                        }
+                    });
+                    if (data) {
+                        landInfo = DataMgr.instance.editInfo[data.bid];
+                        laneModel.buildingID = data.id;
+                    }
+                }
                 laneModel.initData(i, j, landWidth, landInfo);
                 this.setLandGrid(laneModel, i, j);
                 this._landModelAry.push(laneModel);
@@ -215,9 +223,13 @@ export class MapUICtl extends MainBaseCtl {
         }
     }
     // 初始化建筑
-    initBuilding() {
-        // for test
-        this.newBuilding(DataMgr.instance.editInfo[0], 30, 30, false, false);//TEST 测试数据
+    initBuilding(list: s2cBuildingList[]) {
+        if (!list || list.length <= 0) return;
+        list.forEach(element => {
+            let editInfo = DataMgr.instance.editInfo[element.bid];
+            let building = this.newBuilding(editInfo, element.x, element.y, 1 == element.direction, false);
+            building.buildingID = element.id;
+        });
     }
     /** 初始化角色 */
     public async initRole() {
@@ -619,6 +631,7 @@ export class MapUICtl extends MainBaseCtl {
         this._loadCount--;
         if (this._loadCount <= 0) {
             this._loadCount = 0;
+            this.buildingRoleSort();
             if (this._callBack) {
                 this._callBack();
                 this._callBack = null;
@@ -629,5 +642,63 @@ export class MapUICtl extends MainBaseCtl {
     getLoadOverCall() {
         this._loadCount++;
         return this.loadOverCall.bind(this);
+    }
+    /**建筑列表 */
+    onBuildingList(list: s2cBuildingList[]) {
+        let list1 = [];
+        let list2 = [];
+        list.forEach(element => {
+            let editInfo = DataMgr.instance.editInfo[element.bid];
+            if (!editInfo) return;
+            if (EditType.Land == editInfo.type) {
+                list2.push(element);
+            } else {
+                list1.push(element);
+            }
+        })
+        this.initBuilding(list1);
+        this.initLand(list2);
+
+        this.updateCameraVisible();
+    }
+    /**查找建筑 */
+    findBuilding(id: number) {
+        let children = this._mainScene.buildingLayer.children;
+        for (let i = 0; i < children.length; i++) {
+            const element = children[i];
+            let building = element.getComponent(BuildingModel);
+            if (!building) continue;
+            if (building.buildingID == id) return building;
+        }
+        return null;
+    }
+    findBuildingByIdx(idx: number) {
+        let children = this._mainScene.buildingLayer.children;
+        for (let i = 0; i < children.length; i++) {
+            const element = children[i];
+            let building = element.getComponent(BuildingModel);
+            if (!building) continue;
+            if (building.idx == idx) return building;
+        }
+        return null;
+    }
+    /**查找地块 */
+    findLand(id: number) {
+        for (let i = 0; i < this._landModelAry.length; i++) {
+            const element = this._landModelAry[i];
+            let land = element.getComponent(LandModel);
+            if (!land) continue;
+            if (land.buildingID == id) return land;
+        }
+        return null;
+    }
+    findLandByIdx(idx: number) {
+        for (let i = 0; i < this._landModelAry.length; i++) {
+            const element = this._landModelAry[i];
+            let land = element.getComponent(LandModel);
+            if (!land) continue;
+            if (land.idx == idx) return land;
+        }
+        return null;
     }
 }

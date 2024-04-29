@@ -385,5 +385,19 @@ export class MainScene extends Component {
         let pos = this.mapCamera.worldToScreen(worldPos);
         return pos;
     }
+    /**查找建筑 */
+    findBuilding(id: number) {
+        return this._mapUICtl.findBuilding(id);
+    }
+    findBuildingByIdx(idx: number) {
+        return this._mapUICtl.findBuildingByIdx(idx);
+    }
+    /**查找地块 */
+    findLand(id: number) {
+        return this._mapUICtl.findLand(id);
+    }
+    findLandByIdx(idx: number) {
+        return this._mapUICtl.findLandByIdx(idx);
+    }
 }
 

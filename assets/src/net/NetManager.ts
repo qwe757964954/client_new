@@ -1,8 +1,9 @@
 import { EventType } from "../config/EventType";
 import { TextConfig } from "../config/TextConfig";
 import { ViewsManager } from "../manager/ViewsManager";
-import { c2sAccountEditRealName, c2sAccountInit, c2sAccountStudyWord, c2sPropMyList } from "../models/NetModel";
-import EventManager, { EventMgr } from "../util/EventManager";
+import { BaseDataPacket } from "../models/NetModel";
+import { User } from "../models/User";
+import { EventMgr } from "../util/EventManager";
 import { ServiceMgr } from "./ServiceManager";
 import { Socket } from "./Socket";
 //消息服务管理类
@@ -38,19 +39,31 @@ class NetManager {
             this._socket.closeSocket();
             this._socket = null;
         }
-
+        console.log("connectNet", this._serverUrl, this._serverPort);
         this._socket = new Socket();
         this._socket.openFun = this.onConnect.bind(this);
         this._socket.recvFun = this.onRecvMsg.bind(this);
         this._socket.errorFun = this.onError.bind(this);
         this._socket.closeFun = this.onClose.bind(this);
-        this._socket.connect("wss://" + this._serverUrl + ":" + this._serverPort);
+        this._socket.connect("ws://" + this._serverUrl + ":" + this._serverPort);
     }
     //发送消息
     public sendMsg(pbobj?: any) {
         if (this._socket) {
-            console.log("sendMsg", pbobj.Path);
-            let buffer = pbobj ? JSON.stringify(pbobj) : pbobj;//pb对象转数据
+            let command_id = pbobj.command_id;
+            let obj = new BaseDataPacket();
+            if (Array.isArray(pbobj)) {
+                pbobj.forEach(item => {
+                    command_id = item.command_id;
+                    item.command_id = undefined;
+                });
+            } else {
+                pbobj.command_id = undefined;
+            }
+            console.log("sendMsg", command_id);
+            obj.command_id = Number(command_id);
+            obj.data = pbobj;
+            let buffer = JSON.stringify(obj);
             this._socket.sendMsg(buffer);
         }
     }
@@ -64,38 +77,43 @@ class NetManager {
     //连接成功
     public onConnect() {
         console.log("onConnect");
-        this._reconnceTime = 0;
-        EventManager.emit(EventType.Socket_Connect);
-        ServiceMgr.accountService.accountInit();
+        // this._reconnceTime = 0;//让登录结果来重置，防止假连接
+        EventMgr.emit(EventType.Socket_Connect);
+
+        ServiceMgr.accountService.accountLogin();
     }
     //socket接收消息
     public onRecvMsg(data: string) {
         let obj = JSON.parse(data);
-        if (obj.Path)
-            console.log("onRecvMsg", obj.Path);
-        else
+        if (obj.command_id) {
+            console.log("onRecvMsg id", obj.command_id, obj);
+            EventMgr.emit(obj.command_id, obj.data);
+        } else {
             console.log("onRecvMsg no path", obj);
-
-        EventManager.emit(obj.Path, obj);
-        EventMgr.dispatch(obj.Path, obj);
+        }
     }
     //socket错误回调
     public onError() {
         console.log("onError");
+        EventMgr.emit(EventType.Socket_Dis);
         this.reConnect();
     }
     //socket关闭回调
     public onClose() {
         console.log("onClose");
+        EventMgr.emit(EventType.Socket_Close);
         if (this._socket) {
             this.reConnect();
         }
     }
     // 弹出重连提示
     public showReconnectTips() {
+        EventMgr.emit(EventType.Socket_ReconnectFail);
         ViewsManager.showAlert(TextConfig.Net_Error, () => {
-            this._reconnceTime = 0;
-            this.connectNet();
+            if (User.isLogin) {
+                this.resetReconnceTime();
+                this.connectNet();
+            }
         });
     }
     //重连
@@ -107,36 +125,10 @@ class NetManager {
         }
         this.connectNet();
     }
-
-    /********************************消息接口start**************************************/
-    //请求初始数据
-    public reqInitData() {
-        let para: c2sAccountInit = new c2sAccountInit;
-        // para.MemberToken = 
-        this.sendMsg(para);
+    /**重置重连次数 */
+    public resetReconnceTime() {
+        this._reconnceTime = 0;
     }
-
-    // 请求我的道具列表
-    public reqMyListData(moduleId: number) {
-        let para: c2sPropMyList = new c2sPropMyList;
-        para.ModuleId = moduleId;
-        this.sendMsg(para);
-    }
-
-    // 请求修改名称
-    public reqChangeRealNameData(realName: string) {
-        let para: c2sAccountEditRealName = new c2sAccountEditRealName;
-        para.RealName = realName;
-        this.sendMsg(para);
-    }
-
-    // 请求学生通关单词
-    public reqStudyWordData() {
-        let para: c2sAccountStudyWord = new c2sAccountStudyWord;
-        this.sendMsg(para);
-    }
-
-    /********************************消息接口end****************************************/
 }
 /**NetManager单例 */
 export const NetMgr = NetManager.instance();

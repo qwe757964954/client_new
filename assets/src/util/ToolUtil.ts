@@ -45,4 +45,9 @@ export class ToolUtil {
         }
         return ToolUtil._objectIdMap.get(obj)!;
     }
+    private static _idx = 1;
+    /**获取唯一标识idx */
+    static getIdx(): number {
+        return this._idx++;
+    }
 }

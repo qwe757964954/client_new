@@ -1,6 +1,7 @@
 import { _decorator, Component, Label, Sprite, UITransform, Vec3 } from "cc";
 import { DataMgr, EditInfo } from "../manager/DataMgr";
 import { LoadManager } from "../manager/LoadManager";
+import { ToolUtil } from "../util/ToolUtil";
 import { GridModel } from "./GridModel";
 const { ccclass, property } = _decorator;
 
@@ -12,6 +13,8 @@ export class LandModel extends Component {
     private _y: number;//y格子坐标
     private _width: number;//宽
     private _grids: GridModel[];//格子
+    private _buildingID: number = undefined;//唯一索引id
+    private _idx: number;//索引(前端使用)
 
     // private _landID:number;//地块id
     private _landInfo: EditInfo;//地块信息
@@ -35,9 +38,23 @@ export class LandModel extends Component {
     get width(): number {
         return this._width;
     }
+    set buildingID(buildingID: number) {
+        if (this._buildingID) return;
+        this._buildingID = buildingID;
+    }
+    get buildingID(): number {
+        return this._buildingID;
+    }
+    get idx() {
+        return this._idx;
+    }
+    get bid() {
+        return this._landInfo.id;
+    }
 
     // 初始化数据
     public initData(x: number, y: number, width: number, landInfo: EditInfo) {
+        this._idx = ToolUtil.getIdx();
         this._x = x;
         this._y = y;
         this._width = width;

@@ -78,11 +78,13 @@ export class Socket {
     }
     private onMessage(msg) {
         this.noRecvMsgTimes = 0;
-        let buffer: string = msg.data;
+        let buffer: Blob = msg.data;
         if (!buffer) { return; }
-        if (this.recvFun) {
-            this.recvFun(buffer);
-        }
+        buffer.text().then((data) => {
+            if (this.recvFun) {
+                this.recvFun(data);
+            }
+        });
     }
     private onError() {
         if (this.errorFun) {

@@ -1,13 +1,13 @@
 /**
  * 观察者
  */
-class Observer{
+class Observer {
     /**回调函数 */
     private _callBack: Function = null;
     /**上下文 */
     private _context: any = null;
 
-    constructor(callBack: Function,context: any){
+    constructor(callBack: Function, context: any) {
         this._callBack = callBack;
         this._context = context;
     }
@@ -24,7 +24,7 @@ class Observer{
     /**上下文比较
      * 
      */
-    compar(context:any):boolean{
+    compar(context: any): boolean {
         return this._context == context;
     }
 }
@@ -35,7 +35,7 @@ export default class EventManager {
     private _handleIndex: number;
     private _handles: Map<string, Map<string, Function>>;
 
-    private listeners:{[key:string]:Array<Observer>} = {};
+    private listeners: { [key: string]: Array<Observer> } = {};
 
     private constructor() {
         this._handleIndex = -1;
@@ -52,7 +52,7 @@ export default class EventManager {
     public static on(type: string, callback: Function) {
         return EventManager.instance().on(type, callback);
     }
-    private on(type: string, callback: Function) {
+    public on(type: string, callback: Function) {
         let map: Map<string, any> = this._handles[type];
         if (!map) {
             map = new Map();
@@ -67,7 +67,7 @@ export default class EventManager {
     public static off(type: string, handle?: string) {
         EventManager.instance().off(type, handle);
     }
-    private off(type: string, handle: string) {
+    public off(type: string, handle?: string) {
         let map: Map<string, any> = this._handles[type];
         if (!map) { return; }
         if (!handle) {
@@ -80,7 +80,9 @@ export default class EventManager {
     public static emit(type: string, data?: any) {
         EventManager.instance().emit(type, data);
     }
-    private emit(type: string, data: any) {
+    public emit(type: string, data?: any) {
+        this.dispatch(type, data);
+
         let map: Map<string, any> = this._handles[type];
         if (!map) { return; }
         let ary: Function[] = [];
@@ -123,7 +125,7 @@ export default class EventManager {
                 break;
             }
         }
-        if(observers.length === 0) {
+        if (observers.length === 0) {
             delete this.listeners[name];
         }
     }
@@ -132,7 +134,7 @@ export default class EventManager {
      * @param event 事件名称 
      * @param args 参数
      */
-    public dispatch(event:string,...args:any[]){
+    public dispatch(event: string, ...args: any[]) {
         /**获取该事件相关的所有上下文 */
         let observers: Observer[] = this.listeners[event];
         if (!observers) {
