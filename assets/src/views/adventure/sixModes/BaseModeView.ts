@@ -55,13 +55,15 @@ export class BaseModeView extends Component {
         this._role = instantiate(this.roleModel);
         this.roleContainer.addChild(this._role);
         let roleModel = this._role.getComponent(RoleBaseModel);
-        await roleModel.init(101, 1, [9500, 9700, 9701, 9702, 9703]);
+        roleModel.init(101, 1, [9500, 9700, 9701, 9702, 9703]);
+        roleModel.show(true);
     }
     async initPet() {
         this._pet = instantiate(this.petModel);
         this.petContainer.addChild(this._pet);
         let roleModel = this._pet.getComponent(RoleBaseModel);
-        await roleModel.init(101, 1);
+        roleModel.init(101, 1);
+        roleModel.show(true);
     }
     async initMonster() {
         this._monster = instantiate(this.monsterModel);
