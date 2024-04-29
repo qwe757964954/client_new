@@ -759,7 +759,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 1623,
+      "width": 241.571,
       "height": 88
     },
     "_anchorPoint": {
@@ -785,7 +785,7 @@
     "__prefab": {
       "__id__": 33
     },
-    "_resizeMode": 0,
+    "_resizeMode": 1,
     "_layoutType": 1,
     "_cellSize": {
       "__type__": "cc.Size",
@@ -1051,7 +1051,7 @@
     "pageChangeEvent": {
       "__id__": 50
     },
-    "_virtual": true,
+    "_virtual": false,
     "cyclic": false,
     "lackCenter": false,
     "lackSlide": false,

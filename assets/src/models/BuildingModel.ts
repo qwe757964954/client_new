@@ -1,12 +1,15 @@
 import { Color, Graphics, Label, Node, Rect, Sprite, UITransform, Vec2, Vec3, _decorator } from "cc";
 import { EventType } from "../config/EventType";
 import { PrefabType } from "../config/PrefabType";
+import { TextConfig } from "../config/TextConfig";
 import { DataMgr, EditInfo } from "../manager/DataMgr";
 import { LoadManager } from "../manager/LoadManager";
 import { ViewsManager } from "../manager/ViewsManager";
+import { ServiceMgr } from "../net/ServiceManager";
 import { BaseComponent } from "../script/BaseComponent";
 import CCUtil from "../util/CCUtil";
 import EventManager from "../util/EventManager";
+import { ToolUtil } from "../util/ToolUtil";
 import { BuildingBtnView } from "../views/map/BuildingBtnView";
 import { BuildingInfoView } from "../views/map/BuildingInfoView";
 import { GridModel } from "./GridModel";
@@ -25,7 +28,8 @@ export class BuildingModel extends BaseComponent {
     public graphics: Graphics = null;//格子图层
 
     private _editInfo: EditInfo;//编辑信息
-
+    private _buildingID: number = undefined;//建筑唯一索引id
+    private _idx: number;//索引(前端使用)
     // y从上往下，x从右往左
     private _x: number;//x格子坐标
     private _y: number;//y格子坐标
@@ -58,6 +62,7 @@ export class BuildingModel extends BaseComponent {
     // 初始化数据
     initData(x: number, y: number, editInfo: EditInfo, isFlip: boolean, isNew: boolean) {
         // console.log("initData", x, y, editInfo, isFlip, isNew);
+        this._idx = ToolUtil.getIdx();
         this._editInfo = editInfo;
         this._x = x;
         this._y = y;
@@ -77,6 +82,16 @@ export class BuildingModel extends BaseComponent {
         if (isNew) {
             this.show(true);
         }
+    }
+    set buildingID(id: number) {
+        if (this._buildingID) return;
+        this._buildingID = id;
+    }
+    get buildingID(): number {
+        return this._buildingID;
+    }
+    get idx(): number {
+        return this._idx;
     }
     // 销毁
     protected onDestroy(): void {
@@ -195,12 +210,13 @@ export class BuildingModel extends BaseComponent {
             let buildingBtnView = this._btnView.getComponent(BuildingBtnView);
             let funcs = [//信息、保存、卖出、反转、回收、还原
                 this.showInfo.bind(this),
-                this.saveData.bind(this),
-                this.sell.bind(this),
+                this.reqSaveData.bind(this),
+                this.reqSell.bind(this),
                 this.flip.bind(this),
                 this.recycleBtnClick.bind(this),
                 this.recover.bind(this),
             ];
+            buildingBtnView.sellBtnStatus = this._editInfo.sell > 0;
             buildingBtnView.registerClickCallback(funcs);
             this.onCameraScale(scale);
             this.refreshBtnView();
@@ -229,8 +245,7 @@ export class BuildingModel extends BaseComponent {
             }
         }
         let buildingBtnView = this._btnView.getComponent(BuildingBtnView);
-        buildingBtnView.btnSure.node.active = canSure;
-        // buildingBtnView.btnSure.grayscale = !canSure;
+        buildingBtnView.sureBtnStatus = canSure;
     }
     // 还原数据
     public resetData(): void {
@@ -245,7 +260,11 @@ export class BuildingModel extends BaseComponent {
         });
     }
     // 保存数据
-    public saveData(): void {
+    public saveData(status: boolean = true): void {
+        if (!status) {
+            ViewsManager.showTip(TextConfig.Building_Sure_Tip);
+            return;
+        }
         // this._dataX = this._x;
         // this._dataY = this._y;
         this.saveGrids();//先还原原来格子数据，再保存现在格子数据
@@ -255,10 +274,32 @@ export class BuildingModel extends BaseComponent {
         this._isNew = false;
         this.closeBtnView();
     }
+    /**请求保存 */
+    public reqSaveData(status: boolean = true) {
+        if (!status) {
+            ViewsManager.showTip(TextConfig.Building_Sure_Tip);
+            return;
+        }
+        if (this._buildingID) {
+            ServiceMgr.buildingService.reqBuildingEdit(this._buildingID, this._x, this._y, this._isFlip);
+        } else {
+            ServiceMgr.buildingService.reqBuildingCreate(this._editInfo.id, this._x, this._y, this._idx, this._isFlip);
+        }
+    }
     // 卖出
-    public sell(): void {
-        // TODO
+    public sell(canCell: boolean): void {
+        if (!canCell) {
+            ViewsManager.showTip(TextConfig.Building_Cell_Tip);
+            return;
+        }
         this.recycle();//与回收差别?，如不能还原则需修改逻辑
+    }
+    /**请求卖出 */
+    public reqSell(canCell: boolean) {
+        if (!canCell) {
+            ViewsManager.showTip(TextConfig.Building_Cell_Tip);
+            return;
+        }
     }
     // 翻转
     public flip(): void {
@@ -366,12 +407,16 @@ export class BuildingModel extends BaseComponent {
         g.fill();
     }
     /**显示与否 */
-    public show(isShow: boolean) {
+    public show(isShow: boolean, callBack?: Function) {
+        this.node.active = isShow;
         if (isShow && !this._isLoad) {
             this._isLoad = true;
-            LoadManager.loadSprite(DataMgr.getEditPng(this._editInfo), this.building);
+            LoadManager.loadSprite(DataMgr.getEditPng(this._editInfo), this.building).then(() => {
+                if (callBack) callBack();
+            });
+        } else {
+            if (callBack) callBack();
         }
-        this.node.active = isShow;
     }
     /**获取显示范围 */
     public getRect() {

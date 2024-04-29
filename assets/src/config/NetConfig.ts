@@ -24,6 +24,9 @@ class NetCfg {
     public androidDown = "https://www.chuangciyingyu.com/chuangci_v20220720.apk"; // 安卓下载
     public assertUrl = "https://www.chuangciyingyu.com/assets"; // 资源url
 
+    public server = "192.168.1.67";//webscoket服务器
+    public port = 40003;//webscoket端口
+
     public checkNotice;//公告检测
     public tokenLogin;//token登录
     public mobileLogin;//moble登录

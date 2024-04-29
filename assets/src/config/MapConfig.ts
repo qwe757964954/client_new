@@ -17,14 +17,21 @@ export class RoleInfo {//角色配置
 
 export const MapConfig = {
     bgInfo: {
-        num: 408,
+        // num: 408,
+        // width: 256,
+        // height: 256,
+        // col: 24,
+        // row: 17,
+        // midCol: 12,
+        // midRow: 8,
+        // path: "map/bg/bg{0}/spriteFrame",
+        maxWidth: 6506,
+        maxHeight: 4774,
         width: 256,
         height: 256,
-        col: 24,
-        row: 17,
-        midCol: 12,
-        midRow: 8,
-        path: "map/bg/bg{0}/spriteFrame",
+        col: 26,
+        row: 19,
+        path: "map/newbg/bg{0}/spriteFrame",
         commonPath: "map/bg/bg154/spriteFrame",
         commonAry: [
             155, 156, 157, 176, 177, 178, 179, 180, 181, 182,
@@ -38,7 +45,7 @@ export const MapConfig = {
         ]
     },
     gridInfo: {
-        dtX: 3,//格子X偏差
+        dtX: 2,//格子X偏差
         dtY: 26,//格子Y偏差
         width: 72,//格子像素宽
         height: 36,//格子像素高
@@ -48,10 +55,9 @@ export const MapConfig = {
             // 从上往下 i左边 j右边
             { is: 12, ie: 48, js: 0, je: 12 },
             { is: 12, ie: 60, js: 12, je: 42 },
-            { is: 12, ie: 66, js: 42, je: 60 },
-            { is: 0, ie: 12, js: 48, je: 66 },
-            { is: 12, ie: 72, js: 60, je: 72 },
-            { is: 18, ie: 54, js: 72, je: 78 },
+            { is: 12, ie: 72, js: 42, je: 48 },
+            { is: 0, ie: 72, js: 48, je: 72 },
+            { is: 12, ie: 54, js: 72, je: 78 },
         ]
     },
     roleInfo: {//101 男孩2, 102 女孩1, 103 男孩1
@@ -90,5 +96,14 @@ export const MapConfig = {
             { level: 5, spPath: "animtion/sprite/long05", spNames: ["idle", "run", "action", "attack", "skill"], rect: new Rect(0, 0, 200, 320), },
             { level: 6, spPath: "animtion/sprite/long06", spNames: ["idle", "run", "action", "attack", "skill"], rect: new Rect(0, -20, 220, 350), },
         ],
-    }
+    },
+    landFlowers: [
+        "map/land/dikuaihua1/spriteFrame",
+        "map/land/dikuaihua2/spriteFrame",
+        "map/land/dikuaihua3/spriteFrame",
+        "map/land/dikuaihua4/spriteFrame",
+        "map/land/dikuaihua5/spriteFrame",
+        "map/land/dikuaihua6/spriteFrame",
+        "map/land/dikuaihua7/spriteFrame",
+    ]
 }

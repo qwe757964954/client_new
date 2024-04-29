@@ -1,11 +1,11 @@
-import { _decorator, Button, Component, director, instantiate, Node, Prefab, Sprite, Tween, tween, v3 } from 'cc';
+import { _decorator, Button, Component, instantiate, Node, Prefab, v3 } from 'cc';
+import { EventType } from '../../config/EventType';
+import { PrefabType } from '../../config/PrefabType';
+import GlobalConfig from '../../GlobalConfig';
+import { ViewsManager } from '../../manager/ViewsManager';
 import CCUtil from '../../util/CCUtil';
 import EventManager from '../../util/EventManager';
-import { EventType } from '../../config/EventType';
-import { ViewsManager } from '../../manager/ViewsManager';
-import { Hierarchy, PrefabType } from '../../config/PrefabType';
 import { StudyModeView } from './sixModes/StudyModeView';
-import GlobalConfig from '../../GlobalConfig';
 import { ServiceMgr } from '../../net/ServiceManager';
 import { DataMgr } from '../../manager/DataMgr';
 const { ccclass, property } = _decorator;
@@ -119,6 +119,7 @@ export class WorldMapView extends Component {
     /**点击返回按钮 */
     onBtnBackClick() {
         // EventManager.emit(EventType.Study_Page_Switching, [0])
+        this.node.destroy();
     }
 
     /**打开帮助页面 */

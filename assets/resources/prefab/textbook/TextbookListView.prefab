@@ -410,7 +410,7 @@
   {
     "__type__": "cc.Node",
     "_name": "top_layout",
-    "_objFlags": 0,
+    "_objFlags": 512,
     "__editorExtras__": {},
     "_parent": {
       "__id__": 1
@@ -464,7 +464,7 @@
   {
     "__type__": "cc.Node",
     "_name": "add_textbook_bg",
-    "_objFlags": 0,
+    "_objFlags": 512,
     "__editorExtras__": {},
     "_parent": {
       "__id__": 18
@@ -527,7 +527,7 @@
   {
     "__type__": "cc.Node",
     "_name": "add_icon",
-    "_objFlags": 0,
+    "_objFlags": 512,
     "__editorExtras__": {},
     "_parent": {
       "__id__": 19
@@ -663,7 +663,7 @@
   {
     "__type__": "cc.Node",
     "_name": "add_text_img",
-    "_objFlags": 0,
+    "_objFlags": 512,
     "__editorExtras__": {},
     "_parent": {
       "__id__": 19

@@ -2,15 +2,20 @@ import { Color, Graphics, Rect, Vec3, instantiate, screen } from "cc";
 import GlobalConfig from "../../GlobalConfig";
 import { EventType } from "../../config/EventType";
 import { MapConfig } from "../../config/MapConfig";
+import { TextConfig } from "../../config/TextConfig";
 import { DataMgr, EditInfo } from "../../manager/DataMgr";
 import { BgModel } from "../../models/BgModel";
 import { BuildingModel } from "../../models/BuildingModel";
 import { GridModel } from "../../models/GridModel";
 import { LandModel } from "../../models/LandModel";
+import { s2cBuildingList, s2cBuildingListInfo } from "../../models/NetModel";
 import { RoleBaseModel } from "../../models/RoleBaseModel";
 import { RoleModel } from "../../models/RoleModel";
+import { InterfacePath } from "../../net/InterfacePath";
+import { ServiceMgr } from "../../net/ServiceManager";
 import { BaseComponent } from "../../script/BaseComponent";
-import EventManager from "../../util/EventManager";
+import EventManager, { EventMgr } from "../../util/EventManager";
+import { ToolUtil } from "../../util/ToolUtil";
 import { MainBaseCtl } from "../main/MainBaseCtl";
 import { MainScene } from "../main/MainScene";
 
@@ -35,10 +40,15 @@ export class MapUICtl extends MainBaseCtl {
     private _buidingSortHandler: string;//建筑需要重新排序handle
     private _roleMoveHandler: string;//角色需要移动handle
     private _roleSortHandler: string;//角色需要重新排序handle
+    private _buildingListHandle: string;//建筑列表handle
     private _roleIsShow: boolean = true;//角色是否显示
 
-    constructor(mainScene: MainScene) {
+    private _callBack: Function = null;//加载完成回调
+    private _loadCount: number = 0;//加载计数
+
+    constructor(mainScene: MainScene, callBack?: Function) {
         super(mainScene);
+        this._callBack = callBack;
         this.init();
     }
     // 销毁
@@ -65,11 +75,16 @@ export class MapUICtl extends MainBaseCtl {
         this.initEvent();
         this.initGrid();
         this.initMap();
-        this.initLand();
-        this.initBuilding();
-        await this.initRole();
 
-        this.updateCameraVisible();
+        if (GlobalConfig.OLD_SERVER) {
+            this.initLand({});
+            // this.initBuilding();
+            // this.initRole();
+            this.updateCameraVisible();
+            return;
+        }
+        ServiceMgr.buildingService.reqBuildingList();
+
     }
     // 初始化数据
     initData(): void {
@@ -82,15 +97,17 @@ export class MapUICtl extends MainBaseCtl {
     }
     // 初始化事件
     initEvent() {
-        this._buidingSortHandler = EventManager.on(EventType.Building_Need_Sort, this.buildingSort.bind(this));
-        this._roleMoveHandler = EventManager.on(EventType.Role_Need_Move, this.roleMove.bind(this));
-        this._roleSortHandler = EventManager.on(EventType.Role_Need_Sort, this.roleSort.bind(this));
+        this._buidingSortHandler = EventMgr.on(EventType.Building_Need_Sort, this.buildingSort.bind(this));
+        this._roleMoveHandler = EventMgr.on(EventType.Role_Need_Move, this.roleMove.bind(this));
+        this._roleSortHandler = EventMgr.on(EventType.Role_Need_Sort, this.roleSort.bind(this));
+        this._buildingListHandle = EventMgr.on(InterfacePath.c2sBuildingList, this.onBuildingList.bind(this));
     }
     // 移除事件
     removeEvent() {
-        EventManager.off(EventType.Building_Need_Sort, this._buidingSortHandler);
-        EventManager.off(EventType.Role_Need_Move, this._roleMoveHandler);
-        EventManager.off(EventType.Role_Need_Sort, this._roleSortHandler);
+        EventMgr.off(EventType.Building_Need_Sort, this._buidingSortHandler);
+        EventMgr.off(EventType.Role_Need_Move, this._roleMoveHandler);
+        EventMgr.off(EventType.Role_Need_Sort, this._roleSortHandler);
+        EventMgr.off(InterfacePath.c2sBuildingList, this._buildingListHandle);
     }
     // 获取格子信息
     getGridInfo(i: number, j: number) {
@@ -133,8 +150,6 @@ export class MapUICtl extends MainBaseCtl {
     //初始化地图
     initMap() {
         let bgInfo = MapConfig.bgInfo;
-        let width = bgInfo.width;
-        let height = bgInfo.height;
         let col = bgInfo.col;
         let row = bgInfo.row;
         for (let i = 0; i < col; i++) {
@@ -147,30 +162,18 @@ export class MapUICtl extends MainBaseCtl {
                 this._bgModelAry.push(bgModel);
             }
         }
-        this._mapMaxWidth = width * col;
-        this._mapMaxHeight = height * row;
+        this._mapMaxWidth = bgInfo.maxWidth;
+        this._mapMaxHeight = bgInfo.maxHeight;
     }
-    //是否是可编辑的地块
-    // private landIsCanEdit(i:number, j:number){
-    //     let landInfo = MapConfig.landBaseInfo;
-    //     let range = landInfo.range;
-    //     for(let k=0;k<range.length;k++) {
-    //         let item = range[k];
-    //         if(i < landInfo.col && j < landInfo.row && item.is <= i && i < item.ie && item.js <= j && j < item.je){
-    //             return true;
-    //         }
-    //     }
-    //     return false;
-    // }
     //初始化地块层
-    initLand() {
+    initLand(map: { [key: string]: number }) {
         let gridInfo = MapConfig.gridInfo;
         let width = gridInfo.width;
         let height = gridInfo.height;
         let col = gridInfo.col;
         let row = gridInfo.row;
-        let landInfo = DataMgr.instance.defaultLand;
-        let landWidth = landInfo.width;
+        let defaultInfo = DataMgr.instance.defaultLand;
+        let landWidth = defaultInfo.width;
         let g = this._mainScene.lineLayer.getComponent(Graphics);
         this._mainScene.lineLayer.active = false;
         for (let i = 0; i < col; i++) {
@@ -180,6 +183,13 @@ export class MapUICtl extends MainBaseCtl {
                 let land = instantiate(this._mainScene.landModel);
                 this._mainScene.landLayer.addChild(land);
                 let laneModel = land.getComponent(LandModel);
+                let landInfo = defaultInfo;
+                if (map) {
+                    let key = ToolUtil.replace(TextConfig.Land_Key, i, j);
+                    if (map.hasOwnProperty(key)) {
+                        landInfo = DataMgr.instance.editInfo[map[key]];
+                    }
+                }
                 laneModel.initData(i, j, landWidth, landInfo);
                 this.setLandGrid(laneModel, i, j);
                 this._landModelAry.push(laneModel);
@@ -211,9 +221,13 @@ export class MapUICtl extends MainBaseCtl {
         }
     }
     // 初始化建筑
-    initBuilding() {
-        // for test
-        this.newBuilding(DataMgr.instance.editInfo[0], 30, 30, false, false);//TEST 测试数据
+    initBuilding(list: s2cBuildingListInfo[]) {
+        if (!list || list.length <= 0) return;
+        list.forEach(element => {
+            let editInfo = DataMgr.instance.editInfo[element.bid];
+            let building = this.newBuilding(editInfo, element.x, element.y, 1 == element.direction, false);
+            building.buildingID = element.id;
+        });
     }
     /** 初始化角色 */
     public async initRole() {
@@ -222,7 +236,7 @@ export class MapUICtl extends MainBaseCtl {
             let role = instantiate(this._mainScene.roleModel);
             this._mainScene.buildingLayer.addChild(role);
             let roleModel = role.getComponent(RoleBaseModel);
-            await roleModel.init(101, 1, [9500, 9700, 9701, 9702, 9703]);
+            roleModel.init(101, 1, [9500, 9700, 9701, 9702, 9703]);
             let grid = this.getGridInfo(20, 20);
             roleModel.grid = grid;
             this.roleMove(roleModel);
@@ -233,7 +247,7 @@ export class MapUICtl extends MainBaseCtl {
             let role = instantiate(this._mainScene.roleModel);
             this._mainScene.buildingLayer.addChild(role);
             let roleModel = role.getComponent(RoleBaseModel);
-            await roleModel.init(102, 1, [9550, 9800, 9801, 9802, 9803, 9805]);
+            roleModel.init(102, 1, [9550, 9800, 9801, 9802, 9803, 9805]);
             let grid = this.getGridInfo(35, 40);
             roleModel.grid = grid;
             this.roleMove(roleModel);
@@ -244,7 +258,7 @@ export class MapUICtl extends MainBaseCtl {
             let role = instantiate(this._mainScene.roleModel);
             this._mainScene.buildingLayer.addChild(role);
             let roleModel = role.getComponent(RoleBaseModel);
-            await roleModel.init(103, 1, [9600, 9900, 9901, 9902, 9903]);
+            roleModel.init(103, 1, [9600, 9900, 9901, 9902, 9903]);
             let grid = this.getGridInfo(20, 40);
             roleModel.grid = grid;
             this.roleMove(roleModel);
@@ -256,7 +270,7 @@ export class MapUICtl extends MainBaseCtl {
             let role = instantiate(this._mainScene.petModel);
             this._mainScene.buildingLayer.addChild(role);
             let roleModel = role.getComponent(RoleBaseModel);
-            await roleModel.init(101, 1);
+            roleModel.init(101, 1);
             let grid = this.getGridInfo(21, 21);
             roleModel.grid = grid;
             this.roleMove(roleModel);
@@ -267,7 +281,7 @@ export class MapUICtl extends MainBaseCtl {
             let role = instantiate(this._mainScene.petModel);
             this._mainScene.buildingLayer.addChild(role);
             let roleModel = role.getComponent(RoleBaseModel);
-            await roleModel.init(102, 1);
+            roleModel.init(102, 1);
             let grid = this.getGridInfo(35, 30);
             roleModel.grid = grid;
             this.roleMove(roleModel);
@@ -278,7 +292,7 @@ export class MapUICtl extends MainBaseCtl {
             let role = instantiate(this._mainScene.petModel);
             this._mainScene.buildingLayer.addChild(role);
             let roleModel = role.getComponent(RoleBaseModel);
-            await roleModel.init(103, 1);
+            roleModel.init(103, 1);
             let grid = this.getGridInfo(21, 41);
             roleModel.grid = grid;
             this.roleMove(roleModel);
@@ -512,11 +526,11 @@ export class MapUICtl extends MainBaseCtl {
         visibleRect.height = height;
         // console.log("updateCameraVisible", visibleRect);
         this._bgModelAry.forEach(element => {
-            element.show(visibleRect.intersects(element.getRect()));
+            element.show(visibleRect.intersects(element.getRect()), this.getLoadOverCall());
         });
         //地块动态加载
         this._landModelAry.forEach(element => {
-            element.show(visibleRect.intersects(element.getRect()));
+            element.show(visibleRect.intersects(element.getRect()), this.getLoadOverCall());
         });
         //建筑动态加载
         this._mainScene.buildingLayer.children.forEach(element => {
@@ -524,10 +538,10 @@ export class MapUICtl extends MainBaseCtl {
             if (!building) {
                 let role = element.getComponent(RoleBaseModel);
                 if (!role) return;
-                // TODO 角色动态加载
+                role.show(visibleRect.intersects(role.getRect()), this.getLoadOverCall());
                 return;
             };
-            building.show(visibleRect.intersects(building.getRect()));
+            building.show(visibleRect.intersects(building.getRect()), this.getLoadOverCall());
         });
     }
     // 角色移动
@@ -609,5 +623,50 @@ export class MapUICtl extends MainBaseCtl {
             this.buildingRoleSortEx();
             this._isNeedSort = false;
         }
+    }
+    /**加载回调 */
+    loadOverCall() {
+        this._loadCount--;
+        if (this._loadCount <= 0) {
+            this._loadCount = 0;
+            this.buildingRoleSort();
+            if (this._callBack) {
+                this._callBack();
+                this._callBack = null;
+            }
+        }
+    }
+    /**获取加载回调 */
+    getLoadOverCall() {
+        this._loadCount++;
+        return this.loadOverCall.bind(this);
+    }
+    /**建筑列表 */
+    onBuildingList(data: s2cBuildingList) {
+        this.initBuilding(data.build_list);
+        this.initLand(data.land_dict);
+
+        this.updateCameraVisible();
+    }
+    /**查找建筑 */
+    findBuilding(id: number) {
+        let children = this._mainScene.buildingLayer.children;
+        for (let i = 0; i < children.length; i++) {
+            const element = children[i];
+            let building = element.getComponent(BuildingModel);
+            if (!building) continue;
+            if (building.buildingID == id) return building;
+        }
+        return null;
+    }
+    findBuildingByIdx(idx: number) {
+        let children = this._mainScene.buildingLayer.children;
+        for (let i = 0; i < children.length; i++) {
+            const element = children[i];
+            let building = element.getComponent(BuildingModel);
+            if (!building) continue;
+            if (building.idx == idx) return building;
+        }
+        return null;
     }
 }

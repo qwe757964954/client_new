@@ -12,12 +12,12 @@ import { RecycleCtl } from '../map/RecycleCtl';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { EditInfo, EditType } from '../../manager/DataMgr';
-import { ViewsManager } from '../../manager/ViewsManager';
+import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
 import { BuildingProduceView } from '../map/BuildingProduceView';
 import { MapUICtl } from '../map/MapUICtl';
 import { EditUIView } from './EditUIView';
-import { LandEditUIIvew } from './LandEditUIIvew';
+import { LandEditUIView } from './LandEditUIView';
 import { MainUIView } from './MainUIView';
 const { ccclass, property } = _decorator;
 
@@ -47,14 +47,10 @@ export class MainScene extends Component {
     public touchCanvas: Canvas = null;//监听点击画布
     @property(Camera)
     public uiCamera: Camera = null;//ui摄像机
+    @property(Node)
+    public loadingNode: Node = null;//加载节点
 
     /**=========================ui元素============================ */
-    @property(MainUIView)
-    public mainUIView: MainUIView = null;//主界面ui
-    @property(EditUIView)
-    public editUIView: EditUIView = null;//编辑界面ui
-    @property(LandEditUIIvew)
-    public landEditUIView: LandEditUIIvew = null;//编辑界面ui
     @property(Node)
     public sceneLayer: Node = null;//场景层
     @property(Node)
@@ -64,6 +60,9 @@ export class MainScene extends Component {
     @property(Node)
     public loadingLayer: Node = null;//加载层
 
+    private _mainUIView: MainUIView = null;//主界面ui
+    private _editUIView: EditUIView = null;//编辑界面ui
+    private _landEditUIView: LandEditUIView = null;//编辑界面ui
     /**=========================变量============================ */
     private _mapStatus: MapStatus = MapStatus.DEFAULT;//地图状态
     private _mapNormalCtl: MapNormalCtl = null;//普通地图控制器
@@ -74,7 +73,7 @@ export class MainScene extends Component {
     // private _mainUICtl:MainUICtl = null;//主界面控制器
     private _mapUICtl: MapUICtl = null;//地图界面控制器
 
-
+    private _loadCount: number = 0;//加载计数
     /**=========================事件handle============================ */
     private _buildingBtnViewCloseHandle: string;//建筑按钮视图关闭事件
 
@@ -86,26 +85,37 @@ export class MainScene extends Component {
     protected update(dt: number): void {
         this._mapUICtl?.update(dt);
     }
-
+    /**加载回调 */
+    loadOverCall() {
+        this._loadCount--;
+        if (this._loadCount <= 0) {
+            this._loadCount = 0;
+            this.loadingNode.active = false;
+        }
+    }
+    /**获取加载回调 */
+    getLoadOverCall() {
+        this._loadCount++;
+        return this.loadOverCall.bind(this);
+    }
     // 初始化数据
     initData() {
-        this._mapNormalCtl = new MapNormalCtl(this);
-        this._mapEditCtl = new MapEditCtl(this);
-        this._buildingEditCtl = new BuildEditCtl(this);
-        this._landEditCtl = new LandEditCtl(this);
-        this._recycleCtl = new RecycleCtl(this);
-        this._mapUICtl = new MapUICtl(this);
+        ViewsMgr.initLayer(this.sceneLayer, this.popupLayer, this.tipLayer, this.loadingLayer);
 
-        this.mainUIView.mainScene = this;
-        this.editUIView.mainScene = this;
-        this.editUIView.node.active = false;
-        this.landEditUIView.mainScene = this;
-        this.landEditUIView.node.active = false;
+        let call = this.getLoadOverCall();
+        ViewsMgr.showView(PrefabType.MainUIView, (node: Node) => {
+            let view = node.getComponent(MainUIView);
+            this._mainUIView = view;
+            this._mainUIView.mainScene = this;
+            if (call) call();
+        });
 
-        ViewsManager.instance.initLayer(this.sceneLayer, this.popupLayer, this.tipLayer, this.loadingLayer);
-        // for test
-        // this.changeMapStatus(MapStatus.EDIT);
-        // this.editUIView.node.active = false;
+        this._mapNormalCtl = new MapNormalCtl(this, this.getLoadOverCall());
+        this._mapEditCtl = new MapEditCtl(this, this.getLoadOverCall());
+        this._buildingEditCtl = new BuildEditCtl(this, this.getLoadOverCall());
+        this._landEditCtl = new LandEditCtl(this, this.getLoadOverCall());
+        this._recycleCtl = new RecycleCtl(this, this.getLoadOverCall());
+        this._mapUICtl = new MapUICtl(this, this.getLoadOverCall());
     }
     // 初始化事件
     initEvent() {
@@ -176,7 +186,7 @@ export class MainScene extends Component {
         }
         else if (MapStatus.DEFAULT == this._mapStatus) {// 普通点击 展示建筑建造界面
             ViewsManager.instance.showView(PrefabType.BuildingProduceView, (node: Node) => {
-                this.mainUIView.node.active = false;
+                this._mainUIView.node.active = false;
                 let buildingProduceView = node.getComponent(BuildingProduceView);
                 this._mapUICtl.moveCameraToBuilding(building, buildingProduceView.getBuildingPos());
                 let pos = building.pos;
@@ -185,7 +195,7 @@ export class MainScene extends Component {
                     building.addToParent(this.buildingLayer);
                     building.pos = pos;
                     building.setCameraType(Layers.Enum.DEFAULT);
-                    this.mainUIView.node.active = true;
+                    this._mainUIView.node.active = true;
                     this._mapUICtl.buildingSort();
                 });
             });
@@ -232,11 +242,19 @@ export class MainScene extends Component {
         }
     }
     // 新建建筑与地块
-    onBuidLandClick(data: EditInfo) {
+    onBuildLandClick(data: EditInfo) {
         console.log("onBuidLandClick", data);
         if (EditType.Land == data.type) {
             this._landEditCtl.selectLand = data;
-            this.landEditUIView.initData(data);
+            if (this._landEditUIView) {
+                this._landEditUIView.initData(data);
+            } else {
+                ViewsMgr.showView(PrefabType.LandEditUIView, (node: Node) => {
+                    this._landEditUIView = node.getComponent(LandEditUIView);
+                    this._landEditUIView.mainScene = this;
+                    this._landEditUIView.initData(data);
+                });
+            }
             this.changeMapStatus(MapStatus.LAND_EDIT);
             return;
         }
@@ -254,9 +272,25 @@ export class MainScene extends Component {
         if (status == oldStatus) return;
         console.log("changeMapStatus", oldStatus, status);
         this.lineLayer.active = MapStatus.DEFAULT != status;
-        this.mainUIView.node.active = MapStatus.DEFAULT == status;
-        this.editUIView.node.active = (MapStatus.EDIT == status || MapStatus.BUILD_EDIT == status);
-        this.landEditUIView.node.active = MapStatus.LAND_EDIT == status;
+        this._mainUIView.node.active = MapStatus.DEFAULT == status;
+        if (this._editUIView) {
+            this._editUIView.node.active = (MapStatus.EDIT == status || MapStatus.BUILD_EDIT == status);
+        } else if (MapStatus.EDIT == status || MapStatus.BUILD_EDIT == status) {
+            ViewsMgr.showView(PrefabType.EditUIView, (node: Node) => {
+                let view = node.getComponent(EditUIView);
+                this._editUIView = view;
+                this._editUIView.mainScene = this;
+            });
+        }
+        if (this._landEditUIView) {
+            this._landEditUIView.node.active = MapStatus.LAND_EDIT == status;
+        } else if (MapStatus.LAND_EDIT == status) {
+            ViewsMgr.showView(PrefabType.LandEditUIView, (node: Node) => {
+                let view = node.getComponent(LandEditUIView);
+                this._landEditUIView = view;
+                this._landEditUIView.mainScene = this;
+            });
+        }
         this._mapUICtl.roleIsShow = MapStatus.DEFAULT == status;
         let ctl = this.getMapCtl();
         ctl.clearData();
@@ -350,6 +384,13 @@ export class MainScene extends Component {
         let worldPos = this.landLayer.getComponent(UITransform).convertToWorldSpaceAR(new Vec3(x, y, 0));
         let pos = this.mapCamera.worldToScreen(worldPos);
         return pos;
+    }
+    /**查找建筑 */
+    findBuilding(id: number) {
+        return this._mapUICtl.findBuilding(id);
+    }
+    findBuildingByIdx(idx: number) {
+        return this._mapUICtl.findBuildingByIdx(idx);
     }
 }
 

@@ -1,9 +1,7 @@
 import { Component, Label, Node, ProgressBar, _decorator } from 'cc';
 import { GameRes } from '../../GameRes';
 import { EventType } from '../../config/EventType';
-import { PrefabType } from '../../config/PrefabType';
 import { inf_SpineAniCreate } from '../../manager/InterfaceDefines';
-import { ViewsManager } from '../../manager/ViewsManager';
 import { EventMgr } from '../../util/EventManager';
 const { ccclass, property } = _decorator;
 
@@ -37,7 +35,7 @@ export class RightMonsterView extends Component {
     }
 
     onChallengeClick(){
-        ViewsManager.instance.showView(PrefabType.TextbookChallengeView);
+        
     }
 
     update(deltaTime: number) {

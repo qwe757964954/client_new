@@ -51,7 +51,9 @@ export class TextbookListView extends BaseView {
     initNavTitle(){
         ViewsManager.addNavigation(this.top_layout,0,0).then((navScript: NavTitleView) => {
             navScript.updateNavigationProps("词书列表",()=>{
-                ViewsManager.instance.closeView(PrefabType.TextbookListView);
+                ViewsManager.instance.showView(PrefabType.TextbookChallengeView,(node:Node)=>{
+                    ViewsManager.instance.closeView(PrefabType.TextbookListView);
+                });
             });
         });
     }
@@ -79,7 +81,8 @@ export class TextbookListView extends BaseView {
     }
 
     onClickAddTextbook(){
-
+        console.log("onClickAddTextbook");
+        ViewsManager.instance.showView(PrefabType.SelectWordView);
     }
 }
 

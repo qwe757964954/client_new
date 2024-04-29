@@ -8,6 +8,11 @@ class UserModel {
         }
         return this._instance;
     }
+    private _account: string;        // 账号
+    private _password: string;       // 密码
+    private _loginType: number;      // 登录类型
+    private _isLogin: boolean = false; // 是否登录成功过
+    public isAutoLogin: boolean = true; // 是否自动登录
 
     private _loginToken: string;     // loginTolen
     private _memberToken: string;    // memberToken
@@ -32,6 +37,37 @@ class UserModel {
 
     }
 
+    public resetData() {
+        this._isLogin = false;
+        this._account = "";
+        this._password = "";
+        this._loginToken = "";
+        this._memberToken = "";
+        this._mobile = "";
+    }
+
+    set account(account: string) {
+        this._account = account;
+    }
+    get account(): string {
+        return this._account;
+    }
+    set password(password: string) {
+        this._password = password;
+    }
+    get password(): string {
+        return this._password;
+    }
+    set isLogin(isLogin: boolean) {
+        this._isLogin = isLogin;
+    }
+    get isLogin(): boolean {
+        return this._isLogin;
+    }
+
+    set loginToken(loginToken: string) {
+        this._loginToken = loginToken;
+    }
     get loginToken(): string {
         return this._loginToken;
     }
@@ -50,7 +86,6 @@ class UserModel {
     get sysType(): number {
         return this._sysType;
     }
-
 }
 
 export const User = UserModel.instance;

@@ -1,6 +1,7 @@
 import { _decorator, color, Component, isValid, Node } from 'cc';
+import { BookListItemData } from '../../models/TextbookModel';
 import List from '../../util/list/List';
-import { RightNavItem, RightNavItemData } from './RightNavItem';
+import { RightNavItem } from './RightNavItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('RightNavView')
@@ -8,10 +9,9 @@ export class RightNavView extends Component {
     @property(List)
     public navScroll: List = null;
 
-    private _navDataArr :RightNavItemData[] = [];
+    private _navDataArr :BookListItemData[] = [];
     
     private callSelectCallback:(selectId:number)=>void = null;
-
 
     start() {
         console.log("RightNavView  start");
@@ -19,24 +19,26 @@ export class RightNavView extends Component {
 
     protected onLoad(): void {
         console.log("RightNavView  onLoad");
-        
     }
 
-    loadNavListData(data:RightNavItemData[],callBack:(selectId:number)=>void){
+    loadNavListData(data:BookListItemData[],callBack:(selectId:number)=>void){
+        console.log("loadNavListData",data,this.navScroll.selectedId);
         this.callSelectCallback = callBack;
         this._navDataArr = data;
         this.navScroll.numItems = this._navDataArr.length;
-        this.navScroll.update();
+        this.navScroll.selectedId = -1;
         this.navScroll.selectedId = 0;
+        this.navScroll.update();
     }
 
     onNavListVerticalRender(item:Node, idx:number){
         let navItemScript:RightNavItem = item.getComponent(RightNavItem);
-        let itemInfo:RightNavItemData = this._navDataArr[idx];
+        let itemInfo:BookListItemData = this._navDataArr[idx];
         navItemScript.updateNavProps(idx,itemInfo);
     }
     //当列表项被选择...
     onNavListSelected(item: any, selectedId: number, lastSelectedId: number, val: number) {
+        console.log("onNavListSelected",selectedId);
         if (!item)
             return;
         this.clearTopItemColor();

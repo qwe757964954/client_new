@@ -1,9 +1,7 @@
-import { _decorator, Component, director, Node, view } from 'cc';
-import { ViewsManager } from '../../manager/ViewsManager';
+import { _decorator, Component, director, Node } from 'cc';
 import { PrefabType, SceneType } from '../../config/PrefabType';
+import { ViewsManager } from '../../manager/ViewsManager';
 import CCUtil from '../../util/CCUtil';
-import EventManager from '../../util/EventManager';
-import { EventType } from '../../config/EventType';
 const { ccclass, property } = _decorator;
 
 /**大冒险 学习页面 何存发 2024年4月8日19:21:23 */
@@ -51,6 +49,8 @@ export class studyView extends Component {
                 // director.loadScene(SceneType.WorldMapScene);
                 ViewsManager.instance.showView(PrefabType.WorldMapView);
                 break;
+            case "bookWord": //教材单词
+                ViewsManager.instance.showView(PrefabType.SelectWordView);
         }
         // EventManager.emit(EventType.Study_Page_Switching, [i]);
 

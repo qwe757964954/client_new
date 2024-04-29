@@ -1,6 +1,8 @@
 import { _decorator, Component, Label, Sprite, UITransform, Vec3 } from "cc";
+import { MapConfig } from "../config/MapConfig";
 import { DataMgr, EditInfo } from "../manager/DataMgr";
 import { LoadManager } from "../manager/LoadManager";
+import { ToolUtil } from "../util/ToolUtil";
 import { GridModel } from "./GridModel";
 const { ccclass, property } = _decorator;
 
@@ -18,6 +20,7 @@ export class LandModel extends Component {
 
     private _dataLandInfo: EditInfo;//数据地块信息
     private _isLoad: boolean = false;//是否加载图片
+    private _flowerSprite: Sprite = null;//花朵
 
     // 销毁
     protected onDestroy(): void {
@@ -34,6 +37,9 @@ export class LandModel extends Component {
     }
     get width(): number {
         return this._width;
+    }
+    get bid() {
+        return this._landInfo.id;
     }
 
     // 初始化数据
@@ -68,9 +74,25 @@ export class LandModel extends Component {
         this.node.position = pos;
     }
     //显示地块
-    public showLand() {
+    public showLand(callBack?: Function) {
         this.releaseAsset();
-        LoadManager.loadSprite(DataMgr.getEditPng(this._landInfo), this.getComponent(Sprite));
+        LoadManager.loadSprite(DataMgr.getEditPng(this._landInfo), this.getComponent(Sprite)).then(() => {
+            if (callBack) callBack();
+        });
+        if (this.isDefault()) {
+            if (this._flowerSprite) {
+                this._flowerSprite.node.active = true;
+            } else if (ToolUtil.getRandomInt(0, 19) < 1) {
+                let flowers = MapConfig.landFlowers;
+                let path = flowers[ToolUtil.getRandomInt(0, flowers.length - 1)];
+                this._flowerSprite = this.getComponentInChildren(Sprite);
+                this._flowerSprite.node.active = true;
+                this._flowerSprite.node.scale = new Vec3(0.5, 0.5, 1);
+                LoadManager.loadSprite(path, this._flowerSprite);
+            }
+        } else {
+            if (this._flowerSprite) this._flowerSprite.node.active = false;
+        }
     }
     // 设置地块
     public set landInfo(landInfo: EditInfo) {
@@ -103,15 +125,21 @@ export class LandModel extends Component {
         this.landInfo = this._dataLandInfo;
     }
     /**显示与否 */
-    public show(isShow: boolean) {
+    public show(isShow: boolean, callBack?: Function) {
+        this.node.active = isShow;
         if (isShow && !this._isLoad) {
             this._isLoad = true;
-            this.showLand();
+            this.showLand(callBack);
+        } else {
+            if (callBack) callBack();
         }
-        this.node.active = isShow;
     }
     /**获取显示范围 */
     public getRect() {
         return this.node.getComponent(UITransform).getBoundingBox();
+    }
+    /**是否是默认地块 */
+    public isDefault() {
+        return this._landInfo.id == DataMgr.instance.defaultLand.id;
     }
 }

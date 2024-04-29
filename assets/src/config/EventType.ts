@@ -2,6 +2,8 @@
 export const EventType = {
     Socket_Connect: "SocketConnect",//socket连接成功
     Socket_Dis: "SocketDis",//socket断开
+    Socket_Close: "SocketClose",//socket关闭
+    Socket_ReconnectFail: "SocketReconnectFail",//socket重连失败
 
     Map_Scale: "MapScale",//地图缩放
     BuildingBtnView_Close: "BuildingBtnViewClose",//建筑按钮界面关闭
@@ -30,5 +32,5 @@ export const EventType = {
     Classification_Word: "Classification_Word",//单个单词详情
 
     /**选择词书模块相关事件 */
-
+    Select_Word_Plan: "Select_Word_Plan",//选择计划
 }

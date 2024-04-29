@@ -96,9 +96,9 @@ export class HttpManager {
     // 账号密码登录
     static reqAccountLogin(accountname: string, loginpwd: string, systype: number, successFunc: Function, failedFunc: Function) {
         let para: c2sAccountLogin = new c2sAccountLogin();
-        para.AccountName = accountname;
-        para.LoginPwd = loginpwd;
-        para.SysType = systype;
+        // para.AccountName = accountname;
+        // para.LoginPwd = loginpwd;
+        // para.SysType = systype;
         console.log("reqAccountLogin para = ", JSON.stringify(para));
         HttpUtil.post(NetConfig.accountLogin, JSON.stringify(para)).then(
             (s: string) => {

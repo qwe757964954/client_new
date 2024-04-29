@@ -1,7 +1,12 @@
 import { EventMouse, EventTouch, Vec3 } from "cc";
 import { MapStatus } from "../../config/MapConfig";
+import { ViewsManager } from "../../manager/ViewsManager";
 import { BuildingModel } from "../../models/BuildingModel";
 import { GridModel } from "../../models/GridModel";
+import { s2cBuildingCreate, s2cBuildingEdit } from "../../models/NetModel";
+import { InterfacePath } from "../../net/InterfacePath";
+import { EventMgr } from "../../util/EventManager";
+import { MainScene } from "../main/MainScene";
 import { MapBaseCtl } from "./MapBaseCtl";
 
 //建筑编辑控制器
@@ -12,6 +17,47 @@ export class BuildEditCtl extends MapBaseCtl {
     private _dtScreenPos: Vec3 = new Vec3();//屏幕坐标差
     private _isBuildingMove: boolean = false;//建筑是否移动
 
+    private _buildingEditHandle: string;//建筑编辑事件
+    private _buildingCreateHandle: string;//建筑创建事件
+
+    constructor(mainScene: MainScene, callBack?: Function) {
+        super(mainScene, callBack);
+
+        this.initEvent();
+    }
+    // 初始化事件
+    initEvent() {
+        this._buildingEditHandle = EventMgr.on(InterfacePath.c2sBuildingEdit, this.onBuildingEdit.bind(this));
+        this._buildingCreateHandle = EventMgr.on(InterfacePath.c2sBuildingCreate, this.onBuildingCreate.bind(this));
+    }
+    // 销毁
+    public dispose(): void {
+        EventMgr.off(InterfacePath.c2sBuildingEdit, this._buildingEditHandle);
+        EventMgr.off(InterfacePath.c2sBuildingCreate, this._buildingCreateHandle);
+    }
+    /** 建筑编辑返回 */
+    onBuildingEdit(data: s2cBuildingEdit) {
+        if (this._mainScene.getMapCtl() != this) return;
+        if (200 != data.Code) {
+            ViewsManager.showAlert(data.Msg);
+            return;
+        }
+        let building = this._mainScene.findBuilding(data.id);
+        building?.saveData();
+    }
+    /** 建筑创建返回 */
+    onBuildingCreate(data: s2cBuildingCreate) {
+        if (this._mainScene.getMapCtl() != this) return;
+        if (200 != data.Code) {
+            ViewsManager.showAlert(data.Msg);
+            return;
+        }
+        let building = this._mainScene.findBuildingByIdx(data.idx);
+        if (building) {
+            building.buildingID = data.id;
+            building.saveData();
+        }
+    }
     // 设置选中建筑
     public set selectBuilding(building: BuildingModel) {
         if (!building) return;

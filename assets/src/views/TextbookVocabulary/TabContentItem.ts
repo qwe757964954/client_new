@@ -1,4 +1,6 @@
-import { _decorator, Button, Label, Node } from 'cc';
+import { _decorator, Label, Node } from 'cc';
+import { NetConfig } from '../../config/NetConfig';
+import { SchoolBookGradeItemData, SchoolBookListItemData } from '../../models/TextbookModel';
 import ImgUtil from '../../util/ImgUtil';
 import ListItem from '../../util/list/ListItem';
 const { ccclass, property } = _decorator;
@@ -21,17 +23,17 @@ export class TabContentItem extends ListItem {
     public word_num_text:Label = null;          // 单词数量
     @property(Node)
     public item_img:Node = null;          // 课程图片
-    @property(Button)
-    public addBtn:Button = null;          // 课程图片
     start() {
 
     }
 
-    updateItemProps(idx:number,itemInfo:VocabularyItemData){
-        this.book_name.string = itemInfo.name;
-        this.word_num_text.string = `单词数量：${itemInfo.word_count}`;
-        ImgUtil.loadRemoteImage(itemInfo.imgUrl,this.item_img,186.797,252.651);
-        // this.addBtn.node.active = itemInfo.isCollect;
+    updateItemProps(idx:number,itemInfo:SchoolBookGradeItemData,dataSource:SchoolBookListItemData){
+        this.book_name.string = itemInfo.Name;
+        this.word_num_text.string = `单词数量：${itemInfo.Num}`;
+        let bookImgUrl = `${NetConfig.assertUrl}/imgs/bookcover/${dataSource.Name}/${itemInfo.Name}.jpg`;
+        
+        // item.getChildByName("bookImg").skin = GameData.ASSETS_URL + "/assets/imgs/bookcover/" + this.currentEditionItem.dataSource.Name + "/" + data.Name + ".jpg";
+        ImgUtil.loadRemoteImage(bookImgUrl,this.item_img,186.797,252.651);
     }
 }
 
