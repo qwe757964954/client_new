@@ -14,13 +14,14 @@ export class SettingPlanView extends Component {
     public rightScroll:List = null
 
     start() {
-        this.leftScroll.numItems = 20;
-        this.rightScroll.numItems = 7;
+        // this.leftScroll.numItems = 20;
+        // this.rightScroll.numItems = 7;
     }
     onLoadLeftVerticalList(item:Node, idx:number){
         console.log("onLoadLeftVerticalList",item,idx);
         let label = item.getComponent(Label);
-        let indexNum = idx + 1;
+        // let indexNum = idx + 1;
+        let indexNum = idx + 0;
         let bookImgUrl = `${indexNum}`;
         label.string = bookImgUrl;
     }   
@@ -28,7 +29,7 @@ export class SettingPlanView extends Component {
     onLoadRightVerticalList(item:Node, idx:number){
         console.log("onLoadRightVerticalList",item,idx);
         let label = item.getComponent(Label);
-        let indexNum = idx + 1;
+        let indexNum = idx + 0;
         let bookImgUrl = `${indexNum}`;
         label.string = bookImgUrl;
     }
