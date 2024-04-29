@@ -3,15 +3,18 @@ import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { EventMgr } from '../../util/EventManager';
-import List from '../../util/list/List';
+import { ScrollViewExtra } from './picker/ScrollViewExtra';
 const { ccclass, property } = _decorator;
 
 @ccclass('SettingPlanView')
 export class SettingPlanView extends Component {
-    @property(List)
-    public leftScroll:List = null
-    @property(List)
-    public rightScroll:List = null
+    @property(ScrollViewExtra)
+    public leftScroll:ScrollViewExtra = null
+    @property(ScrollViewExtra)
+    public rightScroll:ScrollViewExtra = null
+
+    @property(Label)
+    public book_title:Label = null
 
     start() {
         // this.leftScroll.numItems = 20;

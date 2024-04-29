@@ -121,6 +121,7 @@ export class ScrollViewExtra extends Component {
             }
         }
         let jsItem = this.selectChildren[idx].getComponent(DateListItemNew);
+        console.log(">>>>>>>>>> 选择结果:",this.selectChildren,idx,jsItem.labNum.string);
         // 这里回调，传出选择结果
     }
 
