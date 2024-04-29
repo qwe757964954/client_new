@@ -4,6 +4,7 @@ import { EventType } from '../../config/EventType';
 import { KeyConfig } from '../../config/KeyConfig';
 import { NetConfig } from '../../config/NetConfig';
 import { SceneType } from '../../config/PrefabType';
+import GlobalConfig from '../../GlobalConfig';
 import { DataMgr } from '../../manager/DataMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { s2cAccountLogin } from '../../models/NetModel';
@@ -12,6 +13,7 @@ import { HttpManager } from '../../net/HttpManager';
 import { InterfacePath } from '../../net/InterfacePath';
 import { NetMgr } from '../../net/NetManager';
 import { BaseView } from '../../script/BaseView';
+import EventManager from '../../util/EventManager';
 import StorageUtil from '../../util/StorageUtil';
 import { TimerMgr } from '../../util/TimerMgr';
 import { ServerItem } from './ServerItem';
@@ -74,7 +76,6 @@ export class LoginView extends BaseView {
     private _socketConnectHandler: string; // socket连接回调事件
 
     start() {
-        // this._socketConnectHandler = EventManager.on(EventType.Socket_Connect, this.onSocketConnect.bind(this));
     }
     //初始化事件
     onInitModuleEvent() {
@@ -125,6 +126,35 @@ export class LoginView extends BaseView {
     }
 
     checkToken() {
+        if (GlobalConfig.OLD_SERVER) {
+            // 有token且登录成功直接进入主界面，否则初始化UI
+            let loginInfoStr = StorageUtil.getData(LOGIN_INFO_KEY);
+            if (!loginInfoStr) {
+                this.initUI();
+                return;
+            }
+            try {
+                let loginInfo = JSON.parse(loginInfoStr);
+                if (loginInfo.AccountName && loginInfo.LoginPwd) {
+                    this.userNameEdit.string = loginInfo.AccountName;
+                    this.pwdEdit.string = loginInfo.LoginPwd;
+                }
+                this._isRequest = true;
+                HttpManager.reqTokenLogin(loginInfo?.LoginToken, (obj) => {
+                    this._isRequest = false;
+                    if (!this.loginSuc(obj)) {
+                        this.initUI();
+                    }
+                }, () => {
+                    this._isRequest = false;
+                    this.initUI();
+                });
+            } catch (error) {
+                console.error(error);
+                this.initUI();
+            }
+            return;
+        }
         let account = StorageUtil.getData(KeyConfig.Last_Login_Account);
         let password = StorageUtil.getData(KeyConfig.Last_Login_Pwd);
         if (account && password) {
@@ -136,33 +166,6 @@ export class LoginView extends BaseView {
             }
         }
         this.initUI();
-
-        // 有token且登录成功直接进入主界面，否则初始化UI
-        // let loginInfoStr = StorageUtil.getData(LOGIN_INFO_KEY);
-        // if (!loginInfoStr) {
-        //     this.initUI();
-        //     return;
-        // }
-        // try {
-        //     let loginInfo = JSON.parse(loginInfoStr);
-        //     if (loginInfo.AccountName && loginInfo.LoginPwd) {
-        //         this.userNameEdit.string = loginInfo.AccountName;
-        //         this.pwdEdit.string = loginInfo.LoginPwd;
-        //     }
-        //     this._isRequest = true;
-        //     HttpManager.reqTokenLogin(loginInfo?.LoginToken, (obj) => {
-        //         this._isRequest = false;
-        //         if (!this.loginSuc(obj)) {
-        //             this.initUI();
-        //         }
-        //     }, () => {
-        //         this._isRequest = false;
-        //         this.initUI();
-        //     });
-        // } catch (error) {
-        //     console.error(error);
-        //     this.initUI();
-        // }
     }
 
     initUI() {
@@ -243,18 +246,20 @@ export class LoginView extends BaseView {
             return;
         }
         this._isRequest = true;
-
+        if (GlobalConfig.OLD_SERVER) {
+            HttpManager.reqAccountLogin(userName, pwd, 0, (obj) => {
+                this.loginSuc(obj);
+                this._isRequest = false;
+            }, () => {
+                console.log("账号密码登录失败");
+                this._isRequest = false;
+            })
+            return;
+        }
         User.account = userName;
         User.password = pwd;
         NetMgr.setServer(NetConfig.server, NetConfig.port);
         NetMgr.connectNet();
-        // HttpManager.reqAccountLogin(userName, pwd, 0, (obj) => {
-        //     this.loginSuc(obj);
-        //     this._isRequest = false;
-        // }, () => {
-        //     console.log("账号密码登录失败");
-        //     this._isRequest = false;
-        // })
     }
 
     // 手机号下一步
@@ -412,6 +417,7 @@ export class LoginView extends BaseView {
         User.memberToken = obj["MemberToken"];
         NetMgr.setServer(obj["WebSocketAddr"], obj["WebSocketPort"], obj["WebPort"]);
         NetMgr.connectNet();
+        this._socketConnectHandler = EventManager.on(EventType.Socket_Connect, this.onSocketConnect.bind(this));
         return true;
     }
 
@@ -424,8 +430,8 @@ export class LoginView extends BaseView {
 
     onDestroy() {
         super.onDestroy();
-        // if (this._socketConnectHandler)
-        //     EventManager.off(EventType.Socket_Connect, this._socketConnectHandler);
+        if (this._socketConnectHandler)
+            EventManager.off(EventType.Socket_Connect, this._socketConnectHandler);
     }
     /**登录结果 */
     onAccountLogin(data: s2cAccountLogin) {

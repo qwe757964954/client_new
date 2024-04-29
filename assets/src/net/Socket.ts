@@ -1,3 +1,4 @@
+import GlobalConfig from "../GlobalConfig";
 
 export class Socket {
 
@@ -78,6 +79,14 @@ export class Socket {
     }
     private onMessage(msg) {
         this.noRecvMsgTimes = 0;
+        if (GlobalConfig.OLD_SERVER) {
+            let buffer: string = msg.data;
+            if (!buffer) { return; }
+            if (this.recvFun) {
+                this.recvFun(buffer);
+            }
+            return;
+        }
         let buffer: Blob = msg.data;
         if (!buffer) { return; }
         buffer.text().then((data) => {

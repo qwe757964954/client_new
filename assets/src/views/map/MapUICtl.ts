@@ -76,12 +76,15 @@ export class MapUICtl extends MainBaseCtl {
         this.initGrid();
         this.initMap();
 
-        // this.initLand();
-        // this.initBuilding();
-        // this.initRole();
-
+        if (GlobalConfig.OLD_SERVER) {
+            this.initLand({});
+            // this.initBuilding();
+            // this.initRole();
+            this.updateCameraVisible();
+            return;
+        }
         ServiceMgr.buildingService.reqBuildingList();
-        // this.updateCameraVisible();
+
     }
     // 初始化数据
     initData(): void {
