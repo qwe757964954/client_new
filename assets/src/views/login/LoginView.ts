@@ -1,4 +1,4 @@
-import { _decorator, director, EditBox, Event, EventTouch, instantiate, Label, Node, Prefab, sys, Toggle } from 'cc';
+import { _decorator, director, EditBox, Event, EventTouch, instantiate, isValid, Label, Node, Prefab, sys, Toggle } from 'cc';
 import { HTML5, NATIVE } from 'cc/env';
 import { EventType } from '../../config/EventType';
 import { KeyConfig } from '../../config/KeyConfig';
@@ -24,15 +24,6 @@ const LOGIN_INFO_KEY = "login_info_key";
 
 @ccclass('LoginView')
 export class LoginView extends BaseView {
-    @property(Node)
-    public sceneLayer: Node = null;//场景层
-    @property(Node)
-    public popupLayer: Node = null;//弹窗层
-    @property(Node)
-    public tipLayer: Node = null;//提示层
-    @property(Node)
-    public loadingLayer: Node = null;//加载层
-
     @property(Node)
     public middle: Node = null;              // middle节点
 
@@ -83,8 +74,6 @@ export class LoginView extends BaseView {
     private _socketConnectHandler: string; // socket连接回调事件
 
     start() {
-        ViewsManager.instance.initLayer(this.sceneLayer, this.popupLayer, this.tipLayer, this.loadingLayer);
-
         // this._socketConnectHandler = EventManager.on(EventType.Socket_Connect, this.onSocketConnect.bind(this));
     }
     //初始化事件
@@ -101,6 +90,7 @@ export class LoginView extends BaseView {
 
         HttpManager.reqSelectServer((obj) => {
             console.log("reqSelectServer obj = ", obj);
+            if (!isValid(this, true)) return;
             let available_server = obj.available_server;
             for (let k in available_server) {
                 let serverItem = instantiate(this.serverItemPrefab);
@@ -140,7 +130,10 @@ export class LoginView extends BaseView {
         if (account && password) {
             this.userNameEdit.string = account;
             this.pwdEdit.string = password;
-            this.btnLoginFunc();
+            if (User.isAutoLogin) {
+                this.btnLoginFunc();
+                return;
+            }
         }
         this.initUI();
 
@@ -438,7 +431,7 @@ export class LoginView extends BaseView {
     onAccountLogin(data: s2cAccountLogin) {
         this._isRequest = false;
         if (200 != data.Code) {
-            ViewsManager.showAlert(data.Msg);
+            ViewsManager.showAlert(data.Msg ? data.Msg : "数据异常");
             return;
         }
         console.log("登录成功");

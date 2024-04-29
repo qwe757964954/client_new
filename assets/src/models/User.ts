@@ -12,6 +12,7 @@ class UserModel {
     private _password: string;       // 密码
     private _loginType: number;      // 登录类型
     private _isLogin: boolean = false; // 是否登录成功过
+    public isAutoLogin: boolean = true; // 是否自动登录
 
     private _loginToken: string;     // loginTolen
     private _memberToken: string;    // memberToken

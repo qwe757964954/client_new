@@ -2,6 +2,7 @@
 export const TextConfig = {
     Building_Path1: "map/land/{0}/spriteFrame",
     Building_Path2: "map/building/{0}/spriteFrame",
+    Land_Key: "{0}_{1}",
 
     Building_Sure_Tip: "有重叠建筑，暂时不能保存!",
     Building_Cell_Tip: "此建筑不能售卖!",

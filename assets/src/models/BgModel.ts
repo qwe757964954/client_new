@@ -1,4 +1,4 @@
-import { _decorator, Component, Sprite, UITransform, Vec3 } from 'cc';
+import { _decorator, Component, Label, Sprite, UITransform, Vec3 } from 'cc';
 import { MapConfig } from '../config/MapConfig';
 import { LoadManager } from '../manager/LoadManager';
 import { ToolUtil } from '../util/ToolUtil';
@@ -22,19 +22,20 @@ export class BgModel extends Component {
         this._x = x;
         this._y = y;
         this._isLoad = false;
+        // this.getComponentInChildren(Label).string = x.toString() + "," + y.toString();
+        this.getComponentInChildren(Label).node.active = false;
 
         this.initPos();
     }
     // 初始化位置
     public initPos() {
+        // 图片描点(0,1.0)
         let bgInfo = MapConfig.bgInfo;
+        let maxWidth = bgInfo.maxWidth;
+        let maxHeight = bgInfo.maxHeight;
         let width = bgInfo.width;
         let height = bgInfo.height;
-        let col = bgInfo.col;
-        let row = bgInfo.row;
-        let midCol = col / 2;
-        let midRow = row / 2;
-        this.node.position = new Vec3((this._x - midCol + 0.5) * width, (midRow - this._y - 0.5) * height, 0);
+        this.node.position = new Vec3(this._x * width - 0.5 * maxWidth, 0.5 * maxHeight - this._y * height, 0);
     }
     private isCommonBg(id: number) {
         let ary = MapConfig.bgInfo.commonAry;

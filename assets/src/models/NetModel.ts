@@ -83,13 +83,17 @@ export class s2cAccountLogin {
 export class c2sBuildingList {
     command_id: string = InterfacePath.c2sBuildingList;
 }
-/**建筑列表返回 数组类型*/
-export class s2cBuildingList {
+export class s2cBuildingListInfo {
     id: number;//建筑唯一索引id
     bid: number;//建筑id
     x: number;//建筑x坐标
     y: number;//建筑y坐标
     direction: number;//建筑方向 0:未翻转, 1: 翻转
+}
+/**建筑列表返回*/
+export class s2cBuildingList {
+    build_list: s2cBuildingListInfo[];//建筑列表
+    land_dict: { [key: string]: number };//地块字典
 }
 /**建筑修改（地块修改） */
 export class c2sBuildingEdit {
@@ -121,6 +125,16 @@ export class s2cBuildingCreate {
     Msg: string;//返回信息
     idx: number;//建筑索引(前端使用)
     id: number;//建筑唯一索引id
+}
+/**地块更新 */
+export class c2sLandUpdate {
+    command_id: string = InterfacePath.c2sLandUpdate;
+    update_land: { [key: string]: number };//地块字典
+}
+/**地块更新返回 */
+export class s2cLandUpdate {
+    Code: number;//返回码
+    Msg: string;//返回信息
 }
 
 /**********************************以上是新接口*************************************/
