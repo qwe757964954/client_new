@@ -1,4 +1,4 @@
-import { _decorator, Component, instantiate, Layers, Node, Prefab, UITransform, view } from 'cc';
+import { _decorator, CCInteger, Component, instantiate, Layers, Node, Prefab, UITransform, view } from 'cc';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
 import { NodeUtil } from '../../util/NodeUtil';
 const { ccclass, property } = _decorator;
@@ -11,8 +11,8 @@ export class FloorsAutoView extends Component {
     public floors2:Node = null;
     @property(Node)
     public role_node:Node = null;
-    @property(Number)
-    private speed:Number = 0;
+    @property({type: CCInteger})
+    private speed:number = 0;
 
     @property(Prefab)
     public roleModel: Prefab = null;//角色
@@ -36,8 +36,8 @@ export class FloorsAutoView extends Component {
         roleModel.walk();
     }
     update(deltaTime: number) {
-        let pos1 = this.floors1.getPosition().x - this.speed.valueOf() * deltaTime;
-        let pos2 = this.floors2.getPosition().x - this.speed.valueOf() * deltaTime;
+        let pos1 = this.floors1.getPosition().x - this.speed * deltaTime;
+        let pos2 = this.floors2.getPosition().x - this.speed * deltaTime;
         this.floors1.setPosition(pos1, this.floors1.getPosition().y, 0);
         this.floors2.setPosition(pos2, this.floors1.getPosition().y, 0);
         let bgWidth = this.floors2.getComponent(UITransform).width;

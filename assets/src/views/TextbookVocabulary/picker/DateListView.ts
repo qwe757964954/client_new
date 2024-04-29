@@ -1,4 +1,4 @@
-import { Component, Node, Prefab, ScrollView, UITransform, Vec3, _decorator, instantiate, isValid, macro } from 'cc';
+import { CCFloat, CCInteger, Component, Node, Prefab, ScrollView, UITransform, Vec3, _decorator, instantiate, isValid, macro } from 'cc';
 import { DateListItemNew } from './DateListItemNew';
 const { ccclass, property } = _decorator;
 
@@ -10,29 +10,29 @@ export class DateListView extends Component {
     @property(Prefab)
     public itemPrefab: Prefab = null; // item预制体 预制挂的脚本要继承ListViewItem
 
-    @property(Number)
-    direction:Number = 1; //1代表竖屏
+    @property({type: CCInteger})
+    direction:number = 1; //1代表竖屏
 
-    @property(Number)
-    spawnCount:Number = 1; //实际创建的项数量
+    @property({type: CCInteger})
+    spawnCount:number = 1; //实际创建的项数量
 
-    @property(Number)
-    spacingY:Number = 0; //纵向间隔
+    @property({type: CCFloat})
+    spacingY:number = 0; //纵向间隔
 
-    @property(Number)
-    spacingX:Number = 0; //纵向间隔
+    @property({type: CCFloat})
+    spacingX:number = 0; //纵向间隔
 
-    @property(Number)
-    itemHeight:Number = 0; //item的高度
+    @property({type: CCFloat})
+    itemHeight:number = 0; //item的高度
 
-    @property(Number)
-    itemWidth:Number = 0; //item的宽度
+    @property({type: CCFloat})
+    itemWidth:number = 0; //item的宽度
 
-    @property(Number)
-    colNum:Number = 0; //纵向布局时的列数
+    @property({type: CCInteger})
+    colNum:number = 0; //纵向布局时的列数
 
-    @property(Number)
-    rowNum:Number = 0; //横向布局时的行数
+    @property({type: CCInteger})
+    rowNum:number = 0; //横向布局时的行数
 
     private initialled: boolean = false;
     private DirectionVertical:number =1; //1 为竖屏其他为横屏
