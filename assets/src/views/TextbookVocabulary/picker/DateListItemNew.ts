@@ -1,11 +1,11 @@
-import { _decorator, Component, Label, Node } from 'cc';
+import { _decorator, CCInteger, Component, Label, Node } from 'cc';
 const { ccclass, property } = _decorator;
 
 @ccclass('DateListItemNew')
 export class DateListItemNew extends Component {
 
-    @property(Number)
-    public index:Number = 0;
+    @property({type: CCInteger})
+    public index:number = 0;
 
     @property(Label)
     public labNum:Label = null;
