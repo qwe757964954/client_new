@@ -12,7 +12,7 @@ import { NetConfig } from '../../../config/NetConfig';
 import { BaseModeView } from './BaseModeView';
 const { ccclass, property } = _decorator;
 
-/**学习模式页面 何存发 2024年4月15日15:38:41 */
+/**词意模式页面*/
 @ccclass('WordMeaningView')
 export class WordMeaningView extends BaseModeView {
 

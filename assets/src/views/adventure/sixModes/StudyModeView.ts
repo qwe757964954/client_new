@@ -12,22 +12,13 @@ import { WordSplitItem } from './items/WordSplitItem';
 import RemoteImageManager from '../../../manager/RemoteImageManager';
 import { WordDetailView } from '../../common/WordDetailView';
 import { NetConfig } from '../../../config/NetConfig';
-import { RoleBaseModel } from '../../../models/RoleBaseModel';
-import { SmallMonsterModel } from '../../common/SmallMonsterModel';
-import { LoadManager } from '../../../manager/LoadManager';
-import { PetModel } from '../../../models/PetModel';
-import { MonsterModel } from '../common/MonsterModel';
+import { BaseModeView } from './BaseModeView';
 const { ccclass, property } = _decorator;
 
 /**学习模式页面 何存发 2024年4月15日15:38:41 */
 @ccclass('StudyModeView')
-export class StudyModeView extends Component {
+export class StudyModeView extends BaseModeView {
 
-
-    @property({ type: Button, tooltip: "关闭按钮" })
-    public btn_close: Button = null;
-    @property({ type: Node, tooltip: "收藏按钮" })
-    public btn_collect: Node = null;
     @property({ type: Node, tooltip: "更多按钮" })
     public btn_more: Node = null;
     @property({ type: Prefab, tooltip: "单词拆分item" })
@@ -50,46 +41,24 @@ export class StudyModeView extends Component {
     wordDetailNode: Node = null;
     @property({ type: Node, tooltip: "隐藏详情面板按钮" })
     btn_hideDetail: Node = null;
-    @property({ type: Node, tooltip: "主面板" })
-    mainNode: Node = null;
-    @property(Prefab)
-    public roleModel: Prefab = null;//角色动画
-    @property({ type: Node, tooltip: "角色容器" })
-    public roleContainer: Node = null;
-    @property({ type: Node, tooltip: "精灵容器" })
-    public petContainer: Node = null;
-    @property({ type: Prefab, tooltip: "精灵预制体" })
-    public petModel: Prefab = null;
-    @property({ type: Node, tooltip: "所有怪物容器" })
-    public monsterContainer: Node = null;
-    @property({ type: Prefab, tooltip: "小怪物预制体" })
-    public smallMonsterModel: Prefab = null;
-    @property({ type: Node, tooltip: "主怪物容器" })
-    public monster: Node = null;
-    @property(Prefab)
-    public monsterModel: Prefab = null;//怪物动画
 
-    private _pet: Node = null; //精灵
-    private _role: Node = null; //人物
-    private _smallMonsters: Node[] = []; //小怪物
-
-    private _spilitData: any = null;
-    private _wordsData: any = null;
-    private _wordIndex: number = 0; //当前单词序号
-    private _splits: any[] = null; //当前单词拆分数据
-    private _spliteItems: Node[] = []; //当前单词拆分节点
-    private _detailData: any = null; //当前单词详情数据
-    private _levelData: any = null; //当前关卡配置
+    protected _spilitData: any = null;
+    protected _wordsData: any = null;
+    protected _wordIndex: number = 0; //当前单词序号
+    protected _splits: any[] = null; //当前单词拆分数据
+    protected _spliteItems: Node[] = []; //当前单词拆分节点
+    protected _detailData: any = null; //当前单词详情数据
+    protected _levelData: any = null; //当前关卡配置
     //事件
-    private _getWordsEveId: string;
-    private _wordDetailEveId: string;
+    protected _getWordsEveId: string;
+    protected _wordDetailEveId: string;
 
-    private _isSplitPlaying: boolean = false; //正在播放拆分音频
-    private _currentSplitIdx: number = 0; //当前播放拆分音频的索引
-    private _isCombine: boolean = false; //是否已经合并单词
-    private _monster: Node = null; //主怪动画节点
+    protected _isSplitPlaying: boolean = false; //正在播放拆分音频
+    protected _currentSplitIdx: number = 0; //当前播放拆分音频的索引
+    protected _isCombine: boolean = false; //是否已经合并单词
+    protected _monster: Node = null; //主怪动画节点
 
-    private _nodePool: NodePool = new NodePool("wordSplitItem");
+    protected _nodePool: NodePool = new NodePool("wordSplitItem");
     start() {
         this.initRole(); //初始化角色
         this.initPet(); //初始化精灵
@@ -105,38 +74,6 @@ export class StudyModeView extends Component {
         this.initMonster(); //初始化怪物
     }
 
-    async initRole() {
-        this._role = instantiate(this.roleModel);
-        this.roleContainer.addChild(this._role);
-        let roleModel = this._role.getComponent(RoleBaseModel);
-        await roleModel.init(101, 1, [9500, 9700, 9701, 9702, 9703]);
-    }
-    async initPet() {
-        this._pet = instantiate(this.petModel);
-        this.petContainer.addChild(this._pet);
-        let roleModel = this._pet.getComponent(RoleBaseModel);
-        await roleModel.init(101, 1);
-    }
-    async initMonster() {
-        // let monsterId = this._monsterData.monsterId;
-        // LoadManager.loadSprite("adventure/monster/" + monsterId + "/spriteFrame", this.monster.getComponent(Sprite));
-        this._monster = instantiate(this.monsterModel);
-        this.monster.addChild(this._monster);
-        let monsterModel = this._monster.getComponent(MonsterModel);
-        monsterModel.init("spine/monster/adventure/" + this._levelData.monsterAni);
-        let len = this._wordsData.length - 1;
-        if (len > 4) {
-            len = 4;
-        }
-        for (let i = 0; i < len; i++) {
-            let sPoint = this.monsterContainer.getChildByName("spoint" + (i + 1));
-            let monster = instantiate(this.smallMonsterModel);
-            sPoint.addChild(monster);
-            let monsterModel = monster.getComponent(SmallMonsterModel);
-            monsterModel.init("spine/monster/adventure/" + this._levelData.miniMonsterAni);
-            this._smallMonsters.push(monster);
-        }
-    }
     //获取关卡单词回包
     initWords(data: any) {
         console.log('initWords', data);
@@ -295,34 +232,6 @@ export class StudyModeView extends Component {
         }, 0.3);
     }
 
-    //怪物逃跑
-    monsterEscape() {
-        return new Promise((resolve, reject) => {
-            let pos = this.monster.position;
-            let scale = this.monster.getScale();
-            this.monster.scale = new Vec3(-scale.x, scale.y, 1);
-            tween(this.monster).to(1, { position: new Vec3(pos.x + 1000, pos.y, pos.z) }).call(() => {
-                resolve(true);
-            }).start();
-        });
-    }
-
-    //精灵攻击
-    attackMonster() {
-        return new Promise((resolve, reject) => {
-            this._pet.getComponent(PetModel).hit().then(() => {
-                if (this._wordIndex == this._wordsData.length) { //最后一个单词攻击主怪
-                    this._monster.getComponent(MonsterModel).injury().then(() => {
-                        resolve(true);
-                    });
-                } else { //小怪受到攻击
-                    this._smallMonsters[this._wordIndex - 1].getComponent(SmallMonsterModel).hit();
-                    resolve(true);
-                }
-            });
-        });
-    }
-
     showWordDetail() {
         if (this._isCombine || this._isSplitPlaying) return;
         if (!this._detailData) {
@@ -359,15 +268,14 @@ export class StudyModeView extends Component {
         console.log("获取单词详情", data);
     }
 
-    private initEvent(): void {
-        CCUtil.onTouch(this.btn_close.node, this.closeView, this);
+    protected initEvent(): void {
+        super.initEvent();
         CCUtil.onTouch(this.btn_more, this.showWordDetail, this);
         CCUtil.onTouch(this.btn_hideDetail, this.hideWordDetail, this);
         this._wordDetailEveId = EventManager.on(EventType.Classification_Word, this.onClassificationWord.bind(this));
     }
-    private removeEvent(): void {
-        console.log('移除事件', this.btn_close);
-        CCUtil.offTouch(this.btn_close.node, this.closeView, this);
+    protected removeEvent(): void {
+        super.removeEvent();
         CCUtil.offTouch(this.btn_more, this.showWordDetail, this);
         CCUtil.offTouch(this.btn_hideDetail, this.hideWordDetail, this);
         EventManager.off(EventType.Classification_Word, this._wordDetailEveId);
@@ -376,7 +284,7 @@ export class StudyModeView extends Component {
         }
 
     }
-    private closeView() {
+    protected closeView() {
         ViewsManager.instance.showView(PrefabType.BaseRemindView, (node: Node) => {
             node.getComponent(BaseRemindView).init("确定退出学习吗?", () => {
                 ViewsManager.instance.closeView(PrefabType.StudyModeView);
@@ -395,7 +303,7 @@ export class StudyModeView extends Component {
 
     }
     /**是否收藏 */
-    private setCollect(isCollect: boolean) {
+    protected setCollect(isCollect: boolean) {
         this.btn_collect.getComponent(Sprite).grayscale = !isCollect
     }
 

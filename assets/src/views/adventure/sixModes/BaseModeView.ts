@@ -64,8 +64,6 @@ export class BaseModeView extends Component {
         await roleModel.init(101, 1);
     }
     async initMonster() {
-        // let monsterId = this._monsterData.monsterId;
-        // LoadManager.loadSprite("adventure/monster/" + monsterId + "/spriteFrame", this.monster.getComponent(Sprite));
         this._monster = instantiate(this.monsterModel);
         this.monster.addChild(this._monster);
         let monsterModel = this._monster.getComponent(MonsterModel);

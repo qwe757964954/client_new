@@ -2744,7 +2744,7 @@
       "a": 255
     },
     "_string": "My name is Jim Green.",
-    "_horizontalAlign": 1,
+    "_horizontalAlign": 0,
     "_verticalAlign": 1,
     "_actualFontSize": 25,
     "_fontSize": 25,
