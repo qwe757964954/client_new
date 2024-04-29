@@ -392,12 +392,5 @@ export class MainScene extends Component {
     findBuildingByIdx(idx: number) {
         return this._mapUICtl.findBuildingByIdx(idx);
     }
-    /**查找地块 */
-    findLand(id: number) {
-        return this._mapUICtl.findLand(id);
-    }
-    findLandByIdx(idx: number) {
-        return this._mapUICtl.findLandByIdx(idx);
-    }
 }
 

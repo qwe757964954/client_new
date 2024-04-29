@@ -64,6 +64,7 @@ class NetManager {
             obj.command_id = Number(command_id);
             obj.data = pbobj;
             let buffer = JSON.stringify(obj);
+            // console.log("sendMsg msg:", buffer);
             this._socket.sendMsg(buffer);
         }
     }

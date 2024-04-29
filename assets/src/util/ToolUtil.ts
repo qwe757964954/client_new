@@ -50,4 +50,13 @@ export class ToolUtil {
     static getIdx(): number {
         return this._idx++;
     }
+    /**随机数 */
+    static getRandom(min: number, max: number): number {
+        return Math.random() * (max - min) + min;
+    }
+    static getRandomInt(min: number, max: number): number {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
 }

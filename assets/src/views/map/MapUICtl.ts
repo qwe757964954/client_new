@@ -2,18 +2,20 @@ import { Color, Graphics, Rect, Vec3, instantiate, screen } from "cc";
 import GlobalConfig from "../../GlobalConfig";
 import { EventType } from "../../config/EventType";
 import { MapConfig } from "../../config/MapConfig";
-import { DataMgr, EditInfo, EditType } from "../../manager/DataMgr";
+import { TextConfig } from "../../config/TextConfig";
+import { DataMgr, EditInfo } from "../../manager/DataMgr";
 import { BgModel } from "../../models/BgModel";
 import { BuildingModel } from "../../models/BuildingModel";
 import { GridModel } from "../../models/GridModel";
 import { LandModel } from "../../models/LandModel";
-import { s2cBuildingList } from "../../models/NetModel";
+import { s2cBuildingList, s2cBuildingListInfo } from "../../models/NetModel";
 import { RoleBaseModel } from "../../models/RoleBaseModel";
 import { RoleModel } from "../../models/RoleModel";
 import { InterfacePath } from "../../net/InterfacePath";
 import { ServiceMgr } from "../../net/ServiceManager";
 import { BaseComponent } from "../../script/BaseComponent";
 import EventManager, { EventMgr } from "../../util/EventManager";
+import { ToolUtil } from "../../util/ToolUtil";
 import { MainBaseCtl } from "../main/MainBaseCtl";
 import { MainScene } from "../main/MainScene";
 
@@ -73,6 +75,7 @@ export class MapUICtl extends MainBaseCtl {
         this.initEvent();
         this.initGrid();
         this.initMap();
+
         // this.initLand();
         // this.initBuilding();
         // this.initRole();
@@ -144,8 +147,6 @@ export class MapUICtl extends MainBaseCtl {
     //初始化地图
     initMap() {
         let bgInfo = MapConfig.bgInfo;
-        let width = bgInfo.width;
-        let height = bgInfo.height;
         let col = bgInfo.col;
         let row = bgInfo.row;
         for (let i = 0; i < col; i++) {
@@ -162,7 +163,7 @@ export class MapUICtl extends MainBaseCtl {
         this._mapMaxHeight = bgInfo.maxHeight;
     }
     //初始化地块层
-    initLand(list: s2cBuildingList[]) {
+    initLand(map: { [key: string]: number }) {
         let gridInfo = MapConfig.gridInfo;
         let width = gridInfo.width;
         let height = gridInfo.height;
@@ -180,16 +181,10 @@ export class MapUICtl extends MainBaseCtl {
                 this._mainScene.landLayer.addChild(land);
                 let laneModel = land.getComponent(LandModel);
                 let landInfo = defaultInfo;
-                if (list) {
-                    //需要优化数据结构，遍历查找可能会出现性能问题
-                    let data = list.find(obj => {
-                        if (obj.x == i && obj.y == j) {
-                            return true;
-                        }
-                    });
-                    if (data) {
-                        landInfo = DataMgr.instance.editInfo[data.bid];
-                        laneModel.buildingID = data.id;
+                if (map) {
+                    let key = ToolUtil.replace(TextConfig.Land_Key, i, j);
+                    if (map.hasOwnProperty(key)) {
+                        landInfo = DataMgr.instance.editInfo[map[key]];
                     }
                 }
                 laneModel.initData(i, j, landWidth, landInfo);
@@ -223,7 +218,7 @@ export class MapUICtl extends MainBaseCtl {
         }
     }
     // 初始化建筑
-    initBuilding(list: s2cBuildingList[]) {
+    initBuilding(list: s2cBuildingListInfo[]) {
         if (!list || list.length <= 0) return;
         list.forEach(element => {
             let editInfo = DataMgr.instance.editInfo[element.bid];
@@ -644,20 +639,9 @@ export class MapUICtl extends MainBaseCtl {
         return this.loadOverCall.bind(this);
     }
     /**建筑列表 */
-    onBuildingList(list: s2cBuildingList[]) {
-        let list1 = [];
-        let list2 = [];
-        list.forEach(element => {
-            let editInfo = DataMgr.instance.editInfo[element.bid];
-            if (!editInfo) return;
-            if (EditType.Land == editInfo.type) {
-                list2.push(element);
-            } else {
-                list1.push(element);
-            }
-        })
-        this.initBuilding(list1);
-        this.initLand(list2);
+    onBuildingList(data: s2cBuildingList) {
+        this.initBuilding(data.build_list);
+        this.initLand(data.land_dict);
 
         this.updateCameraVisible();
     }
@@ -679,25 +663,6 @@ export class MapUICtl extends MainBaseCtl {
             let building = element.getComponent(BuildingModel);
             if (!building) continue;
             if (building.idx == idx) return building;
-        }
-        return null;
-    }
-    /**查找地块 */
-    findLand(id: number) {
-        for (let i = 0; i < this._landModelAry.length; i++) {
-            const element = this._landModelAry[i];
-            let land = element.getComponent(LandModel);
-            if (!land) continue;
-            if (land.buildingID == id) return land;
-        }
-        return null;
-    }
-    findLandByIdx(idx: number) {
-        for (let i = 0; i < this._landModelAry.length; i++) {
-            const element = this._landModelAry[i];
-            let land = element.getComponent(LandModel);
-            if (!land) continue;
-            if (land.idx == idx) return land;
         }
         return null;
     }

@@ -1,4 +1,4 @@
-import { c2sBuildingCreate, c2sBuildingEdit, c2sBuildingList } from "../models/NetModel";
+import { c2sBuildingCreate, c2sBuildingEdit, c2sBuildingList, c2sLandUpdate } from "../models/NetModel";
 import { NetMgr } from "../net/NetManager";
 import { BaseControll } from "../script/BaseControll";
 
@@ -34,6 +34,13 @@ export class BuildingService extends BaseControll {
         para.y = y;
         para.idx = idx;
         para.direction = isFlip ? 1 : 0;
+        NetMgr.sendMsg(para);
+    }
+    /**地块更新 */
+    reqLandUpdate(map: { [key: string]: number }) {
+        // console.log("reqLandUpdate", map);
+        let para = new c2sLandUpdate();
+        para.update_land = map;
         NetMgr.sendMsg(para);
     }
 }
