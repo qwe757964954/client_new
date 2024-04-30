@@ -89,6 +89,18 @@ export class c2sAddPlanStatus {
     num:number;
 }
 
+//修改计划
+
+export class c2sModifyPlanStatus {
+    command_id: string = InterfacePath.Classification_PlanModify;
+    type_name:string;
+    book_name:string;
+    grade:string;
+    rank_num:number;
+    num:number;
+}
+
+
 //获取分类汇总列表
 export class c2sSearchBookList{
     command_id: string = InterfacePath.Classification_List;

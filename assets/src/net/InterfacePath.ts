@@ -22,6 +22,7 @@ export const InterfacePath = {
     Classification_BookStatus: "3011", //我的词书-列表
     Classification_BookAdd: "3013", //我的词书-添加词书
     Classification_PlanAdd: "3016", //我的词书-添加词书
+    Classification_PlanModify: "3017", //我的词书-添加词书
     Classification_BookDel: "3014", //我的词书-删除词书
     Classification_List: "3001", //获取分类汇总列表
     Classification_SchoolBook: "3002", //获取教材课本

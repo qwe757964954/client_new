@@ -25,7 +25,7 @@ export class SettingPlanView extends Component {
 
     private _leftSelectString:string = "1";
     private _rightSelectString:string = "1";
-
+    private _isModify:boolean = false;
     start() {
         this.setLeftRightDatePick();
     }

@@ -1,4 +1,4 @@
-import { BookItemData, BookListItemData, MyTextbookListStatus, MyTextbookStatus, ReqPlanData, SchoolBookGradeItemData, SchoolBookItemData, SchoolBookListGradeItemData, SchoolBookListItemData, UnitItemStatus, UnitListItemStatus, c2sAddBookStatus, c2sAddPlanStatus, c2sBookStatus, c2sDelBookStatus, c2sSchoolBook, c2sSchoolBookGrade, c2sSearchBookList, c2sUnitListStatus } from "../models/TextbookModel";
+import { BookItemData, BookListItemData, MyTextbookListStatus, MyTextbookStatus, ReqPlanData, SchoolBookGradeItemData, SchoolBookItemData, SchoolBookListGradeItemData, SchoolBookListItemData, UnitItemStatus, UnitListItemStatus, c2sAddBookStatus, c2sAddPlanStatus, c2sBookStatus, c2sDelBookStatus, c2sModifyPlanStatus, c2sSchoolBook, c2sSchoolBookGrade, c2sSearchBookList, c2sUnitListStatus } from "../models/TextbookModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
 import { NetNotify } from "../net/NetNotify";
@@ -27,6 +27,7 @@ export default class _TextbookService extends BaseControll{
         this.addModelListener(InterfacePath.Classification_SchoolGrade,this.onSchoolBookGrade);
         this.addModelListener(InterfacePath.Classification_UnitListStatus,this.onUnitListStatus);
         this.addModelListener(InterfacePath.Classification_PlanAdd,this.onPlanAdd);
+        this.addModelListener(InterfacePath.Classification_PlanModify,this.onModifyPlan);
 	}
     reqBookStatus(){
         let para: c2sBookStatus = new c2sBookStatus();
@@ -108,6 +109,25 @@ export default class _TextbookService extends BaseControll{
             return
         }
         EventMgr.dispatch(NetNotify.Classification_PlanAdd,data);
+    }
+
+    reqModifyPlan(data:ReqPlanData){
+        let param:c2sModifyPlanStatus = new c2sModifyPlanStatus();
+        param.book_name = data.book_name;
+        param.grade = data.grade;
+        param.type_name = data.type_name;
+        param.rank_num = data.rank_num;
+        param.num = data.num;
+        NetMgr.sendMsg(param);
+    }
+
+    onModifyPlan(data:any){
+        console.log("onModifyPlan",data);
+        if(data.Code !== 200){
+            console.log(data.Msg);
+            return
+        }
+        EventMgr.dispatch(NetNotify.Classification_PlanModify,data);
     }
 
     reqBookList(){

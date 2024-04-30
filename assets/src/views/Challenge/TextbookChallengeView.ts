@@ -3,7 +3,7 @@ import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { BookItemData, SchoolBookGradeItemData, SchoolBookItemData, UnitListItemStatus } from '../../models/TextbookModel';
+import { BookItemData, ReqPlanData, SchoolBookGradeItemData, SchoolBookItemData, UnitListItemStatus } from '../../models/TextbookModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
@@ -45,14 +45,25 @@ export class TextbookChallengeView extends BaseView {
     onInitModuleEvent(){
         this.addModelListener(NetNotify.Classification_UnitListStatus,this.onUnitListStatus);
         this.addModelListener(EventType.Select_Word_Plan,this.onSelectWordPlan);
+        this.addModelListener(NetNotify.Classification_PlanModify,this.onPlanModify);
         
     }
+    onPlanModify(data:any){
 
+    }
     onSelectWordPlan(params:any){
         ViewsManager.instance.closeView(PrefabType.SettingPlanView);
         if(params.isSave){
-            let curUnitStatus:UnitListItemStatus = this._unitListArr[this._currentUnitIndex];
-            TBServer.reqBookAdd(curUnitStatus.typename,curUnitStatus.bookname,curUnitStatus.grade);
+            // let curUnitStatus:UnitListItemStatus = this._unitListArr[this._currentUnitIndex];
+            // TBServer.reqBookAdd(curUnitStatus.typename,curUnitStatus.bookname,curUnitStatus.grade);
+            let reqData:ReqPlanData = {
+                book_name:this._schoolData.book_name,
+                grade:this._schoolGradeData.grade,
+                type_name:this._tabData.type_name,
+                rank_num:parseInt(params.left),
+                num:parseInt(params.right)
+            }
+            TBServer.reqModifyPlan(reqData);
         }
     }
 
