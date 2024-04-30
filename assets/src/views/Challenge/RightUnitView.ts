@@ -53,7 +53,10 @@ export class RightUnitView extends Component {
     }
 
     onBreakThroughClick(){
-
+        console.log("onBreakThroughClick");
+        ViewsManager.instance.showView(PrefabType.BreakThroughView, (node: Node) => {
+            ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);
+        });
     }
 
     onCheckWordClick(){

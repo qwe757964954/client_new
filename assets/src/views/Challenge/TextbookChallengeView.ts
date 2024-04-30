@@ -141,7 +141,7 @@ export class TextbookChallengeView extends BaseView {
     }
     /**初始化左侧怪物 */
     initLeftMonster(){
-        ResLoader.instance.load(`prefab/${PrefabType.LeftMonsterView.path}`, Prefab, (err: Error | null, prefab: Prefab) => {
+        ResLoader.instance.load(`prefab/${PrefabType.ChallengeLeftView.path}`, Prefab, (err: Error | null, prefab: Prefab) => {
             if (err) {
                 error && console.error(err);
                 return;
