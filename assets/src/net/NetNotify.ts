@@ -3,6 +3,7 @@ export const NetNotify = {
     /***********************************************选择词书 begin*********************************************/
     Classification_BookStatus:"Classification_BookStatus", //我的词书-列表
     Classification_BookAdd:"Classification_BookAdd", //我的词书-添加词书
+    Classification_PlanAdd:"Classification_PlanAdd", //我的词书-添加词书
     Classification_BookDel:"Classification_BookDel", //我的词书-删除词书
     Classification_List:"Classification_List", //获取分类汇总列表
     Classification_SchoolBook:"Classification_SchoolBook", //获取教材课本

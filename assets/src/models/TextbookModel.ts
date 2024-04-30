@@ -1,17 +1,21 @@
 import { InterfacePath } from "../net/InterfacePath";
 import { BaseRepPacket } from "./NetModel";
+
+export interface MyTextbookListStatus extends BaseRepPacket{
+    data:MyTextbookStatus[];
+}
+
 /**我的词书数据 */
 export interface MyTextbookStatus {
-    AccountId: number,
-    BookName: string,
-    Grade: string,
-    Score: number,
-    StudyWordNum: number,
-    TotalScore: number,
-    TotalWordNum: number,
-    TypeName: string,
-    createtime:string,
-    id:number,
+    book_name: string,
+    grade: string,
+    score: number,
+    study_word_num: number,
+    total_score: number,
+    total_word_num: number,
+    type_name: string,
+    unit:string,
+    user_id:number,
 } 
 
 export interface BookListItemData extends BaseRepPacket{
@@ -43,38 +47,48 @@ export interface SchoolBookGradeItemData{
     grade:string,
     num:number,
 }
-export interface UnitListItemStatus{
-    GameModes:string,
-    Id:number,
-    bookname:string,
-    grade:string,
-    score:number,
-    studywordnum:number,
-    totalwordnum:number,
-    typename:string,
+
+export interface UnitListItemStatus extends BaseRepPacket{
+    data:UnitItemStatus[];
+}
+
+export interface UnitItemStatus{
+    num:number,
     unit:string,
 }
 
 // 我的词书
 export class c2sBookStatus {
-    Path: string = InterfacePath.Classification_BookStatus;
+    command_id: string = InterfacePath.Classification_BookStatus;
 }
 
 // 删除我的词书
 export class c2sDelBookStatus {
-    Path: string = InterfacePath.Classification_BookDel;
-    TypeName:string;
-    BookName:string;
-    Grade:string;
+    command_id: string = InterfacePath.Classification_BookDel;
+    type_name:string;
+    book_name:string;
+    grade:string;
 }
 //添加我的词书
 
 export class c2sAddBookStatus {
-    Path: string = InterfacePath.Classification_BookAdd;
-    TypeName:string;
-    BookName:string;
-    Grade:string;
+    command_id: string = InterfacePath.Classification_BookAdd;
+    type_name:string;
+    book_name:string;
+    grade:string;
 }
+
+//添加计划
+
+export class c2sAddPlanStatus {
+    command_id: string = InterfacePath.Classification_PlanAdd;
+    type_name:string;
+    book_name:string;
+    grade:string;
+    rank_num:number;
+    num:number;
+}
+
 //获取分类汇总列表
 export class c2sSearchBookList{
     command_id: string = InterfacePath.Classification_List;
@@ -95,8 +109,16 @@ export class c2sSchoolBookGrade{
 //书年级单元列表
 
 export class c2sUnitListStatus{
-    Path:string = InterfacePath.Classification_UnitListStatus;
-    TypeName:string;
-    BookName:string;
-    Grade:string;
+    command_id:string = InterfacePath.Classification_UnitListStatus;
+    type_name:string;
+    book_name:string;
+    grade:string;
+}
+//添加计划请求model
+export interface ReqPlanData{
+    type_name:string;
+    book_name:string;
+    grade:string;
+    rank_num:number;
+    num:number;
 }

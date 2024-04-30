@@ -19,15 +19,16 @@ export const InterfacePath = {
     //大冒险学习模式相关
     WordGame_Words: "WordGame.Words",  // 获取单词
     /***********************************************选择词书 begin*********************************************/
-    Classification_BookStatus: "Classification.BookStatus", //我的词书-列表
-    Classification_BookAdd: "Classification.BookAdd", //我的词书-添加词书
-    Classification_BookDel: "Classification.BookDel", //我的词书-删除词书
+    Classification_BookStatus: "3011", //我的词书-列表
+    Classification_BookAdd: "3013", //我的词书-添加词书
+    Classification_PlanAdd: "3016", //我的词书-添加词书
+    Classification_BookDel: "3014", //我的词书-删除词书
     Classification_List: "3001", //获取分类汇总列表
     Classification_SchoolBook: "3002", //获取教材课本
     Classification_SchoolGrade: "3003", //教材课本-年级
     Classification_SchoolUnit: "Classification.SchoolUnit", //教材课本-年级-单元
     Classification_SchoolWord: "Classification.SchoolWord", //教材课本-年级-单元-词汇
-    Classification_UnitListStatus: "Classification.UnitListStatus", //书年级单元列表
+    Classification_UnitListStatus: "3004", //书年级单元列表
     Classification_UnitStatus: "Classification.UnitStatus", //书年级单元学习情况列表
     Classification_UnitWordList: "Classification.UnitWordList", // 单元单词列表
     Classification_GameResultUp: "Classification.GameResultUp", //结果上报

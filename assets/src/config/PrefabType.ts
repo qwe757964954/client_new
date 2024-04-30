@@ -68,6 +68,7 @@ export const PrefabType = {
     SettingPlanView: { path: "textbook/SettingPlanView", zindex: Hierarchy.POPUPLAYER, tips: "计划设置dialog模块" },
     ScrollMapView: { path: "textbook/ScrollMapView", zindex: Hierarchy.POPUPLAYER, tips: "滑动地图模块" },
     BreakThroughView: { path: "textbook/BreakThroughView", zindex: Hierarchy.POPUPLAYER, tips: "单词大冒险挑战模块" },
+    TextbookRemindView: { path: "textbook/TextbookRemindView", zindex: Hierarchy.POPUPLAYER, tips: "二级确认弹窗" },
     /*********************************************教材单词相关end*************************************************************/
     /*********************************************地图相关start***********************************************************/
     MainUIView: { path: "map/MainUIView", zindex: Hierarchy.SCENELAYER, tips: "地图UI界面" },

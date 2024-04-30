@@ -28,7 +28,7 @@ export class TextbookChallengeView extends BaseView {
     private _tabData:BookItemData = null;
     private _schoolData:SchoolBookItemData = null;
     private _schoolGradeData:SchoolBookGradeItemData = null;
-    private _unitListArr:UnitListItemStatus[] = [];
+    private _unitListArr:UnitListItemStatus = null;
     private _currentUnitIndex:number = 0;
     // EventMgr.dispatch(NetNotify.Classification_UnitListStatus,dataArr);
     start() {
@@ -66,11 +66,11 @@ export class TextbookChallengeView extends BaseView {
         return this._unitListArr.length - 1;
     }
 
-    onUnitListStatus(data:UnitListItemStatus[]){
+    onUnitListStatus(data:UnitListItemStatus){
         this._unitListArr = data;
         this._currentUnitIndex = this.getCurrentUnit();
-        this._bottomView.updateItemList(this._unitListArr,this._currentUnitIndex);
-        this._unitDetailView.updateUnitProps(this._unitListArr[this._currentUnitIndex]);
+        this._bottomView.updateItemList(this._unitListArr.data,this._currentUnitIndex);
+        this._unitDetailView.updateUnitProps(this._unitListArr.data[this._currentUnitIndex]);
     }
     /**初始化数据 */
     initData(tabData:BookItemData,schoolData:SchoolBookItemData,gradeData:SchoolBookGradeItemData){

@@ -1,4 +1,4 @@
-import { BookItemData, BookListItemData, MyTextbookStatus, SchoolBookGradeItemData, SchoolBookItemData, SchoolBookListGradeItemData, SchoolBookListItemData, UnitListItemStatus, c2sAddBookStatus, c2sBookStatus, c2sDelBookStatus, c2sSchoolBook, c2sSchoolBookGrade, c2sSearchBookList, c2sUnitListStatus } from "../models/TextbookModel";
+import { BookItemData, BookListItemData, MyTextbookListStatus, MyTextbookStatus, ReqPlanData, SchoolBookGradeItemData, SchoolBookItemData, SchoolBookListGradeItemData, SchoolBookListItemData, UnitItemStatus, UnitListItemStatus, c2sAddBookStatus, c2sAddPlanStatus, c2sBookStatus, c2sDelBookStatus, c2sSchoolBook, c2sSchoolBookGrade, c2sSearchBookList, c2sUnitListStatus } from "../models/TextbookModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
 import { NetNotify } from "../net/NetNotify";
@@ -26,6 +26,7 @@ export default class _TextbookService extends BaseControll{
         this.addModelListener(InterfacePath.Classification_SchoolBook,this.onSchoolBook);
         this.addModelListener(InterfacePath.Classification_SchoolGrade,this.onSchoolBookGrade);
         this.addModelListener(InterfacePath.Classification_UnitListStatus,this.onUnitListStatus);
+        this.addModelListener(InterfacePath.Classification_PlanAdd,this.onPlanAdd);
 	}
     reqBookStatus(){
         let para: c2sBookStatus = new c2sBookStatus();
@@ -33,34 +34,37 @@ export default class _TextbookService extends BaseControll{
     }
     onBookStatus(data: any){
         console.log(data);
-        let dataArr:MyTextbookStatus[] = []
         if(data.Code !== 200){
             console.log(data.Msg);
             return
         }
-        for (let index = 0; index < data.Data.length; index++) {
-            const element = data.Data[index];
-            let obj:MyTextbookStatus = {
-                AccountId:element.AccountId,
-                BookName:element.BookName,
-                Grade:element.Grade,
-                Score:element.Score,
-                StudyWordNum:element.StudyWordNum,
-                TotalScore:element.TotalScore,
-                TotalWordNum:element.TotalWordNum,
-                TypeName:element.TypeName,
-                createtime:element.createtime,
-                id:element.id,
-            }
-            dataArr.push(obj);
+        let myTextbookList:MyTextbookListStatus = {
+            Code:data.Code,
+            Msg:data.MSg,
+            data:[],
         }
-        EventMgr.dispatch(NetNotify.Classification_BookStatus,dataArr);
+        for (let index = 0; index < data.length; index++) {
+            const element = data[index];
+            let obj:MyTextbookStatus = {
+                book_name:element.book_name,
+                grade:element.grade,
+                score:element.score,
+                study_word_num:element.study_word_num,
+                total_score:element.total_score,
+                total_word_num:element.total_word_num,
+                type_name:element.type_name,
+                unit:element.unit,
+                user_id:element.user_id,
+            }
+            myTextbookList.data.push(obj);
+        }
+        EventMgr.dispatch(NetNotify.Classification_BookStatus,myTextbookList.data);
     }
     reqBookDel(data: MyTextbookStatus){
         let param:c2sDelBookStatus = new c2sDelBookStatus();
-        param.BookName = data.BookName;
-        param.Grade = data.Grade;
-        param.TypeName = data.TypeName;
+        param.book_name = data.book_name;
+        param.grade = data.grade;
+        param.type_name = data.type_name;
         NetMgr.sendMsg(param);
     }
     onBookDel(data: any){
@@ -73,9 +77,9 @@ export default class _TextbookService extends BaseControll{
     }
     reqBookAdd(BookName: string,Grade: string,TypeName: string){
         let param:c2sAddBookStatus = new c2sAddBookStatus();
-        param.BookName = BookName;
-        param.Grade = Grade;
-        param.TypeName = TypeName;
+        param.book_name = BookName;
+        param.grade = Grade;
+        param.type_name = TypeName;
         NetMgr.sendMsg(param);
     }
     onBookAdd(data: any){
@@ -86,6 +90,26 @@ export default class _TextbookService extends BaseControll{
         }
         EventMgr.dispatch(NetNotify.Classification_BookAdd,data);
     }
+
+    reqPlanAdd(data:ReqPlanData){
+        let param:c2sAddPlanStatus = new c2sAddPlanStatus();
+        param.book_name = data.book_name;
+        param.grade = data.grade;
+        param.type_name = data.type_name;
+        param.rank_num = data.rank_num;
+        param.num = data.num;
+        NetMgr.sendMsg(param);
+    }
+
+    onPlanAdd(data: any){
+        console.log("onPlanAdd",data);
+        if(data.Code !== 200){
+            console.log(data.Msg);
+            return
+        }
+        EventMgr.dispatch(NetNotify.Classification_PlanAdd,data);
+    }
+
     reqBookList(){
         let param:c2sSearchBookList = new c2sSearchBookList();
         NetMgr.sendMsg(param);
@@ -167,9 +191,9 @@ export default class _TextbookService extends BaseControll{
     }
     reqUnitListStatus(TypeName:string,BookName:string,Grade:string){
         let param:c2sUnitListStatus = new c2sUnitListStatus();
-        param.TypeName = TypeName;
-        param.BookName = BookName;
-        param.Grade = Grade;
+        param.type_name = TypeName;
+        param.book_name = BookName;
+        param.grade = Grade;
         NetMgr.sendMsg(param);
     }
     onUnitListStatus(data:any){
@@ -178,23 +202,20 @@ export default class _TextbookService extends BaseControll{
             console.log(data.Msg);
             return;
         }
-        let dataArr:UnitListItemStatus[] = [];
-        for (let index = 0; index < data.Data.length; index++) {
-            const element = data.Data[index];
-            let obj:UnitListItemStatus = {
-                GameModes:element.GameModes,
-                Id:element.Id,
-                bookname:element.bookname,
-                grade:element.grade,
-                score:element.score,
-                studywordnum:element.studywordnum,
-                totalwordnum:element.totalwordnum,
-                typename:element.typename,
-                unit:element.unit
-            }
-            dataArr.push(obj);
+        let unitListStatus:UnitListItemStatus = {
+            Code:data.Code,
+            Msg:data.Msg,
+            data:[]
         }
-        EventMgr.dispatch(NetNotify.Classification_UnitListStatus,dataArr);
+        for (let index = 0; index < data.length; index++) {
+            const element = data[index];
+            let obj:UnitItemStatus = {
+                num:element.num,
+                unit:element.unit,
+            }
+            unitListStatus.data.push(obj);
+        }
+        EventMgr.dispatch(NetNotify.Classification_UnitListStatus,unitListStatus);
     }
 };
 

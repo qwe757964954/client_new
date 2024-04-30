@@ -8,6 +8,7 @@ import { TBServer } from '../../service/TextbookService';
 import List from '../../util/list/List';
 import { NavTitleView } from '../common/NavTitleView';
 import { MyContentItem } from './MyContentItem';
+import { ITextbookRemindData, TextbookRemindView } from './TextbookRemindView';
 const { ccclass, property } = _decorator;
 
 @ccclass('TextbookListView')
@@ -23,6 +24,8 @@ export class TextbookListView extends BaseView {
     public myTextbookLayout:Node = null;          // 我的词库
 
     private _myTextbookDataArr:MyTextbookStatus[] = [];
+
+    private _selectedIndex:number = 0;
     start() {
         this.initUI();
     }
@@ -42,10 +45,17 @@ export class TextbookListView extends BaseView {
         this.updateShowMyScrollEmpty();
     }
     onBookStatus(data:MyTextbookStatus[]){
-        this._myTextbookDataArr = data;
-        this.myScrollView.numItems = this._myTextbookDataArr.length;
-        this.myScrollView.update();
-        this.myScrollView.selectedId = 0;
+        //判断data是数组，并且长度大于1
+        if(Array.isArray(data) && data.length > 0){
+            this._myTextbookDataArr = data;
+            this.myScrollView.numItems = this._myTextbookDataArr.length;
+            this.myScrollView.update();
+            this.myScrollView.selectedId = 0;
+        }else{
+            this._myTextbookDataArr = []
+            this.myScrollView.numItems = this._myTextbookDataArr.length;
+            this.myScrollView.update();
+        }
     }
     /**初始化导航栏 */
     initNavTitle(){
@@ -62,14 +72,63 @@ export class TextbookListView extends BaseView {
         let itemInfo:MyTextbookStatus = this._myTextbookDataArr[idx];
         myTextbookItemScript.updateMyContentItemProps(idx,itemInfo);
         myTextbookItemScript.setDeleteClickCallback((delIdx:number,bookStatus:MyTextbookStatus)=>{
-            this.myScrollView.aniDelItem(delIdx,()=>{
-                TBServer.reqBookDel(bookStatus)
-            },-1)
+            let data:ITextbookRemindData = {
+                sure_text:"确定",
+                cancel_text:"取消",
+                content_text:`确定要删除${itemInfo.grade}(${itemInfo.type_name})吗？请注意删除后将不再保留该词书学习记录`,
+                callFunc:(isSure:boolean)=>{
+                    if(isSure){
+                        this.myScrollView.aniDelItem(delIdx,()=>{
+                            TBServer.reqBookDel(bookStatus)
+                        },-1)
+                    }
+                }
+            }
+            this.showRemainCalL(data);
         });
     }
+    showRemainCalL(data:ITextbookRemindData){
+        ViewsManager.instance.showView(PrefabType.TextbookRemindView,(node:Node)=>{
+            let remindScript:TextbookRemindView = node.getComponent(TextbookRemindView);
+            remindScript.initRemind(data);
+        });
+    }
+
     onMyTextBookVerticalSelected(item: any, selectedId: number, lastSelectedId: number, val: number){
         console.log("onMyTextBookVerticalSelected",item,selectedId);
+        let itemInfo:MyTextbookStatus =  this._myTextbookDataArr[this._selectedIndex];
+        let data:ITextbookRemindData = {
+            sure_text:"确定",
+            cancel_text:"取消",
+            content_text:`是否切换\n${itemInfo.grade}${itemInfo.type_name}为当前在学`,
+            callFunc:(isSure:boolean)=>{
+                if(isSure){
+                    this.setClickItemProps(item,selectedId);
+                }
+            }
+        }
+        if(this._selectedIndex!= selectedId){
+            this.showRemainCalL(data);
+        }else{
+           this.setClickItemProps(item,selectedId);
+        }
     }
+
+    setClickItemProps(item:any,selectedId:number){
+        this.clearItems();
+        this._selectedIndex = selectedId;
+        let itemScript = item.getComponent(MyContentItem);
+        itemScript.flagBg.active = true;
+    }
+
+    clearItems(){
+        for (let index = 0; index < this.myScrollView.numItems; index++) {
+            let item = this.myScrollView.getItemByListId(index);
+            let itemScript = item.getComponent(MyContentItem);
+            itemScript.flagBg.active = false;
+        }
+    }
+
     updateShowMyScrollEmpty(){
         // this.myScrollEmpty.active = this._myTextbookDataArr.length === 0;
         // this.myScrollView.node.active = this._myTextbookDataArr.length !== 0;

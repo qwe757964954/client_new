@@ -1,5 +1,5 @@
 import { _decorator, Component, Label, Node, Sprite } from 'cc';
-import { UnitListItemStatus } from '../../models/TextbookModel';
+import { UnitItemStatus } from '../../models/TextbookModel';
 import List from '../../util/list/List';
 import { UnitNumItem } from './UnitNumItem';
 const { ccclass, property } = _decorator;
@@ -15,13 +15,13 @@ export class ChallengeBottomView extends Component {
     public collectScroll:List = null;
     @property(Node)
     public chest_box:Node = null;
-    private _unitListArr:UnitListItemStatus[] = [];
+    private _unitListArr:UnitItemStatus[] = [];
     private _currentUnitIndex:number = 0;
     start() {
 
     }
 
-    updateItemList(dataArr:UnitListItemStatus[],current_index:number){
+    updateItemList(dataArr:UnitItemStatus[],current_index:number){
         this._unitListArr = dataArr;
         this._currentUnitIndex = current_index;
         this.collectScroll.numItems = this._unitListArr.length;
@@ -35,8 +35,8 @@ export class ChallengeBottomView extends Component {
     onLoadCollectHorizontal(item:Node, idx:number){
         console.log("onLoadCollectHorizontal", item,idx);
         let item_sript:UnitNumItem = item.getComponent(UnitNumItem);
-        let unitStatus:UnitListItemStatus = this._unitListArr[idx];
-        item_sript.updateRewardStatus(unitStatus.studywordnum >=unitStatus.totalwordnum);
+        let unitStatus:UnitItemStatus = this._unitListArr[idx];
+        // item_sript.updateRewardStatus(unitStatus.studywordnum >=unitStatus.totalwordnum);
     }
 }
 

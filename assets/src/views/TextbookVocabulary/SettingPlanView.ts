@@ -6,6 +6,13 @@ import { EventMgr } from '../../util/EventManager';
 import { ScrollViewExtra } from './picker/ScrollViewExtra';
 const { ccclass, property } = _decorator;
 
+export interface PlanSaveData {
+    left:string;
+    right:string;
+    isSave:boolean
+}
+
+
 @ccclass('SettingPlanView')
 export class SettingPlanView extends Component {
     @property(ScrollViewExtra)
@@ -16,10 +23,21 @@ export class SettingPlanView extends Component {
     @property(Label)
     public book_title:Label = null
 
+    private _leftSelectString:string = "1";
+    private _rightSelectString:string = "1";
+
     start() {
-        // this.leftScroll.numItems = 20;
-        // this.rightScroll.numItems = 7;
+        this.setLeftRightDatePick();
     }
+    setLeftRightDatePick() {
+        this.leftScroll.initSelectCallFunc((plan_text:string)=>{
+            this._leftSelectString = plan_text;
+        })
+        this.rightScroll.initSelectCallFunc((plan_text:string)=>{
+            this._rightSelectString = plan_text;
+        })
+    }
+
     onLoadLeftVerticalList(item:Node, idx:number){
         console.log("onLoadLeftVerticalList",item,idx);
         let label = item.getComponent(Label);
@@ -39,13 +57,23 @@ export class SettingPlanView extends Component {
     onClickCancel(){
         console.log("onClickCancel");
         ViewsManager.instance.closeView(PrefabType.SettingPlanView);
-        EventMgr.dispatch(EventType.Select_Word_Plan,{isSave:false});
+        let data:PlanSaveData = {
+            left:this._leftSelectString,
+            right:this._rightSelectString,
+            isSave:false
+        }
+        EventMgr.dispatch(EventType.Select_Word_Plan,data);
     }
 
     onClickSave(){
         console.log("onClickSave");
         ViewsManager.instance.closeView(PrefabType.SettingPlanView);
-        EventMgr.dispatch(EventType.Select_Word_Plan,{isSave:true});
+        let data:PlanSaveData = {
+            left:this._leftSelectString,
+            right:this._rightSelectString,
+            isSave:true
+        }
+        EventMgr.dispatch(EventType.Select_Word_Plan,data);
     }
 }
 
