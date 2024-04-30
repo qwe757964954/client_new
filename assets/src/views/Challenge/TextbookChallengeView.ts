@@ -3,7 +3,7 @@ import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { BookListItemData, SchoolBookGradeItemData, SchoolBookListItemData, UnitListItemStatus } from '../../models/TextbookModel';
+import { BookItemData, SchoolBookGradeItemData, SchoolBookItemData, UnitListItemStatus } from '../../models/TextbookModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
@@ -25,8 +25,8 @@ export class TextbookChallengeView extends BaseView {
     private _unitDetailView:RightUnitView = null;
     private _bottomView:ChallengeBottomView = null;
 
-    private _tabData:BookListItemData = null;
-    private _schoolData:SchoolBookListItemData = null;
+    private _tabData:BookItemData = null;
+    private _schoolData:SchoolBookItemData = null;
     private _schoolGradeData:SchoolBookGradeItemData = null;
     private _unitListArr:UnitListItemStatus[] = [];
     private _currentUnitIndex:number = 0;
@@ -73,7 +73,7 @@ export class TextbookChallengeView extends BaseView {
         this._unitDetailView.updateUnitProps(this._unitListArr[this._currentUnitIndex]);
     }
     /**初始化数据 */
-    initData(tabData:BookListItemData,schoolData:SchoolBookListItemData,gradeData:SchoolBookGradeItemData){
+    initData(tabData:BookItemData,schoolData:SchoolBookItemData,gradeData:SchoolBookGradeItemData){
         this._tabData = tabData;
         this._schoolData = schoolData;
         this._schoolGradeData = gradeData;
@@ -82,8 +82,9 @@ export class TextbookChallengeView extends BaseView {
     /**更新我的词书 */
     getUnitListStatus(){
         console.log("getUnitListStatus",this._tabData,this._schoolData,this._schoolGradeData);
-        TBServer.reqUnitListStatus(this._tabData.TypeName,this._schoolData.Name,this._schoolGradeData.Name);
+        TBServer.reqUnitListStatus(this._tabData.type_name,this._schoolData.book_name,this._schoolGradeData.grade);
     }
+
     /**初始化导航栏 */
     initNavTitle(){
         ViewsManager.addNavigation(this.top_layout,0,0).then((navScript: NavTitleView) => {

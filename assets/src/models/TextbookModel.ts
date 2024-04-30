@@ -1,4 +1,5 @@
 import { InterfacePath } from "../net/InterfacePath";
+import { BaseRepPacket } from "./NetModel";
 /**我的词书数据 */
 export interface MyTextbookStatus {
     AccountId: number,
@@ -12,22 +13,35 @@ export interface MyTextbookStatus {
     createtime:string,
     id:number,
 } 
-export interface BookListItemData{
-    Name:string,
-    Num:number,
-    SortNo:number,
-    TypeName:string
+
+export interface BookListItemData extends BaseRepPacket{
+    dataArr:BookItemData[]
 }
 
-export interface SchoolBookListItemData{
-    Name:string,
-    Num:number,
-    SortNo:number,
-    TypeName:string
+
+export interface BookItemData {
+    name:string,
+    num:number,
+    sort_no:number,
+    type_name:string
 }
+
+export interface SchoolBookListItemData extends BaseRepPacket{
+    data:SchoolBookItemData[];
+}
+
+export interface SchoolBookItemData{
+    book_name:string,
+    num:number,
+}
+
+export interface SchoolBookListGradeItemData extends BaseRepPacket{
+    data:SchoolBookGradeItemData[];
+}
+
 export interface SchoolBookGradeItemData{
-    Name:string,
-    Num:number,
+    grade:string,
+    num:number,
 }
 export interface UnitListItemStatus{
     GameModes:string,
@@ -63,19 +77,19 @@ export class c2sAddBookStatus {
 }
 //获取分类汇总列表
 export class c2sSearchBookList{
-    Path: string = InterfacePath.Classification_List;
+    command_id: string = InterfacePath.Classification_List;
 }
 
 //获取教材课本
 export class c2sSchoolBook{
-    Path: string = InterfacePath.Classification_SchoolBook;
-    TypeName:string;
+    command_id: string = InterfacePath.Classification_SchoolBook;
+    type_name:string;
 }
 //教材课本-年级
 export class c2sSchoolBookGrade{
-    Path: string = InterfacePath.Classification_SchoolGrade;
-    TypeName:string;
-    BookName:string;
+    command_id: string = InterfacePath.Classification_SchoolGrade;
+    type_name:string;
+    book_name:string;
 }
 
 //书年级单元列表

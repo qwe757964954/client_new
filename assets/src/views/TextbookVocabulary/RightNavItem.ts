@@ -1,5 +1,5 @@
 import { _decorator, Label, Node } from 'cc';
-import { BookListItemData } from '../../models/TextbookModel';
+import { SchoolBookItemData } from '../../models/TextbookModel';
 import ListItem from '../../util/list/ListItem';
 const { ccclass, property } = _decorator;
 
@@ -23,9 +23,9 @@ export class RightNavItem extends ListItem {
 
     }
 
-    updateNavProps(idx:number,itemInfo:BookListItemData){
+    updateNavProps(idx:number,itemInfo:SchoolBookItemData){
         this.idx = idx;
-        this.itemName.string = itemInfo.Name;
+        this.itemName.string = itemInfo.book_name;
         // this.itembg.active = !itemInfo.isSelected;
         // this.itemSelect.active = itemInfo.isSelected;
     }}
