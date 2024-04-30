@@ -54,8 +54,8 @@ export class TextbookChallengeView extends BaseView {
     onSelectWordPlan(params:any){
         ViewsManager.instance.closeView(PrefabType.SettingPlanView);
         if(params.isSave){
-            // let curUnitStatus:UnitListItemStatus = this._unitListArr[this._currentUnitIndex];
-            // TBServer.reqBookAdd(curUnitStatus.typename,curUnitStatus.bookname,curUnitStatus.grade);
+            let curUnitStatus:UnitListItemStatus = this._unitListArr[this._currentUnitIndex];
+            TBServer.reqBookAdd(curUnitStatus.typename,curUnitStatus.bookname,curUnitStatus.grade);
             let reqData:ReqPlanData = {
                 book_name:this._schoolData.book_name,
                 grade:this._schoolGradeData.grade,

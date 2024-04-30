@@ -40,6 +40,7 @@ export class SelectWordView extends BaseView {
     private _tabIndex:number = 0;
     private _leftNavIndex:number = 0; /**左侧导航索引 */
     private _gradeSelectId:number = 0;
+    private _planData:PlanSaveData = null;
     start() {
         this.initUI();
     }
@@ -59,24 +60,27 @@ export class SelectWordView extends BaseView {
 	}
     onSelectWordPlan(params:PlanSaveData){
         if(params.isSave){
-            let reqData = {
-                type_name:this._bookLiskData.dataArr[this._tabIndex].type_name,
-                book_name:this._schoolBookListDataArr.data[this._leftNavIndex].book_name,
-                grade:this._schoolGradeListData.data[this._gradeSelectId].grade,
-                rank_num:parseInt(params.left),
-                num:parseInt(params.right),
-            }
-            TBServer.reqPlanAdd(reqData)
+            this._planData = params;
+            TBServer.reqBookAdd(this._schoolBookListDataArr.data[this._leftNavIndex].book_name,this._schoolGradeListData.data[this._gradeSelectId].grade,this._bookLiskData.dataArr[this._tabIndex].type_name);
         }else{
             this.textBookScrollView.selectedId = -1;
             this.textBookScrollView.update(); 
         }
     }
     onBookAdd(){
-        ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
-            ViewsManager.instance.closeView(PrefabType.SelectWordView);
-            node.getComponent(TextbookChallengeView).initData(this._bookLiskData.dataArr[this._tabIndex], this._schoolBookListDataArr.data[this._leftNavIndex],this._schoolGradeListData.data[this._gradeSelectId]);
-        });
+        let reqData = {
+            type_name:this._bookLiskData.dataArr[this._tabIndex].type_name,
+            book_name:this._schoolBookListDataArr.data[this._leftNavIndex].book_name,
+            grade:this._schoolGradeListData.data[this._gradeSelectId].grade,
+            rank_num:parseInt(this._planData.left),
+            num:parseInt(this._planData.right),
+        }
+        TBServer.reqPlanAdd(reqData)
+
+        // ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
+        //     ViewsManager.instance.closeView(PrefabType.SelectWordView);
+        //     node.getComponent(TextbookChallengeView).initData(this._bookLiskData.dataArr[this._tabIndex], this._schoolBookListDataArr.data[this._leftNavIndex],this._schoolGradeListData.data[this._gradeSelectId]);
+        // });
     }
 
     onAddPlan(){

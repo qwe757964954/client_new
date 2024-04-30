@@ -124,9 +124,9 @@ export class ScrollViewExtra extends Component {
             // this.selectChildren[i].getComponent(UIOpacity).opacity = i == idx ? 255:120;
             let jsItem = this.selectChildren[i].getComponent(DateListItemNew);
             if(i == idx){
-                jsItem.labNum.color = new Color("#843C2F");
-            }else{
                 jsItem.labNum.color = Color.WHITE;
+            }else{
+                jsItem.labNum.color = new Color("#843C2F");
             }
         }
         let jsItem = this.selectChildren[idx].getComponent(DateListItemNew);
