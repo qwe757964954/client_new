@@ -66,6 +66,11 @@ export class BaseDataPacket {
     command_id: number;//命令号
     data: any;//数据对象
 }
+/**基础返回接口类 */
+export class BaseRepPacket {
+    Code: number;//返回码
+    Msg: string;//返回信息
+}
 /**账号密码登录 */
 export class c2sAccountLogin {
     command_id: string = InterfacePath.c2sAccountLogin;
@@ -73,9 +78,7 @@ export class c2sAccountLogin {
     password: string;//密码
 }
 /**登录返回 */
-export class s2cAccountLogin {
-    Code: number;//返回码
-    Msg: string;//返回信息
+export class s2cAccountLogin extends BaseRepPacket {
     user_id: number;//用户id
     token: string;//token
 }
@@ -91,7 +94,7 @@ export class s2cBuildingListInfo {
     direction: number;//建筑方向 0:未翻转, 1: 翻转
 }
 /**建筑列表返回*/
-export class s2cBuildingList {
+export class s2cBuildingList extends BaseRepPacket {
     build_list: s2cBuildingListInfo[];//建筑列表
     land_dict: { [key: string]: number };//地块字典
 }
@@ -105,9 +108,7 @@ export class c2sBuildingEdit {
     direction: number;//建筑方向
 }
 /**建筑修改返回 */
-export class s2cBuildingEdit {
-    Code: number;//返回码
-    Msg: string;//返回信息
+export class s2cBuildingEdit extends BaseRepPacket {
     id: number;//建筑唯一索引id
 }
 /**新建建筑 */
@@ -120,9 +121,7 @@ export class c2sBuildingCreate {
     direction: number;//建筑方向
 }
 /**新建建筑返回 */
-export class s2cBuildingCreate {
-    Code: number;//返回码
-    Msg: string;//返回信息
+export class s2cBuildingCreate extends BaseRepPacket {
     idx: number;//建筑索引(前端使用)
     id: number;//建筑唯一索引id
 }
@@ -132,9 +131,7 @@ export class c2sLandUpdate {
     update_land: { [key: string]: number };//地块字典
 }
 /**地块更新返回 */
-export class s2cLandUpdate {
-    Code: number;//返回码
-    Msg: string;//返回信息
+export class s2cLandUpdate extends BaseRepPacket {
 }
 
 /**********************************以上是新接口*************************************/
