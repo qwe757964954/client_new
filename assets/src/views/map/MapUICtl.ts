@@ -525,6 +525,9 @@ export class MapUICtl extends MainBaseCtl {
         visibleRect.width = width;
         visibleRect.height = height;
         // console.log("updateCameraVisible", visibleRect);
+        //for test 显示区域
+        // let g = this._mainScene.lineLayer.getComponent(Graphics);
+        // g.clear();
         this._bgModelAry.forEach(element => {
             element.show(visibleRect.intersects(element.getRect()), this.getLoadOverCall());
         });
@@ -542,6 +545,20 @@ export class MapUICtl extends MainBaseCtl {
                 return;
             };
             building.show(visibleRect.intersects(building.getRect()), this.getLoadOverCall());
+            //for test 显示区域
+            // {
+            //     let rect = building.getRect();
+            //     this._mainScene.lineLayer.active = true;
+
+            //     g.lineWidth = 4;
+            //     g.strokeColor = Color.RED;
+            //     g.moveTo(rect.x, rect.y);
+            //     g.lineTo(rect.x + rect.width, rect.y);
+            //     g.lineTo(rect.x + rect.width, rect.y + rect.height);
+            //     g.lineTo(rect.x, rect.y + rect.height);
+            //     g.lineTo(rect.x, rect.y);
+            //     g.stroke();
+            // }
         });
     }
     // 角色移动

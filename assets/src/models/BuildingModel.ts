@@ -93,6 +93,9 @@ export class BuildingModel extends BaseComponent {
     get idx(): number {
         return this._idx;
     }
+    get editInfo() {
+        return this._editInfo;
+    }
     // 销毁
     protected onDestroy(): void {
         this.destoryEvent();
@@ -420,6 +423,9 @@ export class BuildingModel extends BaseComponent {
     }
     /**获取显示范围 */
     public getRect() {
-        return this.node.getComponent(UITransform).getBoundingBox();
+        let rect = this.building.getComponent(UITransform).getBoundingBox().clone();
+        rect.x = this.pos.x + rect.x;
+        rect.y = this.pos.y + rect.y;
+        return rect;
     }
 }
