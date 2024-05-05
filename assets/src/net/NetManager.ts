@@ -111,7 +111,19 @@ class NetManager {
         }
         if (obj.command_id) {
             console.log("onRecvMsg id", obj.command_id, obj);
-            EventMgr.emit(obj.command_id, obj.data);
+            let baseData = obj.data;
+            if (baseData) {
+                let outData = baseData.Data;
+                if (outData) {
+                    outData.Code = baseData.Code;
+                    outData.Msg = baseData.Msg;
+                    EventMgr.emit(obj.command_id, outData);
+                } else {
+                    EventMgr.emit(obj.command_id, baseData);
+                }
+            } else {
+                console.log("onRecvMsg no data");
+            }
         } else {
             console.log("onRecvMsg no path", obj);
         }

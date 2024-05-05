@@ -3,7 +3,7 @@ import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { BookListItemData, SchoolBookGradeItemData, SchoolBookListItemData } from '../../models/TextbookModel';
+import { BookListItemData, SchoolBookGradeItemData, SchoolBookListGradeItemData, SchoolBookListItemData } from '../../models/TextbookModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
@@ -11,6 +11,7 @@ import List from '../../util/list/List';
 import { TextbookChallengeView } from '../Challenge/TextbookChallengeView';
 import { NavTitleView } from '../common/NavTitleView';
 import { RightNavView } from './RightNavView';
+import { PlanSaveData } from './SettingPlanView';
 import { TabContentItem } from './TabContentItem';
 import { TabTopView } from './TabTopView';
 const { ccclass, property } = _decorator;
@@ -31,14 +32,15 @@ export class SelectWordView extends BaseView {
 
     @property(Node)
     public myTextbookLayout:Node = null;          // 我的词库
-    private _schoolGradeListDataArr:SchoolBookGradeItemData[] = [];
-    private _bookTabDataArr:BookListItemData[] = [];/**tab数据 */
-    private _schoolBookListDataArr:SchoolBookListItemData[] = [];/**词书左侧导航数据 */
+    private _schoolGradeListData:SchoolBookListGradeItemData = null;
+    private _bookLiskData:BookListItemData = null;/**tab数据 */
+    private _schoolBookListDataArr:SchoolBookListItemData = null;/**词书左侧导航数据 */
     private _tabTop:TabTopView = null;/**tabview */
     private _rightNav:RightNavView = null;/**左侧导航 */
     private _tabIndex:number = 0;
     private _leftNavIndex:number = 0; /**左侧导航索引 */
     private _gradeSelectId:number = 0;
+    private _planData:PlanSaveData = null;
     start() {
         this.initUI();
     }
@@ -54,39 +56,60 @@ export class SelectWordView extends BaseView {
         this.addModelListener(NetNotify.Classification_SchoolGrade,this.onSchoolGradeList);
         this.addModelListener(NetNotify.Classification_BookAdd,this.onBookAdd);
         this.addModelListener(EventType.Select_Word_Plan,this.onSelectWordPlan);
+        this.addModelListener(NetNotify.Classification_PlanAdd,this.onAddPlan);
 	}
-    onSelectWordPlan(params:any){
-        ViewsManager.instance.closeView(PrefabType.SettingPlanView);
+    onSelectWordPlan(params:PlanSaveData){
         if(params.isSave){
-            TBServer.reqBookAdd(this._bookTabDataArr[this._tabIndex].TypeName,this._schoolBookListDataArr[this._leftNavIndex].Name,this._schoolGradeListDataArr[this._gradeSelectId].Name);
+            this._planData = params;
+            TBServer.reqBookAdd(this._schoolBookListDataArr.data[this._leftNavIndex].book_name,this._schoolGradeListData.data[this._gradeSelectId].grade,this._bookLiskData.dataArr[this._tabIndex].type_name);
+        }else{
+            this.textBookScrollView.selectedId = -1;
+            this.textBookScrollView.update(); 
         }
     }
     onBookAdd(){
+        let reqData = {
+            type_name:this._bookLiskData.dataArr[this._tabIndex].type_name,
+            book_name:this._schoolBookListDataArr.data[this._leftNavIndex].book_name,
+            grade:this._schoolGradeListData.data[this._gradeSelectId].grade,
+            rank_num:parseInt(this._planData.left),
+            num:parseInt(this._planData.right),
+        }
+        TBServer.reqPlanAdd(reqData)
+
+        // ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
+        //     ViewsManager.instance.closeView(PrefabType.SelectWordView);
+        //     node.getComponent(TextbookChallengeView).initData(this._bookLiskData.dataArr[this._tabIndex], this._schoolBookListDataArr.data[this._leftNavIndex],this._schoolGradeListData.data[this._gradeSelectId]);
+        // });
+    }
+
+    onAddPlan(){
         ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
             ViewsManager.instance.closeView(PrefabType.SelectWordView);
-            node.getComponent(TextbookChallengeView).initData(this._bookTabDataArr[this._tabIndex], this._schoolBookListDataArr[this._leftNavIndex],this._schoolGradeListDataArr[this._gradeSelectId]);
+            node.getComponent(TextbookChallengeView).initData(this._bookLiskData.dataArr[this._tabIndex], this._schoolBookListDataArr.data[this._leftNavIndex],this._schoolGradeListData.data[this._gradeSelectId]);
         });
     }
-    onSchoolGradeList(data:SchoolBookGradeItemData[]){
-        this._schoolGradeListDataArr = data;
-        this.textBookScrollView.numItems = this._schoolGradeListDataArr.length;
+
+    onSchoolGradeList(data:SchoolBookListGradeItemData){
+        this._schoolGradeListData = data;
+        this.textBookScrollView.numItems = this._schoolGradeListData.data.length;
         this.textBookScrollView.selectedId = -1;
         this.textBookScrollView.update();
     }
-    onSchoolBookList(data:SchoolBookListItemData[]){
+    onSchoolBookList(data:SchoolBookListItemData){
         this._schoolBookListDataArr = data;
-        this._rightNav.loadNavListData(this._schoolBookListDataArr,(selectId:number)=>{
+        this._rightNav.loadNavListData(this._schoolBookListDataArr.data,(selectId:number)=>{
             if(selectId >= 0){
                 this._leftNavIndex = selectId;
-                TBServer.reqSchoolBookGrade(this._bookTabDataArr[this._tabIndex].TypeName,this._schoolBookListDataArr[this._leftNavIndex].Name);
+                TBServer.reqSchoolBookGrade(this._bookLiskData.dataArr[this._tabIndex].type_name,this._schoolBookListDataArr.data[this._leftNavIndex].book_name);
             }
         });
     }
-    onBookList(data:BookListItemData[]){
-        this._bookTabDataArr = data;
-        this._tabTop.loadTabData(this._bookTabDataArr,(selectId:number)=>{
+    onBookList(data:BookListItemData){
+        this._bookLiskData = data;
+        this._tabTop.loadTabData(this._bookLiskData.dataArr,(selectId:number)=>{
             this._tabIndex = selectId;
-            TBServer.reqSchoolBook(this._bookTabDataArr[this._tabIndex].TypeName);
+            TBServer.reqSchoolBook(this._bookLiskData.dataArr[this._tabIndex].type_name);
         });
     }
  
@@ -147,8 +170,8 @@ export class SelectWordView extends BaseView {
     }
     onLoadTextBookVerticalList(item:Node, idx:number){
         let tabContentItemScript:TabContentItem = item.getComponent(TabContentItem);
-        let itemInfo:SchoolBookGradeItemData = this._schoolGradeListDataArr[idx];
-        tabContentItemScript.updateItemProps(idx,itemInfo,this._schoolBookListDataArr[this._leftNavIndex]);
+        let itemInfo:SchoolBookGradeItemData = this._schoolGradeListData.data[idx];
+        tabContentItemScript.updateItemProps(idx,itemInfo,this._schoolBookListDataArr.data[this._leftNavIndex]);
     }
     onTextBookVerticalSelected(item: any, selectedId: number, lastSelectedId: number, val: number){
         console.log("onTextBookVerticalSelected",item,selectedId);

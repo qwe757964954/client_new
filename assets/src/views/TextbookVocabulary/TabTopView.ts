@@ -1,5 +1,5 @@
 import { _decorator, Button, color, Component, isValid, Node } from 'cc';
-import { BookListItemData } from '../../models/TextbookModel';
+import { BookItemData } from '../../models/TextbookModel';
 import List from '../../util/list/List';
 import { TabTopItem } from './TabTopItem';
 const { ccclass, property } = _decorator;
@@ -9,13 +9,13 @@ export class TabTopView extends Component {
     public tabScroll:List = null;
     @property(Button)
     public myTextbookBtn:Button = null;
-    private _dataArr:BookListItemData[] = [];
+    private _dataArr:BookItemData[] = [];
     private callSelectCallback:(selectId:number)=>void = null;
     start() {
 
     }
     /**初始化数据 */
-    loadTabData(data:BookListItemData[],callBack:(selectId:number)=>void){
+    loadTabData(data:BookItemData[],callBack:(selectId:number)=>void){
         this.callSelectCallback = callBack;
         this._dataArr = data;
         this.tabScroll.numItems = this._dataArr.length;
@@ -26,7 +26,7 @@ export class TabTopView extends Component {
     onTabListHorizontalRender(item:Node, idx:number){
         console.log("onTabListHorizontal_______________");
         let tabItemScript:TabTopItem = item.getComponent(TabTopItem);
-        let itemInfo:BookListItemData = this._dataArr[idx];
+        let itemInfo:BookItemData = this._dataArr[idx];
         tabItemScript.updateItemProps(idx,itemInfo);
     }
     onTabListHorizontalSelected(item: any, selectedId: number, lastSelectedId: number, val: number){

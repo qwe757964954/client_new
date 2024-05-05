@@ -3,7 +3,7 @@ import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { BookListItemData, SchoolBookGradeItemData, SchoolBookListItemData, UnitListItemStatus } from '../../models/TextbookModel';
+import { BookItemData, ReqPlanData, SchoolBookGradeItemData, SchoolBookItemData, UnitListItemStatus } from '../../models/TextbookModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
@@ -25,10 +25,10 @@ export class TextbookChallengeView extends BaseView {
     private _unitDetailView:RightUnitView = null;
     private _bottomView:ChallengeBottomView = null;
 
-    private _tabData:BookListItemData = null;
-    private _schoolData:SchoolBookListItemData = null;
+    private _tabData:BookItemData = null;
+    private _schoolData:SchoolBookItemData = null;
     private _schoolGradeData:SchoolBookGradeItemData = null;
-    private _unitListArr:UnitListItemStatus[] = [];
+    private _unitListArr:UnitListItemStatus = null;
     private _currentUnitIndex:number = 0;
     // EventMgr.dispatch(NetNotify.Classification_UnitListStatus,dataArr);
     start() {
@@ -45,14 +45,25 @@ export class TextbookChallengeView extends BaseView {
     onInitModuleEvent(){
         this.addModelListener(NetNotify.Classification_UnitListStatus,this.onUnitListStatus);
         this.addModelListener(EventType.Select_Word_Plan,this.onSelectWordPlan);
+        this.addModelListener(NetNotify.Classification_PlanModify,this.onPlanModify);
         
     }
+    onPlanModify(data:any){
 
+    }
     onSelectWordPlan(params:any){
         ViewsManager.instance.closeView(PrefabType.SettingPlanView);
         if(params.isSave){
             let curUnitStatus:UnitListItemStatus = this._unitListArr[this._currentUnitIndex];
             TBServer.reqBookAdd(curUnitStatus.typename,curUnitStatus.bookname,curUnitStatus.grade);
+            let reqData:ReqPlanData = {
+                book_name:this._schoolData.book_name,
+                grade:this._schoolGradeData.grade,
+                type_name:this._tabData.type_name,
+                rank_num:parseInt(params.left),
+                num:parseInt(params.right)
+            }
+            TBServer.reqModifyPlan(reqData);
         }
     }
 
@@ -66,14 +77,14 @@ export class TextbookChallengeView extends BaseView {
         return this._unitListArr.length - 1;
     }
 
-    onUnitListStatus(data:UnitListItemStatus[]){
+    onUnitListStatus(data:UnitListItemStatus){
         this._unitListArr = data;
         this._currentUnitIndex = this.getCurrentUnit();
-        this._bottomView.updateItemList(this._unitListArr,this._currentUnitIndex);
-        this._unitDetailView.updateUnitProps(this._unitListArr[this._currentUnitIndex]);
+        this._bottomView.updateItemList(this._unitListArr.data,this._currentUnitIndex);
+        this._unitDetailView.updateUnitProps(this._unitListArr.data[this._currentUnitIndex]);
     }
     /**初始化数据 */
-    initData(tabData:BookListItemData,schoolData:SchoolBookListItemData,gradeData:SchoolBookGradeItemData){
+    initData(tabData:BookItemData,schoolData:SchoolBookItemData,gradeData:SchoolBookGradeItemData){
         this._tabData = tabData;
         this._schoolData = schoolData;
         this._schoolGradeData = gradeData;
@@ -82,8 +93,9 @@ export class TextbookChallengeView extends BaseView {
     /**更新我的词书 */
     getUnitListStatus(){
         console.log("getUnitListStatus",this._tabData,this._schoolData,this._schoolGradeData);
-        TBServer.reqUnitListStatus(this._tabData.TypeName,this._schoolData.Name,this._schoolGradeData.Name);
+        TBServer.reqUnitListStatus(this._tabData.type_name,this._schoolData.book_name,this._schoolGradeData.grade);
     }
+
     /**初始化导航栏 */
     initNavTitle(){
         ViewsManager.addNavigation(this.top_layout,0,0).then((navScript: NavTitleView) => {
@@ -141,7 +153,7 @@ export class TextbookChallengeView extends BaseView {
     }
     /**初始化左侧怪物 */
     initLeftMonster(){
-        ResLoader.instance.load(`prefab/${PrefabType.LeftMonsterView.path}`, Prefab, (err: Error | null, prefab: Prefab) => {
+        ResLoader.instance.load(`prefab/${PrefabType.ChallengeLeftView.path}`, Prefab, (err: Error | null, prefab: Prefab) => {
             if (err) {
                 error && console.error(err);
                 return;

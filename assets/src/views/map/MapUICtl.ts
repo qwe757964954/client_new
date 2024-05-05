@@ -15,6 +15,7 @@ import { InterfacePath } from "../../net/InterfacePath";
 import { ServiceMgr } from "../../net/ServiceManager";
 import { BaseComponent } from "../../script/BaseComponent";
 import EventManager, { EventMgr } from "../../util/EventManager";
+import { TimerMgr } from "../../util/TimerMgr";
 import { ToolUtil } from "../../util/ToolUtil";
 import { MainBaseCtl } from "../main/MainBaseCtl";
 import { MainScene } from "../main/MainScene";
@@ -84,7 +85,6 @@ export class MapUICtl extends MainBaseCtl {
             return;
         }
         ServiceMgr.buildingService.reqBuildingList();
-
     }
     // 初始化数据
     initData(): void {
@@ -525,6 +525,9 @@ export class MapUICtl extends MainBaseCtl {
         visibleRect.width = width;
         visibleRect.height = height;
         // console.log("updateCameraVisible", visibleRect);
+        //for test 显示区域
+        // let g = this._mainScene.lineLayer.getComponent(Graphics);
+        // g.clear();
         this._bgModelAry.forEach(element => {
             element.show(visibleRect.intersects(element.getRect()), this.getLoadOverCall());
         });
@@ -542,6 +545,20 @@ export class MapUICtl extends MainBaseCtl {
                 return;
             };
             building.show(visibleRect.intersects(building.getRect()), this.getLoadOverCall());
+            //for test 显示区域
+            // {
+            //     let rect = building.getRect();
+            //     this._mainScene.lineLayer.active = true;
+
+            //     g.lineWidth = 4;
+            //     g.strokeColor = Color.RED;
+            //     g.moveTo(rect.x, rect.y);
+            //     g.lineTo(rect.x + rect.width, rect.y);
+            //     g.lineTo(rect.x + rect.width, rect.y + rect.height);
+            //     g.lineTo(rect.x, rect.y + rect.height);
+            //     g.lineTo(rect.x, rect.y);
+            //     g.stroke();
+            // }
         });
     }
     // 角色移动
@@ -627,6 +644,7 @@ export class MapUICtl extends MainBaseCtl {
     /**加载回调 */
     loadOverCall() {
         this._loadCount--;
+        // console.log("loadOverCall", this._loadCount);
         if (this._loadCount <= 0) {
             this._loadCount = 0;
             this.buildingRoleSort();
@@ -646,6 +664,7 @@ export class MapUICtl extends MainBaseCtl {
         this.initBuilding(data.build_list);
         this.initLand(data.land_dict);
 
+        TimerMgr.once(this.getLoadOverCall(), 500);//注意一定要加延时
         this.updateCameraVisible();
     }
     /**查找建筑 */

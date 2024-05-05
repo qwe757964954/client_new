@@ -1,4 +1,4 @@
-import { Color, Component, Node, ScrollView, _decorator, math } from 'cc';
+import { CCInteger, Color, Component, Node, ScrollView, _decorator, math } from 'cc';
 import { DateListItemNew } from './DateListItemNew';
 import { DateListView } from './DateListView';
 const { ccclass, property } = _decorator;
@@ -12,11 +12,15 @@ export class ScrollViewExtra extends Component {
     @property(DateListView)
     listViewExtra:DateListView = null;
 
+    @property({type: CCInteger})
+    public totalCount:number = 0;
+
     private nowOffsetY:number = 0;
     private selectChildren:any[] = [];
     private selectChildIndex:number = 0;
     private listData:any = null;
     private contentY:number = null;
+    private _selectCallFunc:(plan_text:string)=>void = null;
     onLoad(): void {
         this.nowOffsetY = 0;
         this.selectChildren = [];
@@ -24,12 +28,17 @@ export class ScrollViewExtra extends Component {
         this.listViewExtra.init([],this);
 
         let data = [];
-        for (let i = 0; i < 10; i++) {
-            data.push(i.toString());
+        for (let i = 0; i < this.totalCount; i++) {
+            let tempCount = i + 1;
+            data.push(tempCount.toString());
         }
         this.init(data);
     }
 
+    /**初始化列表选择返回数据 */
+    initSelectCallFunc(callFunc:(plan_text:string)=>void ){
+        this._selectCallFunc = callFunc;
+    }
     init(listData:any){
         this.listData = listData;
         this.listData.unshift(" ");
@@ -58,7 +67,7 @@ export class ScrollViewExtra extends Component {
 
         this.updateListSelectChildren();
 
-        this.setSelectChildIndex(1);
+        this.setSelectChildIndex(0);
     }
 
     /**刷新复用后的item列表 */
@@ -115,13 +124,16 @@ export class ScrollViewExtra extends Component {
             // this.selectChildren[i].getComponent(UIOpacity).opacity = i == idx ? 255:120;
             let jsItem = this.selectChildren[i].getComponent(DateListItemNew);
             if(i == idx){
-                jsItem.labNum.color = new Color("#843C2F");
-            }else{
                 jsItem.labNum.color = Color.WHITE;
+            }else{
+                jsItem.labNum.color = new Color("#843C2F");
             }
         }
         let jsItem = this.selectChildren[idx].getComponent(DateListItemNew);
         console.log(">>>>>>>>>> 选择结果:",this.selectChildren,idx,jsItem.labNum.string);
+        if(this._selectCallFunc){
+            this._selectCallFunc(jsItem.labNum.string);
+        }
         // 这里回调，传出选择结果
     }
 

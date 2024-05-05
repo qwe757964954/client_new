@@ -1,5 +1,5 @@
 import { _decorator, Label, Node } from 'cc';
-import { BookListItemData } from '../../models/TextbookModel';
+import { BookItemData } from '../../models/TextbookModel';
 import ListItem from '../../util/list/ListItem';
 const { ccclass, property } = _decorator;
 
@@ -13,9 +13,9 @@ export class TabTopItem extends ListItem {
     start() {
 
     }
-    updateItemProps(idx: number,itemInfo:BookListItemData) {
+    updateItemProps(idx: number,itemInfo:BookItemData) {
         this.idx = idx;
-        this.tab_name.string = itemInfo.Name;
+        this.tab_name.string = itemInfo.name;
     }
     update(deltaTime: number) {
         

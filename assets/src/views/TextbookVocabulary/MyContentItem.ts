@@ -41,15 +41,29 @@ export class MyContentItem extends ListItem {
     setDeleteClickCallback(callback) {
         this.delCallback = callback;
     }
+
+    // export interface MyTextbookStatus {
+    //     book_name: string,
+    //     grade: string,
+    //     score: number,
+    //     study_word_num: number,
+    //     total_score: number,
+    //     total_word_num: number,
+    //     type_name: string,
+    //     unit:string,
+    //     user_id:number,
+    // } 
+    
+
     updateMyContentItemProps(idx: number,itemInfo:MyTextbookStatus) {
         this.idx = idx;
         this._bookStatus = itemInfo;
-        this.item_name.string = `${itemInfo.BookName}(${itemInfo.Grade})`;
+        this.item_name.string = `${itemInfo.grade}(${itemInfo.type_name})`;
         // this.desc_text.string = itemInfo.desc;
         // this.flagBg.active = itemInfo.isLearned;
         // this.collect_text.string = `已收集${itemInfo.collect_count}/${itemInfo.total_collect}!`;
-        this.already_learned_text.string = `已学${itemInfo.StudyWordNum}/${itemInfo.TotalWordNum}`;
-        let bookImgUrl = `${NetConfig.assertUrl}/imgs/bookcover/${itemInfo.BookName}/${itemInfo.Grade}.jpg`;
+        this.already_learned_text.string = `已学${itemInfo.study_word_num}/${itemInfo.total_word_num}`;
+        let bookImgUrl = `${NetConfig.assertUrl}/imgs/bookcover/${itemInfo.book_name}/${itemInfo.grade}.jpg`;
         ImgUtil.loadRemoteImage(bookImgUrl,this.item_img,188.156,256.998);
     }
 

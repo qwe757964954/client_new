@@ -1,10 +1,8 @@
-import { _decorator, Component, instantiate, Label, Node, Prefab, Sprite, tween, v3 } from 'cc';
+import { _decorator, Component, instantiate, Label, Node, Prefab, tween, v3 } from 'cc';
+import { EventType } from '../../../config/EventType';
+import { DataMgr } from '../../../manager/DataMgr';
 import CCUtil from '../../../util/CCUtil';
 import EventManager from '../../../util/EventManager';
-import { EventType } from '../../../config/EventType';
-import { ViewsManager } from '../../../manager/ViewsManager';
-import { LoadManager } from '../../../manager/LoadManager';
-import { DataMgr } from '../../../manager/DataMgr';
 import { MonsterModel } from './MonsterModel';
 const { ccclass, property } = _decorator;
 
