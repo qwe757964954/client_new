@@ -1,4 +1,4 @@
-import { _decorator, Button, Component, instantiate, Label, Layout, Node, NodePool, Prefab, Sprite, tween, UITransform, Vec3 } from 'cc';
+import { _decorator, Button, Component, instantiate, Label, Layout, Node, NodePool, Prefab, Sprite, SpriteFrame, tween, UITransform, Vec3 } from 'cc';
 import CCUtil from '../../../util/CCUtil';
 import { EventType } from '../../../config/EventType';
 import { PrefabType } from '../../../config/PrefabType';
@@ -26,11 +26,20 @@ export class WordMeaningView extends BaseModeView {
     wordDetailNode: Node = null;
     @property({ type: Node, tooltip: "隐藏详情面板按钮" })
     btn_hideDetail: Node = null;
+    @property({ type: [Node], tooltip: "答案列表" })
+    answerList: Node[] = [];
+    @property({ type: SpriteFrame, tooltip: "正确背景" })
+    rightBg: SpriteFrame = null;
+    @property({ type: SpriteFrame, tooltip: "错误背景" })
+    errorBg: SpriteFrame = null;
+    @property({ type: SpriteFrame, tooltip: "正常背景" })
+    normalBg: SpriteFrame = null;
 
     private _wordDetailEveId: string;
 
     async initData(wordsdata: any, levelData: any) {
         this.initWords(wordsdata);
+        this.initEvent();
         this._levelData = levelData;
         this.initMonster(); //初始化怪物
     }
@@ -89,6 +98,16 @@ export class WordMeaningView extends BaseModeView {
         tween(this.mainNode).to(0.2, { position: new Vec3(pos.x, -360, 0) }).start();
     }
 
+    onAnswerClick(event: any) {
+        let node = event.target;
+        let index = this.answerList.indexOf(node);
+        let wordData = this._wordsData[this._wordIndex];
+        let isRight = false;
+        if (wordData.word == this._levelData[index]) {
+            isRight = true;
+        }
+    }
+
     onClassificationWord(data: any) {
         if (data.Code != 200) {
             console.error("获取单词详情失败", data);
@@ -103,13 +122,18 @@ export class WordMeaningView extends BaseModeView {
         CCUtil.onTouch(this.btn_more, this.showWordDetail, this);
         CCUtil.onTouch(this.btn_hideDetail, this.hideWordDetail, this);
         this._wordDetailEveId = EventManager.on(EventType.Classification_Word, this.onClassificationWord.bind(this));
+        for (let i = 0; i < this.answerList.length; i++) {
+            CCUtil.onTouch(this.answerList[i], this.onAnswerClick, this);
+        }
     }
     protected removeEvent(): void {
         super.removeEvent();
         CCUtil.offTouch(this.btn_more, this.showWordDetail, this);
         CCUtil.offTouch(this.btn_hideDetail, this.hideWordDetail, this);
         EventManager.off(EventType.Classification_Word, this._wordDetailEveId);
-
+        for (let i = 0; i < this.answerList.length; i++) {
+            CCUtil.offTouch(this.answerList[i], this.onAnswerClick, this);
+        }
     }
     protected closeView() {
         ViewsManager.instance.showView(PrefabType.BaseRemindView, (node: Node) => {
