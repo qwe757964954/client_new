@@ -1,4 +1,4 @@
-import { _decorator, error, instantiate, isValid, Node, Prefab, Widget } from 'cc';
+import { _decorator, error, instantiate, Node, Prefab, tween, UITransform, Vec3 } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
@@ -62,7 +62,6 @@ export class BreakThroughView extends BaseView {
     getUnitListStatus(){
         console.log("getUnitListStatus",this._bookData);
         TBServer.reqUnitListStatus(this._bookData);
-        TBServer.reqBookAwardList(this._bookData.type_name,this._bookData.book_name);
     }
     onUnitListStatus(data:UnitListItemStatus){
         console.log("onUnitListStatus",data);
@@ -97,15 +96,19 @@ export class BreakThroughView extends BaseView {
             }
             let node = instantiate(prefab);
             this.content_layout.addChild(node);
+            let content_size = this.content_layout.getComponent(UITransform);
+            let node_size = node.getComponent(UITransform);
             this._rightChallenge = node.getComponent(rightPanelchange);
-            let widgetCom = node.getComponent(Widget);
-            if(!isValid(widgetCom)){
-                widgetCom = node.addComponent(Widget);
-                widgetCom.isAlignRight = true;
-                widgetCom.isAlignBottom= true;
-            }
-            widgetCom.bottom = 68.297;
-            widgetCom.right = -12.355;
+            let posx = content_size.width / 2 + node_size.width / 2;
+            node.setPosition(posx,0,0);
+            // let widgetCom = node.getComponent(Widget);
+            // if(!isValid(widgetCom)){
+            //     widgetCom = node.addComponent(Widget);
+            //     widgetCom.isAlignRight = true;
+            //     widgetCom.isAlignBottom= true;
+            // }
+            // widgetCom.bottom = 68.297;
+            // widgetCom.right = -12.355;
         })
     }
 
@@ -130,6 +133,13 @@ export class BreakThroughView extends BaseView {
                     game_mode:LearnGameModel.Tutoring
                 }
                 TBServer.reqUnitStatus(reqParam);
+                // this._rightChallenge.openView();
+                let content_size = this.content_layout.getComponent(UITransform);
+                let node_size = this._rightChallenge.node.getComponent(UITransform);
+                let posx = content_size.width / 2 + node_size.width / 2;
+                this._rightChallenge.node.setPosition(posx,0,0);
+                this._rightChallenge.node.active = true;
+                tween(this._rightChallenge.node).by(0.3,{position:new Vec3(-node_size.width,0,0)}).start();
             })
             this.getUnitListStatus();
         });

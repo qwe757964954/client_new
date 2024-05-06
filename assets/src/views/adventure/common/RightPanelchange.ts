@@ -1,4 +1,4 @@
-import { _decorator, Component, instantiate, Label, Node, Prefab, tween, v3 } from 'cc';
+import { _decorator, Component, instantiate, Label, Node, Prefab, tween, UITransform, Vec3 } from 'cc';
 import { EventType } from '../../../config/EventType';
 import { DataMgr } from '../../../manager/DataMgr';
 import CCUtil from '../../../util/CCUtil';
@@ -65,8 +65,12 @@ export class rightPanelchange extends Component {
         this._data = param;
         this.updateView();
         this.node.active = true
-        tween(this.node).to(0.3, { position: v3(178, 100, 0) }).call(() => {
-        }).start()
+        let node_size = this.node.getComponent(UITransform);
+        tween(this.node).by(0.3,{position: new Vec3(-node_size.width,0,0)}).call(() => {
+            // this.node.active = false
+        }).start();
+        // tween(this.node).to(0.3, { position: v3(178, 100, 0) }).call(() => {
+        // }).start()
 
     }
 
@@ -84,11 +88,10 @@ export class rightPanelchange extends Component {
     }
 
     hideView() {
-        tween(this.node).to(0.3, { position: v3(900, 100, 0) }).call(() => {
+        let node_size = this.node.getComponent(UITransform);
+        tween(this.node).by(0.3,{position: new Vec3(node_size.width,0,0)}).call(() => {
             this.node.active = false
-        }).start()
-
-
+        }).start();
     }
 
     removeEvent() {

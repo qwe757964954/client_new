@@ -106,7 +106,7 @@ export class TextbookListView extends BaseView {
                 if(isSure){
                     this.setClickItemProps(item,selectedId);
                     ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
-                        ViewsManager.instance.closeView(PrefabType.SelectWordView);
+                        ViewsManager.instance.closeView(PrefabType.TextbookListView);
                         let bookData:BookUnitModel = {
                             type_name:itemInfo.type_name,
                             book_name:itemInfo.book_name,

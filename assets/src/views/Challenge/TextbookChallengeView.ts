@@ -106,6 +106,7 @@ export class TextbookChallengeView extends BaseView {
     getUnitListStatus(){
         console.log("getUnitListStatus",this._bookData);
         TBServer.reqUnitListStatus(this._bookData);
+        TBServer.reqBookAwardList(this._bookData.type_name,this._bookData.book_name);
     }
 
     /**获取词书计划详情 */
