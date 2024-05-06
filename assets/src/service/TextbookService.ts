@@ -1,9 +1,10 @@
-import { BookItemData, BookListItemData, MyTextbookListStatus, MyTextbookStatus, ReqPlanData, SchoolBookGradeItemData, SchoolBookItemData, SchoolBookListGradeItemData, SchoolBookListItemData, UnitItemStatus, UnitListItemStatus, c2sAddBookStatus, c2sAddPlanStatus, c2sBookStatus, c2sDelBookStatus, c2sModifyPlanStatus, c2sSchoolBook, c2sSchoolBookGrade, c2sSearchBookList, c2sUnitListStatus } from "../models/TextbookModel";
+import { BookItemData, BookListItemData, BookPlanDetail, MyTextbookListStatus, MyTextbookStatus, ReqPlanData, ReqUnitStatusParam, SchoolBookGradeItemData, SchoolBookItemData, SchoolBookListGradeItemData, SchoolBookListItemData, UnitItemStatus, UnitListItemStatus, c2sAddBookStatus, c2sAddPlanBookStatus, c2sAddPlanStatus, c2sBookAwardList, c2sBookPlanDetail, c2sBookStatus, c2sDelBookStatus, c2sModifyPlanStatus, c2sSchoolBook, c2sSchoolBookGrade, c2sSearchBookList, c2sUnitListStatus, c2sUnitStatus } from "../models/TextbookModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
 import { NetNotify } from "../net/NetNotify";
 import { BaseControll } from "../script/BaseControll";
 import { EventMgr } from "../util/EventManager";
+import { BookUnitModel } from "../views/Challenge/TextbookChallengeView";
 
 //用户信息服务
 export default class _TextbookService extends BaseControll{
@@ -28,6 +29,10 @@ export default class _TextbookService extends BaseControll{
         this.addModelListener(InterfacePath.Classification_UnitListStatus,this.onUnitListStatus);
         this.addModelListener(InterfacePath.Classification_PlanAdd,this.onPlanAdd);
         this.addModelListener(InterfacePath.Classification_PlanModify,this.onModifyPlan);
+        this.addModelListener(InterfacePath.Classification_AddPlanBook,this.onAddPlanBook);
+        this.addModelListener(InterfacePath.Classification_BookPlanDetail,this.onBookPlanDetail);
+        this.addModelListener(InterfacePath.Classification_UnitStatus,this.onUnitStatus);
+        this.addModelListener(InterfacePath.Classification_BookAwardList,this.onBookAddAwardList);
 	}
     reqBookStatus(){
         let para: c2sBookStatus = new c2sBookStatus();
@@ -209,11 +214,11 @@ export default class _TextbookService extends BaseControll{
         }
         EventMgr.dispatch(NetNotify.Classification_SchoolGrade,schoolGradeList);
     }
-    reqUnitListStatus(TypeName:string,BookName:string,Grade:string){
+    reqUnitListStatus(bookData:BookUnitModel){
         let param:c2sUnitListStatus = new c2sUnitListStatus();
-        param.type_name = TypeName;
-        param.book_name = BookName;
-        param.grade = Grade;
+        param.type_name = bookData.type_name;
+        param.book_name = bookData.book_name;
+        param.grade = bookData.grade;
         NetMgr.sendMsg(param);
     }
     onUnitListStatus(data:any){
@@ -236,6 +241,116 @@ export default class _TextbookService extends BaseControll{
             unitListStatus.data.push(obj);
         }
         EventMgr.dispatch(NetNotify.Classification_UnitListStatus,unitListStatus);
+    }
+
+    reqAddPlanBook(data:ReqPlanData){
+        let params:c2sAddPlanBookStatus = new c2sAddPlanBookStatus();
+        params.type_name = data.type_name;
+        params.book_name = data.book_name;
+        params.grade = data.grade;
+        params.rank_num = data.rank_num;
+        params.num = data.num;
+        NetMgr.sendMsg(params);
+    }
+
+    onAddPlanBook(data:any){
+        console.log("onAddPlanBook",data);
+        if(data.Code !== 200){
+            console.log(data.Msg);
+            return;
+        }
+        EventMgr.dispatch(NetNotify.Classification_AddPlanBook,data);
+    }
+    reqBookPlanDetail(bookData:BookUnitModel){
+        let params:c2sBookPlanDetail = new c2sBookPlanDetail();
+        params.type_name = bookData.type_name;
+        params.book_name = bookData.book_name;;
+        params.grade = bookData.grade;
+        NetMgr.sendMsg(params);
+    }
+
+    onBookPlanDetail(data:any){
+        console.log("onBookPlanDetail",data);
+        if(data.Code !== 200){
+            console.log(data.Msg);
+            return;
+        }
+        let planData:BookPlanDetail = {
+            Code:data.Code,
+            Msg:data.Msg,
+            book_name:data.book_name,
+            grade:data.grade,
+            id:data.id,
+            num:data.num,
+            rank_num:data.rank_num,
+            type_name:data.type_name,
+            user_id:data.user_id
+        }
+        EventMgr.dispatch(NetNotify.Classification_BookPlanDetail,planData);
+    }
+
+    /*
+export interface ReqUnitStatusParam{
+    type_name:string;
+    book_name:string;
+    grade:string;
+    unit:string;
+    game_mode:number;
+}
+
+//我的单词--词书年级单元学习情况列表接口
+export class c2sUnitStatus {
+    command_id: string = InterfacePath.Classification_UnitStatus;
+    type_name:string;
+    book_name:string;
+    grade:string;
+    unit:string;
+    game_mode:number;
+}
+*/
+    reqUnitStatus(param:ReqUnitStatusParam){
+        let params:c2sUnitStatus = new c2sUnitStatus();
+        params.type_name = param.type_name;
+        params.book_name = param.book_name;
+        params.grade = param.grade;
+        params.unit = param.unit;
+        params.game_mode = param.game_mode;
+        NetMgr.sendMsg(params);
+    }
+    onUnitStatus(data:any){
+        console.log("onUnitStatus",data);
+        if(data.Code!== 200){
+            console.log(data.Msg);
+            return;
+        }
+        // let unitStatus:UnitStatus = {
+        //     Code:data.Code,
+        //     Msg:data.Msg,
+        //     data:[]
+        // }
+        // for (let index = 0; index < data.length; index++) {
+        //     const element = data[index];
+        //     let obj:UnitItemStatus = {
+        //         num:element.num,
+        //         unit:element.unit,
+        //     }
+        //     unitStatus.data.push(obj);
+        // }
+        // EventMgr.dispatch(NetNotify.Classification_UnitStatus,unitStatus);
+        // c2sBookAwardList
+    }
+    reqBookAwardList(type_name:string,book_name:string){
+        let params:c2sBookAwardList = new c2sBookAwardList();
+        params.type_name = type_name;
+        params.book_name = book_name;
+        NetMgr.sendMsg(params);
+    }
+    onBookAddAwardList(data:any){
+        console.log("onBookAddAwardList",data);
+        if(data.Code!== 200){
+            console.log(data.Msg);
+            return;
+        }
     }
 };
 

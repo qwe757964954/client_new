@@ -89,6 +89,16 @@ export class c2sAddPlanStatus {
     num:number;
 }
 
+//添加书附带添加计划
+export class c2sAddPlanBookStatus {
+    command_id: string = InterfacePath.Classification_AddPlanBook;
+    type_name:string;
+    book_name:string;
+    grade:string;
+    rank_num:number;
+    num:number;
+}
+
 //修改计划
 
 export class c2sModifyPlanStatus {
@@ -134,3 +144,47 @@ export interface ReqPlanData{
     rank_num:number;
     num:number;
 }
+
+//我的词书——书对应计划详情
+
+export class c2sBookPlanDetail {
+    command_id: string = InterfacePath.Classification_BookPlanDetail;
+    type_name:string;
+    book_name:string;
+    grade:string;
+}
+
+export interface BookPlanDetail extends BaseRepPacket{
+    book_name:string;
+    grade:string;
+    id:string;
+    num:number;
+    rank_num:number;
+    type_name:string;
+    user_id:number;
+}
+
+export interface ReqUnitStatusParam{
+    type_name:string;
+    book_name:string;
+    grade:string;
+    unit:string;
+    game_mode:number;
+}
+
+//我的单词--词书年级单元学习情况列表接口
+export class c2sUnitStatus {
+    command_id: string = InterfacePath.Classification_UnitStatus;
+    type_name:string;
+    book_name:string;
+    grade:string;
+    unit:string;
+    game_mode:number;
+}
+
+export class c2sBookAwardList {
+    command_id: string = InterfacePath.Classification_BookAwardList;
+    type_name:string;
+    book_name:string;
+}
+

@@ -1,15 +1,32 @@
-import { _decorator, Component, error, instantiate, isValid, Node, Prefab, Widget } from 'cc';
+import { _decorator, error, instantiate, isValid, Node, Prefab, Widget } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
+import { ReqUnitStatusParam, UnitListItemStatus } from '../../models/TextbookModel';
+import { NetNotify } from '../../net/NetNotify';
+import { BaseView } from '../../script/BaseView';
+import { TBServer } from '../../service/TextbookService';
 import { rightPanelchange } from '../adventure/common/RightPanelchange';
 import { NavTitleView } from '../common/NavTitleView';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { ScrollMapView } from './ScrollMapView';
+import { BookUnitModel } from './TextbookChallengeView';
 const { ccclass, property } = _decorator;
 
+// export enum ChangeHeadTypeEnum {
+//     Type_HeadBox= 1,
+//     Type_Head= 2,
+// }
+
+//学习模式(0导学 3词意 7全拼）
+export enum LearnGameModel {
+    Tutoring=0,
+    WordMeaning=3,
+    AllSpelledOut=7,
+}
+
 @ccclass('BreakThroughView')
-export class BreakThroughView extends Component {
+export class BreakThroughView extends BaseView {
     @property(Node)
     public top_layout: Node = null;
     @property(Node)
@@ -18,23 +35,46 @@ export class BreakThroughView extends Component {
     private _rightChallenge:rightPanelchange = null;
     private _scrollMap:ScrollMapView = null;
 
+    private _bookData:BookUnitModel = null;
+
     start() {
         this.initUI();
     }
 
     initUI(){
+        this.initScrollMap();
         this.initNavTitle();
         this.initAmout();
         this.initRightChange();
-        this.initScrollMap();
+        // 
     }
 
+    initData(data:BookUnitModel){
+        this._bookData = data;
+        
+    }
+    onInitModuleEvent(){
+        this.addModelListener(NetNotify.Classification_UnitListStatus,this.onUnitListStatus);
+        // this.addModelListener(EventType.Select_Word_Plan,this.onSelectWordPlan);
+        // this.addModelListener(NetNotify.Classification_PlanModify,this.onPlanModify);
+        // this.addModelListener(NetNotify.Classification_BookPlanDetail,this.onBookPlanDetail);
+    }
+    getUnitListStatus(){
+        console.log("getUnitListStatus",this._bookData);
+        TBServer.reqUnitListStatus(this._bookData);
+        TBServer.reqBookAwardList(this._bookData.type_name,this._bookData.book_name);
+    }
+    onUnitListStatus(data:UnitListItemStatus){
+        console.log("onUnitListStatus",data);
+        this._scrollMap.initUnit(data);
+        // this._rightChallenge.initData(data);
+    }
     /**初始化导航栏 */
     initNavTitle(){
         ViewsManager.addNavigation(this.top_layout,0,0).then((navScript: NavTitleView) => {
-            navScript.updateNavigationProps("教材单词闯关",()=>{
-                ViewsManager.instance.showView(PrefabType.SelectWordView, (node: Node) => {
-                    ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);
+            navScript.updateNavigationProps(`${this._bookData.book_name}${this._bookData.grade}`,()=>{
+                ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
+                    ViewsManager.instance.closeView(PrefabType.BreakThroughView);
                 });
             });
         });
@@ -80,7 +120,21 @@ export class BreakThroughView extends Component {
             let node = instantiate(prefab);
             this.content_layout.addChild(node);
             this._scrollMap = node.getComponent(ScrollMapView);
+            this._scrollMap.setClickCallback((unit:string) =>{
+                console.log("unit",unit);
+                let reqParam:ReqUnitStatusParam = {
+                    type_name:this._bookData.type_name,
+                    book_name:this._bookData.book_name,
+                    grade:this._bookData.grade,
+                    unit:unit,
+                    game_mode:LearnGameModel.Tutoring
+                }
+                TBServer.reqUnitStatus(reqParam);
+            })
+            this.getUnitListStatus();
         });
     }
+
+    
 }
 
