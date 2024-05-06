@@ -48,7 +48,7 @@ export class WorldIsland extends Component {
     private initUI() {
         let winssize = GlobalConfig.WIN_SIZE;
         console.log('屏幕尺寸', winssize);
-        this.node.getComponent(UITransform).width = this.scrollView.getComponent(UITransform).width = this.scrollView.node.getChildByName("view").getComponent(UITransform).width = winssize.width;
+        // this.node.getComponent(UITransform).width = this.scrollView.getComponent(UITransform).width = this.scrollView.node.getChildByName("view").getComponent(UITransform).width = winssize.width;
         this.initlist();
         this.levelPanel.hideView();
     }

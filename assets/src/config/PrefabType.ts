@@ -32,6 +32,8 @@ export const PrefabType = {
     StudyModeView: { path: "studyModes/StudyModeView", zindex: Hierarchy.SCENELAYER, tips: "关卡学模式" },
     WorldMapView: { path: "adventure/WorldMapView", zindex: Hierarchy.SCENELAYER, tips: "单词大冒险岛屿选择" },
     WordMeaningView: { path: "studyModes/WordMeaningView", zindex: Hierarchy.SCENELAYER, tips: "词意模式" },
+    WordPracticeView: { path: "studyModes/WordPraticeView", zindex: Hierarchy.SCENELAYER, tips: "练习模式" },
+    TransitionView: { path: "common/TransitionView", zindex: Hierarchy.POPUPLAYER, tips: "过渡界面" },
 
     //**学习模式相关 end*/
     /*********************************************公共相关start***********************************************************/

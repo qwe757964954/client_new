@@ -13,6 +13,8 @@ import RemoteImageManager from '../../../manager/RemoteImageManager';
 import { WordDetailView } from '../../common/WordDetailView';
 import { NetConfig } from '../../../config/NetConfig';
 import { BaseModeView } from './BaseModeView';
+import { WordMeaningView } from './WordMeaningView';
+import { TransitionView } from '../common/TransitionView';
 const { ccclass, property } = _decorator;
 
 /**学习模式页面 何存发 2024年4月15日15:38:41 */
@@ -216,13 +218,21 @@ export class StudyModeView extends BaseModeView {
             this.splitNode.active = false;
             this.playWordSound().then(() => {
                 this._wordIndex++;
+                this._rightNum++;
                 this.attackMonster().then(() => {
                     if (this._wordIndex == this._wordsData.length) {
                         console.log('学习完成,跳转词意模式');
                         this.monsterEscape().then(() => {
-                            // ViewsManager.instance.showView(PrefabType.WordMeaningView, (node: Node) => {
-                            //     node.getComponent(WordMeaningView).initData(this._wordsData, this._levelData);
-                            // });
+                            ViewsManager.instance.showView(PrefabType.TransitionView, (node: Node) => {
+                                let wordData = JSON.parse(JSON.stringify(this._wordsData));
+                                let levelData = JSON.parse(JSON.stringify(this._levelData));
+                                node.getComponent(TransitionView).setTransitionCallback(() => {
+                                    ViewsManager.instance.showView(PrefabType.WordMeaningView, (node: Node) => {
+                                        node.getComponent(WordMeaningView).initData(wordData, levelData);
+                                        ViewsManager.instance.closeView(PrefabType.StudyModeView);
+                                    });
+                                });
+                            });
                         });
                     } else {
                         this.showCurrentWord();
@@ -280,7 +290,7 @@ export class StudyModeView extends BaseModeView {
         CCUtil.offTouch(this.btn_hideDetail, this.hideWordDetail, this);
         EventManager.off(EventType.Classification_Word, this._wordDetailEveId);
         for (let i = 0; i < this._spliteItems.length; i++) {
-            CCUtil.offTouch(this._spliteItems[i], this.onSplitItemClick.bind(this, this._spliteItems[i]), this);
+            CCUtil.offTouch(this._spliteItems[i], this.onSplitItemClick.bind(this, this._spliteItems[i], i), this);
         }
 
     }
@@ -294,19 +304,8 @@ export class StudyModeView extends BaseModeView {
         });
     }
     onDestroy(): void {
-        this.removeEvent();
+        super.onDestroy();
         this._nodePool.clear();
-        RemoteSoundMgr.clearAudio();
     }
-
-    update(deltaTime: number) {
-
-    }
-    /**是否收藏 */
-    protected setCollect(isCollect: boolean) {
-        this.btn_collect.getComponent(Sprite).grayscale = !isCollect
-    }
-
-
 }
 

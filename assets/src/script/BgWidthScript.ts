@@ -5,7 +5,7 @@ const { ccclass, property } = _decorator;
 // 背景图适配屏幕
 @ccclass('BgWidthScript')
 export class BgWidthScript extends Component {
-    
+
     public onLoad() {
         let transform = this.getComponent(UITransform);
         let imgRate = transform.width / transform.height;
