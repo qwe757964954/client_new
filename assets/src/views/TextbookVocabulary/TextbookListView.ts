@@ -87,6 +87,8 @@ export class TextbookListView extends BaseView {
         ViewsManager.addNavigation(this.top_layout,0,0).then((navScript: NavTitleView) => {
             navScript.updateNavigationProps("词书列表",()=>{
                 ViewsManager.instance.showView(PrefabType.TextbookChallengeView,(node:Node)=>{
+                    let itemScript:TextbookChallengeView = node.getComponent(TextbookChallengeView);
+                    itemScript.initData(this._curBookData);
                     ViewsManager.instance.closeView(PrefabType.TextbookListView);
                 });
             });
@@ -136,6 +138,7 @@ export class TextbookListView extends BaseView {
                             book_name:itemInfo.book_name,
                             grade:itemInfo.grade
                         }
+                        this._curBookData = bookData;
                         node.getComponent(TextbookChallengeView).initData(bookData);
                     });
                 }else{
