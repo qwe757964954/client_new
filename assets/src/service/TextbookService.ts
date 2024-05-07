@@ -288,26 +288,6 @@ export default class _TextbookService extends BaseControll{
         }
         EventMgr.dispatch(NetNotify.Classification_BookPlanDetail,planData);
     }
-
-    /*
-export interface ReqUnitStatusParam{
-    type_name:string;
-    book_name:string;
-    grade:string;
-    unit:string;
-    game_mode:number;
-}
-
-//我的单词--词书年级单元学习情况列表接口
-export class c2sUnitStatus {
-    command_id: string = InterfacePath.Classification_UnitStatus;
-    type_name:string;
-    book_name:string;
-    grade:string;
-    unit:string;
-    game_mode:number;
-}
-*/
     reqUnitStatus(param:ReqUnitStatusParam){
         let params:c2sUnitStatus = new c2sUnitStatus();
         params.type_name = param.type_name;

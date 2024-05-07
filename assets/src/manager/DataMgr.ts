@@ -1,4 +1,3 @@
-import { js } from "cc";
 import { TextConfig } from "../config/TextConfig";
 import { ToolUtil } from "../util/ToolUtil";
 import { LoadManager } from "./LoadManager";
@@ -56,7 +55,10 @@ export class AdvLevelConfig {
 }
 //教材单词关卡配置
 export class BookLevelConfig {
-
+    grade:string;
+    unit:string;
+    type_name:string;
+    game_mode:number
 }
 
 

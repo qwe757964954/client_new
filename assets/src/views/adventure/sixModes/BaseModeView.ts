@@ -1,11 +1,12 @@
-import { _decorator, Button, Component, instantiate, Label, Layout, Node, NodePool, Prefab, Sprite, tween, UITransform, Vec3 } from 'cc';
-import CCUtil from '../../../util/CCUtil';
-import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
-import { RoleBaseModel } from '../../../models/RoleBaseModel';
-import { SmallMonsterModel } from '../../common/SmallMonsterModel';
-import { PetModel } from '../../../models/PetModel';
-import { MonsterModel } from '../common/MonsterModel';
+import { _decorator, Button, Component, instantiate, Node, Prefab, Sprite, tween, Vec3 } from 'cc';
 import { AdvLevelConfig, BookLevelConfig } from '../../../manager/DataMgr';
+import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
+import { PetModel } from '../../../models/PetModel';
+import { RoleBaseModel } from '../../../models/RoleBaseModel';
+import { UnitWordModel } from '../../../models/TextbookModel';
+import CCUtil from '../../../util/CCUtil';
+import { SmallMonsterModel } from '../../common/SmallMonsterModel';
+import { MonsterModel } from '../common/MonsterModel';
 const { ccclass, property } = _decorator;
 
 /**学习模式公共部分 */
@@ -39,7 +40,7 @@ export class BaseModeView extends Component {
     protected _role: Node = null; //人物
     protected _smallMonsters: Node[] = []; //小怪物
 
-    protected _wordsData: any = null;
+    protected _wordsData: UnitWordModel[] = null;
     protected _wordIndex: number = 0; //当前单词序号
     protected _detailData: any = null; //当前单词详情数据
     protected _levelData: AdvLevelConfig | BookLevelConfig = null; //当前关卡配置

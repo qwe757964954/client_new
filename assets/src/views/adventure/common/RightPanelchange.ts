@@ -6,6 +6,11 @@ import EventManager from '../../../util/EventManager';
 import { MonsterModel } from './MonsterModel';
 const { ccclass, property } = _decorator;
 
+export interface LevelConfig {
+    smallId:number;
+    bigId:number;
+}
+
 /**右边选择关卡界面 何存发 2024年4月12日14:21:29 */
 @ccclass('rightPanel')
 export class rightPanelchange extends Component {
@@ -26,7 +31,7 @@ export class rightPanelchange extends Component {
     @property({ type: Prefab, tooltip: "怪物预制" })
     public monsterPrefab: Prefab = null;
 
-    private _data: any = null;
+    private _data: LevelConfig = null;
     private _eveId: string;
     private _monsterAni: Node = null;
 
@@ -60,7 +65,7 @@ export class rightPanelchange extends Component {
 
     }
     /** 打开界面 */
-    openView(param: any = null) {
+    openView(param: LevelConfig = null) {
         console.log('接收到的参数=', param);
         this._data = param;
         this.updateView();

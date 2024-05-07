@@ -1,4 +1,5 @@
 import { _decorator, error, instantiate, Node, Prefab, UITransform } from 'cc';
+import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { DataMgr } from '../../manager/DataMgr';
 import { ResLoader } from '../../manager/ResLoader';
@@ -7,7 +8,8 @@ import { ReqUnitStatusParam, UnitListItemStatus, UnitStatusData } from '../../mo
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
-import { rightPanelchange } from '../adventure/common/RightPanelchange';
+import { LevelConfig, rightPanelchange } from '../adventure/common/RightPanelchange';
+import { StudyModeView } from '../adventure/sixModes/StudyModeView';
 import { NavTitleView } from '../common/NavTitleView';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { ScrollMapView } from './ScrollMapView';
@@ -38,6 +40,8 @@ export class BreakThroughView extends BaseView {
 
     private _bookData:BookUnitModel = null;
 
+    private _curUnitStatus:UnitStatusData = null;
+
     start() {
         this.initUI();
     }
@@ -58,6 +62,9 @@ export class BreakThroughView extends BaseView {
     onInitModuleEvent(){
         this.addModelListener(NetNotify.Classification_UnitListStatus,this.onUnitListStatus);
         this.addModelListener(NetNotify.Classification_UnitStatus,this.onUnitStatus);
+        this.addModelListener(EventType.Enter_Island_Level,this.onEnterIsland);
+
+        
         // this.addModelListener(EventType.Select_Word_Plan,this.onSelectWordPlan);
         // this.addModelListener(NetNotify.Classification_PlanModify,this.onPlanModify);
         // this.addModelListener(NetNotify.Classification_BookPlanDetail,this.onBookPlanDetail);
@@ -66,9 +73,30 @@ export class BreakThroughView extends BaseView {
         console.log("getUnitListStatus",this._bookData);
         TBServer.reqUnitListStatus(this._bookData);
     }
+    /*
+    export class BookLevelConfig {
+        grade:string;
+        unit:string;
+        type_name:string;
+        game_mode:number
+    }
+    */
+    onEnterIsland(data:LevelConfig){
+        ViewsManager.instance.showView(PrefabType.StudyModeView, (node: Node) => {
+            let levelData = DataMgr.instance.getAdvLevelConfig(data.bigId, data.smallId);
+            let bookLevelData = {
+                grade:this._curUnitStatus.grade,
+                unit:this._curUnitStatus.unit,
+                type_name:this._curUnitStatus.type_name,
+                game_mode:this._curUnitStatus.game_mode,
+            }
+            node.getComponent(StudyModeView).initData(this._curUnitStatus.data, levelData);
+        });
+    }
 
     onUnitStatus(data:UnitStatusData){
         console.log("onUnitStatus",data);
+        this._curUnitStatus = data;
         // 
         let content_size = this.content_layout.getComponent(UITransform);
         let node_size = this._rightChallenge.node.getComponent(UITransform);

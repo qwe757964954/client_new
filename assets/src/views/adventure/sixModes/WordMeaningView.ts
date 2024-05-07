@@ -1,16 +1,17 @@
-import { _decorator, Button, Component, instantiate, Label, Layout, Node, NodePool, Prefab, Sprite, SpriteFrame, tween, UITransform, Vec3 } from 'cc';
-import CCUtil from '../../../util/CCUtil';
+import { _decorator, Label, Node, Sprite, SpriteFrame, tween, Vec3 } from 'cc';
 import { EventType } from '../../../config/EventType';
+import { NetConfig } from '../../../config/NetConfig';
 import { PrefabType } from '../../../config/PrefabType';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { ViewsManager } from '../../../manager/ViewsManager';
+import { UnitWordModel } from '../../../models/TextbookModel';
 import { ServiceMgr } from '../../../net/ServiceManager';
+import CCUtil from '../../../util/CCUtil';
 import EventManager from '../../../util/EventManager';
 import { BaseRemindView } from '../../common/BaseRemindView';
 import { WordDetailView } from '../../common/WordDetailView';
-import { NetConfig } from '../../../config/NetConfig';
-import { BaseModeView } from './BaseModeView';
 import { TransitionView } from '../common/TransitionView';
+import { BaseModeView } from './BaseModeView';
 import { WordPracticeView } from './WordPracticeView';
 const { ccclass, property } = _decorator;
 
@@ -64,7 +65,7 @@ export class WordMeaningView extends BaseModeView {
 
     private _selectLock: boolean = false; //选择锁
 
-    async initData(wordsdata: any, levelData: any) {
+    async initData(wordsdata: UnitWordModel[], levelData: any) {
         this.initWords(wordsdata);
         this.initEvent();
         this._levelData = levelData;
@@ -72,12 +73,12 @@ export class WordMeaningView extends BaseModeView {
     }
 
     //获取关卡单词回包
-    initWords(data: any) {
+    initWords(data: UnitWordModel[]) {
         console.log('initWords', data);
         this._wordsData = data;
         for (let i = 0; i < data.length; i++) {
             this._words.push(data[i].word);
-            this._wordsCn.push(data[i].Cn);
+            this._wordsCn.push(data[i].cn);
         }
         this.showCurrentWord();
     }

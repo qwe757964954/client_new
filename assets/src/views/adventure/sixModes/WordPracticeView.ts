@@ -1,16 +1,17 @@
-import { _decorator, Component, Label, Node } from 'cc';
-import { BaseModeView } from './BaseModeView';
-import CCUtil from '../../../util/CCUtil';
-import { ViewsManager } from '../../../manager/ViewsManager';
-import { PrefabType } from '../../../config/PrefabType';
-import { BaseRemindView } from '../../common/BaseRemindView';
-import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
+import { _decorator, Label, Node } from 'cc';
 import { NetConfig } from '../../../config/NetConfig';
-import { LetterItem } from './items/LetterItem';
-import List from '../../../util/list/List';
+import { PrefabType } from '../../../config/PrefabType';
 import { DataMgr } from '../../../manager/DataMgr';
-import { SelectLetterItem } from './items/SelectLetterItem';
+import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
+import { ViewsManager } from '../../../manager/ViewsManager';
+import { UnitWordModel } from '../../../models/TextbookModel';
+import CCUtil from '../../../util/CCUtil';
+import List from '../../../util/list/List';
+import { BaseRemindView } from '../../common/BaseRemindView';
 import { TransitionView } from '../common/TransitionView';
+import { BaseModeView } from './BaseModeView';
+import { LetterItem } from './items/LetterItem';
+import { SelectLetterItem } from './items/SelectLetterItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordPracticeView')
@@ -35,7 +36,7 @@ export class WordPracticeView extends BaseModeView {
 
     private _spilitData: any = null; //拆分数据
 
-    async initData(wordsdata: any, levelData: any) {
+    async initData(wordsdata: UnitWordModel[], levelData: any) {
         this._spilitData = await DataMgr.instance.getWordSplitConfig();
         this.initWords(wordsdata);
         this.initEvent();
@@ -44,7 +45,7 @@ export class WordPracticeView extends BaseModeView {
     }
 
     //获取关卡单词回包
-    initWords(data: any) {
+    initWords(data: UnitWordModel[]) {
         console.log('initWords', data);
         this._wordsData = data;
         this.showCurrentWord();
