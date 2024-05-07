@@ -44,7 +44,7 @@ export class Socket {
 
         this.closeSocket();
         this._socket = new WebSocket(this.ip);
-        // this._socket.binaryType = "arraybuffer";
+        this._socket.binaryType = "arraybuffer";
         this._socket.onopen = this.onOpen.bind(this);
         this._socket.onmessage = this.onMessage.bind(this);
         this._socket.onerror = this.onError.bind(this);
@@ -87,13 +87,12 @@ export class Socket {
             }
             return;
         }
-        let buffer: Blob = msg.data;
+        let buffer: ArrayBuffer = msg.data;
         if (!buffer) { return; }
-        buffer.text().then((data) => {
-            if (this.recvFun) {
-                this.recvFun(data);
-            }
-        });
+        let data = String.fromCharCode.apply(null, new Uint8Array(buffer));
+        if (this.recvFun) {
+            this.recvFun(data);
+        }
     }
     private onError() {
         if (this.errorFun) {
