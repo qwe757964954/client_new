@@ -1,7 +1,9 @@
 import { _decorator, Component, Label, Node, ProgressBar } from 'cc';
+import { NetConfig } from '../../config/NetConfig';
 import { PrefabType } from '../../config/PrefabType';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { UnitListItemStatus } from '../../models/TextbookModel';
+import { BookAwardListModel, BookPlanDetail, UnitListItemStatus } from '../../models/TextbookModel';
+import ImgUtil from '../../util/ImgUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('RightUnitView')
@@ -32,6 +34,21 @@ export class RightUnitView extends Component {
     start() {
 
     }
+
+    updateRightPlan(data:BookPlanDetail) {
+        this.title_label.string = data.book_name;
+        this.grade_label.string = data.grade;
+        this.plan_label.string = `${data.rank_num}/${data.num}`;
+        let bookImgUrl = `${NetConfig.assertUrl}/imgs/bookcover/${data.book_name}/${data.grade}.jpg`;
+        ImgUtil.loadRemoteImage(bookImgUrl,this.current_img,188.573,255.636);
+    }
+
+    updateStudyProgress(data:BookAwardListModel){
+        this.study_label.string = data.study_word_num.toString();
+        this.total_label.string = data.total_word_num.toString();
+        this.study_progress.progress = data.study_word_num / data.total_word_num;
+    }
+
     updateUnitProps(unitData:UnitListItemStatus){
         console.log("updateUnitProps",unitData);
         this._curUnitStatus = unitData;

@@ -1,4 +1,4 @@
-import { BookItemData, BookListItemData, BookPlanDetail, MyTextbookListStatus, MyTextbookStatus, ReqPlanData, ReqUnitStatusParam, SchoolBookGradeItemData, SchoolBookItemData, SchoolBookListGradeItemData, SchoolBookListItemData, UnitItemStatus, UnitListItemStatus, c2sAddBookStatus, c2sAddPlanBookStatus, c2sAddPlanStatus, c2sBookAwardList, c2sBookPlanDetail, c2sBookStatus, c2sDelBookStatus, c2sModifyPlanStatus, c2sSchoolBook, c2sSchoolBookGrade, c2sSearchBookList, c2sUnitListStatus, c2sUnitStatus } from "../models/TextbookModel";
+import { AwardListItem, BookAwardListModel, BookItemData, BookListItemData, BookPlanDetail, MyTextbookListStatus, MyTextbookStatus, ReqPlanData, ReqUnitStatusParam, SchoolBookGradeItemData, SchoolBookItemData, SchoolBookListGradeItemData, SchoolBookListItemData, UnitItemStatus, UnitListItemStatus, c2sAddBookStatus, c2sAddPlanBookStatus, c2sAddPlanStatus, c2sBookAwardList, c2sBookPlanDetail, c2sBookStatus, c2sDelBookStatus, c2sModifyPlanStatus, c2sSchoolBook, c2sSchoolBookGrade, c2sSearchBookList, c2sUnitListStatus, c2sUnitStatus } from "../models/TextbookModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
 import { NetNotify } from "../net/NetNotify";
@@ -351,6 +351,29 @@ export class c2sUnitStatus {
             console.log(data.Msg);
             return;
         }
+        let bookAwardData:BookAwardListModel = {
+            Code:data.Code,
+            Msg:data.Msg,
+            study_num:data.study_num,
+            study_word_num:data.study_word_num,
+            total_num:data.total_num,
+            total_word_num:data.total_word_num,
+            awards_list:[]
+        }
+        for (let index = 0; index < data.awards_list.length; index++) {
+            let element = data.awards_list[index];
+            let obj:AwardListItem = {
+                num:element.num,
+                rec_flag:element.rec_flag,
+                awards:{
+                    coin:element.awards.coin,
+                    diamond:element.awards.diamond,
+                    random_props:element.awards.random_props
+                }
+            }
+            bookAwardData.awards_list.push(obj);
+        }
+        EventMgr.dispatch(NetNotify.Classification_BookAwardList,bookAwardData);
     }
 };
 

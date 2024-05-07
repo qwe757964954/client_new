@@ -188,3 +188,28 @@ export class c2sBookAwardList {
     book_name:string;
 }
 
+export interface BookAwardListModel extends BaseRepPacket{
+    study_num:number;
+    study_word_num:number;
+    total_num:number;
+    total_word_num:number;
+    awards_list:AwardListItem[];
+}
+
+export interface AwardListItem {
+    awards:AwardItem;
+    num:number;
+    rec_flag:number;
+}
+
+export  interface AwardItem {
+    coin:number;
+    diamond:number;
+    random_props:RandomPropsData;
+}
+
+export interface RandomPropsData {
+    change:number;
+    prop_id:number;
+    rat:number;
+}

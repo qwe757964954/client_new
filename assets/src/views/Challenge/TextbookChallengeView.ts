@@ -3,7 +3,7 @@ import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { BookPlanDetail, ReqPlanData, UnitListItemStatus } from '../../models/TextbookModel';
+import { BookAwardListModel, BookPlanDetail, ReqPlanData, UnitListItemStatus } from '../../models/TextbookModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
@@ -37,6 +37,7 @@ export class TextbookChallengeView extends BaseView {
     private _bookData:BookUnitModel = null;
     private _unitListArr:UnitListItemStatus = null;
     private _currentUnitIndex:number = 0;
+    private _planData:BookPlanDetail = null;
     // EventMgr.dispatch(NetNotify.Classification_UnitListStatus,dataArr);
     start() {
         this.initUI();
@@ -54,15 +55,21 @@ export class TextbookChallengeView extends BaseView {
         this.addModelListener(EventType.Select_Word_Plan,this.onSelectWordPlan);
         this.addModelListener(NetNotify.Classification_PlanModify,this.onPlanModify);
         this.addModelListener(NetNotify.Classification_BookPlanDetail,this.onBookPlanDetail);
+        this.addModelListener(NetNotify.Classification_BookAwardList,this.onBookAwardList);
     }
     onPlanModify(data:any){
 
     }
 
+    onBookAwardList(data:BookAwardListModel){
+        console.log("onBookAwardList",data);
+        this._unitDetailView.updateStudyProgress(data);
+    }
+
     onBookPlanDetail(data:BookPlanDetail){
-
+        this._planData = data;
         console.log("onBookPlanDetail",data);
-
+        this._unitDetailView.updateRightPlan(data);
     }
 
     onSelectWordPlan(params:any){
@@ -80,6 +87,7 @@ export class TextbookChallengeView extends BaseView {
     }
 
     getCurrentUnit(){
+        return 0;
         for (let index = 0; index < this._unitListArr.data.length; index++) {
             const element = this._unitListArr[index];
             if(element.studywordnum < element.totalwordnum){
@@ -91,27 +99,27 @@ export class TextbookChallengeView extends BaseView {
 
     onUnitListStatus(data:UnitListItemStatus){
         this._unitListArr = data;
-        // this._currentUnitIndex = this.getCurrentUnit();
-        // this._bottomView.updateItemList(this._unitListArr.data,this._currentUnitIndex);
+        this._currentUnitIndex = this.getCurrentUnit();
+        this._bottomView.updateItemList(this._unitListArr.data,this._currentUnitIndex);
         // this._unitDetailView.updateUnitProps(this._unitListArr.data[this._currentUnitIndex]);
     }
     /**初始化数据 */
     initData(bookModel:BookUnitModel){
         this._bookData = bookModel;
-        this.getUnitListStatus();
-        this.getBookPlanDetail();
 
     }
     /**更新我的词书 */
     getUnitListStatus(){
         console.log("getUnitListStatus",this._bookData);
         TBServer.reqUnitListStatus(this._bookData);
-        TBServer.reqBookAwardList(this._bookData.type_name,this._bookData.book_name);
+        
     }
 
     /**获取词书计划详情 */
     getBookPlanDetail(){
         TBServer.reqBookPlanDetail(this._bookData);
+        /**顺带请求学习奖励list */
+        TBServer.reqBookAwardList(this._bookData.type_name,this._bookData.book_name);
     }
     /**初始化导航栏 */
     initNavTitle(){
@@ -161,6 +169,7 @@ export class TextbookChallengeView extends BaseView {
                     ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);
                 });
             });
+            this.getBookPlanDetail();
         });
     }
     /**下方单元进度模块 */
@@ -173,6 +182,7 @@ export class TextbookChallengeView extends BaseView {
             let node = instantiate(prefab);
             this.node.addChild(node);
             this._bottomView = node.getComponent(ChallengeBottomView);
+            this.getUnitListStatus();
         });
     }
     /**初始化左侧怪物 */
