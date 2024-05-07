@@ -9,6 +9,7 @@ import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
 import { NavTitleView } from '../common/NavTitleView';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
+import { TextbookListView } from '../TextbookVocabulary/TextbookListView';
 import { BreakThroughView } from './BreakThroughView';
 import { ChallengeBottomView } from './ChallengeBottomView';
 import { RightUnitView } from './RightUnitView';
@@ -169,6 +170,15 @@ export class TextbookChallengeView extends BaseView {
                     ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);
                 });
             });
+
+            this._unitDetailView.setChangeBookCallback(()=>{
+                ViewsManager.instance.showView(PrefabType.TextbookListView, (node: Node) => {
+                    let itemScript:TextbookListView = node.getComponent(TextbookListView);
+                    itemScript.initData(this._bookData);
+                    ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);
+                });
+            });
+
             this.getBookPlanDetail();
         });
     }

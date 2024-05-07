@@ -31,6 +31,8 @@ export class RightUnitView extends Component {
 
     private _breakThroughCallback:()=>void = null;
 
+    private _changeCallback:()=>void = null;
+
     start() {
 
     }
@@ -71,6 +73,10 @@ export class RightUnitView extends Component {
         this._breakThroughCallback = callback;
     }
 
+    setChangeBookCallback(callback:()=>void){
+        this._changeCallback = callback;
+    }
+
     onReviewClick(){
 
     }
@@ -90,9 +96,9 @@ export class RightUnitView extends Component {
         });
     }
     onChangeTextbookClick(){
-        ViewsManager.instance.showView(PrefabType.TextbookListView, (node: Node) => {
-            ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);
-        });
+        if(this._changeCallback){
+            this._changeCallback();
+        }
     }
 }
 

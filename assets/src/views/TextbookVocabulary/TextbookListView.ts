@@ -1,4 +1,4 @@
-import { _decorator, Node } from 'cc';
+import { _decorator, isValid, Node } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { MyTextbookStatus } from '../../models/TextbookModel';
@@ -27,12 +27,18 @@ export class TextbookListView extends BaseView {
     private _myTextbookDataArr:MyTextbookStatus[] = [];
 
     private _selectedIndex:number = 0;
+
+    private _curBookData:BookUnitModel = null;
     start() {
         this.initUI();
     }
     protected initUI(){
         this.initNavTitle();
         TBServer.reqBookStatus();
+    }
+
+    initData(data:BookUnitModel){
+        this._curBookData = data;
     }
 
     /** 初始化模块事件 */
@@ -45,13 +51,31 @@ export class TextbookListView extends BaseView {
         TBServer.reqBookStatus();
         this.updateShowMyScrollEmpty();
     }
+
+    getSelectDataIndex(){
+        let select_id = 0;
+        for (let index = 0; index < this._myTextbookDataArr.length; index++) {
+            const element = this._myTextbookDataArr[index];
+            console.log(element,this._curBookData);
+            if(element.book_name == this._curBookData.book_name && 
+                element.type_name == this._curBookData.type_name && 
+                element.grade == this._curBookData.grade){
+                select_id = index;
+                break;
+            }
+        }
+        return select_id;
+    }
+
     onBookStatus(data:MyTextbookStatus[]){
         //判断data是数组，并且长度大于1
         if(Array.isArray(data) && data.length > 0){
             this._myTextbookDataArr = data;
             this.myScrollView.numItems = this._myTextbookDataArr.length;
             this.myScrollView.update();
-            this.myScrollView.selectedId = 0;
+            let select_id = this.getSelectDataIndex()
+            this._selectedIndex = select_id;
+            this.myScrollView.selectedId = select_id;
         }else{
             this._myTextbookDataArr = []
             this.myScrollView.numItems = this._myTextbookDataArr.length;
@@ -138,9 +162,12 @@ export class TextbookListView extends BaseView {
     clearItems(){
         for (let index = 0; index < this.myScrollView.numItems; index++) {
             let item = this.myScrollView.getItemByListId(index);
-            let itemScript = item.getComponent(MyContentItem);
-            itemScript.flagBg.active = false;
-            itemScript.select_infoBg.active = false;
+            console.log("clearItems_____",index,item);
+            if(isValid(item)){
+                let itemScript = item.getComponent(MyContentItem);
+                itemScript.flagBg.active = false;
+                itemScript.select_infoBg.active = false;
+            }
         }
     }
 
