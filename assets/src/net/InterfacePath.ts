@@ -43,6 +43,8 @@ export const InterfacePath = {
     NewWord_List: "NewWord.List", //我的生词列表
     NewWord_Add: "NewWord.Add", //添加到我的生词本
     NewWord_Del: "NewWord.Del", //移除生词本
+    SearchWord_DelSingle: "SearchWord.DelSingle", //删除一个查找单词历史
+    SearchWord_DelAll: "SearchWord.DelAll", //删除所有查找单词历史
     /***********************************************选择词书 end*********************************************/
     /************************************socket消息类型end*********************************************/
 }
