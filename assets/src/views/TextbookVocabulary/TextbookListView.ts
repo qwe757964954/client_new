@@ -56,7 +56,6 @@ export class TextbookListView extends BaseView {
         let select_id = 0;
         for (let index = 0; index < this._myTextbookDataArr.length; index++) {
             const element = this._myTextbookDataArr[index];
-            console.log(element,this._curBookData);
             if(element.book_name == this._curBookData.book_name && 
                 element.type_name == this._curBookData.type_name && 
                 element.grade == this._curBookData.grade){
@@ -165,7 +164,6 @@ export class TextbookListView extends BaseView {
     clearItems(){
         for (let index = 0; index < this.myScrollView.numItems; index++) {
             let item = this.myScrollView.getItemByListId(index);
-            console.log("clearItems_____",index,item);
             if(isValid(item)){
                 let itemScript = item.getComponent(MyContentItem);
                 itemScript.flagBg.active = false;

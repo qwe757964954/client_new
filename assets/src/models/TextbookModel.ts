@@ -182,6 +182,26 @@ export class c2sUnitStatus {
     game_mode:number;
 }
 
+export interface UnitStatusData extends BaseRepPacket{
+    flag:number;
+    game_mode:number;
+    grade:string;
+    study_num:number;
+    type_name:string;
+    unit:string;
+    user_id:number;
+    data:UnitWordModel[];
+}
+
+export interface UnitWordModel{
+    cn:string;
+    phonic:string;
+    syllable:string;
+    symbol:string;
+    symbolus:string;
+    word:string;
+}
+
 export class c2sBookAwardList {
     command_id: string = InterfacePath.Classification_BookAwardList;
     type_name:string;

@@ -1,8 +1,9 @@
-import { _decorator, error, instantiate, Node, Prefab, tween, UITransform, Vec3 } from 'cc';
+import { _decorator, error, instantiate, Node, Prefab, UITransform } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
+import { DataMgr } from '../../manager/DataMgr';
 import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { ReqUnitStatusParam, UnitListItemStatus } from '../../models/TextbookModel';
+import { ReqUnitStatusParam, UnitListItemStatus, UnitStatusData } from '../../models/TextbookModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
@@ -47,6 +48,7 @@ export class BreakThroughView extends BaseView {
         this.initAmout();
         this.initRightChange();
         // 
+        DataMgr.instance.getAdventureLevelConfig();
     }
 
     initData(data:BookUnitModel){
@@ -55,6 +57,7 @@ export class BreakThroughView extends BaseView {
     }
     onInitModuleEvent(){
         this.addModelListener(NetNotify.Classification_UnitListStatus,this.onUnitListStatus);
+        this.addModelListener(NetNotify.Classification_UnitStatus,this.onUnitStatus);
         // this.addModelListener(EventType.Select_Word_Plan,this.onSelectWordPlan);
         // this.addModelListener(NetNotify.Classification_PlanModify,this.onPlanModify);
         // this.addModelListener(NetNotify.Classification_BookPlanDetail,this.onBookPlanDetail);
@@ -63,6 +66,21 @@ export class BreakThroughView extends BaseView {
         console.log("getUnitListStatus",this._bookData);
         TBServer.reqUnitListStatus(this._bookData);
     }
+
+    onUnitStatus(data:UnitStatusData){
+        console.log("onUnitStatus",data);
+        // 
+        let content_size = this.content_layout.getComponent(UITransform);
+        let node_size = this._rightChallenge.node.getComponent(UITransform);
+        let posx = content_size.width / 2 + node_size.width / 2;
+        this._rightChallenge.node.setPosition(posx,0,0);
+        const removedString = data.unit.replace("Unit ", "").trim();
+        let param:any = {smallId:parseInt(removedString), bigId:1}
+        this._rightChallenge.openView(param);
+        // this._rightChallenge.node.active = true;
+        // tween(this._rightChallenge.node).by(0.3,{position:new Vec3(-node_size.width,0,0)}).start();
+    }
+
     onUnitListStatus(data:UnitListItemStatus){
         console.log("onUnitListStatus",data);
         this._scrollMap.initUnit(data);
@@ -135,13 +153,7 @@ export class BreakThroughView extends BaseView {
                     game_mode:LearnGameModel.Tutoring
                 }
                 TBServer.reqUnitStatus(reqParam);
-                // this._rightChallenge.openView();
-                let content_size = this.content_layout.getComponent(UITransform);
-                let node_size = this._rightChallenge.node.getComponent(UITransform);
-                let posx = content_size.width / 2 + node_size.width / 2;
-                this._rightChallenge.node.setPosition(posx,0,0);
-                this._rightChallenge.node.active = true;
-                tween(this._rightChallenge.node).by(0.3,{position:new Vec3(-node_size.width,0,0)}).start();
+                
             })
             this.getUnitListStatus();
         });

@@ -1,4 +1,4 @@
-import { AwardListItem, BookAwardListModel, BookItemData, BookListItemData, BookPlanDetail, MyTextbookListStatus, MyTextbookStatus, ReqPlanData, ReqUnitStatusParam, SchoolBookGradeItemData, SchoolBookItemData, SchoolBookListGradeItemData, SchoolBookListItemData, UnitItemStatus, UnitListItemStatus, c2sAddBookStatus, c2sAddPlanBookStatus, c2sAddPlanStatus, c2sBookAwardList, c2sBookPlanDetail, c2sBookStatus, c2sDelBookStatus, c2sModifyPlanStatus, c2sSchoolBook, c2sSchoolBookGrade, c2sSearchBookList, c2sUnitListStatus, c2sUnitStatus } from "../models/TextbookModel";
+import { AwardListItem, BookAwardListModel, BookItemData, BookListItemData, BookPlanDetail, MyTextbookListStatus, MyTextbookStatus, ReqPlanData, ReqUnitStatusParam, SchoolBookGradeItemData, SchoolBookItemData, SchoolBookListGradeItemData, SchoolBookListItemData, UnitItemStatus, UnitListItemStatus, UnitStatusData, UnitWordModel, c2sAddBookStatus, c2sAddPlanBookStatus, c2sAddPlanStatus, c2sBookAwardList, c2sBookPlanDetail, c2sBookStatus, c2sDelBookStatus, c2sModifyPlanStatus, c2sSchoolBook, c2sSchoolBookGrade, c2sSearchBookList, c2sUnitListStatus, c2sUnitStatus } from "../models/TextbookModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
 import { NetNotify } from "../net/NetNotify";
@@ -323,21 +323,31 @@ export class c2sUnitStatus {
             console.log(data.Msg);
             return;
         }
-        // let unitStatus:UnitStatus = {
-        //     Code:data.Code,
-        //     Msg:data.Msg,
-        //     data:[]
-        // }
-        // for (let index = 0; index < data.length; index++) {
-        //     const element = data[index];
-        //     let obj:UnitItemStatus = {
-        //         num:element.num,
-        //         unit:element.unit,
-        //     }
-        //     unitStatus.data.push(obj);
-        // }
-        // EventMgr.dispatch(NetNotify.Classification_UnitStatus,unitStatus);
-        // c2sBookAwardList
+        let unitStatus:UnitStatusData = {
+            Code:data.Code,
+            Msg:data.Msg,
+            flag:data.flag,
+            game_mode:data.game_mode,
+            grade:data.grade,
+            study_num:data.study_num,
+            type_name:data.type_name,
+            unit:data.unit,
+            user_id:data.user_id,
+            data:[]
+        }
+        for (let index = 0; index < data.data.length; index++) {
+            const element = data.data[index];
+            let obj:UnitWordModel = {
+                cn:element.cn,
+                phonic:element.phonic,
+                syllable:element.syllable,
+                symbol:element.symbol,
+                symbolus:element.symbolus,
+                word:element.word
+            }
+            unitStatus.data.push(obj);
+        }
+        EventMgr.dispatch(NetNotify.Classification_UnitStatus,unitStatus);
     }
     reqBookAwardList(type_name:string,book_name:string){
         let params:c2sBookAwardList = new c2sBookAwardList();
