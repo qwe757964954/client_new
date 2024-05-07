@@ -10,7 +10,7 @@ import { rightPanelchange } from '../adventure/common/RightPanelchange';
 import { NavTitleView } from '../common/NavTitleView';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { ScrollMapView } from './ScrollMapView';
-import { BookUnitModel } from './TextbookChallengeView';
+import { BookUnitModel, TextbookChallengeView } from './TextbookChallengeView';
 const { ccclass, property } = _decorator;
 
 // export enum ChangeHeadTypeEnum {
@@ -73,6 +73,8 @@ export class BreakThroughView extends BaseView {
         ViewsManager.addNavigation(this.top_layout,0,0).then((navScript: NavTitleView) => {
             navScript.updateNavigationProps(`${this._bookData.book_name}${this._bookData.grade}`,()=>{
                 ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
+                    let itemScript:TextbookChallengeView = node.getComponent(TextbookChallengeView);
+                    itemScript.initData(this._bookData);
                     ViewsManager.instance.closeView(PrefabType.BreakThroughView);
                 });
             });
