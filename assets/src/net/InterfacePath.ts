@@ -21,22 +21,24 @@ export const InterfacePath = {
     /***********************************************选择词书 begin*********************************************/
     Classification_BookStatus: "3011", //我的词书-列表
     Classification_BookAdd: "3013", //我的词书-添加词书
-    Classification_PlanAdd: "3016", //我的词书-添加词书
-    Classification_PlanModify: "3017", //我的词书-添加词书
+    Classification_PlanAdd: "3016", //我的词书-添加计划
+    Classification_PlanModify: "3017", //我的词书-修改计划
     Classification_BookDel: "3014", //我的词书-删除词书
     Classification_List: "3001", //获取分类汇总列表
     Classification_SchoolBook: "3002", //获取教材课本
     Classification_SchoolGrade: "3003", //教材课本-年级
+    Classification_AddPlanBook: "3018",//添加书与计划
+    Classification_BookPlanDetail: "3015",//书对应计划详情
     Classification_SchoolUnit: "Classification.SchoolUnit", //教材课本-年级-单元
     Classification_SchoolWord: "Classification.SchoolWord", //教材课本-年级-单元-词汇
     Classification_UnitListStatus: "3004", //书年级单元列表
-    Classification_UnitStatus: "Classification.UnitStatus", //书年级单元学习情况列表
+    Classification_UnitStatus: "3009", //书年级单元学习情况列表
     Classification_UnitWordList: "Classification.UnitWordList", // 单元单词列表
     Classification_GameResultUp: "Classification.GameResultUp", //结果上报
     Classification_Word: "Classification.Word", //单个单词详情
     Classification_GameSubmit: "Classification.GameSubmit", //单个单词学习提交
     Classification_TypeNameStatus: "Classification.TypeNameStatus", //大分类信息
-    Classification_BookAwardList: "Classification.BookAwardList", // 教材单词课本奖励列表
+    Classification_BookAwardList: "3006", // 教材单词课本奖励列表
     Classification_RecBookAward: "Classification.RecBookAward", //教材单词领取课本单词奖励
     Classification_SoundCommit: "Classification.SoundCommit", //教材单词语音评测上报
     Classification_WordSentence: "Classification.WordSentence", //通过单词获取句子

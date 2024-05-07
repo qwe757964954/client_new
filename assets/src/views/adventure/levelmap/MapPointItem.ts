@@ -11,6 +11,9 @@ export class MapPointItem extends Component {
     public levelLabel: Label = null;
 
     public data: { bigId: number, smallId: number } = null;
+
+    public index:number = 0;
+
     start() {
 
     }

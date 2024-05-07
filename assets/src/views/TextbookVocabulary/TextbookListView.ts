@@ -6,6 +6,7 @@ import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
 import List from '../../util/list/List';
+import { BookUnitModel, TextbookChallengeView } from '../Challenge/TextbookChallengeView';
 import { NavTitleView } from '../common/NavTitleView';
 import { MyContentItem } from './MyContentItem';
 import { ITextbookRemindData, TextbookRemindView } from './TextbookRemindView';
@@ -75,7 +76,7 @@ export class TextbookListView extends BaseView {
             let data:ITextbookRemindData = {
                 sure_text:"确定",
                 cancel_text:"取消",
-                content_text:`确定要删除${itemInfo.grade}(${itemInfo.type_name})吗？请注意删除后将不再保留该词书学习记录`,
+                content_text:`确定要删除${itemInfo.book_name}(${itemInfo.grade})吗？请注意删除后将不再保留该词书学习记录`,
                 callFunc:(isSure:boolean)=>{
                     if(isSure){
                         this.myScrollView.aniDelItem(delIdx,()=>{
@@ -96,17 +97,29 @@ export class TextbookListView extends BaseView {
 
     onMyTextBookVerticalSelected(item: any, selectedId: number, lastSelectedId: number, val: number){
         console.log("onMyTextBookVerticalSelected",item,selectedId);
-        let itemInfo:MyTextbookStatus =  this._myTextbookDataArr[this._selectedIndex];
+        let itemInfo:MyTextbookStatus =  this._myTextbookDataArr[selectedId];
         let data:ITextbookRemindData = {
             sure_text:"确定",
             cancel_text:"取消",
-            content_text:`是否切换\n${itemInfo.grade}${itemInfo.type_name}为当前在学`,
+            content_text:`是否切换\n${itemInfo.book_name}${itemInfo.grade}为当前在学`,
             callFunc:(isSure:boolean)=>{
                 if(isSure){
                     this.setClickItemProps(item,selectedId);
+                    ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
+                        ViewsManager.instance.closeView(PrefabType.TextbookListView);
+                        let bookData:BookUnitModel = {
+                            type_name:itemInfo.type_name,
+                            book_name:itemInfo.book_name,
+                            grade:itemInfo.grade
+                        }
+                        node.getComponent(TextbookChallengeView).initData(bookData);
+                    });
+                }else{
+                    this.myScrollView.selectedId = this._selectedIndex;
                 }
             }
         }
+        
         if(this._selectedIndex!= selectedId){
             this.showRemainCalL(data);
         }else{
@@ -119,6 +132,7 @@ export class TextbookListView extends BaseView {
         this._selectedIndex = selectedId;
         let itemScript = item.getComponent(MyContentItem);
         itemScript.flagBg.active = true;
+        itemScript.select_infoBg.active = true;
     }
 
     clearItems(){
@@ -126,6 +140,7 @@ export class TextbookListView extends BaseView {
             let item = this.myScrollView.getItemByListId(index);
             let itemScript = item.getComponent(MyContentItem);
             itemScript.flagBg.active = false;
+            itemScript.select_infoBg.active = false;
         }
     }
 

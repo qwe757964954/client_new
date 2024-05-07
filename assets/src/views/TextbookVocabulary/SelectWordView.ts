@@ -8,7 +8,7 @@ import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
 import List from '../../util/list/List';
-import { TextbookChallengeView } from '../Challenge/TextbookChallengeView';
+import { BookUnitModel, TextbookChallengeView } from '../Challenge/TextbookChallengeView';
 import { NavTitleView } from '../common/NavTitleView';
 import { RightNavView } from './RightNavView';
 import { PlanSaveData } from './SettingPlanView';
@@ -57,16 +57,40 @@ export class SelectWordView extends BaseView {
         this.addModelListener(NetNotify.Classification_BookAdd,this.onBookAdd);
         this.addModelListener(EventType.Select_Word_Plan,this.onSelectWordPlan);
         this.addModelListener(NetNotify.Classification_PlanAdd,this.onAddPlan);
+        this.addModelListener(NetNotify.Classification_AddPlanBook,this.onAddPlanBook);
 	}
     onSelectWordPlan(params:PlanSaveData){
         if(params.isSave){
             this._planData = params;
-            TBServer.reqBookAdd(this._schoolBookListDataArr.data[this._leftNavIndex].book_name,this._schoolGradeListData.data[this._gradeSelectId].grade,this._bookLiskData.dataArr[this._tabIndex].type_name);
+            let reqData = {
+                type_name:this._bookLiskData.dataArr[this._tabIndex].type_name,
+                book_name:this._schoolBookListDataArr.data[this._leftNavIndex].book_name,
+                grade:this._schoolGradeListData.data[this._gradeSelectId].grade,
+                rank_num:parseInt(this._planData.left),
+                num:parseInt(this._planData.right),
+            }
+            TBServer.reqAddPlanBook(reqData);
         }else{
             this.textBookScrollView.selectedId = -1;
             this.textBookScrollView.update(); 
         }
     }
+
+    onAddPlanBook(data){
+        ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
+            ViewsManager.instance.closeView(PrefabType.SelectWordView);
+            let type_name = this._bookLiskData.dataArr[this._tabIndex].type_name;
+            let book_name = this._schoolBookListDataArr.data[this._leftNavIndex].book_name;
+            let grade = this._schoolGradeListData.data[this._gradeSelectId].grade;
+            let bookData:BookUnitModel = {
+                type_name:type_name,
+                book_name:book_name,
+                grade:grade
+            }
+            node.getComponent(TextbookChallengeView).initData(bookData);
+        });
+    }
+
     onBookAdd(){
         let reqData = {
             type_name:this._bookLiskData.dataArr[this._tabIndex].type_name,
@@ -76,18 +100,10 @@ export class SelectWordView extends BaseView {
             num:parseInt(this._planData.right),
         }
         TBServer.reqPlanAdd(reqData)
-
-        // ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
-        //     ViewsManager.instance.closeView(PrefabType.SelectWordView);
-        //     node.getComponent(TextbookChallengeView).initData(this._bookLiskData.dataArr[this._tabIndex], this._schoolBookListDataArr.data[this._leftNavIndex],this._schoolGradeListData.data[this._gradeSelectId]);
-        // });
     }
 
     onAddPlan(){
-        ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
-            ViewsManager.instance.closeView(PrefabType.SelectWordView);
-            node.getComponent(TextbookChallengeView).initData(this._bookLiskData.dataArr[this._tabIndex], this._schoolBookListDataArr.data[this._leftNavIndex],this._schoolGradeListData.data[this._gradeSelectId]);
-        });
+        
     }
 
     onSchoolGradeList(data:SchoolBookListGradeItemData){

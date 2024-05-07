@@ -13,6 +13,8 @@ export class MyContentItem extends ListItem {
     @property(Node)
     public infoBg:Node = null;          // 背景
     @property(Node)
+    public select_infoBg:Node = null;          // 选择背景
+    @property(Node)
     public item_img:Node = null;          // 课程图片
     @property(Label)
     public item_name:Label = null;          // 课程名字
@@ -42,27 +44,15 @@ export class MyContentItem extends ListItem {
         this.delCallback = callback;
     }
 
-    // export interface MyTextbookStatus {
-    //     book_name: string,
-    //     grade: string,
-    //     score: number,
-    //     study_word_num: number,
-    //     total_score: number,
-    //     total_word_num: number,
-    //     type_name: string,
-    //     unit:string,
-    //     user_id:number,
-    // } 
-    
-
     updateMyContentItemProps(idx: number,itemInfo:MyTextbookStatus) {
         this.idx = idx;
         this._bookStatus = itemInfo;
-        this.item_name.string = `${itemInfo.grade}(${itemInfo.type_name})`;
+        this.item_name.string = `${itemInfo.book_name}(${itemInfo.grade})`;
         // this.desc_text.string = itemInfo.desc;
         // this.flagBg.active = itemInfo.isLearned;
-        // this.collect_text.string = `已收集${itemInfo.collect_count}/${itemInfo.total_collect}!`;
-        this.already_learned_text.string = `已学${itemInfo.study_word_num}/${itemInfo.total_word_num}`;
+        this.learnProgress.progress = itemInfo.study_word_num/itemInfo.total_word_num;
+        this.collect_text.string = `剩余天数0`;
+        this.already_learned_text.string = `已学  ${itemInfo.study_word_num}/${itemInfo.total_word_num}`;
         let bookImgUrl = `${NetConfig.assertUrl}/imgs/bookcover/${itemInfo.book_name}/${itemInfo.grade}.jpg`;
         ImgUtil.loadRemoteImage(bookImgUrl,this.item_img,188.156,256.998);
     }
