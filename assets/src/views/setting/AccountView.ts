@@ -53,6 +53,7 @@ export class AccountView extends Component {
     // 意见反馈
     btnFanKuiFunc() {
         console.log("btnFanKuiFunc");
+        ViewsManager.instance.showView(PrefabType.FeedbackView);
     }
     // 账号注销
     btnZhuXiaoFunc() {
