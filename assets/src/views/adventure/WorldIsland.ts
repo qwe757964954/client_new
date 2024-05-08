@@ -36,6 +36,7 @@ export class WorldIsland extends Component {
     }
 
     mapPointClick(target: MapPointItem) {
+        this.levelPanel.node.active = true;
         console.log('点击了地图点', target.data);
         this.levelPanel.openView(target.data);
     }

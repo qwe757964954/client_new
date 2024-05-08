@@ -1,6 +1,6 @@
 import { EventType } from "../config/EventType";
 import { ViewsManager } from "../manager/ViewsManager";
-import { c2sClassificationWord, c2sWordGameWords } from "../models/AdventureModel";
+import { c2sClassificationWord, c2sIslandStatus, c2sWordGameWords, WordGameWordsData } from "../models/AdventureModel";
 import { UnitWordModel } from "../models/TextbookModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
@@ -27,6 +27,13 @@ export default class StudyService extends BaseControll {
         EventManager.emit(EventType.Classification_Word, data);
     }
 
+    //获取大冒险岛屿状态
+    getIslandStatus(bigId: number) {
+        let para: c2sIslandStatus = new c2sIslandStatus();
+        para.big_id = bigId;
+        NetMgr.sendMsg(para);
+    }
+
     //获取大冒险关卡单词
     getWordGameWords(bigId: number, smallId: number, microId: number, gameMode: number) {
         let para: c2sWordGameWords = new c2sWordGameWords();
@@ -36,12 +43,12 @@ export default class StudyService extends BaseControll {
         para.game_mode = gameMode;
         NetMgr.sendMsg(para);
     }
-    onWordGameWords(data: any) {
+    onWordGameWords(data: WordGameWordsData) {
         if (data.Code != 200) {
             ViewsManager.showTip(data.Msg);
             return;
         }
         console.log("onWordGameWords", data);
-        EventManager.emit(EventType.WordGame_Words, data);
+        EventManager.emit(EventType.WordGame_Words, data.data);
     }
 }

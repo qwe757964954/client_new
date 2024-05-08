@@ -52,13 +52,14 @@ export class AdvLevelConfig {
     monsterName: string;
     monsterAni: string;
     miniMonsterAni: string;
+    gameMode: number;
 }
 //教材单词关卡配置
 export class BookLevelConfig {
-    grade:string;
-    unit:string;
-    type_name:string;
-    game_mode:number
+    grade: string;
+    unit: string;
+    type_name: string;
+    game_mode: number
 }
 
 
