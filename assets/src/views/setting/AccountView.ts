@@ -1,6 +1,7 @@
-import { _decorator, Component } from 'cc';
+import { _decorator, Component, Node } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { ViewsManager } from '../../manager/ViewsManager';
+import { ApplyLogoutView } from './ApplyLogoutView';
 const { ccclass, property } = _decorator;
 
 @ccclass('AccountView')
@@ -59,6 +60,13 @@ export class AccountView extends Component {
     // 账号注销
     btnZhuXiaoFunc() {
         console.log("btnZhuXiaoFunc");
+        ViewsManager.instance.showView(PrefabType.ApplyLogoutView,(node: Node) => {
+            let itemScript = node.getComponent(ApplyLogoutView);
+            itemScript.setAgreeCallback(()=>{
+                console.log("agree  call  back");
+                ViewsManager.instance.showView(PrefabType.LogoutView);
+            })
+        });
     }
     // 用户隐私政策
     btnYinSiFunc() {
