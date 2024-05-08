@@ -45,6 +45,7 @@ export class Socket {
         this.closeSocket();
         this._socket = new WebSocket(this.ip);
         this._socket.binaryType = "arraybuffer";
+        // this._socket.binaryType = "blob";
         this._socket.onopen = this.onOpen.bind(this);
         this._socket.onmessage = this.onMessage.bind(this);
         this._socket.onerror = this.onError.bind(this);
@@ -78,6 +79,7 @@ export class Socket {
         }
     }
     private onMessage(msg) {
+        // console.log("onMessage", msg);
         this.noRecvMsgTimes = 0;
         if (GlobalConfig.OLD_SERVER) {
             let buffer: string = msg.data;
@@ -87,11 +89,21 @@ export class Socket {
             }
             return;
         }
-        let buffer: ArrayBuffer = msg.data;
+        let buffer: any = msg.data;
         if (!buffer) { return; }
-        let data = String.fromCharCode.apply(null, new Uint8Array(buffer));
-        if (this.recvFun) {
-            this.recvFun(data);
+        if (buffer instanceof ArrayBuffer) {
+            // console.log("onMessage data ArrayBuffer");
+            let data = String.fromCharCode.apply(null, new Uint8Array(buffer));
+            if (this.recvFun) {
+                this.recvFun(data);
+            }
+        } else if (buffer instanceof Blob) {
+            // console.log("onMessage data Blob");
+            buffer.text().then((data) => {
+                if (this.recvFun) {
+                    this.recvFun(data);
+                }
+            });
         }
     }
     private onError() {

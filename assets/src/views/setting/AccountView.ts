@@ -1,6 +1,6 @@
 import { _decorator, Component } from 'cc';
-import { ViewsManager } from '../../manager/ViewsManager';
 import { PrefabType } from '../../config/PrefabType';
+import { ViewsManager } from '../../manager/ViewsManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('AccountView')
@@ -43,6 +43,7 @@ export class AccountView extends Component {
     // 切换角色
     btnChangeRoleFunc() {
         console.log("btnChangeRoleFunc");
+        ViewsManager.instance.showView(PrefabType.ChangeRoleView);
     }
     // 会员中心
     btnVipCenterFunc() {
