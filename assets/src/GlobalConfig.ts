@@ -4,14 +4,13 @@ import DebugConfig from "./DebugConfig";
 import { DataMgr } from "./manager/DataMgr";
 import { SpineAniManager } from "./manager/SpineAniManager";
 import FileUtil from "./util/FileUtil";
-import { InterfaceUtil } from "./util/InterfaceUtil";
 
 
 export default class GlobalConfig {
     public static APP_VERSION: string = APP_VERSION;//游戏资源版本
-    public static EXE_VERSION = InterfaceUtil.getExeVer();//程序版本（打包时写入底层代码中）
-    public static EXE_RES_VERSION = InterfaceUtil.getExeResVer();//程序资源版本（打包时写入底层代码中）
-    public static CHANNEL_ID: number = InterfaceUtil.getChannelId();//渠道ID（打包时写入底层代码中）
+    public static EXE_VERSION: number = 1;//程序版本（打包时写入底层代码中）
+    public static EXE_RES_VERSION: string = "1.0";//程序资源版本（打包时写入底层代码中）
+    public static CHANNEL_ID: number = 1;//渠道ID（打包时写入底层代码中）
 
     public static TEST_SERVER: boolean = DebugConfig.TEST_SERVER;
     public static OLD_SERVER: boolean = DebugConfig.OLD_SERVER;

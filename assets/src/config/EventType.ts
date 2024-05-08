@@ -5,6 +5,8 @@ export const EventType = {
     Socket_Close: "SocketClose",//socket关闭
     Socket_ReconnectFail: "SocketReconnectFail",//socket重连失败
 
+    Get_Record_Result: "GetRecordResult",//获取录音结果
+
     Map_Scale: "MapScale",//地图缩放
     BuildingBtnView_Close: "BuildingBtnViewClose",//建筑按钮界面关闭
     MapStatus_Change: "MapStatusChange",//地图状态改变
