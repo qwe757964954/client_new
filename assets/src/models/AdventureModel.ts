@@ -24,6 +24,16 @@ export class IslandStatusModel {
     small_type: number; //关卡类型
 }
 
+export class MapLevelData {
+    flag: number;
+    big_id: number;
+    small_id: number;
+    micro_id: number;
+    small_type: number;
+    game_modes: string;
+    current_mode: number;
+}
+
 export class IslandStatusData extends BaseRepPacket {
     data: IslandStatusModel[];
 }

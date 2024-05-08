@@ -304,8 +304,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 100,
-      "height": 100
+      "width": 2190,
+      "height": 1000
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -332,6 +332,13 @@
     },
     "bg": {
       "__id__": 5
+    },
+    "mapPointPrefab": {
+      "__uuid__": "4963a1de-a843-49b2-ac8f-a0c2ab340b0e",
+      "__expectedType__": "cc.Prefab"
+    },
+    "mapPointContainer": {
+      "__id__": 8
     },
     "islandBg": [
       {

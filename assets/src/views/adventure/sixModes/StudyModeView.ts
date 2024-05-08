@@ -210,7 +210,7 @@ export class StudyModeView extends BaseModeView {
             let oldPos = this._spliteItems[i].position;
             targetX = i < halfIdx ? (oldPos.x + 35 * (halfIdx - i)) : (oldPos.x - 35 * (i - halfIdx));
             let pos = new Vec3(targetX, oldPos.y, 0);
-            tween(this._spliteItems[i]).to(0.3, { position: pos }).start();
+            tween(this._spliteItems[i]).to(0.2, { position: pos }).start();
         }
         this.scheduleOnce(() => {
             this.wholeWordNode.active = true;
@@ -240,7 +240,7 @@ export class StudyModeView extends BaseModeView {
                     }
                 });
             });
-        }, 0.3);
+        }, 0.2);
     }
 
     showWordDetail() {

@@ -1,4 +1,5 @@
 import { _decorator, Component, Label, Node } from 'cc';
+import { MapLevelData } from '../../../models/AdventureModel';
 const { ccclass, property } = _decorator;
 
 @ccclass('MapPointItem')
@@ -10,17 +11,17 @@ export class MapPointItem extends Component {
     @property({ type: Label, tooltip: "关卡Label" })
     public levelLabel: Label = null;
 
-    public data: { bigId: number, smallId: number } = null;
+    public data: MapLevelData = null;
 
-    public index:number = 0;
+    public index: number = 0;
 
     start() {
 
     }
 
-    setData(data: { bigId: number, smallId: number }) {
+    initData(data: MapLevelData) {
         this.data = data;
-        this.levelLabel.string = this.data.bigId + "-" + this.data.smallId;
+        this.levelLabel.string = data.small_id + "-" + data.micro_id;
     }
 }
 
