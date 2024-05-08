@@ -35,6 +35,7 @@ export class AccountView extends Component {
     // 充值
     btnChongZhiFunc() {
         console.log("btnChongZhiFunc");
+        ViewsManager.instance.showView(PrefabType.ResetPasswordView);
     }
     // 剧情回顾
     btnJuQingHuiGuFunc() {

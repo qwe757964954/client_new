@@ -54,6 +54,7 @@ export const PrefabType = {
     MemberCentreView: { path: "setting/MemberCentreView", zindex: Hierarchy.POPUPLAYER, tips: "会员中心" },
     ChangeRoleView: { path: "setting/ChangeRoleView", zindex: Hierarchy.POPUPLAYER, tips: "角色更换" },
     FeedbackView: { path: "setting/FeedbackView", zindex: Hierarchy.POPUPLAYER, tips: "意见反馈" },
+    ResetPasswordView: { path: "setting/ResetPasswordView", zindex: Hierarchy.POPUPLAYER, tips: "重置密码" },
     // 设置相关END
     /**教材单词相关 */
     /*********************************************教材单词相关start***********************************************************/
