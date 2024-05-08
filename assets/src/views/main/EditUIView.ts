@@ -1,7 +1,8 @@
-import { _decorator, Component, instantiate, Node, Prefab, Sprite } from 'cc';
+import { _decorator, Component, instantiate, Node, Prefab, ScrollView, Sprite, Vec2 } from 'cc';
 import { MapStatus } from '../../config/MapConfig';
 import { DataMgr, EditType } from '../../manager/DataMgr';
 import CCUtil from '../../util/CCUtil';
+import { TimerMgr } from '../../util/TimerMgr';
 import { EditItem } from '../map/EditItem';
 import { MainScene } from './MainScene';
 const { ccclass, property } = _decorator;
@@ -23,10 +24,14 @@ export class EditUIView extends Component {
     @property(Prefab)
     public editItem: Prefab = null;//编辑元素预制体
     @property(Node)
-    public scrollView: Node = null;//滚动视图
+    public scrollContent: Node = null;//滚动视图容器
+    @property(ScrollView)
+    public scrollView: ScrollView = null;//滚动视图
 
 
     private _mainScene: MainScene = null;//主场景
+    private _isFirst: boolean = true;//是否是第一次
+    private _editType: EditType = null;//编辑类型
     start() {
         this.initEvent();
     }
@@ -59,44 +64,23 @@ export class EditUIView extends Component {
     }
     // 标题所有按钮点击 
     onBtnAllClick() {
-        this.scrollView.removeAllChildren();
-        let editConfig = DataMgr.instance.editInfo;
-        editConfig.forEach(info => {
-            let node = instantiate(this.editItem);
-            this.scrollView.addChild(node);
-            node.getComponent(EditItem).initData(info, this.onEditItemClick.bind(this));
-        });
-        // for (let key in editConfig) {
-        //     if (Object.prototype.hasOwnProperty.call(editConfig, key)) {
-        //         let info = editConfig[key];
-        //         let node = instantiate(this.editItem);
-        //         this.scrollView.addChild(node);
-        //         node.getComponent(EditItem).initData(info, this.onEditItemClick.bind(this));
-        //     }
-        // }
+        this.showEditType(EditType.Null);
     }
     // 标题特殊按钮点击 
     onBtnSpecialClick() {
-
+        this.showEditType(EditType.Buiding);
     }
     // 标题建筑按钮点击 
     onBtnBuidingClick() {
-
+        this.showEditType(EditType.LandmarkBuiding);
     }
     // 标题装饰按钮点击 
     onBtnDecorationClick() {
-
+        this.showEditType(EditType.Decoration);
     }
     // 标题地块按钮点击 
     onBtnLandClick() {
-        this.scrollView.removeAllChildren();
-        let editConfig = DataMgr.instance.editInfo;
-        editConfig.forEach(info => {
-            if (EditType.Land != info.type) return;
-            let node = instantiate(this.editItem);
-            this.scrollView.addChild(node);
-            node.getComponent(EditItem).initData(info, this.onEditItemClick.bind(this));
-        });
+        this.showEditType(EditType.Land);
     }
     // 关闭按钮点击 
     onBtnCloseClick() {
@@ -109,11 +93,50 @@ export class EditUIView extends Component {
     }
     // 初始化数据
     initData() {
-        this.onBtnAllClick();
+        this.showEditType(EditType.Null);
     }
     // 编辑元素点击
     onEditItemClick(editItem: EditItem) {
         this._mainScene.onBuildLandClick(editItem.data);
+    }
+    /**显示对应编辑类型 */
+    showEditType(editType: EditType) {
+        if (editType == this._editType) return;
+        this._editType = editType;
+
+        let children = this.scrollContent.children;
+        let maxCount = children.length;
+        let index = 0;
+        let editConfig = DataMgr.instance.editInfo;
+        editConfig.forEach(info => {
+            if (editType != EditType.Null && editType != info.type) return;
+            let node: Node;
+            if (index < maxCount) {
+                node = children[index];
+                index++;
+            } else {
+                node = instantiate(this.editItem);
+                this.scrollContent.addChild(node);
+            }
+            node.getComponent(EditItem).initData(info, this.onEditItemClick.bind(this));
+        });
+        //移除多余元素
+        let tmpAry = [];
+        for (let i = index; i < maxCount; i++) {
+            tmpAry.push(children[i]);
+        }
+        for (let i = 0; i < tmpAry.length; i++) {
+            this.scrollContent.removeChild(tmpAry[i]);
+        }
+        //第一次窄屏幕时，显示位置不对
+        if (this._isFirst) {
+            this._isFirst = false;
+            TimerMgr.once(() => {
+                this.scrollView.scrollToOffset(new Vec2(0, 0));
+            }, 1);
+        } else {
+            this.scrollView.scrollToOffset(new Vec2(0, 0));
+        }
     }
 }
 

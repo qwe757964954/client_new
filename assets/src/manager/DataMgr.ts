@@ -26,9 +26,11 @@ export class RoleSlotConfig {
 }
 // 建筑、装饰、地板信息
 export enum EditType {//编辑元素类型
-    Buiding = 0,//建筑
-    Decoration = 1,//装饰
-    Land = 2,//地块
+    Null = 0,
+    Buiding = 1,//功能性建筑
+    LandmarkBuiding = 2,//地标建筑
+    Decoration = 3,//装饰
+    Land = 4,//地块
 }
 export class EditInfo {
     id: number;//id
