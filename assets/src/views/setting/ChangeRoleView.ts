@@ -1,4 +1,6 @@
 import { _decorator, Component, EventTouch, instantiate, Layers, Node, Prefab, tween } from 'cc';
+import { PrefabType } from '../../config/PrefabType';
+import { ViewsManager } from '../../manager/ViewsManager';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
 import CCUtil from '../../util/CCUtil';
 import { NodeUtil } from '../../util/NodeUtil';
@@ -80,8 +82,14 @@ export class ChangeRoleView extends Component {
         tween(this.roleList[2]).to(0.5,{position: pos3}).start();
     }
     
-    update(deltaTime: number) {
+    onSelectRoleClick(){
+        console.log("onSelectRoleClick____________");
         
+    }
+
+    onBackClose(){
+        console.log("onBackClose____________");
+        ViewsManager.instance.closeView(PrefabType.ChangeRoleView);
     }
 }
 
