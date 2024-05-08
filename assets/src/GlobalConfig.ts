@@ -31,7 +31,7 @@ export default class GlobalConfig {
         this.WIN_SIZE = View.instance.getVisibleSize();
         this.SCREEN_SIZE = screen.windowSize;
         this.WIN_RATE = this.WIN_SIZE.width / this.WIN_SIZE.height;
-        console.log("GlobalConfig init", this.WIN_SIZE, this.WIN_RATE);
+        console.log("GlobalConfig init", this.WIN_SIZE, this.WIN_RATE, this.SCREEN_SIZE);
         let tmplog = console.log;
         SpineAniManager.getInstance().preLoadSkinAniDir("resources", "Spine");
         if (DebugConfig.NO_PRINT) {
@@ -69,4 +69,6 @@ screen.on("window-resize", () => {
     GlobalConfig.WIN_SIZE = View.instance.getVisibleSize();
     GlobalConfig.SCREEN_SIZE = screen.windowSize;
     GlobalConfig.WIN_RATE = GlobalConfig.WIN_SIZE.width / GlobalConfig.WIN_SIZE.height;
+
+    console.log("GlobalConfig resize", GlobalConfig.WIN_SIZE, GlobalConfig.WIN_RATE, GlobalConfig.SCREEN_SIZE);
 })
