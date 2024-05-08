@@ -8,6 +8,8 @@ import EventManager from '../../util/EventManager';
 import { StudyModeView } from './sixModes/StudyModeView';
 import { ServiceMgr } from '../../net/ServiceManager';
 import { DataMgr } from '../../manager/DataMgr';
+import { WordMeaningView } from './sixModes/WordMeaningView';
+import { WordPracticeView } from './sixModes/WordPracticeView';
 const { ccclass, property } = _decorator;
 /**大冒险 世界地图 何存发 2024年4月8日14:45:44 */
 @ccclass('WorldMapView')
@@ -89,9 +91,14 @@ export class WorldMapView extends Component {
             ViewsManager.showTip('获取单词失败');
             return;
         }
-        ViewsManager.instance.showView(PrefabType.StudyModeView, (node: Node) => {
+        // ViewsManager.instance.showView(PrefabType.StudyModeView, (node: Node) => {
+        //     let levelData = DataMgr.instance.getAdvLevelConfig(this._currentIslandID, this._currentLevelID);
+        //     node.getComponent(StudyModeView).initData(data.Data, levelData);
+        // });
+
+        ViewsManager.instance.showView(PrefabType.WordPracticeView, (node: Node) => {
             let levelData = DataMgr.instance.getAdvLevelConfig(this._currentIslandID, this._currentLevelID);
-            node.getComponent(StudyModeView).initData(data.Data, levelData);
+            node.getComponent(WordPracticeView).initData(data.Data, levelData);
         });
     }
 

@@ -1,18 +1,21 @@
-import { _decorator, Button, Component, instantiate, Label, Layout, Node, NodePool, Prefab, Sprite, tween, UITransform, Vec3 } from 'cc';
-import CCUtil from '../../../util/CCUtil';
+import { _decorator, instantiate, Label, Node, NodePool, Prefab, Sprite, tween, UITransform, Vec3 } from 'cc';
 import { EventType } from '../../../config/EventType';
+import { NetConfig } from '../../../config/NetConfig';
 import { PrefabType } from '../../../config/PrefabType';
 import { DataMgr } from '../../../manager/DataMgr';
+import RemoteImageManager from '../../../manager/RemoteImageManager';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { ViewsManager } from '../../../manager/ViewsManager';
+import { UnitWordModel } from '../../../models/TextbookModel';
 import { ServiceMgr } from '../../../net/ServiceManager';
+import CCUtil from '../../../util/CCUtil';
 import EventManager from '../../../util/EventManager';
 import { BaseRemindView } from '../../common/BaseRemindView';
-import { WordSplitItem } from './items/WordSplitItem';
-import RemoteImageManager from '../../../manager/RemoteImageManager';
 import { WordDetailView } from '../../common/WordDetailView';
-import { NetConfig } from '../../../config/NetConfig';
+import { TransitionView } from '../common/TransitionView';
 import { BaseModeView } from './BaseModeView';
+import { WordSplitItem } from './items/WordSplitItem';
+import { WordMeaningView } from './WordMeaningView';
 const { ccclass, property } = _decorator;
 
 /**学习模式页面 何存发 2024年4月15日15:38:41 */
@@ -43,7 +46,7 @@ export class StudyModeView extends BaseModeView {
     btn_hideDetail: Node = null;
 
     protected _spilitData: any = null;
-    protected _wordsData: any = null;
+    protected _wordsData: UnitWordModel[] = null;
     protected _wordIndex: number = 0; //当前单词序号
     protected _splits: any[] = null; //当前单词拆分数据
     protected _spliteItems: Node[] = []; //当前单词拆分节点
@@ -67,7 +70,7 @@ export class StudyModeView extends BaseModeView {
         this.initEvent();
     }
 
-    async initData(wordsdata: any, levelData: any) {
+    async initData(wordsdata: UnitWordModel[], levelData: any) {
         this._spilitData = await DataMgr.instance.getWordSplitConfig();
         this.initWords(wordsdata);
         this._levelData = levelData;
@@ -75,7 +78,7 @@ export class StudyModeView extends BaseModeView {
     }
 
     //获取关卡单词回包
-    initWords(data: any) {
+    initWords(data: UnitWordModel[]) {
         console.log('initWords', data);
         this._wordsData = data;
         let splits = [];
@@ -104,8 +107,8 @@ export class StudyModeView extends BaseModeView {
         console.log('word', wordData);
         let word = wordData.word;
         this.wordLabel.string = this.wholeWordLabel.string = word;
-        this.symbolLabel.string = wordData.Symbol;
-        this.cnLabel.string = wordData.Cn;
+        this.symbolLabel.string = wordData.symbol;
+        this.cnLabel.string = wordData.cn;
         this.splitNode.active = true;
         this.wholeWordNode.active = false;
 
@@ -216,13 +219,21 @@ export class StudyModeView extends BaseModeView {
             this.splitNode.active = false;
             this.playWordSound().then(() => {
                 this._wordIndex++;
+                this._rightNum++;
                 this.attackMonster().then(() => {
                     if (this._wordIndex == this._wordsData.length) {
                         console.log('学习完成,跳转词意模式');
                         this.monsterEscape().then(() => {
-                            // ViewsManager.instance.showView(PrefabType.WordMeaningView, (node: Node) => {
-                            //     node.getComponent(WordMeaningView).initData(this._wordsData, this._levelData);
-                            // });
+                            ViewsManager.instance.showView(PrefabType.TransitionView, (node: Node) => {
+                                let wordData = JSON.parse(JSON.stringify(this._wordsData));
+                                let levelData = JSON.parse(JSON.stringify(this._levelData));
+                                node.getComponent(TransitionView).setTransitionCallback(() => {
+                                    ViewsManager.instance.showView(PrefabType.WordMeaningView, (node: Node) => {
+                                        node.getComponent(WordMeaningView).initData(wordData, levelData);
+                                        ViewsManager.instance.closeView(PrefabType.StudyModeView);
+                                    });
+                                });
+                            });
                         });
                     } else {
                         this.showCurrentWord();
@@ -280,7 +291,7 @@ export class StudyModeView extends BaseModeView {
         CCUtil.offTouch(this.btn_hideDetail, this.hideWordDetail, this);
         EventManager.off(EventType.Classification_Word, this._wordDetailEveId);
         for (let i = 0; i < this._spliteItems.length; i++) {
-            CCUtil.offTouch(this._spliteItems[i], this.onSplitItemClick.bind(this, this._spliteItems[i]), this);
+            CCUtil.offTouch(this._spliteItems[i], this.onSplitItemClick.bind(this, this._spliteItems[i], i), this);
         }
 
     }
@@ -294,19 +305,8 @@ export class StudyModeView extends BaseModeView {
         });
     }
     onDestroy(): void {
-        this.removeEvent();
+        super.onDestroy();
         this._nodePool.clear();
-        RemoteSoundMgr.clearAudio();
     }
-
-    update(deltaTime: number) {
-
-    }
-    /**是否收藏 */
-    protected setCollect(isCollect: boolean) {
-        this.btn_collect.getComponent(Sprite).grayscale = !isCollect
-    }
-
-
 }
 

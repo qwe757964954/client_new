@@ -1,4 +1,3 @@
-import { js } from "cc";
 import { TextConfig } from "../config/TextConfig";
 import { ToolUtil } from "../util/ToolUtil";
 import { LoadManager } from "./LoadManager";
@@ -45,6 +44,7 @@ export class EditInfo {
     function: string;//功能描述
 }
 
+//大冒险关卡配置
 export class AdvLevelConfig {
     islandId: number;
     levelId: number;
@@ -52,6 +52,13 @@ export class AdvLevelConfig {
     monsterName: string;
     monsterAni: string;
     miniMonsterAni: string;
+}
+//教材单词关卡配置
+export class BookLevelConfig {
+    grade:string;
+    unit:string;
+    type_name:string;
+    game_mode:number
 }
 
 

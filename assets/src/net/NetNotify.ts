@@ -5,6 +5,7 @@ export const NetNotify = {
     Classification_BookAdd:"Classification_BookAdd", //我的词书-添加词书
     Classification_PlanAdd:"Classification_PlanAdd", //我的词书-添加计划
     Classification_PlanModify:"Classification_PlanModify", //我的词书-修改计划
+    Classification_AddPlanBook:"Classification_AddPlanBook", //添加词书附带修改计划
     Classification_BookDel:"Classification_BookDel", //我的词书-删除词书
     Classification_List:"Classification_List", //获取分类汇总列表
     Classification_SchoolBook:"Classification_SchoolBook", //获取教材课本
@@ -22,6 +23,7 @@ export const NetNotify = {
     Classification_RecBookAward:"Classification_RecBookAward", //教材单词领取课本单词奖励
     Classification_SoundCommit:"Classification_SoundCommit", //教材单词语音评测上报
     Classification_WordSentence:"Classification_WordSentence", //通过单词获取句子
+    Classification_BookPlanDetail:"Classification_BookPlanDetail", //书对应计划详情
     NewWord_List:"NewWord_List", //我的生词列表
     NewWord_Add:"NewWord_Add", //添加到我的生词本
     NewWord_Del:"NewWord_Del", //移除生词本

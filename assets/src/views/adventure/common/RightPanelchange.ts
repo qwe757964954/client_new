@@ -1,10 +1,15 @@
-import { _decorator, Component, instantiate, Label, Node, Prefab, tween, v3 } from 'cc';
+import { _decorator, Component, instantiate, Label, Node, Prefab, tween, UITransform, Vec3 } from 'cc';
 import { EventType } from '../../../config/EventType';
 import { DataMgr } from '../../../manager/DataMgr';
 import CCUtil from '../../../util/CCUtil';
 import EventManager from '../../../util/EventManager';
 import { MonsterModel } from './MonsterModel';
 const { ccclass, property } = _decorator;
+
+export interface LevelConfig {
+    smallId:number;
+    bigId:number;
+}
 
 /**右边选择关卡界面 何存发 2024年4月12日14:21:29 */
 @ccclass('rightPanel')
@@ -26,7 +31,7 @@ export class rightPanelchange extends Component {
     @property({ type: Prefab, tooltip: "怪物预制" })
     public monsterPrefab: Prefab = null;
 
-    private _data: any = null;
+    private _data: LevelConfig = null;
     private _eveId: string;
     private _monsterAni: Node = null;
 
@@ -60,13 +65,17 @@ export class rightPanelchange extends Component {
 
     }
     /** 打开界面 */
-    openView(param: any = null) {
+    openView(param: LevelConfig = null) {
         console.log('接收到的参数=', param);
         this._data = param;
         this.updateView();
         this.node.active = true
-        tween(this.node).to(0.3, { position: v3(178, 100, 0) }).call(() => {
-        }).start()
+        let node_size = this.node.getComponent(UITransform);
+        tween(this.node).by(0.3,{position: new Vec3(-node_size.width,0,0)}).call(() => {
+            // this.node.active = false
+        }).start();
+        // tween(this.node).to(0.3, { position: v3(178, 100, 0) }).call(() => {
+        // }).start()
 
     }
 
@@ -84,11 +93,10 @@ export class rightPanelchange extends Component {
     }
 
     hideView() {
-        tween(this.node).to(0.3, { position: v3(900, 100, 0) }).call(() => {
+        let node_size = this.node.getComponent(UITransform);
+        tween(this.node).by(0.3,{position: new Vec3(node_size.width,0,0)}).call(() => {
             this.node.active = false
-        }).start()
-
-
+        }).start();
     }
 
     removeEvent() {

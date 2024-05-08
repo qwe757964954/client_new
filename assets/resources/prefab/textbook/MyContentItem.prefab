@@ -1789,13 +1789,14 @@
       "__id__": 76
     },
     "selectedMode": 1,
-    "selectedFlag": {
-      "__id__": 8
-    },
+    "selectedFlag": null,
     "selectedSpriteFrame": null,
     "adaptiveSize": false,
     "infoBg": {
       "__id__": 2
+    },
+    "select_infoBg": {
+      "__id__": 8
     },
     "item_img": {
       "__id__": 14

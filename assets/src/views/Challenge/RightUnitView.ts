@@ -2,7 +2,7 @@ import { _decorator, Component, Label, Node, ProgressBar } from 'cc';
 import { NetConfig } from '../../config/NetConfig';
 import { PrefabType } from '../../config/PrefabType';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { UnitListItemStatus } from '../../models/TextbookModel';
+import { BookAwardListModel, BookPlanDetail, UnitListItemStatus } from '../../models/TextbookModel';
 import ImgUtil from '../../util/ImgUtil';
 const { ccclass, property } = _decorator;
 
@@ -29,12 +29,32 @@ export class RightUnitView extends Component {
 
     private _modifyCallback:(isSave:boolean)=>void = null;
 
+    private _breakThroughCallback:()=>void = null;
+
+    private _changeCallback:()=>void = null;
+
     start() {
 
     }
+
+    updateRightPlan(data:BookPlanDetail) {
+        this.title_label.string = data.book_name;
+        this.grade_label.string = data.grade;
+        this.plan_label.string = `${data.rank_num}/${data.num}`;
+        let bookImgUrl = `${NetConfig.assertUrl}/imgs/bookcover/${data.book_name}/${data.grade}.jpg`;
+        ImgUtil.loadRemoteImage(bookImgUrl,this.current_img,188.573,255.636);
+    }
+
+    updateStudyProgress(data:BookAwardListModel){
+        this.study_label.string = data.study_word_num.toString();
+        this.total_label.string = data.total_word_num.toString();
+        this.study_progress.progress = data.study_word_num / data.total_word_num;
+    }
+
     updateUnitProps(unitData:UnitListItemStatus){
         console.log("updateUnitProps",unitData);
         this._curUnitStatus = unitData;
+        /*
         this.title_label.string = unitData.bookname;
         this.grade_label.string = unitData.grade;
         this.study_label.string = unitData.studywordnum.toString();
@@ -42,10 +62,19 @@ export class RightUnitView extends Component {
         this.study_progress.progress = unitData.studywordnum / unitData.totalwordnum;
         let bookImgUrl = `${NetConfig.assertUrl}/imgs/bookcover/${unitData.bookname}/${unitData.grade}.jpg`;
         ImgUtil.loadRemoteImage(bookImgUrl,this.current_img,188.573,255.636);
+        */
     }
 
     setModifyCallback(callback:(isSave:boolean)=>void){
         this._modifyCallback = callback;
+    }
+
+    setBreakThroughCallback(callback:()=>void){
+        this._breakThroughCallback = callback;
+    }
+
+    setChangeBookCallback(callback:()=>void){
+        this._changeCallback = callback;
     }
 
     onReviewClick(){
@@ -54,9 +83,9 @@ export class RightUnitView extends Component {
 
     onBreakThroughClick(){
         console.log("onBreakThroughClick");
-        ViewsManager.instance.showView(PrefabType.BreakThroughView, (node: Node) => {
-            ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);
-        });
+        if(this._breakThroughCallback){
+            this._breakThroughCallback();
+        }
     }
 
     onCheckWordClick(){
@@ -67,9 +96,9 @@ export class RightUnitView extends Component {
         });
     }
     onChangeTextbookClick(){
-        ViewsManager.instance.showView(PrefabType.TextbookListView, (node: Node) => {
-            ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);
-        });
+        if(this._changeCallback){
+            this._changeCallback();
+        }
     }
 }
 
