@@ -75,7 +75,7 @@ class NetManager {
             obj.command_id = Number(command_id);
             obj.data = pbobj;
             let buffer = JSON.stringify(obj);
-            // console.log("sendMsg msg:", buffer);
+            // console.log("sendMsg msg2:", buffer);
             this._socket.sendMsg(buffer);
         }
     }
@@ -115,9 +115,14 @@ class NetManager {
             if (baseData) {
                 let outData = baseData.Data;
                 if (outData) {
-                    outData.Code = baseData.Code;
-                    outData.Msg = baseData.Msg;
-                    EventMgr.emit(obj.command_id, outData);
+                    if (Array.isArray(outData)) {
+                        baseData.data = outData;
+                        EventMgr.emit(obj.command_id, baseData);
+                    } else {
+                        outData.Code = baseData.Code;
+                        outData.Msg = baseData.Msg;
+                        EventMgr.emit(obj.command_id, outData);
+                    }
                 } else {
                     EventMgr.emit(obj.command_id, baseData);
                 }
