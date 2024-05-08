@@ -27,7 +27,7 @@ export class WordPracticeView extends BaseModeView {
     @property({ type: List, tooltip: "选择List" })
     selectList: List = null;
 
-    private _currentWord: any; //当前单词
+    private _currentWord: UnitWordModel; //当前单词
     private _letterList: string[] = []; //字母列表
     private _currentLetterIdx: number = 0; //当前字母索引
     private _letterItems: Node[] = []; //字母节点
@@ -66,8 +66,8 @@ export class WordPracticeView extends BaseModeView {
         if (splitData) {
             splits = splitData.split(" ");
         } else {
-            if (this._currentWord.indexOf(" ") != -1) {
-                splits = this._currentWord.split(" ");
+            if (word.indexOf(" ") != -1) {
+                splits = word.split(" ");
             }
         }
         let colorIdx = 1;
@@ -91,7 +91,7 @@ export class WordPracticeView extends BaseModeView {
         console.log("letterList", this._letterList);
         console.log("selectLetterList", this._selectLetterList);
         this.wordLabel.string = this._currentWord.word;
-        this.wordMeanLabel.string = this._currentWord.Cn;
+        this.wordMeanLabel.string = this._currentWord.cn;
         this.letterList.numItems = this._letterList.length;
         this.selectList.numItems = this._selectLetterList.length;
     }

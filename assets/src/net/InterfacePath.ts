@@ -17,7 +17,9 @@ export const InterfacePath = {
     Account_StudyWord: "Account.StudyWord",  // 学生通关单词
 
     //大冒险学习模式相关
-    WordGame_Words: "WordGame.Words",  // 获取单词
+    Island_Status: "3100",  // 大冒险岛屿状态
+    Island_Progress: "3101",  // 大冒险岛屿进度
+    WordGame_Words: "3102",  // 获取大冒险单词
     /***********************************************选择词书 begin*********************************************/
     Classification_BookStatus: "3011", //我的词书-列表
     Classification_BookAdd: "3013", //我的词书-添加词书
@@ -45,6 +47,8 @@ export const InterfacePath = {
     NewWord_List: "NewWord.List", //我的生词列表
     NewWord_Add: "NewWord.Add", //添加到我的生词本
     NewWord_Del: "NewWord.Del", //移除生词本
+    SearchWord_DelSingle: "SearchWord.DelSingle", //删除一个查找单词历史
+    SearchWord_DelAll: "SearchWord.DelAll", //删除所有查找单词历史
     /***********************************************选择词书 end*********************************************/
     /************************************socket消息类型end*********************************************/
 }

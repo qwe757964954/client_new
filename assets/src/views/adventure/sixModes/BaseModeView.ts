@@ -1,4 +1,4 @@
-import { _decorator, Button, Component, instantiate, Node, Prefab, Sprite, tween, Vec3 } from 'cc';
+import { _decorator, Button, Component, instantiate, Node, Prefab, Sprite, tween, UITransform, Vec3 } from 'cc';
 import { AdvLevelConfig, BookLevelConfig } from '../../../manager/DataMgr';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { PetModel } from '../../../models/PetModel';
@@ -96,6 +96,7 @@ export class BaseModeView extends Component {
 
     //怪物逃跑
     monsterEscape() {
+        this.reportResult();
         return new Promise((resolve, reject) => {
             let pos = this.monster.position;
             let scale = this.monster.getScale();
@@ -106,12 +107,30 @@ export class BaseModeView extends Component {
         });
     }
 
+    //上报结果
+    reportResult() {
+        console.log("上报结果");
+        let isAdventure = this._levelData.hasOwnProperty('islandId'); //是否是大冒险关卡
+        if (isAdventure) { //大冒险关卡
+
+        } else {
+            //教材关卡
+        }
+    }
+
     //精灵攻击
     attackMonster() {
         return new Promise((resolve, reject) => {
-            this._pet.getComponent(PetModel).hit().then(() => {
+            let targetMonster: Node;
+            let isAdventure = this._levelData.hasOwnProperty('islandId'); //是否是大冒险关卡
+            if (isAdventure) {
+                targetMonster = this._rightNum == this._wordsData.length ? this._monster : this._smallMonsters[this._rightNum - 1];
+            } else {
+                targetMonster = this._monster;
+            }
+            this.petAttackShow(targetMonster).then(() => {
                 //大冒险关卡
-                if (this._levelData.hasOwnProperty('islandId')) {
+                if (isAdventure) {
                     if (this._rightNum == this._wordsData.length) { //最后一个单词攻击主怪
                         this._monster.getComponent(MonsterModel).injury().then(() => {
                             resolve(true);
@@ -124,6 +143,22 @@ export class BaseModeView extends Component {
                     resolve(true);
                 }
             });
+        });
+    }
+
+    //精灵攻击目标
+    petAttackShow(target: Node) {
+        return new Promise((resolve, reject) => {
+            let petPos = new Vec3(this._pet.position);
+            let targetTranform = target.parent.getComponent(UITransform);
+            let petTransform = this.petContainer.getComponent(UITransform);
+            let targetpos = petTransform.convertToNodeSpaceAR(targetTranform.convertToWorldSpaceAR(new Vec3(0, 0, 0)));
+            tween(this._pet).to(0.5, { position: new Vec3(targetpos.x - 600, targetpos.y, targetpos.z) }).call(() => {
+                this._pet.getComponent(PetModel).hit().then(() => {
+                    tween(this._pet).to(0.5, { position: petPos }).start();
+                    resolve(true);
+                });
+            }).start();
         });
     }
 
