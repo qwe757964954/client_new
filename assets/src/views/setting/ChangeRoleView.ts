@@ -1,5 +1,7 @@
-import { _decorator, Component, EventTouch, Node, tween } from 'cc';
+import { _decorator, Component, EventTouch, instantiate, Layers, Node, Prefab, tween } from 'cc';
+import { RoleBaseModel } from '../../models/RoleBaseModel';
 import CCUtil from '../../util/CCUtil';
+import { NodeUtil } from '../../util/NodeUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('ChangeRoleView')
@@ -8,13 +10,49 @@ export class ChangeRoleView extends Component {
     @property([Node])
     public roleList:Node[] = [];
 
+    @property(Prefab)
+    public roleModel: Prefab = null;//角色
+
+    @property(Prefab)
+    public petModel: Prefab = null;//角色
+
+    private roleConfig:Map<number,number[]> = new Map([
+        [101,[9500, 9700, 9701, 9702, 9703]],
+        [102,[9550, 9800, 9801, 9802, 9803, 9805]],
+        [103,[9600, 9900, 9901, 9902, 9903]],
+    ])
+
     start() {
         for (let index = 0; index < this.roleList.length; index++) {
             const roleItem = this.roleList[index];
             CCUtil.onTouch(roleItem, this.onItemClick, this);
+            let count = 101 + index;
+            this.initRoleSkeleton(roleItem, count);
+            this.initPetSkeleton(roleItem.getChildByName("correct"), count);
         }
-
     }
+
+    async initRoleSkeleton(parent:Node,count:number) {
+        let role = instantiate(this.roleModel);
+        parent.addChild(role);
+        NodeUtil.setLayerRecursively(role,Layers.Enum.UI_2D);
+        let roleModel = role.getComponent(RoleBaseModel);
+        await roleModel.init(count, 1, this.roleConfig.get(count));
+        role.setScale(2,2,2);
+        roleModel.show(true);
+    }
+
+    initPetSkeleton(parent:Node,count:number) {
+        let pet = instantiate(this.petModel);
+        parent.addChild(pet);
+        NodeUtil.setLayerRecursively(pet,Layers.Enum.UI_2D);
+        let petModel = pet.getComponent(RoleBaseModel);
+        petModel.init(count, 1);
+        pet.setScale(1,1,1);
+        petModel.show(true);
+    }
+
+
     onItemClick(event: EventTouch) {
         // console.log("onItemClick", event);
         let pos1 = this.roleList[0].getPosition();
