@@ -98,7 +98,7 @@ export class MainUIView extends Component {
     }
     //翻译查词点击
     public onClickTranslate() {
-
+        ViewsManager.instance.showView(PrefabType.SearchWorldView);
     }
     //编辑点击
     public onClickEdit() {

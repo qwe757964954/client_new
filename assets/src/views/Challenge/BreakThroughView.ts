@@ -73,14 +73,6 @@ export class BreakThroughView extends BaseView {
         console.log("getUnitListStatus",this._bookData);
         TBServer.reqUnitListStatus(this._bookData);
     }
-    /*
-    export class BookLevelConfig {
-        grade:string;
-        unit:string;
-        type_name:string;
-        game_mode:number
-    }
-    */
     onEnterIsland(data:LevelConfig){
         ViewsManager.instance.showView(PrefabType.StudyModeView, (node: Node) => {
             let levelData = DataMgr.instance.getAdvLevelConfig(data.bigId, data.smallId);

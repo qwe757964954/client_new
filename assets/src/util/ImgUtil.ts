@@ -51,13 +51,16 @@ export default class ImgUtil {
         })
         */
         let sprite = imgNode.getComponent(Sprite);
-        if(!isValid(sprite)){
+        if (!isValid(sprite)) {
             sprite = imgNode.addComponent(Sprite);
         }
         LoadManager.loadRemoteSprite(imgUrl, imgNode.getComponent(Sprite)).then(() => {
             imgNode.getComponent(UITransform).width = width;
             imgNode.getComponent(UITransform).height = height;
-        });
+        },
+            (error) => {
+                console.error(error);
+            });
     }
 
 
