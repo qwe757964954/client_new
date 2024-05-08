@@ -82,7 +82,7 @@ export class SearchWordView extends Component {
         EventManager.off("SearchWord", this._testWordDetailEveId);
         EventManager.off("SearchWordItem", this._testWordDetailItemEveId);
         EventManager.off("DelOneSearchWord", this._delOneSearchWordEveId);
-        this.edtSearchWord.node.off("editing-did-began", this.onEditBoxBeganEdit, this);
+        //this.edtSearchWord.node.off("editing-did-began", this.onEditBoxBeganEdit, this);
     }
 
     protected onLoad(): void {
