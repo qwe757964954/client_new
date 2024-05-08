@@ -1,4 +1,8 @@
+import { director } from "cc";
 import { KeyConfig } from "../config/KeyConfig";
+import { SceneType } from "../config/PrefabType";
+import { TextConfig } from "../config/TextConfig";
+import { ViewsManager } from "../manager/ViewsManager";
 import { c2sAccountInit, c2sAccountLogin, s2cAccountLogin } from "../models/NetModel";
 import { User } from "../models/User";
 import { InterfacePath } from "../net/InterfacePath";
@@ -15,6 +19,7 @@ export default class AccountService {
     addServerEvent() {
         EventManager.on(InterfacePath.Account_Init, this.onAccountInit.bind(this));
         EventManager.on(InterfacePath.c2sAccountLogin, this.onAccountLogin.bind(this));
+        EventManager.on(InterfacePath.s2cAccountLogout, this.onAccountLogout.bind(this));
     }
 
     //账号初始化
@@ -45,5 +50,11 @@ export default class AccountService {
             StorageUtil.saveData(KeyConfig.Last_Login_Account, User.account);
             StorageUtil.saveData(KeyConfig.Last_Login_Pwd, User.password);
         }
+    }
+    onAccountLogout() {
+        NetMgr.closeNet();//主动关闭网络，不重连
+        ViewsManager.showAlert(TextConfig.Account_Logout_Tip, () => {
+            director.loadScene(SceneType.LoginScene);
+        });
     }
 }
