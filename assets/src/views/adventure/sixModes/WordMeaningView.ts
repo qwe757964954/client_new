@@ -58,7 +58,7 @@ export class WordMeaningView extends BaseModeView {
     private _wrongWordList: any[] = []; //错误单词列表
 
     private _wrongMode: boolean = false; //错误重答模式
-    private _rightWordData: any = null; //正确单词数据
+    private _rightWordData: UnitWordModel = null; //正确单词数据
     private _sentenceData: any = null; //例句数据
 
     private _wordDetailEveId: string;
@@ -90,7 +90,7 @@ export class WordMeaningView extends BaseModeView {
         console.log('word', this._rightWordData);
         let word = this._rightWordData.word;
         this.wordLabel.string = word;
-        this.symbolLabel.string = this._rightWordData.Symbol;
+        this.symbolLabel.string = this._rightWordData.symbol;
         this.initWordDetail(word);
         this.randomOption(this._rightWordData);
         this.playWordSound();
@@ -98,7 +98,7 @@ export class WordMeaningView extends BaseModeView {
 
     randomOption(rightWordData: any) {
         this._optionList = [];
-        this._optionList.push({ cn: rightWordData.Cn, en: rightWordData.word });
+        this._optionList.push({ cn: rightWordData.cn, en: rightWordData.word });
         let leng = this._wordsCn.length < 3 ? this._wordsCn.length : 3;
         while (this._optionList.length < leng) {
             let randomIndex = Math.round(Math.random() * (this._wordsCn.length - 1));

@@ -87,19 +87,16 @@ export class WorldMapView extends Component {
 
     //获取关卡单词回包
     onWordGameWords(data: any) {
-        if (data.Code != 200) {
-            ViewsManager.showTip('获取单词失败');
-            return;
-        }
-        // ViewsManager.instance.showView(PrefabType.StudyModeView, (node: Node) => {
-        //     let levelData = DataMgr.instance.getAdvLevelConfig(this._currentIslandID, this._currentLevelID);
-        //     node.getComponent(StudyModeView).initData(data.Data, levelData);
-        // });
-
-        ViewsManager.instance.showView(PrefabType.WordPracticeView, (node: Node) => {
+        console.log('获取单词', data);
+        ViewsManager.instance.showView(PrefabType.StudyModeView, (node: Node) => {
             let levelData = DataMgr.instance.getAdvLevelConfig(this._currentIslandID, this._currentLevelID);
-            node.getComponent(WordPracticeView).initData(data.Data, levelData);
+            node.getComponent(StudyModeView).initData(data.Data, levelData);
         });
+
+        // ViewsManager.instance.showView(PrefabType.WordPracticeView, (node: Node) => {
+        //     let levelData = DataMgr.instance.getAdvLevelConfig(this._currentIslandID, this._currentLevelID);
+        //     node.getComponent(WordPracticeView).initData(data.Data, levelData);
+        // });
     }
 
     /**初始化监听事件 */
