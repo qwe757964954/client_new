@@ -1,4 +1,4 @@
-import { _decorator, Component, instantiate, Node, Prefab, ScrollView, Sprite, Vec2 } from 'cc';
+import { _decorator, color, Component, instantiate, Label, Node, Prefab, ScrollView, Sprite, SpriteFrame, Vec2 } from 'cc';
 import { MapStatus } from '../../config/MapConfig';
 import { DataMgr, EditType } from '../../manager/DataMgr';
 import CCUtil from '../../util/CCUtil';
@@ -27,11 +27,14 @@ export class EditUIView extends Component {
     public scrollContent: Node = null;//滚动视图容器
     @property(ScrollView)
     public scrollView: ScrollView = null;//滚动视图
+    @property([SpriteFrame])
+    public spriteFrames: SpriteFrame[] = [];//图片资源
 
 
     private _mainScene: MainScene = null;//主场景
     private _isFirst: boolean = true;//是否是第一次
     private _editType: EditType = null;//编辑类型
+    private _lastSelect: Sprite = null;//上次选中
     start() {
         this.initEvent();
     }
@@ -64,22 +67,27 @@ export class EditUIView extends Component {
     }
     // 标题所有按钮点击 
     onBtnAllClick() {
+        this.selectBtn(this.btnAll);
         this.showEditType(EditType.Null);
     }
     // 标题特殊按钮点击 
     onBtnSpecialClick() {
+        this.selectBtn(this.btnSpecial);
         this.showEditType(EditType.Buiding);
     }
     // 标题建筑按钮点击 
     onBtnBuidingClick() {
+        this.selectBtn(this.btnBuiding);
         this.showEditType(EditType.LandmarkBuiding);
     }
     // 标题装饰按钮点击 
     onBtnDecorationClick() {
+        this.selectBtn(this.btnDecoration);
         this.showEditType(EditType.Decoration);
     }
     // 标题地块按钮点击 
     onBtnLandClick() {
+        this.selectBtn(this.btnLand);
         this.showEditType(EditType.Land);
     }
     // 关闭按钮点击 
@@ -93,6 +101,7 @@ export class EditUIView extends Component {
     }
     // 初始化数据
     initData() {
+        this.selectBtn(this.btnAll);
         this.showEditType(EditType.Null);
     }
     // 编辑元素点击
@@ -137,6 +146,17 @@ export class EditUIView extends Component {
         } else {
             this.scrollView.scrollToOffset(new Vec2(0, 0));
         }
+    }
+    /**选中按钮 */
+    selectBtn(btn: Sprite) {
+        if (btn == this._lastSelect) return;
+        if (this._lastSelect) {
+            this._lastSelect.getComponentInChildren(Label).color = color("#FFFFFF");
+            this._lastSelect.spriteFrame = this.spriteFrames[1];
+        }
+        btn.getComponentInChildren(Label).color = color("#72320F");
+        btn.spriteFrame = this.spriteFrames[0];
+        this._lastSelect = btn;
     }
 }
 
