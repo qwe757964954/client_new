@@ -1,6 +1,7 @@
-import { _decorator, Component } from 'cc';
+import { _decorator, Component, Node } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { ViewsManager } from '../../manager/ViewsManager';
+import { ApplyLogoutView } from './ApplyLogoutView';
 const { ccclass, property } = _decorator;
 
 @ccclass('AccountView')
@@ -35,6 +36,7 @@ export class AccountView extends Component {
     // 充值
     btnChongZhiFunc() {
         console.log("btnChongZhiFunc");
+        ViewsManager.instance.showView(PrefabType.ResetPasswordView);
     }
     // 剧情回顾
     btnJuQingHuiGuFunc() {
@@ -53,10 +55,18 @@ export class AccountView extends Component {
     // 意见反馈
     btnFanKuiFunc() {
         console.log("btnFanKuiFunc");
+        ViewsManager.instance.showView(PrefabType.FeedbackView);
     }
     // 账号注销
     btnZhuXiaoFunc() {
         console.log("btnZhuXiaoFunc");
+        ViewsManager.instance.showView(PrefabType.ApplyLogoutView,(node: Node) => {
+            let itemScript = node.getComponent(ApplyLogoutView);
+            itemScript.setAgreeCallback(()=>{
+                console.log("agree  call  back");
+                ViewsManager.instance.showView(PrefabType.LogoutView);
+            })
+        });
     }
     // 用户隐私政策
     btnYinSiFunc() {

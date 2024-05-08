@@ -8,6 +8,8 @@ export const InterfacePath = {
     c2sBuildingEdit: "2007",//建筑修改
     c2sLandUpdate: "2008",//地块更新
 
+    s2cAccountLogout: "10001",//登录被顶号返回
+
     /***********************************以上是新消息********************************************/
     Account_Step: "Account.Step",
     Account_Info: "Account.Info",

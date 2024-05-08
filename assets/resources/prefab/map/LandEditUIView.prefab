@@ -612,7 +612,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 978.0000000000002,
+      "width": 980,
       "height": 200
     },
     "_anchorPoint": {
@@ -683,10 +683,10 @@
     "__prefab": {
       "__id__": 29
     },
-    "_alignFlags": 44,
+    "_alignFlags": 20,
     "_target": null,
-    "_left": 400,
-    "_right": 400,
+    "_left": 111.00000000000011,
+    "_right": 111.00000000000011,
     "_top": 0,
     "_bottom": 0,
     "_horizontalCenter": 0,

@@ -95,7 +95,7 @@
         "_value": true
       },
       "websocket": {
-        "_value": false
+        "_value": true
       },
       "websocket-server": {
         "_value": false
@@ -116,6 +116,9 @@
         "_value": true
       },
       "marionette": {
+        "_value": false
+      },
+      "procedural-animation": {
         "_value": false
       },
       "custom-pipeline": {
@@ -139,6 +142,7 @@
       "tween",
       "ui",
       "video",
+      "websocket",
       "webview"
     ],
     "noDeprecatedFeatures": {

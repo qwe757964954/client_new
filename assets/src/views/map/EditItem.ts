@@ -41,9 +41,10 @@ export class EditItem extends Component {
 
     // 初始化
     public initData(info: EditInfo, clickCall: Function): void {
+        this._clickCall = clickCall;
+        if (this._data == info) return;
         this._data = info;
         // TODO 国王分显示
-        this._clickCall = clickCall;
         LoadManager.loadSprite(DataMgr.getEditPng(info), this.img).then((spriteFrame: SpriteFrame) => {
             this.fixPos();
             this.fixImg();
@@ -62,19 +63,21 @@ export class EditItem extends Component {
         let transform = this.img.getComponent(UITransform);
         let scaleX = selfTransform.width / transform.width;
         let scaleY = selfTransform.height / transform.height;
-        if (scaleX >= 1.0 && scaleY >= 1.0) return;
-        let minScale = Math.min(scaleX, scaleY);
-        scale.x *= minScale;
-        scale.y *= minScale;
+        if (scaleX < 1.0 || scaleY < 1.0) {
+            let minScale = Math.min(scaleX, scaleY);
+            scale.x *= minScale;
+            scale.y *= minScale;
+        }
         this.img.node.scale = scale;
     }
     /**修复位置 */
     public fixPos(): void {
-        if (EditType.Land != this._data.type) return;
-        let size = this.getComponent(UITransform).contentSize;
-        // let imgSize = this.img.getComponent(UITransform).contentSize;
-        let y = size.height * 0.5 - MapConfig.gridInfo.height;
-        this.img.node.position = new Vec3(0, y, 0);
+        let pos = new Vec3(0, 0, 0);
+        if (EditType.Land == this._data.type) {
+            let size = this.getComponent(UITransform).contentSize;
+            pos.y = size.height * 0.5 - MapConfig.gridInfo.height;
+        }
+        this.img.node.position = pos;
     }
 }
 

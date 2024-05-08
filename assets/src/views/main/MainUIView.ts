@@ -13,8 +13,6 @@ export class MainUIView extends Component {
     @property(Sprite)
     public btnMenu: Sprite = null;//菜单
     @property(Sprite)
-    public btnOnlineGift: Sprite = null;//在线礼包
-    @property(Sprite)
     public btnReview: Sprite = null;//复习计划
     @property(Sprite)
     public btnTranslate: Sprite = null;//翻译查词
@@ -56,7 +54,7 @@ export class MainUIView extends Component {
     public initEvent() {
         CCUtil.onTouch(this.btnHead, this.onClickHead, this);
         CCUtil.onTouch(this.btnMenu, this.onClickMenu, this);
-        CCUtil.onTouch(this.btnOnlineGift, this.onClickOnlineGift, this);
+        // CCUtil.onTouch(this.btnOnlineGift, this.onClickOnlineGift, this);
         CCUtil.onTouch(this.btnReview, this.onClickReview, this);
         CCUtil.onTouch(this.btnTranslate, this.onClickTranslate, this);
         CCUtil.onTouch(this.btnEdit, this.onClickEdit, this);
@@ -70,7 +68,7 @@ export class MainUIView extends Component {
     public removeEvent() {
         CCUtil.offTouch(this.btnHead, this.onClickHead, this);
         CCUtil.offTouch(this.btnMenu, this.onClickMenu, this);
-        CCUtil.offTouch(this.btnOnlineGift, this.onClickOnlineGift, this);
+        // CCUtil.offTouch(this.btnOnlineGift, this.onClickOnlineGift, this);
         CCUtil.offTouch(this.btnReview, this.onClickReview, this);
         CCUtil.offTouch(this.btnTranslate, this.onClickTranslate, this);
         CCUtil.offTouch(this.btnEdit, this.onClickEdit, this);
