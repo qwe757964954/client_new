@@ -2068,36 +2068,10 @@
         "__id__": 49
       }
     ],
-    "levelArr": [
-      {
-        "__uuid__": "061198ae-bd6a-40a4-b81f-0e082cf51135",
-        "__expectedType__": "cc.Prefab"
-      },
-      {
-        "__uuid__": "061198ae-bd6a-40a4-b81f-0e082cf51135",
-        "__expectedType__": "cc.Prefab"
-      },
-      {
-        "__uuid__": "061198ae-bd6a-40a4-b81f-0e082cf51135",
-        "__expectedType__": "cc.Prefab"
-      },
-      {
-        "__uuid__": "061198ae-bd6a-40a4-b81f-0e082cf51135",
-        "__expectedType__": "cc.Prefab"
-      },
-      {
-        "__uuid__": "061198ae-bd6a-40a4-b81f-0e082cf51135",
-        "__expectedType__": "cc.Prefab"
-      },
-      {
-        "__uuid__": "061198ae-bd6a-40a4-b81f-0e082cf51135",
-        "__expectedType__": "cc.Prefab"
-      },
-      {
-        "__uuid__": "061198ae-bd6a-40a4-b81f-0e082cf51135",
-        "__expectedType__": "cc.Prefab"
-      }
-    ],
+    "islandPref": {
+      "__uuid__": "061198ae-bd6a-40a4-b81f-0e082cf51135",
+      "__expectedType__": "cc.Prefab"
+    },
     "btn_back": {
       "__id__": 81
     },

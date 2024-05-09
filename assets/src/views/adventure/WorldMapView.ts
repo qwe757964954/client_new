@@ -11,7 +11,8 @@ import { DataMgr } from '../../manager/DataMgr';
 import { WordMeaningView } from './sixModes/WordMeaningView';
 import { WordPracticeView } from './sixModes/WordPracticeView';
 import { InterfacePath } from '../../net/InterfacePath';
-import { GameMode, IslandStatusData } from '../../models/AdventureModel';
+import { GameMode, IslandStatusData, MapLevelData } from '../../models/AdventureModel';
+import { WorldIsland } from './WorldIsland';
 const { ccclass, property } = _decorator;
 /**大冒险 世界地图 何存发 2024年4月8日14:45:44 */
 @ccclass('WorldMapView')
@@ -20,8 +21,8 @@ export class WorldMapView extends Component {
 
     @property({ type: [Node], tooltip: "地图" })
     public mapView: Node[] = [];
-    @property({ type: [Prefab], tooltip: "页面" })
-    public levelArr: Prefab[] = [];
+    @property({ type: Prefab, tooltip: "岛屿" })
+    public islandPref: Prefab = null;
     @property({ type: Button, tooltip: "返回按钮" })
     public btn_back: Button = null!;
     @property({ type: Node, tooltip: "岛屿地图容器" })
@@ -36,10 +37,13 @@ export class WorldMapView extends Component {
     private _getWordsEveId: string; //获取单词
 
     private _currentIslandID: number = 0;//当前岛屿id
-    private _currentLevelData: { smallId: number, bigId: number, mirrorId: number, gameMode: number } = null;//当前关卡数据
+    private _currentLevelData: MapLevelData = null;//当前关卡数据
+
+    private _getingIslandStatus: boolean = false;//是否正在获取岛屿状态
     start() {
         let winssize = GlobalConfig.WIN_SIZE;
         this.islandContainer.position = v3(-winssize.width / 2, 0, 0);
+        WorldIsland.initMapPoints();
     }
 
     onLoad(): void {
@@ -52,33 +56,51 @@ export class WorldMapView extends Component {
     }
     /**切换岛屿 */
     private switchLevels(i: number) {
-        console.log('切换岛屿', i)
-        // EventManager.emit(EventType.Study_Page_Switching, [i])
-        if (!this.levelArr[i]) {
-            console.error("没有这个页面", i);
-            return
-        }
+        console.log('切换岛屿', i);
         this.showIsland(i);
     }
 
     showIsland(id: number) {
+        if (this._getingIslandStatus) {
+            console.log('正在获取岛屿状态中', id);
+            return;
+        }
         this._currentIslandID = +id + 1;
+        this._getingIslandStatus = true;
         ServiceMgr.studyService.getIslandStatus(this._currentIslandID);
     }
 
     //获取岛屿状态
     onGetIslandStatus(data: IslandStatusData) {
+        this._getingIslandStatus = false;
         if (data.Code != 200) {
             console.error('获取岛屿状态失败', data.Msg);
             return;
+        }
+        let mapPoints: MapLevelData[] = [];
+        let levelStatus = data.data;
+        for (let i = 0; i < levelStatus.length; i++) {
+            let status = levelStatus[i];
+            let micros = status.micros;
+            for (let j = 0; j < micros.length; j++) {
+                let mapLevelData = new MapLevelData();
+                mapLevelData.big_id = this._currentIslandID;
+                mapLevelData.small_id = status.small_id;
+                mapLevelData.flag = status.flag;
+                mapLevelData.small_type = status.small_type;
+                mapLevelData.game_modes = micros[j].game_modes;
+                mapLevelData.micro_id = micros[j].micro_id;
+                mapPoints.push(mapLevelData);
+            }
         }
 
         if (this._currentIsland) {
             this._currentIsland.removeFromParent();
         }
-        let copynode = instantiate(this.levelArr[this._currentIslandID - 1]);
+        let copynode = instantiate(this.islandPref);
         this._currentIsland = copynode;
         this.islandContainer.addChild(copynode);
+        copynode.getComponent(WorldIsland).setPointsData(this._currentIslandID, mapPoints);
     }
 
     /**隐藏视图 */
@@ -89,20 +111,19 @@ export class WorldMapView extends Component {
     }
 
     //进入关卡
-    private enterLevel(data: { smallId: number, bigId: number, mirrorId: number, gameMode: number }) {
+    private enterLevel(data: MapLevelData) {
         console.log('进入关卡', data);
         this._currentLevelData = data;
-        this._currentLevelData.gameMode = 0;
-        this._currentLevelData.mirrorId = 1;
-        ServiceMgr.studyService.getWordGameWords(data.bigId, data.smallId, 1, 0);
+        this._currentLevelData.current_mode = 0;
+        ServiceMgr.studyService.getWordGameWords(data.big_id, data.small_id, data.micro_id, data.current_mode);
     }
 
     //获取关卡单词回包
     onWordGameWords(data: any) {
         console.log('获取单词', data);
-        let gameMode = this._currentLevelData.gameMode;
-        let levelData = DataMgr.instance.getAdvLevelConfig(this._currentIslandID, this._currentLevelData.smallId);
-        levelData.gameMode = this._currentLevelData.gameMode;
+        let gameMode = this._currentLevelData.current_mode;
+        let levelData = DataMgr.instance.getAdvLevelConfig(this._currentIslandID, this._currentLevelData.small_id);
+        levelData.gameMode = this._currentLevelData.current_mode;
         switch (gameMode) {
             case GameMode.Study:
                 ViewsManager.instance.showView(PrefabType.StudyModeView, (node: Node) => {
