@@ -3,7 +3,7 @@ import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { BookAwardListModel, BookPlanDetail, ReqPlanData, UnitListItemStatus } from '../../models/TextbookModel';
+import { BookAwardListModel, BookPlanDetail, ModifyPlanData, UnitListItemStatus } from '../../models/TextbookModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
@@ -59,7 +59,7 @@ export class TextbookChallengeView extends BaseView {
         this.addModelListener(NetNotify.Classification_BookAwardList,this.onBookAwardList);
     }
     onPlanModify(data:any){
-
+        TBServer.reqBookPlanDetail(this._bookData);
     }
 
     onBookAwardList(data:BookAwardListModel){
@@ -76,14 +76,12 @@ export class TextbookChallengeView extends BaseView {
     onSelectWordPlan(params:any){
         ViewsManager.instance.closeView(PrefabType.SettingPlanView);
         if(params.isSave){
-            let reqData:ReqPlanData = {
-                book_name:this._bookData.book_name,
-                grade:this._bookData.grade,
-                type_name:this._bookData.type_name,
+            let modifyData:ModifyPlanData = {
+                plan_id:this._planData.id,
                 rank_num:parseInt(params.left),
                 num:parseInt(params.right)
             }
-            TBServer.reqModifyPlan(reqData);
+            TBServer.reqModifyPlan(modifyData);
         }
     }
 

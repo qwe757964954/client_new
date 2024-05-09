@@ -1,4 +1,6 @@
-import { AwardListItem, BookAwardListModel, BookItemData, BookListItemData, BookPlanDetail, MyTextbookListStatus, MyTextbookStatus, ReqPlanData, ReqUnitStatusParam, SchoolBookGradeItemData, SchoolBookItemData, SchoolBookListGradeItemData, SchoolBookListItemData, UnitItemStatus, UnitListItemStatus, UnitStatusData, UnitWordModel, c2sAddBookStatus, c2sAddPlanBookStatus, c2sAddPlanStatus, c2sBookAwardList, c2sBookPlanDetail, c2sBookStatus, c2sDelBookStatus, c2sModifyPlanStatus, c2sSchoolBook, c2sSchoolBookGrade, c2sSearchBookList, c2sUnitListStatus, c2sUnitStatus } from "../models/TextbookModel";
+import { isValid } from "cc";
+import { ViewsManager } from "../manager/ViewsManager";
+import { AwardListItem, BookAwardListModel, BookItemData, BookListItemData, BookPlanDetail, CurrentBookStatus, ModifyPlanData, MyTextbookListStatus, MyTextbookStatus, ReqPlanData, ReqUnitStatusParam, SchoolBookGradeItemData, SchoolBookItemData, SchoolBookListGradeItemData, SchoolBookListItemData, UnitItemStatus, UnitListItemStatus, UnitStatusData, UnitWordModel, c2sAddBookStatus, c2sAddPlanBookStatus, c2sAddPlanStatus, c2sBookAwardList, c2sBookPlanDetail, c2sBookStatus, c2sCurrentBook, c2sDelBookStatus, c2sModifyPlanStatus, c2sSchoolBook, c2sSchoolBookGrade, c2sSearchBookList, c2sUnitListStatus, c2sUnitStatus } from "../models/TextbookModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
 import { NetNotify } from "../net/NetNotify";
@@ -33,6 +35,7 @@ export default class _TextbookService extends BaseControll {
         this.addModelListener(InterfacePath.Classification_BookPlanDetail, this.onBookPlanDetail);
         this.addModelListener(InterfacePath.Classification_UnitStatus, this.onUnitStatus);
         this.addModelListener(InterfacePath.Classification_BookAwardList, this.onBookAddAwardList);
+        this.addModelListener(InterfacePath.Classification_CurrentBook, this.onCurrentBook);
     }
     reqBookStatus() {
         let para: c2sBookStatus = new c2sBookStatus();
@@ -116,11 +119,9 @@ export default class _TextbookService extends BaseControll {
         EventMgr.dispatch(NetNotify.Classification_PlanAdd, data);
     }
 
-    reqModifyPlan(data: ReqPlanData) {
+    reqModifyPlan(data: ModifyPlanData) {
         let param: c2sModifyPlanStatus = new c2sModifyPlanStatus();
-        param.book_name = data.book_name;
-        param.grade = data.grade;
-        param.type_name = data.type_name;
+        param.plan_id = data.plan_id;
         param.rank_num = data.rank_num;
         param.num = data.num;
         NetMgr.sendMsg(param);
@@ -257,6 +258,7 @@ export default class _TextbookService extends BaseControll {
         console.log("onAddPlanBook", data);
         if (data.Code !== 200) {
             console.log(data.Msg);
+            ViewsManager.showTip(data.Msg);
             return;
         }
         EventMgr.dispatch(NetNotify.Classification_AddPlanBook, data);
@@ -364,6 +366,36 @@ export default class _TextbookService extends BaseControll {
             bookAwardData.awards_list.push(obj);
         }
         EventMgr.dispatch(NetNotify.Classification_BookAwardList, bookAwardData);
+    }
+
+    reqCurrentBook(){
+        let params:c2sCurrentBook = new c2sCurrentBook();
+        NetMgr.sendMsg(params);
+    }
+
+    onCurrentBook(data:any){
+        console.log("onCurrentBook.....",data);
+        if(data.Code !== 200){
+            console.log(data.Msg);
+            return;
+        }
+        let curBookData:CurrentBookStatus = {
+            Msg: data.Msg,
+            Code: data.Code,
+        }
+        if(isValid(data.Data)){
+            curBookData.data.user_id = data.Data.user_id;
+            curBookData.data.type_name = data.Data.type_name;
+            curBookData.data.book_name = data.Data.book_name;
+            curBookData.data.grade = data.Data.grade;
+            curBookData.data.unit = data.Data.unit;
+            curBookData.data.status = data.Data.status;
+            curBookData.data.score = data.Data.score;
+            curBookData.data.total_score = data.Data.total_score;
+            curBookData.data.study_word_num = data.Data.study_word_num;
+            curBookData.data.total_word_num = data.Data.total_word_num;
+        }
+        EventMgr.dispatch(NetNotify.Classification_CurrentBook, curBookData);
     }
 };
 

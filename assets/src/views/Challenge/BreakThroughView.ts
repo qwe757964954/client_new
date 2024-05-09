@@ -89,7 +89,6 @@ export class BreakThroughView extends BaseView {
     onUnitStatus(data:UnitStatusData){
         console.log("onUnitStatus",data);
         this._curUnitStatus = data;
-        // 
         let content_size = this.content_layout.getComponent(UITransform);
         let node_size = this._rightChallenge.node.getComponent(UITransform);
         let posx = content_size.width / 2 + node_size.width / 2;

@@ -43,6 +43,7 @@ export const InterfacePath = {
     Classification_GameSubmit: "Classification.GameSubmit", //单个单词学习提交
     Classification_TypeNameStatus: "Classification.TypeNameStatus", //大分类信息
     Classification_BookAwardList: "3006", // 教材单词课本奖励列表
+    Classification_CurrentBook: "3019", // 当前词书信息
     Classification_RecBookAward: "Classification.RecBookAward", //教材单词领取课本单词奖励
     Classification_SoundCommit: "Classification.SoundCommit", //教材单词语音评测上报
     Classification_WordSentence: "Classification.WordSentence", //通过单词获取句子
