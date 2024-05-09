@@ -68,8 +68,8 @@ export class BaseDataPacket {
 }
 /**基础返回接口类 */
 export class BaseRepPacket {
-    Code: number;//返回码
-    Msg: string;//返回信息
+    code: number;//返回码
+    msg: string;//返回信息
 }
 /**账号密码登录 */
 export class c2sAccountLogin {

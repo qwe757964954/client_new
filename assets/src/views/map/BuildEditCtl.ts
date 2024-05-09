@@ -38,8 +38,8 @@ export class BuildEditCtl extends MapBaseCtl {
     /** 建筑编辑返回 */
     onBuildingEdit(data: s2cBuildingEdit) {
         if (this._mainScene.getMapCtl() != this) return;
-        if (200 != data.Code) {
-            ViewsManager.showAlert(data.Msg);
+        if (200 != data.code) {
+            ViewsManager.showAlert(data.msg);
             return;
         }
         let building = this._mainScene.findBuilding(data.id);
@@ -48,8 +48,8 @@ export class BuildEditCtl extends MapBaseCtl {
     /** 建筑创建返回 */
     onBuildingCreate(data: s2cBuildingCreate) {
         if (this._mainScene.getMapCtl() != this) return;
-        if (200 != data.Code) {
-            ViewsManager.showAlert(data.Msg);
+        if (200 != data.code) {
+            ViewsManager.showAlert(data.msg);
             return;
         }
         let building = this._mainScene.findBuildingByIdx(data.idx);

@@ -1,4 +1,5 @@
 import { Component, EventTouch, Prefab, ScrollView, _decorator, instantiate } from 'cc';
+import { MapLevelData } from '../../models/AdventureModel';
 import { UnitItemStatus, UnitListItemStatus } from '../../models/TextbookModel';
 import CCUtil from '../../util/CCUtil';
 import { MapPointItem } from '../adventure/levelmap/MapPointItem';
@@ -63,8 +64,8 @@ export class ScrollMapView extends Component {
             let itemScript:MapPointItem = itemNode.getComponent(MapPointItem);
             itemScript.index = index;
             let smallId = index + 1;
-            let data = {bigId:1, smallId:smallId};
-            itemScript.setData(data);
+            let data:MapLevelData = {big_id:1, small_id:smallId,micro_id:smallId};
+            itemScript.initData(data);
             CCUtil.onTouch(itemNode, this.onItemClick, this);
             this.mapScrollView.content.addChild(itemNode);
             itemNode.setPosition(mapCoord.x,mapCoord.y,0);

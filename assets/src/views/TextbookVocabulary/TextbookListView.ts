@@ -126,7 +126,7 @@ export class TextbookListView extends BaseView {
         let data:ITextbookRemindData = {
             sure_text:"确定",
             cancel_text:"取消",
-            content_text:`是否切换\n${itemInfo.book_name}${itemInfo.grade}为当前在学`,
+            content_text:`是否切换\n《${itemInfo.book_name}${itemInfo.grade}》为当前在学`,
             callFunc:(isSure:boolean)=>{
                 if(isSure){
                     this.setClickItemProps(item,selectedId);
@@ -159,6 +159,7 @@ export class TextbookListView extends BaseView {
         let itemScript = item.getComponent(MyContentItem);
         itemScript.flagBg.active = true;
         itemScript.select_infoBg.active = true;
+        itemScript.btn_delete.node.active = false;
     }
 
     clearItems(){
@@ -168,6 +169,7 @@ export class TextbookListView extends BaseView {
                 let itemScript = item.getComponent(MyContentItem);
                 itemScript.flagBg.active = false;
                 itemScript.select_infoBg.active = false;
+                itemScript.btn_delete.node.active = true;
             }
         }
     }
@@ -184,7 +186,9 @@ export class TextbookListView extends BaseView {
 
     onClickAddTextbook(){
         console.log("onClickAddTextbook");
-        ViewsManager.instance.showView(PrefabType.SelectWordView);
+        ViewsManager.instance.showView(PrefabType.SelectWordView,(node:Node)=>{
+            ViewsManager.instance.closeView(PrefabType.TextbookListView);
+        });
     }
 }
 

@@ -436,8 +436,8 @@ export class LoginView extends BaseView {
     /**登录结果 */
     onAccountLogin(data: s2cAccountLogin) {
         this._isRequest = false;
-        if (200 != data.Code) {
-            ViewsManager.showAlert(data.Msg ? data.Msg : "数据异常");
+        if (200 != data.code) {
+            ViewsManager.showAlert(data.msg ? data.msg : "数据异常");
             return;
         }
         console.log("登录成功");

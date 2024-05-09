@@ -103,9 +103,7 @@ export class c2sAddPlanBookStatus {
 
 export class c2sModifyPlanStatus {
     command_id: string = InterfacePath.Classification_PlanModify;
-    type_name:string;
-    book_name:string;
-    grade:string;
+    plan_id:string;
     rank_num:number;
     num:number;
 }
@@ -141,6 +139,13 @@ export interface ReqPlanData{
     type_name:string;
     book_name:string;
     grade:string;
+    rank_num:number;
+    num:number;
+}
+
+//修改计划请求model
+export interface ModifyPlanData{
+    plan_id:string;
     rank_num:number;
     num:number;
 }
@@ -232,4 +237,23 @@ export interface RandomPropsData {
     change:number;
     prop_id:number;
     rat:number;
+}
+
+export class c2sCurrentBook {
+    command_id: string = InterfacePath.Classification_CurrentBook;
+}
+
+
+
+export interface CurrentBookStatus extends BaseRepPacket {
+    user_id?:number;
+    book_name?:string;
+    type_name?:string;
+    grade?:string;
+    unit?:string;
+    status?:number;
+    score?:number;
+    total_score?:number;
+    study_word_num?:number;
+    total_word_num?:number
 }

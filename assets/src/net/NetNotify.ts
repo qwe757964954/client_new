@@ -24,6 +24,7 @@ export const NetNotify = {
     Classification_SoundCommit:"Classification_SoundCommit", //教材单词语音评测上报
     Classification_WordSentence:"Classification_WordSentence", //通过单词获取句子
     Classification_BookPlanDetail:"Classification_BookPlanDetail", //书对应计划详情
+    Classification_CurrentBook: "Classification_CurrentBook",//当前词书信息
     NewWord_List:"NewWord_List", //我的生词列表
     NewWord_Add:"NewWord_Add", //添加到我的生词本
     NewWord_Del:"NewWord_Del", //移除生词本

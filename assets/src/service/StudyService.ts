@@ -1,7 +1,6 @@
 import { EventType } from "../config/EventType";
 import { ViewsManager } from "../manager/ViewsManager";
 import { c2sClassificationWord, c2sIslandStatus, c2sWordGameWords, WordGameWordsData } from "../models/AdventureModel";
-import { UnitWordModel } from "../models/TextbookModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
 import { BaseControll } from "../script/BaseControll";
@@ -44,8 +43,8 @@ export default class StudyService extends BaseControll {
         NetMgr.sendMsg(para);
     }
     onWordGameWords(data: WordGameWordsData) {
-        if (data.Code != 200) {
-            ViewsManager.showTip(data.Msg);
+        if (data.code != 200) {
+            ViewsManager.showTip(data.msg);
             return;
         }
         console.log("onWordGameWords", data);

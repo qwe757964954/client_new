@@ -41,8 +41,8 @@ export default class AccountService {
     /**登录返回 */
     onAccountLogin(data: s2cAccountLogin) {
         NetMgr.resetReconnceTime();
-        console.log("AccountService onAccountLogin", data.Code, data.Msg, data.user_id);
-        if (200 == data.Code) {
+        console.log("AccountService onAccountLogin", data.code, data.msg, data.user_id);
+        if (200 == data.code) {
             User.isLogin = true;
             User.userId = data.user_id;
             User.memberToken = data.token;

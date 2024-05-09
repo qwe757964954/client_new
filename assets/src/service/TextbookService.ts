@@ -1,4 +1,6 @@
-import { AwardListItem, BookAwardListModel, BookItemData, BookListItemData, BookPlanDetail, MyTextbookListStatus, MyTextbookStatus, ReqPlanData, ReqUnitStatusParam, SchoolBookGradeItemData, SchoolBookItemData, SchoolBookListGradeItemData, SchoolBookListItemData, UnitItemStatus, UnitListItemStatus, UnitStatusData, UnitWordModel, c2sAddBookStatus, c2sAddPlanBookStatus, c2sAddPlanStatus, c2sBookAwardList, c2sBookPlanDetail, c2sBookStatus, c2sDelBookStatus, c2sModifyPlanStatus, c2sSchoolBook, c2sSchoolBookGrade, c2sSearchBookList, c2sUnitListStatus, c2sUnitStatus } from "../models/TextbookModel";
+import { isValid } from "cc";
+import { ViewsManager } from "../manager/ViewsManager";
+import { AwardListItem, BookAwardListModel, BookItemData, BookListItemData, BookPlanDetail, CurrentBookStatus, ModifyPlanData, MyTextbookListStatus, MyTextbookStatus, ReqPlanData, ReqUnitStatusParam, SchoolBookGradeItemData, SchoolBookItemData, SchoolBookListGradeItemData, SchoolBookListItemData, UnitItemStatus, UnitListItemStatus, UnitStatusData, UnitWordModel, c2sAddBookStatus, c2sAddPlanBookStatus, c2sAddPlanStatus, c2sBookAwardList, c2sBookPlanDetail, c2sBookStatus, c2sCurrentBook, c2sDelBookStatus, c2sModifyPlanStatus, c2sSchoolBook, c2sSchoolBookGrade, c2sSearchBookList, c2sUnitListStatus, c2sUnitStatus } from "../models/TextbookModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
 import { NetNotify } from "../net/NetNotify";
@@ -33,6 +35,7 @@ export default class _TextbookService extends BaseControll {
         this.addModelListener(InterfacePath.Classification_BookPlanDetail, this.onBookPlanDetail);
         this.addModelListener(InterfacePath.Classification_UnitStatus, this.onUnitStatus);
         this.addModelListener(InterfacePath.Classification_BookAwardList, this.onBookAddAwardList);
+        this.addModelListener(InterfacePath.Classification_CurrentBook, this.onCurrentBook);
     }
     reqBookStatus() {
         let para: c2sBookStatus = new c2sBookStatus();
@@ -40,13 +43,13 @@ export default class _TextbookService extends BaseControll {
     }
     onBookStatus(data: any) {
         console.log(data);
-        if (data.Code !== 200) {
-            console.log(data.Msg);
+        if (data.code !== 200) {
+            console.log(data.msg);
             return
         }
         let myTextbookList: MyTextbookListStatus = {
-            Code: data.Code,
-            Msg: data.MSg,
+            code: data.code,
+            msg: data.msg,
             data: [],
         }
         for (let index = 0; index < data.data.length; index++) {
@@ -75,8 +78,8 @@ export default class _TextbookService extends BaseControll {
     }
     onBookDel(data: any) {
         console.log(data);
-        if (data.Code !== 200) {
-            console.log(data.Msg);
+        if (data.code !== 200) {
+            console.log(data.msg);
             return
         }
         EventMgr.dispatch(NetNotify.Classification_BookDel, data);
@@ -90,8 +93,8 @@ export default class _TextbookService extends BaseControll {
     }
     onBookAdd(data: any) {
         console.log("onBookAdd", data);
-        if (data.Code !== 200) {
-            console.log(data.Msg);
+        if (data.code !== 200) {
+            console.log(data.msg);
             return
         }
         EventMgr.dispatch(NetNotify.Classification_BookAdd, data);
@@ -109,18 +112,16 @@ export default class _TextbookService extends BaseControll {
 
     onPlanAdd(data: any) {
         console.log("onPlanAdd", data);
-        if (data.Code !== 200) {
-            console.log(data.Msg);
+        if (data.code !== 200) {
+            console.log(data.msg);
             return
         }
         EventMgr.dispatch(NetNotify.Classification_PlanAdd, data);
     }
 
-    reqModifyPlan(data: ReqPlanData) {
+    reqModifyPlan(data: ModifyPlanData) {
         let param: c2sModifyPlanStatus = new c2sModifyPlanStatus();
-        param.book_name = data.book_name;
-        param.grade = data.grade;
-        param.type_name = data.type_name;
+        param.plan_id = data.plan_id;
         param.rank_num = data.rank_num;
         param.num = data.num;
         NetMgr.sendMsg(param);
@@ -128,8 +129,8 @@ export default class _TextbookService extends BaseControll {
 
     onModifyPlan(data: any) {
         console.log("onModifyPlan", data);
-        if (data.Code !== 200) {
-            console.log(data.Msg);
+        if (data.code !== 200) {
+            console.log(data.msg);
             return
         }
         EventMgr.dispatch(NetNotify.Classification_PlanModify, data);
@@ -141,13 +142,13 @@ export default class _TextbookService extends BaseControll {
     }
     onBookList(data: any) {
         console.log("onBookList", data);
-        if (data.Code !== 200) {
-            console.log(data.Msg);
+        if (data.code !== 200) {
+            console.log(data.msg);
             return
         }
         let bookLiskData: BookListItemData = {
-            Code: data.Code,
-            Msg: data.Msg,
+            code: data.code,
+            msg: data.msg,
             dataArr: []
         };
         for (let index = 0; index < data.data.length; index++) {
@@ -169,13 +170,13 @@ export default class _TextbookService extends BaseControll {
     }
     onSchoolBook(data: any) {
         console.log("onSchoolBook", data);
-        if (data.Code !== 200) {
-            console.log(data.Msg);
+        if (data.code !== 200) {
+            console.log(data.msg);
             return;
         }
         let schoolBookList: SchoolBookListItemData = {
-            Code: data.Code,
-            Msg: data.Msg,
+            code: data.code,
+            msg: data.msg,
             data: []
         }
         for (let index = 0; index < data.data.length; index++) {
@@ -195,13 +196,13 @@ export default class _TextbookService extends BaseControll {
         NetMgr.sendMsg(param);
     }
     onSchoolBookGrade(data: any) {
-        if (data.Code !== 200) {
-            console.log(data.Msg);
+        if (data.code !== 200) {
+            console.log(data.msg);
             return;
         }
         let schoolGradeList: SchoolBookListGradeItemData = {
-            Code: data.Code,
-            Msg: data.Msg,
+            code: data.code,
+            msg: data.msg,
             data: []
         }
         for (let index = 0; index < data.data.length; index++) {
@@ -223,13 +224,13 @@ export default class _TextbookService extends BaseControll {
     }
     onUnitListStatus(data: any) {
         console.log("onUnitListStatus", data);
-        if (data.Code !== 200) {
-            console.log(data.Msg);
+        if (data.code !== 200) {
+            console.log(data.msg);
             return;
         }
         let unitListStatus: UnitListItemStatus = {
-            Code: data.Code,
-            Msg: data.Msg,
+            code: data.code,
+            msg: data.msg,
             data: []
         }
         for (let index = 0; index < data.data.length; index++) {
@@ -255,8 +256,9 @@ export default class _TextbookService extends BaseControll {
 
     onAddPlanBook(data: any) {
         console.log("onAddPlanBook", data);
-        if (data.Code !== 200) {
-            console.log(data.Msg);
+        if (data.code !== 200) {
+            console.log(data.msg);
+            ViewsManager.showTip(data.msg);
             return;
         }
         EventMgr.dispatch(NetNotify.Classification_AddPlanBook, data);
@@ -271,13 +273,13 @@ export default class _TextbookService extends BaseControll {
 
     onBookPlanDetail(data: any) {
         console.log("onBookPlanDetail", data);
-        if (data.Code !== 200) {
-            console.log(data.Msg);
+        if (data.code !== 200) {
+            console.log(data.msg);
             return;
         }
         let planData: BookPlanDetail = {
-            Code: data.Code,
-            Msg: data.Msg,
+            code: data.code,
+            msg: data.msg,
             book_name: data.book_name,
             grade: data.grade,
             id: data.id,
@@ -299,13 +301,13 @@ export default class _TextbookService extends BaseControll {
     }
     onUnitStatus(data: any) {
         console.log("onUnitStatus", data);
-        if (data.Code !== 200) {
-            console.log(data.Msg);
+        if (data.code !== 200) {
+            console.log(data.msg);
             return;
         }
         let unitStatus: UnitStatusData = {
-            Code: data.Code,
-            Msg: data.Msg,
+            code: data.Code,
+            msg: data.Msg,
             flag: data.flag,
             game_mode: data.game_mode,
             grade: data.grade,
@@ -337,13 +339,13 @@ export default class _TextbookService extends BaseControll {
     }
     onBookAddAwardList(data: any) {
         console.log("onBookAddAwardList", data);
-        if (data.Code !== 200) {
-            console.log(data.Msg);
+        if (data.code !== 200) {
+            console.log(data.msg);
             return;
         }
         let bookAwardData: BookAwardListModel = {
-            Code: data.Code,
-            Msg: data.Msg,
+            code: data.code,
+            msg: data.msg,
             study_num: data.study_num,
             study_word_num: data.study_word_num,
             total_num: data.total_num,
@@ -364,6 +366,36 @@ export default class _TextbookService extends BaseControll {
             bookAwardData.awards_list.push(obj);
         }
         EventMgr.dispatch(NetNotify.Classification_BookAwardList, bookAwardData);
+    }
+
+    reqCurrentBook(){
+        let params:c2sCurrentBook = new c2sCurrentBook();
+        NetMgr.sendMsg(params);
+    }
+
+    onCurrentBook(data:any){
+        console.log("onCurrentBook.....",data);
+        if(data.code !== 200){
+            console.log(data.msg);
+            return;
+        }
+        let curBookData:CurrentBookStatus = {
+            msg: data.msg,
+            code: data.code,
+        }
+        if(isValid(data.type_name) && isValid(data.book_name) && isValid(data.grade)){
+            curBookData.user_id = data.user_id;
+            curBookData.type_name = data.type_name;
+            curBookData.book_name = data.book_name;
+            curBookData.grade = data.grade;
+            curBookData.unit = data.unit;
+            curBookData.status = data.status;
+            curBookData.score = data.score;
+            curBookData.total_score = data.total_score;
+            curBookData.study_word_num = data.study_word_num;
+            curBookData.total_word_num = data.total_word_num;
+        }
+        EventMgr.dispatch(NetNotify.Classification_CurrentBook, curBookData);
     }
 };
 

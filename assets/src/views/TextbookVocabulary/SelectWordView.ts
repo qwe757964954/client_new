@@ -77,6 +77,7 @@ export class SelectWordView extends BaseView {
     }
 
     onAddPlanBook(data){
+        
         ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
             ViewsManager.instance.closeView(PrefabType.SelectWordView);
             let type_name = this._bookLiskData.dataArr[this._tabIndex].type_name;

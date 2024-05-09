@@ -2,16 +2,16 @@ import { _decorator, Button, Component, instantiate, Node, Prefab, v3 } from 'cc
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import GlobalConfig from '../../GlobalConfig';
+import { DataMgr } from '../../manager/DataMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
+import { GameMode, IslandStatusData, MapLevelData } from '../../models/AdventureModel';
+import { InterfacePath } from '../../net/InterfacePath';
+import { ServiceMgr } from '../../net/ServiceManager';
 import CCUtil from '../../util/CCUtil';
 import EventManager from '../../util/EventManager';
 import { StudyModeView } from './sixModes/StudyModeView';
-import { ServiceMgr } from '../../net/ServiceManager';
-import { DataMgr } from '../../manager/DataMgr';
 import { WordMeaningView } from './sixModes/WordMeaningView';
 import { WordPracticeView } from './sixModes/WordPracticeView';
-import { InterfacePath } from '../../net/InterfacePath';
-import { GameMode, IslandStatusData, MapLevelData } from '../../models/AdventureModel';
 import { WorldIsland } from './WorldIsland';
 const { ccclass, property } = _decorator;
 /**大冒险 世界地图 何存发 2024年4月8日14:45:44 */
@@ -73,8 +73,8 @@ export class WorldMapView extends Component {
     //获取岛屿状态
     onGetIslandStatus(data: IslandStatusData) {
         this._getingIslandStatus = false;
-        if (data.Code != 200) {
-            console.error('获取岛屿状态失败', data.Msg);
+        if (data.code != 200) {
+            console.error('获取岛屿状态失败', data.msg);
             return;
         }
         let mapPoints: MapLevelData[] = [];
