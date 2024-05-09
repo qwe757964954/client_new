@@ -1,7 +1,7 @@
 import { _decorator, error, instantiate, Node, Prefab, UITransform } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
-import { DataMgr } from '../../manager/DataMgr';
+import { BookLevelConfig, DataMgr } from '../../manager/DataMgr';
 import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { MapLevelData } from '../../models/AdventureModel';
@@ -74,9 +74,10 @@ export class BreakThroughView extends BaseView {
         TBServer.reqUnitListStatus(this._bookData);
     }
     onEnterIsland(data:LevelConfig){
+    
         ViewsManager.instance.showView(PrefabType.StudyModeView, (node: Node) => {
-            let levelData = DataMgr.instance.getAdvLevelConfig(data.bigId, data.smallId);
-            let bookLevelData = {
+            let levelData = DataMgr.instance.getAdvLevelConfig(data.big_id, data.small_id);
+            let bookLevelData:BookLevelConfig = {
                 grade:this._curUnitStatus.grade,
                 unit:this._curUnitStatus.unit,
                 type_name:this._curUnitStatus.type_name,
@@ -85,19 +86,6 @@ export class BreakThroughView extends BaseView {
             node.getComponent(StudyModeView).initData(this._curUnitStatus.data, levelData);
         });
     }
-
-    /*
-    export class MapLevelData {
-    flag?: number;
-    big_id: number;
-    small_id: number;
-    micro_id: number;
-    small_type?: number;
-    game_modes?: string;
-    current_mode?: number;
-}
-    */
-
     onUnitStatus(data:UnitStatusData){
         console.log("onUnitStatus",data);
         this._curUnitStatus = data;

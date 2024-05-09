@@ -1,15 +1,15 @@
 import { _decorator, Component, instantiate, Label, Node, Prefab, tween, UITransform, Vec3 } from 'cc';
 import { EventType } from '../../../config/EventType';
 import { DataMgr } from '../../../manager/DataMgr';
+import { MapLevelData } from '../../../models/AdventureModel';
 import CCUtil from '../../../util/CCUtil';
 import EventManager from '../../../util/EventManager';
 import { MonsterModel } from './MonsterModel';
-import { MapLevelData } from '../../../models/AdventureModel';
 const { ccclass, property } = _decorator;
 
 export interface LevelConfig {
-    smallId: number;
-    bigId: number;
+    small_id: number;
+    big_id: number;
 }
 /**右边选择关卡界面 何存发 2024年4月12日14:21:29 */
 @ccclass('rightPanel')

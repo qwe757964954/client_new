@@ -31,7 +31,7 @@ export const InterfacePath = {
     Classification_List: "3001", //获取分类汇总列表
     Classification_SchoolBook: "3002", //获取教材课本
     Classification_SchoolGrade: "3003", //教材课本-年级
-    Classification_AddPlanBook: "3018",//添加书与计划
+    Classification_AddPlanBook: "3013",//添加书与计划
     Classification_BookPlanDetail: "3015",//书对应计划详情
     Classification_SchoolUnit: "Classification.SchoolUnit", //教材课本-年级-单元
     Classification_SchoolWord: "Classification.SchoolWord", //教材课本-年级-单元-词汇
