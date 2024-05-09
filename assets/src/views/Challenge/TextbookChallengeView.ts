@@ -165,7 +165,7 @@ export class TextbookChallengeView extends BaseView {
                 ViewsManager.instance.showView(PrefabType.BreakThroughView, (node: Node) => {
                     let itemScript:BreakThroughView = node.getComponent(BreakThroughView);
                     itemScript.initData(this._bookData);
-                    ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);
+                    // ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);
                 });
             });
 

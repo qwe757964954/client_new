@@ -4,6 +4,7 @@ import { PrefabType } from '../../config/PrefabType';
 import { DataMgr } from '../../manager/DataMgr';
 import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
+import { MapLevelData } from '../../models/AdventureModel';
 import { ReqUnitStatusParam, UnitListItemStatus, UnitStatusData } from '../../models/TextbookModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
@@ -13,7 +14,7 @@ import { StudyModeView } from '../adventure/sixModes/StudyModeView';
 import { NavTitleView } from '../common/NavTitleView';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { ScrollMapView } from './ScrollMapView';
-import { BookUnitModel, TextbookChallengeView } from './TextbookChallengeView';
+import { BookUnitModel } from './TextbookChallengeView';
 const { ccclass, property } = _decorator;
 
 // export enum ChangeHeadTypeEnum {
@@ -85,6 +86,18 @@ export class BreakThroughView extends BaseView {
         });
     }
 
+    /*
+    export class MapLevelData {
+    flag?: number;
+    big_id: number;
+    small_id: number;
+    micro_id: number;
+    small_type?: number;
+    game_modes?: string;
+    current_mode?: number;
+}
+    */
+
     onUnitStatus(data:UnitStatusData){
         console.log("onUnitStatus",data);
         this._curUnitStatus = data;
@@ -93,7 +106,7 @@ export class BreakThroughView extends BaseView {
         let posx = content_size.width / 2 + node_size.width / 2;
         this._rightChallenge.node.setPosition(posx,0,0);
         const removedString = data.unit.replace("Unit ", "").trim();
-        let param:any = {smallId:parseInt(removedString), bigId:1}
+        let param:MapLevelData = {small_id:parseInt(removedString), big_id:1,micro_id:parseInt(removedString)}
         this._rightChallenge.openView(param);
         // this._rightChallenge.node.active = true;
         // tween(this._rightChallenge.node).by(0.3,{position:new Vec3(-node_size.width,0,0)}).start();
@@ -108,11 +121,12 @@ export class BreakThroughView extends BaseView {
     initNavTitle(){
         ViewsManager.addNavigation(this.top_layout,0,0).then((navScript: NavTitleView) => {
             navScript.updateNavigationProps(`${this._bookData.book_name}${this._bookData.grade}`,()=>{
-                ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
-                    let itemScript:TextbookChallengeView = node.getComponent(TextbookChallengeView);
-                    itemScript.initData(this._bookData);
-                    ViewsManager.instance.closeView(PrefabType.BreakThroughView);
-                });
+                ViewsManager.instance.closeView(PrefabType.BreakThroughView);
+                // ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
+                //     let itemScript:TextbookChallengeView = node.getComponent(TextbookChallengeView);
+                //     itemScript.initData(this._bookData);
+                //     // ViewsManager.instance.closeView(PrefabType.BreakThroughView);
+                // });
             });
         });
     }
