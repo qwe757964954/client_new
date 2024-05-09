@@ -6,6 +6,7 @@ import { PetModel } from '../../../models/PetModel';
 import { RoleBaseModel } from '../../../models/RoleBaseModel';
 import { ReportResultModel, UnitWordModel } from '../../../models/TextbookModel';
 import { InterfacePath } from '../../../net/InterfacePath';
+import { NetNotify } from '../../../net/NetNotify';
 import { ServiceMgr } from '../../../net/ServiceManager';
 import { TBServer } from '../../../service/TextbookService';
 import CCUtil from '../../../util/CCUtil';
@@ -209,7 +210,6 @@ export class BaseModeView extends Component {
         if (data.code == 200) {
             this._upResultSucce = true;
         } else {
-
         }
     }
 
@@ -217,6 +217,7 @@ export class BaseModeView extends Component {
     protected initEvent(): void {
         CCUtil.onTouch(this.btn_close.node, this.closeView, this);
         this._getResultEveId = EventManager.on(InterfacePath.Adventure_Result, this.onUpResult.bind(this));
+        EventManager.on(NetNotify.Classification_ReportResult, this.onUpResult.bind(this));
     }
     protected removeEvent(): void {
         CCUtil.offTouch(this.btn_close.node, this.closeView, this);
