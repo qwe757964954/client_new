@@ -61,7 +61,8 @@ export class BookLevelConfig {
     grade: string;
     unit: string;
     type_name: string;
-    game_mode: number
+    game_mode: number;
+    book_name:string;
 }
 
 

@@ -190,6 +190,7 @@ export class c2sUnitStatus {
 export interface UnitStatusData extends BaseRepPacket{
     flag:number;
     game_mode:number;
+    book_name:string;
     grade:string;
     study_num:number;
     type_name:string;
@@ -257,3 +258,24 @@ export interface CurrentBookStatus extends BaseRepPacket {
     study_word_num?:number;
     total_word_num?:number
 }
+
+export interface ReportResultModel{ 
+    type_name:string;
+    book_name:string;
+    grade:string;
+    unit:string;
+    game_mode:number;
+}
+
+export class c2sReportResult {
+    command_id: string = InterfacePath.Classification_ReportResult;
+    type_name:string;
+    book_name:string;
+    grade:string;
+    unit:string;
+    game_mode:number;
+}
+
+// "command_id";
+// :3023, "data":{"type_name":"primaryschool", "book_name":"人教PEP版", "grade":"三上", "unit":"Unit 1","game_mode":0}}
+

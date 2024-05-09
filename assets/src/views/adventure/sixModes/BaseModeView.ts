@@ -3,7 +3,8 @@ import { AdvLevelConfig, BookLevelConfig } from '../../../manager/DataMgr';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { PetModel } from '../../../models/PetModel';
 import { RoleBaseModel } from '../../../models/RoleBaseModel';
-import { UnitWordModel } from '../../../models/TextbookModel';
+import { ReportResultModel, UnitWordModel } from '../../../models/TextbookModel';
+import { TBServer } from '../../../service/TextbookService';
 import CCUtil from '../../../util/CCUtil';
 import { SmallMonsterModel } from '../../common/SmallMonsterModel';
 import { MonsterModel } from '../common/MonsterModel';
@@ -91,7 +92,10 @@ export class BaseModeView extends Component {
                 this._smallMonsters.push(monster);
             }
         } else { //教材单词关卡
-
+            this._monster = instantiate(this.monsterModel);
+            this.monster.addChild(this._monster);
+            let monsterModel = this._monster.getComponent(MonsterModel);
+            monsterModel.init("spine/TextbookVocabulary/" + "10018");
         }
     }
 
@@ -116,6 +120,15 @@ export class BaseModeView extends Component {
 
         } else {
             //教材关卡
+            let levelData:BookLevelConfig = this._levelData as BookLevelConfig;
+            let data:ReportResultModel = {
+                type_name:levelData.type_name,
+                book_name:levelData.book_name,
+                grade:levelData.grade,
+                unit:levelData.unit,
+                game_mode:levelData.game_mode,
+            }
+            TBServer.reqReportResult(data);
         }
     }
 
@@ -141,7 +154,10 @@ export class BaseModeView extends Component {
                         resolve(true);
                     }
                 } else {
-                    resolve(true);
+                    this._monster.getComponent(MonsterModel).inHit().then(() => {
+                        resolve(true);
+                    });
+                    // resolve(true);
                 }
             });
         });

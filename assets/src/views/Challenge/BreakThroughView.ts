@@ -25,7 +25,10 @@ const { ccclass, property } = _decorator;
 //学习模式(0导学 3词意 7全拼）
 export enum LearnGameModel {
     Tutoring=0,
+    Translate = 1,
+    Practice = 2,
     WordMeaning=3,
+    Reed = 4,
     AllSpelledOut=7,
 }
 
@@ -74,18 +77,34 @@ export class BreakThroughView extends BaseView {
         TBServer.reqUnitListStatus(this._bookData);
     }
     onEnterIsland(data:LevelConfig){
-    
+        
+        switch (this._curUnitStatus.game_mode) {
+            case LearnGameModel.Tutoring:
+                this.gotoTutoring(data);
+                break;
+        
+            default:
+                break;
+        }
+
+        
+    }
+    /**进入学 */
+    gotoTutoring(data:LevelConfig){
         ViewsManager.instance.showView(PrefabType.StudyModeView, (node: Node) => {
-            let levelData = DataMgr.instance.getAdvLevelConfig(data.big_id, data.small_id);
             let bookLevelData:BookLevelConfig = {
                 grade:this._curUnitStatus.grade,
                 unit:this._curUnitStatus.unit,
                 type_name:this._curUnitStatus.type_name,
                 game_mode:this._curUnitStatus.game_mode,
+                book_name:this._curUnitStatus.book_name
             }
-            node.getComponent(StudyModeView).initData(this._curUnitStatus.data, levelData);
+            console.log("onEnterIsland_______",this._curUnitStatus);
+            
+            node.getComponent(StudyModeView).initData(this._curUnitStatus.data, bookLevelData);
         });
     }
+
     onUnitStatus(data:UnitStatusData){
         console.log("onUnitStatus",data);
         this._curUnitStatus = data;
@@ -94,7 +113,10 @@ export class BreakThroughView extends BaseView {
         let posx = content_size.width / 2 + node_size.width / 2;
         this._rightChallenge.node.setPosition(posx,0,0);
         const removedString = data.unit.replace("Unit ", "").trim();
-        let param:MapLevelData = {small_id:parseInt(removedString), big_id:1,micro_id:parseInt(removedString)}
+        let param:MapLevelData = {small_id:parseInt(removedString), 
+            big_id:1,
+            micro_id:parseInt(removedString),
+            game_modes:"word"}
         this._rightChallenge.openView(param);
         // this._rightChallenge.node.active = true;
         // tween(this._rightChallenge.node).by(0.3,{position:new Vec3(-node_size.width,0,0)}).start();
@@ -141,14 +163,6 @@ export class BreakThroughView extends BaseView {
             this._rightChallenge = node.getComponent(rightPanelchange);
             let posx = content_size.width / 2 + node_size.width / 2;
             node.setPosition(posx,0,0);
-            // let widgetCom = node.getComponent(Widget);
-            // if(!isValid(widgetCom)){
-            //     widgetCom = node.addComponent(Widget);
-            //     widgetCom.isAlignRight = true;
-            //     widgetCom.isAlignBottom= true;
-            // }
-            // widgetCom.bottom = 68.297;
-            // widgetCom.right = -12.355;
         })
     }
 
