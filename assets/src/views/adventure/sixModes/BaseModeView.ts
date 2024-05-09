@@ -153,7 +153,7 @@ export class BaseModeView extends Component {
             let targetTranform = target.parent.getComponent(UITransform);
             let petTransform = this.petContainer.getComponent(UITransform);
             let targetpos = petTransform.convertToNodeSpaceAR(targetTranform.convertToWorldSpaceAR(new Vec3(0, 0, 0)));
-            tween(this._pet).to(0.5, { position: new Vec3(targetpos.x - 600, targetpos.y, targetpos.z) }).call(() => {
+            tween(this._pet).to(0.5, { position: new Vec3(targetpos.x - 650, targetpos.y, targetpos.z) }).call(() => {
                 this._pet.getComponent(PetModel).hit().then(() => {
                     tween(this._pet).to(0.5, { position: petPos }).start();
                     resolve(true);

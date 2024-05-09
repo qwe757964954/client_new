@@ -22,6 +22,7 @@ export const InterfacePath = {
     Island_Status: "3100",  // 大冒险岛屿状态
     Island_Progress: "3101",  // 大冒险岛屿进度
     WordGame_Words: "3102",  // 获取大冒险单词
+    Adventure_Result: "3104",  // 大冒险结果提交
     /***********************************************选择词书 begin*********************************************/
     Classification_BookStatus: "3011", //我的词书-列表
     Classification_BookAdd: "3013", //我的词书-添加词书

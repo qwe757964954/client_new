@@ -62,3 +62,13 @@ export class c2sClassificationWord {
     command_id: string = InterfacePath.Classification_Word;
     Word: string;
 }
+
+//大冒险结果提交
+export class c2sAdventureResult {
+    command_id: string = InterfacePath.Adventure_Result;
+    big_id: number;
+    small_id: number;
+    micro_id: number;
+    game_mode: number;
+    cost_time: number;
+}
