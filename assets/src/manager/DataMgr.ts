@@ -1,4 +1,5 @@
 import { TextConfig } from "../config/TextConfig";
+import { MapLevelData } from "../models/AdventureModel";
 import { ToolUtil } from "../util/ToolUtil";
 import { LoadManager } from "./LoadManager";
 
@@ -78,14 +79,15 @@ export class AdvLevelConfig {
     monsterName: string;
     monsterAni: string;
     miniMonsterAni: string;
-    gameMode: number;
+    mapLevelData: MapLevelData;
 }
 //教材单词关卡配置
 export class BookLevelConfig {
     grade: string;
     unit: string;
     type_name: string;
-    game_mode: number
+    game_mode: number;
+    book_name:string;
 }
 
 

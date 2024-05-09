@@ -16,6 +16,7 @@ import { TransitionView } from '../common/TransitionView';
 import { BaseModeView } from './BaseModeView';
 import { WordSplitItem } from './items/WordSplitItem';
 import { WordMeaningView } from './WordMeaningView';
+import { GameMode } from '../../../models/AdventureModel';
 const { ccclass, property } = _decorator;
 
 /**学习模式页面 何存发 2024年4月15日15:38:41 */
@@ -62,12 +63,9 @@ export class StudyModeView extends BaseModeView {
     protected _monster: Node = null; //主怪动画节点
 
     protected _nodePool: NodePool = new NodePool("wordSplitItem");
-    start() {
-        this.initRole(); //初始化角色
-        this.initPet(); //初始化精灵
-    }
     onLoad(): void {
         this.initEvent();
+        this.gameMode = GameMode.Study;
     }
 
     async initData(wordsdata: UnitWordModel[], levelData: any) {
@@ -222,25 +220,27 @@ export class StudyModeView extends BaseModeView {
                 this._rightNum++;
                 this.attackMonster().then(() => {
                     if (this._wordIndex == this._wordsData.length) {
-                        console.log('学习完成,跳转词意模式');
-                        this.monsterEscape().then(() => {
-                            ViewsManager.instance.showView(PrefabType.TransitionView, (node: Node) => {
-                                let wordData = JSON.parse(JSON.stringify(this._wordsData));
-                                let levelData = JSON.parse(JSON.stringify(this._levelData));
-                                node.getComponent(TransitionView).setTransitionCallback(() => {
-                                    ViewsManager.instance.showView(PrefabType.WordMeaningView, (node: Node) => {
-                                        node.getComponent(WordMeaningView).initData(wordData, levelData);
-                                        ViewsManager.instance.closeView(PrefabType.StudyModeView);
-                                    });
-                                });
-                            });
-                        });
+                        this.monsterEscape();
                     } else {
                         this.showCurrentWord();
                     }
                 });
             });
         }, 0.2);
+    }
+
+    protected modeOver(): void {
+        console.log('学习完成,跳转词意模式');
+        ViewsManager.instance.showView(PrefabType.TransitionView, (node: Node) => {
+            let wordData = JSON.parse(JSON.stringify(this._wordsData));
+            let levelData = JSON.parse(JSON.stringify(this._levelData));
+            node.getComponent(TransitionView).setTransitionCallback(() => {
+                ViewsManager.instance.showView(PrefabType.WordMeaningView, (node: Node) => {
+                    node.getComponent(WordMeaningView).initData(wordData, levelData);
+                    ViewsManager.instance.closeView(PrefabType.StudyModeView);
+                });
+            });
+        });
     }
 
     showWordDetail() {

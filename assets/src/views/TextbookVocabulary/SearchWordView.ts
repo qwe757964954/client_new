@@ -102,7 +102,7 @@ export class SearchWordView extends Component {
 
     /**向historyList里添加一项内容*/
     addHitstoryListItem(data: any) {
-        console.log("addHitstoryList data:", data);
+        //console.log("addHitstoryList data:", data);
         if (!data) {
             return;
         }

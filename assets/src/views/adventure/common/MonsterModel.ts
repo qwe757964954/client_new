@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, sp } from 'cc';
+import { _decorator, Component, sp } from 'cc';
 import { LoadManager } from '../../../manager/LoadManager';
 const { ccclass, property } = _decorator;
 
@@ -34,6 +34,17 @@ export class MonsterModel extends Component {
                 resolve(true);
             })
             this.monster.setAnimation(0, 'injury', false);
+        });
+    }
+
+    inHit(){
+        return new Promise((resolve) => {
+            this.monster.setCompleteListener(() => {
+                this.monster.setCompleteListener(null);
+                this.monster.setAnimation(0, 'idle', true);
+                resolve(true);
+            })
+            this.monster.setAnimation(0, 'hit', false);
         });
     }
 

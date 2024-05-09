@@ -22,6 +22,7 @@ export const InterfacePath = {
     Island_Status: "3100",  // 大冒险岛屿状态
     Island_Progress: "3101",  // 大冒险岛屿进度
     WordGame_Words: "3102",  // 获取大冒险单词
+    Adventure_Result: "3104",  // 大冒险结果提交
     /***********************************************选择词书 begin*********************************************/
     Classification_BookStatus: "3011", //我的词书-列表
     Classification_BookAdd: "3013", //我的词书-添加词书
@@ -44,6 +45,7 @@ export const InterfacePath = {
     Classification_TypeNameStatus: "Classification.TypeNameStatus", //大分类信息
     Classification_BookAwardList: "3006", // 教材单词课本奖励列表
     Classification_CurrentBook: "3019", // 当前词书信息
+    Classification_ReportResult: "3023", // 上报消息
     Classification_RecBookAward: "Classification.RecBookAward", //教材单词领取课本单词奖励
     Classification_SoundCommit: "Classification.SoundCommit", //教材单词语音评测上报
     Classification_WordSentence: "Classification.WordSentence", //通过单词获取句子

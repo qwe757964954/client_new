@@ -123,7 +123,7 @@ export class WorldMapView extends Component {
         console.log('获取单词', data);
         let gameMode = this._currentLevelData.current_mode;
         let levelData = DataMgr.instance.getAdvLevelConfig(this._currentIslandID, this._currentLevelData.small_id);
-        levelData.gameMode = this._currentLevelData.current_mode;
+        levelData.mapLevelData = this._currentLevelData;
         switch (gameMode) {
             case GameMode.Study:
                 ViewsManager.instance.showView(PrefabType.StudyModeView, (node: Node) => {

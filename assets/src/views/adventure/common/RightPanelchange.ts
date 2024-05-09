@@ -68,6 +68,7 @@ export class rightPanelchange extends Component {
     openView(param: MapLevelData = null) {
         console.log('接收到的参数=', param);
         this._data = param;
+
         this.updateView();
         this.node.active = true
         let node_size = this.node.getComponent(UITransform);
@@ -88,7 +89,13 @@ export class rightPanelchange extends Component {
             this.monsterNode.addChild(this._monsterAni);
         }
         let monsterModel = this._monsterAni.getComponent(MonsterModel);
-        monsterModel.init("spine/monster/adventure/" + levelData.monsterAni);
+        if(this._data.game_modes && this._data.game_modes === "word"){
+            monsterModel.init("spine/TextbookVocabulary/" + "10018");
+            this.monsterNameTxt.string = "缝合怪";
+        }else{
+            monsterModel.init("spine/monster/adventure/" + levelData.monsterAni);
+        }
+        
         // LoadManager.loadSprite("adventure/monster/" + this._data.bigId + "-" + this._data.smallId + "/spriteFrame", this.monster.getComponent(Sprite));
     }
 

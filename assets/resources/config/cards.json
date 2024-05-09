@@ -1,0 +1,146 @@
+{
+    "1": {
+        "Level": "S",
+        "CardImg": "1-1",
+        "CardNo": 1001,
+        "CardName": "绿龙",
+        "Type": 0,
+        "Cost": 2
+    },
+    "2": {
+        "Level": "S",
+        "CardImg": "1-2",
+        "CardNo": 1002,
+        "CardName": "红龙",
+        "Type": 0,
+        "Cost": 3
+    },
+    "3": {
+        "Level": "S",
+        "CardImg": "1-3",
+        "CardNo": 1003,
+        "CardName": "黄龙",
+        "Type": 1,
+        "Cost": 2
+    },
+    "4": {
+        "Level": "S",
+        "CardImg": "1-4",
+        "CardNo": 1004,
+        "CardName": "蓝龙",
+        "Type": 1,
+        "Cost": 4
+    },
+    "5": {
+        "Level": "S",
+        "CardImg": "1-5",
+        "CardNo": 1005,
+        "CardName": "火龙",
+        "Type": 1,
+        "Cost": 5
+    },
+    "6": {
+        "Level": "S",
+        "CardImg": "1-6",
+        "CardNo": 1006,
+        "CardName": "魔法电龙",
+        "Type": 2,
+        "Cost": 1
+    },
+    "7": {
+        "Level": "A",
+        "CardImg": "1-7",
+        "CardNo": 1007,
+        "CardName": "红胖猪",
+        "Type": 0,
+        "Cost": 3
+    },
+    "8": {
+        "Level": "A",
+        "CardImg": "1-8",
+        "CardNo": 1008,
+        "CardName": "独角兽",
+        "Type": 3,
+        "Cost": 1
+    },
+    "9": {
+        "Level": "A",
+        "CardImg": "1-9",
+        "CardNo": 1009,
+        "CardName": "紫独角兽",
+        "Type": 3,
+        "Cost": 3
+    },
+    "10": {
+        "Level": "A",
+        "CardImg": "1-10",
+        "CardNo": 1010,
+        "CardName": "草系独角兽",
+        "Type": 2,
+        "Cost": 2
+    },
+    "11": {
+        "Level": "A",
+        "CardImg": "1-11",
+        "CardNo": 1011,
+        "CardName": "水系独角兽",
+        "Type": 2,
+        "Cost": 1
+    },
+    "12": {
+        "Level": "A",
+        "CardImg": "1-12",
+        "CardNo": 1012,
+        "CardName": "暴怒独角兽",
+        "Type": 3,
+        "Cost": 3
+    },
+    "13": {
+        "Level": "B",
+        "CardImg": "1-13",
+        "CardNo": 1013,
+        "CardName": "食人花",
+        "Type": 0,
+        "Cost": 1
+    },
+    "14": {
+        "Level": "B",
+        "CardImg": "1-14",
+        "CardNo": 1014,
+        "CardName": "向日葵",
+        "Type": 2,
+        "Cost": 1
+    },
+    "15": {
+        "Level": "B",
+        "CardImg": "1-15",
+        "CardNo": 1015,
+        "CardName": "忍者草",
+        "Type": 3,
+        "Cost": 2
+    },
+    "16": {
+        "Level": "C",
+        "CardImg": "1-16",
+        "CardNo": 1016,
+        "CardName": "斗蓬草",
+        "Type": 2,
+        "Cost": 2
+    },
+    "17": {
+        "Level": "C",
+        "CardImg": "1-17",
+        "CardNo": 1017,
+        "CardName": "凶兽草",
+        "Type": 3,
+        "Cost": 3
+    },
+    "18": {
+        "Level": "C",
+        "CardImg": "1-18",
+        "CardNo": 1018,
+        "CardName": "狂怒闪电草",
+        "Type": 2,
+        "Cost": 5
+    }
+}
