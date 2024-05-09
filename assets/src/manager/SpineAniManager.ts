@@ -324,17 +324,20 @@ export class SpineAniManager extends BaseControll {
 					skeleton["realUpdateAnimation"](dt);
 				}
 			}
+			// skeleton.clearAnimations();
+			// skeleton.invalidAnimationCache();
+			// skeleton.clearTracks();
 			skeleton.premultipliedAlpha = premultipliedAlpha;
 			skeleton.setAnimation(trackIndex, name, loop);
 		}
-		if (!skinData) {
-			console.log("==============再次加载============")
+		// if (!skinData) {
+		// 	console.log("==============再次加载============")
 			this.preLoadSkinAniDir(resData.bundle, resData.path, null, () => {
 				doCallback();
 			})
-		} else {
-			doCallback();
-		}
+		// } else {
+		// 	doCallback();
+		// }
 	}
 
 }

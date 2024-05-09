@@ -17,19 +17,25 @@ export class ChallengeLeftView extends Component {
     public sk_monster:Node = null;
 
     onLoad(): void {
+        
+    }
+
+    start() {
+        this.loadMonsterSkelton();
+        
+    }
+
+    loadMonsterSkelton(){
+        this.sk_monster.removeAllChildren();
         let spinePrams:inf_SpineAniCreate = {
             resConf:GameRes.Spine_Stitches,
             aniName:"idle",
             parentNode:this.sk_monster,
             isLoop:true,
-            isPremult:true,
+            // isPremult:true,
             toPos:new Vec3(34.822,-258.273)
         }
         EventMgr.dispatch(EventType.Sys_Ani_Play,spinePrams);
-    }
-
-    start() {
-
     }
 
     update(deltaTime: number) {
