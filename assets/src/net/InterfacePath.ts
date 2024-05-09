@@ -8,6 +8,8 @@ export const InterfacePath = {
     c2sBuildingEdit: "2007",//建筑修改
     c2sLandUpdate: "2008",//地块更新
 
+    s2cAccountLogout: "10001",//登录被顶号返回
+
     /***********************************以上是新消息********************************************/
     Account_Step: "Account.Step",
     Account_Info: "Account.Info",
@@ -17,7 +19,9 @@ export const InterfacePath = {
     Account_StudyWord: "Account.StudyWord",  // 学生通关单词
 
     //大冒险学习模式相关
-    WordGame_Words: "WordGame.Words",  // 获取单词
+    Island_Status: "3100",  // 大冒险岛屿状态
+    Island_Progress: "3101",  // 大冒险岛屿进度
+    WordGame_Words: "3102",  // 获取大冒险单词
     /***********************************************选择词书 begin*********************************************/
     Classification_BookStatus: "3011", //我的词书-列表
     Classification_BookAdd: "3013", //我的词书-添加词书

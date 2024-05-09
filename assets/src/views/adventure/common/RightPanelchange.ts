@@ -4,13 +4,13 @@ import { DataMgr } from '../../../manager/DataMgr';
 import CCUtil from '../../../util/CCUtil';
 import EventManager from '../../../util/EventManager';
 import { MonsterModel } from './MonsterModel';
+import { MapLevelData } from '../../../models/AdventureModel';
 const { ccclass, property } = _decorator;
 
 export interface LevelConfig {
-    smallId:number;
-    bigId:number;
+    smallId: number;
+    bigId: number;
 }
-
 /**右边选择关卡界面 何存发 2024年4月12日14:21:29 */
 @ccclass('rightPanel')
 export class rightPanelchange extends Component {
@@ -31,7 +31,7 @@ export class rightPanelchange extends Component {
     @property({ type: Prefab, tooltip: "怪物预制" })
     public monsterPrefab: Prefab = null;
 
-    private _data: LevelConfig = null;
+    private _data: MapLevelData = null;
     private _eveId: string;
     private _monsterAni: Node = null;
 
@@ -65,13 +65,13 @@ export class rightPanelchange extends Component {
 
     }
     /** 打开界面 */
-    openView(param: LevelConfig = null) {
+    openView(param: MapLevelData = null) {
         console.log('接收到的参数=', param);
         this._data = param;
         this.updateView();
         this.node.active = true
         let node_size = this.node.getComponent(UITransform);
-        tween(this.node).by(0.3,{position: new Vec3(-node_size.width,0,0)}).call(() => {
+        tween(this.node).by(0.3, { position: new Vec3(-node_size.width, 0, 0) }).call(() => {
             // this.node.active = false
         }).start();
         // tween(this.node).to(0.3, { position: v3(178, 100, 0) }).call(() => {
@@ -80,8 +80,8 @@ export class rightPanelchange extends Component {
     }
 
     updateView() {
-        let levelData = DataMgr.instance.getAdvLevelConfig(+this._data.bigId, +this._data.smallId);
-        this.levelTxt.string = this._data.bigId + '-' + this._data.smallId;
+        let levelData = DataMgr.instance.getAdvLevelConfig(+this._data.big_id, +this._data.small_id);
+        this.levelTxt.string = this._data.small_id + '-' + this._data.micro_id;
         this.monsterNameTxt.string = levelData.monsterName;
         if (!this._monsterAni) {
             this._monsterAni = instantiate(this.monsterPrefab);
@@ -94,7 +94,7 @@ export class rightPanelchange extends Component {
 
     hideView() {
         let node_size = this.node.getComponent(UITransform);
-        tween(this.node).by(0.3,{position: new Vec3(node_size.width,0,0)}).call(() => {
+        tween(this.node).by(0.3, { position: new Vec3(node_size.width, 0, 0) }).call(() => {
             this.node.active = false
         }).start();
     }

@@ -171,19 +171,4 @@ export class c2sAccountStudyWord {
     Path: string = InterfacePath.Account_StudyWord;
 }
 
-//单词大冒险获取单词数据
-export class c2sWordGameWords {
-    Path: string = InterfacePath.WordGame_Words;
-    BigId: number;
-    SmallId: number;
-    MicroId: number;
-    GameMode: number;
-}
-
-//获取单词详情
-export class c2sClassificationWord {
-    Path: string = InterfacePath.Classification_Word;
-    Word: string;
-}
-
 /*****************************************************************************/
