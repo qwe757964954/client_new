@@ -1,9 +1,10 @@
 import { _decorator, error, instantiate, Node, Prefab, UITransform } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
-import { DataMgr } from '../../manager/DataMgr';
+import { BookLevelConfig, DataMgr } from '../../manager/DataMgr';
 import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
+import { MapLevelData } from '../../models/AdventureModel';
 import { ReqUnitStatusParam, UnitListItemStatus, UnitStatusData } from '../../models/TextbookModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
@@ -13,7 +14,7 @@ import { StudyModeView } from '../adventure/sixModes/StudyModeView';
 import { NavTitleView } from '../common/NavTitleView';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { ScrollMapView } from './ScrollMapView';
-import { BookUnitModel, TextbookChallengeView } from './TextbookChallengeView';
+import { BookUnitModel } from './TextbookChallengeView';
 const { ccclass, property } = _decorator;
 
 // export enum ChangeHeadTypeEnum {
@@ -73,9 +74,10 @@ export class BreakThroughView extends BaseView {
         TBServer.reqUnitListStatus(this._bookData);
     }
     onEnterIsland(data:LevelConfig){
+    
         ViewsManager.instance.showView(PrefabType.StudyModeView, (node: Node) => {
-            let levelData = DataMgr.instance.getAdvLevelConfig(data.bigId, data.smallId);
-            let bookLevelData = {
+            let levelData = DataMgr.instance.getAdvLevelConfig(data.big_id, data.small_id);
+            let bookLevelData:BookLevelConfig = {
                 grade:this._curUnitStatus.grade,
                 unit:this._curUnitStatus.unit,
                 type_name:this._curUnitStatus.type_name,
@@ -84,7 +86,6 @@ export class BreakThroughView extends BaseView {
             node.getComponent(StudyModeView).initData(this._curUnitStatus.data, levelData);
         });
     }
-
     onUnitStatus(data:UnitStatusData){
         console.log("onUnitStatus",data);
         this._curUnitStatus = data;
@@ -93,7 +94,7 @@ export class BreakThroughView extends BaseView {
         let posx = content_size.width / 2 + node_size.width / 2;
         this._rightChallenge.node.setPosition(posx,0,0);
         const removedString = data.unit.replace("Unit ", "").trim();
-        let param:any = {smallId:parseInt(removedString), bigId:1}
+        let param:MapLevelData = {small_id:parseInt(removedString), big_id:1,micro_id:parseInt(removedString)}
         this._rightChallenge.openView(param);
         // this._rightChallenge.node.active = true;
         // tween(this._rightChallenge.node).by(0.3,{position:new Vec3(-node_size.width,0,0)}).start();
@@ -108,11 +109,12 @@ export class BreakThroughView extends BaseView {
     initNavTitle(){
         ViewsManager.addNavigation(this.top_layout,0,0).then((navScript: NavTitleView) => {
             navScript.updateNavigationProps(`${this._bookData.book_name}${this._bookData.grade}`,()=>{
-                ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
-                    let itemScript:TextbookChallengeView = node.getComponent(TextbookChallengeView);
-                    itemScript.initData(this._bookData);
-                    ViewsManager.instance.closeView(PrefabType.BreakThroughView);
-                });
+                ViewsManager.instance.closeView(PrefabType.BreakThroughView);
+                // ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
+                //     let itemScript:TextbookChallengeView = node.getComponent(TextbookChallengeView);
+                //     itemScript.initData(this._bookData);
+                //     // ViewsManager.instance.closeView(PrefabType.BreakThroughView);
+                // });
             });
         });
     }

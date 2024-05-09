@@ -83,6 +83,7 @@ export class BaseModeView extends Component {
     }
     async initMonster() {
         //单词大冒险关卡
+        console.log("initMonster......",this._levelData);
         if (this._levelData.hasOwnProperty('islandId')) {
             let lvData = this._levelData as AdvLevelConfig;
             this._monster = instantiate(this.monsterModel);
