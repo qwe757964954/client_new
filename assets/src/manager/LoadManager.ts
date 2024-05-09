@@ -58,6 +58,8 @@ export class LoadManager {
     private static updateObjAsset(obj: Component, assets: Asset, resolve: (value?: any) => void, reject: (value?: any) => void) {
         //如果父节点不存或已经被销毁则直接返回
         if (!obj || !isValid(obj, true)) {
+            assets.addRef();
+            LoadManager.releaseAsset(assets);
             reject(new Error("parent is null or invalid"));
             return;
         }
@@ -144,6 +146,8 @@ export class LoadManager {
                 }
                 //如果父节点不存或已经被销毁则直接返回
                 if (!parent || !isValid(parent, true)) {
+                    assets.addRef();
+                    LoadManager.releaseAsset(assets);
                     reject(new Error("parent is null or invalid"));
                     return;
                 }

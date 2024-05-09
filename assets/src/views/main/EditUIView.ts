@@ -135,7 +135,9 @@ export class EditUIView extends Component {
             tmpAry.push(children[i]);
         }
         for (let i = 0; i < tmpAry.length; i++) {
-            this.scrollContent.removeChild(tmpAry[i]);
+            tmpAry[i].destroy();
+            // let tmp = tmpAry[i];
+            // this.scrollContent.removeChild(tmp);
         }
         //第一次窄屏幕时，显示位置不对
         if (this._isFirst) {
