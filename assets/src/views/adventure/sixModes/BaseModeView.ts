@@ -1,17 +1,17 @@
 import { _decorator, Button, Component, instantiate, Node, Prefab, Sprite, tween, UITransform, Vec3 } from 'cc';
 import { AdvLevelConfig, BookLevelConfig } from '../../../manager/DataMgr';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
+import { s2cAdventureResult } from '../../../models/AdventureModel';
 import { PetModel } from '../../../models/PetModel';
 import { RoleBaseModel } from '../../../models/RoleBaseModel';
 import { ReportResultModel, UnitWordModel } from '../../../models/TextbookModel';
+import { InterfacePath } from '../../../net/InterfacePath';
+import { ServiceMgr } from '../../../net/ServiceManager';
 import { TBServer } from '../../../service/TextbookService';
 import CCUtil from '../../../util/CCUtil';
+import EventManager from '../../../util/EventManager';
 import { SmallMonsterModel } from '../../common/SmallMonsterModel';
 import { MonsterModel } from '../common/MonsterModel';
-import { ServiceMgr } from '../../../net/ServiceManager';
-import EventManager from '../../../util/EventManager';
-import { InterfacePath } from '../../../net/InterfacePath';
-import { s2cAdventureResult } from '../../../models/AdventureModel';
 const { ccclass, property } = _decorator;
 
 /**学习模式公共部分 */
@@ -140,7 +140,7 @@ export class BaseModeView extends Component {
                 book_name:levelData.book_name,
                 grade:levelData.grade,
                 unit:levelData.unit,
-                game_mode:levelData.game_mode,
+                game_mode:this.gameMode,
             }
             TBServer.reqReportResult(data);
         }
