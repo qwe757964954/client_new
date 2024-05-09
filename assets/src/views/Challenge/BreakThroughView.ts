@@ -1,4 +1,4 @@
-import { _decorator, error, instantiate, Node, Prefab, UITransform } from 'cc';
+import { _decorator, error, instantiate, Layers, Node, Prefab, UITransform } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { BookLevelConfig, DataMgr } from '../../manager/DataMgr';
@@ -9,6 +9,7 @@ import { ReqUnitStatusParam, UnitListItemStatus, UnitStatusData } from '../../mo
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
+import { NodeUtil } from '../../util/NodeUtil';
 import { LevelConfig, rightPanelchange } from '../adventure/common/RightPanelchange';
 import { StudyModeView } from '../adventure/sixModes/StudyModeView';
 import { NavTitleView } from '../common/NavTitleView';
@@ -40,7 +41,11 @@ export class BreakThroughView extends BaseView {
     public content_layout: Node = null;
 
     private _rightChallenge:rightPanelchange = null;
-    private _scrollMap:ScrollMapView = null;
+
+    @property(Node)
+    public scrollMapNode: Node = null;
+
+    public _scrollMap:ScrollMapView = null;
 
     private _bookData:BookUnitModel = null;
 
@@ -51,12 +56,11 @@ export class BreakThroughView extends BaseView {
     }
 
     initUI(){
-        
+        this.initScrollMap();
         this.initNavTitle();
         this.initAmout();
         this.initRightChange();
         DataMgr.instance.getAdventureLevelConfig();
-        this.initScrollMap();
     }
 
     initData(data:BookUnitModel){
@@ -100,8 +104,6 @@ export class BreakThroughView extends BaseView {
                 game_mode:this._curUnitStatus.game_mode,
                 book_name:this._curUnitStatus.book_name
             }
-            console.log("onEnterIsland_______",this._curUnitStatus);
-            
             node.getComponent(StudyModeView).initData(this._curUnitStatus.data, bookLevelData);
         });
     }
@@ -113,6 +115,7 @@ export class BreakThroughView extends BaseView {
         let node_size = this._rightChallenge.node.getComponent(UITransform);
         let posx = content_size.width / 2 + node_size.width / 2;
         this._rightChallenge.node.setPosition(posx,0,0);
+        this._rightChallenge.node.active = true;
         const removedString = data.unit.replace("Unit ", "").trim();
         let param:MapLevelData = {small_id:parseInt(removedString), 
             big_id:1,
@@ -159,6 +162,7 @@ export class BreakThroughView extends BaseView {
             }
             let node = instantiate(prefab);
             this.content_layout.addChild(node);
+            NodeUtil.setLayerRecursively(node,Layers.Enum.UI_2D);
             let content_size = this.content_layout.getComponent(UITransform);
             let node_size = node.getComponent(UITransform);
             this._rightChallenge = node.getComponent(rightPanelchange);
@@ -170,28 +174,20 @@ export class BreakThroughView extends BaseView {
 
     /**初始化地图模块 */
     initScrollMap(){
-        ResLoader.instance.load(`prefab/${PrefabType.ScrollMapView.path}`, Prefab, (err: Error | null, prefab: Prefab) => {
-            if (err) {
-                error && console.error(err);
-                return;
+        this._scrollMap = this.scrollMapNode.getComponent(ScrollMapView);
+        this._scrollMap.setClickCallback((unit:string) =>{
+            console.log("unit",unit);
+            let reqParam:ReqUnitStatusParam = {
+                type_name:this._bookData.type_name,
+                book_name:this._bookData.book_name,
+                grade:this._bookData.grade,
+                unit:unit,
+                game_mode:LearnGameModel.Tutoring
             }
-            let node = instantiate(prefab);
-            this.content_layout.addChild(node);
-            this._scrollMap = node.getComponent(ScrollMapView);
-            this._scrollMap.setClickCallback((unit:string) =>{
-                console.log("unit",unit);
-                let reqParam:ReqUnitStatusParam = {
-                    type_name:this._bookData.type_name,
-                    book_name:this._bookData.book_name,
-                    grade:this._bookData.grade,
-                    unit:unit,
-                    game_mode:LearnGameModel.Tutoring
-                }
-                TBServer.reqUnitStatus(reqParam);
-                
-            })
-            this.getUnitListStatus();
-        });
+            TBServer.reqUnitStatus(reqParam);
+            
+        })
+        this.getUnitListStatus();
     }
 
     
