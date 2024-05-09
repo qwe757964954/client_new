@@ -32,8 +32,8 @@ export class LandEditCtl extends MapBaseCtl {
     }
     /**地块更新返回 */
     onLandUpdate(data: s2cLandUpdate) {
-        if (200 != data.Code) {
-            ViewsManager.showAlert(data.Msg);
+        if (200 != data.code) {
+            ViewsManager.showAlert(data.msg);
             return;
         }
         this._selectLand = null;

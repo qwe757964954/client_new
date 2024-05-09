@@ -111,23 +111,18 @@ class NetManager {
         }
         if (obj.command_id) {
             console.log("onRecvMsg id", obj.command_id, obj);
-            let baseData = obj.data;
-            if (baseData) {
-                let outData = baseData.Data;
-                if (outData) {
-                    if (Array.isArray(outData)) {
-                        baseData.data = outData;
-                        EventMgr.emit(obj.command_id, baseData);
-                    } else {
-                        outData.Code = baseData.Code;
-                        outData.Msg = baseData.Msg;
-                        EventMgr.emit(obj.command_id, outData);
-                    }
+
+            let outData = obj.data;
+            if (outData) {
+                if (Array.isArray(outData)) {
+                    EventMgr.emit(obj.command_id, obj);
                 } else {
-                    EventMgr.emit(obj.command_id, baseData);
+                    outData.code = obj.code;
+                    outData.msg = obj.msg;
+                    EventMgr.emit(obj.command_id, outData);
                 }
             } else {
-                console.log("onRecvMsg no data");
+                EventMgr.emit(obj.command_id, obj);
             }
         } else {
             console.log("onRecvMsg no path", obj);

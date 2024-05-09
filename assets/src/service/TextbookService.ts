@@ -45,8 +45,8 @@ export default class _TextbookService extends BaseControll {
             return
         }
         let myTextbookList: MyTextbookListStatus = {
-            Code: data.Code,
-            Msg: data.MSg,
+            code: data.Code,
+            msg: data.MSg,
             data: [],
         }
         for (let index = 0; index < data.data.length; index++) {
@@ -146,8 +146,8 @@ export default class _TextbookService extends BaseControll {
             return
         }
         let bookLiskData: BookListItemData = {
-            Code: data.Code,
-            Msg: data.Msg,
+            code: data.Code,
+            msg: data.Msg,
             dataArr: []
         };
         for (let index = 0; index < data.data.length; index++) {
@@ -174,8 +174,8 @@ export default class _TextbookService extends BaseControll {
             return;
         }
         let schoolBookList: SchoolBookListItemData = {
-            Code: data.Code,
-            Msg: data.Msg,
+            code: data.Code,
+            msg: data.Msg,
             data: []
         }
         for (let index = 0; index < data.data.length; index++) {
@@ -200,8 +200,8 @@ export default class _TextbookService extends BaseControll {
             return;
         }
         let schoolGradeList: SchoolBookListGradeItemData = {
-            Code: data.Code,
-            Msg: data.Msg,
+            code: data.Code,
+            msg: data.Msg,
             data: []
         }
         for (let index = 0; index < data.data.length; index++) {
@@ -228,8 +228,8 @@ export default class _TextbookService extends BaseControll {
             return;
         }
         let unitListStatus: UnitListItemStatus = {
-            Code: data.Code,
-            Msg: data.Msg,
+            code: data.Code,
+            msg: data.Msg,
             data: []
         }
         for (let index = 0; index < data.data.length; index++) {
@@ -276,8 +276,8 @@ export default class _TextbookService extends BaseControll {
             return;
         }
         let planData: BookPlanDetail = {
-            Code: data.Code,
-            Msg: data.Msg,
+            code: data.Code,
+            msg: data.Msg,
             book_name: data.book_name,
             grade: data.grade,
             id: data.id,
@@ -304,8 +304,8 @@ export default class _TextbookService extends BaseControll {
             return;
         }
         let unitStatus: UnitStatusData = {
-            Code: data.Code,
-            Msg: data.Msg,
+            code: data.Code,
+            msg: data.Msg,
             flag: data.flag,
             game_mode: data.game_mode,
             grade: data.grade,
@@ -342,8 +342,8 @@ export default class _TextbookService extends BaseControll {
             return;
         }
         let bookAwardData: BookAwardListModel = {
-            Code: data.Code,
-            Msg: data.Msg,
+            code: data.Code,
+            msg: data.Msg,
             study_num: data.study_num,
             study_word_num: data.study_word_num,
             total_num: data.total_num,
