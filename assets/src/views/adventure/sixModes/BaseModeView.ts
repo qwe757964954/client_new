@@ -182,7 +182,6 @@ export class BaseModeView extends Component {
                     this._monster.getComponent(MonsterModel).inHit().then(() => {
                         resolve(true);
                     });
-                    // resolve(true);
                 }
             });
         });
