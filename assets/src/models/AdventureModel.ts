@@ -72,3 +72,7 @@ export class c2sAdventureResult {
     game_mode: number;
     cost_time: number;
 }
+//大冒险结果提交返回
+export class s2cAdventureResult extends BaseRepPacket {
+    data: { pass_num: number };
+}

@@ -7,6 +7,10 @@ import { UnitWordModel } from '../../../models/TextbookModel';
 import CCUtil from '../../../util/CCUtil';
 import { SmallMonsterModel } from '../../common/SmallMonsterModel';
 import { MonsterModel } from '../common/MonsterModel';
+import { ServiceMgr } from '../../../net/ServiceManager';
+import EventManager from '../../../util/EventManager';
+import { InterfacePath } from '../../../net/InterfacePath';
+import { s2cAdventureResult } from '../../../models/AdventureModel';
 const { ccclass, property } = _decorator;
 
 /**学习模式公共部分 */
@@ -47,9 +51,17 @@ export class BaseModeView extends Component {
     protected _monster: Node = null; //主怪动画节点
     protected _errorNum: number = 0; //错误数量
     protected _rightNum: number = 0; //正确数量
+    protected _costTime: number = 0; //花费时间
+
+    protected _getResultEveId: string; //获取结果
+
+    private _upResultSucce: boolean = false; //上报结果成功
+
+    protected gameMode: number = 0; //游戏模式
     start() {
         this.initRole(); //初始化角色
         this.initPet(); //初始化精灵
+        this._costTime = Date.now();
     }
     onLoad(): void {
 
@@ -97,14 +109,14 @@ export class BaseModeView extends Component {
     //怪物逃跑
     monsterEscape() {
         this.reportResult();
-        return new Promise((resolve, reject) => {
-            let pos = this.monster.position;
-            let scale = this.monster.getScale();
-            this.monster.scale = new Vec3(-scale.x, scale.y, 1);
-            tween(this.monster).to(1, { position: new Vec3(pos.x + 1000, pos.y, pos.z) }).call(() => {
-                resolve(true);
-            }).start();
-        });
+        let pos = this.monster.position;
+        let scale = this.monster.getScale();
+        this.monster.scale = new Vec3(-scale.x, scale.y, 1);
+        tween(this.monster).to(1, { position: new Vec3(pos.x + 1000, pos.y, pos.z) }).call(() => {
+            if (this._upResultSucce) {
+                this.modeOver();
+            }
+        }).start();
     }
 
     //上报结果
@@ -112,10 +124,17 @@ export class BaseModeView extends Component {
         console.log("上报结果");
         let isAdventure = this._levelData.hasOwnProperty('islandId'); //是否是大冒险关卡
         if (isAdventure) { //大冒险关卡
-
+            let levelData = this._levelData as AdvLevelConfig;
+            let costTime = Date.now() - this._costTime;
+            ServiceMgr.studyService.submitAdventureResult(levelData.islandId, levelData.levelId, levelData.mapLevelData.micro_id, levelData.mapLevelData.current_mode, costTime);
         } else {
             //教材关卡
         }
+    }
+
+    //当前模式结束,跳转下一模式或结算
+    protected modeOver() {
+
     }
 
     //精灵攻击
@@ -125,6 +144,8 @@ export class BaseModeView extends Component {
             let isAdventure = this._levelData.hasOwnProperty('islandId'); //是否是大冒险关卡
             if (isAdventure) {
                 targetMonster = this._rightNum == this._wordsData.length ? this._monster : this._smallMonsters[this._rightNum - 1];
+                if (!targetMonster)
+                    targetMonster = this._monster;
             } else {
                 targetMonster = this._monster;
             }
@@ -136,7 +157,11 @@ export class BaseModeView extends Component {
                             resolve(true);
                         });
                     } else { //小怪受到攻击
-                        this._smallMonsters[this._rightNum - 1].getComponent(SmallMonsterModel).hit();
+                        if (this._smallMonsters[this._rightNum - 1]) {
+                            this._smallMonsters[this._rightNum - 1].getComponent(SmallMonsterModel).hit();
+                        } else {
+                            this._monster.getComponent(MonsterModel).injury();
+                        }
                         resolve(true);
                     }
                 } else {
@@ -162,8 +187,20 @@ export class BaseModeView extends Component {
         });
     }
 
+    //获取大冒险上报结果
+    onUpResult(data: s2cAdventureResult) {
+        console.log("大冒险上报结果", data);
+        if (data.code == 200) {
+            this._upResultSucce = true;
+        } else {
+
+        }
+    }
+
+
     protected initEvent(): void {
         CCUtil.onTouch(this.btn_close.node, this.closeView, this);
+        this._getResultEveId = EventManager.on(InterfacePath.Adventure_Result, this.onUpResult.bind(this));
     }
     protected removeEvent(): void {
         CCUtil.offTouch(this.btn_close.node, this.closeView, this);
