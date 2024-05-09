@@ -1,6 +1,6 @@
 import { EventType } from "../config/EventType";
 import { ViewsManager } from "../manager/ViewsManager";
-import { c2sClassificationWord, c2sIslandStatus, c2sWordGameWords, WordGameWordsData } from "../models/AdventureModel";
+import { c2sAdventureResult, c2sClassificationWord, c2sIslandStatus, c2sWordGameWords, WordGameWordsData } from "../models/AdventureModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
 import { BaseControll } from "../script/BaseControll";
@@ -49,5 +49,16 @@ export default class StudyService extends BaseControll {
         }
         console.log("onWordGameWords", data);
         EventManager.emit(EventType.WordGame_Words, data.data);
+    }
+
+    //单词大冒险结果提交
+    submitAdventureResult(bigId: number, smallId: number, microId: number, gameMode: number, costTime: number) {
+        let para: c2sAdventureResult = new c2sAdventureResult();
+        para.big_id = bigId;
+        para.small_id = smallId;
+        para.micro_id = microId;
+        para.game_mode = gameMode;
+        para.cost_time = costTime;
+        NetMgr.sendMsg(para);
     }
 }

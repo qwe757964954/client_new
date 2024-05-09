@@ -13,6 +13,7 @@ import { WordDetailView } from '../../common/WordDetailView';
 import { TransitionView } from '../common/TransitionView';
 import { BaseModeView } from './BaseModeView';
 import { WordPracticeView } from './WordPracticeView';
+import { GameMode } from '../../../models/AdventureModel';
 const { ccclass, property } = _decorator;
 
 /**词意模式页面*/
@@ -66,6 +67,7 @@ export class WordMeaningView extends BaseModeView {
     private _selectLock: boolean = false; //选择锁
 
     async initData(wordsdata: UnitWordModel[], levelData: any) {
+        this.gameMode = GameMode.WordMeaning;
         this.initWords(wordsdata);
         this.initEvent();
         this._levelData = levelData;
@@ -201,20 +203,7 @@ export class WordMeaningView extends BaseModeView {
                         this._wrongMode = true;
                         this.showCurrentWord();
                     } else {
-                        this.monsterEscape().then(() => {
-                            console.log('词意模式完成');
-                            ViewsManager.instance.showView(PrefabType.TransitionView, (node: Node) => {
-                                let wordData = JSON.parse(JSON.stringify(this._wordsData));
-                                let levelData = JSON.parse(JSON.stringify(this._levelData));
-                                //跳转到下一场景
-                                node.getComponent(TransitionView).setTransitionCallback(() => {
-                                    ViewsManager.instance.showView(PrefabType.WordPracticeView, (node: Node) => {
-                                        node.getComponent(WordPracticeView).initData(wordData, levelData);
-                                        ViewsManager.instance.closeView(PrefabType.WordMeaningView);
-                                    });
-                                });
-                            });
-                        });
+                        this.monsterEscape();
                     }
                 } else {
                     this.showCurrentWord();
@@ -241,6 +230,21 @@ export class WordMeaningView extends BaseModeView {
                 this.showCurrentWord();
             }, 1);
         }
+    }
+
+    protected modeOver(): void {
+        console.log('词意模式完成');
+        ViewsManager.instance.showView(PrefabType.TransitionView, (node: Node) => {
+            let wordData = JSON.parse(JSON.stringify(this._wordsData));
+            let levelData = JSON.parse(JSON.stringify(this._levelData));
+            //跳转到下一场景
+            node.getComponent(TransitionView).setTransitionCallback(() => {
+                ViewsManager.instance.showView(PrefabType.WordPracticeView, (node: Node) => {
+                    node.getComponent(WordPracticeView).initData(wordData, levelData);
+                    ViewsManager.instance.closeView(PrefabType.WordMeaningView);
+                });
+            });
+        });
     }
 
     onClassificationWord(data: any) {
