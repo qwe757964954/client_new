@@ -51,7 +51,6 @@ export class BreakThroughView extends BaseView {
         this.initNavTitle();
         this.initAmout();
         this.initRightChange();
-        // 
         DataMgr.instance.getAdventureLevelConfig();
     }
 

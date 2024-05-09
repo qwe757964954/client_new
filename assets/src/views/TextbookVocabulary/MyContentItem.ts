@@ -19,8 +19,6 @@ export class MyContentItem extends ListItem {
     @property(Label)
     public item_name:Label = null;          // 课程名字
     @property(Label)
-    public desc_text:Label = null;          // 课程详情
-    @property(Label)
     public collect_text:Label = null;          // 已收集
     @property(Label)
     public already_learned_text:Label = null;          // 已学单词
@@ -28,7 +26,7 @@ export class MyContentItem extends ListItem {
     public learnProgress:ProgressBar = null;          // 学习进度
 
     @property(Button)
-    public btn_close:Button = null;          // 关闭按钮
+    public btn_delete:Button = null;          // 关闭按钮
 
     @property(Node)
     public flagBg:Node = null;
