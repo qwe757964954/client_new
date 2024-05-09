@@ -243,19 +243,17 @@ export class c2sCurrentBook {
     command_id: string = InterfacePath.Classification_CurrentBook;
 }
 
-export interface CurrentBookStatus extends BaseRepPacket {
-    data?:CurrentBookItem;
-}
 
-export interface CurrentBookItem {
-    user_id:number;
-    book_name:string;
-    type_name:string;
-    grade:string;
-    unit:string;
-    status:number;
-    score:number;
-    total_score:number;
-    study_word_num:number;
-    total_word_num:number
+
+export interface CurrentBookStatus extends BaseRepPacket {
+    user_id?:number;
+    book_name?:string;
+    type_name?:string;
+    grade?:string;
+    unit?:string;
+    status?:number;
+    score?:number;
+    total_score?:number;
+    study_word_num?:number;
+    total_word_num?:number
 }

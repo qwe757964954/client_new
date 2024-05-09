@@ -44,13 +44,13 @@ export class studyView extends BaseView {
         console.log("onCurrentBookStatus___________",curBook);
         
         /**当前词书状态 */
-        if(isValid(curBook.data)){
+        if(isValid(curBook.type_name) && isValid(curBook.book_name) && isValid(curBook.grade)){
             ViewsManager.instance.showView(PrefabType.TextbookChallengeView,(node: Node) => {
                 let challengeScript:TextbookChallengeView = node.getComponent(TextbookChallengeView);
                 let unitData:BookUnitModel = {
-                    type_name:curBook.data.type_name,
-                    book_name:curBook.data.book_name,
-                    grade:curBook.data.grade
+                    type_name:curBook.type_name,
+                    book_name:curBook.book_name,
+                    grade:curBook.grade
                 }
                 challengeScript.initData(unitData);
             });

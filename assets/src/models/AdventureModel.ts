@@ -25,13 +25,13 @@ export class IslandStatusModel {
 }
 
 export class MapLevelData {
-    flag: number;
+    flag?: number;
     big_id: number;
     small_id: number;
     micro_id: number;
-    small_type: number;
-    game_modes: string;
-    current_mode: number;
+    small_type?: number;
+    game_modes?: string;
+    current_mode?: number;
 }
 
 export class IslandStatusData extends BaseRepPacket {
