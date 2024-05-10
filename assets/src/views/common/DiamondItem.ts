@@ -16,6 +16,9 @@ export class DiamondItem extends Component {
         this.initEvent();
         this.onDiamondUpdate();
     }
+    protected onDestroy(): void {
+        this.destoryEvent();
+    }
     //初始化事件
     public initEvent() {
         CCUtil.onTouch(this, this.onClick, this);
