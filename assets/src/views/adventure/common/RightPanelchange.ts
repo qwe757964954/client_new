@@ -72,7 +72,7 @@ export class rightPanelchange extends Component {
         this.updateView();
         this.node.active = true
         let node_size = this.node.getComponent(UITransform);
-        tween(this.node).to(0.3, { position: new Vec3(178, 100, 0) }).call(() => {
+        tween(this.node).by(0.3, { position: new Vec3(-node_size.width, 0, 0) }).call(() => {
             // this.node.active = false
         }).start();
         // tween(this.node).to(0.3, { position: v3(178, 100, 0) }).call(() => {
@@ -101,7 +101,7 @@ export class rightPanelchange extends Component {
 
     hideView() {
         let node_size = this.node.getComponent(UITransform);
-        tween(this.node).to(0.3, { position: new Vec3(750, 100, 0) }).call(() => {
+        tween(this.node).by(0.3, { position: new Vec3(node_size.width, 0, 0) }).call(() => {
             this.node.active = false
         }).start();
     }
