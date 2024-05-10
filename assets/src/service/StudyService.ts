@@ -1,6 +1,6 @@
 import { EventType } from "../config/EventType";
 import { ViewsManager } from "../manager/ViewsManager";
-import { c2sAdventureResult, c2sClassificationWord, c2sIslandStatus, c2sWordGameWords, WordGameWordsData } from "../models/AdventureModel";
+import { c2sAdventureResult, c2sClassificationWord, c2sIslandProgress, c2sIslandStatus, c2sWordGameWords, WordGameWordsData } from "../models/AdventureModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
 import { BaseControll } from "../script/BaseControll";
@@ -29,6 +29,13 @@ export default class StudyService extends BaseControll {
     //获取大冒险岛屿状态
     getIslandStatus(bigId: number) {
         let para: c2sIslandStatus = new c2sIslandStatus();
+        para.big_id = bigId;
+        NetMgr.sendMsg(para);
+    }
+
+    //获取大冒险岛屿进度
+    getIslandProgress(bigId: number) {
+        let para: c2sIslandProgress = new c2sIslandProgress();
         para.big_id = bigId;
         NetMgr.sendMsg(para);
     }

@@ -44,6 +44,16 @@ export class c2sIslandProgress {
     big_id: number;
 }
 
+export class IslandProgressData {
+    small_id: number;
+    micro_id: number;
+    game_mode: number;
+}
+
+export class IslandProgressModel extends BaseRepPacket {
+
+}
+
 //单词大冒险获取单词数据
 export class c2sWordGameWords {
     command_id: string = InterfacePath.WordGame_Words;

@@ -4,7 +4,7 @@ import { PrefabType } from '../../config/PrefabType';
 import GlobalConfig from '../../GlobalConfig';
 import { DataMgr } from '../../manager/DataMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { GameMode, IslandStatusData, MapLevelData } from '../../models/AdventureModel';
+import { GameMode, IslandProgressData, IslandProgressModel, IslandStatusData, MapLevelData } from '../../models/AdventureModel';
 import { InterfacePath } from '../../net/InterfacePath';
 import { ServiceMgr } from '../../net/ServiceManager';
 import CCUtil from '../../util/CCUtil';
@@ -32,12 +32,14 @@ export class WorldMapView extends Component {
     private _currentIsland: Node = null;//当前岛屿
 
     private _islandStatusId: string; //岛屿状态
+    private _islandProgressId: string; //岛屿进度
     private _exitIslandEveId: string; //退出岛屿
     private _enterLevelEveId: string; //进入关卡
     private _getWordsEveId: string; //获取单词
 
     private _currentIslandID: number = 0;//当前岛屿id
     private _currentLevelData: MapLevelData = null;//当前关卡数据
+    private _currentIslandProgress: IslandProgressData = null;//当前岛屿进度
 
     private _getingIslandStatus: boolean = false;//是否正在获取岛屿状态
     start() {
@@ -67,6 +69,21 @@ export class WorldMapView extends Component {
         }
         this._currentIslandID = +id + 1;
         this._getingIslandStatus = true;
+        ServiceMgr.studyService.getIslandProgress(this._currentIslandID);
+    }
+
+    //获取岛屿进度
+    onGetIslandProgress(data: IslandProgressModel) {
+        if (data.code != 200) {
+            console.error('获取岛屿进度失败', data.msg);
+            return;
+        }
+        console.log('获取岛屿进度', data);
+        let process = data[4].process; //暂时取朗读模式进度
+        this._currentIslandProgress = new IslandProgressData();
+        this._currentIslandProgress.small_id = process.small_id;
+        this._currentIslandProgress.micro_id = process.micro_id;
+        this._currentIslandProgress.game_mode = 0;
         ServiceMgr.studyService.getIslandStatus(this._currentIslandID);
     }
 
@@ -100,7 +117,7 @@ export class WorldMapView extends Component {
         let copynode = instantiate(this.islandPref);
         this._currentIsland = copynode;
         this.islandContainer.addChild(copynode);
-        copynode.getComponent(WorldIsland).setPointsData(this._currentIslandID, mapPoints);
+        copynode.getComponent(WorldIsland).setPointsData(this._currentIslandID, mapPoints, this._currentIslandProgress);
     }
 
     /**隐藏视图 */
@@ -154,6 +171,7 @@ export class WorldMapView extends Component {
         this._enterLevelEveId = EventManager.on(EventType.Enter_Island_Level, this.enterLevel.bind(this));
         this._getWordsEveId = EventManager.on(EventType.WordGame_Words, this.onWordGameWords.bind(this));
         this._islandStatusId = EventManager.on(InterfacePath.Island_Status, this.onGetIslandStatus.bind(this));
+        this._islandProgressId = EventManager.on(InterfacePath.Island_Progress, this.onGetIslandProgress.bind(this));
         CCUtil.onTouch(this.btn_back.node, this.onBtnBackClick, this)
 
     }
@@ -166,6 +184,7 @@ export class WorldMapView extends Component {
         EventManager.off(EventType.Enter_Island_Level, this._enterLevelEveId);
         EventManager.off(EventType.WordGame_Words, this._getWordsEveId);
         EventManager.off(InterfacePath.Island_Status, this._islandStatusId);
+        EventManager.off(InterfacePath.Island_Progress, this._islandProgressId);
         CCUtil.offTouch(this.btn_back.node, this.onBtnBackClick, this)
 
     }
