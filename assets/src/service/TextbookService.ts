@@ -36,6 +36,7 @@ export default class _TextbookService extends BaseControll {
         this.addModelListener(InterfacePath.Classification_UnitStatus, this.onUnitStatus);
         this.addModelListener(InterfacePath.Classification_BookAwardList, this.onBookAddAwardList);
         this.addModelListener(InterfacePath.Classification_CurrentBook, this.onCurrentBook);
+        this.addModelListener(InterfacePath.Classification_ReportResult,this.onReportResult)
     }
     reqBookStatus() {
         let para: c2sBookStatus = new c2sBookStatus();
