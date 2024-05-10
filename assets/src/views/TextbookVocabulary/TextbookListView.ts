@@ -45,7 +45,6 @@ export class TextbookListView extends BaseView {
         this.addModelListener(NetNotify.Classification_BookDel,this.onBookDel);
 	}
     onBookDel(){
-        console.log("删除成功——————————————————",this.myScrollView.numItems);
         TBServer.reqBookStatus();
         this.updateShowMyScrollEmpty();
     }
@@ -69,9 +68,7 @@ export class TextbookListView extends BaseView {
         if(Array.isArray(data) && data.length > 0){
             this._myTextbookDataArr = data;
             this.myScrollView.numItems = this._myTextbookDataArr.length;
-            
             let select_id = this.getSelectDataIndex()
-            console.log("select_id",select_id,this._curBookData,this._myTextbookDataArr);
             this.myScrollView.selectedId = -1;
             this.myScrollView.selectedId = select_id;
             this.myScrollView.update();
@@ -121,7 +118,6 @@ export class TextbookListView extends BaseView {
     }
 
     onMyTextBookVerticalSelected(item: any, selectedId: number, lastSelectedId: number, val: number){
-        console.log("onMyTextBookVerticalSelected",item,selectedId);
         /**
          * -1主要是用于重置scrollview selectid ,需过滤
          */
@@ -135,7 +131,6 @@ export class TextbookListView extends BaseView {
             content_text:`是否切换\n《${itemInfo.book_name}${itemInfo.grade}》为当前在学`,
             callFunc:(isSure:boolean)=>{
                 if(isSure){
-                    this.setClickItemProps(item,selectedId);
                     ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
                         ViewsManager.instance.closeView(PrefabType.TextbookListView);
                         let bookData:BookUnitModel = {
@@ -149,33 +144,10 @@ export class TextbookListView extends BaseView {
                 }
             }
         }
-        console.log(itemInfo,this._curBookData);
         if(itemInfo.book_name !== this._curBookData.book_name || 
             itemInfo.type_name !== this._curBookData.type_name || 
             itemInfo.grade !== this._curBookData.grade){
             this.showRemainCalL(data);
-        }else{
-           this.setClickItemProps(item,selectedId);
-        }
-    }
-
-    setClickItemProps(item:any,selectedId:number){
-        this.clearItems();
-        let itemScript = item.getComponent(MyContentItem);
-        itemScript.flagBg.active = true;
-        itemScript.select_infoBg.active = true;
-        itemScript.btn_delete.node.active = false;
-    }
-
-    clearItems(){
-        for (let index = 0; index < this.myScrollView.numItems; index++) {
-            let item = this.myScrollView.getItemByListId(index);
-            if(isValid(item)){
-                let itemScript = item.getComponent(MyContentItem);
-                itemScript.flagBg.active = false;
-                itemScript.select_infoBg.active = false;
-                itemScript.btn_delete.node.active = true;
-            }
         }
     }
 
