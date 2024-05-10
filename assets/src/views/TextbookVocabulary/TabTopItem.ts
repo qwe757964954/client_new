@@ -11,7 +11,7 @@ export class TabTopItem extends ListItem {
     public tab_focus:Node = null;          // tab标签
     public idx:number = 0; //
     start() {
-
+        
     }
     updateItemProps(idx: number,itemInfo:BookItemData) {
         this.idx = idx;

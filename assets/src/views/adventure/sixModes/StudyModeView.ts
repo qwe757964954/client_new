@@ -16,7 +16,8 @@ import { TransitionView } from '../common/TransitionView';
 import { BaseModeView } from './BaseModeView';
 import { WordSplitItem } from './items/WordSplitItem';
 import { WordMeaningView } from './WordMeaningView';
-import { GameMode } from '../../../models/AdventureModel';
+import { WordsDetailData, GameMode } from '../../../models/AdventureModel';
+import { InterfacePath } from '../../../net/InterfacePath';
 const { ccclass, property } = _decorator;
 
 /**学习模式页面 何存发 2024年4月15日15:38:41 */
@@ -55,7 +56,6 @@ export class StudyModeView extends BaseModeView {
     protected _levelData: any = null; //当前关卡配置
     //事件
     protected _getWordsEveId: string;
-    protected _wordDetailEveId: string;
 
     protected _isSplitPlaying: boolean = false; //正在播放拆分音频
     protected _currentSplitIdx: number = 0; //当前播放拆分音频的索引
@@ -70,8 +70,8 @@ export class StudyModeView extends BaseModeView {
 
     async initData(wordsdata: UnitWordModel[], levelData: any) {
         this._spilitData = await DataMgr.instance.getWordSplitConfig();
-        this.initWords(wordsdata);
         this._levelData = levelData;
+        this.initWords(wordsdata);
         this.initMonster(); //初始化怪物
     }
 
@@ -125,10 +125,6 @@ export class StudyModeView extends BaseModeView {
         this.playWordSound();
     }
 
-    //初始化单词详情
-    initWordDetail(word: string) {
-        ServiceMgr.studyService.getClassificationWord(word);
-    }
     //初始化拆分节点
     initSplitNode() {
         this.clearSplitItems();
@@ -270,26 +266,15 @@ export class StudyModeView extends BaseModeView {
         tween(this.mainNode).to(0.2, { position: new Vec3(pos.x, -360, 0) }).start();
     }
 
-    onClassificationWord(data: any) {
-        if (data.Code != 200) {
-            console.error("获取单词详情失败", data);
-            return;
-        }
-        this._detailData = data.Data;
-        console.log("获取单词详情", data);
-    }
-
     protected initEvent(): void {
         super.initEvent();
         CCUtil.onTouch(this.btn_more, this.showWordDetail, this);
         CCUtil.onTouch(this.btn_hideDetail, this.hideWordDetail, this);
-        this._wordDetailEveId = EventManager.on(EventType.Classification_Word, this.onClassificationWord.bind(this));
     }
     protected removeEvent(): void {
         super.removeEvent();
         CCUtil.offTouch(this.btn_more, this.showWordDetail, this);
         CCUtil.offTouch(this.btn_hideDetail, this.hideWordDetail, this);
-        EventManager.off(EventType.Classification_Word, this._wordDetailEveId);
         for (let i = 0; i < this._spliteItems.length; i++) {
             CCUtil.offTouch(this._spliteItems[i], this.onSplitItemClick.bind(this, this._spliteItems[i], i), this);
         }

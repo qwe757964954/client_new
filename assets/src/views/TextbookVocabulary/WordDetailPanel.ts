@@ -5,7 +5,14 @@ import AudioUtil from '../../util/AudioUtil';
 import { DetailWordMeanItem } from './DetailWordMeanItem';
 import { DetailWordNearSynonymMeanItem } from './DetailWordNearSynonymMeanItem';
 import { DetailWordRootItem } from './DetailWordRootItem';
+import { SearchWordDetail, WordSentence, WordSimpleData, WordSpeech } from './SearchWordView';
 const { ccclass, property } = _decorator;
+
+/**词根内容 */
+export interface WordRootData { //{ type: "词根", txt: root }
+    type: string,
+    txt: string,
+}
 
 @ccclass('WordDetailPanel')
 export class WordDetailPanel extends Component {
@@ -81,11 +88,11 @@ export class WordDetailPanel extends Component {
     @property({ type: [SpriteFrame], tooltip: "顶部返回按钮两个图片状态,0是向上，1是向下" })
     private topReturnBtnImgAry: SpriteFrame[] = [];
 
-    sentenceItems: Array<any> = [];
+    sentenceItems: Array<Node> = [];
     tabList: Array<Node> = []; //tab页数组
     boxList: Array<Node> = []; //下面box框
 
-    wordData: any = null; //当前的词条数据
+    wordData: SearchWordDetail = null; //当前的词条数据
     word: string = "";    //当前词
 
     selectTabIdx: number = 1; //当前选中的tab索引
@@ -109,12 +116,12 @@ export class WordDetailPanel extends Component {
         this.removeEvent();
     }
 
-    setData(data) {
+    setData(data: SearchWordDetail) {
         this.wordData = data;
         this.initDetailPanel(data);
     }
 
-    initDetailPanel(data) {
+    initDetailPanel(data: SearchWordDetail) {
         this.word = data.Word;
         this.hideBtn.getComponent(Sprite).spriteFrame = this.topReturnBtnImgAry[0];
         this.sentenceList.content.removeAllChildren();
@@ -201,7 +208,7 @@ export class WordDetailPanel extends Component {
     }
 
     /**向sentenceList里添加一项内容*/
-    addSentenceListItem(data: any) {
+    addSentenceListItem(data: WordSentence) {
         console.log("addSentenceList data:", data);
         if (!data) {
             return;
@@ -210,12 +217,12 @@ export class WordDetailPanel extends Component {
             return;
         }
         let itemSentence = instantiate(this.preSentenceItem);
-        itemSentence.getComponent(DetailSentenseItem).Init(data);
+        itemSentence.getComponent(DetailSentenseItem).init(data);
         this.sentenceList.content.addChild(itemSentence);
     }
 
     /**向词义列表里添加一项 */
-    addSpeechListItem(data: any) { //{ sp: "vt.", tr: "vi. 赠送，捐赠"}
+    addSpeechListItem(data: WordSpeech) { //{ sp: "vt.", tr: "vi. 赠送，捐赠"}
         console.log("addSpeechListItem data:", data);
         if (!data) {
             return;
@@ -224,12 +231,12 @@ export class WordDetailPanel extends Component {
             return;
         }
         let itemSpeech = instantiate(this.preWordMeanItem);
-        itemSpeech.getComponent(DetailWordMeanItem).Init(data);
+        itemSpeech.getComponent(DetailWordMeanItem).init(data);
         this.speechList.content.addChild(itemSpeech);
     }
 
     /**添加一个近义词 */
-    addSimilarList(data: any) { // {Cn:"近义词释义", Word:"近义词本身"}
+    addSimilarList(data: WordSimpleData) { // {Cn:"近义词释义", Word:"近义词本身"}
         console.log("addSimilarList data:", data);
         if (!data) {
             return;
@@ -243,7 +250,7 @@ export class WordDetailPanel extends Component {
     }
 
     /** 添加一个词根 */
-    addRootListItem(data: any) { // {type:"词根", txt:"词根内容"}
+    addRootListItem(data: WordRootData) { // {type:"词根", txt:"词根内容"}
         console.log("addRootListItem data:", data);
         if (!data) {
             return;

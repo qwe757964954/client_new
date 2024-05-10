@@ -1,7 +1,7 @@
 import { _decorator, Button, instantiate, Node, Prefab, Sprite, tween, UITransform, Vec3 } from 'cc';
 import { AdvLevelConfig, BookLevelConfig } from '../../../manager/DataMgr';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
-import { s2cAdventureResult } from '../../../models/AdventureModel';
+import { WordsDetailData, GameMode, s2cAdventureResult } from '../../../models/AdventureModel';
 import { PetModel } from '../../../models/PetModel';
 import { RoleBaseModel } from '../../../models/RoleBaseModel';
 import { ReportResultModel, UnitWordModel } from '../../../models/TextbookModel';
@@ -49,7 +49,7 @@ export class BaseModeView extends BaseView {
 
     protected _wordsData: UnitWordModel[] = null;
     protected _wordIndex: number = 0; //当前单词序号
-    protected _detailData: any = null; //当前单词详情数据
+    protected _detailData: WordsDetailData = null; //当前单词详情数据
     protected _levelData: AdvLevelConfig | BookLevelConfig = null; //当前关卡配置
     protected _monster: Node = null; //主怪动画节点
     protected _errorNum: number = 0; //错误数量
@@ -57,6 +57,7 @@ export class BaseModeView extends BaseView {
     protected _costTime: number = 0; //花费时间
 
     protected _getResultEveId: string; //获取结果
+    protected _wordDetailEveId: string; //获取单词详情
 
     private _upResultSucce: boolean = false; //上报结果成功
 
@@ -70,8 +71,8 @@ export class BaseModeView extends BaseView {
 
     }
 
-    onInitModuleEvent(){
-        this.addModelListener(NetNotify.Classification_ReportResult,this.onUpResult);
+    onInitModuleEvent() {
+        this.addModelListener(NetNotify.Classification_ReportResult, this.onUpResult);
     }
 
     async initRole() {
@@ -90,7 +91,7 @@ export class BaseModeView extends BaseView {
     }
     async initMonster() {
         //单词大冒险关卡
-        console.log("initMonster......",this._levelData);
+        console.log("initMonster......", this._levelData);
         if (this._levelData.hasOwnProperty('islandId')) {
             let lvData = this._levelData as AdvLevelConfig;
             this._monster = instantiate(this.monsterModel);
@@ -140,13 +141,13 @@ export class BaseModeView extends BaseView {
             ServiceMgr.studyService.submitAdventureResult(levelData.islandId, levelData.levelId, levelData.mapLevelData.micro_id, levelData.mapLevelData.current_mode, costTime);
         } else {
             //教材关卡
-            let levelData:BookLevelConfig = this._levelData as BookLevelConfig;
-            let data:ReportResultModel = {
-                type_name:levelData.type_name,
-                book_name:levelData.book_name,
-                grade:levelData.grade,
-                unit:levelData.unit,
-                game_mode:this.gameMode,
+            let levelData: BookLevelConfig = this._levelData as BookLevelConfig;
+            let data: ReportResultModel = {
+                type_name: levelData.type_name,
+                book_name: levelData.book_name,
+                grade: levelData.grade,
+                unit: levelData.unit,
+                game_mode: this.gameMode,
             }
             TBServer.reqReportResult(data);
         }
@@ -218,13 +219,36 @@ export class BaseModeView extends BaseView {
         }
     }
 
+    //获取单词详情
+    initWordDetail(word: string) {
+        if (this._levelData.hasOwnProperty('islandId')) { //大冒险关卡
+            ServiceMgr.studyService.getAdventureWord(word);
+        } else { //教材单词关卡
+
+        }
+    }
+
+    protected onClassificationWord(data: WordsDetailData) {
+        if (data.code != 200) {
+            console.error("获取单词详情失败", data.msg);
+            this._detailData = null;
+            return;
+        }
+        console.log("获取单词详情", data);
+        this._detailData = data;
+    }
 
     protected initEvent(): void {
         CCUtil.onTouch(this.btn_close.node, this.closeView, this);
         this._getResultEveId = EventManager.on(InterfacePath.Adventure_Result, this.onUpResult.bind(this));
+        EventManager.on(NetNotify.Classification_ReportResult, this.onUpResult.bind(this));
+        this._wordDetailEveId = EventManager.on(InterfacePath.Adventure_Word, this.onClassificationWord.bind(this));
     }
     protected removeEvent(): void {
         CCUtil.offTouch(this.btn_close.node, this.closeView, this);
+        EventManager.off(InterfacePath.Adventure_Result, this._getResultEveId);
+        EventManager.off(NetNotify.Classification_ReportResult, this.onUpResult.bind(this));
+        EventManager.off(InterfacePath.Adventure_Word, this.onClassificationWord.bind(this));
     }
 
     protected closeView() {

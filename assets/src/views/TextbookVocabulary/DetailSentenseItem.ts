@@ -15,14 +15,14 @@ export class DetailSentenseItem extends Component {
     @property({ type: Label, tooltip: "单词例句中文翻译" }) //
     public sentenceChTxt: Label = null;
 
-    private sentenceData: any = null;
-    private sentenceId: string = "";
+    private _sentenceData: any = null;
+    private _sentenceId: string = "";
 
     start() {
 
     }
 
-    Init(data) {
+    init(data) {
         if (!data) {
             return;
         }
@@ -35,18 +35,18 @@ export class DetailSentenseItem extends Component {
     }
 
     initData(data) {
-        this.sentenceData = data;
+        this._sentenceData = data;
         this.onSentenceDetail();
     }
 
     onSentenceDetail() {
-        if (!this.sentenceData) {
+        if (!this._sentenceData) {
             return;
         }
-        let word = this.sentenceData.Word;
-        let sentence: string = this.sentenceData.En; //英语部分
-        let strCnt: string = this.sentenceData.Cn;
-        this.sentenceId = this.sentenceData.Id;
+        let word = this._sentenceData.Word;
+        let sentence: string = this._sentenceData.En; //英语部分
+        let strCnt: string = this._sentenceData.Cn;
+        this._sentenceId = this._sentenceData.Id;
         let lowerSent: string = sentence.toLowerCase(); //句子变小写
         let lowerWord = word.toLowerCase(); //单词变小写
         let startIndex = lowerSent.indexOf(lowerWord); //寻找单词的位置
@@ -89,7 +89,7 @@ export class DetailSentenseItem extends Component {
     /**播放单词例句声音 */
     private onPlaySentence() {
         //SoundUtil.playSound("/assets/sounds/glossary/sentence_tts/Emily/" + this.sentenceId + ".wav")
-        let wordSoundUrl = "/sounds/glossary/sentence_tts/Emily/" + this.sentenceId + ".wav";
+        let wordSoundUrl = "/sounds/glossary/sentence_tts/Emily/" + this._sentenceId + ".wav";
         RemoteSoundMgr.playSound(NetConfig.assertUrl + wordSoundUrl);
     }
 
