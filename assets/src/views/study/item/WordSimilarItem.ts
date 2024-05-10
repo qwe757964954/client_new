@@ -11,9 +11,9 @@ export class WordSimilarItem extends Component {
 
     }
 
-    setData(data: { Cn: string, Word: string }) {
-        this.enLabel.string = data.Word;
-        this.cnLabel.string = data.Cn;
+    setData(data: { cn: string, word: string }) {
+        this.enLabel.string = data.word;
+        this.cnLabel.string = data.cn;
     }
 }
 

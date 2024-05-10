@@ -68,9 +68,26 @@ export class WordGameWordsData extends BaseRepPacket {
 }
 
 //获取单词详情
-export class c2sClassificationWord {
-    command_id: string = InterfacePath.Classification_Word;
-    Word: string;
+export class c2sAdventureWord {
+    command_id: string = InterfacePath.Adventure_Word;
+    word: string;
+}
+
+export class WordsDetailData extends BaseRepPacket {
+    word: string;
+    symbol: string;
+    symbolus: string;
+    syllable: string;
+    phonic: string;
+    example: string;
+    example_cn: string;
+    etyma: string;
+    ancillary: string;
+    speech: string;
+    sentence_list: { id: string, cn: string, sentence: string }[];
+    similar_list: any[];
+    variant: any;
+    structure: any;
 }
 
 //大冒险结果提交

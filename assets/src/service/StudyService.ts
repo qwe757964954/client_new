@@ -1,6 +1,6 @@
 import { EventType } from "../config/EventType";
 import { ViewsManager } from "../manager/ViewsManager";
-import { c2sAdventureResult, c2sClassificationWord, c2sIslandProgress, c2sIslandStatus, c2sWordGameWords, WordGameWordsData } from "../models/AdventureModel";
+import { c2sAdventureResult, c2sAdventureWord, c2sIslandProgress, c2sIslandStatus, c2sWordGameWords, WordGameWordsData } from "../models/AdventureModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
 import { BaseControll } from "../script/BaseControll";
@@ -13,17 +13,13 @@ export default class StudyService extends BaseControll {
 
     onInitModuleEvent() {
         this.addModelListener(InterfacePath.WordGame_Words, this.onWordGameWords);
-        this.addModelListener(InterfacePath.Classification_Word, this.onClassificationWord);
     }
 
     //获取单个单词详情
-    getClassificationWord(word: string) {
-        let para: c2sClassificationWord = new c2sClassificationWord();
-        para.Word = word;
+    getAdventureWord(word: string) {
+        let para: c2sAdventureWord = new c2sAdventureWord();
+        para.word = word;
         NetMgr.sendMsg(para);
-    }
-    onClassificationWord(data: any) {
-        EventManager.emit(EventType.Classification_Word, data);
     }
 
     //获取大冒险岛屿状态

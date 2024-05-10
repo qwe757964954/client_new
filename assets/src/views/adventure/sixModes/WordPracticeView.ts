@@ -40,9 +40,9 @@ export class WordPracticeView extends BaseModeView {
     async initData(wordsdata: UnitWordModel[], levelData: any) {
         this.gameMode = GameMode.Practice;
         this._spilitData = await DataMgr.instance.getWordSplitConfig();
+        this._levelData = levelData;
         this.initWords(wordsdata);
         this.initEvent();
-        this._levelData = levelData;
         this.initMonster(); //初始化怪物
     }
 
@@ -135,12 +135,9 @@ export class WordPracticeView extends BaseModeView {
         ViewsManager.instance.showView(PrefabType.TransitionView, (node: Node) => {
             let wordData = JSON.parse(JSON.stringify(this._wordsData));
             let levelData = JSON.parse(JSON.stringify(this._levelData));
-            //跳转到下一场景
+            //跳转到拼模式
             node.getComponent(TransitionView).setTransitionCallback(() => {
-                ViewsManager.instance.showView(PrefabType.WordPracticeView, (node: Node) => {
-                    node.getComponent(WordPracticeView).initData(wordData, levelData);
-                    ViewsManager.instance.closeView(PrefabType.WordMeaningView);
-                });
+
             });
         });
     }
