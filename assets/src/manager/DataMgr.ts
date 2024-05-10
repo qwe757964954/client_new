@@ -7,6 +7,7 @@ const ConfigPath = {
     RoleSlot: "role_slots",
     RoleSlotConfig: "dress_up",
     EditInfo: "building",
+    ProduceInfo: "produce",
     WordSplit: "word_split",
     AdventureLevel: "adventure_level",
 }
@@ -46,6 +47,29 @@ export class EditInfo {
     description: string;//描述
     function: string;//功能描述
 }
+/**奖励信息 */
+export class RewardInfo {
+    id: number;//id
+    num: number;//数量
+}
+/**生产信息 */
+export class ProduceInfo {
+    level: number;//等级
+    unlock: number;//解锁等级
+    res_name: string;//资源名字
+    res_png: string;//资源图片
+    res_time: number;//资源产出时间（单位秒）
+    produce: RewardInfo[];//产出
+    expend: RewardInfo[];//消耗
+    upgrade_need: RewardInfo[];//升级消耗
+    upgrade_time: number;//升级时间
+}
+/**建筑生产信息 */
+export class BuildProduceInfo {
+    id: number;//id
+    data: ProduceInfo[] = [];//生产信息
+    count: number = 0;//数量
+}
 
 //大冒险关卡配置
 export class AdvLevelConfig {
@@ -73,6 +97,7 @@ export class DataMgr {
     public roleSlot: RoleSlot[] = [];//角色插槽
     public roleSlotConfig: RoleSlotConfig[] = [];//角色插槽配置
     public editInfo: EditInfo[] = [];//编辑信息
+    public buildProduceInfo: BuildProduceInfo[] = [];//建筑生产信息
     public wordSplitConfig: any = null;
     public adventureLevelConfig: AdvLevelConfig[] = null;
 
@@ -97,6 +122,7 @@ export class DataMgr {
         await this.initRoleSlot();
         await this.initRoleSlotConfig();
         await this.initEditInfo();
+        await this.initBuildProduceInfo();
     }
     /** 初始化角色插槽 */
     public async initRoleSlot() {
@@ -133,6 +159,45 @@ export class DataMgr {
             if (!this.defaultLand && obj.type == EditType.Land) {
                 this.defaultLand = obj;
             }
+        }
+    }
+    public converAryToReward(ary: number[]): RewardInfo[] {
+        let list: RewardInfo[] = [];
+        let i = 0;
+        let max = ary.length - 1;
+        while (i < max) {
+            let obj = new RewardInfo();
+            obj.id = ary[i];
+            obj.num = ary[i + 1];
+            list.push(obj);
+
+            i = i + 2;
+        }
+        return list;
+    }
+    /** 初始化建筑生产信息 */
+    public async initBuildProduceInfo() {
+        let json = await LoadManager.loadJson(ConfigPath.ProduceInfo);
+        for (let k in json) {
+            let value = json[k];
+            let obj: BuildProduceInfo = this.buildProduceInfo[value.id];
+            if (!obj) {
+                obj = new BuildProduceInfo();
+                obj.id = value.id;
+                this.buildProduceInfo[obj.id] = obj;
+            }
+            let info: ProduceInfo = new ProduceInfo();
+            info.level = value.level;
+            info.unlock = value.unlock;
+            info.res_name = value.res_name;
+            info.res_png = ToolUtil.replace(TextConfig.Prop_Path, value.res_png);
+            info.res_time = value.res_time;
+            info.produce = this.converAryToReward(value.produce);
+            info.expend = this.converAryToReward(value.expend);
+            info.upgrade_need = this.converAryToReward(value.upgrade_need);
+            info.upgrade_time = value.upgrade_time;
+            obj.data[info.level] = info;
+            obj.count++;
         }
     }
 

@@ -185,20 +185,7 @@ export class MainScene extends Component {
             return;
         }
         else if (MapStatus.DEFAULT == this._mapStatus) {// 普通点击 展示建筑建造界面
-            ViewsManager.instance.showView(PrefabType.BuildingProduceView, (node: Node) => {
-                this._mainUIView.node.active = false;
-                let buildingProduceView = node.getComponent(BuildingProduceView);
-                this._mapUICtl.moveCameraToBuilding(building, buildingProduceView.getBuildingPos());
-                let pos = building.pos;
-                building.removeFromParent();
-                buildingProduceView.initData(building, () => {
-                    building.addToParent(this.buildingLayer);
-                    building.pos = pos;
-                    building.setCameraType(Layers.Enum.DEFAULT);
-                    this._mainUIView.node.active = true;
-                    this._mapUICtl.buildingSort();
-                });
-            });
+            this.showBuildingProduceView(building);
         }
     }
     // 建筑长按
@@ -391,6 +378,59 @@ export class MainScene extends Component {
     }
     findBuildingByIdx(idx: number) {
         return this._mapUICtl.findBuildingByIdx(idx);
+    }
+    /**展示建筑建造界面 */
+    showBuildingProduceView(selectBuilding: BuildingModel) {
+        ViewsManager.instance.showView(PrefabType.BuildingProduceView, (node: Node) => {
+            let children = this.buildingLayer.children;
+            let buildAry = [];
+            let idx = 0;
+            for (let i = 0; i < children.length; i++) {
+                const element = children[i];
+                let building = element.getComponent(BuildingModel);
+                if (!building) continue;
+                buildAry.push(building);
+                if (building == selectBuilding) {
+                    idx = i;
+                }
+            }
+            let count = buildAry.length;
+
+            this._mainUIView.node.active = false;
+            let buildingProduceView = node.getComponent(BuildingProduceView);
+            let pos = null;
+            let self = this;
+            let showBuilding = function (building: BuildingModel) {
+                self._mapUICtl.moveCameraToBuilding(building, buildingProduceView.getBuildingPos());
+                pos = building.pos;
+                building.removeFromParent();
+                buildingProduceView.initData(building);
+            }
+            let backBuilding = function (building: BuildingModel) {
+                building.addToParent(self.buildingLayer);
+                building.pos = pos;
+                building.setCameraType(Layers.Enum.DEFAULT);
+            }
+            showBuilding(selectBuilding);
+            buildingProduceView.setCallBack((building: BuildingModel) => {
+                backBuilding(building);
+                self._mainUIView.node.active = true;
+                self._mapUICtl.buildingSort();
+            });
+            if (count > 1) {
+                buildingProduceView.setPreNextCallBack(
+                    (building: BuildingModel) => {
+                        backBuilding(building);
+                        idx = (idx - 1 + count) % count;
+                        showBuilding(buildAry[idx]);
+                    }, (building: BuildingModel) => {
+                        backBuilding(building);
+                        idx = (idx + 1) % count;
+                        showBuilding(buildAry[idx]);
+                    }
+                );
+            }
+        });
     }
 }
 
