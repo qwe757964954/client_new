@@ -1,3 +1,6 @@
+import { EventType } from "../config/EventType";
+import { EventMgr } from "../util/EventManager";
+
 // 用户
 class UserModel {
     //单例
@@ -19,6 +22,11 @@ class UserModel {
     private _mobile: string;         // 手机号
     private _platType: number;       // 平台类型
     private _sysType: number;        // 系统类型
+
+    private _coin: number = 0;       // 金币
+    private _diamond: number = 0;    // 钻石
+    private _stamina: number = 0;     // 体力
+    private _amethyst: number = 0;    // 紫晶石
 
     // 测试数据
     //// 头像数据
@@ -85,6 +93,35 @@ class UserModel {
     }
     get sysType(): number {
         return this._sysType;
+    }
+
+    set coin(coin: number) {
+        this._coin = coin;
+        EventMgr.emit(EventType.Coin_Update);
+    }
+    get coin(): number {
+        return this._coin;
+    }
+    set diamond(diamond: number) {
+        this._diamond = diamond;
+        EventMgr.emit(EventType.Diamond_Update);
+    }
+    get diamond(): number {
+        return this._diamond;
+    }
+    set stamina(stamina: number) {
+        this._stamina = stamina;
+        EventMgr.emit(EventType.Stamina_Update);
+    }
+    get stamina(): number {
+        return this._stamina;
+    }
+    set amethyst(amethyst: number) {
+        this._amethyst = amethyst;
+        EventMgr.emit(EventType.Amethyst_Update);
+    }
+    get amethyst(): number {
+        return this._amethyst;
     }
 }
 

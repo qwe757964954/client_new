@@ -16,9 +16,10 @@ export const EventType = {
     Role_Need_Sort: "RoleNeedSort",//角色需要排序
     GridRect_Need_Draw: "GridRectNeedDraw",//格子需要绘制
 
-    Energy_Update: "EnergyUpdate",//体力更新
+    Stamina_Update: "StaminaUpdate",//体力更新
     Coin_Update: "CoinUpdate",//金币更新
     Diamond_Update: "DiamondUpdate",//钻石更新
+    Amethyst_Update: "AmethystUpdate",//紫晶石更新
 
     Study_Page_Switching: "Study_Page_Switching",//学习页面切换
 

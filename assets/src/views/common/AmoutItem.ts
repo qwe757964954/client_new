@@ -16,8 +16,12 @@ export class AmoutItem extends ListItem {
     }
 
     updateItemProps(idx: number,itemInfo:AmoutItemData){
-        this.amout_text.string = itemInfo.num.toString();
+        this.updateAmout(itemInfo.num);
         this.updateIcon(idx,itemInfo);
+    }
+
+    updateAmout(amout:number){
+        this.amout_text.string = amout.toString();
     }
 
     updateIcon(idx: number,itemInfo:AmoutItemData){

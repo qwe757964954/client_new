@@ -13,13 +13,13 @@ export class WordSentensItem extends Component {
     @property({ type: Label, tooltip: "中文句子" })
     cnLabel: Label = null;
 
-    private _data: { Id: number, En: string, Cn: string } = null;
+    private _data: { id: string, cn: string, sentence: string } = null;
     start() {
         this.addEvent();
     }
 
     onHornClick() {
-        let url = NetConfig.assertUrl + "/sounds/glossary/sentence_tts/Emily/" + this._data.Id + ".wav";
+        let url = NetConfig.assertUrl + "/sounds/glossary/sentence_tts/Emily/" + this._data.id + ".wav";
         RemoteSoundMgr.playSound(url);
     }
 
@@ -31,11 +31,11 @@ export class WordSentensItem extends Component {
         CCUtil.offTouch(this.horn, this.onHornClick.bind(this), this);
     }
 
-    setData(data: { Id: number, En: string, Cn: string }) {
+    setData(data: { id: string, cn: string, sentence: string }) {
         this._data = data;
         console.log("设置数据", data);
-        this.enLabel.string = data.En;
-        this.cnLabel.string = data.Cn;
+        this.enLabel.string = data.sentence;
+        this.cnLabel.string = data.cn;
     }
 }
 

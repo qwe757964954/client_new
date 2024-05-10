@@ -13,7 +13,8 @@ import { WordDetailView } from '../../common/WordDetailView';
 import { TransitionView } from '../common/TransitionView';
 import { BaseModeView } from './BaseModeView';
 import { WordPracticeView } from './WordPracticeView';
-import { GameMode } from '../../../models/AdventureModel';
+import { WordsDetailData, GameMode } from '../../../models/AdventureModel';
+import { InterfacePath } from '../../../net/InterfacePath';
 const { ccclass, property } = _decorator;
 
 /**词意模式页面*/
@@ -60,17 +61,15 @@ export class WordMeaningView extends BaseModeView {
 
     private _wrongMode: boolean = false; //错误重答模式
     private _rightWordData: UnitWordModel = null; //正确单词数据
-    private _sentenceData: any = null; //例句数据
-
-    private _wordDetailEveId: string;
+    private _sentenceData: { id: string, cn: string, sentence: string } = null; //例句数据
 
     private _selectLock: boolean = false; //选择锁
 
     async initData(wordsdata: UnitWordModel[], levelData: any) {
         this.gameMode = GameMode.WordMeaning;
+        this._levelData = levelData;
         this.initWords(wordsdata);
         this.initEvent();
-        this._levelData = levelData;
         this.initMonster(); //初始化怪物
     }
 
@@ -131,10 +130,6 @@ export class WordMeaningView extends BaseModeView {
         }
     }
 
-    //初始化单词详情
-    initWordDetail(word: string) {
-        ServiceMgr.studyService.getClassificationWord(word);
-    }
 
     playWordSound() {
         let word = this._rightWordData.word;
@@ -145,7 +140,7 @@ export class WordMeaningView extends BaseModeView {
 
     playSentenceSound() {
         if (!this._sentenceData) return;
-        let url = NetConfig.assertUrl + "/sounds/glossary/sentence_tts/Emily/" + this._sentenceData.Id + ".wav";
+        let url = NetConfig.assertUrl + "/sounds/glossary/sentence_tts/Emily/" + this._sentenceData.id + ".wav";
         RemoteSoundMgr.playSound(url);
     }
 
@@ -247,18 +242,13 @@ export class WordMeaningView extends BaseModeView {
         });
     }
 
-    onClassificationWord(data: any) {
-        if (data.Code != 200) {
-            console.error("获取单词详情失败", data);
-            return;
-        }
-        this._detailData = data.Data;
-        let sentences = this._detailData.Sentences;
+    onClassificationWord(data: WordsDetailData) {
+        super.onClassificationWord(data);
+        let sentences = this._detailData.sentence_list;
         if (sentences && sentences.length > 0) {
             this._sentenceData = sentences[0];
-            this.sentenceLabel.string = this._sentenceData.En;
+            this.sentenceLabel.string = this._sentenceData.sentence;
         }
-        console.log("获取单词详情", data);
     }
 
     protected initEvent(): void {
@@ -267,7 +257,6 @@ export class WordMeaningView extends BaseModeView {
         CCUtil.onTouch(this.btn_hideDetail, this.hideWordDetail, this);
         CCUtil.onTouch(this.wordSound, this.playWordSound, this);
         CCUtil.onTouch(this.sentenceSound, this.playSentenceSound, this);
-        this._wordDetailEveId = EventManager.on(EventType.Classification_Word, this.onClassificationWord.bind(this));
         for (let i = 0; i < this.answerList.length; i++) {
             CCUtil.onTouch(this.answerList[i], this.onAnswerClick.bind(this, i), this);
         }
@@ -278,7 +267,6 @@ export class WordMeaningView extends BaseModeView {
         CCUtil.offTouch(this.btn_hideDetail, this.hideWordDetail, this);
         CCUtil.offTouch(this.wordSound, this.playWordSound, this);
         CCUtil.offTouch(this.sentenceSound, this.playSentenceSound, this);
-        EventManager.off(EventType.Classification_Word, this._wordDetailEveId);
         for (let i = 0; i < this.answerList.length; i++) {
             CCUtil.offTouch(this.answerList[i], this.onAnswerClick.bind(this, i), this);
         }

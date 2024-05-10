@@ -6,6 +6,7 @@ import List from '../../util/list/List';
 import { WordSentensItem } from './WordSentensItem';
 import { WordMeanItem } from '../study/item/WordMeanItem';
 import { WordSimilarItem } from '../study/item/WordSimilarItem';
+import { WordsDetailData } from '../../models/AdventureModel';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordDetailView')
@@ -28,10 +29,10 @@ export class WordDetailView extends Component {
     assistLabel: Label = null;
     private _word: string = "";
     private _tabIdx: number = 0;
-    private _detailData: any = null;
-    private _sentences: { Id: number, En: string, Cn: string }[] = []; //例句
+    private _detailData: WordsDetailData = null;
+    private _sentences: { id: string, cn: string, sentence: string }[] = []; //例句
     private _means: { sp: string, tr: string }[] = [];  //释义
-    private _similars: { Cn: string, Word: string }[] = []; //相似词
+    private _similars: { cn: string, word: string }[] = []; //相似词
 
     //eventId
     private _getWordsEveId: string = "";
@@ -43,22 +44,22 @@ export class WordDetailView extends Component {
         this.addEvent();
     }
 
-    init(word: string, detalData: any) {
+    init(word: string, detalData: WordsDetailData) {
         this._word = word;
         this._detailData = detalData;
         if (!this._detailData) return;
-        if (this._detailData.Sentences) { //例句
-            this.initSentences(this._detailData.Sentences);
+        if (this._detailData.sentence_list) { //例句
+            this.initSentences(this._detailData.sentence_list);
         }
-        if (this._detailData.Speech) { //释义
-            let means = JSON.parse(this._detailData.Speech);
+        if (this._detailData.speech) { //释义
+            let means = JSON.parse(this._detailData.speech);
             this.initMeans(means);
         }
-        if (this._detailData.Similars) { //相似词
-            this.initSimilars(this._detailData.Similars);
+        if (this._detailData.similar_list) { //相似词
+            this.initSimilars(this._detailData.similar_list);
         }
-        if (this._detailData.Ancillary) { //助记
-            this.assistLabel.string = this._detailData.Ancillary;
+        if (this._detailData.ancillary) { //助记
+            this.assistLabel.string = this._detailData.ancillary;
         }
         this._tabIdx = 0;
     }
@@ -74,7 +75,7 @@ export class WordDetailView extends Component {
     }
 
     //初始化例句
-    initSentences(sentences: { Id: number, En: string, Cn: string }[]) {
+    initSentences(sentences: { id: string, cn: string, sentence: string }[]) {
         this._sentences = sentences;
         this.sentenceList.numItems = this._sentences.length;
     }
@@ -84,7 +85,7 @@ export class WordDetailView extends Component {
         this.wordMeansList.numItems = this._means.length;
     }
     //初始化相似词
-    initSimilars(similars: { Cn: string, Word: string }[]) {
+    initSimilars(similars: { cn: string, word: string }[]) {
         this._similars = similars;
         this.similarList.numItems = this._similars.length;
     }

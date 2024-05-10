@@ -1,4 +1,7 @@
-import { _decorator, Component, Enum, Node } from 'cc';
+import { _decorator, Node } from 'cc';
+import { EventType } from '../../config/EventType';
+import { User } from '../../models/User';
+import { BaseView } from '../../script/BaseView';
 import List from '../../util/list/List';
 import { AmoutItem } from './AmoutItem';
 const { ccclass, property } = _decorator;
@@ -15,7 +18,7 @@ export interface AmoutItemData {
 }
 
 @ccclass('TopAmoutView')
-export class TopAmoutView extends Component {
+export class TopAmoutView extends BaseView {
 
     @property(List)
     public acmoutScroll:List = null;
@@ -25,6 +28,13 @@ export class TopAmoutView extends Component {
     start() {
 
     }
+    
+    protected onInitModuleEvent() {
+		this.addModelListener(EventType.Diamond_Update,this.onUpdateDiamond);
+        this.addModelListener(EventType.Coin_Update,this.onUpdateCoin);
+        this.addModelListener(EventType.Stamina_Update,this.onUpdateStamina);
+	}
+
     /**初始化数据 */
     loadAmoutData(dataArr:AmoutItemData[]){
         this._dataArr = dataArr;
@@ -33,10 +43,25 @@ export class TopAmoutView extends Component {
     }
     /**加载数值item */
     onListHorizontal(item:Node, idx:number){
-        console.log("onListHorizontal_______________");
         let amountItemScript:AmoutItem = item.getComponent(AmoutItem);
         let itemInfo:AmoutItemData = this._dataArr[idx];
         amountItemScript.updateItemProps(idx,itemInfo);
+    }
+
+    onUpdateDiamond(){
+        let coinItem:Node = this.acmoutScroll.getItemByListId(AmoutType.Diamond)
+        let coinScript:AmoutItem = coinItem.getComponent(AmoutItem);
+        coinScript.updateAmout(User.diamond);
+    }
+    onUpdateCoin(){
+        let coinItem:Node = this.acmoutScroll.getItemByListId(AmoutType.Coin)
+        let coinScript:AmoutItem = coinItem.getComponent(AmoutItem);
+        coinScript.updateAmout(User.coin);
+    }
+    onUpdateStamina(){
+        let coinItem:Node = this.acmoutScroll.getItemByListId(AmoutType.Energy)
+        let coinScript:AmoutItem = coinItem.getComponent(AmoutItem);
+        coinScript.updateAmout(User.stamina);
     }
 }
 

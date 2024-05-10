@@ -4,6 +4,7 @@ import { PrefabType } from '../../config/PrefabType';
 import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { BookAwardListModel, BookPlanDetail, ModifyPlanData, UnitListItemStatus } from '../../models/TextbookModel';
+import { User } from '../../models/User';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
@@ -111,7 +112,6 @@ export class TextbookChallengeView extends BaseView {
     getUnitListStatus(){
         console.log("getUnitListStatus",this._bookData);
         TBServer.reqUnitListStatus(this._bookData);
-        
     }
 
     /**获取词书计划详情 */
@@ -134,9 +134,9 @@ export class TextbookChallengeView extends BaseView {
     /**初始化游戏数值 */
     initAmout(){
         ViewsManager.addAmout(this.top_layout,5.471,42.399).then((amoutScript: TopAmoutView) => {
-            let dataArr:AmoutItemData[] = [{type:AmoutType.Diamond,num:0},
-                {type:AmoutType.Coin,num:0},
-                {type:AmoutType.Energy,num:0}];
+            let dataArr:AmoutItemData[] = [{type:AmoutType.Diamond,num:User.diamond},
+                {type:AmoutType.Coin,num:User.coin},
+                {type:AmoutType.Energy,num:User.stamina}];
             amoutScript.loadAmoutData(dataArr);
         });
     }
@@ -213,7 +213,7 @@ export class TextbookChallengeView extends BaseView {
             let projectSizeWidth = view.getDesignResolutionSize().width;
             console.log("viewSizeWidth = ", viewSizeWidth, " projectSizeWidth = ", projectSizeWidth);
             widgetCom.verticalCenter = 78.489;
-            widgetCom.left = 179.221 * viewSizeWidth / projectSizeWidth;
+            widgetCom.left = 108.736 * viewSizeWidth / projectSizeWidth;
             widgetCom.updateAlignment();
         });
     }
