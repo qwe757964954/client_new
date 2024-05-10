@@ -97,28 +97,28 @@ class UserModel {
 
     set coin(coin: number) {
         this._coin = coin;
-        EventMgr.emit(EventType.Coin_Update);
+        EventMgr.emit(EventType.Coin_Update, this._coin);
     }
     get coin(): number {
         return this._coin;
     }
     set diamond(diamond: number) {
         this._diamond = diamond;
-        EventMgr.emit(EventType.Diamond_Update);
+        EventMgr.emit(EventType.Diamond_Update, this._diamond);
     }
     get diamond(): number {
         return this._diamond;
     }
     set stamina(stamina: number) {
         this._stamina = stamina;
-        EventMgr.emit(EventType.Stamina_Update);
+        EventMgr.emit(EventType.Stamina_Update, this._stamina);
     }
     get stamina(): number {
         return this._stamina;
     }
     set amethyst(amethyst: number) {
         this._amethyst = amethyst;
-        EventMgr.emit(EventType.Amethyst_Update);
+        EventMgr.emit(EventType.Amethyst_Update, this._amethyst);
     }
     get amethyst(): number {
         return this._amethyst;

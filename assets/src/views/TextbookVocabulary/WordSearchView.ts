@@ -6,6 +6,7 @@ import { NetConfig } from '../../config/NetConfig';
 import ImgUtil from '../../util/ImgUtil';
 import { RemoteSoundMgr } from '../../manager/RemoteSoundManager';
 import { WordDetailPanel } from './WordDetailPanel';
+import { SearchWordDetail, WordSentence } from './SearchWordView';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordSearchView')
@@ -68,20 +69,20 @@ export class WordSearchView extends Component {
     @property({ type: [SpriteFrame], tooltip: "单词图片按钮两个帧" })
     private sprWordImgBtnAry: SpriteFrame[] = [];
 
-    wordData: any = null; //单词详细信息
-    word: string = ""; //单词名字
-    imgShow: boolean = true; //是否显示图片
+    _wordData: SearchWordDetail = null; //单词详细信息
+    _word: string = ""; //单词名字
+    _imgShow: boolean = true; //是否显示图片
 
-    sentenceData: any = null; //例句信息
-    sentenceId: string = ""; //例句ID
+    _sentenceData: WordSentence = null; //例句信息
+    _sentenceId: string = ""; //例句ID
 
-    tabIdx: number = 1; //显示更多的tab页
+    _tabIdx: number = 1; //显示更多的tab页
 
-    wordDetailPanel: WordDetailPanel = null;
+    _wordDetailPanel: WordDetailPanel = null;
 
     /** 初始化数据 */
-    public initData(data: any) {
-        this.wordData = data;
+    public initData(data: SearchWordDetail) {
+        this._wordData = data;
 
         //this.initEvent();
         // this.initDetailPanel(this.wordData);
@@ -90,7 +91,7 @@ export class WordSearchView extends Component {
 
     initDetailPanel(data) {
         console.log("wordData", data);
-        this.word = data.Word;
+        this._word = data.Word;
         let word = data.Word;
         this.wordCnTxt.string = data.Cn;
         this.usSymbolTxt.string = "美" + data.SymbolUs + "";
@@ -106,21 +107,21 @@ export class WordSearchView extends Component {
             let x: number = 498;
 
             this.imgBox.setPosition(v3(x, y, 0));
-            this.imgShow = true;
+            this._imgShow = true;
         } else { //字符不能超过24，超过24则图片不显示
             let x: number = 1080;//this.wordImgBtn.position.x;
             x = x + 20;
             this.imgBox.setPosition(v3(x, y, 0));
-            this.imgShow = false;
+            this._imgShow = false;
         }
         //this.wordImgBtn.skin = this.imgShow ? "img/newWordGame/showImg_h.png" : "img/newWordGame/showImg.png";
-        this.wordImgBtn.getComponent(Sprite).spriteFrame = this.imgShow ? this.sprWordImgBtnAry[0] : this.sprWordImgBtnAry[1];
+        this.wordImgBtn.getComponent(Sprite).spriteFrame = this._imgShow ? this.sprWordImgBtnAry[0] : this.sprWordImgBtnAry[1];
 
         this.onWordDetail(data);
     }
 
     private onWordDetail(data): void {
-        if (!this.sentenceData) {
+        if (!this._sentenceData) {
             let sentensDatas = data.Sentences;
             let sentData;
             if (sentensDatas && sentensDatas.length > 0) {
@@ -128,7 +129,7 @@ export class WordSearchView extends Component {
                 sentData.Word = data.Word;
                 let word = data.Word;
                 let sentence: string = sentData.En; //英语部分
-                this.sentenceId = sentData.Id;
+                this._sentenceId = sentData.Id;
 
                 let lowerSent: string = sentence.toLowerCase(); //句子变小写
                 let lowerWord = word.toLowerCase(); //单词变小写
@@ -176,33 +177,33 @@ export class WordSearchView extends Component {
 
     /**显示/关闭 词条图片 */
     private onShowWord() {
-        this.imgShow = !this.imgShow;
-        let targetX = this.imgShow ? 498 : (1080 + 20);
+        this._imgShow = !this._imgShow;
+        let targetX = this._imgShow ? 498 : (1080 + 20);
         let y = this.imgBox.position.y;
         //Laya.Tween.to(this.imgBox, { x: targetX }, 200);
         tween(this.imgBox)
             .to(0.2, { position: v3(targetX, y, 0) })
             .start();
-        this.wordImgBtn.getComponent(Sprite).spriteFrame = this.imgShow ? this.sprWordImgBtnAry[0] : this.sprWordImgBtnAry[1];
+        this.wordImgBtn.getComponent(Sprite).spriteFrame = this._imgShow ? this.sprWordImgBtnAry[0] : this.sprWordImgBtnAry[1];
         //this.wordImgBtn.skin = this.imgShow ? "img/newWordGame/showImg_h.png" : "img/newWordGame/showImg.png";
     }
 
     /**播放单词声音 */
     private onPlaySound() {
-        let wordSoundUrl = "/sounds/glossary/words/en/" + this.word + ".wav";
+        let wordSoundUrl = "/sounds/glossary/words/en/" + this._word + ".wav";
         RemoteSoundMgr.playSound(NetConfig.assertUrl + wordSoundUrl);
     }
 
     /**播放音标 */
     private playUkSound() {
-        let wordSoundUrl = "/sounds/glossary/words/uk/" + this.word + ".wav";
+        let wordSoundUrl = "/sounds/glossary/words/uk/" + this._word + ".wav";
         RemoteSoundMgr.playSound(NetConfig.assertUrl + wordSoundUrl);
     }
 
     /**播放单词例句声音 */
     private onPlaySentence() {
         //SoundUtil.playSound("/assets/sounds/glossary/sentence_tts/Emily/" + this.sentenceId + ".wav")
-        let wordSoundUrl = "/sounds/glossary/sentence_tts/Emily/" + this.sentenceId + ".wav";
+        let wordSoundUrl = "/sounds/glossary/sentence_tts/Emily/" + this._sentenceId + ".wav";
         RemoteSoundMgr.playSound(NetConfig.assertUrl + wordSoundUrl);
     }
 
@@ -210,12 +211,12 @@ export class WordSearchView extends Component {
     private showDetail(e: EventTouch) {
         console.log(e);
         if (e.currentTarget.name === "moreBtn") { //点击更多例句按钮
-            this.tabIdx = 1;
+            this._tabIdx = 1;
         }
         else {
-            this.tabIdx = 2;
+            this._tabIdx = 2;
         }
-        this.wordDetailPanel.show(this.tabIdx);
+        this._wordDetailPanel.show(this._tabIdx);
     }
 
     protected onLoad(): void {
@@ -227,15 +228,15 @@ export class WordSearchView extends Component {
     private createDetailPanel(): void {
         var ndWordDetailPanel = instantiate(this.preWordDetailPanel);
         this.node.addChild(ndWordDetailPanel);
-        this.wordDetailPanel = ndWordDetailPanel.getComponent(WordDetailPanel);
-        this.wordDetailPanel.setData(this.wordData);
+        this._wordDetailPanel = ndWordDetailPanel.getComponent(WordDetailPanel);
+        this._wordDetailPanel.setData(this._wordData);
 
-        this.wordDetailPanel.node.active = false;
+        this._wordDetailPanel.node.active = false;
     }
 
     initDetail(data) {
         if (data.Word != "") {
-            this.wordDetailPanel.getComponent(WordDetailPanel).setData(data);
+            this._wordDetailPanel.getComponent(WordDetailPanel).setData(data);
         }
     }
 
@@ -261,7 +262,7 @@ export class WordSearchView extends Component {
     }
 
     start() {
-        this.initDetailPanel(this.wordData);
+        this.initDetailPanel(this._wordData);
     }
 
     protected onDestroy(): void {

@@ -1,4 +1,6 @@
 import { _decorator, Component, Label, Node } from 'cc';
+import { WordRootItem } from './SearchWordView';
+import { WordRootData } from './WordDetailPanel';
 const { ccclass, property } = _decorator;
 
 @ccclass('DetailWordRootItem') //单词释义
@@ -10,7 +12,7 @@ export class DetailWordRootItem extends Component {
     @property({ type: Label, tooltip: "词根内容" }) //
     public rootItemTxt: Label = null;
 
-    Init(data) { // {type:"词根", txt:"词根内容"}
+    Init(data: WordRootData) { // {type:"词根", txt:"词根内容"}
         this.rootTypeTxt.string = "";
         this.rootItemTxt.string = "";
         if (!data) {
