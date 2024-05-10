@@ -48,6 +48,7 @@ export class EditInfo {
     png: string;//图片
     description: string;//描述
     function: string;//功能描述
+    animation: string;//动画
 }
 /**奖励信息 */
 export class RewardInfo {
@@ -158,11 +159,16 @@ export class DataMgr {
         for (let k in json) {
             let obj: EditInfo = json[k];
             if (0 == obj.enable) continue;
-            this.editInfo[obj.id] = obj;
-
-            if (!this.defaultLand && obj.type == EditType.Land) {
-                this.defaultLand = obj;
+            if (obj.type == EditType.Land) {
+                obj.png = ToolUtil.replace(TextConfig.Building_Path1, obj.png);
+                if (!this.defaultLand) this.defaultLand = obj;
+            } else {
+                obj.png = ToolUtil.replace(TextConfig.Building_Path2, obj.png);
             }
+            if (obj.animation && obj.animation.length > 0) {
+                obj.animation = ToolUtil.replace(TextConfig.Building_SpPath, obj.animation);
+            }
+            this.editInfo[obj.id] = obj;
         }
     }
     public converAryToReward(ary: number[]): RewardInfo[] {
@@ -239,9 +245,14 @@ export class DataMgr {
 
     /**获取编辑图片 */
     static getEditPng(editInfo: EditInfo): string {
-        if (editInfo.type == EditType.Land) {
-            return ToolUtil.replace(TextConfig.Building_Path1, editInfo.png);
-        }
-        return ToolUtil.replace(TextConfig.Building_Path2, editInfo.png);
+        // if (editInfo.type == EditType.Land) {
+        //     return ToolUtil.replace(TextConfig.Building_Path1, editInfo.png);
+        // }
+        // return ToolUtil.replace(TextConfig.Building_Path2, editInfo.png);
+        return editInfo.png;
+    }
+    /**获取道具信息 */
+    static getPropInfo(id: number): PropInfo {
+        return DataMgr.instance.propConfig[id];
     }
 }

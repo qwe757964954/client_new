@@ -19,7 +19,7 @@ class RemoteSoundManager {
                 isTimeout = true;
                 resolve(false);
             }, 5000);
-            assetManager.loadRemote(url, { audioLoadMode: AudioClip.AudioType.DOM_AUDIO }, (err, audioclip: AudioClip) => {
+            assetManager.loadRemote(url, { audioLoadMode: AudioClip.AudioType.WEB_AUDIO }, (err, audioclip: AudioClip) => {
                 if (isTimeout) return;
                 clearTimeout(loadLimitTimer);
                 if (err) {
