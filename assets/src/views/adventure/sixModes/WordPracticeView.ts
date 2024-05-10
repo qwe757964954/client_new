@@ -96,6 +96,8 @@ export class WordPracticeView extends BaseModeView {
         this.wordMeanLabel.string = this._currentWord.cn;
         this.letterList.numItems = this._letterList.length;
         this.selectList.numItems = this._selectLetterList.length;
+
+        this.playWordSound();
     }
 
     onLetterRender(item: Node, index: number) {
@@ -132,14 +134,21 @@ export class WordPracticeView extends BaseModeView {
 
     protected modeOver(): void {
         console.log('练习模式完成');
-        ViewsManager.instance.showView(PrefabType.TransitionView, (node: Node) => {
-            let wordData = JSON.parse(JSON.stringify(this._wordsData));
-            let levelData = JSON.parse(JSON.stringify(this._levelData));
-            //跳转到拼模式
-            node.getComponent(TransitionView).setTransitionCallback(() => {
-
+        ViewsManager.instance.showView(PrefabType.BaseRemindView, (node: Node) => {
+            node.getComponent(BaseRemindView).init("后面模式暂未开放，点击确定返回。", () => {
+                ViewsManager.instance.closeView(PrefabType.WordPracticeView);
+            }, () => {
+                ViewsManager.instance.closeView(PrefabType.BaseRemindView);
             });
         });
+        // ViewsManager.instance.showView(PrefabType.TransitionView, (node: Node) => {
+        //     let wordData = JSON.parse(JSON.stringify(this._wordsData));
+        //     let levelData = JSON.parse(JSON.stringify(this._levelData));
+        //     //跳转到拼模式
+        //     node.getComponent(TransitionView).setTransitionCallback(() => {
+
+        //     });
+        // });
     }
 
     playWordSound() {
@@ -157,9 +166,6 @@ export class WordPracticeView extends BaseModeView {
         }
         this._selectLetterList = [];
         this._letterList = [];
-
-        this.letterList.numItems = this._letterList.length;
-        this.selectList.numItems = this._selectLetterList.length;
         this._selectLetterItems = [];
         this._letterItems = [];
     }

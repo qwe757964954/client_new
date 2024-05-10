@@ -63,6 +63,8 @@ export class WorldIsland extends Component {
 
     mapPointClick(data: MapLevelData) {
         this.levelPanel.node.active = true;
+        let nodesize = this.levelPanel.node.getComponent(UITransform).contentSize;
+        this.levelPanel.node.setPosition(nodesize.width, 100);
         console.log('点击了地图点', data);
         this.levelPanel.openView(data);
     }
@@ -89,6 +91,8 @@ export class WorldIsland extends Component {
 
     /**初始化UI */
     private initUI() {
+        let nodesize = this.levelPanel.node.getComponent(UITransform).contentSize;
+        this.levelPanel.node.setPosition(-nodesize.width, 100);
         this.levelPanel.hideView();
     }
 
