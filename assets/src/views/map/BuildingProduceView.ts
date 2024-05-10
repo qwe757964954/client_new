@@ -1,4 +1,4 @@
-import { _decorator, Component, Layers, Node, Sprite, Vec3 } from 'cc';
+import { _decorator, Component, EventTouch, Label, Layers, Node, Sprite, Vec3 } from 'cc';
 import { BuildProduceInfo, DataMgr, ProduceInfo } from '../../manager/DataMgr';
 import { BuildingModel } from '../../models/BuildingModel';
 import CCUtil from '../../util/CCUtil';
@@ -20,6 +20,10 @@ export class BuildingProduceView extends Component {
     public btnRight: Sprite = null;//右箭头
     @property(List)
     public listView: List = null;//列表
+    @property(List)
+    public leftListView: List = null;//列表
+    @property(Label)
+    public labelName: Label = null;//名字
 
     private _building: BuildingModel = null;
     private _closeCallBack: Function = null;
@@ -70,9 +74,12 @@ export class BuildingProduceView extends Component {
         this._building.setCameraType(Layers.Enum.UI_2D);
 
         let editInfo = building.editInfo;
-        let produceInfo: BuildProduceInfo = DataMgr.instance.buildProduceInfo[editInfo.id]
+        this.labelName.string = editInfo.name;
+        let produceInfo: BuildProduceInfo = DataMgr.instance.buildProduceInfo[editInfo.id];
         this._produceData = produceInfo?.data;
         this.listView.numItems = produceInfo ? produceInfo.count : 0;
+
+        this.leftListView.numItems = this._produceData ? produceInfo.count : 0;
     }
     /**设置回调 */
     setCallBack(closeCallBack: Function) {
@@ -111,7 +118,16 @@ export class BuildingProduceView extends Component {
     /**list加载 */
     onLoadProduceInfoList(item: Node, idx: number) {
         let data = this._produceData[idx + 1];
-        item.getComponent(BuildingProduceItem)?.initData(data.res_png, data.res_name, data.res_time, 5);
+        item.getComponent(BuildingProduceItem)?.initData(data.res_png, data.res_name, data.res_time, 5, data.expend);
+    }
+    onLoadLeftList(item: Node, idx: number) {
+        // CCUtil.offTouch(item, this.onLeftListClick, this);
+        // CCUtil.onTouch(item, this.onLeftListClick, this);
+    }
+    /**list点击 */
+    onLeftListClick(event: EventTouch) {
+        // console.log("onLeftListClick", event);
+        // event.target.active = false;
     }
 }
 

@@ -389,9 +389,11 @@ export class MainScene extends Component {
                 const element = children[i];
                 let building = element.getComponent(BuildingModel);
                 if (!building) continue;
+                // let editInfo = building.editInfo;
+                // if (!DataMgr.instance.buildProduceInfo[editInfo.id]) continue;
                 buildAry.push(building);
                 if (building == selectBuilding) {
-                    idx = i;
+                    idx = buildAry.length - 1;
                 }
             }
             let count = buildAry.length;

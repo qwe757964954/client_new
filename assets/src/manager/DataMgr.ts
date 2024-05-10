@@ -1,3 +1,4 @@
+import { PropInfo } from "../config/PropConfig";
 import { TextConfig } from "../config/TextConfig";
 import { MapLevelData } from "../models/AdventureModel";
 import { ToolUtil } from "../util/ToolUtil";
@@ -10,6 +11,7 @@ const ConfigPath = {
     ProduceInfo: "produce",
     WordSplit: "word_split",
     AdventureLevel: "adventure_level",
+    PropConfig: "propConfig",
 }
 
 //角色插槽
@@ -87,7 +89,7 @@ export class BookLevelConfig {
     unit: string;
     type_name: string;
     game_mode: number;
-    book_name:string;
+    book_name: string;
 }
 
 
@@ -100,6 +102,7 @@ export class DataMgr {
     public buildProduceInfo: BuildProduceInfo[] = [];//建筑生产信息
     public wordSplitConfig: any = null;
     public adventureLevelConfig: AdvLevelConfig[] = null;
+    public propConfig: { [key: number]: PropInfo } = {};//道具信息
 
     private _isInit: boolean = false;
     public defaultLand: EditInfo = null;//默认地块
@@ -123,6 +126,7 @@ export class DataMgr {
         await this.initRoleSlotConfig();
         await this.initEditInfo();
         await this.initBuildProduceInfo();
+        await this.initPropConfig();
     }
     /** 初始化角色插槽 */
     public async initRoleSlot() {
@@ -198,6 +202,15 @@ export class DataMgr {
             info.upgrade_time = value.upgrade_time;
             obj.data[info.level] = info;
             obj.count++;
+        }
+    }
+    /**初始化道具配置 */
+    public async initPropConfig() {
+        let json = await LoadManager.loadJson(ConfigPath.PropConfig);
+        for (let k in json) {
+            let obj: PropInfo = json[k];
+            obj.png = ToolUtil.replace(TextConfig.Prop_Path, obj.png);
+            this.propConfig[obj.id] = obj;
         }
     }
 
