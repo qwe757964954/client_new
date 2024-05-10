@@ -78,9 +78,19 @@ export class c2sAccountLogin {
     password: string;//密码
 }
 /**登录返回 */
+export class s2cAccountLoginDetailExtra {
+    coin: number;//金币
+    diamond: number;//钻石
+    amethyst: number;//紫晶石
+    stamina: number;//体力
+}
+export class s2cAccountLoginDetail {
+    extra: s2cAccountLoginDetailExtra;//额外信息
+}
 export class s2cAccountLogin extends BaseRepPacket {
     user_id: number;//用户id
     token: string;//token
+    detail: s2cAccountLoginDetail;
 }
 /**建筑列表 */
 export class c2sBuildingList {
