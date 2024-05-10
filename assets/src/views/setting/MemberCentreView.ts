@@ -1,6 +1,7 @@
 import { _decorator, Component, Node } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { ViewsManager } from '../../manager/ViewsManager';
+import { User } from '../../models/User';
 import List from '../../util/list/List';
 import { NavTitleView } from '../common/NavTitleView';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
@@ -47,9 +48,9 @@ export class MemberCentreView extends Component {
     /**初始化游戏数值 */
     initAmout(){
         ViewsManager.addAmout(this.top_layout,15.78,22.437).then((amoutScript: TopAmoutView) => {
-            let dataArr:AmoutItemData[] = [{type:AmoutType.Diamond,num:0},
-                {type:AmoutType.Coin,num:0},
-                {type:AmoutType.Energy,num:0}];
+            let dataArr:AmoutItemData[] = [{type:AmoutType.Diamond,num:User.diamond},
+                {type:AmoutType.Coin,num:User.coin},
+                {type:AmoutType.Energy,num:User.stamina}];
             amoutScript.loadAmoutData(dataArr);
         });
     }
