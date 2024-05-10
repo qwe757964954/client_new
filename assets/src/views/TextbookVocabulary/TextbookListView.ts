@@ -26,8 +26,6 @@ export class TextbookListView extends BaseView {
 
     private _myTextbookDataArr:MyTextbookStatus[] = [];
 
-    private _selectedIndex:number = 0;
-
     private _curBookData:BookUnitModel = null;
     start() {
         this.initUI();
@@ -71,10 +69,12 @@ export class TextbookListView extends BaseView {
         if(Array.isArray(data) && data.length > 0){
             this._myTextbookDataArr = data;
             this.myScrollView.numItems = this._myTextbookDataArr.length;
-            this.myScrollView.update();
+            
             let select_id = this.getSelectDataIndex()
-            this._selectedIndex = select_id;
+            console.log("select_id",select_id,this._curBookData,this._myTextbookDataArr);
+            this.myScrollView.selectedId = -1;
             this.myScrollView.selectedId = select_id;
+            this.myScrollView.update();
         }else{
             this._myTextbookDataArr = []
             this.myScrollView.numItems = this._myTextbookDataArr.length;
@@ -122,6 +122,12 @@ export class TextbookListView extends BaseView {
 
     onMyTextBookVerticalSelected(item: any, selectedId: number, lastSelectedId: number, val: number){
         console.log("onMyTextBookVerticalSelected",item,selectedId);
+        /**
+         * -1主要是用于重置scrollview selectid ,需过滤
+         */
+        if(selectedId === -1 || !isValid(item)){
+            return;
+        }
         let itemInfo:MyTextbookStatus =  this._myTextbookDataArr[selectedId];
         let data:ITextbookRemindData = {
             sure_text:"确定",
@@ -140,13 +146,13 @@ export class TextbookListView extends BaseView {
                         this._curBookData = bookData;
                         node.getComponent(TextbookChallengeView).initData(bookData);
                     });
-                }else{
-                    this.myScrollView.selectedId = this._selectedIndex;
                 }
             }
         }
-        
-        if(this._selectedIndex!= selectedId){
+        console.log(itemInfo,this._curBookData);
+        if(itemInfo.book_name !== this._curBookData.book_name || 
+            itemInfo.type_name !== this._curBookData.type_name || 
+            itemInfo.grade !== this._curBookData.grade){
             this.showRemainCalL(data);
         }else{
            this.setClickItemProps(item,selectedId);
@@ -155,7 +161,6 @@ export class TextbookListView extends BaseView {
 
     setClickItemProps(item:any,selectedId:number){
         this.clearItems();
-        this._selectedIndex = selectedId;
         let itemScript = item.getComponent(MyContentItem);
         itemScript.flagBg.active = true;
         itemScript.select_infoBg.active = true;
