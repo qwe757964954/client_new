@@ -19,7 +19,7 @@ export interface MyTextbookStatus {
 } 
 
 export interface BookListItemData extends BaseRepPacket{
-    dataArr:BookItemData[]
+    data:BookItemData[]
 }
 
 
@@ -276,6 +276,25 @@ export class c2sReportResult {
     game_mode:number;
 }
 
-// "command_id";
-// :3023, "data":{"type_name":"primaryschool", "book_name":"人教PEP版", "grade":"三上", "unit":"Unit 1","game_mode":0}}
+export class c2sWordDetail {
+    command_id: string = InterfacePath.Classification_Word;
+    word:string;
+}
 
+export interface WordDetailStatus extends BaseRepPacket {
+    ancillary?:string;
+    cn?:string;
+    etyma?:string;
+    example?:string;
+    example_cn?:string;
+    phonic?:number;
+    sentence_list?:any[];
+    similar_list?:number;
+    speech?:number;
+    structure?:any;
+    syllable:string;
+    symbol:string;
+    symbolus:string;
+    variant:any;
+    word:string;
+}

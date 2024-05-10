@@ -63,7 +63,7 @@ export class SelectWordView extends BaseView {
         if(params.isSave){
             this._planData = params;
             let reqData = {
-                type_name:this._bookLiskData.dataArr[this._tabIndex].type_name,
+                type_name:this._bookLiskData.data[this._tabIndex].type_name,
                 book_name:this._schoolBookListDataArr.data[this._leftNavIndex].book_name,
                 grade:this._schoolGradeListData.data[this._gradeSelectId].grade,
                 rank_num:parseInt(this._planData.left),
@@ -80,7 +80,7 @@ export class SelectWordView extends BaseView {
         
         ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
             ViewsManager.instance.closeView(PrefabType.SelectWordView);
-            let type_name = this._bookLiskData.dataArr[this._tabIndex].type_name;
+            let type_name = this._bookLiskData.data[this._tabIndex].type_name;
             let book_name = this._schoolBookListDataArr.data[this._leftNavIndex].book_name;
             let grade = this._schoolGradeListData.data[this._gradeSelectId].grade;
             let bookData:BookUnitModel = {
@@ -94,7 +94,7 @@ export class SelectWordView extends BaseView {
 
     onBookAdd(){
         let reqData = {
-            type_name:this._bookLiskData.dataArr[this._tabIndex].type_name,
+            type_name:this._bookLiskData.data[this._tabIndex].type_name,
             book_name:this._schoolBookListDataArr.data[this._leftNavIndex].book_name,
             grade:this._schoolGradeListData.data[this._gradeSelectId].grade,
             rank_num:parseInt(this._planData.left),
@@ -118,15 +118,15 @@ export class SelectWordView extends BaseView {
         this._rightNav.loadNavListData(this._schoolBookListDataArr.data,(selectId:number)=>{
             if(selectId >= 0){
                 this._leftNavIndex = selectId;
-                TBServer.reqSchoolBookGrade(this._bookLiskData.dataArr[this._tabIndex].type_name,this._schoolBookListDataArr.data[this._leftNavIndex].book_name);
+                TBServer.reqSchoolBookGrade(this._bookLiskData.data[this._tabIndex].type_name,this._schoolBookListDataArr.data[this._leftNavIndex].book_name);
             }
         });
     }
     onBookList(data:BookListItemData){
         this._bookLiskData = data;
-        this._tabTop.loadTabData(this._bookLiskData.dataArr,(selectId:number)=>{
+        this._tabTop.loadTabData(this._bookLiskData.data,(selectId:number)=>{
             this._tabIndex = selectId;
-            TBServer.reqSchoolBook(this._bookLiskData.dataArr[this._tabIndex].type_name);
+            TBServer.reqSchoolBook(this._bookLiskData.data[this._tabIndex].type_name);
         });
     }
  

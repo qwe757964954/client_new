@@ -1,6 +1,6 @@
 import { isValid } from "cc";
 import { ViewsManager } from "../manager/ViewsManager";
-import { AwardListItem, BookAwardListModel, BookItemData, BookListItemData, BookPlanDetail, CurrentBookStatus, ModifyPlanData, MyTextbookListStatus, MyTextbookStatus, ReportResultModel, ReqPlanData, ReqUnitStatusParam, SchoolBookGradeItemData, SchoolBookItemData, SchoolBookListGradeItemData, SchoolBookListItemData, UnitItemStatus, UnitListItemStatus, UnitStatusData, UnitWordModel, c2sAddBookStatus, c2sAddPlanBookStatus, c2sAddPlanStatus, c2sBookAwardList, c2sBookPlanDetail, c2sBookStatus, c2sCurrentBook, c2sDelBookStatus, c2sModifyPlanStatus, c2sReportResult, c2sSchoolBook, c2sSchoolBookGrade, c2sSearchBookList, c2sUnitListStatus, c2sUnitStatus } from "../models/TextbookModel";
+import { CurrentBookStatus, ModifyPlanData, MyTextbookListStatus, MyTextbookStatus, ReportResultModel, ReqPlanData, ReqUnitStatusParam, c2sAddBookStatus, c2sAddPlanBookStatus, c2sAddPlanStatus, c2sBookAwardList, c2sBookPlanDetail, c2sBookStatus, c2sCurrentBook, c2sDelBookStatus, c2sModifyPlanStatus, c2sReportResult, c2sSchoolBook, c2sSchoolBookGrade, c2sSearchBookList, c2sUnitListStatus, c2sUnitStatus, c2sWordDetail } from "../models/TextbookModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
 import { NetNotify } from "../net/NetNotify";
@@ -36,7 +36,8 @@ export default class _TextbookService extends BaseControll {
         this.addModelListener(InterfacePath.Classification_UnitStatus, this.onUnitStatus);
         this.addModelListener(InterfacePath.Classification_BookAwardList, this.onBookAddAwardList);
         this.addModelListener(InterfacePath.Classification_CurrentBook, this.onCurrentBook);
-        this.addModelListener(InterfacePath.Classification_ReportResult,this.onReportResult)
+        this.addModelListener(InterfacePath.Classification_ReportResult,this.onReportResult);
+        this.addModelListener(InterfacePath.Classification_Word,this.onWordDetail);
     }
     reqBookStatus() {
         let para: c2sBookStatus = new c2sBookStatus();
@@ -147,22 +148,7 @@ export default class _TextbookService extends BaseControll {
             console.log(data.msg);
             return
         }
-        let bookLiskData: BookListItemData = {
-            code: data.code,
-            msg: data.msg,
-            dataArr: []
-        };
-        for (let index = 0; index < data.data.length; index++) {
-            const element = data.data[index];
-            let obj: BookItemData = {
-                name: element.name,
-                num: element.num,
-                sort_no: element.sort_no,
-                type_name: element.type_name
-            }
-            bookLiskData.dataArr.push(obj);
-        }
-        EventMgr.dispatch(NetNotify.Classification_List, bookLiskData);
+        EventMgr.dispatch(NetNotify.Classification_List, data);
     }
     reqSchoolBook(TypeName: string) {
         let param: c2sSchoolBook = new c2sSchoolBook();
@@ -175,20 +161,7 @@ export default class _TextbookService extends BaseControll {
             console.log(data.msg);
             return;
         }
-        let schoolBookList: SchoolBookListItemData = {
-            code: data.code,
-            msg: data.msg,
-            data: []
-        }
-        for (let index = 0; index < data.data.length; index++) {
-            const element = data.data[index];
-            let obj: SchoolBookItemData = {
-                book_name: element.book_name,
-                num: element.num,
-            }
-            schoolBookList.data.push(obj);
-        }
-        EventMgr.dispatch(NetNotify.Classification_SchoolBook, schoolBookList);
+        EventMgr.dispatch(NetNotify.Classification_SchoolBook, data);
     }
     reqSchoolBookGrade(TypeName: string, BookName: string) {
         let param: c2sSchoolBookGrade = new c2sSchoolBookGrade();
@@ -201,20 +174,7 @@ export default class _TextbookService extends BaseControll {
             console.log(data.msg);
             return;
         }
-        let schoolGradeList: SchoolBookListGradeItemData = {
-            code: data.code,
-            msg: data.msg,
-            data: []
-        }
-        for (let index = 0; index < data.data.length; index++) {
-            const element = data.data[index];
-            let obj: SchoolBookGradeItemData = {
-                grade: element.grade,
-                num: element.num
-            }
-            schoolGradeList.data.push(obj);
-        }
-        EventMgr.dispatch(NetNotify.Classification_SchoolGrade, schoolGradeList);
+        EventMgr.dispatch(NetNotify.Classification_SchoolGrade, data);
     }
     reqUnitListStatus(bookData: BookUnitModel) {
         let param: c2sUnitListStatus = new c2sUnitListStatus();
@@ -229,20 +189,7 @@ export default class _TextbookService extends BaseControll {
             console.log(data.msg);
             return;
         }
-        let unitListStatus: UnitListItemStatus = {
-            code: data.code,
-            msg: data.msg,
-            data: []
-        }
-        for (let index = 0; index < data.data.length; index++) {
-            const element = data.data[index];
-            let obj: UnitItemStatus = {
-                num: element.num,
-                unit: element.unit,
-            }
-            unitListStatus.data.push(obj);
-        }
-        EventMgr.dispatch(NetNotify.Classification_UnitListStatus, unitListStatus);
+        EventMgr.dispatch(NetNotify.Classification_UnitListStatus, data);
     }
 
     reqAddPlanBook(data: ReqPlanData) {
@@ -278,18 +225,7 @@ export default class _TextbookService extends BaseControll {
             console.log(data.msg);
             return;
         }
-        let planData: BookPlanDetail = {
-            code: data.code,
-            msg: data.msg,
-            book_name: data.book_name,
-            grade: data.grade,
-            id: data.id,
-            num: data.num,
-            rank_num: data.rank_num,
-            type_name: data.type_name,
-            user_id: data.user_id
-        }
-        EventMgr.dispatch(NetNotify.Classification_BookPlanDetail, planData);
+        EventMgr.dispatch(NetNotify.Classification_BookPlanDetail, data);
     }
     reqUnitStatus(param: ReqUnitStatusParam) {
         let params: c2sUnitStatus = new c2sUnitStatus();
@@ -306,32 +242,7 @@ export default class _TextbookService extends BaseControll {
             console.log(data.msg);
             return;
         }
-        let unitStatus: UnitStatusData = {
-            code: data.Code,
-            msg: data.Msg,
-            flag: data.flag,
-            game_mode: data.game_mode,
-            grade: data.grade,
-            study_num: data.study_num,
-            type_name: data.type_name,
-            unit: data.unit,
-            user_id: data.user_id,
-            book_name:data.book_name,
-            data: []
-        }
-        for (let index = 0; index < data.data.length; index++) {
-            const element = data.data[index];
-            let obj: UnitWordModel = {
-                cn: element.cn,
-                phonic: element.phonic,
-                syllable: element.syllable,
-                symbol: element.symbol,
-                symbolus: element.symbolus,
-                word: element.word
-            }
-            unitStatus.data.push(obj);
-        }
-        EventMgr.dispatch(NetNotify.Classification_UnitStatus, unitStatus);
+        EventMgr.dispatch(NetNotify.Classification_UnitStatus, data);
     }
     reqBookAwardList(type_name: string, book_name: string) {
         let params: c2sBookAwardList = new c2sBookAwardList();
@@ -345,29 +256,7 @@ export default class _TextbookService extends BaseControll {
             console.log(data.msg);
             return;
         }
-        let bookAwardData: BookAwardListModel = {
-            code: data.code,
-            msg: data.msg,
-            study_num: data.study_num,
-            study_word_num: data.study_word_num,
-            total_num: data.total_num,
-            total_word_num: data.total_word_num,
-            awards_list: []
-        }
-        for (let index = 0; index < data.awards_list.length; index++) {
-            let element = data.awards_list[index];
-            let obj: AwardListItem = {
-                num: element.num,
-                rec_flag: element.rec_flag,
-                awards: {
-                    coin: element.awards.coin,
-                    diamond: element.awards.diamond,
-                    random_props: element.awards.random_props
-                }
-            }
-            bookAwardData.awards_list.push(obj);
-        }
-        EventMgr.dispatch(NetNotify.Classification_BookAwardList, bookAwardData);
+        EventMgr.dispatch(NetNotify.Classification_BookAwardList, data);
     }
 
     reqCurrentBook(){
@@ -417,6 +306,19 @@ export default class _TextbookService extends BaseControll {
             return;
         }
         EventMgr.dispatch(NetNotify.Classification_ReportResult, data);
+    }
+    reqWordDetail(word:string){
+        let params:c2sWordDetail = new c2sWordDetail();
+        params.word = word;
+        NetMgr.sendMsg(params);
+    }
+    onWordDetail(data:any){
+        console.log("onWordDetail....",data);
+        if(data.code !== 200) {
+            console.log(data.msg);
+            return;
+        }
+        EventMgr.dispatch(NetNotify.Classification_Word, data);
     }
 };
 

@@ -1,7 +1,7 @@
 import { _decorator, Button, instantiate, Node, Prefab, Sprite, tween, UITransform, Vec3 } from 'cc';
 import { AdvLevelConfig, BookLevelConfig } from '../../../manager/DataMgr';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
-import { WordsDetailData, GameMode, s2cAdventureResult } from '../../../models/AdventureModel';
+import { s2cAdventureResult, WordsDetailData } from '../../../models/AdventureModel';
 import { PetModel } from '../../../models/PetModel';
 import { RoleBaseModel } from '../../../models/RoleBaseModel';
 import { ReportResultModel, UnitWordModel } from '../../../models/TextbookModel';
@@ -73,6 +73,7 @@ export class BaseModeView extends BaseView {
 
     onInitModuleEvent() {
         this.addModelListener(NetNotify.Classification_ReportResult, this.onUpResult);
+        this.addModelListener(NetNotify.Classification_Word, this.onClassificationWord);
     }
 
     async initRole() {
@@ -224,7 +225,7 @@ export class BaseModeView extends BaseView {
         if (this._levelData.hasOwnProperty('islandId')) { //大冒险关卡
             ServiceMgr.studyService.getAdventureWord(word);
         } else { //教材单词关卡
-
+            TBServer.reqWordDetail(word);
         }
     }
 
