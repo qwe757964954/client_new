@@ -36,4 +36,10 @@ export const EventType = {
 
     /**选择词书模块相关事件 */
     Select_Word_Plan: "Select_Word_Plan",//选择计划
+
+    /**查找单词相关事件 */
+    Search_Word: "SearchWord", //查找单词
+    Search_Word_Item: "SearchWordItem", //查找某个单词项
+    Search_Word_Del_OneWord: "DelOneSearchWord",//删除某个查找项
+    Search_Word_Edt_Began: "editing-did-began", //输入框编辑开始
 }

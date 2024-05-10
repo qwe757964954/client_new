@@ -2,6 +2,8 @@ import { _decorator, Component, Label, Node, Sprite } from 'cc';
 import EventManager from '../../util/EventManager';
 import { InterfacePath } from '../../net/InterfacePath';
 import CCUtil from '../../util/CCUtil';
+import { EventType } from '../../config/EventType';
+import { WordSimpleData } from './SearchWordView';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordHistoryItem')
@@ -32,7 +34,7 @@ export class WordHistoryItem extends Component {
         this.removeEvent();
     }
 
-    public Init(data: any) { //{Word:'teacher', Cn:'老师'}
+    public init(data: WordSimpleData) { //{Word:'teacher', Cn:'老师'}
         if (!data) {
             console.log("search word data is null!");
             return;
@@ -57,8 +59,7 @@ export class WordHistoryItem extends Component {
 
     /**点击清除一个单词历史 */
     onClearWord() {
-        //this._delOneSearchWordEveId = EventManager.emit("DelOneSearchWord", this.onDelOneSearchWord.bind(this));
-        EventManager.emit("DelOneSearchWord", this.data.Word);
+        EventManager.emit(EventType.Search_Word_Del_OneWord, this.data.Word);
         this.node.destroy();
     }
 
@@ -66,7 +67,7 @@ export class WordHistoryItem extends Component {
      * 
      */
     onSearchDetail() {
-        EventManager.emit("SearchWordItem", this.data);
+        EventManager.emit(EventType.Search_Word_Item, this.data);
     }
 
     onClickClearItem() {
