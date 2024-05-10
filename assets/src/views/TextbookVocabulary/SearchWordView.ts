@@ -260,7 +260,7 @@ export class SearchWordView extends Component {
         //word = word.trim();
         console.log("查找单词详情");
         // 这句代码暂时无效，服务器接口没准备好
-        ServiceMgr.studyService.getClassificationWord(word);
+        ServiceMgr.studyService.getAdventureWord(word);
         //测试代码,接口没送到
         let testWordResp: NetWordSimpleData = { Code: 200, Word: word, Cn: "你好，一种敬语。" };
         EventManager.emit(EventType.Search_Word, testWordResp);
@@ -293,7 +293,7 @@ export class SearchWordView extends Component {
         //word = word.trim();
         console.log("查找单词详情");
         // 这句代码暂时无效，服务器接口没准备好
-        ServiceMgr.studyService.getClassificationWord(word);
+        ServiceMgr.studyService.getAdventureWord(word);
         //测试代码,接口没送到
         let testWordResp: NetWordSimpleData = { Code: 200, Word: word, Cn: "你好，一种敬语。" };
         EventManager.emit(EventType.Search_Word, testWordResp);
