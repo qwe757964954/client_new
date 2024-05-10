@@ -1,4 +1,4 @@
-import { _decorator, Button, Component, instantiate, Node, Prefab, Sprite, tween, UITransform, Vec3 } from 'cc';
+import { _decorator, Button, instantiate, Node, Prefab, Sprite, tween, UITransform, Vec3 } from 'cc';
 import { AdvLevelConfig, BookLevelConfig } from '../../../manager/DataMgr';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { WordsDetailData, GameMode, s2cAdventureResult } from '../../../models/AdventureModel';
@@ -8,6 +8,7 @@ import { ReportResultModel, UnitWordModel } from '../../../models/TextbookModel'
 import { InterfacePath } from '../../../net/InterfacePath';
 import { NetNotify } from '../../../net/NetNotify';
 import { ServiceMgr } from '../../../net/ServiceManager';
+import { BaseView } from '../../../script/BaseView';
 import { TBServer } from '../../../service/TextbookService';
 import CCUtil from '../../../util/CCUtil';
 import EventManager from '../../../util/EventManager';
@@ -17,7 +18,7 @@ const { ccclass, property } = _decorator;
 
 /**学习模式公共部分 */
 @ccclass('BaseModeView')
-export class BaseModeView extends Component {
+export class BaseModeView extends BaseView {
     @property({ type: Button, tooltip: "关闭按钮" })
     public btn_close: Button = null;
     @property({ type: Node, tooltip: "收藏按钮" })
@@ -68,6 +69,10 @@ export class BaseModeView extends Component {
     }
     onLoad(): void {
 
+    }
+
+    onInitModuleEvent() {
+        this.addModelListener(NetNotify.Classification_ReportResult, this.onUpResult);
     }
 
     async initRole() {

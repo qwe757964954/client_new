@@ -6,6 +6,7 @@ import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { MapLevelData } from '../../models/AdventureModel';
 import { ReqUnitStatusParam, UnitListItemStatus, UnitStatusData } from '../../models/TextbookModel';
+import { User } from '../../models/User';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
@@ -147,9 +148,9 @@ export class BreakThroughView extends BaseView {
     /**初始化游戏数值 */
     initAmout(){
         ViewsManager.addAmout(this.top_layout,5.471,42.399).then((amoutScript: TopAmoutView) => {
-            let dataArr:AmoutItemData[] = [{type:AmoutType.Diamond,num:0},
-                {type:AmoutType.Coin,num:0},
-                {type:AmoutType.Energy,num:0}];
+            let dataArr:AmoutItemData[] = [{type:AmoutType.Diamond,num:User.diamond},
+                {type:AmoutType.Coin,num:User.coin},
+                {type:AmoutType.Energy,num:User.stamina}];
             amoutScript.loadAmoutData(dataArr);
         });
     }
