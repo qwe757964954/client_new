@@ -249,6 +249,10 @@ export class MainScene extends Component {
             return;
         }
         let building = this._mapUICtl.newBuildingInCamera(data);
+        if (!building) {
+            ViewsManager.showTip(TextConfig.Building_New_Error);
+            return;
+        }
         this._buildingEditCtl.selectBuilding = building;
         this.changeMapStatus(MapStatus.BUILD_EDIT);
     }

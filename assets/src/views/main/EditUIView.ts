@@ -123,7 +123,7 @@ export class EditUIView extends Component {
             this._itemsData.push(info);
         });
         this.listView.numItems = this._itemsData.length;
-        this.listView.scrollTo(0, 0);
+        // this.listView.scrollTo(0, 0);
     }
     /**选中按钮 */
     selectBtn(btn: Sprite) {
