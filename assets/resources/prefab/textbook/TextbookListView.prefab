@@ -1121,11 +1121,11 @@
     "__prefab": {
       "__id__": 48
     },
-    "_alignFlags": 44,
+    "_alignFlags": 45,
     "_target": null,
     "_left": -40,
     "_right": -40,
-    "_top": 0,
+    "_top": -0.8659999999999854,
     "_bottom": 0,
     "_horizontalCenter": 0,
     "_verticalCenter": 0,
@@ -1136,7 +1136,7 @@
     "_isAbsHorizontalCenter": true,
     "_isAbsVerticalCenter": true,
     "_originalWidth": 1620,
-    "_originalHeight": 0,
+    "_originalHeight": 856.986,
     "_alignMode": 2,
     "_lockFlags": 0,
     "_id": ""
@@ -1641,11 +1641,11 @@
     "__prefab": {
       "__id__": 71
     },
-    "_alignFlags": 20,
+    "_alignFlags": 21,
     "_target": null,
     "_left": 24.93500000000006,
     "_right": 0,
-    "_top": 24.12099999999998,
+    "_top": 0,
     "_bottom": 0,
     "_horizontalCenter": 0,
     "_verticalCenter": 0,
@@ -1656,7 +1656,7 @@
     "_isAbsHorizontalCenter": true,
     "_isAbsVerticalCenter": true,
     "_originalWidth": 0,
-    "_originalHeight": 0,
+    "_originalHeight": 853,
     "_alignMode": 2,
     "_lockFlags": 0,
     "_id": ""
@@ -2334,11 +2334,11 @@
     "__prefab": {
       "__id__": 105
     },
-    "_alignFlags": 20,
+    "_alignFlags": 21,
     "_target": null,
     "_left": 258.61850000000004,
     "_right": 259.38149999999996,
-    "_top": 3.2590000000000288,
+    "_top": 3.1895000000000095,
     "_bottom": -0.069500000000005,
     "_horizontalCenter": 0,
     "_verticalCenter": 0,
@@ -2349,7 +2349,7 @@
     "_isAbsHorizontalCenter": true,
     "_isAbsVerticalCenter": true,
     "_originalWidth": 1260,
-    "_originalHeight": 0,
+    "_originalHeight": 853,
     "_alignMode": 2,
     "_lockFlags": 0,
     "_id": ""
@@ -2411,11 +2411,11 @@
     "__prefab": {
       "__id__": 110
     },
-    "_alignFlags": 44,
+    "_alignFlags": 45,
     "_target": null,
     "_left": 0,
     "_right": 0,
-    "_top": 218,
+    "_top": 143.88,
     "_bottom": 1.3877787807814457e-17,
     "_horizontalCenter": 0,
     "_verticalCenter": 0,
@@ -2426,7 +2426,7 @@
     "_isAbsHorizontalCenter": true,
     "_isAbsVerticalCenter": true,
     "_originalWidth": 1620,
-    "_originalHeight": 0,
+    "_originalHeight": 856.12,
     "_alignMode": 2,
     "_lockFlags": 40,
     "_id": ""

@@ -24,13 +24,11 @@ export class TabTopView extends Component {
     }
 
     onTabListHorizontalRender(item:Node, idx:number){
-        console.log("onTabListHorizontal_______________");
         let tabItemScript:TabTopItem = item.getComponent(TabTopItem);
         let itemInfo:BookItemData = this._dataArr[idx];
         tabItemScript.updateItemProps(idx,itemInfo);
     }
     onTabListHorizontalSelected(item: any, selectedId: number, lastSelectedId: number, val: number){
-        console.log("onTabListHorizontalSelected_______________");
         this.clearTopItemColor();
         let tabItemScript:TabTopItem = item.getComponent(TabTopItem);
         tabItemScript.tab_name.color = tabItemScript.idx === selectedId ? color("#f9b600") : color("#DFC49F");
@@ -51,14 +49,12 @@ export class TabTopView extends Component {
 
     /**点击我得词书 */
     onClickMyTextbook(){
-        console.log("onClickMyTextbook_________________________");
         if(this.callSelectCallback){
             this.callSelectCallback(-1);
         }
     }
     /**点击往右箭头 */
     onClickRightArrowBotton(){
-        console.log("onClickRightArrowBotton________________________");
         this.tabScroll.scrollTo(this._dataArr.length - 1);
     }
 }
