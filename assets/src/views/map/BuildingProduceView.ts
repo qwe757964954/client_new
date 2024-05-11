@@ -1,5 +1,7 @@
 import { _decorator, Component, EventTouch, Label, Layers, Node, Sprite, Vec3 } from 'cc';
+import { TextConfig } from '../../config/TextConfig';
 import { BuildProduceInfo, DataMgr, ProduceInfo } from '../../manager/DataMgr';
+import { ViewsManager } from '../../manager/ViewsManager';
 import { BuildingModel } from '../../models/BuildingModel';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
@@ -121,13 +123,14 @@ export class BuildingProduceView extends Component {
         item.getComponent(BuildingProduceItem)?.initData(data.res_png, data.res_name, data.res_time, 5, data.expend);
     }
     onLoadLeftList(item: Node, idx: number) {
-        // CCUtil.offTouch(item, this.onLeftListClick, this);
-        // CCUtil.onTouch(item, this.onLeftListClick, this);
+        CCUtil.offTouch(item, this.onLeftListClick, this);
+        CCUtil.onTouch(item, this.onLeftListClick, this);
     }
     /**list点击 */
     onLeftListClick(event: EventTouch) {
         // console.log("onLeftListClick", event);
         // event.target.active = false;
+        ViewsManager.showTip(TextConfig.Function_Tip);
     }
 }
 

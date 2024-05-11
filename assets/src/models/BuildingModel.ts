@@ -305,6 +305,7 @@ export class BuildingModel extends BaseComponent {
             ViewsManager.showTip(TextConfig.Building_Cell_Tip);
             return;
         }
+        ViewsManager.showTip(TextConfig.Function_Tip);
     }
     // 翻转
     public flip(): void {
@@ -312,7 +313,8 @@ export class BuildingModel extends BaseComponent {
     }
     // 回收按钮点击
     public recycleBtnClick(): void {
-        this.recycle();
+        ViewsManager.showTip(TextConfig.Function_Tip);
+        // this.recycle();
     }
     // 回收
     public recycle() {
