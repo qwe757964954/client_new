@@ -161,6 +161,7 @@ export class LoginView extends BaseView {
             this.userNameEdit.string = account;
             this.pwdEdit.string = password;
             if (User.isAutoLogin) {
+                User.isLogin = true;//标记账号已经登录过，用来重连
                 this.btnLoginFunc();
                 return;
             }
