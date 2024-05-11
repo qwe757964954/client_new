@@ -135,10 +135,12 @@ export class SelectWordView extends BaseView {
             if (!isValid(widgetCom)) {
                 widgetCom = node.addComponent(Widget);
                 widgetCom.isAlignLeft = true;
-                widgetCom.isAlignVerticalCenter = true;
+                widgetCom.isAlignTop = true;
+                widgetCom.isAlignBottom = true;
             }
             widgetCom.left = 34.1095;
-            widgetCom.verticalCenter = -22.884;
+            widgetCom.top = -26;
+            widgetCom.bottom = -26;
             widgetCom.updateAlignment();
             let navScript = node.getComponent(RightNavView);
             this._rightNav = navScript;
