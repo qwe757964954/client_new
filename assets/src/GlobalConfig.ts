@@ -73,15 +73,16 @@ export default class GlobalConfig {
         if (_ratioReal >= _ratioDes) {
             view.setResolutionPolicy(ResolutionPolicy.FIXED_HEIGHT);
         } else {
-            // view.setResolutionPolicy(ResolutionPolicy.FIXED_HEIGHT);
             view.setResolutionPolicy(ResolutionPolicy.FIXED_WIDTH);
         }
+    }
+    public static initRessolutionHeight(){
+        view.setResolutionPolicy(ResolutionPolicy.FIXED_HEIGHT);
     }
 }
 // 游戏初始化
 game.once(Game.EVENT_POST_PROJECT_INIT, () => {
     GlobalConfig.init();
-    GlobalConfig.initResolutionRules();
 });
 // 监听窗口大小变化
 screen.on("window-resize", () => {
