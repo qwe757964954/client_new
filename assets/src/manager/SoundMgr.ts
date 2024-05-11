@@ -21,4 +21,8 @@ export class SoundMgr {
     static mainBgm() {
         AudioUtil.playMusic(SoundConfig.mainBgm);
     }
+    /**停止背景音乐 */
+    static stopBgm() {
+        AudioUtil.stopMusic();
+    }
 }

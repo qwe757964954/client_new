@@ -1,8 +1,11 @@
 import { _decorator, Component, director, Node, Sprite } from 'cc';
 import { MapStatus } from '../../config/MapConfig';
-import { PrefabType, SceneType } from '../../config/PrefabType';
+import { SceneType } from '../../config/PrefabType';
+import { TextConfig } from '../../config/TextConfig';
 import GlobalConfig from '../../GlobalConfig';
 import { ViewsManager } from '../../manager/ViewsManager';
+import { User } from '../../models/User';
+import { NetMgr } from '../../net/NetManager';
 import CCUtil from '../../util/CCUtil';
 import { MainScene } from './MainScene';
 const { ccclass, property } = _decorator;
@@ -93,23 +96,28 @@ export class MainUIView extends Component {
     }
     //头像点击
     public onClickHead() {
-        ViewsManager.instance.showView(PrefabType.SettingView);
+        // ViewsManager.instance.showView(PrefabType.SettingView);
+        ViewsManager.showTip(TextConfig.Function_Tip);
     }
     //菜单点击
     public onClickMenu() {
-
+        User.isAutoLogin = false;
+        NetMgr.closeNet();
+        director.loadScene(SceneType.LoginScene);
     }
     //在线礼包点击
     public onClickOnlineGift() {
-
+        ViewsManager.showTip(TextConfig.Function_Tip);
     }
     //复习计划点击
     public onClickReview() {
         //ViewsManager.instance.showView(PrefabType.ReviewMainView);
+        ViewsManager.showTip(TextConfig.Function_Tip);
     }
     //翻译查词点击
     public onClickTranslate() {
-        ViewsManager.instance.showView(PrefabType.SearchWorldView);
+        // ViewsManager.instance.showView(PrefabType.SearchWorldView);
+        ViewsManager.showTip(TextConfig.Function_Tip);
     }
     //编辑点击
     public onClickEdit() {
@@ -117,19 +125,19 @@ export class MainUIView extends Component {
     }
     //BOSS点击
     public onClickBoss() {
-
+        ViewsManager.showTip(TextConfig.Function_Tip);
     }
     //商店点击
     public onClickShop() {
-
+        ViewsManager.showTip(TextConfig.Function_Tip);
     }
     //任务点击
     public onClickTask() {
-
+        ViewsManager.showTip(TextConfig.Function_Tip);
     }
     //任务前往点击
     public onClickTaskGo() {
-
+        ViewsManager.showTip(TextConfig.Function_Tip);
     }
     //学习点击
     public onClickStudy() {

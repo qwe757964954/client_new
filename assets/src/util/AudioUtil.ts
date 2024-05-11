@@ -27,7 +27,7 @@ export default class AudioUtil {
         source.clip = null;
         source.volume = volume;
         source.loop = isLoop;
-        source.playOnAwake = true;
+        source.playOnAwake = false;
         return source;
     }
 

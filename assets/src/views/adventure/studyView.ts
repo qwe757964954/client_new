@@ -1,5 +1,6 @@
-import { _decorator, director, isValid, Node, ScrollView, Vec2 } from 'cc';
+import { _decorator, director, isValid, Node, ScrollView } from 'cc';
 import { PrefabType, SceneType } from '../../config/PrefabType';
+import { TextConfig } from '../../config/TextConfig';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { CurrentBookStatus } from '../../models/TextbookModel';
 import { NetNotify } from '../../net/NetNotify';
@@ -83,6 +84,9 @@ export class studyView extends BaseView {
                 break;
             case "bookWord": //教材单词
                 TBServer.reqCurrentBook();
+                break;
+            default:
+                ViewsManager.showTip(TextConfig.Function_Tip);
                 break;
         }
         // EventManager.emit(EventType.Study_Page_Switching, [i]);

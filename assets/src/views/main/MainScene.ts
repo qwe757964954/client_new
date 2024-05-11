@@ -173,6 +173,7 @@ export class MainScene extends Component {
     }
     // 销毁
     protected onDestroy(): void {
+        SoundMgr.stopBgm();
         this.removeEvent();
         this.removeCtl();
         this.removeLoadAsset();

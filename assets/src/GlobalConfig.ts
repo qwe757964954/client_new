@@ -1,4 +1,4 @@
-import { Game, ResolutionPolicy, Size, View, game, macro, profiler, screen, view } from "cc";
+import { Game, Size, View, game, macro, profiler, screen, view } from "cc";
 import { APP_VERSION } from "./AppConfig";
 import DebugConfig from "./DebugConfig";
 import { DataMgr } from "./manager/DataMgr";
@@ -69,23 +69,23 @@ export default class GlobalConfig {
     }
     // 屏幕适配规则
     public static initResolutionRules() {
-        var _desWidth = view.getDesignResolutionSize().width;
-        var _desHeight = view.getDesignResolutionSize().height;
+        // var _desWidth = view.getDesignResolutionSize().width;
+        // var _desHeight = view.getDesignResolutionSize().height;
 
-        var _realWidth = view.getVisibleSize().width;
-        var _realHeight = view.getVisibleSize().height;
+        // var _realWidth = view.getVisibleSize().width;
+        // var _realHeight = view.getVisibleSize().height;
 
-        var _ratioDes = _desWidth / _desHeight;
-        var _ratioReal = _realWidth / _realHeight;
+        // var _ratioDes = _desWidth / _desHeight;
+        // var _ratioReal = _realWidth / _realHeight;
 
-        if (_ratioReal >= _ratioDes) {
-            view.setResolutionPolicy(ResolutionPolicy.FIXED_HEIGHT);
-        } else {
-            view.setResolutionPolicy(ResolutionPolicy.FIXED_WIDTH);
-        }
+        // if (_ratioReal >= _ratioDes) {
+        //     view.setResolutionPolicy(ResolutionPolicy.FIXED_HEIGHT);
+        // } else {
+        //     view.setResolutionPolicy(ResolutionPolicy.FIXED_WIDTH);
+        // }
     }
-    public static initRessolutionHeight(){
-        view.setResolutionPolicy(ResolutionPolicy.FIXED_HEIGHT);
+    public static initRessolutionHeight() {
+        // view.setResolutionPolicy(ResolutionPolicy.FIXED_HEIGHT);
     }
 }
 // 游戏初始化
