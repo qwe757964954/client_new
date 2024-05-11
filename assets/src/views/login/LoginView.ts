@@ -4,6 +4,7 @@ import { EventType } from '../../config/EventType';
 import { KeyConfig } from '../../config/KeyConfig';
 import { NetConfig } from '../../config/NetConfig';
 import { SceneType } from '../../config/PrefabType';
+import { TextConfig } from '../../config/TextConfig';
 import GlobalConfig from '../../GlobalConfig';
 import { DataMgr } from '../../manager/DataMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
@@ -161,6 +162,7 @@ export class LoginView extends BaseView {
             this.userNameEdit.string = account;
             this.pwdEdit.string = password;
             if (User.isAutoLogin) {
+                User.isLogin = true;//标记账号已经登录过，用来重连
                 this.btnLoginFunc();
                 return;
             }
@@ -212,15 +214,16 @@ export class LoginView extends BaseView {
 
     // loginBox和phoneBox切换
     btnChangeLoginFunc(data: Event, customEventData: string) {
-        console.log("btnChangeLoginFunc customEventData = ", customEventData);
-        if (customEventData == "changePhoneBox") {
-            this.inputPhoneBox.active = true;
-            this.loginBox.active = false;
-        }
-        else if (customEventData == "changeLoginBox") {
-            this.inputPhoneBox.active = false;
-            this.loginBox.active = true;
-        }
+        ViewsManager.showTip(TextConfig.Function_Tip);
+        // console.log("btnChangeLoginFunc customEventData = ", customEventData);
+        // if (customEventData == "changePhoneBox") {
+        //     this.inputPhoneBox.active = true;
+        //     this.loginBox.active = false;
+        // }
+        // else if (customEventData == "changeLoginBox") {
+        //     this.inputPhoneBox.active = false;
+        //     this.loginBox.active = true;
+        // }
     }
 
     // 隐私选中方法
