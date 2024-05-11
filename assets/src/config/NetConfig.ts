@@ -1,3 +1,4 @@
+import DebugConfig from "../DebugConfig";
 
 let baseUrl = "https://hksm.chuangciyingyu.com:9191"; //老账号中台地址
 let baseUrl2 = "https://game.chuangciyingyu.com/dev_ope"; //测试地址
@@ -13,6 +14,7 @@ class NetCfg {
         return this.s_instance;
     }
     private constructor() {
+        this.converToDebug();
         this.setCurrentUrl(baseUrl2);
     }
 
@@ -48,6 +50,11 @@ class NetCfg {
         this.smsLogin = this.currentUrl + "/api/smslogin";//短信登录
         this.wechatLogin = this.currentUrl + "/api/wechatlogin";//微信登录
         this.accountLogin = this.currentUrl + "/api/account_login";//账号密码登录
+    }
+    public converToDebug() {
+        if (!DebugConfig.TEST_SERVER) return;
+        this.server = "192.168.1.67";
+        this.port = 40003;
     }
 }
 
