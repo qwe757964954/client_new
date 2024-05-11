@@ -15,6 +15,13 @@ export interface WordSimpleData {
     Cn: string;   //释义
 }
 
+/**单词简单结构 */
+export interface WordSimpleData2 {
+    Word: string; //单词
+    Cn: string;   //释义
+    Symbol: string; //音标
+}
+
 /**查找单词网络回应数据 */
 export interface NetWordSimpleData {
     Code: number, //网络返回的响应码

@@ -7,6 +7,7 @@ import ImgUtil from '../../util/ImgUtil';
 import { RemoteSoundMgr } from '../../manager/RemoteSoundManager';
 import { WordDetailPanel } from './WordDetailPanel';
 import { SearchWordDetail, WordSentence } from './SearchWordView';
+import { TextConfig } from '../../config/TextConfig';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordSearchView')
@@ -94,8 +95,8 @@ export class WordSearchView extends Component {
         this._word = data.Word;
         let word = data.Word;
         this.wordCnTxt.string = data.Cn;
-        this.usSymbolTxt.string = "美" + data.SymbolUs + "";
-        this.ukReadTxt.string = "英" + data.Symbol + "";
+        this.usSymbolTxt.string = TextConfig.US + data.SymbolUs + "";
+        this.ukReadTxt.string = TextConfig.EN + data.Symbol + "";
         let wordImgUrl: string = NetConfig.currentUrl + "/assets/imgs/words/" + data.Word + ".jpg";
         ImgUtil.loadRemoteImage(wordImgUrl, this.wordImg.node, 450.134, 282.543);
         this.learnWordTxt.string = word;

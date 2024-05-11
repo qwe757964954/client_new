@@ -12,6 +12,7 @@ import { RecycleCtl } from '../map/RecycleCtl';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { EditInfo, EditType } from '../../manager/DataMgr';
+import { SoundMgr } from '../../manager/SoundMgr';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
 import { BuildingProduceView } from '../map/BuildingProduceView';
@@ -78,6 +79,7 @@ export class MainScene extends Component {
     private _buildingBtnViewCloseHandle: string;//建筑按钮视图关闭事件
 
     start() {
+        SoundMgr.mainBgm();
         this.initData();
         this.initEvent();
     }

@@ -1,6 +1,7 @@
 import { _decorator, Component, director, Node, Sprite } from 'cc';
 import { MapStatus } from '../../config/MapConfig';
 import { PrefabType, SceneType } from '../../config/PrefabType';
+import GlobalConfig from '../../GlobalConfig';
 import { ViewsManager } from '../../manager/ViewsManager';
 import CCUtil from '../../util/CCUtil';
 import { MainScene } from './MainScene';
@@ -28,6 +29,10 @@ export class MainUIView extends Component {
     public btnTaskGo: Sprite = null;//任务前往
     @property(Sprite)
     public btnStudy: Sprite = null;//学习
+    @property(Node)
+    public btnReviewFix: Node = null;//复习计划修复
+    @property(Node)
+    public btnTranslateFix: Node = null;//翻译查词修复
 
     private _mainScene: MainScene = null;//主场景
 
@@ -44,7 +49,15 @@ export class MainUIView extends Component {
     }
     //初始化
     public init(): void {
+        this.initUI();
         this.initEvent();
+    }
+    /**初始化UI */
+    initUI() {
+        if (GlobalConfig.WIN_RATE < GlobalConfig.MAIN_RATE_MAX) {
+            this.btnReview.node.position = this.btnReviewFix.position;
+            this.btnTranslate.node.position = this.btnTranslateFix.position;
+        }
     }
     //设置主场景
     public set mainScene(mainScene: MainScene) {
