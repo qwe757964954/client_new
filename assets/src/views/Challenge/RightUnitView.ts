@@ -1,6 +1,7 @@
 import { _decorator, Component, Label, Node, ProgressBar } from 'cc';
 import { NetConfig } from '../../config/NetConfig';
 import { PrefabType } from '../../config/PrefabType';
+import { TextConfig } from '../../config/TextConfig';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { BookAwardListModel, BookPlanDetail, UnitListItemStatus } from '../../models/TextbookModel';
 import ImgUtil from '../../util/ImgUtil';
@@ -78,7 +79,7 @@ export class RightUnitView extends Component {
     }
 
     onReviewClick(){
-
+        ViewsManager.showTip(TextConfig.Function_Tip);
     }
 
     onBreakThroughClick(){
@@ -89,7 +90,7 @@ export class RightUnitView extends Component {
     }
 
     onCheckWordClick(){
-
+        ViewsManager.showTip(TextConfig.Function_Tip);
     }
     onModifyPlanClick(){
         ViewsManager.instance.showView(PrefabType.SettingPlanView,(node: Node) => {
