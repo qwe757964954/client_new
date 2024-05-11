@@ -46,11 +46,13 @@ export default class AccountService {
             User.isLogin = true;
             User.userId = data.user_id;
             User.memberToken = data.token;
-            let extra = data.detail.extra;
-            User.coin = extra.coin;
-            User.diamond = extra.diamond;
-            User.amethyst = extra.amethyst;
-            User.stamina = extra.stamina;
+            let extra = data.detail?.extra;
+            if (extra) {
+                User.coin = extra.coin;
+                User.diamond = extra.diamond;
+                User.amethyst = extra.amethyst;
+                User.stamina = extra.stamina;
+            }
 
             StorageUtil.saveData(KeyConfig.Last_Login_Account, User.account);
             StorageUtil.saveData(KeyConfig.Last_Login_Pwd, User.password);
