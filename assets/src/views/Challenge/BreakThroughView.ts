@@ -1,6 +1,7 @@
 import { _decorator, error, instantiate, Layers, Node, Prefab, UITransform } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
+import GlobalConfig from '../../GlobalConfig';
 import { BookLevelConfig, DataMgr } from '../../manager/DataMgr';
 import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
@@ -53,6 +54,7 @@ export class BreakThroughView extends BaseView {
     private _curUnitStatus:UnitStatusData = null;
 
     start() {
+        GlobalConfig.initRessolutionHeight();
         this.initUI();
     }
 

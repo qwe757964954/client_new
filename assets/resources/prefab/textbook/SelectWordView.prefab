@@ -828,7 +828,7 @@
   {
     "__type__": "cc.Node",
     "_name": "TextbookContentView",
-    "_objFlags": 0,
+    "_objFlags": 512,
     "__editorExtras__": {},
     "_parent": {
       "__id__": 1
@@ -885,7 +885,7 @@
   {
     "__type__": "cc.Node",
     "_name": "msgbg",
-    "_objFlags": 0,
+    "_objFlags": 512,
     "__editorExtras__": {},
     "_parent": {
       "__id__": 37
@@ -1060,7 +1060,7 @@
   {
     "__type__": "cc.Node",
     "_name": "vocabularyLayout",
-    "_objFlags": 0,
+    "_objFlags": 512,
     "__editorExtras__": {},
     "_parent": {
       "__id__": 37
@@ -1114,7 +1114,7 @@
   {
     "__type__": "cc.Node",
     "_name": "textBookScrollView",
-    "_objFlags": 0,
+    "_objFlags": 512,
     "__editorExtras__": {},
     "_parent": {
       "__id__": 46
@@ -1174,7 +1174,7 @@
   {
     "__type__": "cc.Node",
     "_name": "view",
-    "_objFlags": 0,
+    "_objFlags": 512,
     "__editorExtras__": {},
     "_parent": {
       "__id__": 47
@@ -1234,7 +1234,7 @@
   {
     "__type__": "cc.Node",
     "_name": "content",
-    "_objFlags": 0,
+    "_objFlags": 512,
     "__editorExtras__": {},
     "_parent": {
       "__id__": 48
@@ -1287,7 +1287,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_objFlags": 0,
+    "_objFlags": 512,
     "_parent": {
       "__id__": 49
     },
