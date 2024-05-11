@@ -1,6 +1,7 @@
 import { _decorator, Button, Color, Component, Label, Node } from 'cc';
-import { ViewsManager } from '../../manager/ViewsManager';
 import { PrefabType } from '../../config/PrefabType';
+import GlobalConfig from '../../GlobalConfig';
+import { ViewsManager } from '../../manager/ViewsManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('SettingView')
@@ -25,6 +26,7 @@ export class SettingView extends Component {
     // private _mainScene:MainScene = null;//主场景
 
     start() {
+        GlobalConfig.initResolutionRules();
         this.init();
     }
 
@@ -95,6 +97,7 @@ export class SettingView extends Component {
     btnCloseFunc() {
         console.log("btnCloseFunc");
         ViewsManager.instance.closeView(PrefabType.SettingView);
+        GlobalConfig.initRessolutionHeight();
     }
 }
 
