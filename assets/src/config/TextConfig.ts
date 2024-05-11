@@ -3,6 +3,7 @@ export const TextConfig = {
     Prop_Path: "common/{0}/spriteFrame",
     Building_Path1: "map/land/{0}/spriteFrame",
     Building_Path2: "map/building/{0}/spriteFrame",
+    Building_SpPath: "spine/building/{0}",
     Land_Key: "{0}_{1}",
     Time_S: "{0}秒",
     Time_M_S: "{0}分钟{1}秒",

@@ -1,3 +1,4 @@
+import DebugConfig from "../DebugConfig";
 
 let baseUrl = "https://hksm.chuangciyingyu.com:9191"; //老账号中台地址
 let baseUrl2 = "https://game.chuangciyingyu.com/dev_ope"; //测试地址
@@ -13,6 +14,7 @@ class NetCfg {
         return this.s_instance;
     }
     private constructor() {
+        this.converToDebug();
         this.setCurrentUrl(baseUrl2);
     }
 
@@ -24,8 +26,8 @@ class NetCfg {
     public androidDown = "https://www.chuangciyingyu.com/chuangci_v20220720.apk"; // 安卓下载
     public assertUrl = "https://www.chuangciyingyu.com/assets"; // 资源url
 
-    public server = "192.168.1.67";//webscoket服务器
-    public port = 40003;//webscoket端口
+    public server = "47.113.86.95";//webscoket服务器
+    public port = 9803;//webscoket端口
 
     public checkNotice;//公告检测
     public tokenLogin;//token登录
@@ -48,6 +50,11 @@ class NetCfg {
         this.smsLogin = this.currentUrl + "/api/smslogin";//短信登录
         this.wechatLogin = this.currentUrl + "/api/wechatlogin";//微信登录
         this.accountLogin = this.currentUrl + "/api/account_login";//账号密码登录
+    }
+    public converToDebug() {
+        if (!DebugConfig.TEST_SERVER) return;
+        this.server = "192.168.1.67";
+        this.port = 40003;
     }
 }
 

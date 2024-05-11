@@ -79,7 +79,6 @@ export class ScrollMapView extends Component {
     onItemClick(event:EventTouch){
         let item:MapPointItem = event.currentTarget.getComponent(MapPointItem);
         let index = item.index;
-        console.log("onItemClick.....",index);
         let itemStatus = this._unitStatus[index];
         if(this._clickCallback){
             this._clickCallback(itemStatus.unit);

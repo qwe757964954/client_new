@@ -36,7 +36,7 @@ export class BuildingProduceItem extends ListItem {
     /**list加载 */
     onLoadListItem(item: Node, idx: number) {
         let data = this._expend[idx];
-        let propInfo = DataMgr.instance.propConfig[data.id];
+        let propInfo = DataMgr.getPropInfo(data.id);
         LoadManager.loadSprite(propInfo.png, item.getComponentInChildren(Sprite));
         item.getComponentInChildren(Label).string = "x" + data.num.toString();
     }

@@ -64,13 +64,11 @@ export class TextbookChallengeView extends BaseView {
     }
 
     onBookAwardList(data:BookAwardListModel){
-        console.log("onBookAwardList",data);
         this._unitDetailView.updateStudyProgress(data);
     }
 
     onBookPlanDetail(data:BookPlanDetail){
         this._planData = data;
-        console.log("onBookPlanDetail",data);
         this._unitDetailView.updateRightPlan(data);
     }
 
@@ -110,7 +108,6 @@ export class TextbookChallengeView extends BaseView {
     }
     /**更新我的词书 */
     getUnitListStatus(){
-        console.log("getUnitListStatus",this._bookData);
         TBServer.reqUnitListStatus(this._bookData);
     }
 

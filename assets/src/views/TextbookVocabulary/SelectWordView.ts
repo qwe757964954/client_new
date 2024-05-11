@@ -22,16 +22,8 @@ export class SelectWordView extends BaseView {
     public top_layout:Node = null;          // 顶部导航栏
     @property(List)
     public textBookScrollView:List = null;
-    @property(List)
-    public myScrollView:List = null;
-    @property(Node)
-    public myScrollEmpty:Node = null;          // 顶部导航栏
-
     @property(Node)
     public vocabularyLayout:Node = null;          // 选择词库
-
-    @property(Node)
-    public myTextbookLayout:Node = null;          // 我的词库
     private _schoolGradeListData:SchoolBookListGradeItemData = null;
     private _bookLiskData:BookListItemData = null;/**tab数据 */
     private _schoolBookListDataArr:SchoolBookListItemData = null;/**词书左侧导航数据 */

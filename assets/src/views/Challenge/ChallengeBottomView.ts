@@ -33,7 +33,6 @@ export class ChallengeBottomView extends Component {
     }
 
     onLoadCollectHorizontal(item:Node, idx:number){
-        console.log("onLoadCollectHorizontal", item,idx);
         let item_sript:UnitNumItem = item.getComponent(UnitNumItem);
         let unitStatus:UnitItemStatus = this._unitListArr[idx];
         // item_sript.updateRewardStatus(unitStatus.studywordnum >=unitStatus.totalwordnum);

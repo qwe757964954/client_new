@@ -114,6 +114,8 @@ export class BaseModeView extends BaseView {
         } else { //教材单词关卡
             this._monster = instantiate(this.monsterModel);
             this.monster.addChild(this._monster);
+            let scale = this._monster.getScale();
+            this._monster.scale = new Vec3(-scale.x, scale.y, 1);
             let monsterModel = this._monster.getComponent(MonsterModel);
             monsterModel.init("spine/TextbookVocabulary/" + "10018");
         }

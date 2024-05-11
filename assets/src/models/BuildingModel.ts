@@ -1,4 +1,4 @@
-import { Color, Graphics, Label, Node, Rect, Sprite, UITransform, Vec2, Vec3, _decorator } from "cc";
+import { Color, Graphics, Label, Node, Rect, Sprite, UITransform, Vec2, Vec3, _decorator, sp } from "cc";
 import { EventType } from "../config/EventType";
 import { PrefabType } from "../config/PrefabType";
 import { TextConfig } from "../config/TextConfig";
@@ -26,6 +26,8 @@ export class BuildingModel extends BaseComponent {
     public label: Label = null;//文本
     @property(Graphics)
     public graphics: Graphics = null;//格子图层
+    @property(sp.Skeleton)
+    public sp: sp.Skeleton = null;//动画
 
     private _editInfo: EditInfo;//编辑信息
     private _buildingID: number = undefined;//建筑唯一索引id
@@ -372,18 +374,30 @@ export class BuildingModel extends BaseComponent {
     }
     /**是否点击到自己 像素点击，可能会出现性能问题*/
     public isTouchSelf(worldPos: Vec3): boolean {
+        // if (this._editInfo.id != 30) return false;//争对某类建筑测试
         let transform = this.building.getComponent(UITransform);
         let rect: Rect = new Rect(0, 0, transform.width, transform.height);
         rect.x = -transform.anchorX * transform.width;
         rect.y = -transform.anchorY * transform.height;
         let pos = transform.convertToNodeSpaceAR(worldPos);
         if (!rect.contains(new Vec2(pos.x, pos.y))) {
+            // console.log("isTouchSelf 3:", pos.x, pos.y);
+            // console.log("isTouchSelf 4:", rect.x, rect.y, rect.width, rect.height);
             return false;
         }
         // console.log("isTouchSelf 1:", pos.x, pos.y);
+        // console.log("isTouchSelf transform:", transform.anchorX, transform.width, transform.anchorY, transform.height);
         let x = Math.floor(pos.x + transform.anchorX * transform.width);
         let y = Math.floor(pos.y + transform.anchorY * transform.height);
         // console.log("isTouchSelf 2:", x, y);
+        if (Sprite.SizeMode.TRIMMED == this.building.sizeMode) {
+            let spriteFrame = this.building.spriteFrame;
+            const size = spriteFrame.originalSize;
+            const offset = spriteFrame.offset;
+            x = x + offset.x + (size.width - rect.width) / 2;
+            y = y + offset.y + (size.height - rect.height) / 2;
+            // console.log("isTouchSelf 5:", x, y);
+        }
         let colors = CCUtil.readPixels(this.building.spriteFrame, x, y);
         return colors[3] >= 50;
     }
@@ -417,6 +431,14 @@ export class BuildingModel extends BaseComponent {
             LoadManager.loadSprite(DataMgr.getEditPng(this._editInfo), this.building).then(() => {
                 if (callBack) callBack();
             });
+            let animation = this._editInfo.animation;
+            if (animation && animation.length > 0) {
+                LoadManager.loadSpine(animation, this.sp).then(() => {
+                    this.sp.setAnimation(0, "animation", true);
+                    let pos = this.building.node.position;
+                    this.sp.node.position = new Vec3(- 4 - pos.x, 12 - pos.y, 0);
+                });
+            }
         } else {
             if (callBack) callBack();
         }

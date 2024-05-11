@@ -7,7 +7,7 @@
  * @end
  ******************************************/
 const { ccclass, property, disallowMultiple, menu, executionOrder } = _decorator;
-import { Button, Component, Enum, EventHandler, Node, Sprite, SpriteFrame, Tween, UITransform, Vec3, _decorator, tween } from 'cc';
+import { Button, Component, Enum, EventHandler, Node, Sprite, SpriteFrame, Tween, UITransform, Vec3, _decorator, isValid, tween } from 'cc';
 import { DEV } from 'cc/env';
 import List from './List';
 
@@ -34,6 +34,14 @@ export default class ListItem extends Component {
         visible() { return this.selectedMode > SelectedType.NONE }
     })
     selectedFlag: Node = null;
+
+    //被选标志
+    @property({
+        type: Node, tooltip: DEV && '被选标识2',
+        visible() { return this.selectedMode === SelectedType.TOGGLE }
+    })
+    selectedFlag2: Node = null;
+
     //被选择的SpriteFrame
     @property({
         type: SpriteFrame, tooltip: DEV && '被选择的SpriteFrame',
@@ -57,6 +65,9 @@ export default class ListItem extends Component {
         switch (this.selectedMode) {
             case SelectedType.TOGGLE:
                 this.selectedFlag.active = val;
+                if(isValid(this.selectedFlag2)){
+                    this.selectedFlag2.active = val;
+                }
                 break;
             case SelectedType.SWITCH:
                 let sp: Sprite = this.selectedFlag.getComponent(Sprite);

@@ -72,14 +72,8 @@ export class BreakThroughView extends BaseView {
         this.addModelListener(NetNotify.Classification_UnitListStatus,this.onUnitListStatus);
         this.addModelListener(NetNotify.Classification_UnitStatus,this.onUnitStatus);
         this.addModelListener(EventType.Enter_Island_Level,this.onEnterIsland);
-
-        
-        // this.addModelListener(EventType.Select_Word_Plan,this.onSelectWordPlan);
-        // this.addModelListener(NetNotify.Classification_PlanModify,this.onPlanModify);
-        // this.addModelListener(NetNotify.Classification_BookPlanDetail,this.onBookPlanDetail);
     }
     getUnitListStatus(){
-        console.log("getUnitListStatus",this._bookData);
         TBServer.reqUnitListStatus(this._bookData);
     }
     onEnterIsland(data:LevelConfig){
@@ -110,7 +104,6 @@ export class BreakThroughView extends BaseView {
     }
 
     onUnitStatus(data:UnitStatusData){
-        console.log("onUnitStatus",data);
         this._curUnitStatus = data;
         let content_size = this.content_layout.getComponent(UITransform);
         let node_size = this._rightChallenge.node.getComponent(UITransform);
@@ -128,7 +121,6 @@ export class BreakThroughView extends BaseView {
     }
 
     onUnitListStatus(data:UnitListItemStatus){
-        console.log("onUnitListStatus",data);
         this._scrollMap.initUnit(data);
         // this._rightChallenge.initData(data);
     }
