@@ -1,12 +1,17 @@
 import { EventKeyboard, Input, KeyCode, NodeEventType, SpriteFrame, director, gfx, input, isValid } from "cc";
+import { SoundMgr } from "../manager/SoundMgr";
 
 export default class CCUtil {
+    public static clickCall() {
+        SoundMgr.click();
+    }
     // 触摸事件监听
     public static onTouch(obj: any, callback: Function, target?: any) {
         if (!obj) return;
         let node = obj.node ? obj.node : obj;
         if (node && node.on && isValid(node, true)) {
             node.on(NodeEventType.TOUCH_END, callback, target);
+            node.on(NodeEventType.TOUCH_END, CCUtil.clickCall, CCUtil);
         }
     }
     // 触摸事件解除
@@ -15,6 +20,7 @@ export default class CCUtil {
         let node = obj.node ? obj.node : obj;
         if (node && node.off && isValid(node, true)) {
             node.off(NodeEventType.TOUCH_END, callback, target);
+            node.off(NodeEventType.TOUCH_END, CCUtil.clickCall, CCUtil);
         }
     }
     // 按键事件监听
