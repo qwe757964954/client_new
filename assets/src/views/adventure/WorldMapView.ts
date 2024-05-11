@@ -1,4 +1,4 @@
-import { _decorator, Button, Component, instantiate, Node, Prefab, v3 } from 'cc';
+import { _decorator, Button, Component, instantiate, Node, Prefab, ScrollView, v3 } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import GlobalConfig from '../../GlobalConfig';
@@ -26,7 +26,10 @@ export class WorldMapView extends Component {
     @property({ type: Button, tooltip: "返回按钮" })
     public btn_back: Button = null!;
     @property({ type: Node, tooltip: "岛屿地图容器" })
-    public islandContainer: Node = null
+    public islandContainer: Node = null;
+    @property({ type: ScrollView, tooltip: "滚动容器" })
+    public scrollView: ScrollView = null;
+
     private _openlevels: number = 0;//开放到第几关
 
     private _currentIsland: Node = null;//当前岛屿
@@ -46,6 +49,7 @@ export class WorldMapView extends Component {
         let winssize = GlobalConfig.WIN_SIZE;
         this.islandContainer.position = v3(-winssize.width / 2, 0, 0);
         WorldIsland.initMapPoints();
+        this.scrollView.scrollToLeft();
     }
 
     onLoad(): void {

@@ -90,6 +90,8 @@ export const PrefabType = {
     /*********************************************地图相关end*************************************************************/
     /*********************************************复习计划start***********************************************************/
     ReviewMainView: { path: "review/ReviewMainView", zindex: Hierarchy.POPUPLAYER, tips: "复习规划主界面" },
+    StudyRecordView: { path: "review/StudyRecordView", zindex: Hierarchy.POPUPLAYER, tips: "复习计划日程表" },
+    DayWordDialogView: { path: "review/DayWordDialogView", zindex: Hierarchy.POPUPLAYER, tips: "每日学习单词表" },
     /*********************************************复习计划end*************************************************************/
     /*********************************************CardBook start***********************************************************/
     CardBookView: { path: "cardWar/CardBookView", zindex: Hierarchy.POPUPLAYER, tips: "卡牌书籍" },

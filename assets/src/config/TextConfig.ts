@@ -18,4 +18,9 @@ export const TextConfig = {
     Net_Error: "网络异常，请检查后再试",
 
     Account_Logout_Tip: "账号已在其他地方登录，如不是本人操作，请修改密码后重新登录",
+
+    US: "美",
+    EN: "英",
+
+    Word_Learn_Count: "共计{0}词",
 }

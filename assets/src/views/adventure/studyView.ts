@@ -1,4 +1,4 @@
-import { _decorator, director, isValid, Node } from 'cc';
+import { _decorator, director, isValid, Node, ScrollView, Vec2 } from 'cc';
 import { PrefabType, SceneType } from '../../config/PrefabType';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { CurrentBookStatus } from '../../models/TextbookModel';
@@ -20,6 +20,9 @@ export class studyView extends BaseView {
 
     @property({ type: Node, tooltip: "关闭按钮" })
     public closeBtn: Node = null;
+
+    @property({ type: ScrollView, tooltip: "滚动容器" })
+    public scrollView: ScrollView = null;
     start() {
 
     }
@@ -38,25 +41,25 @@ export class studyView extends BaseView {
     }
 
     onInitModuleEvent() {
-        this.addModelListener(NetNotify.Classification_CurrentBook,this.onCurrentBookStatus);
+        this.addModelListener(NetNotify.Classification_CurrentBook, this.onCurrentBookStatus);
     }
     onCurrentBookStatus(curBook: CurrentBookStatus): void {
-        console.log("onCurrentBookStatus___________",curBook);
-        
+        console.log("onCurrentBookStatus___________", curBook);
+
         /**当前词书状态 */
-        if(isValid(curBook.type_name) && isValid(curBook.book_name) && isValid(curBook.grade)){
-            ViewsManager.instance.showView(PrefabType.TextbookChallengeView,(node: Node) => {
-                let challengeScript:TextbookChallengeView = node.getComponent(TextbookChallengeView);
-                let unitData:BookUnitModel = {
-                    type_name:curBook.type_name,
-                    book_name:curBook.book_name,
-                    grade:curBook.grade
+        if (isValid(curBook.type_name) && isValid(curBook.book_name) && isValid(curBook.grade)) {
+            ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
+                let challengeScript: TextbookChallengeView = node.getComponent(TextbookChallengeView);
+                let unitData: BookUnitModel = {
+                    type_name: curBook.type_name,
+                    book_name: curBook.book_name,
+                    grade: curBook.grade
                 }
                 challengeScript.initData(unitData);
             });
-        }else{
-            ViewsManager.instance.showView(PrefabType.SelectWordView,(node: Node) => {
-                
+        } else {
+            ViewsManager.instance.showView(PrefabType.SelectWordView, (node: Node) => {
+
             });
         }
     }

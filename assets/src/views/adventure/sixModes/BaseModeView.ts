@@ -251,7 +251,7 @@ export class BaseModeView extends BaseView {
         CCUtil.offTouch(this.btn_close.node, this.closeView, this);
         EventManager.off(InterfacePath.Adventure_Result, this._getResultEveId);
         EventManager.off(NetNotify.Classification_ReportResult, this.onUpResult.bind(this));
-        EventManager.off(InterfacePath.Adventure_Word, this.onClassificationWord.bind(this));
+        EventManager.off(InterfacePath.Adventure_Word, this._wordDetailEveId);
     }
 
     protected closeView() {

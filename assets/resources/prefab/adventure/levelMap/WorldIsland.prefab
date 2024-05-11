@@ -905,8 +905,8 @@
     "_alignFlags": 33,
     "_target": null,
     "_left": 0,
-    "_right": 259,
-    "_top": 50,
+    "_right": 78.32500000000005,
+    "_top": 49.99999999999994,
     "_bottom": 0,
     "_horizontalCenter": 0,
     "_verticalCenter": 0,
@@ -952,8 +952,8 @@
     ],
     "value": {
       "__type__": "cc.Vec3",
-      "x": 1469,
-      "y": 399.99999999999994,
+      "x": 1649.675,
+      "y": 400,
       "z": 0
     }
   },

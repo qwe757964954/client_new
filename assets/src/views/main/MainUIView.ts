@@ -1,6 +1,6 @@
 import { _decorator, Component, director, Node, Sprite } from 'cc';
 import { MapStatus } from '../../config/MapConfig';
-import { PrefabType, SceneType } from '../../config/PrefabType';
+import { PrefabConfig, PrefabType, SceneType } from '../../config/PrefabType';
 import { ViewsManager } from '../../manager/ViewsManager';
 import CCUtil from '../../util/CCUtil';
 import { MainScene } from './MainScene';
@@ -28,6 +28,9 @@ export class MainUIView extends Component {
     public btnTaskGo: Sprite = null;//任务前往
     @property(Sprite)
     public btnStudy: Sprite = null;//学习
+
+    @property(Sprite)
+    public btnTest: Sprite = null;//学习
 
     private _mainScene: MainScene = null;//主场景
 
@@ -63,6 +66,7 @@ export class MainUIView extends Component {
         CCUtil.onTouch(this.btnTask, this.onClickTask, this);
         CCUtil.onTouch(this.btnTaskGo, this.onClickTaskGo, this);
         CCUtil.onTouch(this.btnStudy, this.onClickStudy, this);
+        CCUtil.onTouch(this.btnTest, this.onClickTest, this);
     }
     //移除事件
     public removeEvent() {
@@ -77,6 +81,7 @@ export class MainUIView extends Component {
         CCUtil.offTouch(this.btnTask, this.onClickTask, this);
         CCUtil.offTouch(this.btnTaskGo, this.onClickTaskGo, this);
         CCUtil.offTouch(this.btnStudy, this.onClickStudy, this);
+        CCUtil.offTouch(this.btnTest, this.onClickTest, this);
     }
     //头像点击
     public onClickHead() {
@@ -121,6 +126,12 @@ export class MainUIView extends Component {
     //学习点击
     public onClickStudy() {
         director.loadScene(SceneType.WorldMapScene);
+    }
+
+    //测试用
+    public onClickTest() {
+        //ViewsManager.instance.showView(PrefabType.CardBookView); //打开卡牌书
+        ViewsManager.instance.showView(PrefabType.StudyRecordView); //打开学习记录页面
     }
 }
 

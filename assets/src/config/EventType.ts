@@ -43,4 +43,9 @@ export const EventType = {
     Search_Word_Item: "SearchWordItem", //查找某个单词项
     Search_Word_Del_OneWord: "DelOneSearchWord",//删除某个查找项
     Search_Word_Edt_Began: "editing-did-began", //输入框编辑开始
+
+    /**学习计划相关事件 */
+    StudyRecord_MonthPrice: "Account_MonthPrize", //每个月的得分情况
+    StudyRecord_ClickDateRecord: "StudyRecord_ClickDateRecord", //点击列表里的某一天
+    StudyRecord_DayPrizeWord: "StudyRecord_DayPrizeWord", //某一天学习的所有单词
 }
