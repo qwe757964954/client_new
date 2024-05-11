@@ -1,4 +1,4 @@
-import { EventMouse, EventTouch, Touch, Vec2 } from "cc";
+import { EventMouse, EventTouch, Touch } from "cc";
 import { MainBaseCtl } from "../main/MainBaseCtl";
 
 //普通地图处理

@@ -1,6 +1,6 @@
 import { _decorator, Component, Node } from 'cc';
-import { ViewsManager } from '../../manager/ViewsManager';
 import { PrefabType } from '../../config/PrefabType';
+import { ViewsManager } from '../../manager/ViewsManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('AccountActivationView')

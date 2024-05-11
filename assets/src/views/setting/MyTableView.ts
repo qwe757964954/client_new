@@ -1,8 +1,7 @@
-import { _decorator, Component, Label, Node, Size, UITransform} from 'cc';
-import { ViewsManager } from '../../manager/ViewsManager';
+import { _decorator, Component, Label, Node, Size, UITransform } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
-import { User } from '../../models/User';
 import { SettingConfig } from '../../config/SettingConfig';
+import { ViewsManager } from '../../manager/ViewsManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('MyTableView')
