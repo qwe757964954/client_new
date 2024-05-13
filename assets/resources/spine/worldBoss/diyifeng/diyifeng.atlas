@@ -1,0 +1,111 @@
+
+diyifeng.png
+size: 204,907
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+arm_L2_Line
+  rotate: false
+  xy: 162, 572
+  size: 34, 48
+  orig: 34, 48
+  offset: 0, 0
+  index: -1
+arm_L3_Line
+  rotate: true
+  xy: 162, 537
+  size: 33, 34
+  orig: 33, 34
+  offset: 0, 0
+  index: -1
+arm_R1_Line
+  rotate: false
+  xy: 120, 2
+  size: 73, 231
+  orig: 73, 231
+  offset: 0, 0
+  index: -1
+arm_R2_Line
+  rotate: false
+  xy: 162, 471
+  size: 26, 64
+  orig: 26, 64
+  offset: 0, 0
+  index: -1
+arm_R3_Line
+  rotate: false
+  xy: 162, 659
+  size: 40, 21
+  orig: 40, 21
+  offset: 0, 0
+  index: -1
+arm__L
+  rotate: false
+  xy: 143, 235
+  size: 56, 234
+  orig: 59, 234
+  offset: 3, 0
+  index: -1
+body
+  rotate: false
+  xy: 2, 682
+  size: 191, 223
+  orig: 200, 226
+  offset: 0, 3
+  index: -1
+head
+  rotate: true
+  xy: 2, 14
+  size: 71, 107
+  orig: 71, 111
+  offset: 0, 4
+  index: -1
+head1
+  rotate: true
+  xy: 2, 132
+  size: 45, 112
+  orig: 49, 112
+  offset: 0, 0
+  index: -1
+head2
+  rotate: true
+  xy: 2, 87
+  size: 43, 111
+  orig: 68, 114
+  offset: 0, 3
+  index: -1
+head3
+  rotate: true
+  xy: 162, 622
+  size: 19, 36
+  orig: 19, 36
+  offset: 0, 0
+  index: -1
+head4
+  rotate: true
+  xy: 162, 643
+  size: 14, 38
+  orig: 14, 38
+  offset: 0, 0
+  index: -1
+sting
+  rotate: true
+  xy: 2, 473
+  size: 207, 158
+  orig: 207, 158
+  offset: 0, 0
+  index: -1
+wings_l
+  rotate: true
+  xy: 2, 248
+  size: 223, 139
+  orig: 223, 139
+  offset: 0, 0
+  index: -1
+wings_r
+  rotate: true
+  xy: 2, 179
+  size: 67, 116
+  orig: 67, 117
+  offset: 0, 1
+  index: -1

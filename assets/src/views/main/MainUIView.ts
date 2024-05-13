@@ -1,6 +1,6 @@
 import { _decorator, Component, director, Node, Sprite } from 'cc';
 import { MapStatus } from '../../config/MapConfig';
-import { SceneType } from '../../config/PrefabType';
+import { PrefabType, SceneType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import GlobalConfig from '../../GlobalConfig';
 import { ViewsManager } from '../../manager/ViewsManager';
@@ -125,11 +125,15 @@ export class MainUIView extends Component {
     }
     //BOSS点击
     public onClickBoss() {
-        ViewsManager.showTip(TextConfig.Function_Tip);
+        // ViewsManager.showTip(TextConfig.Function_Tip);
+        ViewsManager.instance.showView(PrefabType.WorldBossView, (node: Node) => {
+        });
     }
     //商店点击
     public onClickShop() {
-        ViewsManager.showTip(TextConfig.Function_Tip);
+        // ViewsManager.showTip(TextConfig.Function_Tip);
+        ViewsManager.instance.showView(PrefabType.ShopUIView, (node: Node) => {
+        });
     }
     //任务点击
     public onClickTask() {

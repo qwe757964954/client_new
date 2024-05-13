@@ -1,0 +1,62 @@
+
+chest_rare_big.png
+size: 402,400
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+bottom
+  rotate: true
+  xy: 211, 181
+  size: 217, 120
+  orig: 217, 120
+  offset: 0, 0
+  index: -1
+light
+  rotate: false
+  xy: 2, 238
+  size: 207, 160
+  orig: 207, 160
+  offset: 0, 0
+  index: -1
+light_piece
+  rotate: false
+  xy: 210, 108
+  size: 30, 30
+  orig: 30, 30
+  offset: 0, 0
+  index: -1
+lock
+  rotate: false
+  xy: 333, 145
+  size: 67, 61
+  orig: 67, 61
+  offset: 0, 0
+  index: -1
+ray
+  rotate: true
+  xy: 210, 140
+  size: 39, 105
+  orig: 39, 105
+  offset: 0, 0
+  index: -1
+shadow
+  rotate: true
+  xy: 333, 208
+  size: 190, 66
+  orig: 190, 66
+  offset: 0, 0
+  index: -1
+top
+  rotate: false
+  xy: 2, 103
+  size: 206, 133
+  orig: 206, 133
+  offset: 0, 0
+  index: -1
+top_close
+  rotate: false
+  xy: 2, 2
+  size: 218, 99
+  orig: 218, 99
+  offset: 0, 0
+  index: -1

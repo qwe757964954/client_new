@@ -1,0 +1,286 @@
+
+bingyuanmengma.png
+size: 1437,1038
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Y_H_datui
+  rotate: true
+  xy: 457, 549
+  size: 128, 125
+  orig: 128, 125
+  offset: 0, 0
+  index: -1
+Y_H_jiao
+  rotate: true
+  xy: 202, 9
+  size: 133, 77
+  orig: 133, 77
+  offset: 0, 0
+  index: -1
+Y_Q_datui
+  rotate: false
+  xy: 813, 557
+  size: 151, 206
+  orig: 151, 206
+  offset: 0, 0
+  index: -1
+Y_Q_jiao
+  rotate: false
+  xy: 1269, 924
+  size: 166, 112
+  orig: 166, 112
+  offset: 0, 0
+  index: -1
+Z_H_datui
+  rotate: false
+  xy: 895, 341
+  size: 169, 214
+  orig: 169, 214
+  offset: 0, 0
+  index: -1
+Z_H_jiao
+  rotate: false
+  xy: 1092, 712
+  size: 173, 109
+  orig: 173, 109
+  offset: 0, 0
+  index: -1
+Z_Q_datui
+  rotate: true
+  xy: 555, 3
+  size: 191, 231
+  orig: 191, 231
+  offset: 0, 0
+  index: -1
+Z_Q_jiao
+  rotate: true
+  xy: 1267, 540
+  size: 195, 151
+  orig: 195, 151
+  offset: 0, 0
+  index: -1
+abdomen
+  rotate: true
+  xy: 2, 547
+  size: 489, 297
+  orig: 492, 304
+  offset: 3, 0
+  index: -1
+arm_l
+  rotate: false
+  xy: 919, 806
+  size: 163, 230
+  orig: 163, 230
+  offset: 0, 0
+  index: -1
+arm_r
+  rotate: true
+  xy: 301, 548
+  size: 129, 154
+  orig: 129, 154
+  offset: 0, 0
+  index: -1
+backthron01
+  rotate: false
+  xy: 1066, 443
+  size: 198, 145
+  orig: 198, 145
+  offset: 0, 0
+  index: -1
+backthron02
+  rotate: false
+  xy: 621, 217
+  size: 164, 44
+  orig: 164, 44
+  offset: 0, 0
+  index: -1
+backthron03
+  rotate: true
+  xy: 1092, 591
+  size: 119, 53
+  orig: 119, 53
+  offset: 0, 0
+  index: -1
+backthron04
+  rotate: true
+  xy: 1269, 737
+  size: 185, 154
+  orig: 185, 154
+  offset: 0, 0
+  index: -1
+backthron05
+  rotate: true
+  xy: 281, 12
+  size: 130, 89
+  orig: 130, 89
+  offset: 0, 0
+  index: -1
+backthron06
+  rotate: false
+  xy: 584, 552
+  size: 227, 125
+  orig: 227, 125
+  offset: 0, 0
+  index: -1
+backthron07
+  rotate: false
+  xy: 966, 590
+  size: 124, 214
+  orig: 124, 214
+  offset: 0, 0
+  index: -1
+backthron08
+  rotate: false
+  xy: 715, 689
+  size: 47, 74
+  orig: 47, 74
+  offset: 0, 0
+  index: -1
+backthron09
+  rotate: true
+  xy: 764, 711
+  size: 52, 29
+  orig: 52, 29
+  offset: 0, 0
+  index: -1
+backthron10
+  rotate: false
+  xy: 1147, 621
+  size: 118, 89
+  orig: 118, 89
+  offset: 0, 0
+  index: -1
+biyan
+  rotate: true
+  xy: 657, 683
+  size: 80, 56
+  orig: 80, 56
+  offset: 0, 0
+  index: -1
+ear_l
+  rotate: true
+  xy: 1066, 316
+  size: 125, 191
+  orig: 125, 191
+  offset: 0, 0
+  index: -1
+headhorn
+  rotate: true
+  xy: 621, 263
+  size: 287, 272
+  orig: 287, 272
+  offset: 0, 0
+  index: -1
+leg_l
+  rotate: true
+  xy: 2, 2
+  size: 140, 198
+  orig: 140, 198
+  offset: 0, 0
+  index: -1
+leg_r
+  rotate: true
+  xy: 1120, 32
+  size: 108, 145
+  orig: 108, 145
+  offset: 0, 0
+  index: -1
+nose01
+  rotate: true
+  xy: 1027, 24
+  size: 116, 91
+  orig: 116, 91
+  offset: 0, 0
+  index: -1
+nose02
+  rotate: false
+  xy: 1267, 70
+  size: 106, 100
+  orig: 106, 100
+  offset: 0, 0
+  index: -1
+nose03
+  rotate: false
+  xy: 788, 7
+  size: 237, 254
+  orig: 239, 254
+  offset: 0, 0
+  index: -1
+stone02
+  rotate: false
+  xy: 1248, 172
+  size: 106, 46
+  orig: 109, 46
+  offset: 0, 0
+  index: -1
+tail
+  rotate: false
+  xy: 1266, 338
+  size: 148, 200
+  orig: 148, 200
+  offset: 0, 0
+  index: -1
+tooth_l
+  rotate: false
+  xy: 301, 679
+  size: 354, 357
+  orig: 354, 357
+  offset: 0, 0
+  index: -1
+tooth_r
+  rotate: true
+  xy: 2, 144
+  size: 401, 355
+  orig: 401, 355
+  offset: 0, 0
+  index: -1
+wool12
+  rotate: false
+  xy: 1059, 142
+  size: 187, 172
+  orig: 187, 172
+  offset: 0, 0
+  index: -1
+wool16
+  rotate: false
+  xy: 372, 2
+  size: 181, 192
+  orig: 181, 192
+  offset: 0, 0
+  index: -1
+wool17
+  rotate: true
+  xy: 1259, 220
+  size: 116, 176
+  orig: 116, 176
+  offset: 0, 0
+  index: -1
+wool18
+  rotate: false
+  xy: 895, 263
+  size: 162, 76
+  orig: 162, 76
+  offset: 0, 0
+  index: -1
+wool20
+  rotate: false
+  xy: 657, 765
+  size: 260, 271
+  orig: 260, 277
+  offset: 0, 6
+  index: -1
+wool_l
+  rotate: false
+  xy: 359, 196
+  size: 260, 350
+  orig: 260, 350
+  offset: 0, 0
+  index: -1
+wool_m
+  rotate: false
+  xy: 1084, 823
+  size: 183, 213
+  orig: 183, 213
+  offset: 0, 0
+  index: -1

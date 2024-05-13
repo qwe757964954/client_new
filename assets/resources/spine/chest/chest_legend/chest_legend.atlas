@@ -1,0 +1,62 @@
+
+chest_legend.png
+size: 512,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+bottom
+  rotate: true
+  xy: 2, 96
+  size: 230, 131
+  orig: 230, 131
+  offset: 0, 0
+  index: -1
+light
+  rotate: false
+  xy: 2, 328
+  size: 207, 160
+  orig: 207, 160
+  offset: 0, 0
+  index: -1
+light_piece
+  rotate: false
+  xy: 211, 335
+  size: 30, 30
+  orig: 30, 30
+  offset: 0, 0
+  index: -1
+lock
+  rotate: false
+  xy: 2, 18
+  size: 70, 76
+  orig: 70, 76
+  offset: 0, 0
+  index: -1
+ray
+  rotate: false
+  xy: 451, 383
+  size: 39, 105
+  orig: 39, 105
+  offset: 0, 0
+  index: -1
+shadow
+  rotate: true
+  xy: 273, 175
+  size: 190, 66
+  orig: 190, 66
+  offset: 0, 0
+  index: -1
+top
+  rotate: true
+  xy: 135, 120
+  size: 206, 136
+  orig: 206, 136
+  offset: 0, 0
+  index: -1
+top_close
+  rotate: false
+  xy: 211, 367
+  size: 238, 121
+  orig: 238, 121
+  offset: 0, 0
+  index: -1
