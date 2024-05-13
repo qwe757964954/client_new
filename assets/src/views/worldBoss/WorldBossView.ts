@@ -40,7 +40,7 @@ export class WorldBossView extends Component {
     initNavTitle(){
         ViewsManager.addNavigation(this.top_layout,0,0).then((navScript: NavTitleView) => {
             navScript.updateNavigationProps(`挑战BOSS`,()=>{
-                ViewsManager.instance.closeView(PrefabType.ShopUIView);
+                ViewsManager.instance.closeView(PrefabType.WorldBossView);
             });
         });
     }
