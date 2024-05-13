@@ -5,12 +5,38 @@ import CCUtil from '../../util/CCUtil';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { PrefabType } from '../../config/PrefabType';
 import EventManager from '../../util/EventManager';
-import { WordMonestTabItem } from './WordMonestTabItem';
+import { CardSimpleInfo, WordMonestTabItem } from './WordMonestTabItem';
 import { WordCardBackItem } from './WordCardBackItem';
 import { NetConfig } from '../../config/NetConfig';
 import ImgUtil from '../../util/ImgUtil';
 import { WordLearnMonestItem } from './WordLearnMonestItem';
+import { NetWordSimpleData, WordSimpleData2 } from '../TextbookVocabulary/SearchWordView';
+import { EventType } from '../../config/EventType';
 const { ccclass, property } = _decorator;
+
+//Tab页需要的数据  // { name: "S级卡", level: "S", lock: false }
+export interface CardTabItemData {
+    name: string; //tab名
+    level: string; //level名
+    lock: boolean; //是否锁定
+}
+
+//有关卡牌UI的简单信息
+export interface CardUISimpleInfo {
+    Level: string | number; //等级
+    CardImg: string; //图片路径名
+    CardNo: string; //卡号
+}
+
+//有关卡牌的详细信息  //{"Level": "S", "CardImg": "1-1", "CardNo": 1001, "CardName": "绿龙", "Type": 0, "Cost": 2}
+export interface CardUIDetailInfo {
+    CardNo: number;  //卡牌index
+    CardImg: string; //卡牌图片资源url
+    Level: string | number; //等级
+    CardName: string; //卡牌名字
+    Type: number;  //类型
+    Cost: number;  //需要消耗
+}
 
 @ccclass('CardBookView')
 export class CardBookView extends Component {
@@ -65,20 +91,20 @@ export class CardBookView extends Component {
     private selectType: string = "S";
     private typeItems: Node[] = [];
     private cardItems: Node[] = [];
-    private haveList: any[] = [];
+    private haveList: NetWordSimpleData[] = [];
     private soundBtnList: Node[] = [];
     private learnTxtList: Node[] = [];
     private starImgList: Node[] = [];
-    private selectCard: any = null; //选中的卡牌数据
-    private loadImgs: any = {};
+    private selectCard: CardUIDetailInfo = null; //选中的卡牌数据
+    private loadImgs = {};
 
     private isClose: boolean = false; //当前界面是否已经关闭
 
-    private SlevelList: any[] = [];
-    private AlevelList: any[] = [];
-    private BlevelList: any[] = [];
-    private ClevelList: any[] = [];
-    private typeData: any[] = [];
+    private SlevelList: CardUISimpleInfo[] = [];
+    private AlevelList: CardUISimpleInfo[] = [];
+    private BlevelList: CardUISimpleInfo[] = [];
+    private ClevelList: CardUISimpleInfo[] = [];
+    private typeData: CardTabItemData[] = [];
 
     private _testCardShowEveId: string = ""; //测试显示卡牌信号
     private _testCardTypeSelectEveId: string = ""; //测试切换卡牌tab页
@@ -97,7 +123,7 @@ export class CardBookView extends Component {
         this.typeData = [];
         this.selectCard = null;
         this.loadImgs = {}; //加载的怪物卡片
-        this.init();
+        await this.init();
         this.addEvent();
     }
 
@@ -111,17 +137,20 @@ export class CardBookView extends Component {
             .then((json) => {
                 //console.log(json);
                 this.onJSONLoaded(json);
+                this.initView();
                 //测试代码,接口没送到
-                EventManager.emit("CardGame_CardShow", { Code: 200, Word: "", Cn: "你好，一种敬语。" });
+                EventManager.emit(EventType.CardBookView_CardShow, { Code: 200, Word: "", Cn: "你好，一种敬语。" });
             },
                 (error) => {
                     console.log(error);
                 });
         //SoundUtil.playLocalMusic("sound/bgm/card_book.mp3");
         AudioUtil.playMusic("sound/bgm/card_book");
+
+
     }
 
-    onJSONLoaded(data) {
+    onJSONLoaded(data: CardUIDetailInfo) {
         this.SlevelList = [];
         this.AlevelList = [];
         this.BlevelList = [];
@@ -148,10 +177,11 @@ export class CardBookView extends Component {
         CCUtil.onTouch(this.getBtn, this.onGetCard, this);
         CCUtil.onTouch(this.haveBtn, this.showHaveCard, this);
         CCUtil.onTouch(this.hideCardBtn, this.onHideCard, this);
-        this._testCardShowEveId = EventManager.on("CardGame_CardShow", this.onCardShow.bind(this)); //
-        this._testCardTypeSelectEveId = EventManager.on("CardBookView_TypeSelect", this.onTypeSelect.bind(this));
-        this._testCardClickEveId = EventManager.on("CardBookView_CardClick", this.onCardClick.bind(this));
-        this._testCardWordEveId = EventManager.on("CardGame_CardWord", this.onShowWordList.bind(this));
+        this._testCardShowEveId = EventManager.on(EventType.CardBookView_CardShow, this.onCardShow.bind(this)); //
+        this._testCardTypeSelectEveId = EventManager.on(EventType.CardBookView_TypeSelect, this.onTypeSelect.bind(this));
+        //this._testCardTypeSelectEveId = EventManager.on(EventType.CardBookView_TypeSelect, this.onTypeSelect.bind(self));
+        this._testCardClickEveId = EventManager.on(EventType.CardBookView_CardClick, this.onCardClick.bind(this));
+        this._testCardWordEveId = EventManager.on(EventType.CardBookView_CardWord, this.onShowWordList.bind(this));
     }
 
     removeEvent() {
@@ -159,10 +189,10 @@ export class CardBookView extends Component {
         CCUtil.offTouch(this.getBtn, this.onGetCard, this);
         CCUtil.offTouch(this.haveBtn, this.showHaveCard, this);
         CCUtil.offTouch(this.hideCardBtn, this.onHideCard, this);
-        EventManager.off("CardGame_CardShow", this._testCardShowEveId);
-        EventManager.off("CardBookView_TypeSelect", this._testCardTypeSelectEveId);
-        EventManager.off("CardBookView_CardClick", this._testCardClickEveId);
-        EventManager.off("CardGame_CardWord", this._testCardWordEveId);
+        EventManager.off(EventType.CardBookView_CardShow, this._testCardShowEveId);
+        EventManager.off(EventType.CardBookView_TypeSelect, this._testCardTypeSelectEveId);
+        EventManager.off(EventType.CardBookView_CardClick, this._testCardClickEveId);
+        EventManager.off(EventType.CardBookView_CardWord, this._testCardWordEveId);
     }
 
     /**关闭页面 TODO*/
@@ -189,9 +219,9 @@ export class CardBookView extends Component {
     }
 
     /**显示已经拥有的卡牌 */
-    onCardShow(data: any) {
-        this.haveList = data;
-        this.initView();
+    onCardShow(data: NetWordSimpleData) {
+        this.haveList?.push(data);
+        //this.initView();
     }
 
     initView() {
@@ -215,7 +245,7 @@ export class CardBookView extends Component {
         this.updateCardList();
     }
 
-    private addTypeListItem(data: any): Node { // { name: "S级卡", level: "S", lock: false }
+    private addTypeListItem(data: CardTabItemData): Node { // { name: "S级卡", level: "S", lock: false }
         console.log("addTypeListItem data:", data);
         if (!data) {
             return null;
@@ -228,7 +258,7 @@ export class CardBookView extends Component {
         return itemTab;
     }
 
-    private addCardListItem(data: any): Node { // {"Level": "B", "CardImg": "1-14", "CardNo": "1014"}
+    private addCardListItem(data: CardUISimpleInfo): Node { // {"Level": "B", "CardImg": "1-14", "CardNo": "1014"}
         console.log("addCardListItem data:", data);
         if (!data) {
             return null;
@@ -242,7 +272,7 @@ export class CardBookView extends Component {
 
     updateCardList() {
         this.clearCardItem();
-        let dataList: any[] = [];
+        let dataList: CardUISimpleInfo[] = [];
         if (this.selectType == "S") {
             dataList = this.SlevelList;
         } else if (this.selectType == "A") {
@@ -266,7 +296,7 @@ export class CardBookView extends Component {
         this.cardList.content.removeAllChildren();
     }
 
-    onTypeSelect(data: any) { //{ name: "S级卡", level: "S", lock: false }
+    onTypeSelect(data: CardSimpleInfo) { //{ name: "S级卡", level: "S", lock: false }
         this.cardListBox.active = true;
         this.cardShowBox.active = false;
         if (data.level == 5) {
@@ -274,7 +304,7 @@ export class CardBookView extends Component {
             ViewsManager.showTip("该功能暂未解锁");
             return;
         }
-        this.selectType = data.level;
+        this.selectType = data.level as string;
         for (let i = 0; i < this.typeItems.length; i++) {
             let wordTabItem: WordMonestTabItem = this.typeItems[i].getComponent(WordMonestTabItem);
             let bSelected = (wordTabItem.data.level == this.selectType);
@@ -290,7 +320,7 @@ export class CardBookView extends Component {
     }
 
     /**点击卡牌 */
-    onCardClick(data: any) { // data = {"Level": "S", "CardImg": "1-1", "CardNo": 1001, "CardName": "绿龙", "Type": 0, "Cost": 2}
+    onCardClick(data: CardUIDetailInfo) { // data = {"Level": "S", "CardImg": "1-1", "CardNo": 1001, "CardName": "绿龙", "Type": 0, "Cost": 2}
         if (!data) {
             return;
         }
@@ -321,7 +351,7 @@ export class CardBookView extends Component {
             this.haveBtn.visible = false;
         })*/
 
-        EventManager.emit("CardGame_CardWord", [
+        EventManager.emit(EventType.CardBookView_CardWord, [
             { Word: "give", Cn: "赠送，给予", Symbol: "[/ ˈtiːtʃə(r) /]" },
             { Word: "apple", Cn: "苹果", Symbol: "[/ ˈtiːtʃə(r) /]" },
         ]);
@@ -329,7 +359,7 @@ export class CardBookView extends Component {
     }
 
     /**显示卡牌列表 */
-    private onShowWordList(data: any): void {
+    private onShowWordList(data: WordSimpleData2[]): void {
         if (this.isClose) return;
         this.showWordList(data);
         this.totalWordTxt.string = "共计" + data.length + "词";
@@ -338,7 +368,7 @@ export class CardBookView extends Component {
         this.haveBtn.active = false;
     }
 
-    showWordList(dataList: Array<any>) {
+    showWordList(dataList: Array<WordSimpleData2>) {
         this.clearItem();
 
         //this.wordList.array = data;
@@ -358,7 +388,7 @@ export class CardBookView extends Component {
         this.starImgList = [];
     }
 
-    private addWordListItem(data: any): Node { // { Word: "give", Cn: "赠送，给予", Symbol: "[/ ˈtiːtʃə(r) /]" }
+    private addWordListItem(data: WordSimpleData2): Node { // { Word: "give", Cn: "赠送，给予", Symbol: "[/ ˈtiːtʃə(r) /]" }
         console.log("addWordListItem data:", data);
         if (!data) {
             return null;

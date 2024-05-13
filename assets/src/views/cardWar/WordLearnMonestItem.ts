@@ -2,6 +2,7 @@ import { _decorator, Component, Label, Node } from 'cc';
 import CCUtil from '../../util/CCUtil';
 import { RemoteSoundMgr } from '../../manager/RemoteSoundManager';
 import { NetConfig } from '../../config/NetConfig';
+import { WordSimpleData2 } from '../TextbookVocabulary/SearchWordView';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordLearnMonestItem')
@@ -21,9 +22,9 @@ export class WordLearnMonestItem extends Component {
     @property({ type: Node, tooltip: "去学习按钮" }) //
     public learnBtn: Node = null;
 
-    wordData: any = null;
+    wordData: WordSimpleData2 = null;
 
-    Init(data: any) { // { Word: "give", Cn: "赠送，给予", Symbol: "[/ ˈtiːtʃə(r) /]" }
+    Init(data: WordSimpleData2) { // { Word: "give", Cn: "赠送，给予", Symbol: "[/ ˈtiːtʃə(r) /]" }
         if (!data) {
             return;
         }

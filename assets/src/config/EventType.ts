@@ -48,4 +48,14 @@ export const EventType = {
     StudyRecord_MonthPrice: "Account_MonthPrize", //每个月的得分情况
     StudyRecord_ClickDateRecord: "StudyRecord_ClickDateRecord", //点击列表里的某一天
     StudyRecord_DayPrizeWord: "StudyRecord_DayPrizeWord", //某一天学习的所有单词
+
+    /**单词卡相关 */
+    CardBookView_CardShow: "CardBookView_CardShow",
+    CardBookView_TypeSelect: "CardBookView_TypeSelect",
+    CardBookView_CardClick: "CardBookView_CardClick",
+    CardBookView_CardWord: "CardBookView_CardWord",
+
+
+    /**新人豪礼相关 */
+    NewBieGift_GetDayGift: "NewBieGift_GetDayGift", //获取当天的礼物
 }
