@@ -8,6 +8,7 @@ import { User } from '../../models/User';
 import { NetMgr } from '../../net/NetManager';
 import CCUtil from '../../util/CCUtil';
 import { MainScene } from './MainScene';
+import { BrocastMgr } from '../notice/BrocastMgr';
 const { ccclass, property } = _decorator;
 
 @ccclass('MainUIView')
@@ -36,6 +37,10 @@ export class MainUIView extends Component {
     public btnReviewFix: Node = null;//复习计划修复
     @property(Node)
     public btnTranslateFix: Node = null;//翻译查词修复
+    @property(Node) //跑马灯广播根结点
+    public brocastRoot: Node = null;
+    //@property(Node) //测试按钮，已经隐藏
+    //public btnTest: Node = null;
 
     private _mainScene: MainScene = null;//主场景
 
@@ -54,6 +59,7 @@ export class MainUIView extends Component {
     public init(): void {
         this.initUI();
         this.initEvent();
+        this.setBrocast(); //跑马灯测试，不用此功能可注掉
     }
     /**初始化UI */
     initUI() {
@@ -79,6 +85,7 @@ export class MainUIView extends Component {
         CCUtil.onTouch(this.btnTask, this.onClickTask, this);
         CCUtil.onTouch(this.btnTaskGo, this.onClickTaskGo, this);
         CCUtil.onTouch(this.btnStudy, this.onClickStudy, this);
+        //CCUtil.onTouch(this.btnTest, this.onClickTest, this);
     }
     //移除事件
     public removeEvent() {
@@ -93,6 +100,7 @@ export class MainUIView extends Component {
         CCUtil.offTouch(this.btnTask, this.onClickTask, this);
         CCUtil.offTouch(this.btnTaskGo, this.onClickTaskGo, this);
         CCUtil.offTouch(this.btnStudy, this.onClickStudy, this);
+        //CCUtil.offTouch(this.btnTest, this.onClickTest, this);
     }
     //头像点击
     public onClickHead() {
@@ -142,6 +150,22 @@ export class MainUIView extends Component {
     //学习点击
     public onClickStudy() {
         director.loadScene(SceneType.WorldMapScene);
+    }
+    //测试按钮
+    public onClickTest() {
+
+    }
+
+    /**开始跑马灯广播*/
+    setBrocast() {
+
+        BrocastMgr.Instance.setRootBrocast(this.brocastRoot);
+        BrocastMgr.Instance.setCustomMode(false);
+        //BrocastMgr.Instance.resetAuto();
+
+        this.scheduleOnce(() => {
+            BrocastMgr.Instance.startBroadCast();
+        }, 1);
     }
 }
 

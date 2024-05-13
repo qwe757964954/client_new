@@ -265,7 +265,7 @@ export class CardBookView extends Component {
         }
 
         let itemCard = instantiate(this.preWordCardItem);
-        itemCard.getComponent(WordCardBackItem).Init(data);
+        itemCard.getComponent(WordCardBackItem).init(data);
         this.cardList.content.addChild(itemCard);
         return itemCard;
     }

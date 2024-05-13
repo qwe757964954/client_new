@@ -1,4 +1,4 @@
-import { Vec2, Vec3 } from "cc";
+import { Vec2, Vec3, Node, UIOpacity, tween } from "cc";
 
 
 export class ToolUtil {
@@ -58,5 +58,11 @@ export class ToolUtil {
         min = Math.ceil(min);
         max = Math.floor(max);
         return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    /**透明度渐变 */
+    static toggleOpacity(node: Node, transTime = 0, endOpacity = 0, onUpdate = (target) => { }) {
+        let wheelMaskUIOpacity = node.getComponent(UIOpacity);
+        return tween(wheelMaskUIOpacity).to(transTime, { opacity: endOpacity }, { onUpdate });
     }
 }

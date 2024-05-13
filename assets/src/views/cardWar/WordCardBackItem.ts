@@ -11,7 +11,7 @@ const { ccclass, property } = _decorator;
 export class WordCardBackItem extends Component {
     public data: CardUISimpleInfo = null;
 
-    Init(data: CardUISimpleInfo) { // {"Level": "B", "CardImg": "1-14", "CardNo": "1014"}
+    init(data: CardUISimpleInfo) { // {"Level": "B", "CardImg": "1-14", "CardNo": "1014"}
         if (!data) return;
         this.data = data;
         let cardNo = Number(data.CardNo);

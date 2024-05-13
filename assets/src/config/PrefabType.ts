@@ -100,4 +100,7 @@ export const PrefabType = {
     NewbieGiftDialogView: { path: "gift/NewbieGiftDialogView", zindex: Hierarchy.POPUPLAYER, tips: "新人七天大礼" },
     NewbieRewardDialogView: { path: "gift/RewardDialogView", zindex: Hierarchy.POPUPLAYER, tips: "领奖励结算窗口" },
     /*********************************************新人七天豪礼 End*************************************************************/
+    /*********************************************跑马灯和公告 start***********************************************************/
+    NoticeDialogView: { path: "notice/NoticeDialogView", zindex: Hierarchy.POPUPLAYER, tips: "新人七天大礼" },
+    /*********************************************跑马灯和公告 End*************************************************************/
 }
