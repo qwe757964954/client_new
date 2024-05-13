@@ -22,7 +22,6 @@ export class ChallengeLeftView extends Component {
 
     start() {
         this.loadMonsterSkelton();
-        
     }
 
     loadMonsterSkelton(){

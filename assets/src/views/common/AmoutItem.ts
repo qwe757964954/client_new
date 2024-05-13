@@ -29,22 +29,22 @@ export class AmoutItem extends ListItem {
         let activeUrl = "";
         switch (itemInfo.type) {
             case AmoutType.Coin:
-                this.aliveIcon.getComponent(UITransform).width = 53.9;
-                this.aliveIcon.getComponent(UITransform).height = 56.7;
+                this.aliveIcon.getComponent(UITransform).width = 56;
+                this.aliveIcon.getComponent(UITransform).height = 57;
                 addUrl = "common/word_0022_icon/spriteFrame";
-                activeUrl = "common/gold/spriteFrame";
+                activeUrl = "common/img_coin/spriteFrame";
                 break;
             case AmoutType.Diamond:
-                this.aliveIcon.getComponent(UITransform).width = 61.6;
-                this.aliveIcon.getComponent(UITransform).height = 52.5;
+                this.aliveIcon.getComponent(UITransform).width = 50;
+                this.aliveIcon.getComponent(UITransform).height = 53;
                 addUrl = "common/add/spriteFrame";
-                activeUrl = "common/stone/spriteFrame";
+                activeUrl = "common/img_diamond/spriteFrame";
                 break;
             case AmoutType.Energy:
-                this.aliveIcon.getComponent(UITransform).width = 46.9;
-                this.aliveIcon.getComponent(UITransform).height = 59.5;
+                this.aliveIcon.getComponent(UITransform).width = 39;
+                this.aliveIcon.getComponent(UITransform).height = 58;
                 addUrl = "common/word_0023_icon/spriteFrame";
-                activeUrl = "common/alive/spriteFrame";
+                activeUrl = "common/img_energy/spriteFrame";
                 break;
             default:
                 break;

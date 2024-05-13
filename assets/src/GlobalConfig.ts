@@ -22,16 +22,24 @@ export default class GlobalConfig {
     public static WIN_RATE: number = 1.0;
     public static WIN_SIZE: Size;//窗口大小（与设计分辨率一致，适配方案）
     public static SCREEN_SIZE: Size;//屏幕大小
+    public static IS_NARROW: boolean = false;//是否是窄屏
+    public static MAIN_RATE_MAX: number = 1.55;//主场景最大比例（适配方案）
 
     private static _isInit: boolean = false;
+    public static setSize() {
+        this.WIN_SIZE = View.instance.getVisibleSize();
+        this.SCREEN_SIZE = screen.windowSize;
+        this.WIN_RATE = this.WIN_SIZE.width / this.WIN_SIZE.height;
+        if (this.WIN_RATE <= 1.4) {
+            this.IS_NARROW = true;
+        }
+        console.log("GlobalConfig set size", this.WIN_SIZE, this.WIN_RATE, this.SCREEN_SIZE);
+    }
     public static init() {
         if (this._isInit) return;
         this._isInit = true;
         view.setOrientation(macro.ORIENTATION_LANDSCAPE);//横屏
-        this.WIN_SIZE = View.instance.getVisibleSize();
-        this.SCREEN_SIZE = screen.windowSize;
-        this.WIN_RATE = this.WIN_SIZE.width / this.WIN_SIZE.height;
-        console.log("GlobalConfig init", this.WIN_SIZE, this.WIN_RATE, this.SCREEN_SIZE);
+        GlobalConfig.setSize();
         let tmplog = console.log;
         SpineAniManager.getInstance().preLoadSkinAniDir("resources", "Spine");
         if (DebugConfig.NO_PRINT) {
@@ -59,6 +67,26 @@ export default class GlobalConfig {
 
         DataMgr.instance.initData();
     }
+    // 屏幕适配规则
+    public static initResolutionRules() {
+        // var _desWidth = view.getDesignResolutionSize().width;
+        // var _desHeight = view.getDesignResolutionSize().height;
+
+        // var _realWidth = view.getVisibleSize().width;
+        // var _realHeight = view.getVisibleSize().height;
+
+        // var _ratioDes = _desWidth / _desHeight;
+        // var _ratioReal = _realWidth / _realHeight;
+
+        // if (_ratioReal >= _ratioDes) {
+        //     view.setResolutionPolicy(ResolutionPolicy.FIXED_HEIGHT);
+        // } else {
+        //     view.setResolutionPolicy(ResolutionPolicy.FIXED_WIDTH);
+        // }
+    }
+    public static initRessolutionHeight() {
+        // view.setResolutionPolicy(ResolutionPolicy.FIXED_HEIGHT);
+    }
 }
 // 游戏初始化
 game.once(Game.EVENT_POST_PROJECT_INIT, () => {
@@ -66,9 +94,5 @@ game.once(Game.EVENT_POST_PROJECT_INIT, () => {
 });
 // 监听窗口大小变化
 screen.on("window-resize", () => {
-    GlobalConfig.WIN_SIZE = View.instance.getVisibleSize();
-    GlobalConfig.SCREEN_SIZE = screen.windowSize;
-    GlobalConfig.WIN_RATE = GlobalConfig.WIN_SIZE.width / GlobalConfig.WIN_SIZE.height;
-
-    console.log("GlobalConfig resize", GlobalConfig.WIN_SIZE, GlobalConfig.WIN_RATE, GlobalConfig.SCREEN_SIZE);
+    GlobalConfig.setSize();
 })

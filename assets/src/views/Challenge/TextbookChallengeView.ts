@@ -1,6 +1,7 @@
 import { _decorator, error, instantiate, isValid, Node, Prefab, view, Widget } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
+import GlobalConfig from '../../GlobalConfig';
 import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { BookAwardListModel, BookPlanDetail, ModifyPlanData, UnitListItemStatus } from '../../models/TextbookModel';
@@ -43,6 +44,7 @@ export class TextbookChallengeView extends BaseView {
     // EventMgr.dispatch(NetNotify.Classification_UnitListStatus,dataArr);
     start() {
         this.initUI();
+        GlobalConfig.initResolutionRules();
     }
     protected initUI(){
         this.initNavTitle();
@@ -125,6 +127,7 @@ export class TextbookChallengeView extends BaseView {
                 //     ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);
                 // });
                 ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);
+                GlobalConfig.initRessolutionHeight();
             });
         });
     }

@@ -1,4 +1,4 @@
-import { _decorator, Component, EventTouch, instantiate, Layers, Node, Prefab, tween } from 'cc';
+import { _decorator, Component, EventTouch, instantiate, Layers, Node, Prefab, sp, tween } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
@@ -29,7 +29,7 @@ export class ChangeRoleView extends Component {
             const roleItem = this.roleList[index];
             CCUtil.onTouch(roleItem, this.onItemClick, this);
             let count = 101 + index;
-            this.initRoleSkeleton(roleItem, count);
+            // this.initRoleSkeleton(roleItem, count);
             this.initPetSkeleton(roleItem.getChildByName("correct"), count);
         }
     }
@@ -77,11 +77,26 @@ export class ChangeRoleView extends Component {
             // 顺时针交换位置
             [this.roleList[0], this.roleList[1], this.roleList[2]] = [this.roleList[2], this.roleList[0], this.roleList[1]];
         }
-        tween(this.roleList[0]).to(0.5,{position: pos1}).start();
-        tween(this.roleList[1]).to(0.5,{position: pos2}).start();
-        tween(this.roleList[2]).to(0.5,{position: pos3}).start();
+        tween(this.roleList[0]).to(0.5,{position: pos1}).call(()=>{
+            this.setRoleStatus(this.roleList[0],true);
+        }).start();
+        tween(this.roleList[1]).to(0.5,{position: pos2}).call(()=>{
+            this.setRoleStatus(this.roleList[1],false);
+        }).start();
+        tween(this.roleList[2]).to(0.5,{position: pos3}).call(()=>{
+            this.setRoleStatus(this.roleList[2],false);
+        }).start();
     }
     
+    setRoleStatus(node:Node,isCurent:boolean) {
+        let role_sk = node.getChildByName("role_sk");
+        let scaleNum = isCurent?0.8:0.7;
+        let ani_name = isCurent?"book":"idle";
+        role_sk.setScale(scaleNum,scaleNum,scaleNum);
+        let sk = role_sk.getComponent(sp.Skeleton);
+        sk.setAnimation(0,ani_name,true);
+    }
+
     onSelectRoleClick(){
         console.log("onSelectRoleClick____________");
         

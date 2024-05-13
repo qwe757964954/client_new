@@ -1,4 +1,4 @@
-import { _decorator, Label, Node, Sprite, SpriteFrame, tween, Vec3 } from 'cc';
+import { _decorator, Label, Node, Sprite, SpriteFrame, tween, Vec3, view } from 'cc';
 import { EventType } from '../../../config/EventType';
 import { NetConfig } from '../../../config/NetConfig';
 import { PrefabType } from '../../../config/PrefabType';
@@ -53,6 +53,7 @@ export class WordMeaningView extends BaseModeView {
     sentenceSound: Node = null;
     @property({ type: Label, tooltip: "例句" })
     sentenceLabel: Label = null;
+
 
     private _words: string[] = []; //单词数据列表
     private _wordsCn: string[] = []; //中文数据列表

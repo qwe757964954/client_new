@@ -1,6 +1,7 @@
 import { _decorator, error, instantiate, isValid, Node, Prefab, Widget } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
+import GlobalConfig from '../../GlobalConfig';
 import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { BookListItemData, SchoolBookGradeItemData, SchoolBookListGradeItemData, SchoolBookListItemData } from '../../models/TextbookModel';
@@ -11,7 +12,7 @@ import List from '../../util/list/List';
 import { BookUnitModel, TextbookChallengeView } from '../Challenge/TextbookChallengeView';
 import { NavTitleView } from '../common/NavTitleView';
 import { RightNavView } from './RightNavView';
-import { PlanSaveData } from './SettingPlanView';
+import { PlanSaveData, SettingPlanView } from './SettingPlanView';
 import { TabContentItem } from './TabContentItem';
 import { TabTopView } from './TabTopView';
 const { ccclass, property } = _decorator;
@@ -34,6 +35,7 @@ export class SelectWordView extends BaseView {
     private _gradeSelectId:number = 0;
     private _planData:PlanSaveData = null;
     start() {
+        GlobalConfig.initResolutionRules();
         this.initUI();
     }
     protected initUI(){
@@ -135,10 +137,12 @@ export class SelectWordView extends BaseView {
             if (!isValid(widgetCom)) {
                 widgetCom = node.addComponent(Widget);
                 widgetCom.isAlignLeft = true;
-                widgetCom.isAlignVerticalCenter = true;
+                widgetCom.isAlignTop = true;
+                widgetCom.isAlignBottom = true;
             }
             widgetCom.left = 34.1095;
-            widgetCom.verticalCenter = -22.884;
+            widgetCom.top = -26;
+            widgetCom.bottom = -26;
             widgetCom.updateAlignment();
             let navScript = node.getComponent(RightNavView);
             this._rightNav = navScript;
@@ -151,6 +155,7 @@ export class SelectWordView extends BaseView {
         ViewsManager.addNavigation(this.top_layout,0,0).then((navScript: NavTitleView) => {
             navScript.updateNavigationProps("添加词书",()=>{
                 ViewsManager.instance.closeView(PrefabType.SelectWordView);
+                GlobalConfig.initRessolutionHeight();
             });
         });
     }
@@ -183,10 +188,13 @@ export class SelectWordView extends BaseView {
         tabContentItemScript.updateItemProps(idx,itemInfo,this._schoolBookListDataArr.data[this._leftNavIndex]);
     }
     onTextBookVerticalSelected(item: any, selectedId: number, lastSelectedId: number, val: number){
-        console.log("onTextBookVerticalSelected",item,selectedId);
         if(selectedId === -1){return}
         this._gradeSelectId = selectedId;
+        let itemInfo:SchoolBookGradeItemData = this._schoolGradeListData.data[selectedId];
         ViewsManager.instance.showView(PrefabType.SettingPlanView,(node: Node) => {
+            let titleBookName = `${this._schoolBookListDataArr.data[this._leftNavIndex].book_name}${itemInfo.grade}`
+            let nodeScript:SettingPlanView = node.getComponent(SettingPlanView)
+            nodeScript.updateTitleName(titleBookName);
         });
     }
 }

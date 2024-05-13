@@ -1,4 +1,4 @@
-import { _decorator, Button, instantiate, Node, Prefab, Sprite, tween, UITransform, Vec3 } from 'cc';
+import { _decorator, Button, instantiate, Node, Prefab, Sprite, tween, UITransform, Vec3, view } from 'cc';
 import { AdvLevelConfig, BookLevelConfig } from '../../../manager/DataMgr';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { s2cAdventureResult, WordsDetailData } from '../../../models/AdventureModel';
@@ -40,6 +40,8 @@ export class BaseModeView extends BaseView {
     public smallMonsterModel: Prefab = null;
     @property({ type: Node, tooltip: "主怪物容器" })
     public monster: Node = null;
+    @property({ type: Node, tooltip: "顶部模式进度容器" })
+    topNode: Node = null;
     @property(Prefab)
     public monsterModel: Prefab = null;//怪物动画
 
@@ -66,6 +68,8 @@ export class BaseModeView extends BaseView {
         this.initRole(); //初始化角色
         this.initPet(); //初始化精灵
         this._costTime = Date.now();
+        let scaleNum = view.getVisibleSize().width / view.getDesignResolutionSize().width;
+        this.topNode.setScale(scaleNum, scaleNum, 1);
     }
     onLoad(): void {
 
@@ -204,7 +208,8 @@ export class BaseModeView extends BaseView {
             let targetTranform = target.parent.getComponent(UITransform);
             let petTransform = this.petContainer.getComponent(UITransform);
             let targetpos = petTransform.convertToNodeSpaceAR(targetTranform.convertToWorldSpaceAR(new Vec3(0, 0, 0)));
-            tween(this._pet).to(0.5, { position: new Vec3(targetpos.x - 650, targetpos.y, targetpos.z) }).call(() => {
+            let startPosx = targetpos.x - petPos.x > 650 ? (targetpos.x - 650) : petPos.x;
+            tween(this._pet).to(0.5, { position: new Vec3(startPosx, targetpos.y, targetpos.z) }).call(() => {
                 this._pet.getComponent(PetModel).hit().then(() => {
                     tween(this._pet).to(0.5, { position: petPos }).start();
                     resolve(true);

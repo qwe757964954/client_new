@@ -1,8 +1,8 @@
-import { _decorator, color, Component, instantiate, Label, Node, Prefab, ScrollView, Sprite, SpriteFrame, Vec2 } from 'cc';
+import { _decorator, color, Component, Label, Node, Prefab, ScrollView, Sprite, SpriteFrame } from 'cc';
 import { MapStatus } from '../../config/MapConfig';
-import { DataMgr, EditType } from '../../manager/DataMgr';
+import { DataMgr, EditInfo, EditType } from '../../manager/DataMgr';
 import CCUtil from '../../util/CCUtil';
-import { TimerMgr } from '../../util/TimerMgr';
+import List from '../../util/list/List';
 import { EditItem } from '../map/EditItem';
 import { MainScene } from './MainScene';
 const { ccclass, property } = _decorator;
@@ -29,12 +29,15 @@ export class EditUIView extends Component {
     public scrollView: ScrollView = null;//滚动视图
     @property([SpriteFrame])
     public spriteFrames: SpriteFrame[] = [];//图片资源
+    @property(List)
+    public listView: List = null;//列表
 
 
     private _mainScene: MainScene = null;//主场景
     private _isFirst: boolean = true;//是否是第一次
     private _editType: EditType = null;//编辑类型
     private _lastSelect: Sprite = null;//上次选中
+    private _itemsData: EditInfo[] = null;//编辑数据
     start() {
         this.initEvent();
     }
@@ -113,41 +116,14 @@ export class EditUIView extends Component {
         if (editType == this._editType) return;
         this._editType = editType;
 
-        let children = this.scrollContent.children;
-        let maxCount = children.length;
-        let index = 0;
         let editConfig = DataMgr.instance.editInfo;
+        this._itemsData = [];
         editConfig.forEach(info => {
             if (editType != EditType.Null && editType != info.type) return;
-            let node: Node;
-            if (index < maxCount) {
-                node = children[index];
-                index++;
-            } else {
-                node = instantiate(this.editItem);
-                this.scrollContent.addChild(node);
-            }
-            node.getComponent(EditItem).initData(info, this.onEditItemClick.bind(this));
+            this._itemsData.push(info);
         });
-        //移除多余元素
-        let tmpAry = [];
-        for (let i = index; i < maxCount; i++) {
-            tmpAry.push(children[i]);
-        }
-        for (let i = 0; i < tmpAry.length; i++) {
-            tmpAry[i].destroy();
-            // let tmp = tmpAry[i];
-            // this.scrollContent.removeChild(tmp);
-        }
-        //第一次窄屏幕时，显示位置不对
-        if (this._isFirst) {
-            this._isFirst = false;
-            TimerMgr.once(() => {
-                this.scrollView.scrollToOffset(new Vec2(0, 0));
-            }, 1);
-        } else {
-            this.scrollView.scrollToOffset(new Vec2(0, 0));
-        }
+        this.listView.numItems = this._itemsData.length;
+        // this.listView.scrollTo(0, 0);
     }
     /**选中按钮 */
     selectBtn(btn: Sprite) {
@@ -159,6 +135,11 @@ export class EditUIView extends Component {
         btn.getComponentInChildren(Label).color = color("#72320F");
         btn.spriteFrame = this.spriteFrames[0];
         this._lastSelect = btn;
+    }
+    /**加载显示 */
+    onLoadItem(item: Node, idx: number) {
+        let info = this._itemsData[idx];
+        item.getComponent(EditItem).initData(info, this.onEditItemClick.bind(this));
     }
 }
 

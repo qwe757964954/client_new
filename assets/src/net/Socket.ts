@@ -34,6 +34,11 @@ export class Socket {
         if (this._socket) {
             this._socket.close();
             this._socket = null;
+
+            this.openFun = null;
+            this.recvFun = null;
+            this.closeFun = null;
+            this.onError = null;
         }
     }
 

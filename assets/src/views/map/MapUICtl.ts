@@ -501,9 +501,19 @@ export class MapUICtl extends MainBaseCtl {
         let winSize = GlobalConfig.SCREEN_SIZE;
         let grid = this.getTouchGrid(winSize.width * 0.5, winSize.height * 0.5);
         if (grid) {
+            for (let i = 0; i < data.width; i++) {
+                for (let j = 0; j < data.width; j++) {
+                    if (i == 0 && j == 0) continue;
+                    let tmpGrid = this.getGridInfo(grid.x + i, grid.y + j);
+                    if (!tmpGrid) {
+                        return null;
+                    }
+                }
+            }
             return this.newBuilding(data, grid.x, grid.y);
         }
-        return this.newBuilding(data, 20, 20);
+        return null;
+        // return this.newBuilding(data, 20, 20);
     }
     // 摄像头移动到指定建筑
     moveCameraToBuilding(building: BuildingModel, plPos: Vec3) {

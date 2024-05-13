@@ -1,4 +1,4 @@
-import { _decorator, instantiate, Label, Node, NodePool, Prefab, Sprite, tween, UITransform, Vec3 } from 'cc';
+import { _decorator, instantiate, Label, Node, NodePool, Prefab, Sprite, tween, UITransform, Vec3, view } from 'cc';
 import { EventType } from '../../../config/EventType';
 import { NetConfig } from '../../../config/NetConfig';
 import { PrefabType } from '../../../config/PrefabType';

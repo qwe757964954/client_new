@@ -38,6 +38,10 @@ export class SettingPlanView extends Component {
         })
     }
 
+    updateTitleName(title:string) {
+        this.book_title.string = title;
+    }
+
     onLoadLeftVerticalList(item:Node, idx:number){
         console.log("onLoadLeftVerticalList",item,idx);
         let label = item.getComponent(Label);
