@@ -3,6 +3,13 @@ import CCUtil from '../../util/CCUtil';
 import EventManager from '../../util/EventManager';
 const { ccclass, property } = _decorator;
 
+/**卡的简单信息 */
+export interface CardSimpleInfo {
+    name: string,  //上牌名字
+    level: string | number, //等级
+    lock: boolean, //是否加锁
+}
+
 @ccclass('WordMonestTabItem')
 export class WordMonestTabItem extends Component {
     @property({ type: Label, tooltip: "Tab页标题" })
@@ -17,9 +24,9 @@ export class WordMonestTabItem extends Component {
     @property({ type: Node, tooltip: "Tab页按钮" })
     public btnTab: Node = null;
 
-    data: any = null;
+    data: CardSimpleInfo = null;
 
-    public Init(data, selectType) { // { name: "S级卡", level: "S", lock: false }
+    public Init(data: CardSimpleInfo, selectType) { // { name: "S级卡", level: "S", lock: false }
         this.data = data;
         this.lockIcon.active = false;
         this.typeTxt.string = data.name;

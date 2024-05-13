@@ -96,4 +96,8 @@ export const PrefabType = {
     /*********************************************CardBook start***********************************************************/
     CardBookView: { path: "cardWar/CardBookView", zindex: Hierarchy.POPUPLAYER, tips: "卡牌书籍" },
     /*********************************************CardBook End*************************************************************/
+    /*********************************************新人七天豪礼 start***********************************************************/
+    NewbieGiftDialogView: { path: "gift/NewbieGiftDialogView", zindex: Hierarchy.POPUPLAYER, tips: "新人七天大礼" },
+    NewbieRewardDialogView: { path: "gift/RewardDialogView", zindex: Hierarchy.POPUPLAYER, tips: "领奖励结算窗口" },
+    /*********************************************新人七天豪礼 End*************************************************************/
 }

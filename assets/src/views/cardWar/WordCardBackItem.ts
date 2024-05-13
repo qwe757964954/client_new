@@ -4,13 +4,14 @@ import ImgUtil from '../../util/ImgUtil';
 import { LoadManager } from '../../manager/LoadManager';
 import CCUtil from '../../util/CCUtil';
 import EventManager from '../../util/EventManager';
+import { CardUISimpleInfo } from './CardBookView';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordCardBackItem')
 export class WordCardBackItem extends Component {
-    public data: any = null;
+    public data: CardUISimpleInfo = null;
 
-    Init(data) { // {"Level": "B", "CardImg": "1-14", "CardNo": "1014"}
+    Init(data: CardUISimpleInfo) { // {"Level": "B", "CardImg": "1-14", "CardNo": "1014"}
         if (!data) return;
         this.data = data;
         let cardNo = Number(data.CardNo);
