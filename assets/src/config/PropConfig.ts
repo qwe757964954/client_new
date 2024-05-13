@@ -10,6 +10,17 @@ export enum PropID {
     hoe = 8,//锄头
     juice = 9,//果汁
     amethyst = 10,//紫晶石
+    nuomici = 11,//糯米糍
+    pizza = 12,//披萨
+    kebab = 13,//烤肉串
+    chicken = 14,//烤鸡
+    pig = 15,//烤乳猪
+    towel = 16,//毛巾
+    perfume = 17,//香水
+    showerHead = 18,//花洒
+    ball = 19,//玩球
+    microphone = 20,//唱歌
+    fireworks = 21,//烟花
 }
 /**道具信息 */
 export class PropInfo {

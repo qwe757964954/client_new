@@ -88,6 +88,9 @@ export const PrefabType = {
     BuildingInfoView: { path: "map/BuildingInfoView", zindex: Hierarchy.POPUPLAYER, tips: "建筑信息界面" },
     BuildingProduceItem: { path: "map/BuildingProduceItem", zindex: Hierarchy.POPUPLAYER, tips: "建筑生产item" },
     /*********************************************地图相关end*************************************************************/
+    /*********************************************宠物相关start*************************************************************/
+    PetInteractionView: { path: "map/PetInteractionView", zindex: Hierarchy.POPUPLAYER, tips: "宠物交互界面" },
+    /*********************************************宠物相关end*************************************************************/
     /*********************************************复习计划start***********************************************************/
     ReviewMainView: { path: "review/ReviewMainView", zindex: Hierarchy.POPUPLAYER, tips: "复习规划主界面" },
     StudyRecordView: { path: "review/StudyRecordView", zindex: Hierarchy.POPUPLAYER, tips: "复习计划日程表" },

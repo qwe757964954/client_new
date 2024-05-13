@@ -1,3 +1,4 @@
+import { PetInfo, PetInteractionInfo, PetMoodInfo } from "../config/PetConfig";
 import { PropInfo } from "../config/PropConfig";
 import { TextConfig } from "../config/TextConfig";
 import { MapLevelData } from "../models/AdventureModel";
@@ -12,6 +13,9 @@ const ConfigPath = {
     WordSplit: "word_split",
     AdventureLevel: "adventure_level",
     PropConfig: "propConfig",
+    PetInteraction: "petInteraction",
+    PetMoodConfig: "petMoodConfig",
+    PetConfig: "petConfig",
 }
 
 //角色插槽
@@ -104,6 +108,9 @@ export class DataMgr {
     public wordSplitConfig: any = null;
     public adventureLevelConfig: AdvLevelConfig[] = null;
     public propConfig: { [key: number]: PropInfo } = {};//道具信息
+    public petInteraction: PetInteractionInfo[] = [];//交互信息
+    public petMoodConfig: PetMoodInfo[] = [];//心情信息
+    public petConfig: PetInfo[] = [];//宠物信息
 
     private _isInit: boolean = false;
     public defaultLand: EditInfo = null;//默认地块
@@ -122,12 +129,14 @@ export class DataMgr {
     public async initData() {
         if (this._isInit) return;
         this._isInit = true;
-
+        console.time("DataMgr initData");
         await this.initRoleSlot();
         await this.initRoleSlotConfig();
+        await this.initPropConfig();
         await this.initEditInfo();
         await this.initBuildProduceInfo();
-        await this.initPropConfig();
+        await this.initPetInteractionConfig();
+        console.timeEnd("DataMgr initData");
     }
     /** 初始化角色插槽 */
     public async initRoleSlot() {
@@ -217,6 +226,27 @@ export class DataMgr {
             let obj: PropInfo = json[k];
             obj.png = ToolUtil.replace(TextConfig.Prop_Path, obj.png);
             this.propConfig[obj.id] = obj;
+        }
+    }
+    /**初始化宠物交互配置 */
+    public async initPetInteractionConfig() {
+        let json = await LoadManager.loadJson(ConfigPath.PetInteraction);
+        for (let k in json) {
+            this.petInteraction.push(json[k]);
+        }
+    }
+    /**初始化心情信息 */
+    public async initPetMoodConfig() {
+        let json = await LoadManager.loadJson(ConfigPath.PetMoodConfig);
+        for (let k in json) {
+            this.petMoodConfig.push(json[k]);
+        }
+    }
+    /**初始化宠物信息 */
+    public async initPetConfig() {
+        let json = await LoadManager.loadJson(ConfigPath.PetConfig);
+        for (let k in json) {
+            this.petConfig.push(json[k]);
         }
     }
 

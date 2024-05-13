@@ -1,12 +1,14 @@
 import { _decorator, Component, director, Node, Sprite } from 'cc';
 import { MapStatus } from '../../config/MapConfig';
-import { SceneType } from '../../config/PrefabType';
+import { PrefabType, SceneType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import GlobalConfig from '../../GlobalConfig';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { User } from '../../models/User';
 import { NetMgr } from '../../net/NetManager';
 import CCUtil from '../../util/CCUtil';
+import { TimerMgr } from '../../util/TimerMgr';
+import { PetInteractionView } from '../map/PetInteractionView';
 import { MainScene } from './MainScene';
 const { ccclass, property } = _decorator;
 
@@ -129,15 +131,26 @@ export class MainUIView extends Component {
     }
     //商店点击
     public onClickShop() {
+        // AudioUtil.playEffect("sound/68146");
         ViewsManager.showTip(TextConfig.Function_Tip);
     }
     //任务点击
     public onClickTask() {
+        console.log("onClickTask");
         ViewsManager.showTip(TextConfig.Function_Tip);
     }
     //任务前往点击
     public onClickTaskGo() {
-        ViewsManager.showTip(TextConfig.Function_Tip);
+        console.log("onClickTaskGo");
+        //延迟一针调用，防止点击事件触发异常（后续点击会穿透）
+        TimerMgr.once(() => {
+            this._mainScene.hideMainUIView();
+        }, 1);
+        ViewsManager.instance.showView(PrefabType.PetInteractionView, (node: Node) => {
+            node.getComponent(PetInteractionView).setRemoveCallback(() => {
+                this._mainScene.showMainUIView();
+            });
+        });
     }
     //学习点击
     public onClickStudy() {

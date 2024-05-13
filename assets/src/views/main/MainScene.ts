@@ -93,6 +93,11 @@ export class MainScene extends Component {
         if (this._loadCount <= 0) {
             this._loadCount = 0;
             this.loadingNode.active = false;
+
+            // this.hideMainUIView();
+            // setTimeout(() => {
+            //     this.showMainUIView();
+            // }, 5000);
         }
     }
     /**获取加载回调 */
@@ -440,6 +445,13 @@ export class MainScene extends Component {
                 );
             }
         });
+    }
+
+    hideMainUIView() {
+        this._mainUIView.node.active = false;
+    }
+    showMainUIView() {
+        this._mainUIView.node.active = true;
     }
 }
 
