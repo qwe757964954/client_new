@@ -1,0 +1,132 @@
+
+hongyanlong.png
+size: 1788,786
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+hongyanlong_1
+  rotate: false
+  xy: 1617, 110
+  size: 127, 97
+  orig: 127, 97
+  offset: 0, 0
+  index: -1
+hongyanlong_10
+  rotate: false
+  xy: 1672, 495
+  size: 104, 137
+  orig: 104, 137
+  offset: 0, 0
+  index: -1
+hongyanlong_11
+  rotate: false
+  xy: 1672, 411
+  size: 102, 82
+  orig: 102, 82
+  offset: 0, 0
+  index: -1
+hongyanlong_12
+  rotate: true
+  xy: 1286, 39
+  size: 165, 198
+  orig: 165, 198
+  offset: 0, 0
+  index: -1
+hongyanlong_13
+  rotate: true
+  xy: 1617, 25
+  size: 83, 139
+  orig: 83, 139
+  offset: 0, 0
+  index: -1
+hongyanlong_14
+  rotate: true
+  xy: 1486, 35
+  size: 169, 129
+  orig: 169, 129
+  offset: 0, 0
+  index: -1
+hongyanlong_15
+  rotate: true
+  xy: 1672, 634
+  size: 150, 114
+  orig: 160, 114
+  offset: 0, 0
+  index: -1
+hongyanlong_16
+  rotate: false
+  xy: 1329, 387
+  size: 341, 397
+  orig: 341, 397
+  offset: 0, 0
+  index: -1
+hongyanlong_17
+  rotate: true
+  xy: 2, 2
+  size: 253, 335
+  orig: 260, 335
+  offset: 0, 0
+  index: -1
+hongyanlong_18
+  rotate: false
+  xy: 1606, 209
+  size: 140, 176
+  orig: 166, 188
+  offset: 16, 5
+  index: -1
+hongyanlong_2
+  rotate: true
+  xy: 1286, 248
+  size: 56, 32
+  orig: 59, 32
+  offset: 0, 0
+  index: -1
+hongyanlong_3
+  rotate: false
+  xy: 688, 31
+  size: 313, 224
+  orig: 314, 224
+  offset: 1, 0
+  index: -1
+hongyanlong_4
+  rotate: false
+  xy: 1003, 7
+  size: 158, 60
+  orig: 158, 61
+  offset: 0, 0
+  index: -1
+hongyanlong_5
+  rotate: false
+  xy: 1010, 69
+  size: 274, 235
+  orig: 274, 235
+  offset: 0, 0
+  index: -1
+hongyanlong_6
+  rotate: false
+  xy: 1010, 306
+  size: 317, 478
+  orig: 317, 478
+  offset: 0, 0
+  index: -1
+hongyanlong_7
+  rotate: true
+  xy: 339, 25
+  size: 230, 347
+  orig: 230, 347
+  offset: 0, 0
+  index: -1
+hongyanlong_8
+  rotate: false
+  xy: 2, 257
+  size: 1006, 527
+  orig: 1006, 529
+  offset: 0, 2
+  index: -1
+hongyanlong_9
+  rotate: true
+  xy: 1329, 206
+  size: 179, 275
+  orig: 179, 275
+  offset: 0, 0
+  index: -1

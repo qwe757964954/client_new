@@ -1,0 +1,62 @@
+
+chest_common.png
+size: 512,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+bottom
+  rotate: false
+  xy: 211, 382
+  size: 193, 108
+  orig: 193, 108
+  offset: 0, 0
+  index: -1
+light
+  rotate: false
+  xy: 2, 330
+  size: 207, 160
+  orig: 207, 160
+  offset: 0, 0
+  index: -1
+light_piece
+  rotate: false
+  xy: 318, 350
+  size: 30, 30
+  orig: 30, 30
+  offset: 0, 0
+  index: -1
+lock
+  rotate: false
+  xy: 406, 427
+  size: 65, 63
+  orig: 65, 63
+  offset: 0, 0
+  index: -1
+ray
+  rotate: true
+  xy: 211, 341
+  size: 39, 105
+  orig: 39, 105
+  offset: 0, 0
+  index: -1
+shadow
+  rotate: true
+  xy: 98, 6
+  size: 190, 66
+  orig: 190, 66
+  offset: 0, 0
+  index: -1
+top
+  rotate: false
+  xy: 2, 198
+  size: 185, 130
+  orig: 185, 130
+  offset: 0, 0
+  index: -1
+top_close
+  rotate: true
+  xy: 2, 2
+  size: 194, 94
+  orig: 194, 94
+  offset: 0, 0
+  index: -1
