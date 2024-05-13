@@ -1,0 +1,300 @@
+
+hanzhu.png
+size: 459,1030
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+abdomen01
+  rotate: false
+  xy: 2, 799
+  size: 236, 229
+  orig: 247, 229
+  offset: 0, 0
+  index: -1
+abdomenhorn01
+  rotate: false
+  xy: 340, 2
+  size: 28, 53
+  orig: 28, 53
+  offset: 0, 0
+  index: -1
+abdomenhorn02
+  rotate: true
+  xy: 280, 116
+  size: 92, 58
+  orig: 92, 58
+  offset: 0, 0
+  index: -1
+abdomenhorn03
+  rotate: false
+  xy: 418, 84
+  size: 37, 47
+  orig: 37, 47
+  offset: 0, 0
+  index: -1
+armhorn01_l
+  rotate: false
+  xy: 71, 64
+  size: 99, 238
+  orig: 104, 238
+  offset: 0, 0
+  index: -1
+armhorn01_r
+  rotate: false
+  xy: 282, 623
+  size: 102, 204
+  orig: 104, 222
+  offset: 2, 18
+  index: -1
+armhorn04_l
+  rotate: false
+  xy: 340, 140
+  size: 41, 86
+  orig: 41, 86
+  offset: 0, 0
+  index: -1
+armhorn04_r
+  rotate: true
+  xy: 393, 223
+  size: 88, 61
+  orig: 88, 61
+  offset: 0, 0
+  index: -1
+bigarm01_r
+  rotate: false
+  xy: 300, 319
+  size: 46, 44
+  orig: 46, 44
+  offset: 0, 0
+  index: -1
+bigarm_l
+  rotate: true
+  xy: 71, 13
+  size: 49, 100
+  orig: 49, 100
+  offset: 0, 0
+  index: -1
+bigarm_r
+  rotate: false
+  xy: 282, 524
+  size: 103, 97
+  orig: 103, 103
+  offset: 0, 6
+  index: -1
+biyan1
+  rotate: false
+  xy: 360, 59
+  size: 8, 19
+  orig: 8, 19
+  offset: 0, 0
+  index: -1
+biyan2
+  rotate: false
+  xy: 262, 353
+  size: 14, 10
+  orig: 15, 11
+  offset: 1, 0
+  index: -1
+biyan3
+  rotate: true
+  xy: 152, 334
+  size: 17, 18
+  orig: 19, 20
+  offset: 1, 1
+  index: -1
+biyan4
+  rotate: false
+  xy: 387, 524
+  size: 24, 19
+  orig: 26, 19
+  offset: 1, 0
+  index: -1
+body01_line
+  rotate: false
+  xy: 2, 550
+  size: 172, 247
+  orig: 178, 247
+  offset: 6, 0
+  index: -1
+body02
+  rotate: false
+  xy: 152, 353
+  size: 91, 195
+  orig: 91, 195
+  offset: 0, 0
+  index: -1
+forearm01_r
+  rotate: false
+  xy: 360, 80
+  size: 56, 51
+  orig: 56, 51
+  offset: 0, 0
+  index: -1
+headhorn01
+  rotate: false
+  xy: 245, 404
+  size: 103, 118
+  orig: 106, 120
+  offset: 3, 1
+  index: -1
+leghorn01_l
+  rotate: false
+  xy: 176, 577
+  size: 104, 220
+  orig: 114, 221
+  offset: 10, 0
+  index: -1
+leghorn01_r
+  rotate: false
+  xy: 280, 57
+  size: 78, 57
+  orig: 78, 57
+  offset: 0, 0
+  index: -1
+leghorn02_l
+  rotate: false
+  xy: 383, 133
+  size: 60, 88
+  orig: 60, 88
+  offset: 0, 0
+  index: -1
+leghorn02_r
+  rotate: false
+  xy: 386, 646
+  size: 59, 181
+  orig: 59, 181
+  offset: 0, 0
+  index: -1
+leghorn03_l
+  rotate: false
+  xy: 240, 829
+  size: 160, 199
+  orig: 160, 199
+  offset: 0, 0
+  index: -1
+leghorn03_r
+  rotate: true
+  xy: 370, 20
+  size: 58, 41
+  orig: 58, 60
+  offset: 0, 0
+  index: -1
+leghorn04_l
+  rotate: false
+  xy: 300, 228
+  size: 91, 83
+  orig: 91, 83
+  offset: 0, 0
+  index: -1
+mouth01
+  rotate: false
+  xy: 356, 313
+  size: 101, 93
+  orig: 101, 97
+  offset: 0, 0
+  index: -1
+mouth02
+  rotate: true
+  xy: 172, 77
+  size: 131, 106
+  orig: 131, 112
+  offset: 0, 3
+  index: -1
+neck
+  rotate: true
+  xy: 350, 408
+  size: 114, 97
+  orig: 114, 97
+  offset: 0, 0
+  index: -1
+shank01_l
+  rotate: true
+  xy: 240, 803
+  size: 24, 33
+  orig: 30, 35
+  offset: 6, 2
+  index: -1
+shank02_r
+  rotate: false
+  xy: 387, 545
+  size: 65, 99
+  orig: 65, 99
+  offset: 0, 0
+  index: -1
+thigh01_l
+  rotate: true
+  xy: 245, 365
+  size: 37, 109
+  orig: 39, 109
+  offset: 0, 0
+  index: -1
+thigh01_r
+  rotate: true
+  xy: 277, 3
+  size: 52, 61
+  orig: 52, 61
+  offset: 0, 0
+  index: -1
+thigh02_l
+  rotate: false
+  xy: 245, 527
+  size: 35, 48
+  orig: 37, 54
+  offset: 1, 0
+  index: -1
+thigh03_l
+  rotate: true
+  xy: 173, 5
+  size: 70, 102
+  orig: 71, 122
+  offset: 1, 20
+  index: -1
+tooth01
+  rotate: false
+  xy: 340, 116
+  size: 13, 22
+  orig: 13, 27
+  offset: 0, 0
+  index: -1
+tooth02
+  rotate: true
+  xy: 245, 353
+  size: 10, 15
+  orig: 10, 18
+  offset: 0, 0
+  index: -1
+tooth03
+  rotate: false
+  xy: 300, 210
+  size: 9, 16
+  orig: 9, 16
+  offset: 0, 0
+  index: -1
+wing01_l
+  rotate: false
+  xy: 2, 304
+  size: 148, 244
+  orig: 148, 244
+  offset: 0, 0
+  index: -1
+wing01_r
+  rotate: false
+  xy: 2, 9
+  size: 67, 293
+  orig: 67, 293
+  offset: 0, 0
+  index: -1
+wing02_l
+  rotate: false
+  xy: 172, 210
+  size: 126, 141
+  orig: 126, 141
+  offset: 0, 0
+  index: -1
+wing02_r
+  rotate: false
+  xy: 402, 837
+  size: 50, 191
+  orig: 50, 191
+  offset: 0, 0
+  index: -1

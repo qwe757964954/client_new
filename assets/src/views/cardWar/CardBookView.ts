@@ -124,7 +124,6 @@ export class CardBookView extends Component {
         this.selectCard = null;
         this.loadImgs = {}; //加载的怪物卡片
         await this.init();
-        this.addEvent();
     }
 
     async init() {
@@ -193,6 +192,10 @@ export class CardBookView extends Component {
         EventManager.off(EventType.CardBookView_TypeSelect, this._testCardTypeSelectEveId);
         EventManager.off(EventType.CardBookView_CardClick, this._testCardClickEveId);
         EventManager.off(EventType.CardBookView_CardWord, this._testCardWordEveId);
+    }
+
+    protected onDestroy(): void {
+        this.removeEvent();
     }
 
     /**关闭页面 TODO*/
@@ -265,7 +268,7 @@ export class CardBookView extends Component {
         }
 
         let itemCard = instantiate(this.preWordCardItem);
-        itemCard.getComponent(WordCardBackItem).Init(data);
+        itemCard.getComponent(WordCardBackItem).init(data);
         this.cardList.content.addChild(itemCard);
         return itemCard;
     }

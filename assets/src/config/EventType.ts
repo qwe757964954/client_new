@@ -58,4 +58,7 @@ export const EventType = {
 
     /**新人豪礼相关 */
     NewBieGift_GetDayGift: "NewBieGift_GetDayGift", //获取当天的礼物
+
+    /**跑马灯和公告相关 */
+    Notice_ShowNotice: "Notice_ShowNotice", //显示公告
 }

@@ -21,3 +21,4 @@ node_modules/
 # WebStorm
 #//////////////////////////
 .idea/
+/settings/v2/packages/information.json

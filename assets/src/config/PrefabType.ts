@@ -79,6 +79,15 @@ export const PrefabType = {
     SearchWorldView: { path: "textbook/SearchWordView", zindex: Hierarchy.POPUPLAYER, tips: "查找单词弹窗" },
     WordSearchView: { path: "textbook/WordSearchView", zindex: Hierarchy.POPUPLAYER, tips: "查找单词详情弹窗" },
     /*********************************************教材单词相关end*************************************************************/
+    /*********************************************商城相关start***********************************************************/
+    ShopUIView: { path: "shop/ShopUIView", zindex: Hierarchy.POPUPLAYER, tips: "商城模块" },
+    /*********************************************商城相关end*************************************************************/
+    /*********************************************挑战BOSS相关start***********************************************************/
+    WorldBossView: { path: "worldBoss/WorldBossView", zindex: Hierarchy.POPUPLAYER, tips: "世界boss挑战模块" },
+    WorldLeftNavView: { path: "worldBoss/WorldLeftNavView", zindex: Hierarchy.POPUPLAYER, tips: "世界boss左侧" },
+    CenterBossView: { path: "worldBoss/CenterBossView", zindex: Hierarchy.POPUPLAYER, tips: "世界boss中间" },
+    RightRankView: { path: "worldBoss/RightRankView", zindex: Hierarchy.POPUPLAYER, tips: "世界boss右侧" },
+    /*********************************************挑战BOSS相关end*************************************************************/
     /*********************************************地图相关start***********************************************************/
     MainUIView: { path: "map/MainUIView", zindex: Hierarchy.SCENELAYER, tips: "地图UI界面" },
     EditUIView: { path: "map/EditUIView", zindex: Hierarchy.SCENELAYER, tips: "地图编辑UI界面" },
@@ -103,4 +112,7 @@ export const PrefabType = {
     NewbieGiftDialogView: { path: "gift/NewbieGiftDialogView", zindex: Hierarchy.POPUPLAYER, tips: "新人七天大礼" },
     NewbieRewardDialogView: { path: "gift/RewardDialogView", zindex: Hierarchy.POPUPLAYER, tips: "领奖励结算窗口" },
     /*********************************************新人七天豪礼 End*************************************************************/
+    /*********************************************跑马灯和公告 start***********************************************************/
+    NoticeDialogView: { path: "notice/NoticeDialogView", zindex: Hierarchy.POPUPLAYER, tips: "新人七天大礼" },
+    /*********************************************跑马灯和公告 End*************************************************************/
 }
