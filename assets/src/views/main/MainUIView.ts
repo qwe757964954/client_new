@@ -78,7 +78,6 @@ export class MainUIView extends Component {
     public initEvent() {
         CCUtil.onTouch(this.btnHead, this.onClickHead, this);
         CCUtil.onTouch(this.btnMenu, this.onClickMenu, this);
-        // CCUtil.onTouch(this.btnOnlineGift, this.onClickOnlineGift, this);
         CCUtil.onTouch(this.btnReview, this.onClickReview, this);
         CCUtil.onTouch(this.btnTranslate, this.onClickTranslate, this);
         CCUtil.onTouch(this.btnEdit, this.onClickEdit, this);
@@ -87,13 +86,11 @@ export class MainUIView extends Component {
         CCUtil.onTouch(this.btnTask, this.onClickTask, this);
         CCUtil.onTouch(this.btnTaskGo, this.onClickTaskGo, this);
         CCUtil.onTouch(this.btnStudy, this.onClickStudy, this);
-        //CCUtil.onTouch(this.btnTest, this.onClickTest, this);
     }
     //移除事件
     public removeEvent() {
         CCUtil.offTouch(this.btnHead, this.onClickHead, this);
         CCUtil.offTouch(this.btnMenu, this.onClickMenu, this);
-        // CCUtil.offTouch(this.btnOnlineGift, this.onClickOnlineGift, this);
         CCUtil.offTouch(this.btnReview, this.onClickReview, this);
         CCUtil.offTouch(this.btnTranslate, this.onClickTranslate, this);
         CCUtil.offTouch(this.btnEdit, this.onClickEdit, this);
@@ -102,7 +99,6 @@ export class MainUIView extends Component {
         CCUtil.offTouch(this.btnTask, this.onClickTask, this);
         CCUtil.offTouch(this.btnTaskGo, this.onClickTaskGo, this);
         CCUtil.offTouch(this.btnStudy, this.onClickStudy, this);
-        //CCUtil.offTouch(this.btnTest, this.onClickTest, this);
     }
     //头像点击
     public onClickHead() {
@@ -114,10 +110,6 @@ export class MainUIView extends Component {
         User.isAutoLogin = false;
         NetMgr.closeNet();
         director.loadScene(SceneType.LoginScene);
-    }
-    //在线礼包点击
-    public onClickOnlineGift() {
-        ViewsManager.showTip(TextConfig.Function_Tip);
     }
     //复习计划点击
     public onClickReview() {
@@ -166,10 +158,6 @@ export class MainUIView extends Component {
     //学习点击
     public onClickStudy() {
         director.loadScene(SceneType.WorldMapScene);
-    }
-    //测试按钮
-    public onClickTest() {
-
     }
 
     /**开始跑马灯广播*/

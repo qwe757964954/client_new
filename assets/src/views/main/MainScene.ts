@@ -93,11 +93,6 @@ export class MainScene extends Component {
         if (this._loadCount <= 0) {
             this._loadCount = 0;
             this.loadingNode.active = false;
-
-            // this.hideMainUIView();
-            // setTimeout(() => {
-            //     this.showMainUIView();
-            // }, 5000);
         }
     }
     /**获取加载回调 */
