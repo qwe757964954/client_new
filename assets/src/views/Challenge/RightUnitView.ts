@@ -5,6 +5,7 @@ import { TextConfig } from '../../config/TextConfig';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { BookAwardListModel, BookPlanDetail, UnitListItemStatus } from '../../models/TextbookModel';
 import ImgUtil from '../../util/ImgUtil';
+import { SettingPlanView } from '../TextbookVocabulary/SettingPlanView';
 const { ccclass, property } = _decorator;
 
 @ccclass('RightUnitView')
@@ -34,11 +35,14 @@ export class RightUnitView extends Component {
 
     private _changeCallback:()=>void = null;
 
+    private _curBookPlanDetail:BookPlanDetail = null;
+
     start() {
 
     }
 
     updateRightPlan(data:BookPlanDetail) {
+        this._curBookPlanDetail = data;
         this.title_label.string = data.book_name;
         this.grade_label.string = data.grade;
         this.plan_label.string = `${data.rank_num}/${data.num}`;
@@ -94,6 +98,9 @@ export class RightUnitView extends Component {
     }
     onModifyPlanClick(){
         ViewsManager.instance.showView(PrefabType.SettingPlanView,(node: Node) => {
+            let nodeScript:SettingPlanView = node.getComponent(SettingPlanView);
+            let titleBookName = `${this._curBookPlanDetail.book_name}${this._curBookPlanDetail.grade}`;
+            nodeScript.updateTitleName(titleBookName);
         });
     }
     onChangeTextbookClick(){

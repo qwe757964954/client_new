@@ -45,8 +45,6 @@ export class studyView extends BaseView {
         this.addModelListener(NetNotify.Classification_CurrentBook, this.onCurrentBookStatus);
     }
     onCurrentBookStatus(curBook: CurrentBookStatus): void {
-        console.log("onCurrentBookStatus___________", curBook);
-
         /**当前词书状态 */
         if (isValid(curBook.type_name) && isValid(curBook.book_name) && isValid(curBook.grade)) {
             ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {

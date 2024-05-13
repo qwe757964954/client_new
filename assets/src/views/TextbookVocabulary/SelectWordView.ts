@@ -12,7 +12,7 @@ import List from '../../util/list/List';
 import { BookUnitModel, TextbookChallengeView } from '../Challenge/TextbookChallengeView';
 import { NavTitleView } from '../common/NavTitleView';
 import { RightNavView } from './RightNavView';
-import { PlanSaveData } from './SettingPlanView';
+import { PlanSaveData, SettingPlanView } from './SettingPlanView';
 import { TabContentItem } from './TabContentItem';
 import { TabTopView } from './TabTopView';
 const { ccclass, property } = _decorator;
@@ -188,10 +188,13 @@ export class SelectWordView extends BaseView {
         tabContentItemScript.updateItemProps(idx,itemInfo,this._schoolBookListDataArr.data[this._leftNavIndex]);
     }
     onTextBookVerticalSelected(item: any, selectedId: number, lastSelectedId: number, val: number){
-        console.log("onTextBookVerticalSelected",item,selectedId);
         if(selectedId === -1){return}
         this._gradeSelectId = selectedId;
+        let itemInfo:SchoolBookGradeItemData = this._schoolGradeListData.data[selectedId];
         ViewsManager.instance.showView(PrefabType.SettingPlanView,(node: Node) => {
+            let titleBookName = `${this._schoolBookListDataArr.data[this._leftNavIndex].book_name}${itemInfo.grade}`
+            let nodeScript:SettingPlanView = node.getComponent(SettingPlanView)
+            nodeScript.updateTitleName(titleBookName);
         });
     }
 }
