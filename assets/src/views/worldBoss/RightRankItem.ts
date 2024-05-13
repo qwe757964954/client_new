@@ -14,14 +14,18 @@ export class RightRankItem extends ListItem {
     @property(Label)
     public scroll_text:Label = null;
 
+    @property(Label)
+    public rank_text:Label = null;
+
     start() {
 
     }
 
     updateRankItem(idx:number) {
         this.rank_img.active = idx<3;
+        this.rank_text.node.active = idx>=3;
+        let count = idx + 1;
         if(idx <3){
-            let count = idx + 1;
             let img_url = `worldBoss/top${count}/spriteFrame`
             ResLoader.instance.load(img_url, SpriteFrame, (err: Error | null, spriteFrame: SpriteFrame) => {
                 if (err) {
@@ -30,6 +34,8 @@ export class RightRankItem extends ListItem {
                 }
                 this.rank_img.getComponent(Sprite).spriteFrame = spriteFrame;
             });
+        }else{
+            this.rank_text.string = count.toString();
         }
     }
 }
