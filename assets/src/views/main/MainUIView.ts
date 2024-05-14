@@ -11,6 +11,9 @@ import { TimerMgr } from '../../util/TimerMgr';
 import { PetInteractionView } from '../map/PetInteractionView';
 import { BrocastMgr } from '../notice/BrocastMgr';
 import { MainScene } from './MainScene';
+import EventManager from '../../util/EventManager';
+import { EventType } from '../../config/EventType';
+import { NoticeContentData } from '../notice/Brocast';
 const { ccclass, property } = _decorator;
 
 @ccclass('MainUIView')
@@ -39,8 +42,10 @@ export class MainUIView extends Component {
     public btnReviewFix: Node = null;//复习计划修复
     @property(Node)
     public btnTranslateFix: Node = null;//翻译查词修复
-    @property(Node) //跑马灯广播根结点
-    public brocastRoot: Node = null;
+    @property(Node)
+    public btnBrocast: Node = null;//点击公告
+    //@property(Node) //跑马灯广播根结点
+    //public brocastRoot: Node = null;
     //@property(Node) //测试按钮，已经隐藏
     //public btnTest: Node = null;
 
@@ -61,7 +66,7 @@ export class MainUIView extends Component {
     public init(): void {
         this.initUI();
         this.initEvent();
-        this.setBrocast(); //跑马灯测试，不用此功能可注掉
+        //this.setBrocast(); //跑马灯测试，不用此功能可注掉
     }
     /**初始化UI */
     initUI() {
@@ -86,6 +91,7 @@ export class MainUIView extends Component {
         CCUtil.onTouch(this.btnTask, this.onClickTask, this);
         CCUtil.onTouch(this.btnTaskGo, this.onClickTaskGo, this);
         CCUtil.onTouch(this.btnStudy, this.onClickStudy, this);
+        CCUtil.onTouch(this.btnBrocast, this.onClickNotice, this);
     }
     //移除事件
     public removeEvent() {
@@ -98,7 +104,7 @@ export class MainUIView extends Component {
         CCUtil.offTouch(this.btnShop, this.onClickShop, this);
         CCUtil.offTouch(this.btnTask, this.onClickTask, this);
         CCUtil.offTouch(this.btnTaskGo, this.onClickTaskGo, this);
-        CCUtil.offTouch(this.btnStudy, this.onClickStudy, this);
+        CCUtil.offTouch(this.btnBrocast, this.onClickNotice, this);
     }
     //头像点击
     public onClickHead() {
@@ -160,39 +166,13 @@ export class MainUIView extends Component {
         director.loadScene(SceneType.WorldMapScene);
     }
 
-    /**开始跑马灯广播*/
-    setBrocast() {  //如果不想点击显示公告页，可在Brocast.ts的onClickNotice方法里注掉相关代码
-        if (!this.brocastRoot) {
-            return;
-        }
-        //rootNode其实就是页面根结点
-        let rootNode: Node = this.brocastRoot.getParent().getParent();
-        if (!rootNode) {
-            return;
-        }
-        //先获取现有公告喇叭节点的世界坐标
-        let wPos: Vec3 = this.brocastRoot.getComponent(UITransform).convertToWorldSpaceAR(v3(0, 0, 0));
-        //再转为根结点下局部坐标
-        let nPosLocal: Vec3 = rootNode.getComponent(UITransform).convertToNodeSpaceAR(wPos);
-        //console.log("nPosLocal:", nPosLocal);
-        let visibleSize: Size = View.instance.getVisibleSize();
-        //新生成一个Node，作为跑马灯根结点
-        let brocastRootNd: Node = new Node();
-        rootNode.addChild(brocastRootNd);
-        brocastRootNd.setPosition(v3(0, nPosLocal.y, nPosLocal.z)); //设置跑马灯根结点位置
-        let rootUITransform = brocastRootNd.getComponent(UITransform);
-        if (!rootUITransform) {
-            rootUITransform = brocastRootNd.addComponent(UITransform);
-        }
-        rootUITransform.setContentSize(new Size(visibleSize.width, 100)); //设置跑马灯根结点大小
-        rootNode.addComponent(BrocastMgr);
-        BrocastMgr.Instance.setRootBrocast(brocastRootNd); //this.brocastRoot
-        BrocastMgr.Instance.setCustomMode(false);
-        //BrocastMgr.Instance.resetAuto();
-
-        this.scheduleOnce(() => {
-            BrocastMgr.Instance.startBroadCast();
-        }, 3);
+    //点击公告
+    public onClickNotice() {
+        let data: NoticeContentData = {
+            "id": "1001",
+            "content": "这是一则公告\n公告内容明天公布\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新",
+        };
+        EventManager.emit(EventType.Notice_ShowNotice, data);
     }
 }
 

@@ -12,7 +12,7 @@ export class BrocastMgr extends Component {
 
     public static Instance: BrocastMgr = null;
 
-    //@property({ type: Prefab, tooltip: "跑马灯预制体" })
+    @property({ type: Prefab, tooltip: "跑马灯预制体" })
     brocastPrefab: Prefab = null;
 
     @property
