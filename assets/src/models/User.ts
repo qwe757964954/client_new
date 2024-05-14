@@ -28,6 +28,8 @@ class UserModel {
     private _stamina: number = 0;     // 体力
     private _amethyst: number = 0;    // 紫晶石
 
+    private _moodScore: number = 0;   // 心情值
+
     // 测试数据
     //// 头像数据
     public curHeadPropId: number = 101;  // 当前头像id

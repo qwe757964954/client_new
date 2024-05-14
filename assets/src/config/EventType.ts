@@ -20,6 +20,7 @@ export const EventType = {
     Coin_Update: "CoinUpdate",//金币更新
     Diamond_Update: "DiamondUpdate",//钻石更新
     Amethyst_Update: "AmethystUpdate",//紫晶石更新
+    Mood_Score_Update: "MoodUpdate",//心情分更新
 
     Study_Page_Switching: "Study_Page_Switching",//学习页面切换
 
