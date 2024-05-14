@@ -1,9 +1,9 @@
-import { _decorator, Component, Label, Node } from 'cc';
+import { _decorator, Component, Label, Node, ProgressBar } from 'cc';
 import { EventType } from '../../config/EventType';
 import { GameBundle } from '../../GameRes';
 import { inf_SpineAniCreate } from '../../manager/InterfaceDefines';
 import { EventMgr } from '../../util/EventManager';
-import { BossInfo } from './BossInfo';
+import { BossGameInfo, BossInfo } from './BossInfo';
 const { ccclass, property } = _decorator;
 
 @ccclass('CenterBossView')
@@ -21,6 +21,9 @@ export class CenterBossView extends Component {
     @property(Node)
     public sk_sp:Node = null;
 
+    @property(ProgressBar)
+    public learn_progress:ProgressBar = null;
+
     start() {
 
     }
@@ -29,8 +32,12 @@ export class CenterBossView extends Component {
         
     }
 
-    updateCenterProps(info: BossInfo){
+    updateCenterProps(gameInfo:BossGameInfo,info: BossInfo){
         this.title_name.string = info.name;
+        this.learn_progress.progress = gameInfo.LastNum/gameInfo.TotalWordNum;
+        this.remaining_word_text.string = `剩余单词量：${gameInfo.LastNum}`;
+        let remaining_num = 50 - gameInfo.SubmitNum;
+        this.remaining_challenge_text.string = `剩余挑战次数：${remaining_num}`;
         this.sk_sp.removeAllChildren();
         this.sk_sp.setScale(info.scale,info.scale,info.scale);
         let resConf = {bundle:GameBundle.NORMAL,path:info.skeleton}
