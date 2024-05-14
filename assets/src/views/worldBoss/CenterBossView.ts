@@ -30,49 +30,26 @@ export class CenterBossView extends Component {
         this.title_name.string = info.name;
         this.learn_progress.progress = gameInfo.LastNum/gameInfo.TotalWordNum;
         this.remaining_word_text.string = `剩余单词量：${gameInfo.LastNum}`;
-        this.sk_sp.removeAllChildren();
         this.sk_sp.setScale(info.scale,info.scale,info.scale);
         let resConf = {bundle:GameBundle.NORMAL,path:info.skeleton}
-        let spinePrams:inf_SpineAniCreate = {
-            resConf:resConf,
-            aniName:"attack",
-            parentNode:this.sk_sp,
-            isLoop:false,
-            // callEndFunc:(trackEntry, skeleton)=>{
-                // console.log(trackEntry)
-                // console.log(skeleton)
-                // let key = `${GameBundle.NORMAL}|${info.skeleton}|attack|`;
-                // let aniNode = SpMgr.getSpineNode(key)
-                // aniNode.active = true;
-                // let aniSk = aniNode.getComponent(sp.Skeleton);
-                // console.log(aniNode)
-                // console.log(aniSk)
-                // aniSk.setAnimation(0,"idle",true);
-                // aniNode.active = true;
-                // this.sk_sp.removeAllChildren();
-                // let aniPrams:inf_SpineAniCreate = {
-                //     resConf:resConf,
-                //     aniName:"idle",
-                //     parentNode:this.sk_sp,
-                //     isLoop:true,
-                // }
-                // EventMgr.dispatch(EventType.Sys_Ani_Play,aniPrams);
-            // }
+        let self = this;
+        let changeAni = function (aniName:string,isLoop:boolean = false) {
+            let spinePrams:inf_SpineAniCreate = {
+                resConf:resConf,
+                aniName:aniName,
+                trackIndex:0,
+                parentNode:self.sk_sp,
+                isLoop:isLoop,
+                callEndFunc:()=>{
+                    if(aniName == "attack"){
+                        changeAni("idle",true);
+                    }
+                }
+            }
+            self.sk_sp.removeAllChildren();
+            EventMgr.dispatch(EventType.Sys_Ani_Play,spinePrams);
         }
-        this.scheduleOnce(()=>{
-            // let key = `${GameBundle.NORMAL}|${info.skeleton}|attack|`;
-            // let aniNode = SpMgr.getSpineNode(key)
-            // aniNode.active = true;
-            // let aniSk = aniNode.getComponent(sp.Skeleton);
-            // console.log(aniNode)
-            // console.log(aniSk)
-            // aniSk.clearAnimations();
-            // aniSk.clearTracks();
-            // aniSk.setAnimation(0,"idle",true);
-            // aniSk.updateAnimation(0);
-            // aniNode.active = true;
-        },3)
-        EventMgr.dispatch(EventType.Sys_Ani_Play,spinePrams);
+        changeAni("attack",false);
     }
 }
 
