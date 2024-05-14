@@ -21,6 +21,9 @@ export class RightRankView extends Component {
     @property(Node)
     public chest_node:Node = null;
 
+    @property(Node)
+    public complete_flag:Node = null;
+
     private _rewardList:AmoutItemData[] = [
         {type:AmoutType.Coin,num:500},
         {type:AmoutType.Diamond,num:20},
@@ -30,6 +33,7 @@ export class RightRankView extends Component {
     start() {
         this.rank_scroll.numItems = 9;
         this.reward_scroll.numItems = this._rewardList.length;
+
         this.chest_node.removeAllChildren();
         let resConf = {bundle:GameBundle.NORMAL,path:"spine/chest/chest_divine/chest_divine.json"}
         let spinePrams:inf_SpineAniCreate = {

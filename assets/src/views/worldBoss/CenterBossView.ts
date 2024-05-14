@@ -36,9 +36,19 @@ export class CenterBossView extends Component {
         let resConf = {bundle:GameBundle.NORMAL,path:info.skeleton}
         let spinePrams:inf_SpineAniCreate = {
             resConf:resConf,
-            aniName:"idle",
+            aniName:"attack",
             parentNode:this.sk_sp,
             isLoop:true,
+            oneLoopEndcallFunc:()=>{
+                this.sk_sp.removeAllChildren();
+                let aniPrams:inf_SpineAniCreate = {
+                    resConf:resConf,
+                    aniName:"idle",
+                    parentNode:this.sk_sp,
+                    isLoop:true,
+                }
+                EventMgr.dispatch(EventType.Sys_Ani_Play,aniPrams);
+            }
         }
         EventMgr.dispatch(EventType.Sys_Ani_Play,spinePrams);
     }

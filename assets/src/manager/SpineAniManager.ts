@@ -1,4 +1,4 @@
-import { Node, Vec3, _decorator, assetManager, error, sp } from 'cc';
+import { Node, Vec3, _decorator, assetManager, error, isValid, sp } from 'cc';
 import { EventType } from '../config/EventType';
 import { BaseControll } from '../script/BaseControll';
 import ImgUtil from '../util/ImgUtil';
@@ -29,7 +29,7 @@ export class SpineAniManager extends BaseControll {
 	/** 骨骼动画资源映射 */
 	private _skinAniMapping = {};
 	/** 当前播放的动画节点队列 */
-	static AniNodeMap: Map<string, Node> = new Map();
+	public AniNodeMap: Map<string, Node> = new Map();
 
 	public static init(): SpineAniManager {
 		if (this._instance) {
@@ -169,7 +169,7 @@ export class SpineAniManager extends BaseControll {
 		let key = param.resConf.bundle + "|" + param.resConf.path + "|" + param.aniName;
 		let aniNode = this.getSpineNode(key);
 		if (!aniNode || aniNode.isValid == false) {
-			SpineAniManager.AniNodeMap.set(key, null);
+			this.AniNodeMap.set(key, null);
 			return;
 		}
 		if (aniNode.parent != param.parentNode) {
@@ -178,12 +178,12 @@ export class SpineAniManager extends BaseControll {
 		if (aniNode.isValid == true) {
 			aniNode.destroy();
 		}
-		SpineAniManager.AniNodeMap.set(key, null);
+		this.AniNodeMap.set(key, null);
 	}
 	/** 获取已添加动画节点 */
 	public getSpineNode(key: string): Node | null {
 		if (key && key != null) {
-			let node = SpineAniManager.AniNodeMap.get(key);
+			let node = this.AniNodeMap.get(key);
 			return node;
 		}
 		return null
@@ -196,7 +196,7 @@ export class SpineAniManager extends BaseControll {
 			if (aniNode.isValid == true) {
 				aniNode.destroy();
 			}
-			SpineAniManager.AniNodeMap.set(key, null);
+			this.AniNodeMap.set(key, null);
 		}
 	}
 
@@ -236,7 +236,7 @@ export class SpineAniManager extends BaseControll {
 		aniNode.addChild(node);
 		//标识
 		node["Anikey"] = key;
-		SpineAniManager.AniNodeMap.set(key, node);
+		this.AniNodeMap.set(key, node);
 		return node;
 	}
 
@@ -340,4 +340,16 @@ export class SpineAniManager extends BaseControll {
 		// }
 	}
 
+	public getSpineByBundlePath(param: inf_SpineAniCreate){
+		if (!param || !param.resConf || !param.aniName) {
+			return;
+		};
+		let ket_str = isValid(param.aniKey) ? param.aniKey:"";
+		let key = `${param.resConf.bundle}|${param.resConf.path}|${param.aniName}|${ket_str}`;
+		let aniNode = this.getSpineNode(key);
+		return aniNode;
+	}
+
 }
+
+export const SpMgr = SpineAniManager.getInstance();
