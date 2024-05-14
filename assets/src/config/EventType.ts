@@ -62,4 +62,7 @@ export const EventType = {
 
     /**跑马灯和公告相关 */
     Notice_ShowNotice: "Notice_ShowNotice", //显示公告
+
+    /**世界BOSS */
+    Challenge_WorldBoss: "Challenge_WorldBoss", //挑战世界boss
 }

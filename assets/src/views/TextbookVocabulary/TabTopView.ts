@@ -29,6 +29,7 @@ export class TabTopView extends Component {
         tabItemScript.updateItemProps(idx,itemInfo);
     }
     onTabListHorizontalSelected(item: any, selectedId: number, lastSelectedId: number, val: number){
+        if(!isValid(selectedId) || selectedId < 0 || !isValid(item)){return;}
         this.clearTopItemColor();
         let tabItemScript:TabTopItem = item.getComponent(TabTopItem);
         tabItemScript.tab_name.color = tabItemScript.idx === selectedId ? color("#f9b600") : color("#DFC49F");
