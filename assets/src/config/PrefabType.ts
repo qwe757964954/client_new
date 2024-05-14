@@ -101,6 +101,7 @@ export const PrefabType = {
     /*********************************************地图相关end*************************************************************/
     /*********************************************宠物相关start*************************************************************/
     PetInteractionView: { path: "map/PetInteractionView", zindex: Hierarchy.POPUPLAYER, tips: "宠物交互界面" },
+    PetInfoView: { path: "map/PetInfoView", zindex: Hierarchy.POPUPLAYER, tips: "宠物信息界面" },
     /*********************************************宠物相关end*************************************************************/
     /*********************************************复习计划start***********************************************************/
     ReviewMainView: { path: "review/ReviewMainView", zindex: Hierarchy.POPUPLAYER, tips: "复习规划主界面" },

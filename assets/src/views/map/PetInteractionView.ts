@@ -1,13 +1,16 @@
 import { _decorator, color, Component, Label, Layers, Node, Sprite, SpriteFrame } from 'cc';
 import { PetInteractionInfo, PetInteractionType } from '../../config/PetConfig';
+import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { DataMgr } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
+import { ViewsManager } from '../../manager/ViewsManager';
 import { PetModel } from '../../models/PetModel';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
 import { NodeUtil } from '../../util/NodeUtil';
 import { ToolUtil } from '../../util/ToolUtil';
+import { PetInfoView } from './PetInfoView';
 const { ccclass, property } = _decorator;
 /**宠物互动界面 */
 @ccclass('PetInteractionView')
@@ -109,7 +112,12 @@ export class PetInteractionView extends Component {
     }
     /**信息按钮 */
     onInfoClick() {
-
+        ViewsManager.instance.showView(PrefabType.PetInfoView, (node: Node) => {
+            this.node.active = false;
+            node.getComponent(PetInfoView).init(() => {
+                this.node.active = true;
+            });
+        });
     }
     /**设置移除回调 */
     setRemoveCallback(callback: Function) {
