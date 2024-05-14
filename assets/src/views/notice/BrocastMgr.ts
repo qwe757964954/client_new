@@ -53,7 +53,7 @@ export class BrocastMgr extends Component {
     }
 
     removeEvent() {
-        EventManager.off(EventType.StudyRecord_DayPrizeWord, this._showNoticeEveId);
+        EventManager.off(EventType.Notice_ShowNotice, this._showNoticeEveId);
     }
 
     protected onEnable(): void {
