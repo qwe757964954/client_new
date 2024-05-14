@@ -78,8 +78,6 @@ export class BuildingModel extends BaseComponent {
         this.label.node.active = false;
         this.graphics.node.active = false;
 
-        // LoadManager.loadSprite(DataMgr.getEditPng(this._editInfo), this.building);
-
         this.initEvent();
         if (isNew) {
             this.show(true);
