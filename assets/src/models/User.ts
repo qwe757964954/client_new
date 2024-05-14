@@ -30,18 +30,26 @@ class UserModel {
 
     private _moodScore: number = 0;   // 心情值
 
+    public userID: number;   // 用户id
+    public nick: string;     // 昵称
+    public avatarID: number;   // 头像id
+    public level: number;     // 等级
+    public exp: number;       // 经验
+    public roleID: number;    // 角色id
+
+
+
     // 测试数据
     //// 头像数据
-    public curHeadPropId: number = 101;  // 当前头像id
-    public curHeadBoxPropId: number = 800;   // 当前头像框id
+    public curHeadPropId: number = 101;  // 当前头像id 作废
+    public curHeadBoxPropId: number = 800;   // 当前头像框id 作废
     // 用户id、昵称、称号等信息
-    public userId: number = 12345;   // 用户id
-    public userName: string = "哈哈哈";  // 昵称
-    public roletitle: string = "高级";   // 称号文字
-    public level: number = 101;  // 称号等级
-    public currentExp: number = 35;  // 称号等级经验
+    public userName: string = "哈哈哈";  // 昵称 作废
+    public roletitle: string = "高级";   // 称号文字 作废
+    // public level: number = 101;  // 称号等级 作废
+    public currentExp: number = 35;  // 称号等级经验 作废
     // 修改昵称信息
-    public editRealNameNum: number = 0;  // 修改昵称次数
+    public editRealNameNum: number = 0;  // 修改昵称次数 作废
 
     private constructor() {
 

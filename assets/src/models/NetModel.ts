@@ -83,6 +83,9 @@ export class s2cAccountLoginDetailExtra {
     diamond: number;//钻石
     amethyst: number;//紫晶石
     stamina: number;//体力
+    role_id: number;//角色id
+    level: number;//等级
+    exp: number;//经验
 }
 export class s2cAccountLoginDetail {
     extra: s2cAccountLoginDetailExtra;//额外信息

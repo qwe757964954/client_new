@@ -52,10 +52,10 @@ export class CenterView extends Component {
     // 初始化用户id、昵称、称号等信息
     public initUserInfo() {
         let user = User;
-        this.idTxt.string = user.userId.toString();
+        this.idTxt.string = user.userID.toString();
         this.nameTxt.string = user.userName;
         this.roletitleTxt.string = user.roletitle;
-        this.levelTxt.string = user.level.toString();
+        // this.levelTxt.string = user.level.toString();
         this.currentExpTxt.string = user.currentExp.toString() + "/100";
         this.roleTitleProgress.progress = user.currentExp / 100;
     }

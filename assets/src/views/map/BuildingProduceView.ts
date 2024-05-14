@@ -26,6 +26,8 @@ export class BuildingProduceView extends Component {
     public leftListView: List = null;//列表
     @property(Label)
     public labelName: Label = null;//名字
+    @property(Node)
+    public btnUpgrade: Node = null;//升级按钮
 
     private _building: BuildingModel = null;
     private _closeCallBack: Function = null;
@@ -50,12 +52,14 @@ export class BuildingProduceView extends Component {
         CCUtil.onTouch(this.btnClose, this.onClickClose, this);
         CCUtil.onTouch(this.btnLeft, this.onClickLeft, this);
         CCUtil.onTouch(this.btnRight, this.onClickRight, this);
+        CCUtil.onTouch(this.btnUpgrade, this.onClickUpgrade, this);
     }
     // 移除事件
     removeEvent() {
         CCUtil.offTouch(this.btnClose, this.onClickClose, this);
         CCUtil.offTouch(this.btnLeft, this.onClickLeft, this);
         CCUtil.offTouch(this.btnRight, this.onClickRight, this);
+        CCUtil.offTouch(this.btnUpgrade, this.onClickUpgrade, this);
     }
     // 处理销毁
     dispose() {
@@ -117,10 +121,15 @@ export class BuildingProduceView extends Component {
         this.removeBuilding();
         if (this._nextCallBack) this._nextCallBack(building);
     }
+    /**升级 */
+    onClickUpgrade() {
+        // TODO
+        ViewsManager.showTip(TextConfig.Function_Tip);
+    }
     /**list加载 */
     onLoadProduceInfoList(item: Node, idx: number) {
         let data = this._produceData[idx + 1];
-        item.getComponent(BuildingProduceItem)?.initData(data.res_png, data.res_name, data.res_time, 5, data.expend);
+        item.getComponent(BuildingProduceItem)?.initData(data, 1, 5);
     }
     onLoadLeftList(item: Node, idx: number) {
         CCUtil.offTouch(item, this.onLeftListClick, this);
