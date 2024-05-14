@@ -1,4 +1,4 @@
-import { _decorator, Component, Label, Node, Sprite } from 'cc';
+import { _decorator, Component, Label, Sprite } from 'cc';
 import CCUtil from '../../util/CCUtil';
 import { EffectUtil } from '../../util/EffectUtil';
 const { ccclass, property } = _decorator;
@@ -50,10 +50,9 @@ export class PopView extends Component {
     }
     // 显示界面
     show() {
-        EffectUtil.centerPopup(this.bg.node);
-        setTimeout(() => {
+        EffectUtil.centerPopup(this.bg.node, () => {
             this._canClose = true;
-        })
+        });
     }
 }
 

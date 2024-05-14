@@ -28,7 +28,7 @@ export class BuildingProduceItem extends ListItem {
         this.labelName.string = name;
         let str = time < 60 ? ToolUtil.replace(TextConfig.Time_S, time) : ToolUtil.replace(TextConfig.Time_M_S, Math.floor(time / 60), time % 60);
         this.labelTime.string = str;
-        this.labelNum.string = "x" + num.toString();
+        this.labelNum.string = num.toString();
 
         this._expend = expand;
         this.scrollView.numItems = expand ? expand.length : 0;
@@ -38,7 +38,7 @@ export class BuildingProduceItem extends ListItem {
         let data = this._expend[idx];
         let propInfo = DataMgr.getPropInfo(data.id);
         LoadManager.loadSprite(propInfo.png, item.getComponentInChildren(Sprite));
-        item.getComponentInChildren(Label).string = "x" + data.num.toString();
+        item.getComponentInChildren(Label).string = ToolUtil.replace(TextConfig.Prop_Show, data.num);
     }
 }
 

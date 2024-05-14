@@ -8,6 +8,7 @@ export const TextConfig = {
     Time_S: "{0}秒",
     Time_M_S: "{0}分钟{1}秒",
     Pet_Mood_Prop: "+{0}",
+    Prop_Show: "x{0}",
 
     Function_Tip: "功能暂未开放，敬请期待",
 
