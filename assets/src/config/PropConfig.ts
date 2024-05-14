@@ -27,4 +27,10 @@ export class PropInfo {
     id: number;//id
     name: string;//名字
     png: string;//图片
+    frame: string;//框图片
+}
+/**道具数据 */
+export class PropData {
+    id: number;//id
+    num: number;//数量
 }

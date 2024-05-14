@@ -225,6 +225,7 @@ export class DataMgr {
         for (let k in json) {
             let obj: PropInfo = json[k];
             obj.png = ToolUtil.replace(TextConfig.Prop_Path, obj.png);
+            obj.frame = ToolUtil.replace(TextConfig.Prop_Path, obj.frame);
             this.propConfig[obj.id] = obj;
         }
     }

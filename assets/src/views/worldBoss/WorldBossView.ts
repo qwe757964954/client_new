@@ -1,11 +1,11 @@
-import { _decorator, Component, error, instantiate, isValid, Node, Prefab, Sprite, SpriteFrame, Widget } from 'cc';
+import { _decorator, Component, error, instantiate, isValid, JsonAsset, Node, Prefab, Sprite, SpriteFrame, Widget } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { User } from '../../models/User';
 import { NavTitleView } from '../common/NavTitleView';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
-import WordBossArray, { BossInfo } from './BossInfo';
+import WordBossArray, { BossGameInfo, BossInfo, WordBossInfoData, WorldBossResponse } from './BossInfo';
 import { CenterBossView } from './CenterBossView';
 import { RightRankView } from './RightRankView';
 import { WorldLeftNavView } from './WorldLeftNavView';
@@ -24,17 +24,35 @@ export class WorldBossView extends Component {
     private _centerView:CenterBossView = null;
     private _leftView:WorldLeftNavView = null;
     private _rightRankView:RightRankView = null;
+    private _worldRankData:WorldBossResponse = null;
     start() {
         this.initUI();
     }
 
-    initUI(){
+    async initUI(){
         this.initNavTitle();
         this.initAmout();
         this.initLeftBossNav();
+        await this.loadRankData();
         this.initCenterView();
         this.initRightRankView();
+        console.log(WordBossInfoData);
     }
+
+    async loadRankData(): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            ResLoader.instance.load(`worldBoss/RankData`, JsonAsset, async (err: Error | null, jsonData: JsonAsset) => {
+                if (err) {
+                    console.error(err);
+                    reject(err);
+                } else {
+                    this._worldRankData = jsonData.json as WorldBossResponse;
+                    resolve();
+                }
+            });
+        });
+    }
+    
 
     /**初始化导航栏 */
     initNavTitle(){
@@ -106,6 +124,8 @@ export class WorldBossView extends Component {
             }
             let node = instantiate(prefab);
             this.content_layout.addChild(node);
+            this._rightRankView = node.getComponent(RightRankView);
+            this._rightRankView.loadRankData(this._worldRankData);
             let widgetCom = node.getComponent(Widget);
             if (!isValid(widgetCom)) {
                 widgetCom = node.addComponent(Widget);
@@ -119,6 +139,7 @@ export class WorldBossView extends Component {
 
     selectBossUpdateStatus(select_id: number){
         let info:BossInfo = WordBossArray[select_id];
+        let gameInfo:BossGameInfo = this._worldRankData.Data.Game;
         ResLoader.instance.load(info.bgImage, SpriteFrame, (err: Error | null, spriteFrame: SpriteFrame) => {
             if (err) {
                 error && console.error(err);
@@ -126,7 +147,7 @@ export class WorldBossView extends Component {
             }
             this.bg_img.getComponent(Sprite).spriteFrame = spriteFrame;
         });
-        this._centerView.updateCenterProps(info);
+        this._centerView.updateCenterProps(gameInfo,info);
     }
 
     update(deltaTime: number) {

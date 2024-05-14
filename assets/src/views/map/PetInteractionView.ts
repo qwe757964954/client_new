@@ -1,10 +1,12 @@
-import { _decorator, color, Component, Label, Node, Sprite, SpriteFrame } from 'cc';
+import { _decorator, color, Component, Label, Layers, Node, Sprite, SpriteFrame } from 'cc';
 import { PetInteractionInfo, PetInteractionType } from '../../config/PetConfig';
 import { TextConfig } from '../../config/TextConfig';
 import { DataMgr } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
+import { PetModel } from '../../models/PetModel';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
+import { NodeUtil } from '../../util/NodeUtil';
 import { ToolUtil } from '../../util/ToolUtil';
 const { ccclass, property } = _decorator;
 /**宠物互动界面 */
@@ -24,6 +26,8 @@ export class PetInteractionView extends Component {
     public btnType: Node[] = [];//类型
     @property([SpriteFrame])
     public spriteFrames: SpriteFrame[] = [];//图片资源
+    @property(PetModel)
+    public pet: PetModel = null;//宠物
 
     private _data: PetInteractionInfo[] = null;//数据
     private _type: PetInteractionType = null;//类型
@@ -52,6 +56,10 @@ export class PetInteractionView extends Component {
     }
     init() {
         this.showTye(PetInteractionType.eat);
+
+        this.pet.init(101, 1);
+        this.pet.show(true);
+        NodeUtil.setLayerRecursively(this.pet.node, Layers.Enum.UI_2D);
     }
     /**显示类型 */
     showTye(type: PetInteractionType) {

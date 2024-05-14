@@ -1,6 +1,7 @@
 import { _decorator, error, Label, Node, Sprite, SpriteFrame } from 'cc';
 import { ResLoader } from '../../manager/ResLoader';
 import ListItem from '../../util/list/ListItem';
+import { BossRank } from './BossInfo';
 const { ccclass, property } = _decorator;
 
 @ccclass('RightRankItem')
@@ -12,7 +13,7 @@ export class RightRankItem extends ListItem {
     public name_text:Label = null;
 
     @property(Label)
-    public scroll_text:Label = null;
+    public score_text:Label = null;
 
     @property(Label)
     public rank_text:Label = null;
@@ -21,7 +22,9 @@ export class RightRankItem extends ListItem {
 
     }
 
-    updateRankItem(idx:number) {
+    updateRankItem(rankInfo:BossRank,idx:number) {
+        this.name_text.string = rankInfo.RealName;
+        this.score_text.string = rankInfo.Num.toString();
         this.rank_img.active = idx<3;
         this.rank_text.node.active = idx>=3;
         let count = idx + 1;
