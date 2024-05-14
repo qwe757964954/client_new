@@ -1,8 +1,14 @@
 import { _decorator, error, Label, Node, Sprite, SpriteFrame } from 'cc';
 import { ResLoader } from '../../manager/ResLoader';
 import ListItem from '../../util/list/ListItem';
-import { AmoutItemData, AmoutType } from '../common/TopAmoutView';
+import { AwardInfo } from './RightRankView';
 const { ccclass, property } = _decorator;
+
+export enum RewardType {
+    Coin= "Coin",/**金币 */
+    Diamond= "Diamond",/**钻石 */
+    Stone= "Stone"/**体力 */
+}
 
 @ccclass('RewardItemView')
 export class RewardItemView extends ListItem {
@@ -14,16 +20,16 @@ export class RewardItemView extends ListItem {
     start() {
 
     }
-    updateRewardItem(info:AmoutItemData){
+    updateRewardItem(info:AwardInfo){
         let icon_url = ""
         switch (info.type) {
-            case AmoutType.Coin:
+            case RewardType.Coin:
                 icon_url = "common/img_coin/spriteFrame";
                 break;
-            case AmoutType.Diamond:
+            case RewardType.Diamond:
                 icon_url = "common/img_diamond/spriteFrame";
                 break;
-            case AmoutType.Energy:
+            case RewardType.Stone:
                 icon_url = "common/img_energy/spriteFrame";
                 break;
             default:
@@ -36,7 +42,7 @@ export class RewardItemView extends ListItem {
             }
             this.img_coin.getComponent(Sprite).spriteFrame = spriteFrame;
         });
-        this.amout_text.string = info.num.toString();
+        this.amout_text.string = info.value.toString();
     }
     update(deltaTime: number) {
         

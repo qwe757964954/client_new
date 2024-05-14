@@ -210,7 +210,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "scroll_text",
+    "_name": "score_text",
     "_objFlags": 512,
     "__editorExtras__": {},
     "_parent": {
@@ -736,7 +736,7 @@
     "name_text": {
       "__id__": 17
     },
-    "scroll_text": {
+    "score_text": {
       "__id__": 11
     },
     "rank_text": {
