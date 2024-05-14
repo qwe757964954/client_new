@@ -7,6 +7,7 @@ import { BaseView } from '../../script/BaseView';
 import CCUtil from '../../util/CCUtil';
 import { NavTitleView } from '../common/NavTitleView';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
+import { BossChallengeView } from './BossChallengeView';
 import WordBossArray, { BossGameInfo, BossInfo, WordBossInfoData, WorldBossResponse } from './BossInfo';
 import { CenterBossView } from './CenterBossView';
 import { RightRankView } from './RightRankView';
@@ -169,6 +170,8 @@ export class WorldBossView extends BaseView {
     onChallengeWorldBoss(){
         console.log("onChallengeWorldBoss");
         ViewsManager.instance.showView(PrefabType.BossChallengeView, (node: Node) => {
+            let nodeScript:BossChallengeView = node.getComponent(BossChallengeView);
+            nodeScript.initData(this._worldRankData.Data.Game)
         });
     }
 

@@ -96,7 +96,7 @@
       "__id__": 1
     },
     "_children": [],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 3
@@ -733,7 +733,7 @@
         "__id__": 38
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 44
@@ -1235,7 +1235,7 @@
         "__id__": 59
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 65
@@ -3147,7 +3147,7 @@
     "renderEvent": {
       "__id__": 178
     },
-    "selectedMode": 0,
+    "selectedMode": 1,
     "selectedEvent": {
       "__id__": 179
     },
@@ -3173,15 +3173,17 @@
     },
     "component": "",
     "_componentId": "53febenkaZAcpvCQItBSdr+",
-    "handler": "",
+    "handler": "onLoadAnswerVertical",
     "customEventData": ""
   },
   {
     "__type__": "cc.ClickEvent",
-    "target": null,
+    "target": {
+      "__id__": 1
+    },
     "component": "",
-    "_componentId": "",
-    "handler": "",
+    "_componentId": "53febenkaZAcpvCQItBSdr+",
+    "handler": "onAnswerVerticalSelected",
     "customEventData": ""
   },
   {
@@ -3281,6 +3283,9 @@
     "_enabled": true,
     "__prefab": {
       "__id__": 186
+    },
+    "wordScroll": {
+      "__id__": 175
     },
     "wordLabel": {
       "__id__": 25
