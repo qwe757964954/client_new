@@ -185,13 +185,14 @@ export class MainUIView extends Component {
             rootUITransform = brocastRootNd.addComponent(UITransform);
         }
         rootUITransform.setContentSize(new Size(visibleSize.width, 100)); //设置跑马灯根结点大小
+        rootNode.addComponent(BrocastMgr);
         BrocastMgr.Instance.setRootBrocast(brocastRootNd); //this.brocastRoot
         BrocastMgr.Instance.setCustomMode(false);
         //BrocastMgr.Instance.resetAuto();
 
         this.scheduleOnce(() => {
             BrocastMgr.Instance.startBroadCast();
-        }, 1);
+        }, 3);
     }
 }
 

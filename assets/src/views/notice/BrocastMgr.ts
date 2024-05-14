@@ -1,4 +1,4 @@
-import { _decorator, Component, instantiate, Node, Prefab, UIOpacity } from 'cc';
+import { _decorator, Component, instantiate, Node, Prefab, resources, UIOpacity } from 'cc';
 import { Brocast, NoticeContentData } from './Brocast';
 import EventManager from '../../util/EventManager';
 import { EventType } from '../../config/EventType';
@@ -12,7 +12,7 @@ export class BrocastMgr extends Component {
 
     public static Instance: BrocastMgr = null;
 
-    @property({ type: Prefab, tooltip: "跑马灯预制体" })
+    //@property({ type: Prefab, tooltip: "跑马灯预制体" })
     brocastPrefab: Prefab = null;
 
     @property
@@ -35,6 +35,9 @@ export class BrocastMgr extends Component {
     onLoad() {
         if (BrocastMgr.Instance === null) {
             BrocastMgr.Instance = this;
+            resources.load("prefab/notice/broadCast", (err, data: Prefab) => {
+                this.brocastPrefab = data as Prefab;
+            });
         }
         else {
             this.destroy();
