@@ -1,4 +1,4 @@
-import { _decorator, Component, director, Node, Sprite } from 'cc';
+import { _decorator, Component, director, Node, Size, Sprite, UITransform, v3, Vec3, View } from 'cc';
 import { MapStatus } from '../../config/MapConfig';
 import { PrefabType, SceneType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
@@ -161,9 +161,31 @@ export class MainUIView extends Component {
     }
 
     /**开始跑马灯广播*/
-    setBrocast() {
-
-        BrocastMgr.Instance.setRootBrocast(this.brocastRoot);
+    setBrocast() {  //如果不想点击显示公告页，可在Brocast.ts的onClickNotice方法里注掉相关代码
+        if (!this.brocastRoot) {
+            return;
+        }
+        //rootNode其实就是页面根结点
+        let rootNode: Node = this.brocastRoot.getParent().getParent();
+        if (!rootNode) {
+            return;
+        }
+        //先获取现有公告喇叭节点的世界坐标
+        let wPos: Vec3 = this.brocastRoot.getComponent(UITransform).convertToWorldSpaceAR(v3(0, 0, 0));
+        //再转为根结点下局部坐标
+        let nPosLocal: Vec3 = rootNode.getComponent(UITransform).convertToNodeSpaceAR(wPos);
+        //console.log("nPosLocal:", nPosLocal);
+        let visibleSize: Size = View.instance.getVisibleSize();
+        //新生成一个Node，作为跑马灯根结点
+        let brocastRootNd: Node = new Node();
+        rootNode.addChild(brocastRootNd);
+        brocastRootNd.setPosition(v3(0, nPosLocal.y, nPosLocal.z)); //设置跑马灯根结点位置
+        let rootUITransform = brocastRootNd.getComponent(UITransform);
+        if (!rootUITransform) {
+            rootUITransform = brocastRootNd.addComponent(UITransform);
+        }
+        rootUITransform.setContentSize(new Size(visibleSize.width, 100)); //设置跑马灯根结点大小
+        BrocastMgr.Instance.setRootBrocast(brocastRootNd); //this.brocastRoot
         BrocastMgr.Instance.setCustomMode(false);
         //BrocastMgr.Instance.resetAuto();
 
