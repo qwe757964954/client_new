@@ -1,13 +1,16 @@
-import { Label, Layers, Node, Prefab, Widget, _decorator, error, instantiate, isValid } from 'cc';
+import { Label, Layers, Node, Prefab, UITransform, Vec3, Widget, _decorator, error, instantiate, isValid, tween } from 'cc';
+import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
+import { PetModel } from '../../models/PetModel';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
 import { BaseView } from '../../script/BaseView';
 import CCUtil from '../../util/CCUtil';
 import { NodeUtil } from '../../util/NodeUtil';
 import { MonsterModel } from '../adventure/common/MonsterModel';
 import WordBossArray, { BossGameInfo, BossInfo } from './BossInfo';
+import { AnswerType } from './ChallengeAnswerItem';
 import { ChallengeFrameView } from './ChallengeFrameView';
 const { ccclass, property } = _decorator;
 
@@ -100,7 +103,7 @@ export class BossChallengeView extends BaseView {
         
     }
     onInitModuleEvent(){
-        // this.addModelListener(EventType.Challenge_WorldBoss,this.onChallengeWorldBoss);
+        this.addModelListener(EventType.Challenge_ReportResult,this.onChallengeReportResult);
     }
     initEvent(){
         CCUtil.onTouch(this.btn_close, this.onCloseView, this);
@@ -130,11 +133,80 @@ export class BossChallengeView extends BaseView {
     onCloseView(){
         ViewsManager.instance.closeView(PrefabType.BossChallengeView);
     }
-
+    onChallengeReportResult(params:{result:AnswerType}){
+        console.log(params);
+        if(params.result == AnswerType.Correct){
+            this.attackMonster().then(() => {
+                this._challengeFrame.onLoadWordData(this._bossGame.Words);
+            });
+        }else{
+            this.attackPet().then(() =>{
+                this._challengeFrame.onLoadWordData(this._bossGame.Words);
+            });
+        }
+    }
     onDestroy() {
         super.onDestroy();
 		this.removeEvent();
 	};
+
+    //怪物攻击
+
+    attackPet() {
+        return new Promise((resolve, reject) => {
+            let targetPet = this._pet;
+            this.monsterAttackShow(targetPet).then(() => {
+                this._pet.getComponent(PetModel).inHit().then(() => {
+                    resolve(true);
+                });
+            });
+        });
+    }
+    monsterAttackShow(target: Node) {
+        return new Promise((resolve, reject) => {
+            let monsterPos = new Vec3(this._monster.position);
+            let spNode = this._monster.getChildByName("sp")
+            let sp_real_width = spNode.getComponent(UITransform).width * spNode.scale.x * this._monster.scale.x*0.5;
+            let targetTranform = target.parent.getComponent(UITransform);
+            let monsterTransform = this.monsterContainer.getComponent(UITransform);
+            let targetpos = monsterTransform.convertToNodeSpaceAR(targetTranform.convertToWorldSpaceAR(new Vec3(0, 0, 0)));
+            this._monster.getComponent(MonsterModel).move();
+            tween(this._monster).to(1, { position: new Vec3(targetpos.x + sp_real_width, monsterPos.y, targetpos.z) }).call(() => { 
+                this._monster.getComponent(MonsterModel).hit().then(() => { 
+                    tween(this._monster).to(0.5, { position: monsterPos }).start(); 
+                    resolve(true);
+                });
+                // this._monster.getComponent(MonsterModel).hit().then(() => { tween(this._monster).to(0.5, { position: monsterPos }).start(); resolve(true); 
+            }).start();
+        });
+    }
+    //精灵攻击
+    attackMonster() {
+        return new Promise((resolve, reject) => {
+            let targetMonster = this._monster;
+            this.petAttackShow(targetMonster).then(() => {
+                this._monster.getComponent(MonsterModel).inHit().then(() => {
+                    resolve(true);
+                });
+            });
+        });
+    }
+    //精灵攻击目标
+    petAttackShow(target: Node) {
+        return new Promise((resolve, reject) => {
+            let petPos = new Vec3(this._pet.position);
+            let targetTranform = target.parent.getComponent(UITransform);
+            let petTransform = this.petContainer.getComponent(UITransform);
+            let targetpos = petTransform.convertToNodeSpaceAR(targetTranform.convertToWorldSpaceAR(new Vec3(0, 0, 0)));
+            let startPosx = targetpos.x - petPos.x > 650 ? (targetpos.x - 650) : petPos.x;
+            tween(this._pet).to(0.5, { position: new Vec3(startPosx, targetpos.y, targetpos.z) }).call(() => {
+                this._pet.getComponent(PetModel).hit().then(() => {
+                    tween(this._pet).to(0.5, { position: petPos }).start();
+                    resolve(true);
+                });
+            }).start();
+        });
+    }
 }
 
 

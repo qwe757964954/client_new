@@ -64,5 +64,5 @@ export const EventType = {
     Notice_ShowNotice: "Notice_ShowNotice", //显示公告
 
     /**世界BOSS */
-    Challenge_WorldBoss: "Challenge_WorldBoss", //挑战世界boss
+    Challenge_ReportResult: "Challenge_ReportResult", //上报结果
 }

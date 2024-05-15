@@ -16,6 +16,7 @@ const ConfigPath = {
     PetInteraction: "petInteraction",
     PetMoodConfig: "petMoodConfig",
     PetConfig: "petConfig",
+    ArchConfig: "AchConfig",
 }
 
 //角色插槽
@@ -96,6 +97,20 @@ export class BookLevelConfig {
     game_mode: number;
     book_name: string;
 }
+//成就信息配置
+export class ArchConfig {
+    AchId: number;  //成就id
+    Info: string;   //成就描述
+    Awards: string[]; //奖励 300,30
+    Type: number;    //成就类型
+    Title: string;   //成就名字
+    T: number;
+    SendFlag: number;
+    Score: number;
+    MedalId: number; //奖章ID
+    Bid: number;
+    Mid: number;
+}
 
 
 //数据管理器
@@ -111,6 +126,7 @@ export class DataMgr {
     public petInteraction: PetInteractionInfo[] = [];//交互信息
     public petMoodConfig: PetMoodInfo[] = [];//心情信息
     public petConfig: PetInfo[] = [];//宠物信息
+    public archConfig: ArchConfig[] = []; //成就信息
 
     private _isInit: boolean = false;
     public defaultLand: EditInfo = null;//默认地块
@@ -136,6 +152,7 @@ export class DataMgr {
         await this.initEditInfo();
         await this.initBuildProduceInfo();
         await this.initPetInteractionConfig();
+        await this.initAchieveConfig();
         console.timeEnd("DataMgr initData");
     }
     /** 初始化角色插槽 */
@@ -248,6 +265,26 @@ export class DataMgr {
         let json = await LoadManager.loadJson(ConfigPath.PetConfig);
         for (let k in json) {
             this.petConfig.push(json[k]);
+        }
+    }
+
+    /**初始化成就信息 */
+    public async initAchieveConfig() {
+        let json = await LoadManager.loadJson(ConfigPath.ArchConfig);
+        for (let k in json) {
+            let obj: ArchConfig = new ArchConfig();
+            obj.AchId = Number(json[k].AchId);
+            obj.Info = json[k].Info;
+            obj.Awards = json[k].Awards.split(",");
+            obj.Type = Number(json[k].Type);
+            obj.Title = json[k].Title;
+            obj.T = json[k].T;
+            obj.SendFlag = Number(json[k].SendFlag);
+            obj.Score = Number(json[k].Score);
+            obj.MedalId = Number(json[k].MedalId);
+            obj.Bid = Number(json[k].Bid);
+            obj.Mid = Number(json[k].Mid);
+            this.archConfig[obj.AchId] = obj;
         }
     }
 

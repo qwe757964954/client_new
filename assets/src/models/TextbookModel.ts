@@ -55,6 +55,7 @@ export interface UnitListItemStatus extends BaseRepPacket{
 export interface UnitItemStatus{
     num:number,
     unit:string,
+    point_list:number[];
 }
 
 // 我的词书

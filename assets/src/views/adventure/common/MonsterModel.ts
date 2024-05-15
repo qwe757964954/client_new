@@ -48,12 +48,27 @@ export class MonsterModel extends Component {
         });
     }
 
+    public hit() {
+        return new Promise((resolve) => {
+            this.monster.setCompleteListener(() => {
+                this.monster.setCompleteListener(null);
+                this.monster.setAnimation(0, 'idle', true);
+                resolve(true);
+            })
+            this.monster.setAnimation(0, 'attack', false);
+        });
+    }
+
     die() {
         this.monster.setAnimation(0, 'die', false);
     }
 
     flee() {
         this.monster.setAnimation(0, 'flee', true);
+    }
+
+    move() {
+        this.monster.setAnimation(0, 'move', true);
     }
 
     protected onDestroy(): void {

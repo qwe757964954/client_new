@@ -83,6 +83,9 @@ export class studyView extends BaseView {
             case "bookWord": //教材单词
                 TBServer.reqCurrentBook();
                 break;
+            case "grammar": //语法训练
+                ViewsManager.instance.showView(PrefabType.GrammarTrainingView);
+                break;
             default:
                 ViewsManager.showTip(TextConfig.Function_Tip);
                 break;

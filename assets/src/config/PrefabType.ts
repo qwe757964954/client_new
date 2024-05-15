@@ -84,6 +84,9 @@ export const PrefabType = {
     /*********************************************商城相关start***********************************************************/
     ShopUIView: { path: "shop/ShopUIView", zindex: Hierarchy.POPUPLAYER, tips: "商城模块" },
     /*********************************************商城相关end*************************************************************/
+    /*********************************************语法训练start***********************************************************/
+    GrammarTrainingView: { path: "grammar/GrammarTrainingView", zindex: Hierarchy.POPUPLAYER, tips: "语法训练" },
+    /*********************************************语法训练end*************************************************************/
     /*********************************************挑战BOSS相关start***********************************************************/
     WorldBossView: { path: "worldBoss/WorldBossView", zindex: Hierarchy.POPUPLAYER, tips: "世界boss挑战模块" },
     WorldLeftNavView: { path: "worldBoss/WorldLeftNavView", zindex: Hierarchy.POPUPLAYER, tips: "世界boss左侧" },
@@ -122,4 +125,7 @@ export const PrefabType = {
     /*********************************************跑马灯和公告 start***********************************************************/
     NoticeDialogView: { path: "notice/NoticeDialogView", zindex: Hierarchy.POPUPLAYER, tips: "新人七天大礼" },
     /*********************************************跑马灯和公告 End*************************************************************/
+    /*********************************************成就 start***********************************************************/
+    AchieveDialogView: { path: "achieve/AchieveDialogView", zindex: Hierarchy.POPUPLAYER, tips: "成就面板" },
+    /*********************************************成就 End*************************************************************/
 }
