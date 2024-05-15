@@ -20,5 +20,5 @@
 #//////////////////////////
 # WebStorm
 #//////////////////////////
-.DebugConfig.ts
+.src/DebugConfig.ts
 # /settings/v2/packages/information.json
