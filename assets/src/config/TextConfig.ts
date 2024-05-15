@@ -28,4 +28,12 @@ export const TextConfig = {
     EN: "英",
 
     Word_Learn_Count: "共计{0}词",
+
+    //成就相关
+    Achieve_OverView: "成就总览",
+    Achieve_GrowUp: "人物成长",
+    Achieve_Social: "社交",
+    Achieve_Dungeon: "副本",
+    Achieve_SpriteTrain: "精灵培养",
+    Achieve_AbilityTrain: "能力培养",
 }
