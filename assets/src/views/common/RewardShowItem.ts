@@ -1,7 +1,6 @@
 import { _decorator, Label, Sprite } from 'cc';
-import { PropData } from '../../config/PropConfig';
 import { TextConfig } from '../../config/TextConfig';
-import { DataMgr } from '../../manager/DataMgr';
+import { DataMgr, RewardInfo } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
 import ListItem from '../../util/list/ListItem';
 import { ToolUtil } from '../../util/ToolUtil';
@@ -14,7 +13,7 @@ export class RewardShowItem extends ListItem {
     @property(Label)
     public num: Label = null;//数量
 
-    init(data: PropData) {
+    init(data: RewardInfo) {
         let propInfo = DataMgr.getPropInfo(data.id);
         LoadManager.loadSprite(propInfo.png, this.img);
         this.num.string = ToolUtil.replace(TextConfig.Prop_Show, data.num);

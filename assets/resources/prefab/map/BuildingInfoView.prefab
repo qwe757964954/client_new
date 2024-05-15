@@ -1929,6 +1929,24 @@
     "labelFunction": {
       "__id__": 66
     },
+    "spriteFrames": [
+      {
+        "__uuid__": "86b2856d-e3c2-4594-9da0-99dcd3a6d2a0@f9941",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "f6a047da-845a-4b90-a0ea-78b0cb967c73@f9941",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "fef1be85-ddf6-4fb3-bfff-f94872ed72eb@f9941",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "f27da112-f840-48bf-a192-c676b42bdf15@f9941",
+        "__expectedType__": "cc.SpriteFrame"
+      }
+    ],
     "_id": ""
   },
   {

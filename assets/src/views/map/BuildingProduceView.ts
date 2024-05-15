@@ -1,11 +1,13 @@
 import { _decorator, Component, EventTouch, Label, Layers, Node, Sprite, Vec3 } from 'cc';
+import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
-import { BuildProduceInfo, DataMgr, ProduceInfo } from '../../manager/DataMgr';
+import { DataMgr, ProduceInfo } from '../../manager/DataMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { BuildingModel } from '../../models/BuildingModel';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
 import { BuildingProduceItem } from './BuildingProduceItem';
+import { BuildingUpgradeView } from './BuildingUpgradeView';
 const { ccclass, property } = _decorator;
 
 @ccclass('BuildingProduceView')
@@ -81,11 +83,13 @@ export class BuildingProduceView extends Component {
 
         let editInfo = building.editInfo;
         this.labelName.string = editInfo.name;
-        let produceInfo: BuildProduceInfo = DataMgr.instance.buildProduceInfo[editInfo.id];
+        let produceInfo = DataMgr.instance.buildProduceInfo[editInfo.id];
         this._produceData = produceInfo?.data;
-        this.listView.numItems = produceInfo ? produceInfo.count : 0;
-
-        this.leftListView.numItems = this._produceData ? produceInfo.count : 0;
+        let count = produceInfo ? produceInfo.count : 0;
+        this.listView.numItems = count;
+        let buildingData = this._building.buildingData;
+        this.leftListView.numItems = buildingData.queueMaxCount;
+        this.btnUpgrade.active = buildingData.level < count;
     }
     /**设置回调 */
     setCallBack(closeCallBack: Function) {
@@ -123,13 +127,14 @@ export class BuildingProduceView extends Component {
     }
     /**升级 */
     onClickUpgrade() {
-        // TODO
-        ViewsManager.showTip(TextConfig.Function_Tip);
+        ViewsManager.instance.showView(PrefabType.BuildingUpgradeView, (node: Node) => {
+            node.getComponent(BuildingUpgradeView).init(this._building);
+        });
     }
     /**list加载 */
     onLoadProduceInfoList(item: Node, idx: number) {
         let data = this._produceData[idx + 1];
-        item.getComponent(BuildingProduceItem)?.initData(data, 1, 5);
+        item.getComponent(BuildingProduceItem)?.initData(data, this._building.buildingData.level, 5);
     }
     onLoadLeftList(item: Node, idx: number) {
         CCUtil.offTouch(item, this.onLeftListClick, this);

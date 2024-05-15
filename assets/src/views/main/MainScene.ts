@@ -1,4 +1,4 @@
-import { _decorator, Camera, Canvas, Component, EventMouse, EventTouch, Layers, Node, Prefab, UITransform, Vec3 } from 'cc';
+import { _decorator, Camera, Canvas, Component, EventMouse, EventTouch, Layers, Node, Prefab, sp, UITransform, Vec3 } from 'cc';
 import { EventType } from '../../config/EventType';
 import { MapStatus } from '../../config/MapConfig';
 import { BuildingModel } from '../../models/BuildingModel';
@@ -50,7 +50,8 @@ export class MainScene extends Component {
     public uiCamera: Camera = null;//ui摄像机
     @property(Node)
     public loadingNode: Node = null;//加载节点
-
+    @property(sp.Skeleton)
+    public loadingSp: sp.Skeleton = null;//加载动画
     /**=========================ui元素============================ */
     @property(Node)
     public sceneLayer: Node = null;//场景层
@@ -90,15 +91,29 @@ export class MainScene extends Component {
     /**加载回调 */
     loadOverCall() {
         this._loadCount--;
-        if (this._loadCount <= 0) {
-            this._loadCount = 0;
-            this.loadingNode.active = false;
-        }
+        // 等动画完成后再移除加载层
+        // if (this._loadCount <= 0) {
+        //     this._loadCount = 0;
+        //     this.loadingNode.active = false;
+        // }
     }
     /**获取加载回调 */
     getLoadOverCall() {
         this._loadCount++;
         return this.loadOverCall.bind(this);
+    }
+    // 显示加载动画
+    showLoading() {
+        this.loadingNode.active = true;
+        // this.loadingSp.setAnimation(0, "animation", true);
+        this.loadingSp.setCompleteListener(this.onLoadingAnimationComplete.bind(this));
+    }
+    /**loading动画完成 */
+    onLoadingAnimationComplete(trackEntry: sp.spine.TrackEntry) {
+        if (this._loadCount <= 0) {
+            this.loadingSp.clearAnimations();
+            this.loadingNode.active = false;
+        }
     }
     // 初始化数据
     initData() {
@@ -111,6 +126,7 @@ export class MainScene extends Component {
             this._mainUIView.mainScene = this;
             if (call) call();
         });
+        this.showLoading();
 
         this._mapNormalCtl = new MapNormalCtl(this, this.getLoadOverCall());
         this._mapEditCtl = new MapEditCtl(this, this.getLoadOverCall());
@@ -188,6 +204,8 @@ export class MainScene extends Component {
             return;
         }
         else if (MapStatus.DEFAULT == this._mapStatus) {// 普通点击 展示建筑建造界面
+            let editInfo = building.editInfo;
+            if (EditType.Buiding != editInfo.type) return;
             this.showBuildingProduceView(building);
         }
     }

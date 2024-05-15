@@ -3,6 +3,7 @@ import { TextConfig } from '../../config/TextConfig';
 import { DataMgr, ProduceInfo, RewardInfo } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
 import { ViewsManager } from '../../manager/ViewsManager';
+import { User } from '../../models/User';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
 import ListItem from '../../util/list/ListItem';
@@ -60,7 +61,7 @@ export class BuildingProduceItem extends ListItem {
         let time = data.res_time;
         this.labelTime.string = ToolUtil.getSecFormatStr(time);
 
-        let cbLevel = 1;//城堡等级
+        let cbLevel = User.castleLevel;//城堡等级
         if (data.unlock > cbLevel || data.level > level) {
             this.produceNode.active = false;
             this.lockNode.active = true;
