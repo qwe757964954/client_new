@@ -1,10 +1,13 @@
-import { _decorator, Component, error, instantiate, isValid, JsonAsset, Node, Prefab, Sprite, SpriteFrame, Widget } from 'cc';
+import { _decorator, error, instantiate, isValid, JsonAsset, Label, Node, Prefab, Sprite, SpriteFrame, Widget } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { User } from '../../models/User';
+import { BaseView } from '../../script/BaseView';
+import CCUtil from '../../util/CCUtil';
 import { NavTitleView } from '../common/NavTitleView';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
+import { BossChallengeView } from './BossChallengeView';
 import WordBossArray, { BossGameInfo, BossInfo, WordBossInfoData, WorldBossResponse } from './BossInfo';
 import { CenterBossView } from './CenterBossView';
 import { RightRankView } from './RightRankView';
@@ -12,7 +15,7 @@ import { WorldLeftNavView } from './WorldLeftNavView';
 const { ccclass, property } = _decorator;
 
 @ccclass('WorldBossView')
-export class WorldBossView extends Component {
+export class WorldBossView extends BaseView {
     @property(Node)
     public top_layout:Node = null;
     @property(Node)
@@ -20,15 +23,24 @@ export class WorldBossView extends Component {
 
     @property(Node)
     public bg_img:Node = null;
-
+    @property(Label)
+    public remaining_challenge_text:Label = null;
+    @property(Node)
+    public challenge_btn:Node = null;
     private _centerView:CenterBossView = null;
     private _leftView:WorldLeftNavView = null;
     private _rightRankView:RightRankView = null;
     private _worldRankData:WorldBossResponse = null;
     start() {
         this.initUI();
+        this.initEvent();
     }
-
+    initEvent(){
+        CCUtil.onTouch(this.challenge_btn, this.onChallengeWorldBoss, this);
+    }
+    removeEvent(){
+        CCUtil.offTouch(this.challenge_btn, this.onChallengeWorldBoss, this);
+    }
     async initUI(){
         this.initNavTitle();
         this.initAmout();
@@ -38,7 +50,9 @@ export class WorldBossView extends Component {
         this.initRightRankView();
         console.log(WordBossInfoData);
     }
-
+    onInitModuleEvent(){
+        // this.addModelListener(EventType.Challenge_WorldBoss,this.onChallengeWorldBoss);
+    }
     async loadRankData(): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             ResLoader.instance.load(`worldBoss/RankData`, JsonAsset, async (err: Error | null, jsonData: JsonAsset) => {
@@ -106,6 +120,7 @@ export class WorldBossView extends Component {
             this._centerView = node.getComponent(CenterBossView);
             this._leftView.letNavScroll.selectedId = 0;
             let widgetCom = node.getComponent(Widget);
+            
             if (!isValid(widgetCom)) {
                 widgetCom = node.addComponent(Widget);
                 widgetCom.isAlignHorizontalCenter = true;
@@ -148,11 +163,18 @@ export class WorldBossView extends Component {
             this.bg_img.getComponent(Sprite).spriteFrame = spriteFrame;
         });
         this._centerView.updateCenterProps(gameInfo,info);
+        let remaining_num = 50 - gameInfo.SubmitNum;
+        this.remaining_challenge_text.string = `剩余挑战次数：${remaining_num}`;
     }
 
-    update(deltaTime: number) {
-        
+    onChallengeWorldBoss(){
+        console.log("onChallengeWorldBoss");
+        ViewsManager.instance.showView(PrefabType.BossChallengeView, (node: Node) => {
+            let nodeScript:BossChallengeView = node.getComponent(BossChallengeView);
+            nodeScript.initData(this._worldRankData.Data.Game)
+        });
     }
+
 }
 
 

@@ -44,7 +44,7 @@ export default class AccountService {
         console.log("AccountService onAccountLogin", data.code, data.msg, data.user_id);
         if (200 == data.code) {
             User.isLogin = true;
-            User.userId = data.user_id;
+            User.userID = data.user_id;
             User.memberToken = data.token;
             let extra = data.detail?.extra;
             if (extra) {
@@ -52,6 +52,9 @@ export default class AccountService {
                 User.diamond = extra.diamond;
                 User.amethyst = extra.amethyst;
                 User.stamina = extra.stamina;
+                User.roleID = extra.role_id;
+                User.level = extra.level;
+                User.exp = extra.exp;
             }
 
             StorageUtil.saveData(KeyConfig.Last_Login_Account, User.account);

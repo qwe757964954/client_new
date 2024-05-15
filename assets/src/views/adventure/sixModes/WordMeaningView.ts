@@ -1,20 +1,16 @@
-import { _decorator, Label, Node, Sprite, SpriteFrame, tween, Vec3, view } from 'cc';
-import { EventType } from '../../../config/EventType';
+import { _decorator, Label, Node, Sprite, SpriteFrame, tween, Vec3 } from 'cc';
 import { NetConfig } from '../../../config/NetConfig';
 import { PrefabType } from '../../../config/PrefabType';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { ViewsManager } from '../../../manager/ViewsManager';
+import { GameMode, WordsDetailData } from '../../../models/AdventureModel';
 import { UnitWordModel } from '../../../models/TextbookModel';
-import { ServiceMgr } from '../../../net/ServiceManager';
 import CCUtil from '../../../util/CCUtil';
-import EventManager from '../../../util/EventManager';
 import { BaseRemindView } from '../../common/BaseRemindView';
 import { WordDetailView } from '../../common/WordDetailView';
 import { TransitionView } from '../common/TransitionView';
 import { BaseModeView } from './BaseModeView';
 import { WordPracticeView } from './WordPracticeView';
-import { WordsDetailData, GameMode } from '../../../models/AdventureModel';
-import { InterfacePath } from '../../../net/InterfacePath';
 const { ccclass, property } = _decorator;
 
 /**词意模式页面*/

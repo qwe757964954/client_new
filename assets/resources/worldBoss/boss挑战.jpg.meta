@@ -2,22 +2,22 @@
   "ver": "1.0.26",
   "importer": "image",
   "imported": true,
-  "uuid": "7ccb5351-5da4-4478-96ec-96881a3829f4",
+  "uuid": "f7e16024-0b4e-41af-89cd-da01288b02f1",
   "files": [
-    ".json",
-    ".png"
+    ".jpg",
+    ".json"
   ],
   "subMetas": {
     "6c48a": {
       "importer": "texture",
-      "uuid": "7ccb5351-5da4-4478-96ec-96881a3829f4@6c48a",
-      "displayName": "img_bg_right",
+      "uuid": "f7e16024-0b4e-41af-89cd-da01288b02f1@6c48a",
+      "displayName": "boss挑战",
       "id": "6c48a",
       "name": "texture",
       "userData": {
         "wrapModeS": "clamp-to-edge",
         "wrapModeT": "clamp-to-edge",
-        "imageUuidOrDatabaseUri": "7ccb5351-5da4-4478-96ec-96881a3829f4",
+        "imageUuidOrDatabaseUri": "f7e16024-0b4e-41af-89cd-da01288b02f1",
         "isUuid": true,
         "visible": false,
         "minfilter": "linear",
@@ -34,8 +34,8 @@
     },
     "f9941": {
       "importer": "sprite-frame",
-      "uuid": "7ccb5351-5da4-4478-96ec-96881a3829f4@f9941",
-      "displayName": "img_bg_right",
+      "uuid": "f7e16024-0b4e-41af-89cd-da01288b02f1@f9941",
+      "displayName": "boss挑战",
       "id": "f9941",
       "name": "spriteFrame",
       "userData": {
@@ -46,14 +46,14 @@
         "offsetY": 0,
         "trimX": 0,
         "trimY": 0,
-        "width": 567,
-        "height": 263,
-        "rawWidth": 567,
-        "rawHeight": 263,
-        "borderTop": 40,
-        "borderBottom": 33,
-        "borderLeft": 44,
-        "borderRight": 52,
+        "width": 1792,
+        "height": 828,
+        "rawWidth": 1792,
+        "rawHeight": 828,
+        "borderTop": 0,
+        "borderBottom": 0,
+        "borderLeft": 0,
+        "borderRight": 0,
         "packable": true,
         "pixelsToUnit": 100,
         "pivotX": 0.5,
@@ -61,17 +61,17 @@
         "meshType": 0,
         "vertices": {
           "rawPosition": [
-            -283.5,
-            -131.5,
+            -896,
+            -414,
             0,
-            283.5,
-            -131.5,
+            896,
+            -414,
             0,
-            -283.5,
-            131.5,
+            -896,
+            414,
             0,
-            283.5,
-            131.5,
+            896,
+            414,
             0
           ],
           "indexes": [
@@ -84,12 +84,12 @@
           ],
           "uv": [
             0,
-            263,
-            567,
-            263,
+            828,
+            1792,
+            828,
             0,
             0,
-            567,
+            1792,
             0
           ],
           "nuv": [
@@ -103,18 +103,18 @@
             1
           ],
           "minPos": [
-            -283.5,
-            -131.5,
+            -896,
+            -414,
             0
           ],
           "maxPos": [
-            283.5,
-            131.5,
+            896,
+            414,
             0
           ]
         },
         "isUuid": true,
-        "imageUuidOrDatabaseUri": "7ccb5351-5da4-4478-96ec-96881a3829f4@6c48a",
+        "imageUuidOrDatabaseUri": "f7e16024-0b4e-41af-89cd-da01288b02f1@6c48a",
         "atlasUuid": ""
       },
       "ver": "1.0.12",
@@ -127,8 +127,8 @@
   },
   "userData": {
     "type": "sprite-frame",
-    "hasAlpha": true,
+    "hasAlpha": false,
     "fixAlphaTransparencyArtifacts": false,
-    "redirect": "7ccb5351-5da4-4478-96ec-96881a3829f4@f9941"
+    "redirect": "f7e16024-0b4e-41af-89cd-da01288b02f1@f9941"
   }
 }

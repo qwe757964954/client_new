@@ -1,5 +1,8 @@
-import { Vec2, Vec3, Node, UIOpacity, tween } from "cc";
+import { Node, UIOpacity, Vec2, Vec3, tween } from "cc";
 
+const Time_S = "{0}秒"
+const Time_M = "{0}分钟"
+const Time_M_S = "{0}分钟{1}秒"
 
 export class ToolUtil {
     /**
@@ -64,5 +67,18 @@ export class ToolUtil {
     static toggleOpacity(node: Node, transTime = 0, endOpacity = 0, onUpdate = (target) => { }) {
         let wheelMaskUIOpacity = node.getComponent(UIOpacity);
         return tween(wheelMaskUIOpacity).to(transTime, { opacity: endOpacity }, { onUpdate });
+    }
+    /**
+     * 获取 分秒 字符串
+     */
+    static getSecFormatStr(sec: number): string {
+        let minute = Math.floor(sec / 60);
+        let second = sec % 60;
+        if (minute <= 0) {
+            return ToolUtil.replace(Time_S, second);
+        } else if (second <= 0) {
+            return ToolUtil.replace(Time_M, minute);
+        }
+        return ToolUtil.replace(Time_M_S, minute, second);
     }
 }

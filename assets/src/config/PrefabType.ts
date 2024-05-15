@@ -89,6 +89,8 @@ export const PrefabType = {
     WorldLeftNavView: { path: "worldBoss/WorldLeftNavView", zindex: Hierarchy.POPUPLAYER, tips: "世界boss左侧" },
     CenterBossView: { path: "worldBoss/CenterBossView", zindex: Hierarchy.POPUPLAYER, tips: "世界boss中间" },
     RightRankView: { path: "worldBoss/RightRankView", zindex: Hierarchy.POPUPLAYER, tips: "世界boss右侧" },
+    BossChallengeView: { path: "worldBoss/BossChallengeView", zindex: Hierarchy.POPUPLAYER, tips: "世界boss挑战界面" },
+    ChallengeFrameView: { path: "worldBoss/ChallengeFrameView", zindex: Hierarchy.POPUPLAYER, tips: "世界boss挑战操作页面" },
     /*********************************************挑战BOSS相关end*************************************************************/
     /*********************************************地图相关start***********************************************************/
     MainUIView: { path: "map/MainUIView", zindex: Hierarchy.SCENELAYER, tips: "地图UI界面" },
@@ -101,6 +103,7 @@ export const PrefabType = {
     /*********************************************地图相关end*************************************************************/
     /*********************************************宠物相关start*************************************************************/
     PetInteractionView: { path: "map/PetInteractionView", zindex: Hierarchy.POPUPLAYER, tips: "宠物交互界面" },
+    PetInfoView: { path: "map/PetInfoView", zindex: Hierarchy.POPUPLAYER, tips: "宠物信息界面" },
     /*********************************************宠物相关end*************************************************************/
     /*********************************************复习计划start***********************************************************/
     ReviewMainView: { path: "review/ReviewMainView", zindex: Hierarchy.POPUPLAYER, tips: "复习规划主界面" },

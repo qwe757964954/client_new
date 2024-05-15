@@ -4,6 +4,7 @@ export interface BossInfo {
     name: string;
     skeleton: string;
     scale: number;
+    challengeScale:number;
 }
 
 const WordBossArray: BossInfo[] = [
@@ -12,6 +13,7 @@ const WordBossArray: BossInfo[] = [
         bossImage: "worldBoss/boss1/spriteFrame",
         skeleton: "spine/worldBoss/hongyanlong/hongyanlong.json",
         scale:0.7,
+        challengeScale:1,
         name: "焰鳄"
     },
     {
@@ -19,6 +21,7 @@ const WordBossArray: BossInfo[] = [
         bossImage: "worldBoss/boss2/spriteFrame",
         skeleton: "spine/worldBoss/bingyuanmengma/bingyuanmengma.json",
         scale:0.4,
+        challengeScale:0.8,
         name: "冰猛犸"
     },
     {
@@ -26,6 +29,7 @@ const WordBossArray: BossInfo[] = [
         bossImage: "worldBoss/boss3/spriteFrame",
         skeleton: "spine/worldBoss/jukouniaolong/jukouniaolong.json",
         scale:0.7,
+        challengeScale:1.5,
         name: "大嘴鸟"
     },
     {
@@ -33,6 +37,7 @@ const WordBossArray: BossInfo[] = [
         bossImage: "worldBoss/boss4/spriteFrame",
         skeleton: "spine/worldBoss/hanzhu/hanzhu.json",
         scale:0.7,
+        challengeScale:1.5,
         name: "蓝翼蛛"
     },
     {
@@ -40,6 +45,7 @@ const WordBossArray: BossInfo[] = [
         bossImage: "worldBoss/boss5/spriteFrame",
         skeleton: "spine/worldBoss/qiguanglong/qiguanglong.json",
         scale:0.85,
+        challengeScale:1.5,
         name: "紫棘龙"
     },
     {
@@ -47,6 +53,7 @@ const WordBossArray: BossInfo[] = [
         bossImage: "worldBoss/boss6/spriteFrame",
         skeleton: "spine/worldBoss/diyifeng/diyifeng.json",
         scale:0.85,
+        challengeScale:1.5,
         name: "绿腹蜂"
     },
     {
@@ -54,6 +61,7 @@ const WordBossArray: BossInfo[] = [
         bossImage: "worldBoss/boss7/spriteFrame",
         skeleton: "spine/worldBoss/qiguanglong/qiguanglong.json",
         scale:0.85,
+        challengeScale:1.5,
         name: "巨象龟"
     },
     {
@@ -61,6 +69,7 @@ const WordBossArray: BossInfo[] = [
         bossImage: "worldBoss/boss8/spriteFrame",
         skeleton: "spine/worldBoss/qiguanglong/qiguanglong.json",
         scale:0.85,
+        challengeScale:1.5,
         name: "三头狼"
     },
     {
@@ -68,6 +77,7 @@ const WordBossArray: BossInfo[] = [
         bossImage: "worldBoss/boss9/spriteFrame",
         skeleton: "spine/worldBoss/qiguanglong/qiguanglong.json",
         scale:0.85,
+        challengeScale:1.5,
         name: "黄泉龙"
     },
 ];
