@@ -19,6 +19,17 @@ export class PetModel extends RoleBaseModel {
             this.role.setAnimation(0, 'skill', false);
         });
     }
+
+    public inHit() {
+        return new Promise((resolve) => {
+            this.role.setCompleteListener(() => {
+                this.role.setCompleteListener(null);
+                this.role.setAnimation(0, 'idle', true);
+                resolve(true);
+            })
+            this.role.setAnimation(0, 'attack', false);
+        });
+    }
 }
 
 

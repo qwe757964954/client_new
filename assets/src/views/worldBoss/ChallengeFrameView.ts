@@ -1,4 +1,6 @@
 import { _decorator, Component, isValid, Label, Node } from 'cc';
+import { EventType } from '../../config/EventType';
+import { EventMgr } from '../../util/EventManager';
 import List from '../../util/list/List';
 import { BossGameWord } from './BossInfo';
 import { AnswerType, ChallengeAnswerItem } from './ChallengeAnswerItem';
@@ -36,6 +38,9 @@ export class ChallengeFrameView extends Component {
         const randomIndex = Math.floor(Math.random() * words.length);
         return words[randomIndex];
     }
+    removeWord(wordInfo:BossGameWord){
+        this._bossWords = this._bossWords.filter(wordInfo => wordInfo.En != this._currentWord.En);
+    }
     onLoadAnswerVertical(item:Node, idx:number){
         let item_sript:ChallengeAnswerItem = item.getComponent(ChallengeAnswerItem);
         let wordInfo:BossGameWord = this._bossWords[idx];
@@ -48,12 +53,12 @@ export class ChallengeFrameView extends Component {
         let status:AnswerType = this._currentWord.En == wordInfo.En ? AnswerType.Correct :  AnswerType.Error;
         let item_sript:ChallengeAnswerItem = item.getComponent(ChallengeAnswerItem);
         item_sript.changeItemStatus(status);
+        this.removeWord(wordInfo);
         this.scheduleOnce(()=>{
-            this.onLoadWordData(this._bossWords);
-        },3)
+            EventMgr.dispatch(EventType.Challenge_ReportResult,{result:status});
+        },0.5)
         
     }
-
 
 }
 

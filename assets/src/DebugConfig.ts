@@ -5,7 +5,7 @@ const DebugConfig = {
     ERROR_LOG: false,//是否错误写入log
     UPLOAD_LOG: false,//是否上传错误log
     SHOW_FPS: false,//是否显示FPS
-    TEST_SERVER: true,//是否测试服
+    TEST_SERVER: false,//是否测试服
     OLD_SERVER: false,//是否旧服
 };
 

@@ -9,6 +9,7 @@ export const TextConfig = {
     Prop_Show: "x{0}",
     Produce_Lock1: "城堡等级达到{0}级",
     Produce_Lock2: "建筑物等级达到{0}级",
+    Level_Text: "{0}级",
 
     Function_Tip: "功能暂未开放，敬请期待",
 
