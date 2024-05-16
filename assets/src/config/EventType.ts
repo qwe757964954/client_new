@@ -64,5 +64,9 @@ export const EventType = {
     Notice_ShowNotice: "Notice_ShowNotice", //显示公告
 
     /**世界BOSS */
-    Challenge_ReportResult: "Challenge_ReportResult", //上报结果
+    Challenge_WorldBoss: "Challenge_WorldBoss", //挑战世界boss
+    /**成就相关 */
+    Achieve_GetAllInfo: "Achieve_GetAllInfo", //获取成就各项数据列表
+    Achieve_SelectMedal: "Achieve_SelectMedal", //选择勋章
+    Achieve_GetAward: "Achieve_GetAward", //领取奖励
 }

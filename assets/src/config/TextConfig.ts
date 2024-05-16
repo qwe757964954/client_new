@@ -37,4 +37,7 @@ export const TextConfig = {
     Achieve_Dungeon: "副本",
     Achieve_SpriteTrain: "精灵培养",
     Achieve_AbilityTrain: "能力培养",
+    Achieve_GoTo: "前往",
+    Achieve_GetAward: "领取",
+    Achieve_Error_Medal_ExceedLimit: "最多只能展示{0}枚勋章!"
 }
