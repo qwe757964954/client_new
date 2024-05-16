@@ -1,0 +1,250 @@
+{
+    "Code": 200,
+    "Data": [
+        {
+            "Id": 2101,
+            "PId": 1001,
+            "Name": "简单句",
+            "VideoUrl": null,
+            "SubFlag": 1,
+            "SortNo": null,
+            "ChildNodes": [
+                {
+                    "Id": 3042,
+                    "PId": 2101,
+                    "Name": "简单句的定义",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3042.mp4",
+                    "SubFlag": 1,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3043,
+                    "PId": 2101,
+                    "Name": "五大简单基本句型",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3043.mp4",
+                    "SubFlag": 1,
+                    "SortNo": null,
+                    "Difficulty": null
+                }
+            ],
+            "Score": 0,
+            "CompStatus": 0
+        },
+        {
+            "Id": 2102,
+            "PId": 1001,
+            "Name": "陈述句",
+            "VideoUrl": null,
+            "SubFlag": 0,
+            "SortNo": null,
+            "ChildNodes": [
+                {
+                    "Id": 3044,
+                    "PId": 2102,
+                    "Name": "陈述句的概念",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3044.mp4",
+                    "SubFlag": 1,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3045,
+                    "PId": 2102,
+                    "Name": "陈述句的句子结构以及用法",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3045.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3046,
+                    "PId": 2102,
+                    "Name": "特殊（肯定句与否定句互换词）",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3046.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                }
+            ],
+            "Score": 0,
+            "CompStatus": 0
+        },
+        {
+            "Id": 2103,
+            "PId": 1001,
+            "Name": "祈使句",
+            "VideoUrl": null,
+            "SubFlag": 0,
+            "SortNo": null,
+            "ChildNodes": [
+                {
+                    "Id": 3047,
+                    "PId": 2103,
+                    "Name": "祈使句的定义",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3047.mp4",
+                    "SubFlag": 1,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3048,
+                    "PId": 2103,
+                    "Name": "祈使句的分类",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3048.mp4",
+                    "SubFlag": 1,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3049,
+                    "PId": 2103,
+                    "Name": "肯定的祈使句",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3049.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3050,
+                    "PId": 2103,
+                    "Name": "否定的祈使句",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3050.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                }
+            ],
+            "Score": 0,
+            "CompStatus": 0
+        },
+        {
+            "Id": 2104,
+            "PId": 1001,
+            "Name": "疑问句",
+            "VideoUrl": null,
+            "SubFlag": 0,
+            "SortNo": null,
+            "ChildNodes": [
+                {
+                    "Id": 3051,
+                    "PId": 2104,
+                    "Name": "一般疑问句",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3051.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3052,
+                    "PId": 2104,
+                    "Name": "特殊疑问句",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3052.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3053,
+                    "PId": 2104,
+                    "Name": "选择疑问句",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3053.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3054,
+                    "PId": 2104,
+                    "Name": "反意疑问句",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3054.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                }
+            ],
+            "Score": 0,
+            "CompStatus": 0
+        },
+        {
+            "Id": 2105,
+            "PId": 1001,
+            "Name": "感叹句",
+            "VideoUrl": null,
+            "SubFlag": 0,
+            "SortNo": null,
+            "ChildNodes": [
+                {
+                    "Id": 3055,
+                    "PId": 2105,
+                    "Name": "感叹句的基本特征",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3055.mp4",
+                    "SubFlag": 1,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3056,
+                    "PId": 2105,
+                    "Name": "感叹句的用法",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3056.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                }
+            ],
+            "Score": 0,
+            "CompStatus": 0
+        },
+        {
+            "Id": 2106,
+            "PId": 1001,
+            "Name": "There be 句型",
+            "VideoUrl": null,
+            "SubFlag": 0,
+            "SortNo": null,
+            "ChildNodes": [
+                {
+                    "Id": 3057,
+                    "PId": 2106,
+                    "Name": "There be句型的定义",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3057.mp4",
+                    "SubFlag": 1,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3058,
+                    "PId": 2106,
+                    "Name": "There be句型的主谓一致",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3058.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3059,
+                    "PId": 2106,
+                    "Name": "There be句型的结构",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3059.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3060,
+                    "PId": 2106,
+                    "Name": "There be与have的区别",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3060.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                }
+            ],
+            "Score": 0,
+            "CompStatus": 0
+        }
+    ],
+    "Msg": "请求成功",
+    "Path": "Grammar.GetCurriculumScores"
+}

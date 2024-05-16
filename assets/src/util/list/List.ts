@@ -315,6 +315,9 @@ export default class List extends Component {
         return this._scrollView;
     }
     private _layout: Layout;
+    get layout() {
+        return this._layout;
+    }
     private _resizeMode: number;
     private _topGap: number;
     private _rightGap: number;

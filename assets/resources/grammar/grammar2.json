@@ -1,0 +1,304 @@
+{
+    "Code": 200,
+    "Data": [
+        {
+            "Id": 2201,
+            "PId": 1002,
+            "Name": "一般现在时",
+            "VideoUrl": null,
+            "SubFlag": 0,
+            "SortNo": null,
+            "ChildNodes": [
+                {
+                    "Id": 3061,
+                    "PId": 2201,
+                    "Name": "一般现在时的定义与基本用法",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3061.mp4",
+                    "SubFlag": 1,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3062,
+                    "PId": 2201,
+                    "Name": "一般现在时的时间标志词",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3062.mp4",
+                    "SubFlag": 1,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3063,
+                    "PId": 2201,
+                    "Name": "动词第三人称单数变化规则",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3063.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3064,
+                    "PId": 2201,
+                    "Name": "一般现在时结构",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3064.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                }
+            ],
+            "Score": 0,
+            "CompStatus": 0
+        },
+        {
+            "Id": 2202,
+            "PId": 1002,
+            "Name": "现在进行时",
+            "VideoUrl": null,
+            "SubFlag": 0,
+            "SortNo": null,
+            "ChildNodes": [
+                {
+                    "Id": 3065,
+                    "PId": 2202,
+                    "Name": "现在进行时定义与基本用法",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3065.mp4",
+                    "SubFlag": 1,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3066,
+                    "PId": 2202,
+                    "Name": "现在进行时的时间标志词",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3066.mp4",
+                    "SubFlag": 1,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3067,
+                    "PId": 2202,
+                    "Name": "动词现在分词的变化规则",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3067.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3068,
+                    "PId": 2202,
+                    "Name": "现在进行时的结构",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3068.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                }
+            ],
+            "Score": 0,
+            "CompStatus": 0
+        },
+        {
+            "Id": 2203,
+            "PId": 1002,
+            "Name": "一般将来时",
+            "VideoUrl": null,
+            "SubFlag": 0,
+            "SortNo": null,
+            "ChildNodes": [
+                {
+                    "Id": 3069,
+                    "PId": 2203,
+                    "Name": "一般将来时定义与基本用法",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3069.mp4",
+                    "SubFlag": 1,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3070,
+                    "PId": 2203,
+                    "Name": "一般将来时的时间标志词",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3070.mp4",
+                    "SubFlag": 1,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3071,
+                    "PId": 2203,
+                    "Name": "一般将来时的结构",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3071.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3072,
+                    "PId": 2203,
+                    "Name": "will与be going to 的区别",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3072.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                }
+            ],
+            "Score": 0,
+            "CompStatus": 0
+        },
+        {
+            "Id": 2204,
+            "PId": 1002,
+            "Name": "一般过去时",
+            "VideoUrl": null,
+            "SubFlag": 0,
+            "SortNo": null,
+            "ChildNodes": [
+                {
+                    "Id": 3073,
+                    "PId": 2204,
+                    "Name": "一般过去时的定义与基本用法\r\n",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3073.mp4",
+                    "SubFlag": 1,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3074,
+                    "PId": 2204,
+                    "Name": "一般过去时的时间标志词",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3074.mp4",
+                    "SubFlag": 1,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3075,
+                    "PId": 2204,
+                    "Name": "动词过去式变化规则",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3075.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3076,
+                    "PId": 2204,
+                    "Name": "一般过去时结构",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3076.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                }
+            ],
+            "Score": 0,
+            "CompStatus": 0
+        },
+        {
+            "Id": 2205,
+            "PId": 1002,
+            "Name": "过去进行时",
+            "VideoUrl": null,
+            "SubFlag": 0,
+            "SortNo": null,
+            "ChildNodes": [
+                {
+                    "Id": 3077,
+                    "PId": 2205,
+                    "Name": "过去进行时的定义",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3077.mp4",
+                    "SubFlag": 1,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3078,
+                    "PId": 2205,
+                    "Name": "过去进行时的时间标志词",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3078.mp4",
+                    "SubFlag": 1,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3079,
+                    "PId": 2205,
+                    "Name": "动词现在分词的变化规则",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3079.mp4",
+                    "SubFlag": 1,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3080,
+                    "PId": 2205,
+                    "Name": "过去进行时的基本结构",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3080.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3081,
+                    "PId": 2205,
+                    "Name": "过去进行时常见用法",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3081.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                }
+            ],
+            "Score": 0,
+            "CompStatus": 0
+        },
+        {
+            "Id": 2206,
+            "PId": 1002,
+            "Name": "现在完成时",
+            "VideoUrl": null,
+            "SubFlag": 0,
+            "SortNo": null,
+            "ChildNodes": [
+                {
+                    "Id": 3082,
+                    "PId": 2206,
+                    "Name": "现在完成时的结构",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3082.mp4",
+                    "SubFlag": 1,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3083,
+                    "PId": 2206,
+                    "Name": "动词的过去分词的规则变化",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3083.mp4",
+                    "SubFlag": 1,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3084,
+                    "PId": 2206,
+                    "Name": "现在完成时的用法",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3084.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3085,
+                    "PId": 2206,
+                    "Name": "has gone(to),has been(to), has been(in)的区别",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3085.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                }
+            ],
+            "Score": 0,
+            "CompStatus": 0
+        }
+    ],
+    "Msg": "请求成功",
+    "Path": "Grammar.GetCurriculumScores"
+}

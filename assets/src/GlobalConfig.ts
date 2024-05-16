@@ -1,9 +1,11 @@
 import { Game, Size, View, game, macro, profiler, screen, view } from "cc";
 import { APP_VERSION } from "./AppConfig";
 import DebugConfig from "./DebugConfig";
+import { TextConfig } from "./config/TextConfig";
 import { DataMgr } from "./manager/DataMgr";
 import { SpineAniManager } from "./manager/SpineAniManager";
 import FileUtil from "./util/FileUtil";
+import { ToolUtil } from "./util/ToolUtil";
 
 
 export default class GlobalConfig {
@@ -66,6 +68,9 @@ export default class GlobalConfig {
         }
 
         DataMgr.instance.initData();
+    }
+    public static getVersionStr() {
+        return ToolUtil.replace(TextConfig.Ver_Text, GlobalConfig.APP_VERSION, GlobalConfig.EXE_VERSION, GlobalConfig.EXE_RES_VERSION, GlobalConfig.CHANNEL_ID);
     }
     // 屏幕适配规则
     public static initResolutionRules() {

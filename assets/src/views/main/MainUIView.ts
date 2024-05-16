@@ -1,4 +1,5 @@
-import { _decorator, Component, director, Node, Size, Sprite, UITransform, v3, Vec3, View } from 'cc';
+import { _decorator, Component, director, Node, Sprite } from 'cc';
+import { EventType } from '../../config/EventType';
 import { MapStatus } from '../../config/MapConfig';
 import { PrefabType, SceneType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
@@ -7,13 +8,11 @@ import { ViewsManager } from '../../manager/ViewsManager';
 import { User } from '../../models/User';
 import { NetMgr } from '../../net/NetManager';
 import CCUtil from '../../util/CCUtil';
+import EventManager from '../../util/EventManager';
 import { TimerMgr } from '../../util/TimerMgr';
 import { PetInteractionView } from '../map/PetInteractionView';
-import { BrocastMgr } from '../notice/BrocastMgr';
-import { MainScene } from './MainScene';
-import EventManager from '../../util/EventManager';
-import { EventType } from '../../config/EventType';
 import { NoticeContentData } from '../notice/Brocast';
+import { MainScene } from './MainScene';
 const { ccclass, property } = _decorator;
 
 @ccclass('MainUIView')
@@ -116,6 +115,7 @@ export class MainUIView extends Component {
     //菜单点击
     public onClickMenu() {
         User.isAutoLogin = false;
+        User.resetData();
         NetMgr.closeNet();
         director.loadScene(SceneType.LoginScene);
     }
@@ -149,6 +149,7 @@ export class MainUIView extends Component {
     public onClickTask() {
         console.log("onClickTask");
         ViewsManager.showTip(TextConfig.Function_Tip);
+        // RemoteSoundMgr.playSound("https://www.chuangciyingyu.com/audio/test/68146.wav");
     }
     //任务前往点击
     public onClickTaskGo() {
