@@ -8,6 +8,7 @@ import { RemoteSoundMgr } from '../../manager/RemoteSoundManager';
 import { WordDetailPanel } from './WordDetailPanel';
 import { SearchWordDetail, WordSentence } from './SearchWordView';
 import { TextConfig } from '../../config/TextConfig';
+import { WordsDetailData } from '../../models/AdventureModel';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordSearchView')
@@ -70,7 +71,7 @@ export class WordSearchView extends Component {
     @property({ type: [SpriteFrame], tooltip: "单词图片按钮两个帧" })
     private sprWordImgBtnAry: SpriteFrame[] = [];
 
-    _wordData: SearchWordDetail = null; //单词详细信息
+    _wordData: WordsDetailData = null; //单词详细信息
     _word: string = ""; //单词名字
     _imgShow: boolean = true; //是否显示图片
 
@@ -82,7 +83,7 @@ export class WordSearchView extends Component {
     _wordDetailPanel: WordDetailPanel = null;
 
     /** 初始化数据 */
-    public initData(data: SearchWordDetail) {
+    public initData(data: WordsDetailData) {
         this._wordData = data;
 
         //this.initEvent();
@@ -90,16 +91,27 @@ export class WordSearchView extends Component {
         this.createDetailPanel();
     }
 
-    initDetailPanel(data) {
+    initDetailPanel(data: WordsDetailData) {
         console.log("wordData", data);
-        this._word = data.Word;
-        let word = data.Word;
-        this.wordCnTxt.string = data.Cn;
-        this.usSymbolTxt.string = TextConfig.US + data.SymbolUs + "";
-        this.ukReadTxt.string = TextConfig.EN + data.Symbol + "";
-        let wordImgUrl: string = NetConfig.currentUrl + "/assets/imgs/words/" + data.Word + ".jpg";
+        this._word = data.word;
+        let word = data.word;
+        this.wordCnTxt.string = data.cn;
+        this.usSymbolTxt.string = TextConfig.US + data.symbolus + "";
+        this.ukReadTxt.string = TextConfig.EN + data.symbol + "";
+        //let wordImgUrl: string = NetConfig.currentUrl + "/assets/imgs/words/" + data.word + ".jpg";
+        let wordImgUrl: string = NetConfig.assertUrl + "/imgs/words/" + data.word + ".jpg";
+
         ImgUtil.loadRemoteImage(wordImgUrl, this.wordImg.node, 450.134, 282.543);
-        this.learnWordTxt.string = word;
+        if (data.phonic && data.phonic !== "") {
+            this.learnWordTxt.string = data.phonic;
+        }
+        else if (data.syllable && data.syllable !== "") {
+            this.learnWordTxt.string = data.syllable;
+        }
+        else {
+            this.learnWordTxt.string = word;
+        }
+
         var lenLearnWordTxt = this.learnWordTxt.string.length;
         //var uiLearnWordTransform: UITransform = this.learnWordTxt.node.getComponent(UITransform);
         let y = this.imgBox.position.y;
@@ -121,14 +133,21 @@ export class WordSearchView extends Component {
         this.onWordDetail(data);
     }
 
-    private onWordDetail(data): void {
+    private onWordDetail(data: WordsDetailData): void {
         if (!this._sentenceData) {
-            let sentensDatas = data.Sentences;
+            let sentensDatas = data.sentence_list;
             let sentData;
             if (sentensDatas && sentensDatas.length > 0) {
-                sentData = sentensDatas[0]; //第0句第一句例句
-                sentData.Word = data.Word;
-                let word = data.Word;
+                let sentencData = sentensDatas[0];
+                let sentData: WordSentence = {
+                    Word: data.word,
+                    En: sentencData.sentence,
+                    Cn: sentencData.cn,
+                    Id: sentencData.id,
+                }
+                //sentData = sentensDatas[0]; //第0句第一句例句
+                //sentData.Word = data.word;
+                let word = data.word;
                 let sentence: string = sentData.En; //英语部分
                 this._sentenceId = sentData.Id;
 
@@ -165,7 +184,7 @@ export class WordSearchView extends Component {
                 else {
                     this.sentenceTxt.string = "<color=#6C331F>" + sentence + "</color>";
                 }
-                this.sentenceChTxt.string = sentData.Ch; //中文部分
+                this.sentenceChTxt.string = sentData.Cn; //中文部分
             }
         }
     }

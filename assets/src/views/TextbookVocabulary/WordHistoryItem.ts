@@ -20,7 +20,7 @@ export class WordHistoryItem extends Component {
     @property({ type: Node, tooltip: "删除一条纪录按钮" })
     public btn_ClearWord: Node = null;
 
-    data: any = null;
+    data: WordSimpleData = null;
 
     private _delOneSearchWordEveId: string = "";
 
@@ -41,8 +41,8 @@ export class WordHistoryItem extends Component {
         }
 
         this.data = data;
-        this.lblWord.string = data.Word;
-        this.lblContent.string = data.Cn;
+        this.lblWord.string = data.word;
+        this.lblContent.string = data.cn;
 
 
     }
@@ -59,7 +59,7 @@ export class WordHistoryItem extends Component {
 
     /**点击清除一个单词历史 */
     onClearWord() {
-        EventManager.emit(EventType.Search_Word_Del_OneWord, this.data.Word);
+        EventManager.emit(EventType.Search_Word_Del_OneWord, this.data.word);
         this.node.destroy();
     }
 

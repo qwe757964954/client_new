@@ -7,12 +7,14 @@ import { ViewsManager } from '../../manager/ViewsManager';
 import { PrefabType } from '../../config/PrefabType';
 import CCUtil from '../../util/CCUtil';
 import { WordSearchView } from './WordSearchView';
+import { InterfacePath } from '../../net/InterfacePath';
+import { WordsDetailData } from '../../models/AdventureModel';
 const { ccclass, property } = _decorator;
 
 /**单词简单结构 */
 export interface WordSimpleData {
-    Word: string; //单词
-    Cn: string;   //释义
+    word: string; //单词
+    cn: string;   //释义
 }
 
 /**单词简单结构 */
@@ -27,6 +29,23 @@ export interface NetWordSimpleData {
     Code: number, //网络返回的响应码
     Word: string; //单词
     Cn: string;   //释义
+}
+
+/**查找单词真实网络回应数据 */
+export interface NetSearchWordData {
+    code: number, //网络返回的响应码
+    command_id: number; //命令号
+    data: WordsDetailData; //单词详细数据
+}
+
+/**单词详情数据 */
+export interface WordDetailData {
+    word: string;
+    ancillary: string; //助记
+    cn: string;  //释义
+    etyma: string; //词根
+    example: string; //英语例句
+    example_cn
 }
 
 /**例句数据 */
@@ -89,11 +108,11 @@ export class SearchWordView extends Component {
 
     _historys: Array<WordSimpleData> = []; //查找的历史
     _historyObj = {}; //JSON组织的查找历史
-    protected _detailData: NetWordSimpleData = null; //当前单词详情数据
+    protected _detailData: WordsDetailData = null; //当前单词详情数据
 
-    private _wordDetailEveId: string; //查找单词事件响应
-    private _testWordDetailEveId: string = ""; // 测试单词事件响应
-    private _testWordDetailItemEveId: string = ""; // 测试点击历史列表项时弹出单词详情事件响应
+
+    private _wordDetailNetEveId: string = ""; //网络单词详情响应
+    private _searchWordDetailItemEveId: string = ""; // 测试点击历史列表项时弹出单词详情事件响应
     private _delOneSearchWordEveId: string = ""; //删除一个单词历史纪录
 
     private _isSearching: boolean = false; //是否正在查找单词
@@ -108,7 +127,7 @@ export class SearchWordView extends Component {
             this._historyObj = JSON.parse(localStorage.getItem("searchHistory"));
             for (let k in this._historyObj) {
 
-                let data: WordSimpleData = { Word: k, Cn: this._historyObj[k] };
+                let data: WordSimpleData = { word: k, cn: this._historyObj[k] };
                 this._historys.push(data);
             }
         }
@@ -124,10 +143,12 @@ export class SearchWordView extends Component {
         CCUtil.onTouch(this.btn_back, this.closeView, this);
         CCUtil.onTouch(this.btn_search, this.onSearch, this);
         CCUtil.onTouch(this.btn_clearHistoryAll, this.onClearHistory, this);
-        this._wordDetailEveId = EventManager.on(EventType.Classification_Word, this.onWordDetail.bind(this));
-        this._testWordDetailEveId = EventManager.on(EventType.Search_Word, this.onTestSearchWord.bind(this));
-        this._testWordDetailItemEveId = EventManager.on(EventType.Search_Word_Item, this.onTestSearchWordItem.bind(this));
+        //this._wordDetailEveId = EventManager.on(EventType.Classification_Word, this.onWordDetail.bind(this));
+        //this._testWordDetailEveId = EventManager.on(EventType.Search_Word, this.onTestSearchWord.bind(this));
+        this._searchWordDetailItemEveId = EventManager.on(EventType.Search_Word_Item, this.onSearchWordItem.bind(this));
         this._delOneSearchWordEveId = EventManager.on(EventType.Search_Word_Del_OneWord, this.onDelOneSearchWord.bind(this));
+
+        this._wordDetailNetEveId = EventManager.on(InterfacePath.Adventure_Word, this.onClassificationWord.bind(this));
 
         this.edtSearchWord.node.on(EventType.Search_Word_Edt_Began, this.onEditBoxBeganEdit, this);
     }
@@ -137,10 +158,13 @@ export class SearchWordView extends Component {
         CCUtil.offTouch(this.btn_back, this.closeView, this);
         CCUtil.offTouch(this.btn_search, this.onSearch, this);
         CCUtil.offTouch(this.btn_clearHistoryAll, this.onClearHistory, this);
-        EventManager.off(EventType.Classification_Word, this._wordDetailEveId);
-        EventManager.off(EventType.Search_Word, this._testWordDetailEveId);
-        EventManager.off(EventType.Search_Word_Item, this._testWordDetailItemEveId);
+        //EventManager.off(EventType.Classification_Word, this._wordDetailEveId);
+        //EventManager.off(EventType.Search_Word, this._testWordDetailEveId);
+        EventManager.off(EventType.Search_Word_Item, this._searchWordDetailItemEveId);
         EventManager.off(EventType.Search_Word_Del_OneWord, this._delOneSearchWordEveId);
+
+        EventManager.off(InterfacePath.Adventure_Word, this._wordDetailNetEveId);
+
         //this.edtSearchWord.node.off("editing-did-began", this.onEditBoxBeganEdit, this);
     }
 
@@ -165,7 +189,7 @@ export class SearchWordView extends Component {
         if (!data) {
             return;
         }
-        if (!data.Word || !data.Cn) {
+        if (!data.word || !data.cn) {
             return;
         }
         let itemHistory = instantiate(this.preWordHistoryItem);
@@ -192,73 +216,102 @@ export class SearchWordView extends Component {
         console.log("获取单词详情:", data);
     }
 
-    onTestSearchWord(data: NetWordSimpleData) {
-        console.log("查找单词测试:", data);
+    onClassificationWord(data: WordsDetailData) {
+        console.log(data);
+        if (data.code != 200) {
+            console.error("获取单词详情失败", data);
+            return;
+        }
         this._detailData = data;
-        if (data.Code != 200) {
+
+
+        if (this._detailData.word !== "") {
+            //打开单词详情
+            ViewsManager.instance.showView(PrefabType.WordSearchView, (node: Node) => {
+                node.getComponent(WordSearchView).initData(this._detailData);
+            });
+
+            if (!this._historyObj[this._detailData.word]) {
+                //this.clearBtn();
+                this._historyObj[this._detailData.word] = this._detailData.cn;
+                this._historys.push({ word: this._detailData.word, cn: this._detailData.cn });
+                //this.historyList.array = this.historys;
+                let historyObjStr: string = JSON.stringify(this._historyObj);
+                localStorage.setItem("searchHistory", historyObjStr);
+                let wordSimpleData: WordSimpleData = { word: this._detailData.word, cn: this._detailData.cn };
+                this.addHitstoryListItem(wordSimpleData);
+            }
+        }
+        this._isSearching = false;
+    }
+
+    onTestSearchWord(data: NetSearchWordData) {
+        console.log("查找单词测试:", data);
+        this._detailData = data.data;
+        if (data.code != 200) {
             console.error("获取单词详情失败", data);
             this._isSearching = false;
             return;
         }
 
-        if (data.Word !== "") {
+
+        if (this._detailData.word !== "") {
             //暂时还没做到
             //let searchView = new WordSearchView(data);
             //searchView.popup();
             //打开单词详情
             ViewsManager.instance.showView(PrefabType.WordSearchView, (node: Node) => {
-                let wordData: SearchWordDetail = {
-                    Word: data.Word,//"congrantulationcongrantu",//data.Word,//"Daidai",
-                    Cn: data.Cn,//"呆呆是一只比熊名犬",
-                    SymbolUs: "[/ ˈtiːtʃə(r) /]",
-                    Symbol: "[/ ˈtiːtʃə(r) /]",
-                    Sentences: [
+                let wordData: WordsDetailData = {
+                    word: this._detailData.word,//"congrantulationcongrantu",//data.Word,//"Daidai",
+                    cn: this._detailData.cn,//"呆呆是一只比熊名犬",
+                    symbol: "[/ ˈtiːtʃə(r) /]",
+                    symbolus: "[/ ˈtiːtʃə(r) /]",
+                    etyma: "",
+                    variant: null,
+                    sentence_list: [
                         {
-                            Word: "",
-                            En: "Please give me a apple",
-                            Cn: "请给我一个苹果",
-                            Id: "1001",
+                            id: "1001",
+                            sentence: "Please give me a apple",
+                            cn: "请给我一个苹果",
+
                         },
                     ],
-                    Speech: [
-                        {
-                            sp: "vt.",
-                            tr: "vi. 赠送，捐赠",
-                        },
-                        {
-                            sp: "vt.",
-                            tr: "给，提供，支付，使产生",
-                        },
+                    speech: "",
+                    similar_list: [
+                        { word: "send", cn: "n. 送给" },
+                        { word: "donate", cn: "n. 捐赠" },
                     ],
-                    Similars: [
-                        { Word: "send", Cn: "n. 送给" },
-                        { Word: "donate", Cn: "n. 捐赠" },
-                    ],
-                    Ancillary: "背单词没有捷径",
-                    Structure: {
+                    ancillary: "背单词没有捷径",
+                    structure: {
                         Roots: [{ Name: "er" }, { Name: "alt" }],
                         Prefixs: [{ Name: "pre" }, { Name: "le" }],
                         Suffix: [{ Name: "root" }, { Name: "me" }],
-                    }
+                    },
+                    syllable: "d-o-g",
+                    phonic: "d·o·g",
+                    example: "Dogs bark.",
+                    example_cn: "狗叫",
+                    code: 200,
+                    msg: "请求成功",
                 };
                 node.getComponent(WordSearchView).initData(wordData);
             });
-            if (!this._historyObj[data.Word]) {
+            if (!this._historyObj[this._detailData.word]) {
                 //this.clearBtn();
-                this._historyObj[data.Word] = data.Cn;
-                this._historys.push({ Word: data.Word, Cn: data.Cn });
+                this._historyObj[this._detailData.word] = this._detailData.cn;
+                this._historys.push({ word: this._detailData.word, cn: this._detailData.cn });
                 //this.historyList.array = this.historys;
                 let historyObjStr: string = JSON.stringify(this._historyObj);
                 localStorage.setItem("searchHistory", historyObjStr);
-                this.addHitstoryListItem(data);
+                this.addHitstoryListItem(this._detailData);
             }
         }
 
         this._isSearching = false;
     }
 
-    onTestSearchWordItem(data: NetWordSimpleData) {
-        let word: string = data.Word;
+    onSearchWordItem(data: WordSimpleData) {
+        let word: string = data.word;
         if (!word) {
             return;
         }
@@ -269,8 +322,8 @@ export class SearchWordView extends Component {
         // 这句代码暂时无效，服务器接口没准备好
         ServiceMgr.studyService.getAdventureWord(word);
         //测试代码,接口没送到
-        let testWordResp: NetWordSimpleData = { Code: 200, Word: word, Cn: "你好，一种敬语。" };
-        EventManager.emit(EventType.Search_Word, testWordResp);
+        //let testWordResp: NetWordSimpleData = { Code: 200, Word: word, Cn: "你好，一种敬语。" };
+        //EventManager.emit(EventType.Search_Word, testWordResp);
     }
 
     /**删除一个词条 */
@@ -280,7 +333,7 @@ export class SearchWordView extends Component {
             return;
         }
         for (let i = 0; i < this._historys.length; i++) {
-            if (this._historys[i].Word == delWord) {
+            if (this._historys[i].word == delWord) {
                 this._historys.splice(i, 1);
                 break;
             }
@@ -302,8 +355,8 @@ export class SearchWordView extends Component {
         // 这句代码暂时无效，服务器接口没准备好
         ServiceMgr.studyService.getAdventureWord(word);
         //测试代码,接口没送到
-        let testWordResp: NetWordSimpleData = { Code: 200, Word: word, Cn: "你好，一种敬语。" };
-        EventManager.emit(EventType.Search_Word, testWordResp);
+        //let testWordResp: NetWordSimpleData = { Code: 200, Word: word, Cn: "你好，一种敬语。" };
+        //EventManager.emit(EventType.Search_Word, testWordResp);
     }
 
     /**清除所有的单词搜索历史 */

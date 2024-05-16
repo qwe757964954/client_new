@@ -2,6 +2,7 @@ import { _decorator, Component, Label, Node, RichText } from 'cc';
 import CCUtil from '../../util/CCUtil';
 import { RemoteSoundMgr } from '../../manager/RemoteSoundManager';
 import { NetConfig } from '../../config/NetConfig';
+import { WordSentence } from './SearchWordView';
 const { ccclass, property } = _decorator;
 
 @ccclass('SentenseItem')
@@ -15,14 +16,14 @@ export class DetailSentenseItem extends Component {
     @property({ type: Label, tooltip: "单词例句中文翻译" }) //
     public sentenceChTxt: Label = null;
 
-    private _sentenceData: any = null;
+    private _sentenceData: WordSentence = null;
     private _sentenceId: string = "";
 
     start() {
 
     }
 
-    init(data) {
+    init(data: WordSentence) {
         if (!data) {
             return;
         }
@@ -34,7 +35,7 @@ export class DetailSentenseItem extends Component {
         this.RemoveEvent();
     }
 
-    initData(data) {
+    initData(data: WordSentence) {
         this._sentenceData = data;
         this.onSentenceDetail();
     }
