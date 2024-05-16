@@ -136,7 +136,7 @@ export class DataMgr {
     public petInteraction: PetInteractionInfo[] = [];//交互信息
     public petMoodConfig: PetMoodInfo[] = [];//心情信息
     public petConfig: PetInfo[] = [];//宠物信息
-    public archConfig: ArchConfig[] = []; //成就信息
+    public archConfig: { [key: number]: ArchConfig } = {}; //成就信息
     public medalConfig: MedalConfig[] = []; //勋章信息
 
     private _isInit: boolean = false;
@@ -299,6 +299,7 @@ export class DataMgr {
             obj.Status = -1;
             obj.NextIds = -1;
             this.archConfig[obj.AchId] = obj;
+            //this.archConfig.push(obj);
         }
     }
     /**初始化勋章信息 */
