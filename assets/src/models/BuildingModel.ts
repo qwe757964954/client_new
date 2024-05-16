@@ -13,6 +13,7 @@ import EventManager from "../util/EventManager";
 import { ToolUtil } from "../util/ToolUtil";
 import { BuildingBtnView } from "../views/map/BuildingBtnView";
 import { BuildingInfoView } from "../views/map/BuildingInfoView";
+import { EditAnimView } from "../views/map/EditAnimView";
 import { GridModel } from "./GridModel";
 const { ccclass, property } = _decorator;
 /**建筑数据(服务端为准) */
@@ -31,8 +32,6 @@ export class BuildingData {
 export class BuildingModel extends BaseComponent {
     @property(Sprite)
     public building: Sprite = null;//建筑
-    @property(Node)
-    public btnView: Node = null;//建筑按钮界面节点
     @property(Label)
     public label: Label = null;//文本
     @property(Graphics)
@@ -59,6 +58,7 @@ export class BuildingModel extends BaseComponent {
     private _dataIsFlip: boolean = false;//数据是否翻转
     private _dataIsShow: boolean = false;//数据是否显示
     private _btnView: Node = null;//建筑按钮界面
+    private _longView: EditAnimView = null;//长按界面
 
     // private _mapScaleHandle:string//地图缩放事件句柄
     private _pos: Vec3 = new Vec3(0, 0, 0);//位置
@@ -295,6 +295,7 @@ export class BuildingModel extends BaseComponent {
         this._dataIsShow = this._isShow;
         this._isNew = false;
         this.closeBtnView();
+        this.closeLongView();
     }
     /**请求保存 */
     public reqSaveData(status: boolean = true) {
@@ -345,6 +346,7 @@ export class BuildingModel extends BaseComponent {
     public recover() {
         this.resetData();
         this.closeBtnView();
+        this.closeLongView();
         if (this._isNew) {
             this.removeFromScene(true);
         }
@@ -468,5 +470,28 @@ export class BuildingModel extends BaseComponent {
         rect.x = this.pos.x + rect.x;
         rect.y = this.pos.y + rect.y;
         return rect;
+    }
+    /**显示按钮界面 */
+    public showLongView() {
+        if (this._longView) {
+            this._longView.node.active = true;
+            this._longView.showAnim();
+            return;
+        }
+        LoadManager.loadPrefab(PrefabType.EditAnimView.path, this.node).then((node: Node) => {
+            let pos = new Vec3(this.building.node.position);
+            pos.y += this.building.getComponent(UITransform).height;
+            this._longView = node.getComponent(EditAnimView);
+            this._longView.showAnim();
+            node.position = pos;
+        });
+    }
+    /**关闭按钮界面 */
+    public closeLongView() {
+        if (!this._longView) {
+            return;
+        }
+        this._longView.node.active = false;
+        this._longView.stopAnim();
     }
 }

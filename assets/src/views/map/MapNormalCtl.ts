@@ -34,7 +34,8 @@ export class MapNormalCtl extends MapBaseCtl {
         // let grid = this._mainScene.getTouchGrid(pos.x, pos.y);
         // this._touchBuilding = grid?.building;
         if (this._touchBuilding && this._touchBuilding.isCanEdit) {
-            // 显示长按提示UI TODO
+            // 显示长按提示UI
+            this._mainScene.onBuildingLongStart(this._touchBuilding);
             // 定时器触发
             this._timer = TimerMgr.once(() => {
                 if (this._touchBuilding) {
@@ -61,6 +62,7 @@ export class MapNormalCtl extends MapBaseCtl {
 
         if (this._isTouchMove) {
             if (this._timer) {
+                this._mainScene.onBuildingLongCancel(this._touchBuilding);
                 TimerMgr.stop(this._timer);
                 this._timer = null;
             }
@@ -84,6 +86,7 @@ export class MapNormalCtl extends MapBaseCtl {
     //点击结束
     public onTouchEnd(e: EventTouch) {
         if (this._timer) {
+            this._mainScene.onBuildingLongCancel(this._touchBuilding);
             TimerMgr.stop(this._timer);
             this._timer = null;
         }
@@ -106,6 +109,7 @@ export class MapNormalCtl extends MapBaseCtl {
     //点击取消
     public onTouchCancel(e: EventTouch) {
         if (this._timer) {
+            this._mainScene.onBuildingLongCancel(this._touchBuilding);
             TimerMgr.stop(this._timer);
             this._timer = null;
         }
@@ -121,6 +125,7 @@ export class MapNormalCtl extends MapBaseCtl {
     // 清理数据
     clearData(): void {
         if (this._timer) {
+            this._mainScene.onBuildingLongCancel(this._touchBuilding);
             TimerMgr.stop(this._timer);
             this._timer = null;
         }

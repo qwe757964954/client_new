@@ -219,10 +219,21 @@ export class MainScene extends Component {
             }
         }
     }
+    /**建筑长按开始 */
+    onBuildingLongStart(building: BuildingModel) {
+        if (!building) return;
+        building.showLongView();
+    }
+    /**建筑长按取消 */
+    onBuildingLongCancel(building: BuildingModel) {
+        if (!building) return;
+        building.closeLongView();
+    }
     // 建筑长按
     onBuildingLongClick(building: BuildingModel) {
         if (!building) return;
         console.log("onBuildingLongClick", building);
+        building.closeLongView();
         if (MapStatus.DEFAULT == this._mapStatus) {
             this._buildingEditCtl.selectBuilding = building;
             this.changeMapStatus(MapStatus.BUILD_EDIT);
