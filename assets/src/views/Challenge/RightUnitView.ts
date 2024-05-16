@@ -40,7 +40,7 @@ export class RightUnitView extends Component {
     }
 
     updateRightPlan(data:BookPlanDetail) {
-        
+        this.plan_label.string = `${data.rank_num}/${data.num}`;
     }
 
     updateStudyProgress(data:BookAwardListModel){

@@ -68,7 +68,7 @@ export class TextbookChallengeView extends BaseView {
         this._bookData = data;
         this._unitDetailView.updateUnitProps(this._bookData);
         this.getUnitListStatus();
-        // this.getBookPlanDetail();
+        this.getBookPlanDetail();
     }
     onPlanModify(data:any){
         let params:BookUnitModel = {
