@@ -1,4 +1,5 @@
-import { _decorator, Component, Node } from 'cc';
+import { _decorator, Component, Label, Node } from 'cc';
+import GlobalConfig from '../../GlobalConfig';
 import { SoundMgr } from '../../manager/SoundMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
 const { ccclass, property } = _decorator;
@@ -13,9 +14,12 @@ export class LoginScene extends Component {
     public tipLayer: Node = null;//提示层
     @property(Node)
     public loadingLayer: Node = null;//加载层
+    @property(Label)
+    public labelVer: Label = null;
     onLoad() {
         SoundMgr.loginBgm();
         ViewsManager.instance.initLayer(this.sceneLayer, this.popupLayer, this.tipLayer, this.loadingLayer);
+        this.labelVer.string = GlobalConfig.getVersionStr();
     }
 }
 
