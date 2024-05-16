@@ -155,6 +155,7 @@ export class TextbookListView extends BaseView {
     }
     onChangeTextbook(){
         ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
+            ViewsManager.instance.closeView(PrefabType.TextbookListView);
         });
     }
     onClickHelp() {
