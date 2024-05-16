@@ -17,6 +17,7 @@ const ConfigPath = {
     PetMoodConfig: "petMoodConfig",
     PetConfig: "petConfig",
     ArchConfig: "AchConfig",
+    MedalConfig: "medal",
 }
 
 //角色插槽
@@ -110,6 +111,15 @@ export class ArchConfig {
     MedalId: number; //奖章ID
     Bid: number;
     Mid: number;
+    Status: number;
+    NextIds: number;
+}
+/**勋章信息配置 */
+export class MedalConfig {
+    MedalId: number; //勋章ID
+    Info: string;    //勋章信息
+    Type: string;
+    Ce: number;
 }
 
 
@@ -126,7 +136,8 @@ export class DataMgr {
     public petInteraction: PetInteractionInfo[] = [];//交互信息
     public petMoodConfig: PetMoodInfo[] = [];//心情信息
     public petConfig: PetInfo[] = [];//宠物信息
-    public archConfig: ArchConfig[] = []; //成就信息
+    public archConfig: { [key: number]: ArchConfig } = {}; //成就信息
+    public medalConfig: MedalConfig[] = []; //勋章信息
 
     private _isInit: boolean = false;
     public defaultLand: EditInfo = null;//默认地块
@@ -153,6 +164,7 @@ export class DataMgr {
         await this.initBuildProduceInfo();
         await this.initPetInteractionConfig();
         await this.initAchieveConfig();
+        await this.initMedalConfig();
         console.timeEnd("DataMgr initData");
     }
     /** 初始化角色插槽 */
@@ -284,7 +296,22 @@ export class DataMgr {
             obj.MedalId = Number(json[k].MedalId);
             obj.Bid = Number(json[k].Bid);
             obj.Mid = Number(json[k].Mid);
+            obj.Status = -1;
+            obj.NextIds = -1;
             this.archConfig[obj.AchId] = obj;
+            //this.archConfig.push(obj);
+        }
+    }
+    /**初始化勋章信息 */
+    public async initMedalConfig() {
+        let json = await LoadManager.loadJson(ConfigPath.MedalConfig);
+        for (let k in json) {
+            let obj: MedalConfig = new MedalConfig();
+            obj.MedalId = Number(json[k].MedalId);
+            obj.Info = json[k].Info;
+            obj.Type = json[k].Type;
+            obj.Ce = Number(json[k].Ce);
+            this.medalConfig.push(obj);
         }
     }
 

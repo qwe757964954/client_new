@@ -1,5 +1,6 @@
 import { _decorator, Component, director, Label, Node, ProgressBar } from 'cc';
 import { SceneType } from '../config/PrefabType';
+import GlobalConfig from '../GlobalConfig';
 import { ViewsManager } from '../manager/ViewsManager';
 const { ccclass, property } = _decorator;
 
@@ -16,16 +17,19 @@ export class LoadingScene extends Component {
 
     //进度条
     @property(ProgressBar)
-    progressBar: ProgressBar = null;
+    public progressBar: ProgressBar = null;
     //进度文字
     @property(Label)
-    label: Label = null;
+    public label: Label = null;
+    @property(Label)
+    public labelVer: Label = null;
 
     private _time: number = 0;//加载时间
     private _maxtime: number = 1.0;//最大加载时间
 
     start() {
         ViewsManager.instance.initLayer(this.sceneLayer, this.popupLayer, this.tipLayer, this.loadingLayer);
+        this.labelVer.string = GlobalConfig.getVersionStr();
         this.checkVersion();
     }
 

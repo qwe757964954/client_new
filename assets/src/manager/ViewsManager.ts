@@ -92,22 +92,31 @@ export class ViewsManager {
         return false;
     }
     // 显示提示弹框
-    static showAlert(content: string, callBack?: Function) {
-        ViewsManager.instance.showView(PrefabType.PopView, (node: Node) => {
+    public showAlert(content: string, callBack?: Function) {
+        this.showView(PrefabType.PopView, (node: Node) => {
             node.getComponent(PopView).init(content, callBack);
         });
     }
+    static showAlert(content: string, callBack?: Function) {
+        ViewsManager.instance.showAlert(content, callBack);
+    }
     // 显示提示
-    static showTip(content: string, callBack?: Function) {
-        ViewsManager.instance.showView(PrefabType.TipView, (node: Node) => {
+    public showTip(content: string, callBack?: Function) {
+        this.showView(PrefabType.TipView, (node: Node) => {
             node.getComponent(TipView).init(content, callBack);
         });
     }
+    static showTip(content: string, callBack?: Function) {
+        ViewsManager.instance.showTip(content, callBack);
+    }
     // 显示确定弹窗
-    static showConfirm(content: string, sureCall?: Function, cancelCall?: Function) {
-        ViewsManager.instance.showView(PrefabType.ConfirmView, (node: Node) => {
+    public showConfirm(content: string, sureCall?: Function, cancelCall?: Function) {
+        this.showView(PrefabType.ConfirmView, (node: Node) => {
             node.getComponent(ConfirmView).init(content, sureCall, cancelCall);
         });
+    }
+    static showConfirm(content: string, sureCall?: Function, cancelCall?: Function) {
+        ViewsManager.instance.showConfirm(content, sureCall, cancelCall);
     }
     /**
      * 导航栏公共模块
