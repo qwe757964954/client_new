@@ -46,8 +46,8 @@ export class MainUIView extends Component {
     public btnBrocast: Node = null;//点击公告
     //@property(Node) //跑马灯广播根结点
     //public brocastRoot: Node = null;
-    //@property(Node) //测试按钮，已经隐藏
-    //public btnTest: Node = null;
+    @property(Node) //测试按钮，已经隐藏
+    public btnTest: Node = null;
 
     private _mainScene: MainScene = null;//主场景
 
@@ -92,6 +92,7 @@ export class MainUIView extends Component {
         CCUtil.onTouch(this.btnTaskGo, this.onClickTaskGo, this);
         CCUtil.onTouch(this.btnStudy, this.onClickStudy, this);
         CCUtil.onTouch(this.btnBrocast, this.onClickNotice, this);
+        CCUtil.onTouch(this.btnTest, this.onClickTest, this);
     }
     //移除事件
     public removeEvent() {
@@ -105,6 +106,7 @@ export class MainUIView extends Component {
         CCUtil.offTouch(this.btnTask, this.onClickTask, this);
         CCUtil.offTouch(this.btnTaskGo, this.onClickTaskGo, this);
         CCUtil.offTouch(this.btnBrocast, this.onClickNotice, this);
+        CCUtil.offTouch(this.btnTest, this.onClickTest, this);
     }
     //头像点击
     public onClickHead() {
@@ -173,6 +175,13 @@ export class MainUIView extends Component {
             "content": "这是一则公告\n公告内容明天公布\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新",
         };
         EventManager.emit(EventType.Notice_ShowNotice, data);
+    }
+
+    // 点击测试
+    public onClickTest() {
+        ViewsManager.instance.showView(PrefabType.AchieveDialogView, (node: Node) => {
+
+        });
     }
 }
 
