@@ -28,7 +28,7 @@ export class TabContentItem extends ListItem {
     }
     updateItemProps(idx:number,itemInfo:SchoolBookGradeItemData,dataSource:SchoolBookItemData){
         this.book_name.string = itemInfo.grade;
-        this.word_num_text.string = `单词数量：${itemInfo.num}`;
+        this.word_num_text.string = `共${itemInfo.num}词`;
         let bookImgUrl = `${NetConfig.assertUrl}/imgs/bookcover/${dataSource.book_name}/${itemInfo.grade}.jpg`;
         
         // item.getChildByName("bookImg").skin = GameData.ASSETS_URL + "/assets/imgs/bookcover/" + this.currentEditionItem.dataSource.Name + "/" + data.Name + ".jpg";
