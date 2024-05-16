@@ -1,12 +1,12 @@
 import { _decorator, isValid, Node } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { MyTextbookStatus } from '../../models/TextbookModel';
+import { CurrentBookStatus, MyTextbookStatus } from '../../models/TextbookModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
 import List from '../../util/list/List';
-import { BookUnitModel, TextbookChallengeView } from '../Challenge/TextbookChallengeView';
+import { BookUnitModel } from '../Challenge/TextbookChallengeView';
 import { NavTitleView } from '../common/NavTitleView';
 import { MyContentItem } from './MyContentItem';
 import { ITextbookRemindData, TextbookRemindView } from './TextbookRemindView';
@@ -26,7 +26,7 @@ export class TextbookListView extends BaseView {
 
     private _myTextbookDataArr: MyTextbookStatus[] = [];
 
-    private _curBookData: BookUnitModel = null;
+    private _curBookData: CurrentBookStatus = null;
     start() {
         this.initUI();
     }
@@ -35,7 +35,7 @@ export class TextbookListView extends BaseView {
         TBServer.reqBookStatus();
     }
 
-    initData(data: BookUnitModel) {
+    initData(data: CurrentBookStatus) {
         this._curBookData = data;
     }
 
@@ -43,6 +43,7 @@ export class TextbookListView extends BaseView {
     protected onInitModuleEvent() {
         this.addModelListener(NetNotify.Classification_BookStatus, this.onBookStatus);
         this.addModelListener(NetNotify.Classification_BookDel, this.onBookDel);
+        this.addModelListener(NetNotify.Classification_ChangeTextbook, this.onChangeTextbook);
     }
     onBookDel() {
         TBServer.reqBookStatus();
@@ -83,8 +84,6 @@ export class TextbookListView extends BaseView {
         ViewsManager.addNavigation(this.top_layout, 0, 0).then((navScript: NavTitleView) => {
             navScript.updateNavigationProps("词书列表", () => {
                 ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
-                    let itemScript: TextbookChallengeView = node.getComponent(TextbookChallengeView);
-                    itemScript.initData(this._curBookData);
                     ViewsManager.instance.closeView(PrefabType.TextbookListView);
                 });
             });
@@ -131,16 +130,14 @@ export class TextbookListView extends BaseView {
             content_text: `是否切换\n《${itemInfo.book_name}${itemInfo.grade}》为当前在学`,
             callFunc: (isSure: boolean) => {
                 if (isSure) {
-                    ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
-                        ViewsManager.instance.closeView(PrefabType.TextbookListView);
-                        let bookData: BookUnitModel = {
-                            type_name: itemInfo.type_name,
-                            book_name: itemInfo.book_name,
-                            grade: itemInfo.grade
-                        }
-                        this._curBookData = bookData;
-                        node.getComponent(TextbookChallengeView).initData(bookData);
-                    });
+                    let bookData: BookUnitModel = {
+                        type_name: itemInfo.type_name,
+                        book_name: itemInfo.book_name,
+                        grade: itemInfo.grade
+                    }
+                    TBServer.reqChangeTextbook(bookData);
+
+                    
                 }
             }
         }
@@ -155,7 +152,15 @@ export class TextbookListView extends BaseView {
         // this.myScrollEmpty.active = this._myTextbookDataArr.length === 0;
         // this.myScrollView.node.active = this._myTextbookDataArr.length !== 0;
     }
-
+    onChangeTextbook(){
+        ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
+                        
+            // ViewsManager.instance.closeView(PrefabType.TextbookListView);
+            
+            // this._curBookData = bookData;
+            // node.getComponent(TextbookChallengeView).initData(bookData);
+        });
+    }
     onClickHelp() {
         console.log("onClickHelp");
         ViewsManager.instance.showView(PrefabType.SelectWordHelp);

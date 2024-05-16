@@ -9,7 +9,6 @@ import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
 import List from '../../util/list/List';
-import { BookUnitModel, TextbookChallengeView } from '../Challenge/TextbookChallengeView';
 import { NavTitleView } from '../common/NavTitleView';
 import { RightNavView } from './RightNavView';
 import { PlanSaveData, SettingPlanView } from './SettingPlanView';
@@ -74,15 +73,15 @@ export class SelectWordView extends BaseView {
         
         ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
             ViewsManager.instance.closeView(PrefabType.SelectWordView);
-            let type_name = this._bookLiskData.data[this._tabIndex].type_name;
-            let book_name = this._schoolBookListDataArr.data[this._leftNavIndex].book_name;
-            let grade = this._schoolGradeListData.data[this._gradeSelectId].grade;
-            let bookData:BookUnitModel = {
-                type_name:type_name,
-                book_name:book_name,
-                grade:grade
-            }
-            node.getComponent(TextbookChallengeView).initData(bookData);
+            // let type_name = this._bookLiskData.data[this._tabIndex].type_name;
+            // let book_name = this._schoolBookListDataArr.data[this._leftNavIndex].book_name;
+            // let grade = this._schoolGradeListData.data[this._gradeSelectId].grade;
+            // let bookData:BookUnitModel = {
+            //     type_name:type_name,
+            //     book_name:book_name,
+            //     grade:grade
+            // }
+            // node.getComponent(TextbookChallengeView).initData(bookData);
         });
     }
 
@@ -185,6 +184,7 @@ export class SelectWordView extends BaseView {
     onLoadTextBookVerticalList(item:Node, idx:number){
         let tabContentItemScript:TabContentItem = item.getComponent(TabContentItem);
         let itemInfo:SchoolBookGradeItemData = this._schoolGradeListData.data[idx];
+        console.log("book data",itemInfo);
         tabContentItemScript.updateItemProps(idx,itemInfo,this._schoolBookListDataArr.data[this._leftNavIndex]);
     }
     onTextBookVerticalSelected(item: any, selectedId: number, lastSelectedId: number, val: number){

@@ -257,7 +257,10 @@ export interface CurrentBookStatus extends BaseRepPacket {
     score?:number;
     total_score?:number;
     study_word_num?:number;
-    total_word_num?:number
+    total_word_num?:number;
+    id?:string;
+    num?:number;
+    rank_num?:number;
 }
 
 export interface ReportResultModel{ 
@@ -298,4 +301,10 @@ export interface WordDetailStatus extends BaseRepPacket {
     symbolus:string;
     variant:any;
     word:string;
+}
+export class c2sChangeTextbook {
+    command_id: string = InterfacePath.Classification_ChangeTextbook;
+    type_name:string;
+    book_name:string;
+    grade:string;
 }

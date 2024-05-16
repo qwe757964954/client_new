@@ -3,7 +3,7 @@ import { NetConfig } from '../../config/NetConfig';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { BookAwardListModel, BookPlanDetail, UnitListItemStatus } from '../../models/TextbookModel';
+import { BookAwardListModel, BookPlanDetail, CurrentBookStatus } from '../../models/TextbookModel';
 import ImgUtil from '../../util/ImgUtil';
 import { SettingPlanView } from '../TextbookVocabulary/SettingPlanView';
 const { ccclass, property } = _decorator;
@@ -27,7 +27,7 @@ export class RightUnitView extends Component {
     @property(Node)
     public current_img:Node = null;
 
-    private _curUnitStatus:UnitListItemStatus = null;
+    private _curUnitStatus:CurrentBookStatus = null;
 
     private _modifyCallback:(isSave:boolean)=>void = null;
 
@@ -35,30 +35,30 @@ export class RightUnitView extends Component {
 
     private _changeCallback:()=>void = null;
 
-    private _curBookPlanDetail:BookPlanDetail = null;
-
     start() {
 
     }
 
     updateRightPlan(data:BookPlanDetail) {
-        this._curBookPlanDetail = data;
-        this.title_label.string = data.book_name;
-        this.grade_label.string = data.grade;
-        this.plan_label.string = `${data.rank_num}/${data.num}`;
-        let bookImgUrl = `${NetConfig.assertUrl}/imgs/bookcover/${data.book_name}/${data.grade}.jpg`;
-        ImgUtil.loadRemoteImage(bookImgUrl,this.current_img,188.573,255.636);
+        
     }
 
     updateStudyProgress(data:BookAwardListModel){
-        this.study_label.string = data.study_word_num.toString();
-        this.total_label.string = data.total_word_num.toString();
-        this.study_progress.progress = data.study_word_num / data.total_word_num;
+        
+        
     }
 
-    updateUnitProps(unitData:UnitListItemStatus){
+    updateUnitProps(unitData:CurrentBookStatus){
         console.log("updateUnitProps",unitData);
+        this.plan_label.string = `${unitData.rank_num}/${unitData.num}`;
         this._curUnitStatus = unitData;
+        this.title_label.string = unitData.book_name;
+        this.grade_label.string = unitData.grade;
+        this.study_label.string = unitData.study_word_num.toString();
+        this.total_label.string = unitData.total_word_num.toString();
+        this.study_progress.progress = unitData.study_word_num / unitData.total_word_num;
+        let bookImgUrl = `${NetConfig.assertUrl}/imgs/bookcover/${unitData.book_name}/${unitData.grade}.jpg`;
+        ImgUtil.loadRemoteImage(bookImgUrl,this.current_img,188.573,255.636);
         /*
         this.title_label.string = unitData.bookname;
         this.grade_label.string = unitData.grade;
@@ -99,7 +99,7 @@ export class RightUnitView extends Component {
     onModifyPlanClick(){
         ViewsManager.instance.showView(PrefabType.SettingPlanView,(node: Node) => {
             let nodeScript:SettingPlanView = node.getComponent(SettingPlanView);
-            let titleBookName = `${this._curBookPlanDetail.book_name}${this._curBookPlanDetail.grade}`;
+            let titleBookName = `${this._curUnitStatus.book_name}${this._curUnitStatus.grade}`;
             nodeScript.updateTitleName(titleBookName);
         });
     }
