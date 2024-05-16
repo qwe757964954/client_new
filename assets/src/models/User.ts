@@ -37,6 +37,7 @@ class UserModel {
     public exp: number;       // 经验
     public roleID: number;    // 角色id
 
+    public castleLevel: number = 1;    // 城堡等级
 
 
     // 测试数据
@@ -62,6 +63,7 @@ class UserModel {
         this._loginToken = "";
         this._memberToken = "";
         this._mobile = "";
+        this.castleLevel = 1;
     }
 
     set account(account: string) {

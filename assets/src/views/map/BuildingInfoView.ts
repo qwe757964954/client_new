@@ -20,6 +20,9 @@ export class BuildingInfoView extends Component {
     public labelDesc: Label = null;//建筑描述
     @property(Label)
     public labelFunction: Label = null;//建筑功能
+    @property({ type: [SpriteFrame], tooltip: "建筑类型图标 0功能 1地标 2装饰 3地板" })
+    public spriteFrames: SpriteFrame[] = [];
+
 
     start() {
         this.initEvent();
@@ -47,6 +50,7 @@ export class BuildingInfoView extends Component {
         this.labelName.string = editInfo.name;
         this.labelDesc.string = editInfo.description;
         this.labelFunction.string = editInfo.function;
+        this.imgIcon.spriteFrame = this.spriteFrames[editInfo.type - 1];
 
         LoadManager.loadSprite(DataMgr.getEditPng(editInfo), this.img).then((spriteFrame: SpriteFrame) => {
             this.resetImgSize();

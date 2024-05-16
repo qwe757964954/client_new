@@ -14,6 +14,16 @@ import { BuildingBtnView } from "../views/map/BuildingBtnView";
 import { BuildingInfoView } from "../views/map/BuildingInfoView";
 import { GridModel } from "./GridModel";
 const { ccclass, property } = _decorator;
+/**建筑数据(服务端为准) */
+export class BuildingData {
+    public id: number;//建筑唯一索引id
+    public level: number = 1;//建筑等级
+    // TODO
+    // 建筑当前状态（普通、生产中、生产完成、升级中、升级完成）
+    public time: number = 0;//建筑时间
+    public queueMaxCount: number = 5;//队列最大数量
+    // 正在建造的队列（id，时间）
+}
 
 //建筑模型
 @ccclass('BuildingModel')
@@ -32,6 +42,7 @@ export class BuildingModel extends BaseComponent {
     private _editInfo: EditInfo;//编辑信息
     private _buildingID: number = undefined;//建筑唯一索引id
     private _idx: number;//索引(前端使用)
+    public buildingData: BuildingData = new BuildingData();//建筑数据
     // y从上往下，x从右往左
     private _x: number;//x格子坐标
     private _y: number;//y格子坐标
@@ -86,6 +97,7 @@ export class BuildingModel extends BaseComponent {
     set buildingID(id: number) {
         if (this._buildingID) return;
         this._buildingID = id;
+        this.buildingData.id = id;
     }
     get buildingID(): number {
         return this._buildingID;
