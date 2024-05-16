@@ -135,7 +135,6 @@ export class BreakThroughView extends BaseView {
     initNavTitle(){
         ViewsManager.addNavigation(this.top_layout,0,0).then((navScript: NavTitleView) => {
             navScript.updateNavigationProps(`${this._bookData.book_name}${this._bookData.grade}`,()=>{
-                // ViewsManager.instance.closeView(PrefabType.BreakThroughView);
                 ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
                     ViewsManager.instance.closeView(PrefabType.BreakThroughView);
                 });
