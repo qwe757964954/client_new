@@ -1,0 +1,496 @@
+{
+    "Code": 200,
+    "Data": [
+        {
+            "Id": 2001,
+            "PId": 1000,
+            "Name": "绪论",
+            "VideoUrl": null,
+            "SubFlag": 1,
+            "SortNo": null,
+            "ChildNodes": [
+                {
+                    "Id": 3001,
+                    "PId": 2001,
+                    "Name": "单词的分类",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3001.mp4",
+                    "SubFlag": 1,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3002,
+                    "PId": 2001,
+                    "Name": "句子的成分",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3002.mp4",
+                    "SubFlag": 1,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3003,
+                    "PId": 2001,
+                    "Name": "句子的种类和类型",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3003.mp4",
+                    "SubFlag": 1,
+                    "SortNo": null,
+                    "Difficulty": null
+                }
+            ],
+            "Score": 0,
+            "CompStatus": 0
+        },
+        {
+            "Id": 2002,
+            "PId": 1000,
+            "Name": "名词",
+            "VideoUrl": null,
+            "SubFlag": 0,
+            "SortNo": null,
+            "ChildNodes": [
+                {
+                    "Id": 3004,
+                    "PId": 2002,
+                    "Name": "名词的概念和分类",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3004.mp4",
+                    "SubFlag": 1,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3005,
+                    "PId": 2002,
+                    "Name": "可数名词与不可数名词",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3005.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3006,
+                    "PId": 2002,
+                    "Name": "可数名词的复数构成",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3006.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": 25
+                },
+                {
+                    "Id": 3007,
+                    "PId": 2002,
+                    "Name": "名词所有格",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3007.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": 25
+                }
+            ],
+            "Score": 16,
+            "CompStatus": 0
+        },
+        {
+            "Id": 2003,
+            "PId": 1000,
+            "Name": "冠词",
+            "VideoUrl": null,
+            "SubFlag": 0,
+            "SortNo": null,
+            "ChildNodes": [
+                {
+                    "Id": 3008,
+                    "PId": 2003,
+                    "Name": "冠词的概念和分类",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3008.mp4",
+                    "SubFlag": 1,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3009,
+                    "PId": 2003,
+                    "Name": "不定冠词a/an",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3009.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3010,
+                    "PId": 2003,
+                    "Name": "定冠词the",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3010.mp4",
+                    "SubFlag": 1,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3011,
+                    "PId": 2003,
+                    "Name": "a/an与the用法比较",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3011.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                }
+            ],
+            "Score": 0,
+            "CompStatus": 0
+        },
+        {
+            "Id": 2004,
+            "PId": 1000,
+            "Name": "代词",
+            "VideoUrl": null,
+            "SubFlag": 0,
+            "SortNo": null,
+            "ChildNodes": [
+                {
+                    "Id": 3012,
+                    "PId": 2004,
+                    "Name": "代词的定义与分类",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3012.mp4",
+                    "SubFlag": 1,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3013,
+                    "PId": 2004,
+                    "Name": "人称代词",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3013.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3014,
+                    "PId": 2004,
+                    "Name": "物主代词",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3014.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3015,
+                    "PId": 2004,
+                    "Name": "反身代词",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3015.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3016,
+                    "PId": 2004,
+                    "Name": "指示代词",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3016.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3017,
+                    "PId": 2004,
+                    "Name": "不定代词",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3017.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3018,
+                    "PId": 2004,
+                    "Name": "疑问代词",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3018.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                }
+            ],
+            "Score": 0,
+            "CompStatus": 0
+        },
+        {
+            "Id": 2005,
+            "PId": 1000,
+            "Name": "数词",
+            "VideoUrl": null,
+            "SubFlag": 0,
+            "SortNo": null,
+            "ChildNodes": [
+                {
+                    "Id": 3019,
+                    "PId": 2005,
+                    "Name": "数词的定义与分类",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3019.mp4",
+                    "SubFlag": 1,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3020,
+                    "PId": 2005,
+                    "Name": "基数词",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3020.mp4",
+                    "SubFlag": 1,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3021,
+                    "PId": 2005,
+                    "Name": "序数词",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3021.mp4",
+                    "SubFlag": 1,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3022,
+                    "PId": 2005,
+                    "Name": "数词常见用法",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3022.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                }
+            ],
+            "Score": 0,
+            "CompStatus": 0
+        },
+        {
+            "Id": 2006,
+            "PId": 1000,
+            "Name": "介词",
+            "VideoUrl": null,
+            "SubFlag": 0,
+            "SortNo": null,
+            "ChildNodes": [
+                {
+                    "Id": 3023,
+                    "PId": 2006,
+                    "Name": "介词概述",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3023.mp4",
+                    "SubFlag": 1,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3024,
+                    "PId": 2006,
+                    "Name": "时间介词",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3024.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3025,
+                    "PId": 2006,
+                    "Name": "地点介词",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3025.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3026,
+                    "PId": 2006,
+                    "Name": "方位介词",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3026.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3027,
+                    "PId": 2006,
+                    "Name": "方式介词",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3027.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                }
+            ],
+            "Score": 0,
+            "CompStatus": 0
+        },
+        {
+            "Id": 2007,
+            "PId": 1000,
+            "Name": "连词",
+            "VideoUrl": null,
+            "SubFlag": 0,
+            "SortNo": null,
+            "ChildNodes": [
+                {
+                    "Id": 3028,
+                    "PId": 2007,
+                    "Name": "连词的定义",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3028.mp4",
+                    "SubFlag": 1,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3029,
+                    "PId": 2007,
+                    "Name": "并列连词",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3029.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3030,
+                    "PId": 2007,
+                    "Name": "连词词组",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3030.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                }
+            ],
+            "Score": 0,
+            "CompStatus": 0
+        },
+        {
+            "Id": 2008,
+            "PId": 1000,
+            "Name": "形容词",
+            "VideoUrl": null,
+            "SubFlag": 0,
+            "SortNo": null,
+            "ChildNodes": [
+                {
+                    "Id": 3031,
+                    "PId": 2008,
+                    "Name": "形容词定义及用法",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3031.mp4",
+                    "SubFlag": 1,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3032,
+                    "PId": 2008,
+                    "Name": "形容词比较级与最高级变化规则",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3032.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3033,
+                    "PId": 2008,
+                    "Name": "形容词比较级和最高级用法",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3033.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                }
+            ],
+            "Score": 0,
+            "CompStatus": 0
+        },
+        {
+            "Id": 2009,
+            "PId": 1000,
+            "Name": "副词",
+            "VideoUrl": null,
+            "SubFlag": 0,
+            "SortNo": null,
+            "ChildNodes": [
+                {
+                    "Id": 3034,
+                    "PId": 2009,
+                    "Name": "副词的定义",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3034.mp4",
+                    "SubFlag": 1,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3035,
+                    "PId": 2009,
+                    "Name": "副词与形容词的区别",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3035.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3036,
+                    "PId": 2009,
+                    "Name": "副词比较级和最高级的用法",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3036.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                }
+            ],
+            "Score": 0,
+            "CompStatus": 0
+        },
+        {
+            "Id": 2010,
+            "PId": 1000,
+            "Name": "动词",
+            "VideoUrl": null,
+            "SubFlag": 0,
+            "SortNo": null,
+            "ChildNodes": [
+                {
+                    "Id": 3037,
+                    "PId": 2010,
+                    "Name": "动词的分类",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3037.mp4",
+                    "SubFlag": 1,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3038,
+                    "PId": 2010,
+                    "Name": "实义动词",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3038.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3039,
+                    "PId": 2010,
+                    "Name": "系动词",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3039.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3040,
+                    "PId": 2010,
+                    "Name": "助动词",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3040.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                },
+                {
+                    "Id": 3041,
+                    "PId": 2010,
+                    "Name": "情态动词",
+                    "VideoUrl": "https://www.chuangciyingyu.com/assets/videos/grammar/3041.mp4",
+                    "SubFlag": 0,
+                    "SortNo": null,
+                    "Difficulty": null
+                }
+            ],
+            "Score": 0,
+            "CompStatus": 0
+        }
+    ],
+    "Msg": "请求成功",
+    "Path": "Grammar.GetCurriculumScores"
+}
