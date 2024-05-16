@@ -16,6 +16,7 @@ import { SoundMgr } from '../../manager/SoundMgr';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
 import { BuildingProduceView } from '../map/BuildingProduceView';
+import { CastleInfoView } from '../map/CastleInfoView';
 import { MapUICtl } from '../map/MapUICtl';
 import { EditUIView } from './EditUIView';
 import { LandEditUIView } from './LandEditUIView';
@@ -205,8 +206,11 @@ export class MainScene extends Component {
         }
         else if (MapStatus.DEFAULT == this._mapStatus) {// 普通点击 展示建筑建造界面
             let editInfo = building.editInfo;
-            if (EditType.Buiding != editInfo.type) return;
-            this.showBuildingProduceView(building);
+            if (EditType.Null == editInfo.type) {
+                this.showCastleView(building);
+            } else if (EditType.Buiding == editInfo.type) {
+                this.showBuildingProduceView(building);
+            }
         }
     }
     // 建筑长按
@@ -457,6 +461,25 @@ export class MainScene extends Component {
                     }
                 );
             }
+        });
+    }
+    /**显示城堡升级界面 */
+    showCastleView(selectBuilding: BuildingModel) {
+        ViewsManager.instance.showView(PrefabType.CastleInfoView, (node: Node) => {
+            this._mainUIView.node.active = false;
+            let view = node.getComponent(CastleInfoView);
+            let pos = selectBuilding.pos;
+            let self = this;
+            view.setCallBack((building: BuildingModel) => {
+                building.addToParent(self.buildingLayer);
+                building.pos = pos;
+                building.setCameraType(Layers.Enum.DEFAULT);
+                self._mainUIView.node.active = true;
+                self._mapUICtl.buildingSort();
+            });
+            this._mapUICtl.moveCameraToBuilding(selectBuilding, view.getBuildingPos());
+            selectBuilding.removeFromParent();
+            view.init(selectBuilding);
         });
     }
 
