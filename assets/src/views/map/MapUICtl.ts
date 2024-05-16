@@ -223,6 +223,7 @@ export class MapUICtl extends MainBaseCtl {
     // 初始化建筑
     initBuilding(list: s2cBuildingListInfo[]) {
         if (!list || list.length <= 0) return;
+        list.push({ id: 1, bid: 3, x: 0, y: 0, direction: 0 });
         list.forEach(element => {
             let editInfo = DataMgr.instance.editInfo[element.bid];
             let building = this.newBuilding(editInfo, element.x, element.y, 1 == element.direction, false);
@@ -270,7 +271,7 @@ export class MapUICtl extends MainBaseCtl {
             let role = instantiate(this._mainScene.petModel);
             this._mainScene.buildingLayer.addChild(role);
             let roleModel = role.getComponent(RoleBaseModel);
-            roleModel.init(101, 1);
+            roleModel.init(103, 1);
             let grid = this.getGridInfo(21, 21);
             roleModel.grid = grid;
             this.roleMove(roleModel);
@@ -281,7 +282,7 @@ export class MapUICtl extends MainBaseCtl {
             let role = instantiate(this._mainScene.petModel);
             this._mainScene.buildingLayer.addChild(role);
             let roleModel = role.getComponent(RoleBaseModel);
-            roleModel.init(102, 1);
+            roleModel.init(103, 2);
             let grid = this.getGridInfo(35, 30);
             roleModel.grid = grid;
             this.roleMove(roleModel);
@@ -292,7 +293,7 @@ export class MapUICtl extends MainBaseCtl {
             let role = instantiate(this._mainScene.petModel);
             this._mainScene.buildingLayer.addChild(role);
             let roleModel = role.getComponent(RoleBaseModel);
-            roleModel.init(103, 1);
+            roleModel.init(103, 3);
             let grid = this.getGridInfo(21, 41);
             roleModel.grid = grid;
             this.roleMove(roleModel);
@@ -673,6 +674,7 @@ export class MapUICtl extends MainBaseCtl {
     onBuildingList(data: s2cBuildingList) {
         this.initBuilding(data.build_list);
         this.initLand(data.land_dict);
+        // this.initRole();
 
         TimerMgr.once(this.getLoadOverCall(), 500);//注意一定要加延时
         this.updateCameraVisible();

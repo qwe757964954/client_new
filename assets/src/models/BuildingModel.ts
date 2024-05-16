@@ -1,5 +1,6 @@
 import { Color, Graphics, Label, Node, Rect, Sprite, UITransform, Vec2, Vec3, _decorator, sp } from "cc";
 import { EventType } from "../config/EventType";
+import { MapConfig } from "../config/MapConfig";
 import { PrefabType } from "../config/PrefabType";
 import { TextConfig } from "../config/TextConfig";
 import { DataMgr, EditInfo } from "../manager/DataMgr";
@@ -63,6 +64,7 @@ export class BuildingModel extends BaseComponent {
     private _pos: Vec3 = new Vec3(0, 0, 0);//位置
     private _isFixImgPos: boolean = false;//是否固定图片位置
     private _isLoad: boolean = false;//是否加载图片
+    public isCanEdit: boolean = true;//是否可以编辑
 
     // 初始化事件
     public initEvent() {
@@ -92,6 +94,11 @@ export class BuildingModel extends BaseComponent {
         this.initEvent();
         if (isNew) {
             this.show(true);
+        }
+        /**是否是矿山，需特殊处理 */
+        if (3 == editInfo.id) {
+            this.isCanEdit = false;
+            this.pos = new Vec3(MapConfig.minePos.x, MapConfig.minePos.y, 0);
         }
     }
     set buildingID(id: number) {

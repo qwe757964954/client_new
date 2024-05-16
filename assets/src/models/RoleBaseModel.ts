@@ -1,4 +1,4 @@
-import { _decorator, Rect, sp, Tween, tween, TweenSystem, Vec2, Vec3 } from 'cc';
+import { _decorator, Rect, sp, Sprite, Tween, tween, TweenSystem, UITransform, Vec2, Vec3 } from 'cc';
 import { EventType } from '../config/EventType';
 import { MapConfig, RoleInfo } from '../config/MapConfig';
 import { TextConfig } from '../config/TextConfig';
@@ -61,6 +61,12 @@ export class RoleBaseModel extends BaseComponent {
     get pos() {
         return this.node.position;
     }
+    get roleID() {
+        return this._roleID;
+    }
+    get level() {
+        return this._level;
+    }
     // 销毁
     public dispose() {
         this.node.destroy();
@@ -71,6 +77,18 @@ export class RoleBaseModel extends BaseComponent {
             TimerMgr.stopLoop(this._timer);
             this._timer = null;
         }
+    }
+    /**画出碰撞区域 */
+    public drawRect() {
+        let sprite = this.getComponentInChildren(Sprite);
+        if (!sprite) return;
+        let node = sprite.node;
+        node.active = true;
+        let rect: Rect = this._roleInfo.rect;
+        node.position = new Vec3(rect.x, rect.y, 0);
+        let transform: UITransform = node.getComponent(UITransform);
+        transform.width = rect.width;
+        transform.height = rect.height;
     }
     // 初始化
     public async init(roleID: number, level: number, slots: number[] = [], roleType: RoleType = RoleType.none, loadCallBack?: Function) {
@@ -85,6 +103,7 @@ export class RoleBaseModel extends BaseComponent {
         }
         this._loadCallBack = loadCallBack;
         this.initRole();
+        // this.drawRect();
     }
     // 初始化角色
     public async initRole() {
