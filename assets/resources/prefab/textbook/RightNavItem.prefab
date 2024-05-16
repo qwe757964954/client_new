@@ -454,7 +454,7 @@
     "_fontSize": 35,
     "_fontFamily": "Arial",
     "_lineHeight": 35,
-    "_overflow": 0,
+    "_overflow": 2,
     "_enableWrapText": true,
     "_font": null,
     "_isSystemFontUsed": true,
@@ -568,6 +568,7 @@
     "selectedFlag": {
       "__id__": 8
     },
+    "selectedFlag2": null,
     "selectedSpriteFrame": null,
     "adaptiveSize": false,
     "itembg": {
