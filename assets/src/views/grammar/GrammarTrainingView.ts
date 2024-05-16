@@ -8,6 +8,7 @@ import { NavTitleView } from '../common/NavTitleView';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { GrammarTipItem } from './GrammarTipItem';
 import { GrammarTrainingItem } from './GrammarTrainingItem';
+import { GrammarVocabularyView } from './GrammarVocabularyView';
 const { ccclass, property } = _decorator;
 
 export interface TipItemInfo {
@@ -71,7 +72,7 @@ export class GrammarTrainingView extends BaseView {
     /**初始化导航栏 */
     initNavTitle(){
         ViewsManager.addNavigation(this.top_layout,0,0).then((navScript: NavTitleView) => {
-            navScript.updateNavigationProps(`挑战BOSS`,()=>{
+            navScript.updateNavigationProps(`语法训练`,()=>{
                 ViewsManager.instance.closeView(PrefabType.GrammarTrainingView);
             });
         });
@@ -87,11 +88,13 @@ export class GrammarTrainingView extends BaseView {
     }
 
     onLoadTabHorizontal(item:Node, idx:number){
+        console.log("onLoadTabHorizontal",idx);
         let item_sript:GrammarTrainingItem = item.getComponent(GrammarTrainingItem);
         item_sript.updatePropsItem(this._tabData[idx]);
     }
 
     onLoadTipGrid(item:Node, idx:number){
+        console.log("onLoadTipGrid",idx);
         let item_sript:GrammarTipItem = item.getComponent(GrammarTipItem);
         let tipInfo:TipItemInfo = this._tipData[idx];
         item_sript.updatePropsItem(tipInfo);
@@ -99,23 +102,12 @@ export class GrammarTrainingView extends BaseView {
 
     onTipGridSelected(item: any, selectedId: number, lastSelectedId: number, val: number){
         console.log("onTipGridSelected",selectedId);
+        ViewsManager.instance.showView(PrefabType.GrammarVocabularyView,(node: Node)=>{
+            let vocabulary_script:GrammarVocabularyView = node.getComponent(GrammarVocabularyView);
+            vocabulary_script.setSelectId(selectedId);
+        });
+
     }
-    
-    /*
-    onAnswerVerticalSelected(item: any, selectedId: number, lastSelectedId: number, val: number){
-        console.log("onBossVerticalSelected",selectedId);
-        if(!isValid(selectedId) || selectedId < 0 || !isValid(item)){return;}
-        let wordInfo:BossGameWord = this._bossWords[selectedId];
-        let status:AnswerType = this._currentWord.En == wordInfo.En ? AnswerType.Correct :  AnswerType.Error;
-        let item_sript:ChallengeAnswerItem = item.getComponent(ChallengeAnswerItem);
-        item_sript.changeItemStatus(status);
-        this.removeWord(wordInfo);
-        this.scheduleOnce(()=>{
-            EventMgr.dispatch(EventType.Challenge_ReportResult,{result:status});
-        },0.5)
-        
-    }
-    */
 }
 
 

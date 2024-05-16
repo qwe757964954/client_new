@@ -42,6 +42,7 @@ export const InterfacePath = {
     Classification_UnitWordList: "Classification.UnitWordList", // 单元单词列表
     Classification_GameResultUp: "Classification.GameResultUp", //结果上报
     Classification_Word: "3021", //单个单词详情
+    Classification_ChangeTextbook: "3020", //切换教材
     Classification_GameSubmit: "Classification.GameSubmit", //单个单词学习提交
     Classification_TypeNameStatus: "Classification.TypeNameStatus", //大分类信息
     Classification_BookAwardList: "3006", // 教材单词课本奖励列表

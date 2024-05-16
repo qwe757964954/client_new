@@ -284,7 +284,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 435,
+      "y": 434.99999999999994,
       "z": 0
     },
     "_lrot": {
@@ -1728,7 +1728,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": -767.565,
-      "y": 272.114,
+      "y": 272.1139999999999,
       "z": 0
     },
     "_lrot": {
@@ -2412,8 +2412,8 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -600.341,
-      "y": 132.002,
+      "x": -692.975,
+      "y": 131.002,
       "z": 0
     },
     "_lrot": {
@@ -2458,7 +2458,7 @@
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
+      "x": 0,
       "y": 0.5
     },
     "_id": ""
@@ -2490,7 +2490,7 @@
       "a": 255
     },
     "_string": "美[/ ˈtiːtʃə(r) /]",
-    "_horizontalAlign": 1,
+    "_horizontalAlign": 0,
     "_verticalAlign": 1,
     "_actualFontSize": 35,
     "_fontSize": 35,
@@ -4441,7 +4441,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 1698.687,
-      "height": 769.786
+      "height": 769.7859999999998
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -4610,7 +4610,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 1680,
-      "height": 830
+      "height": 829.9999999999999
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -4732,7 +4732,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 1778,
-      "height": 1000
+      "height": 999.9999999999999
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",

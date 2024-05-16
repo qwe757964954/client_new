@@ -6,7 +6,7 @@ import { BookLevelConfig, DataMgr } from '../../manager/DataMgr';
 import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { MapLevelData } from '../../models/AdventureModel';
-import { ReqUnitStatusParam, UnitListItemStatus, UnitStatusData } from '../../models/TextbookModel';
+import { CurrentBookStatus, ReqUnitStatusParam, UnitListItemStatus, UnitStatusData } from '../../models/TextbookModel';
 import { User } from '../../models/User';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
@@ -17,7 +17,7 @@ import { StudyModeView } from '../adventure/sixModes/StudyModeView';
 import { NavTitleView } from '../common/NavTitleView';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { ScrollMapView } from './ScrollMapView';
-import { BookUnitModel, TextbookChallengeView } from './TextbookChallengeView';
+import { BookUnitModel } from './TextbookChallengeView';
 const { ccclass, property } = _decorator;
 
 // export enum ChangeHeadTypeEnum {
@@ -49,7 +49,7 @@ export class BreakThroughView extends BaseView {
 
     public _scrollMap:ScrollMapView = null;
 
-    private _bookData:BookUnitModel = null;
+    private _bookData:CurrentBookStatus = null;
 
     private _curUnitStatus:UnitStatusData = null;
 
@@ -66,7 +66,7 @@ export class BreakThroughView extends BaseView {
         DataMgr.instance.getAdventureLevelConfig();
     }
 
-    initData(data:BookUnitModel){
+    initData(data:CurrentBookStatus){
         this._bookData = data;
         
     }
@@ -76,7 +76,12 @@ export class BreakThroughView extends BaseView {
         this.addModelListener(EventType.Enter_Island_Level,this.onEnterIsland);
     }
     getUnitListStatus(){
-        TBServer.reqUnitListStatus(this._bookData);
+        let params:BookUnitModel = {
+            type_name:this._bookData.type_name,
+            book_name:this._bookData.book_name,
+            grade:this._bookData.grade
+        }
+        TBServer.reqUnitListStatus(params);
     }
     onEnterIsland(data:LevelConfig){
         
@@ -132,8 +137,6 @@ export class BreakThroughView extends BaseView {
             navScript.updateNavigationProps(`${this._bookData.book_name}${this._bookData.grade}`,()=>{
                 // ViewsManager.instance.closeView(PrefabType.BreakThroughView);
                 ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
-                    let itemScript:TextbookChallengeView = node.getComponent(TextbookChallengeView);
-                    itemScript.initData(this._bookData);
                     ViewsManager.instance.closeView(PrefabType.BreakThroughView);
                 });
             });

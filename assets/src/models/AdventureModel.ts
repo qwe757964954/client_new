@@ -75,17 +75,18 @@ export class c2sAdventureWord {
 
 export class WordsDetailData extends BaseRepPacket {
     word: string;
-    symbol: string;
-    symbolus: string;
-    syllable: string;
-    phonic: string;
+    cn: string; //单词释义
+    symbol: string;    //音标
+    symbolus: string;  //美式音标
+    syllable: string;  //音素拆分
+    phonic: string;    //自然拼读拆分
     example: string;
     example_cn: string;
-    etyma: string;
-    ancillary: string;
+    etyma: string;      //词根
+    ancillary: string;  //助记
     speech: string;
     sentence_list: { id: string, cn: string, sentence: string }[];
-    similar_list: any[];
+    similar_list: { word: string, cn: string }[];
     variant: any;
     structure: any;
 }

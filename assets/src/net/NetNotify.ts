@@ -17,6 +17,7 @@ export const NetNotify = {
     Classification_UnitWordList:"Classification_UnitWordList", // 单元单词列表
     Classification_GameResultUp:"Classification_GameResultUp", //结果上报
     Classification_Word:"Classification_Word", //单个单词详情
+    Classification_ChangeTextbook: "Classification_ChangeTextbook", //切换教材
     Classification_ReportResult:"Classification_ReportResult", //上报结果
     Classification_GameSubmit:"Classification_GameSubmit", //单个单词学习提交
     Classification_TypeNameStatus:"Classification_TypeNameStatus", //大分类信息

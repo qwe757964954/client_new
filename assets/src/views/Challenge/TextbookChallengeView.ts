@@ -4,7 +4,7 @@ import { PrefabType } from '../../config/PrefabType';
 import GlobalConfig from '../../GlobalConfig';
 import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { BookAwardListModel, BookPlanDetail, ModifyPlanData, UnitListItemStatus } from '../../models/TextbookModel';
+import { BookAwardListModel, BookPlanDetail, CurrentBookStatus, ModifyPlanData, UnitListItemStatus } from '../../models/TextbookModel';
 import { User } from '../../models/User';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
@@ -37,7 +37,7 @@ export class TextbookChallengeView extends BaseView {
     private _unitDetailView:RightUnitView = null;
     private _bottomView:ChallengeBottomView = null;
 
-    private _bookData:BookUnitModel = null;
+    private _bookData:CurrentBookStatus = null;
     private _unitListArr:UnitListItemStatus = null;
     private _currentUnitIndex:number = 0;
     private _planData:BookPlanDetail = null;
@@ -46,27 +46,41 @@ export class TextbookChallengeView extends BaseView {
         this.initUI();
         GlobalConfig.initResolutionRules();
     }
-    protected initUI(){
+    protected async initUI(){
         this.initNavTitle();
         this.initAmout();
-        this.initChallengeBottom();
-        this.initLeftMonster();
-        this.initRightBookUnitInfo();
+        await this.initChallengeBottom();
+        await this.initLeftMonster();
+        await this.initRightBookUnitInfo();
+        TBServer.reqCurrentBook();
     }
 
     onInitModuleEvent(){
+        this.addModelListener(NetNotify.Classification_CurrentBook, this.onCurrentBookStatus);
         this.addModelListener(NetNotify.Classification_UnitListStatus,this.onUnitListStatus);
         this.addModelListener(EventType.Select_Word_Plan,this.onSelectWordPlan);
         this.addModelListener(NetNotify.Classification_PlanModify,this.onPlanModify);
         this.addModelListener(NetNotify.Classification_BookPlanDetail,this.onBookPlanDetail);
         this.addModelListener(NetNotify.Classification_BookAwardList,this.onBookAwardList);
     }
+    onCurrentBookStatus(data:CurrentBookStatus){
+        console.log("onCurrentBookStatus",data);
+        this._bookData = data;
+        this._unitDetailView.updateUnitProps(this._bookData);
+        this.getUnitListStatus();
+        // this.getBookPlanDetail();
+    }
     onPlanModify(data:any){
-        TBServer.reqBookPlanDetail(this._bookData);
+        let params:BookUnitModel = {
+            type_name:this._bookData.type_name,
+            book_name:this._bookData.book_name,
+            grade:this._bookData.grade
+        }
+        TBServer.reqBookPlanDetail(params);
     }
 
     onBookAwardList(data:BookAwardListModel){
-        this._unitDetailView.updateStudyProgress(data);
+        // this._unitDetailView.updateStudyProgress(data);
     }
 
     onBookPlanDetail(data:BookPlanDetail){
@@ -103,19 +117,24 @@ export class TextbookChallengeView extends BaseView {
         this._bottomView.updateItemList(this._unitListArr.data,this._currentUnitIndex);
         // this._unitDetailView.updateUnitProps(this._unitListArr.data[this._currentUnitIndex]);
     }
-    /**初始化数据 */
-    initData(bookModel:BookUnitModel){
-        this._bookData = bookModel;
-
-    }
     /**更新我的词书 */
     getUnitListStatus(){
-        TBServer.reqUnitListStatus(this._bookData);
+        let params:BookUnitModel = {
+            type_name:this._bookData.type_name,
+            book_name:this._bookData.book_name,
+            grade:this._bookData.grade
+        }
+        TBServer.reqUnitListStatus(params);
     }
 
     /**获取词书计划详情 */
     getBookPlanDetail(){
-        TBServer.reqBookPlanDetail(this._bookData);
+        let params:BookUnitModel = {
+            type_name:this._bookData.type_name,
+            book_name:this._bookData.book_name,
+            grade:this._bookData.grade
+        }
+        TBServer.reqBookPlanDetail(params);
         /**顺带请求学习奖励list */
         TBServer.reqBookAwardList(this._bookData.type_name,this._bookData.book_name);
     }
@@ -141,81 +160,89 @@ export class TextbookChallengeView extends BaseView {
         });
     }
 
-    /**出事右侧怪物详情 */
-    initRightBookUnitInfo(){
-        ResLoader.instance.load(`prefab/${PrefabType.RightUnitView.path}`, Prefab, (err: Error | null, prefab: Prefab) => {
-            if (err) {
-                error && console.error(err);
-                return;
-            }
-            let node = instantiate(prefab);
-            this.content_layout.addChild(node);
-            this._unitDetailView = node.getComponent(RightUnitView);
-            let widgetCom = node.getComponent(Widget);
-            if(!isValid(widgetCom)){
-                widgetCom = node.addComponent(Widget);
-                widgetCom.isAlignRight = true;
-                widgetCom.isAlignVerticalCenter= true;
-            }
-            widgetCom.verticalCenter = 62.308;
-            widgetCom.right = 62.308;
-            this._unitDetailView.setModifyCallback((isSave:boolean)=>{
-
-            });
-            this._unitDetailView.setBreakThroughCallback(()=>{
-                ViewsManager.instance.showView(PrefabType.BreakThroughView, (node: Node) => {
-                    let itemScript:BreakThroughView = node.getComponent(BreakThroughView);
-                    itemScript.initData(this._bookData);
-                    ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);
+    initRightBookUnitInfo() {
+        return new Promise((resolve, reject) => {
+            ResLoader.instance.load(`prefab/${PrefabType.RightUnitView.path}`, Prefab, (err, prefab) => {
+                if (err) {
+                    console.error(err);
+                    reject(err);
+                    return;
+                }
+                let node = instantiate(prefab);
+                this.content_layout.addChild(node);
+                this._unitDetailView = node.getComponent(RightUnitView);
+                let widgetCom = node.getComponent(Widget);
+                if (!isValid(widgetCom)) {
+                    widgetCom = node.addComponent(Widget);
+                    widgetCom.isAlignRight = true;
+                    widgetCom.isAlignVerticalCenter = true;
+                }
+                widgetCom.verticalCenter = 62.308;
+                widgetCom.right = 62.308;
+                this._unitDetailView.setModifyCallback((isSave) => {
+                    // Your callback logic
                 });
-            });
-
-            this._unitDetailView.setChangeBookCallback(()=>{
-                ViewsManager.instance.showView(PrefabType.TextbookListView, (node: Node) => {
-                    let itemScript:TextbookListView = node.getComponent(TextbookListView);
-                    itemScript.initData(this._bookData);
-                    ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);
+                this._unitDetailView.setBreakThroughCallback(() => {
+                    ViewsManager.instance.showView(PrefabType.BreakThroughView, (node) => {
+                        let itemScript = node.getComponent(BreakThroughView);
+                        itemScript.initData(this._bookData);
+                        ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);
+                    });
                 });
+                this._unitDetailView.setChangeBookCallback(() => {
+                    ViewsManager.instance.showView(PrefabType.TextbookListView, (node) => {
+                        let itemScript = node.getComponent(TextbookListView);
+                        itemScript.initData(this._bookData);
+                        ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);
+                    });
+                });
+                resolve(true); // Resolve the promise once all asynchronous operations are completed
             });
-
-            this.getBookPlanDetail();
         });
     }
-    /**下方单元进度模块 */
-    initChallengeBottom(){
-        ResLoader.instance.load(`prefab/${PrefabType.ChallengeBottomView.path}`, Prefab, (err: Error | null, prefab: Prefab) => {
-            if (err) {
-                error && console.error(err);
-                return;
-            }
-            let node = instantiate(prefab);
-            this.node.addChild(node);
-            this._bottomView = node.getComponent(ChallengeBottomView);
-            this.getUnitListStatus();
+    initChallengeBottom() {
+        return new Promise((resolve, reject) => {
+            ResLoader.instance.load(`prefab/${PrefabType.ChallengeBottomView.path}`, Prefab, (err: Error | null, prefab: Prefab) => {
+                if (err) {
+                    error && console.error(err);
+                    reject(err);
+                    return;
+                }
+                let node = instantiate(prefab);
+                this.node.addChild(node);
+                this._bottomView = node.getComponent(ChallengeBottomView);
+                resolve(true);
+            });
         });
     }
+
     /**初始化左侧怪物 */
     initLeftMonster(){
-        ResLoader.instance.load(`prefab/${PrefabType.ChallengeLeftView.path}`, Prefab, (err: Error | null, prefab: Prefab) => {
-            if (err) {
-                error && console.error(err);
-                return;
-            }
-            let node = instantiate(prefab);
-            this.content_layout.addChild(node);
-            let widgetCom = node.getComponent(Widget);
-            if(!isValid(widgetCom)){
-                widgetCom = node.addComponent(Widget);
-                widgetCom.isAlignLeft = true;
-                widgetCom.isAlignVerticalCenter= true;
-            }
-            let viewSizeWidth = view.getVisibleSize().width;
-            let projectSizeWidth = view.getDesignResolutionSize().width;
-            console.log("viewSizeWidth = ", viewSizeWidth, " projectSizeWidth = ", projectSizeWidth);
-            widgetCom.verticalCenter = 78.489;
-            widgetCom.left = 108.736 * viewSizeWidth / projectSizeWidth;
-            widgetCom.updateAlignment();
+        return new Promise((resolve, reject) => {
+            ResLoader.instance.load(`prefab/${PrefabType.ChallengeLeftView.path}`, Prefab, (err: Error | null, prefab: Prefab) => {
+                if (err) {
+                    error && console.error(err);
+                    reject(err);
+                    return;
+                }
+                let node = instantiate(prefab);
+                this.content_layout.addChild(node);
+                let widgetCom = node.getComponent(Widget);
+                if(!isValid(widgetCom)){
+                    widgetCom = node.addComponent(Widget);
+                    widgetCom.isAlignLeft = true;
+                    widgetCom.isAlignVerticalCenter= true;
+                }
+                let viewSizeWidth = view.getVisibleSize().width;
+                let projectSizeWidth = view.getDesignResolutionSize().width;
+                console.log("viewSizeWidth = ", viewSizeWidth, " projectSizeWidth = ", projectSizeWidth);
+                widgetCom.verticalCenter = 78.489;
+                widgetCom.left = 108.736 * viewSizeWidth / projectSizeWidth;
+                widgetCom.updateAlignment();
+                resolve(true);
+            });
         });
+        
     }
 }
 
