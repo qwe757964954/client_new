@@ -167,7 +167,7 @@ export class ScrollViewExtra extends Component {
             return this.setSelectChildIndex(this.selectChildIndex);
         }
         this.nowOffsetY = offset;
-        scroll.scrollToOffset(new math.Vec2(scrollOffset.x,this.nowOffsetY),0.5);
+        scroll.scrollToOffset(new math.Vec2(scrollOffset.x,this.nowOffsetY),0.2);
     }
     /** Scroll to the item with the given number */
     scrollToNumber(numberString: string) {
@@ -178,7 +178,7 @@ export class ScrollViewExtra extends Component {
             const scrollOffset = this.scrollView.getScrollOffset();
             let count  = index - 1;
             const targetOffset = count * this.listViewExtra.itemHeight;
-            this.scrollView.scrollToOffset(new math.Vec2(scrollOffset.x, targetOffset), 0.5);
+            this.scrollView.scrollToOffset(new math.Vec2(scrollOffset.x, targetOffset), 0.2);
         } else {
             console.error(`Item with number ${numberString} not found.`);
         }
