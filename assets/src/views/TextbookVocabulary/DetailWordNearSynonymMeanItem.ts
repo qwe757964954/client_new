@@ -17,8 +17,8 @@ export class DetailWordNearSynonymMeanItem extends Component {
         if (!data) {
             return;
         }
-        this.enTxt.string = data.Word;
-        this.chTxt.string = data.Cn;
+        this.enTxt.string = data.word;
+        this.chTxt.string = data.cn;
     }
 
     start() {

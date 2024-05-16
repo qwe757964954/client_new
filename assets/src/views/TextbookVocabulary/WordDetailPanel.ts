@@ -6,6 +6,7 @@ import { DetailWordMeanItem } from './DetailWordMeanItem';
 import { DetailWordNearSynonymMeanItem } from './DetailWordNearSynonymMeanItem';
 import { DetailWordRootItem } from './DetailWordRootItem';
 import { SearchWordDetail, WordSentence, WordSimpleData, WordSpeech } from './SearchWordView';
+import { WordsDetailData } from '../../models/AdventureModel';
 const { ccclass, property } = _decorator;
 
 /**词根内容 */
@@ -92,7 +93,7 @@ export class WordDetailPanel extends Component {
     tabList: Array<Node> = []; //tab页数组
     boxList: Array<Node> = []; //下面box框
 
-    wordData: SearchWordDetail = null; //当前的词条数据
+    wordData: WordsDetailData = null; //当前的词条数据
     word: string = "";    //当前词
 
     selectTabIdx: number = 1; //当前选中的tab索引
@@ -116,29 +117,36 @@ export class WordDetailPanel extends Component {
         this.removeEvent();
     }
 
-    setData(data: SearchWordDetail) {
+    setData(data: WordsDetailData) {
         this.wordData = data;
         this.initDetailPanel(data);
     }
 
-    initDetailPanel(data: SearchWordDetail) {
-        this.word = data.Word;
+    initDetailPanel(data: WordsDetailData) {
+        this.word = data.word;
         this.hideBtn.getComponent(Sprite).spriteFrame = this.topReturnBtnImgAry[0];
         this.sentenceList.content.removeAllChildren();
         this.speechList.content.removeAllChildren();
         this.similarList.content.removeAllChildren();
         this.rootList.content.removeAllChildren();
         //this.collectBtn.skin = (GameDataController.getCollectWord(data.Word) != null) ? "img/myword/star_wrong.png" : "img/myword/common icon_star_red.png";
-        let sentensData = data.Sentences;
+        let sentensData = data.sentence_list;
         if (sentensData && sentensData.length > 0) {
-            for (let i = 0; i < data.Sentences.length; i++) {
-                data.Sentences[i].Word = data.Word;
-                this.addSentenceListItem(data.Sentences[i]);
+            for (let i = 0; i < sentensData.length; i++) {
+                // data.sentence_list[i].word = data.Word;
+                let sentencData = sentensData[i];
+                let sentenceData: WordSentence = {
+                    Word: this.word,
+                    En: sentencData.sentence,
+                    Cn: sentencData.cn,
+                    Id: sentencData.id,
+                }
+                this.addSentenceListItem(sentenceData);
             }
         }
 
-        if (data.Speech) { //单词释义
-            let speeches = data.Speech;//JSON.parse(data.Speech);
+        if (data.speech) { //单词释义
+            let speeches = JSON.parse(data.speech);//JSON.parse(data.Speech);
             if (speeches && speeches.length > 0) {
                 for (let i = 0; i < speeches.length; i++) {
                     this.addSpeechListItem(speeches[i]);
@@ -146,29 +154,29 @@ export class WordDetailPanel extends Component {
             }
         }
         // 如果有近义词列表
-        if (data.Similars && data.Similars.length > 0) {
-            for (let i = 0; i < data.Similars.length; i++) {
-                this.addSimilarList(data.Similars[i]);
+        if (data.similar_list && data.similar_list.length > 0) {
+            for (let i = 0; i < data.similar_list.length; i++) {
+                this.addSimilarList(data.similar_list[i]);
             }
         }
 
         //单词助记
-        if (data.Ancillary) {
-            this.prefixTxt.string = data.Ancillary;
+        if (data.ancillary) {
+            this.prefixTxt.string = data.ancillary;
         } else {
             this.prefixTxt.string = "";
         }
 
         //词根
-        if (data.Structure && ((data.Structure.Prefixs && data.Structure.Prefixs.length > 0) ||
-            (data.Structure.Roots && data.Structure.Roots.length > 0) ||
-            (data.Structure.Suffix && data.Structure.Suffix.length > 0))) {
+        if (data.structure && ((data.structure.Prefixs && data.structure.Prefixs.length > 0) ||
+            (data.structure.Roots && data.structure.Roots.length > 0) ||
+            (data.structure.Suffix && data.structure.Suffix.length > 0))) {
 
-            if (data.Structure.Roots) {
+            if (data.structure.Roots) {
                 let root = "";
-                for (let i = 0; i < data.Structure.Roots.length; i++) {
-                    root += data.Structure.Roots[i].Name;
-                    if (i != data.Structure.Roots.length - 1) {
+                for (let i = 0; i < data.structure.Roots.length; i++) {
+                    root += data.structure.Roots[i].Name;
+                    if (i != data.structure.Roots.length - 1) {
                         root += "\n";
                     }
                 }
@@ -177,11 +185,11 @@ export class WordDetailPanel extends Component {
                 this.addRootListItem(rootData);
             }
 
-            if (data.Structure.Prefixs) { // 前缀
+            if (data.structure.Prefixs) { // 前缀
                 let pre = "";
-                for (let i = 0; i < data.Structure.Prefixs.length; i++) {
-                    pre += data.Structure.Prefixs[i].Name;
-                    if (i != data.Structure.Prefixs.length - 1) {
+                for (let i = 0; i < data.structure.Prefixs.length; i++) {
+                    pre += data.structure.Prefixs[i].Name;
+                    if (i != data.structure.Prefixs.length - 1) {
                         pre += "\n";
                     }
                 }
@@ -190,11 +198,11 @@ export class WordDetailPanel extends Component {
                 this.addRootListItem(rootData);
             }
 
-            if (data.Structure.Suffix) { //后缀
+            if (data.structure.Suffix) { //后缀
                 let suff = "";
-                for (let i = 0; i < data.Structure.Suffix.length; i++) {
-                    suff += data.Structure.Suffix[i].Name;
-                    if (i != data.Structure.Suffix.length - 1) {
+                for (let i = 0; i < data.structure.Suffix.length; i++) {
+                    suff += data.structure.Suffix[i].Name;
+                    if (i != data.structure.Suffix.length - 1) {
                         suff += "\n";
                     }
                 }
@@ -241,7 +249,7 @@ export class WordDetailPanel extends Component {
         if (!data) {
             return;
         }
-        if (!data.Cn || !data.Word) {
+        if (!data.cn || !data.word) {
             return;
         }
         let itemSimilar = instantiate(this.preWordNearSynonymMeanItem);
