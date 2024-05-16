@@ -16,25 +16,52 @@ export interface PlanSaveData {
 @ccclass('SettingPlanView')
 export class SettingPlanView extends Component {
     @property(ScrollViewExtra)
-    public leftScroll:ScrollViewExtra = null
+    public levelScroll:ScrollViewExtra = null
     @property(ScrollViewExtra)
-    public rightScroll:ScrollViewExtra = null
+    public dayScroll:ScrollViewExtra = null
 
     @property(Label)
     public book_title:Label = null
 
-    private _leftSelectString:string = "1";
-    private _rightSelectString:string = "1";
+    private _levelSelect:number = 0;
+    private _daySelect:number = 0;
     private _isModify:boolean = false;
+
+    private _totoal_level:number = 20;
+
     start() {
         this.setLeftRightDatePick();
+        this.scheduleOnce(()=>{
+            this.dayScroll.scrollToNumber(`${7}`)
+        },0.5);
     }
+
+    calculateDays(challengesPerDay: number){
+        return Math.ceil(this._totoal_level / challengesPerDay);
+    }
+
+    calculateLevels(days:number){
+        return Math.ceil(this._totoal_level / days);
+    }
+
     setLeftRightDatePick() {
-        this.leftScroll.initSelectCallFunc((plan_text:string)=>{
-            this._leftSelectString = plan_text;
+        this.levelScroll.initSelectCallFunc((select_num:number)=>{
+            if(this._levelSelect === select_num){
+                return;
+            }
+            this._levelSelect = select_num;
+            console.log("_leftSelect....",select_num);
+            let days = this.calculateDays(select_num);
+            this.dayScroll.scrollToNumber(`${days}`)
         })
-        this.rightScroll.initSelectCallFunc((plan_text:string)=>{
-            this._rightSelectString = plan_text;
+        this.dayScroll.initSelectCallFunc((select_num:number)=>{
+            if(this._daySelect === select_num){
+                return;
+            }
+            console.log("_rightSelect....",select_num);
+            this._daySelect = select_num;
+            let levels = this.calculateLevels(select_num);
+            this.levelScroll.scrollToNumber(`${levels}`)
         })
     }
 
@@ -62,8 +89,8 @@ export class SettingPlanView extends Component {
         console.log("onClickCancel");
         ViewsManager.instance.closeView(PrefabType.SettingPlanView);
         let data:PlanSaveData = {
-            left:this._leftSelectString,
-            right:this._rightSelectString,
+            left:`${this._levelSelect}`,
+            right:`${this._daySelect}`,
             isSave:false
         }
         EventMgr.dispatch(EventType.Select_Word_Plan,data);
@@ -73,8 +100,8 @@ export class SettingPlanView extends Component {
         console.log("onClickSave");
         ViewsManager.instance.closeView(PrefabType.SettingPlanView);
         let data:PlanSaveData = {
-            left:this._leftSelectString,
-            right:this._rightSelectString,
+            left:`${this._levelSelect}`,
+            right:`${this._daySelect}`,
             isSave:true
         }
         EventMgr.dispatch(EventType.Select_Word_Plan,data);

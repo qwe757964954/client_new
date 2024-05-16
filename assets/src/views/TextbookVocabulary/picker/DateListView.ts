@@ -64,6 +64,7 @@ export class DateListView extends Component {
         }
         this.obj = params;
         this.dataList = list || [];
+        // this.spawnCount = list.length;
         this.totalCount = this.dataList.length;
         this.content = this.scrollView.content;
         this.updateTimer = 0;
