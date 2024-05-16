@@ -33,7 +33,7 @@ export class MapNormalCtl extends MapBaseCtl {
         this._touchBuilding = this._mainScene.getTouchBuilding(pos.x, pos.y);//for test
         // let grid = this._mainScene.getTouchGrid(pos.x, pos.y);
         // this._touchBuilding = grid?.building;
-        if (this._touchBuilding) {
+        if (this._touchBuilding && this._touchBuilding.isCanEdit) {
             // 显示长按提示UI TODO
             // 定时器触发
             this._timer = TimerMgr.once(() => {

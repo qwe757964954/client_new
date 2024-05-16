@@ -13,6 +13,7 @@ export const TextConfig = {
     Ver_Text: "ver:{0}.{1}.{2}",
 
     Function_Tip: "功能暂未开放，敬请期待",
+    Function_Tip2: "暂时没有该功能",
 
     Building_Sure_Tip: "有重叠建筑，暂时不能保存!",
     Building_Cell_Tip: "此建筑不能售卖!",

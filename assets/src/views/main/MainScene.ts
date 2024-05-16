@@ -200,6 +200,7 @@ export class MainScene extends Component {
         if (!building) return;
         console.log("onBuildingClick", building);
         if (MapStatus.EDIT == this._mapStatus) {
+            if (!building.isCanEdit) return;
             this._buildingEditCtl.selectBuilding = building;
             this.changeMapStatus(MapStatus.BUILD_EDIT);
             return;
@@ -210,6 +211,8 @@ export class MainScene extends Component {
                 this.showCastleView(building);
             } else if (EditType.Buiding == editInfo.type) {
                 this.showBuildingProduceView(building);
+            } else {
+                ViewsMgr.showTip(TextConfig.Function_Tip2);
             }
         }
     }

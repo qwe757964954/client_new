@@ -80,7 +80,7 @@ export class BuildEditCtl extends MapBaseCtl {
         if (!super.onTouchStart(e)) return false;
         let pos = e.getLocation();//需要用屏幕坐标去转换点击事件
         let building = this._mainScene.getTouchBuilding(pos.x, pos.y);
-        if (building) {
+        if (building && building.isCanEdit) {
             this._lastTouchGrid = building?.grids[0];
             let screenPos = this._mainScene.mapPosToScreenPos(this._lastTouchGrid.pos.x, this._lastTouchGrid.pos.y);
 

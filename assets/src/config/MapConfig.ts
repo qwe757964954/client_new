@@ -60,6 +60,7 @@ export const MapConfig = {
             { is: 12, ie: 54, js: 72, je: 78 },
         ]
     },
+    minePos: { x: 350, y: 700 },
     roleInfo: {//101 男孩2, 102 女孩1, 103 男孩1
         101: [
             { level: 1, spPath: "animtion/role/nanhai02", spNames: ["Idle", "Run"], rect: new Rect(-90, -10, 180, 280), }
@@ -105,5 +106,5 @@ export const MapConfig = {
         "map/land/dikuaihua5/spriteFrame",
         "map/land/dikuaihua6/spriteFrame",
         "map/land/dikuaihua7/spriteFrame",
-    ]
+    ],
 }

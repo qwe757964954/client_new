@@ -223,6 +223,7 @@ export class MapUICtl extends MainBaseCtl {
     // 初始化建筑
     initBuilding(list: s2cBuildingListInfo[]) {
         if (!list || list.length <= 0) return;
+        list.push({ id: 1, bid: 3, x: 0, y: 0, direction: 0 });
         list.forEach(element => {
             let editInfo = DataMgr.instance.editInfo[element.bid];
             let building = this.newBuilding(editInfo, element.x, element.y, 1 == element.direction, false);
