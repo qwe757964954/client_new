@@ -47,13 +47,6 @@ export class studyView extends BaseView {
         /**当前词书状态 */
         if (isValid(curBook.type_name) && isValid(curBook.book_name) && isValid(curBook.grade)) {
             ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
-                // let challengeScript: TextbookChallengeView = node.getComponent(TextbookChallengeView);
-                // let unitData: BookUnitModel = {
-                //     type_name: curBook.type_name,
-                //     book_name: curBook.book_name,
-                //     grade: curBook.grade
-                // }
-                // challengeScript.initData(unitData);
             });
         } else {
             ViewsManager.instance.showView(PrefabType.SelectWordView, (node: Node) => {

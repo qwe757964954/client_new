@@ -136,8 +136,9 @@ export class TextbookListView extends BaseView {
                         grade: itemInfo.grade
                     }
                     TBServer.reqChangeTextbook(bookData);
-
-                    
+                }else{
+                    let select_id = this.getSelectDataIndex()
+                    this.myScrollView.selectedId = select_id;
                 }
             }
         }
@@ -154,11 +155,7 @@ export class TextbookListView extends BaseView {
     }
     onChangeTextbook(){
         ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
-                        
-            // ViewsManager.instance.closeView(PrefabType.TextbookListView);
-            
-            // this._curBookData = bookData;
-            // node.getComponent(TextbookChallengeView).initData(bookData);
+            ViewsManager.instance.closeView(PrefabType.TextbookListView);
         });
     }
     onClickHelp() {

@@ -142,9 +142,6 @@ export class TextbookChallengeView extends BaseView {
     initNavTitle(){
         ViewsManager.addNavigation(this.top_layout,0,0).then((navScript: NavTitleView) => {
             navScript.updateNavigationProps("我的词书",()=>{
-                // ViewsManager.instance.showView(PrefabType.SelectWordView, (node: Node) => {
-                //     ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);
-                // });
                 ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);
                 GlobalConfig.initRessolutionHeight();
             });

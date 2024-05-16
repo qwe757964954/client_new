@@ -70,18 +70,8 @@ export class SelectWordView extends BaseView {
     }
 
     onAddPlanBook(data){
-        
         ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
             ViewsManager.instance.closeView(PrefabType.SelectWordView);
-            // let type_name = this._bookLiskData.data[this._tabIndex].type_name;
-            // let book_name = this._schoolBookListDataArr.data[this._leftNavIndex].book_name;
-            // let grade = this._schoolGradeListData.data[this._gradeSelectId].grade;
-            // let bookData:BookUnitModel = {
-            //     type_name:type_name,
-            //     book_name:book_name,
-            //     grade:grade
-            // }
-            // node.getComponent(TextbookChallengeView).initData(bookData);
         });
     }
 
