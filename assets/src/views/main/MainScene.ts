@@ -11,7 +11,7 @@ import { RecycleCtl } from '../map/RecycleCtl';
 // import { MainUICtl } from './MainUICtl';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
-import { EditInfo, EditType } from '../../manager/DataMgr';
+import { DataMgr, EditInfo, EditType } from '../../manager/DataMgr';
 import { SoundMgr } from '../../manager/SoundMgr';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
@@ -418,8 +418,8 @@ export class MainScene extends Component {
                 const element = children[i];
                 let building = element.getComponent(BuildingModel);
                 if (!building) continue;
-                // let editInfo = building.editInfo;
-                // if (!DataMgr.instance.buildProduceInfo[editInfo.id]) continue;
+                let editInfo = building.editInfo;
+                if (!DataMgr.instance.buildProduceInfo[editInfo.id]) continue;
                 buildAry.push(building);
                 if (building == selectBuilding) {
                     idx = buildAry.length - 1;
