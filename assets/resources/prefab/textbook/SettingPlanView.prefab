@@ -151,8 +151,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 1778,
-      "height": 1000
+      "width": 1778.0000000000002,
+      "height": 1000.0000000000001
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -2617,7 +2617,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "dayScrollViewExtra",
+    "_name": "levelScrollViewExtra",
     "_objFlags": 512,
     "__editorExtras__": {},
     "_parent": {
@@ -3245,7 +3245,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "rightScrollViewExtra",
+    "_name": "dayScrollViewExtra",
     "_objFlags": 512,
     "__editorExtras__": {},
     "_parent": {
@@ -3851,7 +3851,7 @@
     "listViewExtra": {
       "__id__": 161
     },
-    "totalCount": 7,
+    "totalCount": 20,
     "_id": ""
   },
   {
@@ -3926,8 +3926,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 1778,
-      "height": 1000
+      "width": 1778.0000000000002,
+      "height": 1000.0000000000001
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -3952,10 +3952,10 @@
     "__prefab": {
       "__id__": 175
     },
-    "leftScroll": {
+    "levelScroll": {
       "__id__": 136
     },
-    "rightScroll": {
+    "dayScroll": {
       "__id__": 166
     },
     "book_title": {

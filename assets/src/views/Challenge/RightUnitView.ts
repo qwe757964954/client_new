@@ -40,7 +40,7 @@ export class RightUnitView extends Component {
     }
 
     updateRightPlan(data:BookPlanDetail) {
-        
+        this.plan_label.string = `${data.rank_num}/${data.num}`;
     }
 
     updateStudyProgress(data:BookAwardListModel){
@@ -59,15 +59,6 @@ export class RightUnitView extends Component {
         this.study_progress.progress = unitData.study_word_num / unitData.total_word_num;
         let bookImgUrl = `${NetConfig.assertUrl}/imgs/bookcover/${unitData.book_name}/${unitData.grade}.jpg`;
         ImgUtil.loadRemoteImage(bookImgUrl,this.current_img,188.573,255.636);
-        /*
-        this.title_label.string = unitData.bookname;
-        this.grade_label.string = unitData.grade;
-        this.study_label.string = unitData.studywordnum.toString();
-        this.total_label.string = unitData.totalwordnum.toString();
-        this.study_progress.progress = unitData.studywordnum / unitData.totalwordnum;
-        let bookImgUrl = `${NetConfig.assertUrl}/imgs/bookcover/${unitData.bookname}/${unitData.grade}.jpg`;
-        ImgUtil.loadRemoteImage(bookImgUrl,this.current_img,188.573,255.636);
-        */
     }
 
     setModifyCallback(callback:(isSave:boolean)=>void){

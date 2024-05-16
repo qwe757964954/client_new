@@ -9,6 +9,7 @@ import CCUtil from '../../util/CCUtil';
 import { WordSearchView } from './WordSearchView';
 import { InterfacePath } from '../../net/InterfacePath';
 import { WordsDetailData } from '../../models/AdventureModel';
+import { SoundMgr } from '../../manager/SoundMgr';
 const { ccclass, property } = _decorator;
 
 /**单词简单结构 */
@@ -198,11 +199,12 @@ export class SearchWordView extends Component {
     }
 
     start() {
-
+        SoundMgr.stopBgm();
     }
 
     protected onDestroy(): void {
         //EventManager.off(EventType.Classification_Word, this._wordDetailEveId);
+        SoundMgr.mainBgm();
         this.removeEvent();
     }
 

@@ -20,7 +20,7 @@ export class ScrollViewExtra extends Component {
     private selectChildIndex:number = 0;
     private listData:any = null;
     private contentY:number = null;
-    private _selectCallFunc:(plan_text:string)=>void = null;
+    private _selectCallFunc:(select_num:number)=>void = null;
     onLoad(): void {
         this.nowOffsetY = 0;
         this.selectChildren = [];
@@ -36,7 +36,7 @@ export class ScrollViewExtra extends Component {
     }
 
     /**初始化列表选择返回数据 */
-    initSelectCallFunc(callFunc:(plan_text:string)=>void ){
+    initSelectCallFunc(callFunc:(select_num:number)=>void ){
         this._selectCallFunc = callFunc;
     }
     init(listData:any){
@@ -63,7 +63,7 @@ export class ScrollViewExtra extends Component {
         },this);
         this.nowOffsetY = scroll.getScrollOffset().y;
         /**加载listView子节点 */
-        this.listViewExtra.updateData(this.listData);
+        this.listViewExtra.updateData(this.listData,true);
 
         this.updateListSelectChildren();
 
@@ -132,7 +132,7 @@ export class ScrollViewExtra extends Component {
         let jsItem = this.selectChildren[idx].getComponent(DateListItemNew);
         console.log(">>>>>>>>>> 选择结果:",this.selectChildren,idx,jsItem.labNum.string);
         if(this._selectCallFunc){
-            this._selectCallFunc(jsItem.labNum.string);
+            this._selectCallFunc(parseInt(jsItem.labNum.string));
         }
         // 这里回调，传出选择结果
     }
@@ -168,6 +168,20 @@ export class ScrollViewExtra extends Component {
         }
         this.nowOffsetY = offset;
         scroll.scrollToOffset(new math.Vec2(scrollOffset.x,this.nowOffsetY),0.5);
+    }
+    /** Scroll to the item with the given number */
+    scrollToNumber(numberString: string) {
+        // Find the index of the item with the given number in the list data
+        const index = this.listData.findIndex((item: string) => item === numberString);
+        if (index !== -1) {
+            this.updateListSelectChildren();
+            const scrollOffset = this.scrollView.getScrollOffset();
+            let count  = index - 1;
+            const targetOffset = count * this.listViewExtra.itemHeight;
+            this.scrollView.scrollToOffset(new math.Vec2(scrollOffset.x, targetOffset), 0.5);
+        } else {
+            console.error(`Item with number ${numberString} not found.`);
+        }
     }
 }
 

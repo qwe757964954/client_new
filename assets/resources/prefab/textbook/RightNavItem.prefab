@@ -411,7 +411,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 249.0341796875,
+      "width": 225,
       "height": 48.1
     },
     "_anchorPoint": {
@@ -447,7 +447,7 @@
       "b": 255,
       "a": 255
     },
-    "_string": "入教版（PEP）",
+    "_string": "入教版（PEP",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 35,
@@ -455,7 +455,7 @@
     "_fontFamily": "Arial",
     "_lineHeight": 35,
     "_overflow": 2,
-    "_enableWrapText": true,
+    "_enableWrapText": false,
     "_font": null,
     "_isSystemFontUsed": true,
     "_spacingX": 0,
@@ -473,7 +473,7 @@
       "a": 255
     },
     "_outlineWidth": 2,
-    "_enableShadow": false,
+    "_enableShadow": true,
     "_shadowColor": {
       "__type__": "cc.Color",
       "r": 0,
@@ -483,8 +483,8 @@
     },
     "_shadowOffset": {
       "__type__": "cc.Vec2",
-      "x": 2,
-      "y": 2
+      "x": 0,
+      "y": -4
     },
     "_shadowBlur": 2,
     "_id": ""
@@ -494,7 +494,7 @@
     "fileId": "51d3AwyjxPeq78nE/P+wYJ"
   },
   {
-    "__type__": "cc.LabelOutline",
+    "__type__": "cc.LabelShadow",
     "_name": "",
     "_objFlags": 0,
     "__editorExtras__": {},
@@ -509,7 +509,7 @@
   },
   {
     "__type__": "cc.CompPrefabInfo",
-    "fileId": "f0+toJ4/pELZdUG+WgHZtd"
+    "fileId": "5cNrJnDo1HZIzq3Lr1qmqG"
   },
   {
     "__type__": "cc.PrefabInfo",

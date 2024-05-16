@@ -78,6 +78,7 @@ export const PrefabType = {
     ScrollMapView: { path: "textbook/ScrollMapView", zindex: Hierarchy.POPUPLAYER, tips: "滑动地图模块" },
     BreakThroughView: { path: "textbook/BreakThroughView", zindex: Hierarchy.POPUPLAYER, tips: "单词大冒险挑战模块" },
     TextbookRemindView: { path: "textbook/TextbookRemindView", zindex: Hierarchy.POPUPLAYER, tips: "二级确认弹窗" },
+    ChallengeRemindView: { path: "textbook/ChallengeRemindView", zindex: Hierarchy.POPUPLAYER, tips: "首次故事背景引导" },
     SearchWorldView: { path: "textbook/SearchWordView", zindex: Hierarchy.POPUPLAYER, tips: "查找单词弹窗" },
     WordSearchView: { path: "textbook/WordSearchView", zindex: Hierarchy.POPUPLAYER, tips: "查找单词详情弹窗" },
     /*********************************************教材单词相关end*************************************************************/
