@@ -15,9 +15,12 @@ import { DataMgr, EditInfo, EditType } from '../../manager/DataMgr';
 import { SoundMgr } from '../../manager/SoundMgr';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
+import { RoleModel } from '../../models/RoleModel';
+import { TimerMgr } from '../../util/TimerMgr';
 import { BuildingProduceView } from '../map/BuildingProduceView';
 import { CastleInfoView } from '../map/CastleInfoView';
 import { MapUICtl } from '../map/MapUICtl';
+import { PetInteractionView } from '../map/PetInteractionView';
 import { EditUIView } from './EditUIView';
 import { LandEditUIView } from './LandEditUIView';
 import { MainUIView } from './MainUIView';
@@ -229,7 +232,23 @@ export class MainScene extends Component {
     onRoleClick(role: RoleBaseModel) {
         if (!role) return;
         console.log("onRoleClick", role);
-        role.onClickShow();
+        if (role instanceof RoleModel) {
+            role.onClickShow();
+            return;
+        }
+        role.isActive = false;
+        //延迟一针调用，防止点击事件触发异常（后续点击会穿透）
+        TimerMgr.once(() => {
+            this.hideMainUIView();
+        }, 1);
+        ViewsMgr.showView(PrefabType.PetInteractionView, (node: Node) => {
+            let view = node.getComponent(PetInteractionView);
+            view.init(role.roleID, role.level);
+            view.setRemoveCallback(() => {
+                role.isActive = true;
+                this.showMainUIView();
+            });
+        });
     }
     /** 角色拖动开始 */
     onRoleDragStart(role: RoleBaseModel) {

@@ -1,4 +1,4 @@
-import { _decorator, color, Component, Label, Layers, Node, Sprite, SpriteFrame } from 'cc';
+import { _decorator, color, Component, Label, Layers, Node, Sprite, SpriteFrame, Vec3 } from 'cc';
 import { PetInteractionInfo, PetInteractionType } from '../../config/PetConfig';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
@@ -37,7 +37,6 @@ export class PetInteractionView extends Component {
     private _removeCall: Function = null;//移除回调
 
     start() {
-        this.init();
         this.initEvent();
     }
     protected onDestroy(): void {
@@ -57,12 +56,15 @@ export class PetInteractionView extends Component {
         CCUtil.offTouch(this.btnClose, this.onCloseClick, this);
         CCUtil.offTouch(this.btnInfo, this.onInfoClick, this);
     }
-    init() {
+    init(id: number, level: number) {
         this.showTye(PetInteractionType.eat);
 
-        this.pet.init(101, 1);
+        this.pet.init(id, level);
         this.pet.show(true);
         NodeUtil.setLayerRecursively(this.pet.node, Layers.Enum.UI_2D);
+        if (level <= 2) {//特殊处理，后面考虑走配置
+            this.pet.node.scale = new Vec3(1.5, 1.5, 1);
+        }
     }
     /**显示类型 */
     showTye(type: PetInteractionType) {

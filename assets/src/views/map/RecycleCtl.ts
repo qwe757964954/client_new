@@ -44,6 +44,7 @@ export class RecycleCtl extends MapBaseCtl {
     // 建筑回收
     onBuildingRecycle(building: BuildingModel) {
         if (!building) return;
+        if (building.isCanEdit) return;
         building.recycle();
         this._recycleBuildingAry.push(building);
     }

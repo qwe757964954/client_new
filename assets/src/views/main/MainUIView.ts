@@ -4,13 +4,11 @@ import { MapStatus } from '../../config/MapConfig';
 import { PrefabType, SceneType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import GlobalConfig from '../../GlobalConfig';
-import { ViewsManager } from '../../manager/ViewsManager';
+import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { User } from '../../models/User';
 import { NetMgr } from '../../net/NetManager';
 import CCUtil from '../../util/CCUtil';
 import EventManager from '../../util/EventManager';
-import { TimerMgr } from '../../util/TimerMgr';
-import { PetInteractionView } from '../map/PetInteractionView';
 import { NoticeContentData } from '../notice/Brocast';
 import { MainScene } from './MainScene';
 const { ccclass, property } = _decorator;
@@ -154,15 +152,7 @@ export class MainUIView extends Component {
     //任务前往点击
     public onClickTaskGo() {
         console.log("onClickTaskGo");
-        //延迟一针调用，防止点击事件触发异常（后续点击会穿透）
-        TimerMgr.once(() => {
-            this._mainScene.hideMainUIView();
-        }, 1);
-        ViewsManager.instance.showView(PrefabType.PetInteractionView, (node: Node) => {
-            node.getComponent(PetInteractionView).setRemoveCallback(() => {
-                this._mainScene.showMainUIView();
-            });
-        });
+        ViewsMgr.showTip(TextConfig.Function_Tip);
     }
     //学习点击
     public onClickStudy() {

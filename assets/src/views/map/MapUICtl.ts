@@ -271,7 +271,7 @@ export class MapUICtl extends MainBaseCtl {
             let role = instantiate(this._mainScene.petModel);
             this._mainScene.buildingLayer.addChild(role);
             let roleModel = role.getComponent(RoleBaseModel);
-            roleModel.init(101, 1);
+            roleModel.init(103, 1);
             let grid = this.getGridInfo(21, 21);
             roleModel.grid = grid;
             this.roleMove(roleModel);
@@ -282,7 +282,7 @@ export class MapUICtl extends MainBaseCtl {
             let role = instantiate(this._mainScene.petModel);
             this._mainScene.buildingLayer.addChild(role);
             let roleModel = role.getComponent(RoleBaseModel);
-            roleModel.init(102, 1);
+            roleModel.init(103, 2);
             let grid = this.getGridInfo(35, 30);
             roleModel.grid = grid;
             this.roleMove(roleModel);
@@ -293,7 +293,7 @@ export class MapUICtl extends MainBaseCtl {
             let role = instantiate(this._mainScene.petModel);
             this._mainScene.buildingLayer.addChild(role);
             let roleModel = role.getComponent(RoleBaseModel);
-            roleModel.init(103, 1);
+            roleModel.init(103, 3);
             let grid = this.getGridInfo(21, 41);
             roleModel.grid = grid;
             this.roleMove(roleModel);
@@ -674,6 +674,7 @@ export class MapUICtl extends MainBaseCtl {
     onBuildingList(data: s2cBuildingList) {
         this.initBuilding(data.build_list);
         this.initLand(data.land_dict);
+        // this.initRole();
 
         TimerMgr.once(this.getLoadOverCall(), 500);//注意一定要加延时
         this.updateCameraVisible();
