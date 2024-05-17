@@ -222,7 +222,7 @@ export class MainScene extends Component {
     /**建筑长按开始 */
     onBuildingLongStart(building: BuildingModel) {
         if (!building) return;
-        building.showLongView();
+        building.showLongView(this.cameraRate);
     }
     /**建筑长按取消 */
     onBuildingLongCancel(building: BuildingModel) {
