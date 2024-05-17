@@ -52,6 +52,7 @@ export default class ImgUtil {
             imgNode.getComponent(UITransform).height = height;
         })
         */
+       
         let sprite = imgNode.getComponent(Sprite);
         if (!isValid(sprite)) {
             sprite = imgNode.addComponent(Sprite);
@@ -59,10 +60,7 @@ export default class ImgUtil {
         LoadManager.loadRemoteSprite(imgUrl, imgNode.getComponent(Sprite)).then(() => {
             imgNode.getComponent(UITransform).width = width;
             imgNode.getComponent(UITransform).height = height;
-        },
-            (error) => {
-                console.error(error);
-            });
+        });
     }
 
 
