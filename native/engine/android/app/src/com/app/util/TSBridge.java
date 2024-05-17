@@ -126,11 +126,9 @@ public class TSBridge {
     }
     static public void wxLogin() {
     }
-    static public void wxLoginResult(){}
-    static public void isWxInstall(){
-
+    static public void wxLoginResult(String result){
+        TSBridge.javaToTs("wxLoginResult", result);
     }
-    static public void isWxInstallResult(){}
 //    static public void initPhoneLogin(){}
     static public void initPhoneLoginResult(String result){
         TSBridge.javaToTs("initPhoneLoginResult", result);
