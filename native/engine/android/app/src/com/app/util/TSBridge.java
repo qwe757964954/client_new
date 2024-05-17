@@ -1,7 +1,9 @@
 package com.app.util;
 
+import android.annotation.SuppressLint;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.provider.Settings;
 import android.util.Log;
 
 import com.app.Config;
@@ -110,6 +112,9 @@ public class TSBridge {
             map.put("exeVer", Config.exeVer);
             map.put("exeResVer", Config.exeResVer);
             map.put("appversionName", getAppversionName());
+            map.put("deviceModel", getModel());
+            map.put("osVersion", getOsVersion());
+            map.put("androidId", getAndroidId());
 
             JSONObject json = new JSONObject(map);
             str = json.toString();
@@ -123,6 +128,17 @@ public class TSBridge {
         PackageManager pm = _activity.getPackageManager();
         PackageInfo pi = pm.getPackageInfo(_activity.getPackageName(), 0);
         return pi.versionName;
+    }
+    static public String getModel(){
+        return android.os.Build.MODEL;
+    }
+    static public String getOsVersion(){
+        return android.os.Build.VERSION.RELEASE;
+    }
+    @SuppressLint("HardwareIds")
+    static public String getAndroidId(){
+        if(null == _activity) return "";
+        return Settings.Secure.getString(_activity.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
     static public void wxLogin() {
     }
