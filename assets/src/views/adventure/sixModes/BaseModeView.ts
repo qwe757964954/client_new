@@ -4,7 +4,7 @@ import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { s2cAdventureResult, WordsDetailData } from '../../../models/AdventureModel';
 import { PetModel } from '../../../models/PetModel';
 import { RoleBaseModel } from '../../../models/RoleBaseModel';
-import { ReportResultModel, UnitWordModel } from '../../../models/TextbookModel';
+import { GameSubmitModel, ReportResultModel, UnitWordModel } from '../../../models/TextbookModel';
 import { InterfacePath } from '../../../net/InterfacePath';
 import { NetNotify } from '../../../net/NetNotify';
 import { ServiceMgr } from '../../../net/ServiceManager';
@@ -163,6 +163,21 @@ export class BaseModeView extends BaseView {
     //当前模式结束,跳转下一模式或结算
     protected modeOver() {
 
+    }
+    //单个单词学习情况上报
+    onGameSubmit(word: string) {
+        let levelData: BookLevelConfig = this._levelData as BookLevelConfig;
+        let costTime = Date.now() - this._costTime;
+        let data:GameSubmitModel = {
+            type_name: levelData.type_name,
+            book_name: levelData.book_name,
+            grade: levelData.grade,
+            unit: levelData.unit,
+            game_mode: this.gameMode,
+            cost_time:costTime,
+            word: word,
+        }
+        TBServer.reqGameSubmit(data);
     }
 
     //精灵攻击

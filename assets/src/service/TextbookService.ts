@@ -1,6 +1,6 @@
 import { isValid } from "cc";
 import { ViewsManager } from "../manager/ViewsManager";
-import { CurrentBookStatus, ModifyPlanData, MyTextbookListStatus, MyTextbookStatus, ReportResultModel, ReqPlanData, ReqUnitStatusParam, c2sAddBookStatus, c2sAddPlanBookStatus, c2sAddPlanStatus, c2sBookAwardList, c2sBookPlanDetail, c2sBookStatus, c2sChangeTextbook, c2sCurrentBook, c2sDelBookStatus, c2sModifyPlanStatus, c2sReportResult, c2sSchoolBook, c2sSchoolBookGrade, c2sSearchBookList, c2sUnitListStatus, c2sUnitStatus, c2sWordDetail } from "../models/TextbookModel";
+import { CurrentBookStatus, GameSubmitModel, ModifyPlanData, MyTextbookListStatus, MyTextbookStatus, ReportResultModel, ReqPlanData, ReqUnitStatusParam, c2sAddBookStatus, c2sAddPlanBookStatus, c2sAddPlanStatus, c2sBookAwardList, c2sBookPlanDetail, c2sBookStatus, c2sChangeTextbook, c2sCurrentBook, c2sDelBookStatus, c2sGameSubmit, c2sModifyPlanStatus, c2sReportResult, c2sSchoolBook, c2sSchoolBookGrade, c2sSearchBookList, c2sUnitListStatus, c2sUnitStatus, c2sWordDetail } from "../models/TextbookModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
 import { NetNotify } from "../net/NetNotify";
@@ -39,6 +39,7 @@ export default class _TextbookService extends BaseControll {
         this.addModelListener(InterfacePath.Classification_ReportResult,this.onReportResult);
         this.addModelListener(InterfacePath.Classification_Word,this.onWordDetail);
         this.addModelListener(InterfacePath.Classification_ChangeTextbook,this.onChangeTextbook);
+        this.addModelListener(InterfacePath.Classification_GameSubmit,this.onGameSubmit);
     }
     reqBookStatus() {
         let para: c2sBookStatus = new c2sBookStatus();
@@ -358,6 +359,27 @@ export default class _TextbookService extends BaseControll {
         EventMgr.dispatch(NetNotify.Classification_ChangeTextbook, data);
     }
 
+
+    reqGameSubmit(data:GameSubmitModel){
+        let params:c2sGameSubmit = new c2sGameSubmit();
+        params.word = data.word;
+        params.type_name = data.type_name;
+        params.book_name = data.book_name;
+        params.grade = data.grade;
+        params.cost_time = data.cost_time;
+        params.unit = data.unit;
+        params.game_mode = data.game_mode;
+        NetMgr.sendMsg(params);
+    }
+    onGameSubmit(data:any){
+        console.log("onGameSubmit.....",data);
+        if(data.code !== 200){
+            console.log(data.msg);
+            ViewsManager.showTip(data.msg);
+            return;
+        }
+        EventMgr.dispatch(NetNotify.Classification_GameSubmit, data);
+    }
 };
 
 export const TBServer = _TextbookService.getInstance();

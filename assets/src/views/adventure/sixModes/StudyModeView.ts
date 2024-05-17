@@ -1,23 +1,19 @@
-import { _decorator, instantiate, Label, Node, NodePool, Prefab, Sprite, tween, UITransform, Vec3, view } from 'cc';
-import { EventType } from '../../../config/EventType';
+import { _decorator, instantiate, Label, Node, NodePool, Prefab, Sprite, tween, UITransform, Vec3 } from 'cc';
 import { NetConfig } from '../../../config/NetConfig';
 import { PrefabType } from '../../../config/PrefabType';
 import { DataMgr } from '../../../manager/DataMgr';
 import RemoteImageManager from '../../../manager/RemoteImageManager';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { ViewsManager } from '../../../manager/ViewsManager';
+import { GameMode } from '../../../models/AdventureModel';
 import { UnitWordModel } from '../../../models/TextbookModel';
-import { ServiceMgr } from '../../../net/ServiceManager';
 import CCUtil from '../../../util/CCUtil';
-import EventManager from '../../../util/EventManager';
 import { BaseRemindView } from '../../common/BaseRemindView';
 import { WordDetailView } from '../../common/WordDetailView';
 import { TransitionView } from '../common/TransitionView';
 import { BaseModeView } from './BaseModeView';
 import { WordSplitItem } from './items/WordSplitItem';
 import { WordMeaningView } from './WordMeaningView';
-import { WordsDetailData, GameMode } from '../../../models/AdventureModel';
-import { InterfacePath } from '../../../net/InterfacePath';
 const { ccclass, property } = _decorator;
 
 /**学习模式页面 何存发 2024年4月15日15:38:41 */
@@ -220,8 +216,10 @@ export class StudyModeView extends BaseModeView {
                     } else {
                         this.showCurrentWord();
                     }
-                });
+                });   
             });
+            let word = this._wordsData[this._wordIndex].word
+            this.onGameSubmit(word);
         }, 0.2);
     }
 

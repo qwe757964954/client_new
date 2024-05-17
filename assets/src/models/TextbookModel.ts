@@ -308,3 +308,24 @@ export class c2sChangeTextbook {
     book_name:string;
     grade:string;
 }
+
+export class c2sGameSubmit {
+    command_id: string = InterfacePath.Classification_GameSubmit;
+    word:string;
+    type_name:string;
+    book_name:string;
+    grade:string;
+    cost_time:number;
+    unit:string;
+    game_mode:number;
+}
+
+export interface GameSubmitModel {
+    word:string;
+    type_name:string;
+    book_name:string;
+    grade:string;
+    cost_time:number;
+    unit:string;
+    game_mode:number;
+}
