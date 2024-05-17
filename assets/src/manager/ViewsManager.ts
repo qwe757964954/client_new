@@ -53,12 +53,29 @@ export class ViewsManager {
     genPureColorSpriteFrame(color:Color = Color.BLACK){
 
     }
+    /**
+     * 
+     * @param viewConfig 
+     * 示例代码： ViewsManager.instance.closePopup(PrefabType.SettingPlanView);
+     */
     closePopup(viewConfig:PrefabConfig){
         // 关闭界面
         let parent = this.getParentNode(viewConfig.zindex);
         parent?.getChildByName(viewConfig.path.replace("/", "_"))?.destroy();
     }
 
+    /**
+     * 
+     * @param viewConfig  需要有scpt_name 且继承 BasePopup  参考 SettingPlanView
+     * @param data 打开需要添加的参数，tudo
+     * @returns 
+     * 示例：
+     * ViewsManager.instance.showPopup(PrefabType.SettingPlanView).then((node: Node)=>{
+            let nodeScript:SettingPlanView = node.getComponent(SettingPlanView);
+            let titleBookName = `${this._curUnitStatus.book_name}${this._curUnitStatus.grade}`;
+            nodeScript.updateTitleName(titleBookName);
+        })
+     */
 
     async showPopup(viewConfig:PrefabConfig,data?:any){
         let parent = this.getParentNode(viewConfig.zindex);
