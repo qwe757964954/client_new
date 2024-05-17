@@ -1,4 +1,4 @@
-import { EventKeyboard, EventTouch, Input, KeyCode, NodeEventType, SpriteFrame, director, gfx, input, isValid } from "cc";
+import { EventKeyboard, EventTouch, Input, KeyCode, Node, NodeEventType, SpriteFrame, Widget, director, gfx, input, isValid } from "cc";
 import { SoundMgr } from "../manager/SoundMgr";
 
 export default class CCUtil {
@@ -104,5 +104,35 @@ export default class CCUtil {
         director.root.device.copyTextureToBuffers(gfxTexture, bufferViews, [region]);
         // console.log("readPixels return", buffer[0], buffer[1], buffer[2], buffer[3]);
         return buffer;
+    }
+
+    public static addWidget(nd: Node, paddings: { left?: number; right?: number; top?: number, bottom?: number}) {
+        if (!nd) return;
+
+        let wgt = nd.getComponent(Widget);
+        if (!isValid(wgt)) {
+            wgt = nd.addComponent(Widget);
+        }
+        if (typeof paddings.left === "number") {
+            wgt.isAlignLeft = true;
+            wgt.left = paddings.left;
+        }
+
+        if (typeof paddings.right === "number") {
+            wgt.isAlignRight = true;
+            wgt.right = paddings.right;
+        }
+
+        if (typeof paddings.top === "number") {
+            wgt.isAlignTop = true;
+            wgt.top = paddings.top;
+        }
+
+        if (typeof paddings.bottom === "number") {
+            wgt.isAlignBottom = true;
+            wgt.bottom = paddings.bottom;
+        }
+
+        return wgt;
     }
 }

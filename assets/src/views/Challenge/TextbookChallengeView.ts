@@ -74,11 +74,12 @@ export class TextbookChallengeView extends BaseView {
             //     }
             // }
         }
-        ViewsManager.instance.showView(PrefabType.ChallengeRemindView, (node) => {
+
+        ViewsManager.instance.showPopup(PrefabType.ChallengeRemindView).then((node:Node) => {
             let remindScript: ChallengeRemindView = node.getComponent(ChallengeRemindView);
             remindScript.initRemind(data);
             StorageUtil.saveData(KeyConfig.FIRST_TEXTBOOK_CHALLENGE,"0");
-        });
+        })
     }
 
     onInitModuleEvent(){
@@ -115,7 +116,7 @@ export class TextbookChallengeView extends BaseView {
     }
 
     onSelectWordPlan(params:any){
-        ViewsManager.instance.closeView(PrefabType.SettingPlanView);
+        ViewsManager.instance.closePopup(PrefabType.SettingPlanView);
         if(params.isSave){
             let modifyData:ModifyPlanData = {
                 plan_id:this._planData.id,

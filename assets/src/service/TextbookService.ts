@@ -369,6 +369,7 @@ export default class _TextbookService extends BaseControll {
         params.cost_time = data.cost_time;
         params.unit = data.unit;
         params.game_mode = data.game_mode;
+        console.log(data);
         NetMgr.sendMsg(params);
     }
     onGameSubmit(data:any){

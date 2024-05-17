@@ -1,5 +1,7 @@
-import { Layers, Node, Sprite, UITransform, Vec2, isValid } from "cc";
+import { Layers, Node, Sprite, SpriteFrame, UITransform, Vec2, error, isValid } from "cc";
 import { LoadManager } from "../manager/LoadManager";
+import { ResLoader } from "../manager/ResLoader";
+import CCUtil from "./CCUtil";
 
 /**
  * 图片工具类
@@ -80,6 +82,32 @@ export default class ImgUtil {
         uiTrans.anchorPoint = new Vec2(0.5, 0.5);
         uiTrans.enabled = true;
         return node;
+    }
+
+    /**
+     * 创建一个2D半透明节点
+     * @param name 节点名称
+     * @returns 
+     */
+    public static async create_PureNode(parent:Node) {
+        return new Promise((resolve, reject) => {
+            ResLoader.instance.load("common/img_banTouMing/spriteFrame", SpriteFrame, (err: Error | null, spriteFrame: SpriteFrame) => {
+                if (err) {
+                    error && console.error(err);
+                    reject(err);
+                    return;
+                }
+                let node = new Node("dark");
+                node.layer = Layers.Enum.UI_2D;
+                let uiTrans: UITransform = node.addComponent(UITransform);
+                uiTrans.anchorPoint = new Vec2(0.5, 0.5);
+                uiTrans.enabled = true;
+                node.addComponent(Sprite).spriteFrame = spriteFrame;
+                node.parent = parent;
+                CCUtil.addWidget(node,{ left: 0, right: 0, top: 0, bottom: 0 });
+                resolve(true);
+            });
+        });
     }
 }
 

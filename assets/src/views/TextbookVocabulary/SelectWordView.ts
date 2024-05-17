@@ -181,11 +181,11 @@ export class SelectWordView extends BaseView {
         if(selectedId === -1){return}
         this._gradeSelectId = selectedId;
         let itemInfo:SchoolBookGradeItemData = this._schoolGradeListData.data[selectedId];
-        ViewsManager.instance.showView(PrefabType.SettingPlanView,(node: Node) => {
+        ViewsManager.instance.showPopup(PrefabType.SettingPlanView).then((node: Node)=>{
             let titleBookName = `${this._schoolBookListDataArr.data[this._leftNavIndex].book_name}${itemInfo.grade}`
             let nodeScript:SettingPlanView = node.getComponent(SettingPlanView)
             nodeScript.updateTitleName(titleBookName);
-        });
+        })
     }
 }
 

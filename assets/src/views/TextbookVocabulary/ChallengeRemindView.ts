@@ -1,6 +1,5 @@
-import { _decorator, Component, Label, RichText } from 'cc';
-import { PrefabType } from '../../config/PrefabType';
-import { ViewsManager } from '../../manager/ViewsManager';
+import { _decorator, Label, RichText } from 'cc';
+import { BasePopup } from '../../script/BasePopup';
 const { ccclass, property } = _decorator;
 
 export interface IChallengeRemindData {
@@ -11,7 +10,7 @@ export interface IChallengeRemindData {
 }
 
 @ccclass('ChallengeRemindView')
-export class ChallengeRemindView extends Component {
+export class ChallengeRemindView extends BasePopup {
 
     @property(Label)
     public sure_text: Label = null;
@@ -22,7 +21,11 @@ export class ChallengeRemindView extends Component {
     private _callFunc:(isSure:boolean)=>void = null;
 
     start() {
-
+        this.enableClickBlankToClose([this.node.getChildByName("frame")]).then(()=>{
+            if(this._callFunc){
+                this._callFunc(false);
+            }
+        });
     }
 
     initRemind(data:IChallengeRemindData){
@@ -35,14 +38,14 @@ export class ChallengeRemindView extends Component {
         if(this._callFunc){
             this._callFunc(true);
         }
-        ViewsManager.instance.closeView(PrefabType.ChallengeRemindView);
+        this.closePop();
     }
 
     onClickCancel(){
         if(this._callFunc){
             this._callFunc(false);
         }
-        ViewsManager.instance.closeView(PrefabType.ChallengeRemindView);
+        this.closePop();
     }
 
 }

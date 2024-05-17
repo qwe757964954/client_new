@@ -241,6 +241,7 @@
     },
     "selectedMode": 0,
     "selectedFlag": null,
+    "selectedFlag2": null,
     "selectedSpriteFrame": null,
     "adaptiveSize": false,
     "rewad_progress": {

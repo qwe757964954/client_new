@@ -88,11 +88,11 @@ export class RightUnitView extends Component {
         ViewsManager.showTip(TextConfig.Function_Tip);
     }
     onModifyPlanClick(){
-        ViewsManager.instance.showView(PrefabType.SettingPlanView,(node: Node) => {
+        ViewsManager.instance.showPopup(PrefabType.SettingPlanView).then((node: Node)=>{
             let nodeScript:SettingPlanView = node.getComponent(SettingPlanView);
             let titleBookName = `${this._curUnitStatus.book_name}${this._curUnitStatus.grade}`;
             nodeScript.updateTitleName(titleBookName);
-        });
+        })
     }
     onChangeTextbookClick(){
         if(this._changeCallback){

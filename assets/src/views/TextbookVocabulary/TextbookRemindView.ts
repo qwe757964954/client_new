@@ -1,6 +1,5 @@
-import { _decorator, Component, Label } from 'cc';
-import { PrefabType } from '../../config/PrefabType';
-import { ViewsManager } from '../../manager/ViewsManager';
+import { _decorator, Label } from 'cc';
+import { BasePopup } from '../../script/BasePopup';
 const { ccclass, property } = _decorator;
 
 export interface ITextbookRemindData {
@@ -11,7 +10,7 @@ export interface ITextbookRemindData {
 }
 
 @ccclass('TextbookRemindView')
-export class TextbookRemindView extends Component {
+export class TextbookRemindView extends BasePopup {
 
     @property(Label)
     public sure_text: Label = null;
@@ -25,7 +24,11 @@ export class TextbookRemindView extends Component {
     private _callFunc:(isSure:boolean)=>void = null;
 
     start() {
-
+        this.enableClickBlankToClose([this.node.getChildByName("frame")]).then(() => {
+            if(this._callFunc){
+                this._callFunc(false);
+            }
+        });
     }
 
     initRemind(data:ITextbookRemindData){
@@ -39,14 +42,14 @@ export class TextbookRemindView extends Component {
         if(this._callFunc){
             this._callFunc(true);
         }
-        ViewsManager.instance.closeView(PrefabType.TextbookRemindView);
+        this.closePop();
     }
 
     onClickCancel(){
         if(this._callFunc){
             this._callFunc(false);
         }
-        ViewsManager.instance.closeView(PrefabType.TextbookRemindView);
+        this.closePop();
     }
 
 }

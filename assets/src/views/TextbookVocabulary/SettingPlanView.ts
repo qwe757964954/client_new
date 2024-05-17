@@ -1,7 +1,6 @@
-import { _decorator, Component, Label, Node } from 'cc';
+import { _decorator, Label, Node } from 'cc';
 import { EventType } from '../../config/EventType';
-import { PrefabType } from '../../config/PrefabType';
-import { ViewsManager } from '../../manager/ViewsManager';
+import { BasePopup } from '../../script/BasePopup';
 import { EventMgr } from '../../util/EventManager';
 import { ScrollViewExtra } from './picker/ScrollViewExtra';
 const { ccclass, property } = _decorator;
@@ -14,7 +13,7 @@ export interface PlanSaveData {
 
 
 @ccclass('SettingPlanView')
-export class SettingPlanView extends Component {
+export class SettingPlanView extends BasePopup {
     @property(ScrollViewExtra)
     public levelScroll:ScrollViewExtra = null
     @property(ScrollViewExtra)
@@ -34,6 +33,14 @@ export class SettingPlanView extends Component {
         this.scheduleOnce(()=>{
             this.dayScroll.scrollToNumber(`${7}`)
         },0.5);
+        this.enableClickBlankToClose([this.node.getChildByName("small_dialog_bg")]).then(()=>{
+            let data:PlanSaveData = {
+                left:`${this._levelSelect}`,
+                right:`${this._daySelect}`,
+                isSave:false
+            }
+            EventMgr.dispatch(EventType.Select_Word_Plan,data);
+        });
     }
 
     calculateDays(challengesPerDay: number){
@@ -87,7 +94,7 @@ export class SettingPlanView extends Component {
     }
     onClickCancel(){
         console.log("onClickCancel");
-        ViewsManager.instance.closeView(PrefabType.SettingPlanView);
+        this.closePop();
         let data:PlanSaveData = {
             left:`${this._levelSelect}`,
             right:`${this._daySelect}`,
@@ -98,7 +105,7 @@ export class SettingPlanView extends Component {
 
     onClickSave(){
         console.log("onClickSave");
-        ViewsManager.instance.closeView(PrefabType.SettingPlanView);
+        this.closePop();
         let data:PlanSaveData = {
             left:`${this._levelSelect}`,
             right:`${this._daySelect}`,

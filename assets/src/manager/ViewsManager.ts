@@ -1,5 +1,8 @@
-import { Node, Prefab, Widget, instantiate, isValid } from "cc";
+import { BlockInputEvents, Color, Node, Prefab, Widget, instantiate, isValid } from "cc";
 import { Hierarchy, PrefabConfig, PrefabType } from "../config/PrefabType";
+import { BasePopup } from "../script/BasePopup";
+import CCUtil from "../util/CCUtil";
+import ImgUtil from "../util/ImgUtil";
 import { ConfirmView } from "../views/common/ConfirmView";
 import { NavTitleView } from "../views/common/NavTitleView";
 import { PopView } from "../views/common/PopView";
@@ -45,6 +48,41 @@ export class ViewsManager {
         if (Hierarchy.TIPLAYER == hierarchy) return this.tipLayer;
         if (Hierarchy.LOADINGLAYER == hierarchy) return this.loadingLayer;
         return this.sceneLayer;
+    }
+
+    genPureColorSpriteFrame(color:Color = Color.BLACK){
+
+    }
+    closePopup(viewConfig:PrefabConfig){
+        // 关闭界面
+        let parent = this.getParentNode(viewConfig.zindex);
+        parent?.getChildByName(viewConfig.path.replace("/", "_"))?.destroy();
+    }
+
+
+    async showPopup(viewConfig:PrefabConfig,data?:any){
+        let parent = this.getParentNode(viewConfig.zindex);
+        let nd_name= viewConfig.path.replace("/", "_");
+        let nd: Node = ImgUtil.create_2DNode(nd_name);
+        parent.addChild(nd);
+        nd.addComponent(BlockInputEvents);
+        CCUtil.addWidget(nd,{ left: 0, right: 0, top: 0, bottom: 0 });
+        await ImgUtil.create_PureNode(nd);
+        return new Promise((resolve, reject) => {
+            ResLoader.instance.load(`prefab/${viewConfig.path}`, Prefab, (err, prefab) => {
+                if (err) {
+                    console.error(err);
+                    reject(err);
+                    return;
+                }
+                let node = instantiate(prefab);
+                nd.addChild(node);
+                CCUtil.addWidget(nd,{ left: 0, right: 0, top: 0, bottom: 0 });
+                let scpt:BasePopup = node.getComponent(viewConfig.scpt_name);
+                scpt.showAnim();
+                resolve(node); // Resolve the promise once all asynchronous operations are completed
+            });
+        });
     }
 
     // 显示界面

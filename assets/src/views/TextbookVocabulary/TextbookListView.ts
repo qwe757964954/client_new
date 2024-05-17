@@ -110,7 +110,7 @@ export class TextbookListView extends BaseView {
         });
     }
     showRemainCalL(data: ITextbookRemindData) {
-        ViewsManager.instance.showView(PrefabType.TextbookRemindView, (node: Node) => {
+        ViewsManager.instance.showPopup(PrefabType.TextbookRemindView).then((node: Node)=>{
             let remindScript: TextbookRemindView = node.getComponent(TextbookRemindView);
             remindScript.initRemind(data);
         });
