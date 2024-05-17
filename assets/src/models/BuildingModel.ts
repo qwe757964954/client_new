@@ -472,9 +472,10 @@ export class BuildingModel extends BaseComponent {
         return rect;
     }
     /**显示按钮界面 */
-    public showLongView() {
+    public showLongView(scale: number = 1.0) {
         if (this._longView) {
             this._longView.node.active = true;
+            this._longView.node.scale = new Vec3(scale, scale, 1);
             this._longView.showAnim();
             return;
         }
@@ -484,6 +485,7 @@ export class BuildingModel extends BaseComponent {
             this._longView = node.getComponent(EditAnimView);
             this._longView.showAnim();
             node.position = pos;
+            this._longView.node.scale = new Vec3(scale, scale, 1);
         });
     }
     /**关闭按钮界面 */
