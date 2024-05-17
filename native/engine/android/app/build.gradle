@@ -109,6 +109,8 @@ dependencies {
     implementation('com.alibaba:fastjson:1.1.55.android')
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0'
     /**********************一键登录所需库 end****************************************/
+    api 'com.tencent.mm.opensdk:wechat-sdk-android:+'//微信
+
     implementation fileTree(dir: '../libs', include: ['*.jar','*.aar'])
     implementation fileTree(dir: 'libs', include: ['*.jar','*.aar'])
     implementation fileTree(dir: "${COCOS_ENGINE_PATH}/cocos/platform/android/java/libs", include: ['*.jar'])
