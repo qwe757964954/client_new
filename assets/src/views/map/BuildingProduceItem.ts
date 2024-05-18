@@ -1,6 +1,6 @@
 import { _decorator, Label, Node, Sprite } from 'cc';
 import { TextConfig } from '../../config/TextConfig';
-import { DataMgr, ProduceInfo, RewardInfo } from '../../manager/DataMgr';
+import { DataMgr, ProduceInfo, PropData } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { User } from '../../models/User';
@@ -35,7 +35,7 @@ export class BuildingProduceItem extends ListItem {
     @property(Node)
     public lockNode: Node = null;//锁定节点
 
-    private _expend: RewardInfo[] = null;
+    private _expend: PropData[] = null;
 
     start() {
         this.initEvent();

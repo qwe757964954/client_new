@@ -1,6 +1,6 @@
 import { _decorator, Component, Label, Node, Sprite } from 'cc';
 import { TextConfig } from '../../config/TextConfig';
-import { DataMgr, RewardInfo } from '../../manager/DataMgr';
+import { DataMgr, PropData } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { BuildingModel } from '../../models/BuildingModel';
@@ -29,7 +29,7 @@ export class BuildingUpgradeView extends Component {
     @property(Sprite)
     public img: Sprite = null;//图片)
 
-    private _upgradeNeed: RewardInfo[] = null;
+    private _upgradeNeed: PropData[] = null;
 
     start() {
         this.initEvent();

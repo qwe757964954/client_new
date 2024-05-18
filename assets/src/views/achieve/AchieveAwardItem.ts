@@ -1,6 +1,5 @@
-import { _decorator, Component, Label, Node, Sprite, SpriteFrame } from 'cc';
+import { _decorator, Component, Label, Sprite, SpriteFrame } from 'cc';
 
-import { RewardInfo } from '../../manager/DataMgr';
 import { RewordUIInfo } from '../gift/RewardDialogView';
 const { ccclass, property } = _decorator;
 
