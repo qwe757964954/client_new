@@ -42,5 +42,11 @@ export const TextConfig = {
     Achieve_AbilityTrain: "能力培养",
     Achieve_GoTo: "前往",
     Achieve_GetAward: "领取",
-    Achieve_Error_Medal_ExceedLimit: "最多只能展示{0}枚勋章!"
+    Achieve_Error_Medal_ExceedLimit: "最多只能展示{0}枚勋章!",
+
+    //单词查找相关
+    Search_Word_Fail: "未查找到该单词详情",
+
+    //帮助菜单相关
+    Help_ImageDisplay: "图示",
 }

@@ -6,6 +6,7 @@ import { NewbieAwardItem } from './NewbieAwardItem';
 import CCUtil from '../../util/CCUtil';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { PrefabType } from '../../config/PrefabType';
+import { EffectUtil } from '../../util/EffectUtil';
 const { ccclass, property } = _decorator;
 
 export interface RewordUIInfo {
@@ -19,6 +20,12 @@ export class RewardDialogView extends Component {
     @property({ type: Node, tooltip: "背景" })
     bg: Node = null;
 
+    @property({ type: Node, tooltip: "光" })
+    light: Node = null;
+
+    @property({ type: Node, tooltip: "点击关闭" })
+    clickNd: Node = null;
+
     @property({ type: ScrollView, tooltip: "奖励列表" }) //preAward
     rewardList: ScrollView = null;
 
@@ -28,12 +35,16 @@ export class RewardDialogView extends Component {
     private _rewardData: BieGiftBaseInfo = null; //奖励
     private _myAwardItems: RewordUIInfo[] = [];
 
+    private _canClose: boolean = false;
+
     initData(data: BieGiftBaseInfo) {
         this._rewardData = data;
 
         this._myAwardItems = [];
 
         this.init();
+
+        this.show();
     }
 
     init() {
@@ -42,11 +53,11 @@ export class RewardDialogView extends Component {
     }
 
     addEvent() {
-        CCUtil.onTouch(this.bg, this.onCloseView, this);
+        CCUtil.onTouch(this.clickNd, this.onCloseView, this);
     }
 
     removeEvent() {
-        CCUtil.offTouch(this.bg, this.onCloseView, this);
+        CCUtil.offTouch(this.clickNd, this.onCloseView, this);
     }
 
     protected onDestroy(): void {
@@ -97,7 +108,27 @@ export class RewardDialogView extends Component {
     }
 
     onCloseView() {
-        ViewsManager.instance.closeView(PrefabType.NewbieRewardDialogView);
+        // ViewsManager.instance.closeView(PrefabType.NewbieRewardDialogView);
+        if (!this._canClose) return;
+        this._canClose = false;
+        EffectUtil.centerClose(this.node, () => {
+            //if (this._callBack) this._callBack();
+            this.dispose();
+        });
+    }
+
+    //销毁
+    dispose() {
+        //this.removeEvent();
+        this.node.destroy();
+    }
+
+    // 显示界面
+    show() {
+        EffectUtil.centerPopup(this.node);
+        setTimeout(() => {
+            this._canClose = true;
+        })
     }
 
     start() {

@@ -18,6 +18,7 @@ const ConfigPath = {
     PetConfig: "petConfig",
     ArchConfig: "AchConfig",
     MedalConfig: "medal",
+    HelpConfig: "gameHelp",
 }
 
 //角色插槽
@@ -138,6 +139,7 @@ export class DataMgr {
     public petConfig: PetInfo[] = [];//宠物信息
     public archConfig: { [key: number]: ArchConfig } = {}; //成就信息
     public medalConfig: MedalConfig[] = []; //勋章信息
+    public helpConfig = {} //帮助配置
 
     private _isInit: boolean = false;
     public defaultLand: EditInfo = null;//默认地块
@@ -165,6 +167,7 @@ export class DataMgr {
         await this.initPetInteractionConfig();
         await this.initAchieveConfig();
         await this.initMedalConfig();
+        await this.initHelpConfig();
         console.timeEnd("DataMgr initData");
     }
     /** 初始化角色插槽 */
@@ -312,6 +315,14 @@ export class DataMgr {
             obj.Type = json[k].Type;
             obj.Ce = Number(json[k].Ce);
             this.medalConfig.push(obj);
+        }
+    }
+
+    /**初始化帮助信息 */
+    public async initHelpConfig() {
+        let json = await LoadManager.loadJson(ConfigPath.HelpConfig);
+        for (let k in json) {
+            this.helpConfig[k] = json[k];
         }
     }
 

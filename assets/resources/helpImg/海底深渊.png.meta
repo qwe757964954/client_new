@@ -1,0 +1,134 @@
+{
+  "ver": "1.0.26",
+  "importer": "image",
+  "imported": true,
+  "uuid": "de20c438-ded9-48c4-aa02-2a3968033dcb",
+  "files": [
+    ".json",
+    ".png"
+  ],
+  "subMetas": {
+    "6c48a": {
+      "importer": "texture",
+      "uuid": "de20c438-ded9-48c4-aa02-2a3968033dcb@6c48a",
+      "displayName": "海底深渊",
+      "id": "6c48a",
+      "name": "texture",
+      "userData": {
+        "wrapModeS": "clamp-to-edge",
+        "wrapModeT": "clamp-to-edge",
+        "imageUuidOrDatabaseUri": "de20c438-ded9-48c4-aa02-2a3968033dcb",
+        "isUuid": true,
+        "visible": false,
+        "minfilter": "linear",
+        "magfilter": "linear",
+        "mipfilter": "none",
+        "anisotropy": 0
+      },
+      "ver": "1.0.22",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    },
+    "f9941": {
+      "importer": "sprite-frame",
+      "uuid": "de20c438-ded9-48c4-aa02-2a3968033dcb@f9941",
+      "displayName": "海底深渊",
+      "id": "f9941",
+      "name": "spriteFrame",
+      "userData": {
+        "trimType": "auto",
+        "trimThreshold": 1,
+        "rotated": false,
+        "offsetX": 0,
+        "offsetY": -11.5,
+        "trimX": 82,
+        "trimY": 97,
+        "width": 636,
+        "height": 905,
+        "rawWidth": 800,
+        "rawHeight": 1076,
+        "borderTop": 0,
+        "borderBottom": 0,
+        "borderLeft": 0,
+        "borderRight": 0,
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivotX": 0.5,
+        "pivotY": 0.5,
+        "meshType": 0,
+        "vertices": {
+          "rawPosition": [
+            -318,
+            -452.5,
+            0,
+            318,
+            -452.5,
+            0,
+            -318,
+            452.5,
+            0,
+            318,
+            452.5,
+            0
+          ],
+          "indexes": [
+            0,
+            1,
+            2,
+            2,
+            1,
+            3
+          ],
+          "uv": [
+            82,
+            979,
+            718,
+            979,
+            82,
+            74,
+            718,
+            74
+          ],
+          "nuv": [
+            0.1025,
+            0.0687732342007435,
+            0.8975,
+            0.0687732342007435,
+            0.1025,
+            0.9098513011152416,
+            0.8975,
+            0.9098513011152416
+          ],
+          "minPos": [
+            -318,
+            -452.5,
+            0
+          ],
+          "maxPos": [
+            318,
+            452.5,
+            0
+          ]
+        },
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "de20c438-ded9-48c4-aa02-2a3968033dcb@6c48a",
+        "atlasUuid": ""
+      },
+      "ver": "1.0.12",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    }
+  },
+  "userData": {
+    "type": "sprite-frame",
+    "hasAlpha": true,
+    "fixAlphaTransparencyArtifacts": false,
+    "redirect": "de20c438-ded9-48c4-aa02-2a3968033dcb@f9941"
+  }
+}
