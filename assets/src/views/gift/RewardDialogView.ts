@@ -1,4 +1,4 @@
-import { _decorator, Component, instantiate, Node, Prefab, ScrollView, SpriteFrame } from 'cc';
+import { _decorator, Component, easing, instantiate, Node, Prefab, ScrollView, SpriteFrame, tween, Vec3 } from 'cc';
 import AudioUtil from '../../util/AudioUtil';
 import { BieGiftBaseInfo } from './NewbieGiftDialogView';
 import List from '../../util/list/List';
@@ -7,6 +7,9 @@ import CCUtil from '../../util/CCUtil';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { PrefabType } from '../../config/PrefabType';
 import { EffectUtil } from '../../util/EffectUtil';
+import { PropInfo } from '../../config/PropConfig';
+import { RewardItem } from '../common/RewardItem';
+import { PropData } from '../../manager/DataMgr';
 const { ccclass, property } = _decorator;
 
 export interface RewordUIInfo {
@@ -32,12 +35,12 @@ export class RewardDialogView extends Component {
     @property({ type: Prefab, tooltip: "奖励预制体" })
     preAward: Prefab = null;
 
-    private _rewardData: BieGiftBaseInfo = null; //奖励
+    private _rewardData: PropData[] = null; //奖励
     private _myAwardItems: RewordUIInfo[] = [];
 
     private _canClose: boolean = false;
 
-    initData(data: BieGiftBaseInfo) {
+    initData(data: PropData[]) {
         this._rewardData = data;
 
         this._myAwardItems = [];
@@ -68,24 +71,23 @@ export class RewardDialogView extends Component {
         AudioUtil.playEffect("sound/open_reward");
         var datas = [];
 
-        if (this._rewardData.Stone > 0) {
-            var dataAward: RewordUIInfo = { "skinType": 0, "count": this._rewardData.Stone };
-            datas.push(dataAward);
-        }
-        if (this._rewardData.Diamond > 0) {
-            var dataAward: RewordUIInfo = { "skinType": 1, "count": this._rewardData.Diamond };
-            datas.push(dataAward);
-        }
-        if (this._rewardData.Coin > 0) {
-            var dataAward: RewordUIInfo = { "skinType": 2, "count": this._rewardData.Coin };
-            datas.push(dataAward);
+        this.rewardList.content.removeAllChildren();
+        for (let i = 0; i < this._rewardData.length; i++) {
+            let item = instantiate(this.preAward);
+            this.rewardList.content.addChild(item);
+            item.getComponent(RewardItem).init(this._rewardData[i]);
+
+            let index = i;
+            item.scale = new Vec3(0.2, 0.2, 1.0);
+            item.pauseSystemEvents(true);
+            tween(item).hide().delay(i * 0.1).show().to(0.4, { scale: new Vec3(1.0, 1.0, 1.0) }, { easing: easing.backOut }).call(() => {
+                item.resumeSystemEvents(true);
+                if (index == this._rewardData.length - 1) {
+                    this._canClose = true;
+                }
+            }).start();
         }
 
-        this.rewardList.content.removeAllChildren();
-        this._myAwardItems = datas;
-        for (let i = 0; i < this._myAwardItems.length; i++) {
-            this.addAwardListItem(this._myAwardItems[i]);
-        }
     }
 
     /**向award+List里添加一项内容*/
