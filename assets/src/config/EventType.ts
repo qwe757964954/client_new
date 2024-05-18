@@ -65,6 +65,7 @@ export const EventType = {
 
     /**世界BOSS */
     Challenge_WorldBoss: "Challenge_WorldBoss", //挑战世界boss
+
     /**成就相关 */
     Achieve_GetAllInfo: "Achieve_GetAllInfo", //获取成就各项数据列表
     Achieve_SelectMedal: "Achieve_SelectMedal", //选择勋章
