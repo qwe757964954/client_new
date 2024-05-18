@@ -517,12 +517,12 @@ export class MapUICtl extends MainBaseCtl {
         // return this.newBuilding(data, 20, 20);
     }
     // 摄像头移动到指定建筑
-    moveCameraToBuilding(building: BuildingModel, plPos: Vec3) {
+    moveCameraToBuilding(building: BuildingModel, plPos: Vec3, scale: number = 1) {
         let pos = building.node.position;
         let winSize = GlobalConfig.WIN_SIZE;
         // console.log("moveCameraToBuilding",pos.x, pos.y, plPos.x, plPos.y);
-        this.mapMoveTo(pos.x - plPos.x, pos.y - plPos.y);
-        this.mapZoomTo(this._uiCameraHeight);
+        this.mapMoveTo(pos.x - plPos.x / scale, pos.y - plPos.y / scale);
+        this.mapZoomTo(this._uiCameraHeight / scale);
     }
     // 更新摄像头可见范围内元素
     updateCameraVisible() {

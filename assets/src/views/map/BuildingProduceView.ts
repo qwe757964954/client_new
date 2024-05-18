@@ -104,7 +104,7 @@ export class BuildingProduceView extends Component {
     }
     // 获取建筑所在位置
     getBuildingPos() {
-        return this.plBuilding.position;
+        return this.plBuilding.position.add(this.building.position);
     }
     // 移除建筑
     removeBuilding() {

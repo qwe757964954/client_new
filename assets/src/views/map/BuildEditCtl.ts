@@ -121,10 +121,14 @@ export class BuildEditCtl extends MapBaseCtl {
     //点击结束
     public onTouchEnd(e: EventTouch) {
         if (this._isTouchInSelf && !this._isTouchMove && !this._isBuildingMove) {
-            let pos = e.getLocation();
-            let gridModel = this._mainScene.getTouchGrid(pos.x, pos.y);
-            if (gridModel) {
-                this._mainScene.setBuildingGrid(this._selectBuilding, gridModel.x, gridModel.y);
+            if (!this._touchBuilding || this._touchBuilding == this._selectBuilding) {
+                let pos = e.getLocation();
+                let gridModel = this._mainScene.getTouchGrid(pos.x, pos.y);
+                if (gridModel) {
+                    this._mainScene.setBuildingGrid(this._selectBuilding, gridModel.x, gridModel.y);
+                }
+            } else {
+                this.selectBuilding = this._touchBuilding;
             }
         }
         this._lastTouchGrid = null;

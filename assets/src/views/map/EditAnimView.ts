@@ -13,7 +13,16 @@ export class EditAnimView extends Component {
     showAnim() {
         this.stopAnim();
         this.progress.progress = 0;
-        tween(this.progress).to(1.0, { progress: 1.0 }).start();
+
+        let children = this.node.children;
+        children.forEach(child => {
+            child.active = false;
+        });
+        tween(this.progress).delay(0.5).call(() => {
+            children.forEach(child => {
+                child.active = true;
+            });
+        }).to(0.5, { progress: 1.0 }).start();
     }
 
     stopAnim() {

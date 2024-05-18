@@ -116,7 +116,7 @@ export class CastleInfoView extends Component {
     }
     // 获取建筑所在位置
     getBuildingPos() {
-        return this.plBuilding.position;
+        return this.plBuilding.position.add(this.building.position);
     }
     /**设置回调 */
     setCallBack(closeCallBack: Function) {
