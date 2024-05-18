@@ -58,7 +58,9 @@ export class BuildingModel extends BaseComponent {
     private _dataIsFlip: boolean = false;//数据是否翻转
     private _dataIsShow: boolean = false;//数据是否显示
     private _btnView: Node = null;//建筑按钮界面
+    // private _btnViewShow: boolean = false;//建筑按钮界面是否显示
     private _longView: EditAnimView = null;//长按界面
+    private _longViewShow: boolean = false;//长按界面是否显示
 
     // private _mapScaleHandle:string//地图缩放事件句柄
     private _pos: Vec3 = new Vec3(0, 0, 0);//位置
@@ -473,6 +475,7 @@ export class BuildingModel extends BaseComponent {
     }
     /**显示按钮界面 */
     public showLongView(scale: number = 1.0) {
+        this._longViewShow = true;
         if (this._longView) {
             this._longView.node.active = true;
             this._longView.node.scale = new Vec3(scale, scale, 1);
@@ -485,15 +488,17 @@ export class BuildingModel extends BaseComponent {
             this._longView = node.getComponent(EditAnimView);
             this._longView.showAnim();
             node.position = pos;
-            this._longView.node.scale = new Vec3(scale, scale, 1);
+            node.scale = new Vec3(scale, scale, 1);
+            node.active = this._longViewShow;
         });
     }
     /**关闭按钮界面 */
     public closeLongView() {
+        this._longViewShow = false;
         if (!this._longView) {
             return;
         }
-        this._longView.node.active = false;
+        this._longView.node.active = this._longViewShow;
         this._longView.stopAnim();
     }
 }
