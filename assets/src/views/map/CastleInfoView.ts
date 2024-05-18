@@ -37,6 +37,10 @@ export class CastleInfoView extends Component {
     public plConditions: Node = null;//条件层
     @property(Node)
     public condition: Node = null;//条件
+    @property(Node)
+    public plUpgrade: Node = null;//升级层
+    @property(Node)
+    public nodeMaxLevel: Node = null;//最大等级
 
     private _building: BuildingModel = null;
     private _closeCallBack: Function = null;
@@ -63,12 +67,20 @@ export class CastleInfoView extends Component {
         this._building.addToParent(this.building);
         this._building.setCameraType(Layers.Enum.UI_2D);
 
+        let maxLevel = 5;
         let buildingData = this._building.buildingData;
         let editInfo = this._building.editInfo;
         this.labelName1.string = editInfo.name;
         this.labelLevel.string = ToolUtil.replace(TextConfig.Level_Text, buildingData.level);
-        // this.labelMaxLevel.string = "3";// TODO最大等级
+        this.labelMaxLevel.string = ToolUtil.replace(TextConfig.Level_Text2, maxLevel);
         this.labelName2.string = editInfo.name;
+        if (buildingData.level >= maxLevel) {
+            this.nodeMaxLevel.active = true;
+            this.plUpgrade.active = false;
+            return;
+        }
+        this.nodeMaxLevel.active = false;
+        this.plUpgrade.active = true;
         this.labelLevel1.string = ToolUtil.replace(TextConfig.Level_Text, buildingData.level);
         this.labelLevel2.string = ToolUtil.replace(TextConfig.Level_Text, buildingData.level + 1);
         // this.labelCoin.string = "3000";// TODO升级所需金币
