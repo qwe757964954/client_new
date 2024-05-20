@@ -13,6 +13,7 @@ import EventManager from "../util/EventManager";
 import { ToolUtil } from "../util/ToolUtil";
 import { BuildingBtnView } from "../views/map/BuildingBtnView";
 import { BuildingInfoView } from "../views/map/BuildingInfoView";
+import { CountdownFrame } from "../views/map/CountdownFrame";
 import { EditAnimView } from "../views/map/EditAnimView";
 import { GridModel } from "./GridModel";
 const { ccclass, property } = _decorator;
@@ -61,6 +62,8 @@ export class BuildingModel extends BaseComponent {
     // private _btnViewShow: boolean = false;//建筑按钮界面是否显示
     private _longView: EditAnimView = null;//长按界面
     private _longViewShow: boolean = false;//长按界面是否显示
+    private _countdownFrame: CountdownFrame = null;//倒计时界面
+    private _countdownFrameShow: boolean = false;//倒计时界面是否显示
 
     // private _mapScaleHandle:string//地图缩放事件句柄
     private _pos: Vec3 = new Vec3(0, 0, 0);//位置
@@ -473,7 +476,7 @@ export class BuildingModel extends BaseComponent {
         rect.y = this.pos.y + rect.y;
         return rect;
     }
-    /**显示按钮界面 */
+    /**显示长按界面 */
     public showLongView(scale: number = 1.0) {
         this._longViewShow = true;
         if (this._longView) {
@@ -492,7 +495,7 @@ export class BuildingModel extends BaseComponent {
             node.active = this._longViewShow;
         });
     }
-    /**关闭按钮界面 */
+    /**关闭长按界面 */
     public closeLongView() {
         this._longViewShow = false;
         if (!this._longView) {
@@ -500,5 +503,30 @@ export class BuildingModel extends BaseComponent {
         }
         this._longView.node.active = this._longViewShow;
         this._longView.stopAnim();
+    }
+    /**显示倒计时 */
+    public showCountDownView() {
+        if (true) return;
+        // TODO 判断本建筑是否需要显示逻辑
+        this._countdownFrameShow = true;
+        if (this._countdownFrame) {
+            this._countdownFrame.node.active = true;
+            return;
+        }
+        LoadManager.loadPrefab(PrefabType.CountdownFrame.path, this.node).then((node: Node) => {
+            let height = this._grids ? this._grids[0]?.height : 0;
+            node.position = new Vec3(0, -0.5 * this._width * height, 0);
+            node.active = this._countdownFrameShow;
+            this._countdownFrame = node.getComponent(CountdownFrame);
+            this._countdownFrame.init(200);
+        });
+    }
+    /**关闭倒计时 */
+    public closeCountDownView() {
+        this._countdownFrameShow = false;
+        if (!this._countdownFrame) {
+            return;
+        }
+        this._countdownFrame.node.active = this._countdownFrameShow;
     }
 }

@@ -43,6 +43,7 @@ export class MapUICtl extends MainBaseCtl {
     private _roleSortHandler: string;//角色需要重新排序handle
     private _buildingListHandle: string;//建筑列表handle
     private _roleIsShow: boolean = true;//角色是否显示
+    private _countdownFrameIsShow: boolean = true;//建筑倒计时框是否显示
 
     private _callBack: Function = null;//加载完成回调
     private _loadCount: number = 0;//加载计数
@@ -228,6 +229,7 @@ export class MapUICtl extends MainBaseCtl {
             let editInfo = DataMgr.instance.editInfo[element.bid];
             let building = this.newBuilding(editInfo, element.x, element.y, 1 == element.direction, false);
             building.buildingID = element.id;
+            building.showCountDownView();
         });
     }
     /** 初始化角色 */
@@ -643,6 +645,20 @@ export class MapUICtl extends MainBaseCtl {
         this._roleIsShow = isShow;
         this._roleModelAry.forEach(element => {
             element.isActive = isShow;
+        });
+    }
+    /** 是否显示所有建筑计时框 */
+    public set countdownFrameIsShow(isShow: boolean) {
+        if (this._countdownFrameIsShow == isShow) return;
+        this._countdownFrameIsShow = isShow;
+        this._mainScene.buildingLayer.children.forEach(element => {
+            let building = element.getComponent(BuildingModel);
+            if (!building) return;
+            if (isShow) {
+                building.showCountDownView();
+            } else {
+                building.closeCountDownView();
+            }
         });
     }
     /**每帧更新 */

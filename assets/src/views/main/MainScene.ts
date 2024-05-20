@@ -342,6 +342,7 @@ export class MainScene extends Component {
             });
         }
         this._mapUICtl.roleIsShow = MapStatus.DEFAULT == status;
+        this._mapUICtl.countdownFrameIsShow = MapStatus.DEFAULT == status;
         let ctl = this.getMapCtl();
         ctl.clearData();
         this._mapStatus = status;
