@@ -1,3 +1,4 @@
+import { WordSpellView } from "../views/adventure/sixModes/WordSpellView";
 
 // 场景类型
 export const SceneType = {
@@ -34,6 +35,7 @@ export const PrefabType = {
     WorldMapView: { path: "adventure/WorldMapView", zindex: Hierarchy.POPUPLAYER, tips: "单词大冒险岛屿选择" },
     WordMeaningView: { path: "studyModes/WordMeaningView", zindex: Hierarchy.POPUPLAYER, tips: "词意模式" },
     WordPracticeView: { path: "studyModes/WordPraticeView", zindex: Hierarchy.POPUPLAYER, tips: "练习模式" },
+    WordSpellView: { path: "studyModes/WordSpellView", zindex: Hierarchy.POPUPLAYER, tips: "拼写模式" },
     TransitionView: { path: "common/TransitionView", zindex: Hierarchy.POPUPLAYER, tips: "过渡界面" },
 
     //**学习模式相关 end*/
@@ -75,11 +77,11 @@ export const PrefabType = {
     ChallengeLeftView: { path: "textbook/ChallengeLeftView", zindex: Hierarchy.POPUPLAYER, tips: "左侧怪物模块" },
     RightUnitView: { path: "textbook/RightUnitView", zindex: Hierarchy.POPUPLAYER, tips: "右侧单元详情模块" },
     RightPanelchange: { path: "adventure/common/RightPanelchange", zindex: Hierarchy.POPUPLAYER, tips: "单词大冒险右侧挑战模块" },
-    SettingPlanView: { path: "textbook/SettingPlanView", scpt_name:"SettingPlanView",zindex: Hierarchy.POPUPLAYER, tips: "计划设置dialog模块" },
+    SettingPlanView: { path: "textbook/SettingPlanView", scpt_name: "SettingPlanView", zindex: Hierarchy.POPUPLAYER, tips: "计划设置dialog模块" },
     ScrollMapView: { path: "textbook/ScrollMapView", zindex: Hierarchy.POPUPLAYER, tips: "滑动地图模块" },
     BreakThroughView: { path: "textbook/BreakThroughView", zindex: Hierarchy.POPUPLAYER, tips: "单词大冒险挑战模块" },
-    TextbookRemindView: { path: "textbook/TextbookRemindView", scpt_name:"TextbookRemindView", zindex: Hierarchy.POPUPLAYER, tips: "二级确认弹窗" },
-    ChallengeRemindView: { path: "textbook/ChallengeRemindView",scpt_name:"ChallengeRemindView", zindex: Hierarchy.POPUPLAYER, tips: "首次故事背景引导" },
+    TextbookRemindView: { path: "textbook/TextbookRemindView", scpt_name: "TextbookRemindView", zindex: Hierarchy.POPUPLAYER, tips: "二级确认弹窗" },
+    ChallengeRemindView: { path: "textbook/ChallengeRemindView", scpt_name: "ChallengeRemindView", zindex: Hierarchy.POPUPLAYER, tips: "首次故事背景引导" },
     SearchWorldView: { path: "textbook/SearchWordView", zindex: Hierarchy.POPUPLAYER, tips: "查找单词弹窗" },
     WordSearchView: { path: "textbook/WordSearchView", zindex: Hierarchy.POPUPLAYER, tips: "查找单词详情弹窗" },
     /*********************************************教材单词相关end*************************************************************/

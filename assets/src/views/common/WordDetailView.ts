@@ -6,7 +6,7 @@ import List from '../../util/list/List';
 import { WordSentensItem } from './WordSentensItem';
 import { WordMeanItem } from '../study/item/WordMeanItem';
 import { WordSimilarItem } from '../study/item/WordSimilarItem';
-import { WordsDetailData } from '../../models/AdventureModel';
+import { SentenceData, WordsDetailData } from '../../models/AdventureModel';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordDetailView')
@@ -30,7 +30,7 @@ export class WordDetailView extends Component {
     private _word: string = "";
     private _tabIdx: number = 0;
     private _detailData: WordsDetailData = null;
-    private _sentences: { id: string, cn: string, sentence: string }[] = []; //例句
+    private _sentences: SentenceData[] = []; //例句
     private _means: { sp: string, tr: string }[] = [];  //释义
     private _similars: { cn: string, word: string }[] = []; //相似词
 
@@ -75,7 +75,7 @@ export class WordDetailView extends Component {
     }
 
     //初始化例句
-    initSentences(sentences: { id: string, cn: string, sentence: string }[]) {
+    initSentences(sentences: SentenceData[]) {
         this._sentences = sentences;
         this.sentenceList.numItems = this._sentences.length;
     }

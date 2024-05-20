@@ -3,7 +3,7 @@ import { NetConfig } from '../../../config/NetConfig';
 import { PrefabType } from '../../../config/PrefabType';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { ViewsManager } from '../../../manager/ViewsManager';
-import { GameMode, WordsDetailData } from '../../../models/AdventureModel';
+import { GameMode, SentenceData, WordsDetailData } from '../../../models/AdventureModel';
 import { UnitWordModel } from '../../../models/TextbookModel';
 import CCUtil from '../../../util/CCUtil';
 import { BaseRemindView } from '../../common/BaseRemindView';
@@ -58,7 +58,7 @@ export class WordMeaningView extends BaseModeView {
 
     private _wrongMode: boolean = false; //错误重答模式
     private _rightWordData: UnitWordModel = null; //正确单词数据
-    private _sentenceData: { id: string, cn: string, sentence: string } = null; //例句数据
+    private _sentenceData: SentenceData = null; //例句数据
 
     private _selectLock: boolean = false; //选择锁
 
@@ -267,15 +267,6 @@ export class WordMeaningView extends BaseModeView {
         for (let i = 0; i < this.answerList.length; i++) {
             CCUtil.offTouch(this.answerList[i], this.onAnswerClick.bind(this, i), this);
         }
-    }
-    protected closeView() {
-        ViewsManager.instance.showView(PrefabType.BaseRemindView, (node: Node) => {
-            node.getComponent(BaseRemindView).init("确定退出学习吗?", () => {
-                ViewsManager.instance.closeView(PrefabType.WordMeaningView);
-            }, () => {
-                ViewsManager.instance.closeView(PrefabType.BaseRemindView);
-            });
-        });
     }
 }
 
