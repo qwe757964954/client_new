@@ -27,7 +27,7 @@ class UserModel {
     private _diamond: number = 0;    // 钻石
     private _stamina: number = 0;     // 体力
     private _amethyst: number = 0;    // 紫晶石
-
+    private _ticket: number = 0;      // 奖券
     private _moodScore: number = 0;   // 心情值
 
     public userID: number;   // 用户id
@@ -134,6 +134,20 @@ class UserModel {
     }
     get amethyst(): number {
         return this._amethyst;
+    }
+    set ticket(ticket: number) {
+        this._ticket = ticket;
+        EventMgr.emit(EventType.Ticket_Update, this._ticket);
+    }
+    get ticket(): number {
+        return this._ticket;
+    }
+    set moodScore(moodScore: number) {
+        this._moodScore = moodScore;
+        EventMgr.emit(EventType.Mood_Score_Update, this._moodScore);
+    }
+    get moodScore(): number {
+        return this._moodScore;
     }
 }
 

@@ -137,4 +137,8 @@ export const PrefabType = {
     /*********************************************帮助 start***********************************************************/
     HelpDialogView: { path: "help/HelpDialogView", zindex: Hierarchy.POPUPLAYER, tips: "帮助界面" },
     /*********************************************帮助 End*************************************************************/
+    /*********************************************复习规划start***********************************************************/
+    ReviewPlanView: { path: "reviewPlan/ReviewPlanView", zindex: Hierarchy.POPUPLAYER, tips: "复习规划" },
+    ReviewAdjustPlanView: { path: "reviewPlan/ReviewAdjustPlanView", zindex: Hierarchy.POPUPLAYER, tips: "复习规划调整框" },
+    /*********************************************复习规划end***********************************************************/
 }

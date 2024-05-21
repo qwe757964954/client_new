@@ -21,6 +21,8 @@ export enum PropID {
     ball = 19,//玩球
     microphone = 20,//唱歌
     fireworks = 21,//烟花
+    soul = 22,//精灵魂魄
+    ticket = 23,//抽奖券
 }
 /**道具信息 */
 export class PropInfo {

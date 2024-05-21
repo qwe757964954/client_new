@@ -119,8 +119,7 @@ export class MainUIView extends Component {
     }
     //复习计划点击
     public onClickReview() {
-        //ViewsManager.instance.showView(PrefabType.ReviewMainView);
-        ViewsManager.showTip(TextConfig.Function_Tip);
+        ViewsManager.instance.showView(PrefabType.ReviewPlanView);
     }
     //翻译查词点击
     public onClickTranslate() {

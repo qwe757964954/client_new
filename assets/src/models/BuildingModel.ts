@@ -28,6 +28,8 @@ export class BuildingData {
     // 正在建造的队列（id，时间）
 }
 
+const defaultSpAnim = "animation";
+
 //建筑模型
 @ccclass('BuildingModel')
 export class BuildingModel extends BaseComponent {
@@ -460,9 +462,12 @@ export class BuildingModel extends BaseComponent {
             let animation = this._editInfo.animation;
             if (animation && animation.length > 0) {
                 LoadManager.loadSpine(animation, this.sp).then(() => {
-                    this.sp.setAnimation(0, "animation", true);
-                    let pos = this.building.node.position;
-                    this.sp.node.position = new Vec3(- 4 - pos.x, 12 - pos.y, 0);
+                    this.sp.setAnimation(0, defaultSpAnim, true);
+                    let pos = this.building.node.position.clone();
+                    pos.x = -6;
+                    pos.y = -4 - pos.y;
+                    this.sp.node.position = pos;
+                    // console.log("pos", pos.x, pos.y);
                 });
             }
         } else {

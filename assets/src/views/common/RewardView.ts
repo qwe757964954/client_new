@@ -43,6 +43,7 @@ export class RewardView extends Component {
         if (!this._canClose) return;
         this._canClose = false;
         EffectUtil.centerClose(this.frame, () => {
+            if (this._callBack) this._callBack();
             this.node.destroy();
         });
     }

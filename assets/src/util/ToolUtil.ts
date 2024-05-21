@@ -81,4 +81,8 @@ export class ToolUtil {
         }
         return ToolUtil.replace(Time_M_S, minute, second);
     }
+    /**获取值 */
+    static getValue(val: number, min: number, max: number): number {
+        return Math.min(Math.max(val, min), max);
+    }
 }
