@@ -141,4 +141,7 @@ export const PrefabType = {
     ReviewPlanView: { path: "reviewPlan/ReviewPlanView", zindex: Hierarchy.POPUPLAYER, tips: "复习规划" },
     ReviewAdjustPlanView: { path: "reviewPlan/ReviewAdjustPlanView", zindex: Hierarchy.POPUPLAYER, tips: "复习规划调整框" },
     /*********************************************复习规划end***********************************************************/
+    /*********************************************社交 start***********************************************************/
+    FriendsDialogView: { path: "social/FriendsDialogView", zindex: Hierarchy.POPUPLAYER, tips: "好友界面" },
+    /*********************************************社交 End*************************************************************/
 }
