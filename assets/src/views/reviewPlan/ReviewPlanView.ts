@@ -1,6 +1,7 @@
 import { _decorator, Component, Label, Node, ProgressBar, sp, Sprite } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { PropID } from '../../config/PropConfig';
+import { TextConfig } from '../../config/TextConfig';
 import GlobalConfig from '../../GlobalConfig';
 import { ViewsMgr } from '../../manager/ViewsManager';
 import CCUtil from '../../util/CCUtil';
@@ -128,9 +129,11 @@ export class ReviewPlanView extends Component {
     }
     /**单词大冒险 今日复习按钮 */
     onBtnTodayReview1Click() {
+        ViewsMgr.showView(PrefabType.ReviewWordListView);
     }
     /**单词大冒险 复习按钮 */
     onBtnReview1Click() {
+        ViewsMgr.showTip(TextConfig.Function_Tip);
     }
     /**单词大冒险  复习规划提示*/
     onLabelTip1Click() {
@@ -138,9 +141,11 @@ export class ReviewPlanView extends Component {
     }
     /**教材单词 今日复习按钮 */
     onBtnTodayReview2Click() {
+        ViewsMgr.showView(PrefabType.ReviewWordListView);
     }
     /**教材单词 复习按钮 */
     onBtnReview2Click() {
+        ViewsMgr.showTip(TextConfig.Function_Tip);
     }
     /**教材单词  复习规划提示*/
     onLabelTip2Click() {
