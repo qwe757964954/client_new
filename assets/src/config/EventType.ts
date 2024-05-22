@@ -71,4 +71,11 @@ export const EventType = {
     Achieve_GetAllInfo: "Achieve_GetAllInfo", //获取成就各项数据列表
     Achieve_SelectMedal: "Achieve_SelectMedal", //选择勋章
     Achieve_GetAward: "Achieve_GetAward", //领取奖励
+
+    /**好友社交相关 */
+    Friend_MyList: "Friend_MyList", //获取我的好友列表
+    Friend_RecommendList: "Friend_RecommendList", //获取推荐好友列表
+    Friend_SearchFriend: "Friend_SearchFriend",   //查找好友
+    Friend_ClickFriendList: "Friend_ClickFriendList", //点击好友列表
+
 }
