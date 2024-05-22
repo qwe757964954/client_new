@@ -32,6 +32,7 @@ export const TextConfig = {
     EN: "英",
 
     Word_Learn_Count: "共计{0}词",
+    Level_Index: "第{0}关",
 
     //成就相关
     Achieve_OverView: "成就总览",
@@ -49,4 +50,12 @@ export const TextConfig = {
 
     //帮助菜单相关
     Help_ImageDisplay: "图示",
+
+    //好友系统相关
+    Friend_List: "好友列表",
+    Friend_Add: "添加好友",
+    Friend_Apply: "好友申请",
+    Friend_Notify: "好友通知",
+    Friend_InputEmptyTip: "好友ID不能为空",
+    Friend_NoFindUser: "没找到此用户",
 }
