@@ -1,5 +1,5 @@
 import { _decorator, Component, Label, Node, Sprite } from 'cc';
-import { UnitItemStatus } from '../../models/TextbookModel';
+import { CurrentBookStatus } from '../../models/TextbookModel';
 import List from '../../util/list/List';
 import { UnitNumItem } from './UnitNumItem';
 const { ccclass, property } = _decorator;
@@ -15,26 +15,29 @@ export class ChallengeBottomView extends Component {
     public collectScroll:List = null;
     @property(Node)
     public chest_box:Node = null;
-    private _unitListArr:UnitItemStatus[] = [];
+    private _totalUnit:number = 0;
     private _currentUnitIndex:number = 0;
     start() {
 
     }
 
-    updateItemList(dataArr:UnitItemStatus[],current_index:number){
-        this._unitListArr = dataArr;
-        this._currentUnitIndex = current_index;
-        this.collectScroll.numItems = this._unitListArr.length;
+    updateItemList(data:CurrentBookStatus){
+        this._totalUnit = data.unit_total_num;
+        this._currentUnitIndex = data.unit_pass_num;
+        this.collectScroll.numItems = data.unit_total_num;
         this.collectScroll.update();
-        let isComplete = this._currentUnitIndex >= this._unitListArr.length - 1;/**当前收集的进度 */
+        let isComplete = this._currentUnitIndex >= this._totalUnit;/**当前收集的进度 */
         this.chest_box.getComponent(Sprite).grayscale = !isComplete;
-        this.collect_num.string = (this._currentUnitIndex + 1).toString();
-        this.collect_total.string = this._unitListArr.length.toString();
+        this.collect_num.string = this._currentUnitIndex.toString();
+        this.collect_total.string = this._totalUnit.toString();
     }
 
     onLoadCollectHorizontal(item:Node, idx:number){
         let item_sript:UnitNumItem = item.getComponent(UnitNumItem);
-        let unitStatus:UnitItemStatus = this._unitListArr[idx];
+        let unit_num = idx + 1;
+        let isComplete:boolean = this._currentUnitIndex>=unit_num;
+        item_sript.updateRewardStatus(isComplete);
+        // let unitStatus:UnitItemStatus = this._unitListArr[idx];
         // item_sript.updateRewardStatus(unitStatus.studywordnum >=unitStatus.totalwordnum);
     }
 }
