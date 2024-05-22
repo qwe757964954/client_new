@@ -3,7 +3,7 @@ import { TextConfig } from '../../config/TextConfig';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { User } from '../../models/User';
-import { ArchConfig, DataMgr, MedalConfig } from '../../manager/DataMgr';
+import { ArchConfig, DataMgr, MedalConfig, PropData } from '../../manager/DataMgr';
 import { AchieveTaskItem } from './AchieveTaskItem';
 import EventManager from '../../util/EventManager';
 import { EventType } from '../../config/EventType';
@@ -63,6 +63,12 @@ export interface MyMedalInfo {
     icon: MedelIcon; //图标
     nameTxt: string; //名字
     data: MedalConfig;
+}
+
+// 勋章简单信息
+export interface MedalSimpleInfo {
+    id: string; //id
+    icon: string; //图标地址
 }
 
 //勋章选中状态
@@ -437,12 +443,16 @@ export class AchieveDialogView extends Component {
         let numCoin: number = Number(awards[0]);
         let numDiamond: number = Number(awards[1]);
         ViewsManager.instance.showView(PrefabType.NewbieRewardDialogView, (node: Node) => {
-            let awardInfo: BieGiftBaseInfo = {
-                "Stone": 0,
-                "Diamond": numDiamond,
-                "Coin": numCoin
+            let awardInfo: PropData = {
+                "id": 1,
+                "num": numDiamond,
             }
-            node.getComponent(RewardDialogView).initData(awardInfo);
+            let awardInfo2: PropData = {
+                "id": 2,
+                "num": 50,
+            }
+            let awardInfos: PropData[] = [awardInfo, awardInfo2];
+            node.getComponent(RewardDialogView).initData(awardInfos);
         });
     }
 

@@ -58,4 +58,11 @@ export const TextConfig = {
     Friend_Notify: "好友通知",
     Friend_InputEmptyTip: "好友ID不能为空",
     Friend_NoFindUser: "没找到此用户",
+    Friend_CannotAddSelfTip: "不能添加自己",
+    Friend_AddSuccess: "添加好友成功",
+    Friend_AcceptApply: "已同意好友添加申请",
+    Friend_RefuseApply: "已拒绝好友添加申请",
+    Friend_EmailSys: "系统消息",
+    Friend_RecvAwardSucc: "获得邮件奖励",
+    Friend_DelFriendSucc: "删除好友成功",
 }

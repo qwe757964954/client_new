@@ -75,7 +75,15 @@ export const EventType = {
     /**好友社交相关 */
     Friend_MyList: "Friend_MyList", //获取我的好友列表
     Friend_RecommendList: "Friend_RecommendList", //获取推荐好友列表
+    Friend_ApplyList: "Friend_ApplyList", //获取好友申请列表
     Friend_SearchFriend: "Friend_SearchFriend",   //查找好友
-    Friend_ClickFriendList: "Friend_ClickFriendList", //点击好友列表
+    Friend_ClickFriendList: "Friend_ClickFriendList", // 点击好友列表
+    Friend_ClickEmailList: "Friend_ClickEmailList",   // 点击邮件列表
+    Friend_AddFriend: "Friend_AddFriend", //添加好友
+    Friend_ApplyStatus: "Friend_ApplyStatus", //同意/拒绝好友申请请求
+    Friend_SysMsg_List: "Friend_SysMsg_List", // 邮件列表
+    Friend_RecvAward: "Friend_RecvAward", // 获得邮件附件奖励
+    Friend_DelFriend: "Friend_DelFriend", // 删除好友
+
 
 }
