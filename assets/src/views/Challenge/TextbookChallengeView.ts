@@ -15,6 +15,7 @@ import { NavTitleView } from '../common/NavTitleView';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { ChallengeRemindView, IChallengeRemindData } from '../TextbookVocabulary/ChallengeRemindView';
 import { TextbookListView } from '../TextbookVocabulary/TextbookListView';
+import { WordCheckView } from '../TextbookVocabulary/WordCheckView';
 import { BreakThroughView } from './BreakThroughView';
 import { ChallengeBottomView } from './ChallengeBottomView';
 import { RightUnitView } from './RightUnitView';
@@ -219,6 +220,12 @@ export class TextbookChallengeView extends BaseView {
                         let itemScript = node.getComponent(TextbookListView);
                         itemScript.initData(this._bookData);
                         ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);
+                    });
+                });
+                this._unitDetailView.setCheckWordCallback(() => {
+                    ViewsManager.instance.showView(PrefabType.WordCheckView, (node) => {
+                        let itemScript = node.getComponent(WordCheckView);
+                        itemScript.initData(this._bookData);
                     });
                 });
                 resolve(true); // Resolve the promise once all asynchronous operations are completed

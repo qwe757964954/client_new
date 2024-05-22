@@ -1,6 +1,6 @@
 import { isValid } from "cc";
 import { ViewsManager } from "../manager/ViewsManager";
-import { CurrentBookStatus, GameSubmitModel, ModifyPlanData, MyTextbookListStatus, MyTextbookStatus, ReportResultModel, ReqPlanData, ReqUnitStatusParam, c2sAddBookStatus, c2sAddPlanBookStatus, c2sAddPlanStatus, c2sBookAwardList, c2sBookPlanDetail, c2sBookStatus, c2sChangeTextbook, c2sCurrentBook, c2sDelBookStatus, c2sGameSubmit, c2sModifyPlanStatus, c2sReportResult, c2sSchoolBook, c2sSchoolBookGrade, c2sSearchBookList, c2sUnitListStatus, c2sUnitStatus, c2sWordDetail } from "../models/TextbookModel";
+import { CheckWordModel, CurrentBookStatus, GameSubmitModel, ModifyPlanData, MyTextbookListStatus, MyTextbookStatus, ReportResultModel, ReqPlanData, ReqUnitStatusParam, c2sAddBookStatus, c2sAddPlanBookStatus, c2sAddPlanStatus, c2sBookAwardList, c2sBookPlanDetail, c2sBookStatus, c2sChangeTextbook, c2sCheckWord, c2sCurrentBook, c2sDelBookStatus, c2sGameSubmit, c2sModifyPlanStatus, c2sReportResult, c2sSchoolBook, c2sSchoolBookGrade, c2sSearchBookList, c2sUnitListStatus, c2sUnitStatus, c2sWordDetail } from "../models/TextbookModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
 import { NetNotify } from "../net/NetNotify";
@@ -40,6 +40,8 @@ export default class _TextbookService extends BaseControll {
         this.addModelListener(InterfacePath.Classification_Word,this.onWordDetail);
         this.addModelListener(InterfacePath.Classification_ChangeTextbook,this.onChangeTextbook);
         this.addModelListener(InterfacePath.Classification_GameSubmit,this.onGameSubmit);
+        this.addModelListener(InterfacePath.Classification_CheckWord,this.onCheckWord);
+        
     }
     reqBookStatus() {
         let para: c2sBookStatus = new c2sBookStatus();
@@ -382,6 +384,24 @@ export default class _TextbookService extends BaseControll {
             return;
         }
         EventMgr.dispatch(NetNotify.Classification_GameSubmit, data);
+    }
+    reqCheckWord(data:CheckWordModel){
+        let params:c2sCheckWord = new c2sCheckWord();
+        params.type_name = data.type_name;
+        params.book_name = data.book_name;
+        params.grade = data.grade;
+        params.word_type = data.word_type;
+        params.order_type = data.order_type;
+        NetMgr.sendMsg(params);
+    }
+    onCheckWord(data:any){
+        console.log("onGameSubmit.....",data);
+        if(data.code !== 200){
+            console.log(data.msg);
+            ViewsManager.showTip(data.msg);
+            return;
+        }
+        EventMgr.dispatch(NetNotify.Classification_CheckWord, data);
     }
 };
 

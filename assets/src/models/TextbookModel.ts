@@ -24,10 +24,10 @@ export interface BookListItemData extends BaseRepPacket{
 
 
 export interface BookItemData {
-    name:string,
-    num:number,
-    sort_no:number,
-    type_name:string
+    name?:string,
+    num?:number,
+    sort_no?:number,
+    type_name?:string
 }
 
 export interface SchoolBookListItemData extends BaseRepPacket{
@@ -330,4 +330,58 @@ export interface GameSubmitModel {
     cost_time:number;
     unit:string;
     game_mode:number;
+}
+
+// export enum AmoutType {
+//     Coin= 0,/**金币 */
+//     Diamond= 1,/**钻石 */
+//     Energy= 2/**体力 */
+// }
+
+
+export enum CheckWordType {
+    AllWord=1, /**全部单词 */
+    Learned=2, /**已学单词 */
+    NotLearned=3, /**未学单词 */
+    Collect=4,/**收藏单词 */ 
+} 
+
+export enum CheckOrderType {
+    UnitSortOrder=1,/**单元排序正序 */
+    UnitReverseOrder=2,/**单元排序倒序 */
+    LearningTimeOrder=3,/**学习时间正序 */
+    LearningReverseOrder=4,/**学习时间倒序 */
+    AlphabeticalOrder=5,/**字母正序 */
+    AlphabeticalReverseOrder=6,/**字母倒序 */
+}
+
+export interface CheckWordModel {
+    type_name:string;
+    book_name:string;
+    grade:string;
+    word_type:CheckWordType;
+    order_type:CheckOrderType;
+}
+
+export class c2sCheckWord {
+    command_id: string = InterfacePath.Classification_CheckWord;
+    grade:string;
+    type_name:string;
+    book_name:string;
+    word_type:CheckWordType;
+    order_type:CheckOrderType;
+}
+
+export interface CheckWordResponse extends BaseRepPacket{
+    data:CheckWordItem[];
+}
+
+export interface CheckWordItem {
+    cn:string;
+    phonic:string;
+    syllable:string;
+    symbol:string;
+    symbolus:string;
+    unit:string;
+    word:string;
 }

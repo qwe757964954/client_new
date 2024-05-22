@@ -70,6 +70,8 @@ export class BaseDataPacket {
 export class BaseRepPacket {
     code: number;//返回码
     msg: string;//返回信息
+    command_id?:number;
+    seq?:number;
 }
 /**账号密码登录 */
 export class c2sAccountLogin {

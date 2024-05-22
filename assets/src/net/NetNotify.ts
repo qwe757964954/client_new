@@ -20,6 +20,7 @@ export const NetNotify = {
     Classification_ChangeTextbook: "Classification_ChangeTextbook", //切换教材
     Classification_ReportResult:"Classification_ReportResult", //上报结果
     Classification_GameSubmit:"Classification_GameSubmit", //单个单词学习提交
+    Classification_CheckWord:"Classification_CheckWord",  //教材单词单词列表
     Classification_TypeNameStatus:"Classification_TypeNameStatus", //大分类信息
     Classification_BookAwardList:"Classification_BookAwardList", // 教材单词课本奖励列表
     Classification_RecBookAward:"Classification_RecBookAward", //教材单词领取课本单词奖励

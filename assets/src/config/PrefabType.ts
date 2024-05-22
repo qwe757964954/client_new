@@ -83,6 +83,7 @@ export const PrefabType = {
     ChallengeRemindView: { path: "textbook/ChallengeRemindView", scpt_name: "ChallengeRemindView", zindex: Hierarchy.POPUPLAYER, tips: "首次故事背景引导" },
     SearchWorldView: { path: "textbook/SearchWordView", zindex: Hierarchy.POPUPLAYER, tips: "查找单词弹窗" },
     WordSearchView: { path: "textbook/WordSearchView", zindex: Hierarchy.POPUPLAYER, tips: "查找单词详情弹窗" },
+    WordCheckView: { path: "textbook/WordCheckView", zindex: Hierarchy.POPUPLAYER, tips: "单词列表" },
     /*********************************************教材单词相关end*************************************************************/
     /*********************************************商城相关start***********************************************************/
     ShopUIView: { path: "shop/ShopUIView", zindex: Hierarchy.POPUPLAYER, tips: "商城模块" },
