@@ -1,5 +1,6 @@
-import { _decorator, Button, Component, instantiate, Label, Layers, Node, Vec3 } from 'cc';
+import { _decorator, Button, Component, instantiate, Label, Layers, Node, Vec3, Widget } from 'cc';
 import { TextConfig } from '../../config/TextConfig';
+import GlobalConfig from '../../GlobalConfig';
 import { ViewsMgr } from '../../manager/ViewsManager';
 import { BuildingModel } from '../../models/BuildingModel';
 import CCUtil from '../../util/CCUtil';
@@ -41,15 +42,34 @@ export class CastleInfoView extends Component {
     public plUpgrade: Node = null;//升级层
     @property(Node)
     public nodeMaxLevel: Node = null;//最大等级
+    @property(Node)
+    public plRight: Node = null;//右侧层
 
     private _building: BuildingModel = null;
     private _closeCallBack: Function = null;
 
-    start() {
+    onLoad() {
+        this.adaptUI();
         this.initEvent();
     }
     protected onDestroy(): void {
         this.removeEvent();
+    }
+    /**适配UI */
+    adaptUI() {
+        let scale = ToolUtil.getValue(GlobalConfig.WIN_DESIGN_RATE, 0.1, 1.0);
+        CCUtil.setNodeScale(this.plRight, scale);
+        if (GlobalConfig.WIN_DESIGN_RATE > 1.0) {
+            let widget = this.plRight.getComponent(Widget);
+            widget.isAlignHorizontalCenter = true;
+            widget.horizontalCenter = 368;
+            widget.updateAlignment();
+
+            widget = this.plBuilding.getComponent(Widget);
+            widget.isAlignHorizontalCenter = true;
+            widget.horizontalCenter = -500;
+            widget.updateAlignment();
+        }
     }
     initEvent() {
         CCUtil.onTouch(this.btnClose, this.onBtnCloseClick, this);
@@ -116,6 +136,7 @@ export class CastleInfoView extends Component {
     }
     // 获取建筑所在位置
     getBuildingPos() {
+        this.plBuilding.getComponent(Widget).updateAlignment();//立刻更新自动布局
         return this.plBuilding.position.add(this.building.position);
     }
     /**设置回调 */

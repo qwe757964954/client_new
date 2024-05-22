@@ -98,7 +98,7 @@ export class ReviewPlanView extends Component {
     init() {
         // this.labelTip1.node.active = false;
         // this.labelTip2.node.active = false;
-        let scale = ToolUtil.getValue(GlobalConfig.WIN_RATE / GlobalConfig.DESIGN_RATE, 0.78, 1.5);
+        let scale = ToolUtil.getValue(GlobalConfig.WIN_DESIGN_RATE, 0.78, 1.5);
         CCUtil.setNodeScale(this.plAnim, scale);
         if (scale < 1.0) CCUtil.setNodeScale(this.plRight, scale);
         this.sp.setCompleteListener(this.onAnimationComplete.bind(this));

@@ -1,11 +1,13 @@
-import { _decorator, Component, EventTouch, Label, Layers, Node, Sprite, Vec3 } from 'cc';
+import { _decorator, Component, EventTouch, Label, Layers, Node, Sprite, Vec3, Widget } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
+import GlobalConfig from '../../GlobalConfig';
 import { DataMgr, ProduceInfo } from '../../manager/DataMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { BuildingModel } from '../../models/BuildingModel';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
+import { ToolUtil } from '../../util/ToolUtil';
 import { BuildingProduceItem } from './BuildingProduceItem';
 import { BuildingUpgradeView } from './BuildingUpgradeView';
 const { ccclass, property } = _decorator;
@@ -30,6 +32,8 @@ export class BuildingProduceView extends Component {
     public labelName: Label = null;//名字
     @property(Node)
     public btnUpgrade: Node = null;//升级按钮
+    @property(Node)
+    public plLeft: Node = null;//左边层
 
     private _building: BuildingModel = null;
     private _closeCallBack: Function = null;
@@ -38,12 +42,19 @@ export class BuildingProduceView extends Component {
 
     private _produceData: ProduceInfo[] = null;
 
-    start() {
+    onLoad() {
+        this.adaptUI();
         this.init();
     }
     // 销毁
     onDestroy() {
         this.removeEvent();
+    }
+    /**适配UI */
+    adaptUI() {
+        let scale = ToolUtil.getValue(GlobalConfig.WIN_DESIGN_RATE, 0.1, 1.0);
+        CCUtil.setNodeScale(this.listView, scale);
+        CCUtil.setNodeScale(this.plLeft, scale);
     }
     // 初始化
     init() {
@@ -104,6 +115,7 @@ export class BuildingProduceView extends Component {
     }
     // 获取建筑所在位置
     getBuildingPos() {
+        this.plBuilding.getComponent(Widget).updateAlignment();//立刻更新自动布局
         return this.plBuilding.position.add(this.building.position);
     }
     // 移除建筑

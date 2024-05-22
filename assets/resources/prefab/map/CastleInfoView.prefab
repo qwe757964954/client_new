@@ -289,8 +289,8 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -511.172,
-      "y": -312.453,
+      "x": -539.0000000000001,
+      "y": -313,
       "z": 0
     },
     "_lrot": {
@@ -337,7 +337,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 218.057,
+      "y": 218,
       "z": 0
     },
     "_lrot": {
@@ -923,12 +923,12 @@
     },
     "_alignFlags": 10,
     "_target": null,
-    "_left": 127.82800000000009,
+    "_left": 100,
     "_right": 0,
     "_top": 0,
     "_bottom": 0,
-    "_horizontalCenter": -511.172,
-    "_verticalCenter": 37.547000000000025,
+    "_horizontalCenter": -500,
+    "_verticalCenter": 37,
     "_isAbsLeft": true,
     "_isAbsRight": true,
     "_isAbsTop": true,
@@ -1438,8 +1438,8 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 338.684,
-      "y": 0,
+      "x": 819.0000000000001,
+      "y": -20,
       "z": 0
     },
     "_lrot": {
@@ -1488,7 +1488,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -2.684,
+      "x": -442.275,
       "y": -45.086,
       "z": 0
     },
@@ -1624,7 +1624,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 0,
+      "x": -439.591,
       "y": 0,
       "z": 0
     },
@@ -1783,8 +1783,8 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 349.9549999999999,
+      "x": -439.591,
+      "y": 349.955,
       "z": 0
     },
     "_lrot": {
@@ -1973,7 +1973,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 0,
+      "x": -439.591,
       "y": 0,
       "z": 0
     },
@@ -4930,12 +4930,12 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 884.9999999999999,
+      "width": 885,
       "height": 801
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
+      "x": 1,
       "y": 0.5
     },
     "_id": ""
@@ -5001,14 +5001,14 @@
     "__prefab": {
       "__id__": 211
     },
-    "_alignFlags": 42,
+    "_alignFlags": 34,
     "_target": null,
-    "_left": 785.1840000000002,
-    "_right": 107.81600000000014,
+    "_left": 785.1840000000001,
+    "_right": 70,
     "_top": 0,
     "_bottom": 0,
-    "_horizontalCenter": 0,
-    "_verticalCenter": 0,
+    "_horizontalCenter": 368,
+    "_verticalCenter": -20,
     "_isAbsLeft": true,
     "_isAbsRight": true,
     "_isAbsTop": true,
@@ -5179,6 +5179,9 @@
     },
     "nodeMaxLevel": {
       "__id__": 67
+    },
+    "plRight": {
+      "__id__": 60
     },
     "_id": ""
   },
