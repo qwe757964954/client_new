@@ -261,6 +261,8 @@ export interface CurrentBookStatus extends BaseRepPacket {
     id?:string;
     num?:number;
     rank_num?:number;
+    unit_pass_num?:number;
+    unit_total_num?:number;
 }
 
 export interface ReportResultModel{ 

@@ -96,6 +96,7 @@ export class TextbookChallengeView extends BaseView {
         this._unitDetailView.updateUnitProps(this._bookData);
         this.getUnitListStatus();
         this.getBookPlanDetail();
+        this._bottomView.updateItemList(data);
     }
     onPlanModify(data:any){
         let params:BookUnitModel = {
@@ -140,8 +141,8 @@ export class TextbookChallengeView extends BaseView {
 
     onUnitListStatus(data:UnitListItemStatus){
         this._unitListArr = data;
-        this._currentUnitIndex = this.getCurrentUnit();
-        this._bottomView.updateItemList(this._unitListArr.data,this._currentUnitIndex);
+        // this._currentUnitIndex = this.getCurrentUnit();
+        // this._bottomView.updateItemList(this._unitListArr.data,this._currentUnitIndex);
         // this._unitDetailView.updateUnitProps(this._unitListArr.data[this._currentUnitIndex]);
     }
     /**更新我的词书 */

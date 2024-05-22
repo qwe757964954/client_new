@@ -303,6 +303,8 @@ export default class _TextbookService extends BaseControll {
             curBookData.id = data.id;
             curBookData.num = data.num;
             curBookData.rank_num = data.rank_num;
+            curBookData.unit_pass_num = data.unit_pass_num;
+            curBookData.unit_total_num = data.unit_total_num;
         }
         EventMgr.dispatch(NetNotify.Classification_CurrentBook, curBookData);
     }
