@@ -1,15 +1,16 @@
-import { _decorator, error, instantiate, isValid, Node, Prefab, Widget } from 'cc';
+import { _decorator, error, instantiate, isValid, Label, Node, Prefab, Widget } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import GlobalConfig from '../../GlobalConfig';
 import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { BookItemData, CheckOrderType, CheckWordModel, CheckWordResponse, CheckWordType, CurrentBookStatus } from '../../models/TextbookModel';
+import { BookItemData, CheckOrderType, CheckWordItem, CheckWordModel, CheckWordResponse, CheckWordType, CurrentBookStatus } from '../../models/TextbookModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
 import List from '../../util/list/List';
 import { NavTitleView } from '../common/NavTitleView';
 import { TabTopView } from './TabTopView';
+import { WordCheckItem } from './WordCheckItem';
 import { WordSortView } from './WordSortView';
 const { ccclass, property } = _decorator;
 
@@ -24,12 +25,18 @@ export class WordCheckView extends BaseView {
     @property(WordSortView)
     public wordSortView:WordSortView = null;
 
+    @property(Label)
+    public total_word_text:Label = null;
+
     private _bookData:CurrentBookStatus = null;
     private _tabTop:TabTopView = null;
     private _bookTabData:BookItemData[] = [];
 
     private _currentType:CheckWordType = CheckWordType.AllWord;
     private _orderType:CheckOrderType = CheckOrderType.UnitSortOrder;
+    
+    private _wordUnits:{ [unit: string]: CheckWordItem[] } = {};
+
     start() {
         this.initTabData();
         this.initUI();
@@ -74,9 +81,19 @@ export class WordCheckView extends BaseView {
 	protected onInitModuleEvent() {
 		this.addModelListener(NetNotify.Classification_CheckWord,this.onCheckWord);
 	}
-    onCheckWord(data:CheckWordResponse) {
-        console.log("WordCheckView......","onCheckWord......");
-        console.log(data);
+    onCheckWord(response:CheckWordResponse) {
+        this._wordUnits = {};
+        response.data.forEach(word => {
+            if (!this._wordUnits[word.unit]) {
+                this._wordUnits[word.unit] = [];
+            }
+            this._wordUnits[word.unit].push(word);
+        });
+        console.log(this._wordUnits);
+        console.log(Object.keys(this._wordUnits).length);
+        this.total_word_text.string = `共${response.data.length}词`;
+        this.wordCheckScrollView.numItems = Object.keys(this._wordUnits).length;
+        // this.wordCheckScrollView.update();
     }
     /**初始化tab选项 */
     initTabContent(): Promise<TabTopView>{
@@ -119,6 +136,14 @@ export class WordCheckView extends BaseView {
     initData(data:CurrentBookStatus){
         this._bookData = data;
     }
+
+    onLoadWordCheckVerticalList(item:Node, idx:number){
+        console.log('onLoadWordCheckVerticalList',item,idx);
+        let unit = Object.keys(this._wordUnits)[idx];
+        let itemScript = item.getComponent(WordCheckItem);
+        itemScript.updateItemProps(unit,this._wordUnits[unit])
+    }
+
 }
 
 
