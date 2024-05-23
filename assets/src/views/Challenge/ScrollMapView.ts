@@ -1,7 +1,7 @@
 import { Component, EventTouch, Node, Prefab, ScrollView, Sprite, SpriteFrame, UITransform, Vec2, _decorator, instantiate } from 'cc';
 import { ResLoader } from '../../manager/ResLoader';
 import { MapLevelData } from '../../models/AdventureModel';
-import { UnitItemStatus, UnitListItemStatus } from '../../models/TextbookModel';
+import { GateListItem, UnitItemStatus, UnitListItemStatus } from '../../models/TextbookModel';
 import CCUtil from '../../util/CCUtil';
 import ImgUtil from '../../util/ImgUtil';
 import { MapPointItem } from '../adventure/levelmap/MapPointItem';
@@ -60,7 +60,7 @@ export class ScrollMapView extends Component {
     @property(Prefab)
     mapItemPrefab:Prefab = null;
 
-    private _clickCallback:(unit:string)=>void = null;
+    private _clickCallback:(itemStatus:UnitItemStatus,gate:GateListItem)=>void = null;
 
     private _unitStatus:UnitItemStatus[] = null;
 
@@ -72,30 +72,37 @@ export class ScrollMapView extends Component {
     }
 
     async loadMapItems(unitStatus:UnitListItemStatus) {
-        let count = 0;
+        let map_count = 0;
+        let unit_count = 0;
         for (let i = 0; i < unitStatus.data.length; i++) {
-            const index = i % MapCoordinates.length;
-            const xOffset = Math.floor(i / MapCoordinates.length) * mapWidth;
-            const point: MapCoordinate = {
-                x: MapCoordinates[index].x + xOffset,
-                y: MapCoordinates[index].y
-            };
-            let itemNode = instantiate(this.mapItemPrefab);
-            let itemScript:MapPointItem = itemNode.getComponent(MapPointItem);
-            itemScript.index = index;
-            let smallId = i + 1;
-            let data:MapLevelData = {big_id:1, small_id:smallId,micro_id:smallId};
-            itemScript.initData(data);
-            CCUtil.onTouch(itemNode, this.onItemClick, this);
-            this.mapScrollView.content.addChild(itemNode);
-            itemNode.setSiblingIndex(99);
-            itemNode.setPosition(point.x,point.y,0);
-            let mapNode = this.mapScrollView.content.getChildByName(`bg_map_${count}`);
-            let uiTransform = mapNode.getComponent(UITransform);
-            let pos_2d = new Vec2(point.x,point.y);
-            if (uiTransform && !uiTransform.getBoundingBox().contains(pos_2d)) {
-                count++;
-                await this.addMapBg(count);
+            const itemData:UnitItemStatus = unitStatus.data[i];
+            for (let j = 0; j < itemData.gate_list.length; j++) {
+                const gate:GateListItem = itemData.gate_list[j];
+                const index = unit_count % MapCoordinates.length;
+                const xOffset = Math.floor(unit_count / MapCoordinates.length) * mapWidth;
+                const point: MapCoordinate = {
+                    x: MapCoordinates[index].x + xOffset,
+                    y: MapCoordinates[index].y
+                };
+                let itemNode = instantiate(this.mapItemPrefab);
+                let itemScript:MapPointItem = itemNode.getComponent(MapPointItem);
+                itemScript.index = index;
+                const stringWithoutUnit: string = itemData.unit.replace("Unit ", "").trim();
+    
+                let data:MapLevelData = {big_id:parseInt(stringWithoutUnit), small_id:gate.small_id,micro_id:gate.small_id};
+                itemScript.initData(data);
+                CCUtil.onTouch(itemNode, this.onItemClick, this);
+                this.mapScrollView.content.addChild(itemNode);
+                itemNode.setSiblingIndex(99);
+                itemNode.setPosition(point.x,point.y,0);
+                let mapNode = this.mapScrollView.content.getChildByName(`bg_map_${map_count}`);
+                let uiTransform = mapNode.getComponent(UITransform);
+                let pos_2d = new Vec2(point.x,point.y);
+                if (uiTransform && !uiTransform.getBoundingBox().contains(pos_2d)) {
+                    map_count++;
+                    await this.addMapBg(map_count);
+                }
+                unit_count++;
             }
         }
     }
@@ -127,16 +134,18 @@ export class ScrollMapView extends Component {
         });
     }
 
-    setClickCallback(callback:(unit:string)=>void){
+    setClickCallback(callback:(itemStatus:UnitItemStatus,gate:GateListItem)=>void){
         this._clickCallback = callback;
     }
 
     onItemClick(event:EventTouch){
         let item:MapPointItem = event.currentTarget.getComponent(MapPointItem);
-        let index = item.index;
-        let itemStatus = this._unitStatus[index];
+        let data = item.data;
+        let itemStatus:UnitItemStatus = this._unitStatus[data.big_id - 1];
+        let small_id = data.small_id;
+        let gate:GateListItem = itemStatus.gate_list[small_id - 1];
         if(this._clickCallback){
-            this._clickCallback(itemStatus.unit);
+            this._clickCallback(itemStatus,gate);
         }
     }
 }

@@ -176,6 +176,8 @@ export class BaseModeView extends BaseView {
             game_mode: this.gameMode,
             cost_time:costTime,
             word: word,
+            small_id:levelData.small_id,
+            word_flag:"1"
         }
         TBServer.reqGameSubmit(data);
     }
@@ -289,7 +291,19 @@ export class BaseModeView extends BaseView {
     protected setCollect(isCollect: boolean) {
         this.btn_collect.getComponent(Sprite).grayscale = !isCollect
     }
+    /**收藏单词 */
+    onClickCollectEvent(){
+        console.log("onClickCollectEvent.....");
+        let isAdventure = this._levelData.hasOwnProperty('islandId'); //是否是大冒险关卡
+        let wordData = this._wordsData[this._wordIndex];
+        console.log('word', wordData);
+        if (isAdventure) { //大冒险关卡
 
+        } else {
+            //教材关卡
+            
+        }
 
+    }
 }
 
