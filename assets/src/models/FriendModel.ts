@@ -47,6 +47,20 @@ export interface EmailDataInfo {
     Awards: string;  //json形式字符串奖励
 }
 
+/**聊天消息 */
+export interface FriendChatInfo {
+    CreateTime: number; //聊天的消息时间戳
+    isShow: boolean; //日期是否显示
+    AccountId: number; //聊天者的userId,
+    Message: number;  //聊天者发送的图片ID
+}
+
+/**聊天网络消息 */
+export interface FriendChatNetResponse {
+    Code: number;  //消息码
+    Data: FriendChatInfo[]; //聊天消息
+}
+
 //申请好友列表
 export class c2sFriendList {
     command_id: string = "-1";//InterfacePath.Island_Status;
@@ -90,6 +104,19 @@ export class c2sMsgRecAwards {
 export class c2sFriendDel {
     command_id: string = "-1";//InterfacePath.Island_Status;
     Id: number;  //好友UserID
+}
+
+// 收到好友发来的消息列表
+export class c2sFriendMsgList {
+    command_id: string = "-1";//InterfacePath.Island_Status;
+    Id: number;  //好友UserID
+}
+
+// 向好友发消息
+export class c2sSendFriendMsg {
+    command_id: string = "-1";//InterfacePath.Island_Status;
+    FriendId: number;  //好友UserID
+    Message: number; //表情消息ID
 }
 
 

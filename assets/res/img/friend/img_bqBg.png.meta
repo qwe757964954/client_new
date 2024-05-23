@@ -11,7 +11,7 @@
     "6c48a": {
       "importer": "texture",
       "uuid": "9d6b541c-e18f-4986-9eaf-63e5ea5c7db2@6c48a",
-      "displayName": "bqBg",
+      "displayName": "img_bqBg",
       "id": "6c48a",
       "name": "texture",
       "userData": {
@@ -35,7 +35,7 @@
     "f9941": {
       "importer": "sprite-frame",
       "uuid": "9d6b541c-e18f-4986-9eaf-63e5ea5c7db2@f9941",
-      "displayName": "bqBg",
+      "displayName": "img_bqBg",
       "id": "f9941",
       "name": "spriteFrame",
       "userData": {
@@ -50,10 +50,10 @@
         "height": 137,
         "rawWidth": 283,
         "rawHeight": 137,
-        "borderTop": 0,
-        "borderBottom": 0,
-        "borderLeft": 0,
-        "borderRight": 0,
+        "borderTop": 12,
+        "borderBottom": 10,
+        "borderLeft": 12,
+        "borderRight": 11,
         "packable": true,
         "pixelsToUnit": 100,
         "pivotX": 0.5,
