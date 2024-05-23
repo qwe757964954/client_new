@@ -10,15 +10,8 @@ import { TBServer } from '../../service/TextbookService';
 import List from '../../util/list/List';
 import { NavTitleView } from '../common/NavTitleView';
 import { TabTopView } from './TabTopView';
+import { WordSortView } from './WordSortView';
 const { ccclass, property } = _decorator;
-/*
-export interface BookItemData {
-    name?:string,
-    num?:number,
-    sort_no?:number,
-    type_name?:string
-}
-*/
 
 
 @ccclass('WordCheckView')
@@ -27,9 +20,16 @@ export class WordCheckView extends BaseView {
     public top_layout:Node = null;          // 顶部导航栏
     @property(List)
     public wordCheckScrollView:List = null;
+
+    @property(WordSortView)
+    public wordSortView:WordSortView = null;
+
     private _bookData:CurrentBookStatus = null;
     private _tabTop:TabTopView = null;
     private _bookTabData:BookItemData[] = [];
+
+    private _currentType:CheckWordType = CheckWordType.AllWord;
+    private _orderType:CheckOrderType = CheckOrderType.UnitSortOrder;
     start() {
         this.initTabData();
         this.initUI();
@@ -50,8 +50,13 @@ export class WordCheckView extends BaseView {
         this.initNavTitle();
         this._tabTop = await this.initTabContent();
         this._tabTop.loadTabData(this._bookTabData,(selectId:number)=>{
-            let type:CheckWordType = (selectId+1) as CheckWordType;
-            this.onRequestCheckWord(type, CheckOrderType.UnitSortOrder);
+            this._currentType = (selectId+1) as CheckWordType;
+            this.wordSortView.initData(this._currentType);
+            this.onRequestCheckWord();
+        });
+
+        this.wordSortView.setMenuSelectCallback((order_type:CheckOrderType)=>{
+            this.onRequestCheckWord();
         });
         
     }
@@ -100,13 +105,13 @@ export class WordCheckView extends BaseView {
         
     }
 
-    onRequestCheckWord(word_type:CheckWordType,order_type:CheckOrderType){
+    onRequestCheckWord(){
         let params:CheckWordModel = {
             type_name:this._bookData.type_name,
             book_name:this._bookData.book_name,
             grade:this._bookData.grade,
-            word_type:word_type,
-            order_type:order_type,
+            word_type:this._currentType,
+            order_type:this._orderType,
         }
         TBServer.reqCheckWord(params);
     }
