@@ -24,6 +24,9 @@ export default class GlobalConfig {
     public static WIN_RATE: number = 1.0;
     public static WIN_SIZE: Size;//窗口大小（与设计分辨率一致，适配方案）
     public static SCREEN_SIZE: Size;//屏幕大小
+    public static DESIGN_SIZE: Size;//设计分辨率;
+    public static DESIGN_RATE: number = 1.0;
+    public static WIN_DESIGN_RATE: number = 1.0;//窗口分辨率与设计分辨率比例
     public static IS_NARROW: boolean = false;//是否是窄屏
     public static MAIN_RATE_MAX: number = 1.55;//主场景最大比例（适配方案）
 
@@ -32,10 +35,13 @@ export default class GlobalConfig {
         this.WIN_SIZE = View.instance.getVisibleSize();
         this.SCREEN_SIZE = screen.windowSize;
         this.WIN_RATE = this.WIN_SIZE.width / this.WIN_SIZE.height;
+        this.DESIGN_SIZE = View.instance.getDesignResolutionSize();
+        this.DESIGN_RATE = this.DESIGN_SIZE.width / this.DESIGN_SIZE.height;
+        this.WIN_DESIGN_RATE = this.WIN_RATE / this.DESIGN_RATE;
         if (this.WIN_RATE <= 1.4) {
             this.IS_NARROW = true;
         }
-        console.log("GlobalConfig set size", this.WIN_SIZE, this.WIN_RATE, this.SCREEN_SIZE);
+        console.log("GlobalConfig set size", this.WIN_SIZE, this.WIN_RATE, this.SCREEN_SIZE, this.DESIGN_SIZE, this.DESIGN_RATE, this.WIN_DESIGN_RATE);
     }
     public static init() {
         if (this._isInit) return;

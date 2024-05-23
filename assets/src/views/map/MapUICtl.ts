@@ -37,12 +37,14 @@ export class MapUICtl extends MainBaseCtl {
     private _bgModelAry: BgModel[] = [];//背景模型数组
     private _landModelAry: LandModel[] = [];//地块模型数组
     private _roleModelAry: RoleBaseModel[] = [];//角色模型数组
+    private _isNeedUpdateVisible: boolean = false;//是否需要更新可视区域
     private _isNeedSort: boolean = false;//是否需要重新排序
     private _buidingSortHandler: string;//建筑需要重新排序handle
     private _roleMoveHandler: string;//角色需要移动handle
     private _roleSortHandler: string;//角色需要重新排序handle
     private _buildingListHandle: string;//建筑列表handle
     private _roleIsShow: boolean = true;//角色是否显示
+    private _countdownFrameIsShow: boolean = true;//建筑倒计时框是否显示
 
     private _callBack: Function = null;//加载完成回调
     private _loadCount: number = 0;//加载计数
@@ -228,6 +230,7 @@ export class MapUICtl extends MainBaseCtl {
             let editInfo = DataMgr.instance.editInfo[element.bid];
             let building = this.newBuilding(editInfo, element.x, element.y, 1 == element.direction, false);
             building.buildingID = element.id;
+            building.showCountDownView();
         });
     }
     /** 初始化角色 */
@@ -517,15 +520,22 @@ export class MapUICtl extends MainBaseCtl {
         // return this.newBuilding(data, 20, 20);
     }
     // 摄像头移动到指定建筑
-    moveCameraToBuilding(building: BuildingModel, plPos: Vec3) {
+    moveCameraToBuilding(building: BuildingModel, plPos: Vec3, scale: number = 1) {
         let pos = building.node.position;
-        let winSize = GlobalConfig.WIN_SIZE;
+        // let winSize = GlobalConfig.WIN_SIZE;
         // console.log("moveCameraToBuilding",pos.x, pos.y, plPos.x, plPos.y);
-        this.mapMoveTo(pos.x - plPos.x, pos.y - plPos.y);
-        this.mapZoomTo(this._uiCameraHeight);
+        this.mapMoveTo(pos.x - plPos.x / scale, pos.y - plPos.y / scale);
+        this.mapZoomTo(this._uiCameraHeight / scale);
+        this.updateCameraVisible(true);
     }
     // 更新摄像头可见范围内元素
-    updateCameraVisible() {
+    updateCameraVisible(immediately: boolean = false) {
+        if (!immediately) {
+            this._isNeedUpdateVisible = true;
+            return;
+        }
+        this._isNeedUpdateVisible = false;
+
         let visibleRect = new Rect();
         let pos = this._cameraPos;
         let winSize = GlobalConfig.WIN_SIZE;
@@ -645,11 +655,28 @@ export class MapUICtl extends MainBaseCtl {
             element.isActive = isShow;
         });
     }
+    /** 是否显示所有建筑计时框 */
+    public set countdownFrameIsShow(isShow: boolean) {
+        if (this._countdownFrameIsShow == isShow) return;
+        this._countdownFrameIsShow = isShow;
+        this._mainScene.buildingLayer.children.forEach(element => {
+            let building = element.getComponent(BuildingModel);
+            if (!building) return;
+            if (isShow) {
+                building.showCountDownView();
+            } else {
+                building.closeCountDownView();
+            }
+        });
+    }
     /**每帧更新 */
     update(dt: number): void {
         if (this._isNeedSort) {
             this.buildingRoleSortEx();
             this._isNeedSort = false;
+        }
+        if (this._isNeedUpdateVisible) {
+            this.updateCameraVisible(true);
         }
     }
     /**加载回调 */

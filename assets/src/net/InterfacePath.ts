@@ -38,12 +38,15 @@ export const InterfacePath = {
     Classification_SchoolUnit: "Classification.SchoolUnit", //教材课本-年级-单元
     Classification_SchoolWord: "Classification.SchoolWord", //教材课本-年级-单元-词汇
     Classification_UnitListStatus: "3004", //书年级单元列表
+    Classification_VocabularyWord: "3005", //教材单词分类词汇列表接口
     Classification_UnitStatus: "3009", //书年级单元学习情况列表
     Classification_UnitWordList: "Classification.UnitWordList", // 单元单词列表
     Classification_GameResultUp: "Classification.GameResultUp", //结果上报
     Classification_Word: "3021", //单个单词详情
     Classification_ChangeTextbook: "3020", //切换教材
-    Classification_GameSubmit: "3024", //单个单词学习提交
+    Classification_CheckWord: "3008", //词表单词列表
+    Classification_CollectWord: "3007", //教材单词收藏与移除
+    Classification_GameSubmit: "3024", //单词提交
     Classification_TypeNameStatus: "Classification.TypeNameStatus", //大分类信息
     Classification_BookAwardList: "3006", // 教材单词课本奖励列表
     Classification_CurrentBook: "3019", // 当前词书信息

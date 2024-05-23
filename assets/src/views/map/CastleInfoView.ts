@@ -1,5 +1,6 @@
-import { _decorator, Button, Component, instantiate, Label, Layers, Node, Vec3 } from 'cc';
+import { _decorator, Button, Component, instantiate, Label, Layers, Node, Vec3, Widget } from 'cc';
 import { TextConfig } from '../../config/TextConfig';
+import GlobalConfig from '../../GlobalConfig';
 import { ViewsMgr } from '../../manager/ViewsManager';
 import { BuildingModel } from '../../models/BuildingModel';
 import CCUtil from '../../util/CCUtil';
@@ -37,15 +38,38 @@ export class CastleInfoView extends Component {
     public plConditions: Node = null;//条件层
     @property(Node)
     public condition: Node = null;//条件
+    @property(Node)
+    public plUpgrade: Node = null;//升级层
+    @property(Node)
+    public nodeMaxLevel: Node = null;//最大等级
+    @property(Node)
+    public plRight: Node = null;//右侧层
 
     private _building: BuildingModel = null;
     private _closeCallBack: Function = null;
 
-    start() {
+    onLoad() {
+        this.adaptUI();
         this.initEvent();
     }
     protected onDestroy(): void {
         this.removeEvent();
+    }
+    /**适配UI */
+    adaptUI() {
+        let scale = ToolUtil.getValue(GlobalConfig.WIN_DESIGN_RATE, 0.1, 1.0);
+        CCUtil.setNodeScale(this.plRight, scale);
+        if (GlobalConfig.WIN_DESIGN_RATE > 1.0) {
+            let widget = this.plRight.getComponent(Widget);
+            widget.isAlignHorizontalCenter = true;
+            widget.horizontalCenter = 368;
+            widget.updateAlignment();
+
+            widget = this.plBuilding.getComponent(Widget);
+            widget.isAlignHorizontalCenter = true;
+            widget.horizontalCenter = -500;
+            widget.updateAlignment();
+        }
     }
     initEvent() {
         CCUtil.onTouch(this.btnClose, this.onBtnCloseClick, this);
@@ -63,12 +87,20 @@ export class CastleInfoView extends Component {
         this._building.addToParent(this.building);
         this._building.setCameraType(Layers.Enum.UI_2D);
 
+        let maxLevel = 5;
         let buildingData = this._building.buildingData;
         let editInfo = this._building.editInfo;
         this.labelName1.string = editInfo.name;
         this.labelLevel.string = ToolUtil.replace(TextConfig.Level_Text, buildingData.level);
-        // this.labelMaxLevel.string = "3";// TODO最大等级
+        this.labelMaxLevel.string = ToolUtil.replace(TextConfig.Level_Text2, maxLevel);
         this.labelName2.string = editInfo.name;
+        if (buildingData.level >= maxLevel) {
+            this.nodeMaxLevel.active = true;
+            this.plUpgrade.active = false;
+            return;
+        }
+        this.nodeMaxLevel.active = false;
+        this.plUpgrade.active = true;
         this.labelLevel1.string = ToolUtil.replace(TextConfig.Level_Text, buildingData.level);
         this.labelLevel2.string = ToolUtil.replace(TextConfig.Level_Text, buildingData.level + 1);
         // this.labelCoin.string = "3000";// TODO升级所需金币
@@ -104,7 +136,8 @@ export class CastleInfoView extends Component {
     }
     // 获取建筑所在位置
     getBuildingPos() {
-        return this.plBuilding.position;
+        this.plBuilding.getComponent(Widget).updateAlignment();//立刻更新自动布局
+        return this.plBuilding.position.add(this.building.position);
     }
     /**设置回调 */
     setCallBack(closeCallBack: Function) {

@@ -10,6 +10,7 @@ export const TextConfig = {
     Produce_Lock1: "城堡等级达到{0}级",
     Produce_Lock2: "建筑物等级达到{0}级",
     Level_Text: "{0}级",
+    Level_Text2: "/{0}",
     Ver_Text: "ver:{0}.{1}.{2}",
 
     Function_Tip: "功能暂未开放，敬请期待",
@@ -31,6 +32,7 @@ export const TextConfig = {
     EN: "英",
 
     Word_Learn_Count: "共计{0}词",
+    Level_Index: "第{0}关",
 
     //成就相关
     Achieve_OverView: "成就总览",
@@ -41,5 +43,26 @@ export const TextConfig = {
     Achieve_AbilityTrain: "能力培养",
     Achieve_GoTo: "前往",
     Achieve_GetAward: "领取",
-    Achieve_Error_Medal_ExceedLimit: "最多只能展示{0}枚勋章!"
+    Achieve_Error_Medal_ExceedLimit: "最多只能展示{0}枚勋章!",
+
+    //单词查找相关
+    Search_Word_Fail: "未查找到该单词详情",
+
+    //帮助菜单相关
+    Help_ImageDisplay: "图示",
+
+    //好友系统相关
+    Friend_List: "好友列表",
+    Friend_Add: "添加好友",
+    Friend_Apply: "好友申请",
+    Friend_Notify: "好友通知",
+    Friend_InputEmptyTip: "好友ID不能为空",
+    Friend_NoFindUser: "没找到此用户",
+    Friend_CannotAddSelfTip: "不能添加自己",
+    Friend_AddSuccess: "添加好友成功",
+    Friend_AcceptApply: "已同意好友添加申请",
+    Friend_RefuseApply: "已拒绝好友添加申请",
+    Friend_EmailSys: "系统消息",
+    Friend_RecvAwardSucc: "获得邮件奖励",
+    Friend_DelFriendSucc: "删除好友成功",
 }

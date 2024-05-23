@@ -408,6 +408,7 @@
     "selectedFlag": {
       "__id__": 8
     },
+    "selectedFlag2": null,
     "selectedSpriteFrame": null,
     "adaptiveSize": false,
     "tab_name": {

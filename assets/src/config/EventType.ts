@@ -20,6 +20,7 @@ export const EventType = {
     Coin_Update: "CoinUpdate",//金币更新
     Diamond_Update: "DiamondUpdate",//钻石更新
     Amethyst_Update: "AmethystUpdate",//紫晶石更新
+    Ticket_Update: "TicketUpdate",//奖券更新
     Mood_Score_Update: "MoodUpdate",//心情分更新
 
     Study_Page_Switching: "Study_Page_Switching",//学习页面切换
@@ -65,8 +66,24 @@ export const EventType = {
 
     /**世界BOSS */
     Challenge_WorldBoss: "Challenge_WorldBoss", //挑战世界boss
+
     /**成就相关 */
     Achieve_GetAllInfo: "Achieve_GetAllInfo", //获取成就各项数据列表
     Achieve_SelectMedal: "Achieve_SelectMedal", //选择勋章
     Achieve_GetAward: "Achieve_GetAward", //领取奖励
+
+    /**好友社交相关 */
+    Friend_MyList: "Friend_MyList", //获取我的好友列表
+    Friend_RecommendList: "Friend_RecommendList", //获取推荐好友列表
+    Friend_ApplyList: "Friend_ApplyList", //获取好友申请列表
+    Friend_SearchFriend: "Friend_SearchFriend",   //查找好友
+    Friend_ClickFriendList: "Friend_ClickFriendList", // 点击好友列表
+    Friend_ClickEmailList: "Friend_ClickEmailList",   // 点击邮件列表
+    Friend_AddFriend: "Friend_AddFriend", //添加好友
+    Friend_ApplyStatus: "Friend_ApplyStatus", //同意/拒绝好友申请请求
+    Friend_SysMsg_List: "Friend_SysMsg_List", // 邮件列表
+    Friend_RecvAward: "Friend_RecvAward", // 获得邮件附件奖励
+    Friend_DelFriend: "Friend_DelFriend", // 删除好友
+
+
 }

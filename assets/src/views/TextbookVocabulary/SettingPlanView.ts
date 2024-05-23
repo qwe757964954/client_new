@@ -71,7 +71,6 @@ export class SettingPlanView extends BasePopup {
             this.levelScroll.scrollToNumber(`${levels}`)
         })
     }
-
     updateTitleName(title:string) {
         this.book_title.string = title;
     }

@@ -47,6 +47,7 @@ export const PrefabType = {
     TipView: { path: "common/TipView", zindex: Hierarchy.TIPLAYER, tips: "提示界面" },
     ConfirmView: { path: "common/ConfirmView", zindex: Hierarchy.TIPLAYER, tips: "确定弹窗" },
     RewardItem: { path: "common/RewardItem", zindex: Hierarchy.SCENELAYER, tips: "奖励道具" },
+    RewardView: { path: "common/RewardView", zindex: Hierarchy.POPUPLAYER, tips: "奖励弹窗" },
     /*********************************************公共相关end*************************************************************/
     // 设置相关
     SettingView: { path: "setting/SettingView", zindex: Hierarchy.POPUPLAYER, tips: "设置界面" },
@@ -84,6 +85,7 @@ export const PrefabType = {
     ChallengeRemindView: { path: "textbook/ChallengeRemindView", scpt_name: "ChallengeRemindView", zindex: Hierarchy.POPUPLAYER, tips: "首次故事背景引导" },
     SearchWorldView: { path: "textbook/SearchWordView", zindex: Hierarchy.POPUPLAYER, tips: "查找单词弹窗" },
     WordSearchView: { path: "textbook/WordSearchView", zindex: Hierarchy.POPUPLAYER, tips: "查找单词详情弹窗" },
+    WordCheckView: { path: "textbook/WordCheckView", zindex: Hierarchy.POPUPLAYER, tips: "单词列表" },
     /*********************************************教材单词相关end*************************************************************/
     /*********************************************商城相关start***********************************************************/
     ShopUIView: { path: "shop/ShopUIView", zindex: Hierarchy.POPUPLAYER, tips: "商城模块" },
@@ -111,6 +113,8 @@ export const PrefabType = {
     BuildingUpgradeView: { path: "map/BuildingUpgradeView", zindex: Hierarchy.POPUPLAYER, tips: "建筑升级信息界面" },
     CastleInfoView: { path: "map/CastleInfoView", zindex: Hierarchy.POPUPLAYER, tips: "城堡信息界面" },
     EditAnimView: { path: "map/EditAnimView", zindex: Hierarchy.SCENELAYER, tips: "建筑编辑动画" },
+    CountdownFrame: { path: "map/CountdownFrame", zindex: Hierarchy.SCENELAYER, tips: "倒计时框加速" },
+    BuildingSuccessView: { path: "map/BuildingSuccessView", zindex: Hierarchy.POPUPLAYER, tips: "建筑成功界面" },
     /*********************************************地图相关end*************************************************************/
     /*********************************************宠物相关start*************************************************************/
     PetInteractionView: { path: "map/PetInteractionView", zindex: Hierarchy.POPUPLAYER, tips: "宠物交互界面" },
@@ -134,4 +138,15 @@ export const PrefabType = {
     /*********************************************成就 start***********************************************************/
     AchieveDialogView: { path: "achieve/AchieveDialogView", zindex: Hierarchy.POPUPLAYER, tips: "成就面板" },
     /*********************************************成就 End*************************************************************/
+    /*********************************************帮助 start***********************************************************/
+    HelpDialogView: { path: "help/HelpDialogView", zindex: Hierarchy.POPUPLAYER, tips: "帮助界面" },
+    /*********************************************帮助 End*************************************************************/
+    /*********************************************复习规划start***********************************************************/
+    ReviewPlanView: { path: "reviewPlan/ReviewPlanView", zindex: Hierarchy.POPUPLAYER, tips: "复习规划" },
+    ReviewAdjustPlanView: { path: "reviewPlan/ReviewAdjustPlanView", zindex: Hierarchy.POPUPLAYER, tips: "复习规划调整框" },
+    ReviewWordListView: { path: "reviewPlan/ReviewWordListView", zindex: Hierarchy.POPUPLAYER, tips: "复习单词列表" },
+    /*********************************************复习规划end***********************************************************/
+    /*********************************************社交 start***********************************************************/
+    FriendsDialogView: { path: "social/FriendsDialogView", zindex: Hierarchy.POPUPLAYER, tips: "好友界面" },
+    /*********************************************社交 End*************************************************************/
 }

@@ -16,6 +16,7 @@ import { SoundMgr } from '../../manager/SoundMgr';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
 import { RoleModel } from '../../models/RoleModel';
+import CCUtil from '../../util/CCUtil';
 import { TimerMgr } from '../../util/TimerMgr';
 import { BuildingProduceView } from '../map/BuildingProduceView';
 import { CastleInfoView } from '../map/CastleInfoView';
@@ -212,7 +213,7 @@ export class MainScene extends Component {
             let editInfo = building.editInfo;
             if (EditType.Null == editInfo.type) {
                 this.showCastleView(building);
-            } else if (EditType.Buiding == editInfo.type) {
+            } else if (DataMgr.instance.buildProduceInfo[editInfo.id]) {
                 this.showBuildingProduceView(building);
             } else {
                 ViewsMgr.showTip(TextConfig.Function_Tip2);
@@ -341,6 +342,7 @@ export class MainScene extends Component {
             });
         }
         this._mapUICtl.roleIsShow = MapStatus.DEFAULT == status;
+        this._mapUICtl.countdownFrameIsShow = MapStatus.DEFAULT == status;
         let ctl = this.getMapCtl();
         ctl.clearData();
         this._mapStatus = status;
@@ -464,13 +466,16 @@ export class MainScene extends Component {
             let buildingProduceView = node.getComponent(BuildingProduceView);
             let pos = null;
             let self = this;
+            let scale = 1.5;
             let showBuilding = function (building: BuildingModel) {
-                self._mapUICtl.moveCameraToBuilding(building, buildingProduceView.getBuildingPos());
+                self._mapUICtl.moveCameraToBuilding(building, buildingProduceView.getBuildingPos(), scale);
                 pos = building.pos;
                 building.removeFromParent();
+                CCUtil.setNodeScale(building, scale);
                 buildingProduceView.initData(building);
             }
             let backBuilding = function (building: BuildingModel) {
+                CCUtil.setNodeScale(building, 1.0);
                 building.addToParent(self.buildingLayer);
                 building.pos = pos;
                 building.setCameraType(Layers.Enum.DEFAULT);

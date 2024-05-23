@@ -1,4 +1,4 @@
-import { EventKeyboard, EventTouch, Input, KeyCode, Node, NodeEventType, SpriteFrame, Widget, director, gfx, input, isValid } from "cc";
+import { EventKeyboard, EventTouch, Input, KeyCode, Node, NodeEventType, SpriteFrame, Vec3, Widget, director, gfx, input, isValid } from "cc";
 import { SoundMgr } from "../manager/SoundMgr";
 
 export default class CCUtil {
@@ -106,7 +106,7 @@ export default class CCUtil {
         return buffer;
     }
 
-    public static addWidget(nd: Node, paddings: { left?: number; right?: number; top?: number, bottom?: number}) {
+    public static addWidget(nd: Node, paddings: { left?: number; right?: number; top?: number, bottom?: number }) {
         if (!nd) return;
 
         let wgt = nd.getComponent(Widget);
@@ -134,5 +134,11 @@ export default class CCUtil {
         }
 
         return wgt;
+    }
+    /**设置2D节点缩放 */
+    public static setNodeScale(obj: any, scale: number) {
+        if (!obj) return;
+        let node = obj.node ? obj.node : obj;
+        node.scale = new Vec3(scale, scale, 1);
     }
 }

@@ -1,111 +1,111 @@
 
 fmc.png
-size: 1024,256
+size: 512,128
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 fmc_1
   rotate: false
-  xy: 235, 136
-  size: 125, 104
-  orig: 125, 104
+  xy: 143, 64
+  size: 75, 62
+  orig: 75, 62
   offset: 0, 0
   index: -1
 fmc_10
-  rotate: false
-  xy: 235, 83
-  size: 44, 51
-  orig: 44, 51
+  rotate: true
+  xy: 2, 2
+  size: 26, 31
+  orig: 26, 31
   offset: 0, 0
   index: -1
 fmc_11
-  rotate: false
-  xy: 987, 219
-  size: 28, 21
-  orig: 28, 21
+  rotate: true
+  xy: 288, 61
+  size: 17, 13
+  orig: 17, 13
   offset: 0, 0
   index: -1
 fmc_12
   rotate: false
-  xy: 597, 141
-  size: 42, 23
-  orig: 42, 23
+  xy: 35, 14
+  size: 25, 14
+  orig: 25, 14
   offset: 0, 0
   index: -1
 fmc_120
-  rotate: true
-  xy: 198, 36
-  size: 42, 23
-  orig: 42, 23
+  rotate: false
+  xy: 303, 64
+  size: 25, 14
+  orig: 25, 14
   offset: 0, 0
   index: -1
 fmc_13
   rotate: true
-  xy: 362, 134
-  size: 106, 121
-  orig: 106, 121
-  offset: 0, 0
+  xy: 143, 2
+  size: 60, 70
+  orig: 64, 73
+  offset: 4, 0
   index: -1
 fmc_14
-  rotate: false
-  xy: 281, 109
-  size: 23, 25
-  orig: 23, 25
+  rotate: true
+  xy: 62, 14
+  size: 14, 15
+  orig: 14, 15
   offset: 0, 0
   index: -1
 fmc_2
   rotate: false
-  xy: 597, 166
-  size: 97, 74
-  orig: 97, 74
+  xy: 348, 82
+  size: 58, 44
+  orig: 58, 44
   offset: 0, 0
   index: -1
 fmc_3
   rotate: false
-  xy: 696, 167
-  size: 94, 73
-  orig: 94, 73
+  xy: 408, 82
+  size: 56, 44
+  orig: 56, 44
   offset: 0, 0
   index: -1
 fmc_4
   rotate: false
-  xy: 485, 131
-  size: 110, 109
-  orig: 110, 109
+  xy: 220, 61
+  size: 66, 65
+  orig: 66, 65
   offset: 0, 0
   index: -1
 fmc_5
-  rotate: false
-  xy: 101, 4
-  size: 95, 74
-  orig: 95, 74
+  rotate: true
+  xy: 215, 2
+  size: 57, 44
+  orig: 57, 44
   offset: 0, 0
   index: -1
 fmc_6
   rotate: false
-  xy: 2, 2
-  size: 97, 76
-  orig: 97, 76
+  xy: 288, 80
+  size: 58, 46
+  orig: 58, 46
   offset: 0, 0
   index: -1
 fmc_7
-  rotate: false
-  xy: 792, 172
-  size: 97, 68
-  orig: 97, 68
+  rotate: true
+  xy: 466, 68
+  size: 58, 41
+  orig: 58, 41
   offset: 0, 0
   index: -1
 fmc_8
-  rotate: false
-  xy: 891, 172
-  size: 94, 68
-  orig: 94, 68
+  rotate: true
+  xy: 261, 3
+  size: 56, 41
+  orig: 56, 41
   offset: 0, 0
   index: -1
 fmc_9
   rotate: false
-  xy: 2, 80
-  size: 231, 160
-  orig: 231, 160
+  xy: 2, 30
+  size: 139, 96
+  orig: 139, 96
   offset: 0, 0
   index: -1

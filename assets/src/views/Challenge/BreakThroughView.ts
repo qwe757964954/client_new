@@ -6,7 +6,7 @@ import { BookLevelConfig, DataMgr } from '../../manager/DataMgr';
 import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { MapLevelData } from '../../models/AdventureModel';
-import { CurrentBookStatus, ReqUnitStatusParam, UnitListItemStatus, UnitStatusData } from '../../models/TextbookModel';
+import { CurrentBookStatus, GateListItem, ReqUnitStatusParam, UnitItemStatus, UnitListItemStatus, UnitStatusData, VocabularyWordData } from '../../models/TextbookModel';
 import { User } from '../../models/User';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
@@ -51,7 +51,12 @@ export class BreakThroughView extends BaseView {
 
     private _bookData:CurrentBookStatus = null;
 
+    private _curUnitList:UnitListItemStatus = null;
+
     private _curUnitStatus:UnitStatusData = null;
+
+    private _selectitemStatus:UnitItemStatus = null;
+    private _selectGate:GateListItem = null;
 
     start() {
         GlobalConfig.initRessolutionHeight();
@@ -63,6 +68,7 @@ export class BreakThroughView extends BaseView {
         this.initNavTitle();
         this.initAmout();
         this.initRightChange();
+        this.getUnitListStatus();
         DataMgr.instance.getAdventureLevelConfig();
     }
 
@@ -72,6 +78,7 @@ export class BreakThroughView extends BaseView {
     }
     onInitModuleEvent(){
         this.addModelListener(NetNotify.Classification_UnitListStatus,this.onUnitListStatus);
+        this.addModelListener(NetNotify.Classification_VocabularyWord,this.onVocabularyWord);
         this.addModelListener(NetNotify.Classification_UnitStatus,this.onUnitStatus);
         this.addModelListener(EventType.Enter_Island_Level,this.onEnterIsland);
     }
@@ -83,9 +90,22 @@ export class BreakThroughView extends BaseView {
         }
         TBServer.reqUnitListStatus(params);
     }
-    onEnterIsland(data:LevelConfig){
-        
-        switch (this._curUnitStatus.game_mode) {
+
+    reqVocabularyWord(){
+        let reqParam:ReqUnitStatusParam = {
+            type_name:this._bookData.type_name,
+            book_name:this._bookData.book_name,
+            grade:this._bookData.grade,
+            unit:this._selectitemStatus.unit,
+            small_id:this._selectGate.small_id
+        }
+        TBServer.reqVocabularyWord(reqParam);
+    }
+
+    onVocabularyWord(data:VocabularyWordData){
+        console.log("onVocabularyWord", data);
+        let game_model:LearnGameModel = this._curUnitStatus.game_mode as LearnGameModel;
+        switch (game_model) {
             case LearnGameModel.Tutoring:
                 this.gotoTutoring(data);
                 break;
@@ -93,41 +113,48 @@ export class BreakThroughView extends BaseView {
             default:
                 break;
         }
+    }
 
-        
+    onEnterIsland(data:LevelConfig){
+        console.log("onEnterIsland", data);
+        this.reqVocabularyWord();
     }
     /**进入学 */
-    gotoTutoring(data:LevelConfig){
+    gotoTutoring(wordData:VocabularyWordData){
         ViewsManager.instance.showView(PrefabType.StudyModeView, (node: Node) => {
             let bookLevelData:BookLevelConfig = {
-                grade:this._curUnitStatus.grade,
-                unit:this._curUnitStatus.unit,
-                type_name:this._curUnitStatus.type_name,
-                game_mode:this._curUnitStatus.game_mode,
-                book_name:this._curUnitStatus.book_name
+                grade:this._bookData.grade,
+                unit:this._selectitemStatus.unit,
+                type_name:this._bookData.type_name,
+                game_mode:LearnGameModel.Tutoring,
+                book_name:this._bookData.book_name,
+                small_id:this._selectGate.small_id
             }
-            node.getComponent(StudyModeView).initData(this._curUnitStatus.data, bookLevelData);
+            node.getComponent(StudyModeView).initData(wordData.data, bookLevelData);
         });
     }
 
-    onUnitStatus(data:UnitStatusData){
-        this._curUnitStatus = data;
+    showRightChallengeView(){
         let content_size = this.content_layout.getComponent(UITransform);
         let node_size = this._rightChallenge.node.getComponent(UITransform);
         let posx = content_size.width / 2 + node_size.width / 2;
         this._rightChallenge.node.setPosition(posx,0,0);
         this._rightChallenge.node.active = true;
-        const removedString = data.unit.replace("Unit ", "").trim();
-        let param:MapLevelData = {small_id:parseInt(removedString), 
-            big_id:1,
-            micro_id:parseInt(removedString),
+        const removedString = this._curUnitStatus.unit.replace("Unit ", "").trim();
+        let param:MapLevelData = {small_id:this._curUnitStatus.small_id,
+            big_id:parseInt(removedString),
+            micro_id:this._curUnitStatus.small_id,
             game_modes:"word"}
         this._rightChallenge.openView(param);
-        // this._rightChallenge.node.active = true;
-        // tween(this._rightChallenge.node).by(0.3,{position:new Vec3(-node_size.width,0,0)}).start();
+    }
+
+    onUnitStatus(data:UnitStatusData){
+        this._curUnitStatus = data;
+        this.showRightChallengeView();
     }
 
     onUnitListStatus(data:UnitListItemStatus){
+        this._curUnitList = data;
         this._scrollMap.initUnit(data);
         // this._rightChallenge.initData(data);
     }
@@ -172,19 +199,19 @@ export class BreakThroughView extends BaseView {
     /**初始化地图模块 */
     initScrollMap(){
         this._scrollMap = this.scrollMapNode.getComponent(ScrollMapView);
-        this._scrollMap.setClickCallback((unit:string) =>{
-            console.log("unit",unit);
+        this._scrollMap.setClickCallback((itemStatus:UnitItemStatus,gate:GateListItem) =>{
+            this._selectitemStatus = itemStatus;
+            this._selectGate = gate;
+            
             let reqParam:ReqUnitStatusParam = {
                 type_name:this._bookData.type_name,
                 book_name:this._bookData.book_name,
                 grade:this._bookData.grade,
-                unit:unit,
-                game_mode:LearnGameModel.Tutoring
+                unit:this._selectitemStatus.unit,
+                small_id:this._selectGate.small_id
             }
             TBServer.reqUnitStatus(reqParam);
-            
         })
-        this.getUnitListStatus();
     }
 
     

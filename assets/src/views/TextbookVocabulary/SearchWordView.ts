@@ -10,6 +10,8 @@ import { WordSearchView } from './WordSearchView';
 import { InterfacePath } from '../../net/InterfacePath';
 import { WordsDetailData } from '../../models/AdventureModel';
 import { SoundMgr } from '../../manager/SoundMgr';
+import { TipView } from '../common/TipView';
+import { TextConfig } from '../../config/TextConfig';
 const { ccclass, property } = _decorator;
 
 /**单词简单结构 */
@@ -221,7 +223,8 @@ export class SearchWordView extends Component {
     onClassificationWord(data: WordsDetailData) {
         console.log(data);
         if (data.code != 200) {
-            console.error("获取单词详情失败", data);
+            console.log("获取单词详情失败", data);
+            ViewsManager.showTip(TextConfig.Search_Word_Fail);
             return;
         }
         this._detailData = data;

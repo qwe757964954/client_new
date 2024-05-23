@@ -18,6 +18,7 @@ const ConfigPath = {
     PetConfig: "petConfig",
     ArchConfig: "AchConfig",
     MedalConfig: "medal",
+    HelpConfig: "gameHelp",
 }
 
 //角色插槽
@@ -56,8 +57,8 @@ export class EditInfo {
     function: string;//功能描述
     animation: string;//动画
 }
-/**奖励信息 */
-export class RewardInfo {
+/**道具数据 */
+export class PropData {
     id: number;//id
     num: number;//数量
 }
@@ -68,9 +69,9 @@ export class ProduceInfo {
     res_name: string;//资源名字
     res_png: string;//资源图片
     res_time: number;//资源产出时间（单位秒）
-    produce: RewardInfo[];//产出
-    expend: RewardInfo[];//消耗
-    upgrade_need: RewardInfo[];//升级消耗
+    produce: PropData[];//产出
+    expend: PropData[];//消耗
+    upgrade_need: PropData[];//升级消耗
     upgrade_time: number;//升级时间
 }
 /**建筑生产信息 */
@@ -96,6 +97,7 @@ export class BookLevelConfig {
     unit: string;
     type_name: string;
     game_mode: number;
+    small_id: number;
     book_name: string;
 }
 //成就信息配置
@@ -138,6 +140,7 @@ export class DataMgr {
     public petConfig: PetInfo[] = [];//宠物信息
     public archConfig: { [key: number]: ArchConfig } = {}; //成就信息
     public medalConfig: MedalConfig[] = []; //勋章信息
+    public helpConfig = {} //帮助配置
 
     private _isInit: boolean = false;
     public defaultLand: EditInfo = null;//默认地块
@@ -165,6 +168,7 @@ export class DataMgr {
         await this.initPetInteractionConfig();
         await this.initAchieveConfig();
         await this.initMedalConfig();
+        await this.initHelpConfig();
         console.timeEnd("DataMgr initData");
     }
     /** 初始化角色插槽 */
@@ -209,12 +213,12 @@ export class DataMgr {
             this.editInfo[obj.id] = obj;
         }
     }
-    public converAryToReward(ary: number[]): RewardInfo[] {
-        let list: RewardInfo[] = [];
+    public converAryToReward(ary: number[]): PropData[] {
+        let list: PropData[] = [];
         let i = 0;
         let max = ary.length - 1;
         while (i < max) {
-            let obj = new RewardInfo();
+            let obj = new PropData();
             obj.id = ary[i];
             obj.num = ary[i + 1];
             list.push(obj);
@@ -312,6 +316,14 @@ export class DataMgr {
             obj.Type = json[k].Type;
             obj.Ce = Number(json[k].Ce);
             this.medalConfig.push(obj);
+        }
+    }
+
+    /**初始化帮助信息 */
+    public async initHelpConfig() {
+        let json = await LoadManager.loadJson(ConfigPath.HelpConfig);
+        for (let k in json) {
+            this.helpConfig[k] = json[k];
         }
     }
 

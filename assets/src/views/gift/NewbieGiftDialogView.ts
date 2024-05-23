@@ -6,6 +6,7 @@ import CCUtil from '../../util/CCUtil';
 import { PrefabType } from '../../config/PrefabType';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { RewardDialogView } from './RewardDialogView';
+import { PropData } from '../../manager/DataMgr';
 const { ccclass, property } = _decorator;
 
 //新人大礼结构体
@@ -157,12 +158,15 @@ export class NewbieGiftDialogView extends Component {
             }
 
             ViewsManager.instance.showView(PrefabType.NewbieRewardDialogView, (node: Node) => {
-                let awardInfo: BieGiftBaseInfo = {
-                    "Stone": 100,
-                    "Diamond": 200,
-                    "Coin": 100
+                let awardInfo: PropData = {
+                    "id": 1,
+                    "num": 200,
                 }
-                node.getComponent(RewardDialogView).initData(awardInfo);
+                let awardInfo2: PropData = {
+                    "id": 2,
+                    "num": 300,
+                }
+                node.getComponent(RewardDialogView).initData([awardInfo, awardInfo2]);
             }); //打开新人七天大礼页面
         }
     }

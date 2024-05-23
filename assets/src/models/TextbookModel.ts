@@ -24,10 +24,10 @@ export interface BookListItemData extends BaseRepPacket{
 
 
 export interface BookItemData {
-    name:string,
-    num:number,
-    sort_no:number,
-    type_name:string
+    name?:string,
+    num?:number,
+    sort_no?:number,
+    type_name?:string
 }
 
 export interface SchoolBookListItemData extends BaseRepPacket{
@@ -52,10 +52,15 @@ export interface UnitListItemStatus extends BaseRepPacket{
     data:UnitItemStatus[];
 }
 
+
 export interface UnitItemStatus{
     num:number,
     unit:string,
-    point_list:number[];
+    gate_list:GateListItem[];
+}
+
+export interface GateListItem{
+    small_id:number,
 }
 
 // 我的词书
@@ -175,7 +180,7 @@ export interface ReqUnitStatusParam{
     book_name:string;
     grade:string;
     unit:string;
-    game_mode:number;
+    small_id:number;
 }
 
 //我的单词--词书年级单元学习情况列表接口
@@ -185,19 +190,20 @@ export class c2sUnitStatus {
     book_name:string;
     grade:string;
     unit:string;
-    game_mode:number;
+    small_id:number;
 }
 
 export interface UnitStatusData extends BaseRepPacket{
-    flag:number;
-    game_mode:number;
+    type_name:string;
     book_name:string;
     grade:string;
-    study_num:number;
-    type_name:string;
     unit:string;
+    small_id:number;
     user_id:number;
-    data:UnitWordModel[];
+    user_name:string;
+    game_mode:number;
+    flag:number;
+    word_num:number;
 }
 
 export interface UnitWordModel{
@@ -261,6 +267,8 @@ export interface CurrentBookStatus extends BaseRepPacket {
     id?:string;
     num?:number;
     rank_num?:number;
+    unit_pass_num?:number;
+    unit_total_num?:number;
 }
 
 export interface ReportResultModel{ 
@@ -317,7 +325,10 @@ export class c2sGameSubmit {
     grade:string;
     cost_time:number;
     unit:string;
+    small_id:number;
     game_mode:number;
+    word_flag:string;
+    score:string;
 }
 
 export interface GameSubmitModel {
@@ -327,5 +338,93 @@ export interface GameSubmitModel {
     grade:string;
     cost_time:number;
     unit:string;
+    small_id:number;
     game_mode:number;
+    word_flag:string;
+    score?:string;
 }
+
+// export enum AmoutType {
+//     Coin= 0,/**金币 */
+//     Diamond= 1,/**钻石 */
+//     Energy= 2/**体力 */
+// }
+
+
+export enum CheckWordType {
+    AllWord=1, /**全部单词 */
+    Learned=2, /**已学单词 */
+    NotLearned=3, /**未学单词 */
+    Collect=4,/**收藏单词 */ 
+} 
+
+export enum CheckOrderType {
+    UnitSortOrder=1,/**单元排序正序 */
+    UnitReverseOrder=2,/**单元排序倒序 */
+    LearningTimeOrder=3,/**学习时间正序 */
+    LearningReverseOrder=4,/**学习时间倒序 */
+    AlphabeticalOrder=5,/**字母正序 */
+    AlphabeticalReverseOrder=6,/**字母倒序 */
+}
+
+export interface CheckWordModel {
+    type_name:string;
+    book_name:string;
+    grade:string;
+    word_type:CheckWordType;
+    order_type:CheckOrderType;
+}
+
+export class c2sCheckWord {
+    command_id: string = InterfacePath.Classification_CheckWord;
+    grade:string;
+    type_name:string;
+    book_name:string;
+    word_type:CheckWordType;
+    order_type:CheckOrderType;
+}
+
+export interface CheckWordResponse extends BaseRepPacket{
+    data:CheckWordItem[];
+}
+
+export interface CheckWordItem {
+    cn:string;
+    phonic:string;
+    syllable:string;
+    symbol:string;
+    symbolus:string;
+    unit:string;
+    word:string;
+}
+
+export class c2sVocabularyWord {
+    command_id: string = InterfacePath.Classification_VocabularyWord;
+    grade:string;
+    type_name:string;
+    book_name:string;
+    unit:string;
+    small_id:number;
+}
+
+export interface VocabularyWordData extends BaseRepPacket{
+    data:UnitWordModel[];
+}
+
+export interface ReqCollectWord {
+    word:string;
+    c_id:string;
+    action:number;
+}
+
+export class c2sCollectWord {
+    command_id: string = InterfacePath.Classification_CollectWord;
+    word:string;
+    c_id:string;
+    action:number;
+}
+
+export interface CollectWordData extends BaseRepPacket{
+
+}
+

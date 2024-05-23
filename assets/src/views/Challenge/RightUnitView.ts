@@ -35,6 +35,8 @@ export class RightUnitView extends Component {
 
     private _changeCallback:()=>void = null;
 
+    private _checkWordCallback:()=>void = null;
+
     start() {
 
     }
@@ -73,6 +75,10 @@ export class RightUnitView extends Component {
         this._changeCallback = callback;
     }
 
+    setCheckWordCallback(callback:()=>void){
+        this._checkWordCallback = callback;
+    }
+
     onReviewClick(){
         ViewsManager.showTip(TextConfig.Function_Tip);
     }
@@ -85,9 +91,12 @@ export class RightUnitView extends Component {
     }
 
     onCheckWordClick(){
-        ViewsManager.showTip(TextConfig.Function_Tip);
+        if(this._checkWordCallback){
+            this._checkWordCallback();
+        }
     }
     onModifyPlanClick(){
+        
         ViewsManager.instance.showPopup(PrefabType.SettingPlanView).then((node: Node)=>{
             let nodeScript:SettingPlanView = node.getComponent(SettingPlanView);
             let titleBookName = `${this._curUnitStatus.book_name}${this._curUnitStatus.grade}`;
