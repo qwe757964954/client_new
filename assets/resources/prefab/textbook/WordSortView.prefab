@@ -1294,7 +1294,7 @@
     },
     "component": "",
     "_componentId": "c60f1rKKpBGeI1ir86lL56X",
-    "handler": "onLoadWordCheckVerticalList",
+    "handler": "onLoadWordSortVerticalList",
     "customEventData": ""
   },
   {
@@ -1304,7 +1304,7 @@
     },
     "component": "",
     "_componentId": "c60f1rKKpBGeI1ir86lL56X",
-    "handler": "onWordCheckVerticalSelected",
+    "handler": "onWordSortVerticalSelected",
     "customEventData": ""
   },
   {

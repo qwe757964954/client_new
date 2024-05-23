@@ -67,13 +67,13 @@ export class WordSortView extends Component {
         this.updateScrollView();
     }
 
-    onLoadWordCheckVerticalList(item:Node, idx:number){
+    onLoadWordSortVerticalList(item:Node, idx:number){
         console.log('onLoadWordCheckVerticalList',item,idx);
         let sort_text:Label = item.getChildByName('sort_text').getComponent(Label);
         let item_data:SortMenuModel = this._menuDataArr[idx];
         sort_text.string = item_data.menu_name;
     }
-    onWordCheckVerticalSelected(item: any, selectedId: number, lastSelectedId: number, val: number){
+    onWordSortVerticalSelected(item: any, selectedId: number, lastSelectedId: number, val: number){
         if(selectedId === -1){return}
         this._word_check_select = selectedId;
         let item_data:SortMenuModel = this._menuDataArr[selectedId];
