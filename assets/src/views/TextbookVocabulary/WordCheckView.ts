@@ -1,4 +1,4 @@
-import { _decorator, error, instantiate, isValid, Node, Prefab, Widget } from 'cc';
+import { _decorator, error, instantiate, isValid, Label, Node, Prefab, Widget } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import GlobalConfig from '../../GlobalConfig';
 import { ResLoader } from '../../manager/ResLoader';
@@ -24,6 +24,9 @@ export class WordCheckView extends BaseView {
 
     @property(WordSortView)
     public wordSortView:WordSortView = null;
+
+    @property(Label)
+    public total_word_text:Label = null;
 
     private _bookData:CurrentBookStatus = null;
     private _tabTop:TabTopView = null;
@@ -79,8 +82,6 @@ export class WordCheckView extends BaseView {
 		this.addModelListener(NetNotify.Classification_CheckWord,this.onCheckWord);
 	}
     onCheckWord(response:CheckWordResponse) {
-        console.log("WordCheckView......","onCheckWord......");
-        console.log(response);
         this._wordUnits = {};
         response.data.forEach(word => {
             if (!this._wordUnits[word.unit]) {
@@ -90,6 +91,7 @@ export class WordCheckView extends BaseView {
         });
         console.log(this._wordUnits);
         console.log(Object.keys(this._wordUnits).length);
+        this.total_word_text.string = `共${response.data.length}词`;
         this.wordCheckScrollView.numItems = Object.keys(this._wordUnits).length;
         // this.wordCheckScrollView.update();
     }
