@@ -97,6 +97,7 @@ export class BookLevelConfig {
     unit: string;
     type_name: string;
     game_mode: number;
+    small_id: number;
     book_name: string;
 }
 //成就信息配置

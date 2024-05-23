@@ -1,6 +1,6 @@
 import { isValid } from "cc";
 import { ViewsManager } from "../manager/ViewsManager";
-import { CheckWordModel, CurrentBookStatus, GameSubmitModel, ModifyPlanData, MyTextbookListStatus, MyTextbookStatus, ReportResultModel, ReqPlanData, ReqUnitStatusParam, c2sAddBookStatus, c2sAddPlanBookStatus, c2sAddPlanStatus, c2sBookAwardList, c2sBookPlanDetail, c2sBookStatus, c2sChangeTextbook, c2sCheckWord, c2sCurrentBook, c2sDelBookStatus, c2sGameSubmit, c2sModifyPlanStatus, c2sReportResult, c2sSchoolBook, c2sSchoolBookGrade, c2sSearchBookList, c2sUnitListStatus, c2sUnitStatus, c2sWordDetail } from "../models/TextbookModel";
+import { CheckWordModel, CurrentBookStatus, GameSubmitModel, ModifyPlanData, MyTextbookListStatus, MyTextbookStatus, ReportResultModel, ReqCollectWord, ReqPlanData, ReqUnitStatusParam, c2sAddBookStatus, c2sAddPlanBookStatus, c2sAddPlanStatus, c2sBookAwardList, c2sBookPlanDetail, c2sBookStatus, c2sChangeTextbook, c2sCheckWord, c2sCollectWord, c2sCurrentBook, c2sDelBookStatus, c2sGameSubmit, c2sModifyPlanStatus, c2sReportResult, c2sSchoolBook, c2sSchoolBookGrade, c2sSearchBookList, c2sUnitListStatus, c2sUnitStatus, c2sVocabularyWord, c2sWordDetail } from "../models/TextbookModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
 import { NetNotify } from "../net/NetNotify";
@@ -41,7 +41,7 @@ export default class _TextbookService extends BaseControll {
         this.addModelListener(InterfacePath.Classification_ChangeTextbook,this.onChangeTextbook);
         this.addModelListener(InterfacePath.Classification_GameSubmit,this.onGameSubmit);
         this.addModelListener(InterfacePath.Classification_CheckWord,this.onCheckWord);
-        
+        this.addModelListener(InterfacePath.Classification_VocabularyWord,this.onVocabularyWord);
     }
     reqBookStatus() {
         let para: c2sBookStatus = new c2sBookStatus();
@@ -247,7 +247,7 @@ export default class _TextbookService extends BaseControll {
         params.book_name = param.book_name;
         params.grade = param.grade;
         params.unit = param.unit;
-        params.game_mode = param.game_mode;
+        params.small_id = param.small_id;
         NetMgr.sendMsg(params);
     }
     onUnitStatus(data: any) {
@@ -330,11 +330,22 @@ export default class _TextbookService extends BaseControll {
         }
         EventMgr.dispatch(NetNotify.Classification_ReportResult, data);
     }
+    /**
+     * 单词详情
+     * 请求
+     * @param word 
+     */
     reqWordDetail(word:string){
         let params:c2sWordDetail = new c2sWordDetail();
         params.word = word;
         NetMgr.sendMsg(params);
     }
+    /**
+     * 单词详情
+     * 响应
+     * @param data 
+     * @returns 
+     */
     onWordDetail(data:any){
         console.log("onWordDetail....",data);
         if(data.code !== 200) {
@@ -344,7 +355,11 @@ export default class _TextbookService extends BaseControll {
         }
         EventMgr.dispatch(NetNotify.Classification_Word, data);
     }
-
+    /**
+     * 切换教材
+     * 请求
+     * @param data 
+     */
     reqChangeTextbook(data: BookUnitModel) {
         let params: c2sChangeTextbook = new c2sChangeTextbook();
         params.type_name = data.type_name;
@@ -352,7 +367,12 @@ export default class _TextbookService extends BaseControll {
         params.grade = data.grade;
         NetMgr.sendMsg(params);
     }
-
+    /**
+     * 切换教材
+     * 响应
+     * @param data 
+     * @returns 
+     */
     onChangeTextbook(data: any) {
         console.log("onChangeTextbook", data);
         if (data.code !== 200) {
@@ -362,8 +382,11 @@ export default class _TextbookService extends BaseControll {
         }
         EventMgr.dispatch(NetNotify.Classification_ChangeTextbook, data);
     }
-
-
+    /**
+     * 单词提交
+     * 请求
+     * @param data 
+     */
     reqGameSubmit(data:GameSubmitModel){
         let params:c2sGameSubmit = new c2sGameSubmit();
         params.word = data.word;
@@ -373,9 +396,20 @@ export default class _TextbookService extends BaseControll {
         params.cost_time = data.cost_time;
         params.unit = data.unit;
         params.game_mode = data.game_mode;
-        console.log(data);
+        params.small_id = data.small_id;
+        params.word_flag = data.word_flag;
+        if(isValid(data.score)){
+            params.score = data.score;
+        }
+        console.log(params);
         NetMgr.sendMsg(params);
     }
+    /**
+     * 单词提交
+     * 响应
+     * @param data 
+     * @returns 
+     */
     onGameSubmit(data:any){
         console.log("onGameSubmit.....",data);
         if(data.code !== 200){
@@ -385,6 +419,11 @@ export default class _TextbookService extends BaseControll {
         }
         EventMgr.dispatch(NetNotify.Classification_GameSubmit, data);
     }
+    /**
+     * 词表单词列表
+     * 请求
+     * @param data 
+     */
     reqCheckWord(data:CheckWordModel){
         let params:c2sCheckWord = new c2sCheckWord();
         params.type_name = data.type_name;
@@ -394,6 +433,10 @@ export default class _TextbookService extends BaseControll {
         params.order_type = data.order_type;
         NetMgr.sendMsg(params);
     }
+    /**
+     * 词表单词列表 
+     * 响应
+     */
     onCheckWord(data:any){
         console.log("onGameSubmit.....",data);
         if(data.code !== 200){
@@ -402,6 +445,51 @@ export default class _TextbookService extends BaseControll {
             return;
         }
         EventMgr.dispatch(NetNotify.Classification_CheckWord, data);
+    }
+    /**教材单词分类词汇列表接口 
+     * 请求
+     */
+    reqVocabularyWord(param: ReqUnitStatusParam) {
+        let params: c2sVocabularyWord = new c2sVocabularyWord();
+        params.type_name = param.type_name;
+        params.book_name = param.book_name;
+        params.grade = param.grade;
+        params.unit = param.unit;
+        params.small_id = param.small_id;
+        NetMgr.sendMsg(params);
+    }
+    /**
+     * 教材单词分类词汇列表接口 
+     * 响应
+     * @param data 
+     * @returns 
+     */
+    onVocabularyWord(data: any) {
+        console.log("onVocabularyWord", data);
+        if (data.code !== 200) {
+            console.log(data.msg);
+            ViewsManager.showTip(data.msg);
+            return;
+        }
+        EventMgr.dispatch(NetNotify.Classification_VocabularyWord, data);
+    }
+    /**
+     * 请求收藏与移除
+     * req
+     * @param param 
+     */
+    reqCollectWord(param:ReqCollectWord){
+        let params:c2sCollectWord = new c2sCollectWord();
+        params.word = param.word;
+        params.c_id = param.c_id;
+        params.action = param.action;
+    }
+    /**
+     * 收藏与移除
+     * response
+     */
+    onCollectWord(data:any){
+
     }
 };
 

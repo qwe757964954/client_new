@@ -52,10 +52,15 @@ export interface UnitListItemStatus extends BaseRepPacket{
     data:UnitItemStatus[];
 }
 
+
 export interface UnitItemStatus{
     num:number,
     unit:string,
-    point_list:number[];
+    gate_list:GateListItem[];
+}
+
+export interface GateListItem{
+    small_id:number,
 }
 
 // 我的词书
@@ -175,7 +180,7 @@ export interface ReqUnitStatusParam{
     book_name:string;
     grade:string;
     unit:string;
-    game_mode:number;
+    small_id:number;
 }
 
 //我的单词--词书年级单元学习情况列表接口
@@ -185,19 +190,20 @@ export class c2sUnitStatus {
     book_name:string;
     grade:string;
     unit:string;
-    game_mode:number;
+    small_id:number;
 }
 
 export interface UnitStatusData extends BaseRepPacket{
-    flag:number;
-    game_mode:number;
+    type_name:string;
     book_name:string;
     grade:string;
-    study_num:number;
-    type_name:string;
     unit:string;
+    small_id:number;
     user_id:number;
-    data:UnitWordModel[];
+    user_name:string;
+    game_mode:number;
+    flag:number;
+    word_num:number;
 }
 
 export interface UnitWordModel{
@@ -319,7 +325,10 @@ export class c2sGameSubmit {
     grade:string;
     cost_time:number;
     unit:string;
+    small_id:number;
     game_mode:number;
+    word_flag:string;
+    score:string;
 }
 
 export interface GameSubmitModel {
@@ -329,7 +338,10 @@ export interface GameSubmitModel {
     grade:string;
     cost_time:number;
     unit:string;
+    small_id:number;
     game_mode:number;
+    word_flag:string;
+    score?:string;
 }
 
 // export enum AmoutType {
@@ -385,3 +397,34 @@ export interface CheckWordItem {
     unit:string;
     word:string;
 }
+
+export class c2sVocabularyWord {
+    command_id: string = InterfacePath.Classification_VocabularyWord;
+    grade:string;
+    type_name:string;
+    book_name:string;
+    unit:string;
+    small_id:number;
+}
+
+export interface VocabularyWordData extends BaseRepPacket{
+    data:UnitWordModel[];
+}
+
+export interface ReqCollectWord {
+    word:string;
+    c_id:string;
+    action:number;
+}
+
+export class c2sCollectWord {
+    command_id: string = InterfacePath.Classification_CollectWord;
+    word:string;
+    c_id:string;
+    action:number;
+}
+
+export interface CollectWordData extends BaseRepPacket{
+
+}
+

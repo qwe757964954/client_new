@@ -21,7 +21,7 @@ export class MapPointItem extends Component {
 
     initData(data: MapLevelData) {
         this.data = data;
-        this.levelLabel.string = data.small_id + "-" + data.micro_id;
+        this.levelLabel.string = data.big_id + "-" + data.small_id;
     }
 }
 
