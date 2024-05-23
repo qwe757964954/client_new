@@ -1,4 +1,4 @@
-import { _decorator, Button, instantiate, Node, Prefab, Sprite, tween, UITransform, Vec3, view } from 'cc';
+import { _decorator, BlockInputEvents, Button, instantiate, Node, Prefab, Sprite, tween, UITransform, Vec3, view } from 'cc';
 import { AdvLevelConfig, BookLevelConfig } from '../../../manager/DataMgr';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { s2cAdventureResult, WordsDetailData } from '../../../models/AdventureModel';
@@ -14,6 +14,7 @@ import CCUtil from '../../../util/CCUtil';
 import EventManager from '../../../util/EventManager';
 import { SmallMonsterModel } from '../../common/SmallMonsterModel';
 import { MonsterModel } from '../common/MonsterModel';
+import { ViewsManager } from '../../../manager/ViewsManager';
 const { ccclass, property } = _decorator;
 
 /**学习模式公共部分 */
@@ -65,6 +66,7 @@ export class BaseModeView extends BaseView {
 
     protected gameMode: number = 0; //游戏模式
     start() {
+        this.node.getChildByName("img_bg").addComponent(BlockInputEvents);
         this.initRole(); //初始化角色
         this.initPet(); //初始化精灵
         this._costTime = Date.now();
@@ -96,7 +98,6 @@ export class BaseModeView extends BaseView {
     }
     async initMonster() {
         //单词大冒险关卡
-        console.log("initMonster......", this._levelData);
         if (this._levelData.hasOwnProperty('islandId')) {
             let lvData = this._levelData as AdvLevelConfig;
             this._monster = instantiate(this.monsterModel);
@@ -168,13 +169,13 @@ export class BaseModeView extends BaseView {
     onGameSubmit(word: string) {
         let levelData: BookLevelConfig = this._levelData as BookLevelConfig;
         let costTime = Date.now() - this._costTime;
-        let data:GameSubmitModel = {
+        let data: GameSubmitModel = {
             type_name: levelData.type_name,
             book_name: levelData.book_name,
             grade: levelData.grade,
             unit: levelData.unit,
             game_mode: this.gameMode,
-            cost_time:costTime,
+            cost_time: costTime,
             word: word,
             small_id:levelData.small_id,
             word_flag:"1"
@@ -277,7 +278,9 @@ export class BaseModeView extends BaseView {
     }
 
     protected closeView() {
-
+        ViewsManager.instance.showConfirm("确定退出学习吗?", () => {
+            this.node.destroy();
+        });
     }
     onDestroy(): void {
         this.removeEvent();

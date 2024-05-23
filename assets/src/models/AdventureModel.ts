@@ -11,6 +11,12 @@ export enum GameMode {
     Exam = 2    //考试
 }
 
+export class SentenceData {
+    id: string;
+    cn: string;
+    sentence: string;
+}
+
 //大冒险岛屿状态
 export class c2sIslandStatus {
     command_id: string = InterfacePath.Island_Status;
@@ -85,7 +91,7 @@ export class WordsDetailData extends BaseRepPacket {
     etyma: string;      //词根
     ancillary: string;  //助记
     speech: string;
-    sentence_list: { id: string, cn: string, sentence: string }[];
+    sentence_list: SentenceData[];
     similar_list: { word: string, cn: string }[];
     variant: any;
     structure: any;

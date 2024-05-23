@@ -216,7 +216,7 @@ export class StudyModeView extends BaseModeView {
                     } else {
                         this.showCurrentWord();
                     }
-                });   
+                });
             });
             let word = this._wordsData[this._wordIndex].word
             this.onGameSubmit(word);
@@ -277,15 +277,6 @@ export class StudyModeView extends BaseModeView {
             CCUtil.offTouch(this._spliteItems[i], this.onSplitItemClick.bind(this, this._spliteItems[i], i), this);
         }
 
-    }
-    protected closeView() {
-        ViewsManager.instance.showView(PrefabType.BaseRemindView, (node: Node) => {
-            node.getComponent(BaseRemindView).init("确定退出学习吗?", () => {
-                ViewsManager.instance.closeView(PrefabType.StudyModeView);
-            }, () => {
-                ViewsManager.instance.closeView(PrefabType.BaseRemindView);
-            });
-        });
     }
     onDestroy(): void {
         super.onDestroy();

@@ -2,6 +2,7 @@ import { _decorator, Component, Label, Node } from 'cc';
 import CCUtil from '../../util/CCUtil';
 import { NetConfig } from '../../config/NetConfig';
 import { RemoteSoundMgr } from '../../manager/RemoteSoundManager';
+import { SentenceData } from '../../models/AdventureModel';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordSentensItem')
@@ -13,7 +14,7 @@ export class WordSentensItem extends Component {
     @property({ type: Label, tooltip: "中文句子" })
     cnLabel: Label = null;
 
-    private _data: { id: string, cn: string, sentence: string } = null;
+    private _data: SentenceData = null;
     start() {
         this.addEvent();
     }
@@ -31,7 +32,7 @@ export class WordSentensItem extends Component {
         CCUtil.offTouch(this.horn, this.onHornClick.bind(this), this);
     }
 
-    setData(data: { id: string, cn: string, sentence: string }) {
+    setData(data: SentenceData) {
         this._data = data;
         console.log("设置数据", data);
         this.enLabel.string = data.sentence;

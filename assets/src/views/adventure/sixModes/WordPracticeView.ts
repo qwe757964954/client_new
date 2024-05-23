@@ -1,7 +1,7 @@
 import { _decorator, Label, Node } from 'cc';
 import { NetConfig } from '../../../config/NetConfig';
 import { PrefabType } from '../../../config/PrefabType';
-import { DataMgr } from '../../../manager/DataMgr';
+import { AdvLevelConfig, DataMgr } from '../../../manager/DataMgr';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { ViewsManager } from '../../../manager/ViewsManager';
 import { UnitWordModel } from '../../../models/TextbookModel';
@@ -13,6 +13,10 @@ import { BaseModeView } from './BaseModeView';
 import { LetterItem } from './items/LetterItem';
 import { SelectLetterItem } from './items/SelectLetterItem';
 import { GameMode } from '../../../models/AdventureModel';
+import { ServiceMgr } from '../../../net/ServiceManager';
+import EventManager from '../../../util/EventManager';
+import { EventType } from '../../../config/EventType';
+import { WordSpellView } from './WordSpellView';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordPracticeView')
@@ -36,6 +40,8 @@ export class WordPracticeView extends BaseModeView {
     private _selectLetterItems: Node[] = []; //选择字母节点
 
     private _spilitData: any = null; //拆分数据
+
+    private _getWordsEveId: string = ""; //获取单词事件id
 
     async initData(wordsdata: UnitWordModel[], levelData: any) {
         this.gameMode = GameMode.Practice;
@@ -132,23 +138,28 @@ export class WordPracticeView extends BaseModeView {
         }
     }
 
-    protected modeOver(): void {
-        console.log('练习模式完成');
-        ViewsManager.instance.showView(PrefabType.BaseRemindView, (node: Node) => {
-            node.getComponent(BaseRemindView).init("后面模式暂未开放，点击确定返回。", () => {
-                ViewsManager.instance.closeView(PrefabType.WordPracticeView);
-            }, () => {
-                ViewsManager.instance.closeView(PrefabType.BaseRemindView);
+    //获取拼写模式单词数据用以跳转
+    onSpellWordGameWords(data: UnitWordModel[]) {
+        ViewsManager.instance.showView(PrefabType.TransitionView, (node: Node) => {
+            node.getComponent(TransitionView).setTransitionCallback(() => {
+                ViewsManager.instance.showView(PrefabType.WordSpellView, (node: Node) => {
+                    let levelData = this._levelData as AdvLevelConfig;
+                    levelData.mapLevelData.current_mode = GameMode.Spelling;
+                    node.getComponent(WordSpellView).initData(data, levelData);
+                    ViewsManager.instance.closeView(PrefabType.WordPracticeView);
+                });
             });
         });
-        // ViewsManager.instance.showView(PrefabType.TransitionView, (node: Node) => {
-        //     let wordData = JSON.parse(JSON.stringify(this._wordsData));
-        //     let levelData = JSON.parse(JSON.stringify(this._levelData));
-        //     //跳转到拼模式
-        //     node.getComponent(TransitionView).setTransitionCallback(() => {
 
-        //     });
-        // });
+    }
+
+    protected modeOver(): void {
+        console.log('练习模式完成');
+        let isAdventure = this._levelData.hasOwnProperty('islandId'); //是否是大冒险关卡
+        if (isAdventure) { //大冒险关卡
+            let levelData = this._levelData as AdvLevelConfig;
+            ServiceMgr.studyService.getWordGameWords(levelData.islandId, levelData.levelId, levelData.mapLevelData.micro_id, GameMode.Spelling);
+        }
     }
 
     playWordSound() {
@@ -173,20 +184,13 @@ export class WordPracticeView extends BaseModeView {
     protected initEvent(): void {
         super.initEvent();
         CCUtil.onTouch(this.wordSound, this.playWordSound, this);
+        this._getWordsEveId = EventManager.on(EventType.WordGame_Words, this.onSpellWordGameWords.bind(this));
     }
     protected removeEvent(): void {
         super.removeEvent();
         CCUtil.offTouch(this.wordSound, this.playWordSound, this);
+        EventManager.off(EventType.WordGame_Words, this._getWordsEveId);
         this.clearItems();
-    }
-    protected closeView() {
-        ViewsManager.instance.showView(PrefabType.BaseRemindView, (node: Node) => {
-            node.getComponent(BaseRemindView).init("确定退出学习吗?", () => {
-                ViewsManager.instance.closeView(PrefabType.WordPracticeView);
-            }, () => {
-                ViewsManager.instance.closeView(PrefabType.BaseRemindView);
-            });
-        });
     }
 }
 
