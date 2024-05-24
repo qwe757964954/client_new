@@ -136,31 +136,22 @@ export class WordPracticeView extends BaseModeView {
             });
         }
         let word = this._wordsData[this._wordIndex].word
-        this.onGameSubmit(word,true);
-    }
-
-    //获取拼写模式单词数据用以跳转
-    onSpellWordGameWords(data: UnitWordModel[]) {
-        ViewsManager.instance.showView(PrefabType.TransitionView, (node: Node) => {
-            node.getComponent(TransitionView).setTransitionCallback(() => {
-                ViewsManager.instance.showView(PrefabType.WordSpellView, (node: Node) => {
-                    let levelData = this._levelData as AdvLevelConfig;
-                    levelData.mapLevelData.current_mode = GameMode.Spelling;
-                    node.getComponent(WordSpellView).initData(data, levelData);
-                    ViewsManager.instance.closeView(PrefabType.WordPracticeView);
-                });
-            });
-        });
-
+        this.onGameSubmit(word, true);
     }
 
     protected modeOver(): void {
         console.log('练习模式完成');
-        let isAdventure = this._levelData.hasOwnProperty('islandId'); //是否是大冒险关卡
-        if (isAdventure) { //大冒险关卡
-            let levelData = this._levelData as AdvLevelConfig;
-            ServiceMgr.studyService.getWordGameWords(levelData.islandId, levelData.levelId, levelData.mapLevelData.micro_id, GameMode.Spelling);
-        }
+        ViewsManager.instance.showView(PrefabType.TransitionView, (node: Node) => {
+            let wordData = JSON.parse(JSON.stringify(this._wordsData));
+            let levelData = JSON.parse(JSON.stringify(this._levelData));
+            //跳转到下一场景
+            node.getComponent(TransitionView).setTransitionCallback(() => {
+                ViewsManager.instance.showView(PrefabType.WordSpellView, (node: Node) => {
+                    node.getComponent(WordSpellView).initData(wordData, levelData);
+                    ViewsManager.instance.closeView(PrefabType.WordPracticeView);
+                });
+            });
+        });
     }
 
     playWordSound() {
@@ -185,12 +176,10 @@ export class WordPracticeView extends BaseModeView {
     protected initEvent(): void {
         super.initEvent();
         CCUtil.onTouch(this.wordSound, this.playWordSound, this);
-        this._getWordsEveId = EventManager.on(EventType.WordGame_Words, this.onSpellWordGameWords.bind(this));
     }
     protected removeEvent(): void {
         super.removeEvent();
         CCUtil.offTouch(this.wordSound, this.playWordSound, this);
-        EventManager.off(EventType.WordGame_Words, this._getWordsEveId);
         this.clearItems();
     }
 }

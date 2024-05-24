@@ -141,7 +141,7 @@ export class WorldMapView extends Component {
         }
         console.log('进入关卡', data);
         this._currentLevelData = data;
-        this._currentLevelData.current_mode = GameMode.Spelling;
+        this._currentLevelData.current_mode = GameMode.Study;
         this._getingWords = true;
         ServiceMgr.studyService.getWordGameWords(data.big_id, data.small_id, data.micro_id, data.current_mode);
     }
