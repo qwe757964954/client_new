@@ -1,6 +1,7 @@
 import { _decorator, BlockInputEvents, Button, instantiate, Node, Prefab, Sprite, tween, UITransform, Vec3, view } from 'cc';
 import { AdvLevelConfig, BookLevelConfig } from '../../../manager/DataMgr';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
+import { ViewsManager } from '../../../manager/ViewsManager';
 import { s2cAdventureResult, WordsDetailData } from '../../../models/AdventureModel';
 import { PetModel } from '../../../models/PetModel';
 import { RoleBaseModel } from '../../../models/RoleBaseModel';
@@ -14,7 +15,6 @@ import CCUtil from '../../../util/CCUtil';
 import EventManager, { EventMgr } from '../../../util/EventManager';
 import { SmallMonsterModel } from '../../common/SmallMonsterModel';
 import { MonsterModel } from '../common/MonsterModel';
-import { ViewsManager } from '../../../manager/ViewsManager';
 const { ccclass, property } = _decorator;
 
 /**学习模式公共部分 */
@@ -170,7 +170,7 @@ export class BaseModeView extends BaseView {
 
     }
     //单个单词学习情况上报
-    onGameSubmit(word: string) {
+    onGameSubmit(word: string,isRight:boolean) {
         let levelData: BookLevelConfig = this._levelData as BookLevelConfig;
         let costTime = Date.now() - this._costTime;
         let data: GameSubmitModel = {
@@ -182,7 +182,7 @@ export class BaseModeView extends BaseView {
             cost_time: costTime,
             word: word,
             small_id:levelData.small_id,
-            word_flag:1
+            word_flag:isRight ? 1 : 0
         }
         TBServer.reqGameSubmit(data);
     }

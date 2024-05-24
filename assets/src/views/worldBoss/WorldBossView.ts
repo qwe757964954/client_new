@@ -170,6 +170,7 @@ export class WorldBossView extends BaseView {
     onChallengeWorldBoss(){
         console.log("onChallengeWorldBoss");
         ViewsManager.instance.showView(PrefabType.BossChallengeView, (node: Node) => {
+            ViewsManager.instance.closeView(PrefabType.WorldBossView);
             let nodeScript:BossChallengeView = node.getComponent(BossChallengeView);
             nodeScript.initData(this._worldRankData.Data.Game)
         });

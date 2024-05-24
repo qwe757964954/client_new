@@ -8,7 +8,6 @@ import { ViewsManager } from '../../../manager/ViewsManager';
 import { GameMode } from '../../../models/AdventureModel';
 import { UnitWordModel } from '../../../models/TextbookModel';
 import CCUtil from '../../../util/CCUtil';
-import { BaseRemindView } from '../../common/BaseRemindView';
 import { WordDetailView } from '../../common/WordDetailView';
 import { TransitionView } from '../common/TransitionView';
 import { BaseModeView } from './BaseModeView';
@@ -223,9 +222,9 @@ export class StudyModeView extends BaseModeView {
                     }
                 });
             });
-            let word = this._wordsData[this._wordIndex].word
-            this.onGameSubmit(word);
         }, 0.2);
+        let word = this._wordsData[this._wordIndex].word
+        this.onGameSubmit(word,true);
     }
 
     protected modeOver(): void {

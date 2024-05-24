@@ -143,7 +143,7 @@ export class SelectWordView extends BaseView {
     initNavTitle(){
         ViewsManager.addNavigation(this.top_layout,0,0).then((navScript: NavTitleView) => {
             navScript.updateNavigationProps("添加词书",()=>{
-                ViewsManager.instance.closeView(PrefabType.WordCheckView);
+                ViewsManager.instance.closeView(PrefabType.SelectWordView);
                 GlobalConfig.initRessolutionHeight();
             });
         });

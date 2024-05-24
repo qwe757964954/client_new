@@ -6,7 +6,6 @@ import { ViewsManager } from '../../../manager/ViewsManager';
 import { GameMode, SentenceData, WordsDetailData } from '../../../models/AdventureModel';
 import { UnitWordModel } from '../../../models/TextbookModel';
 import CCUtil from '../../../util/CCUtil';
-import { BaseRemindView } from '../../common/BaseRemindView';
 import { WordDetailView } from '../../common/WordDetailView';
 import { TransitionView } from '../common/TransitionView';
 import { BaseModeView } from './BaseModeView';
@@ -201,6 +200,7 @@ export class WordMeaningView extends BaseModeView {
                     this.showCurrentWord();
                 }
             });
+            
         } else {
             answerNode.getComponent(Sprite).spriteFrame = this.errorBg;
             resSymbol.getComponent(Sprite).spriteFrame = this.errorSymbol;
@@ -222,6 +222,8 @@ export class WordMeaningView extends BaseModeView {
                 this.showCurrentWord();
             }, 1);
         }
+        let word = this._wordsData[this._wordIndex].word
+        this.onGameSubmit(word,isRight);
     }
 
     protected modeOver(): void {

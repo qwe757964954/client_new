@@ -1,5 +1,4 @@
 import { Label, Layers, Node, Prefab, UITransform, Vec3, Widget, _decorator, error, instantiate, isValid, tween } from 'cc';
-import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
@@ -103,7 +102,7 @@ export class BossChallengeView extends BaseView {
         
     }
     onInitModuleEvent(){
-        this.addModelListener(EventType.Challenge_ReportResult,this.onChallengeReportResult);
+        // this.addModelListener(EventType.Challenge_ReportResult,this.onChallengeReportResult);
     }
     initEvent(){
         CCUtil.onTouch(this.btn_close, this.onCloseView, this);
@@ -131,7 +130,9 @@ export class BossChallengeView extends BaseView {
         });
     }
     onCloseView(){
-        ViewsManager.instance.closeView(PrefabType.BossChallengeView);
+        ViewsManager.instance.showView(PrefabType.WorldBossView, (node: Node) => {
+            ViewsManager.instance.closeView(PrefabType.BossChallengeView);
+        });
     }
     onChallengeReportResult(params:{result:AnswerType}){
         console.log(params);
