@@ -1,4 +1,5 @@
 import { _decorator, BlockInputEvents, Button, instantiate, Node, Prefab, Sprite, tween, UITransform, Vec3, view } from 'cc';
+import { EventType } from '../../../config/EventType';
 import { AdvLevelConfig, BookLevelConfig } from '../../../manager/DataMgr';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { ViewsManager } from '../../../manager/ViewsManager';
@@ -298,6 +299,10 @@ export class BaseModeView extends BaseView {
 
     protected closeView() {
         ViewsManager.instance.showConfirm("确定退出学习吗?", () => {
+            let isAdventure = this._levelData.hasOwnProperty('islandId'); //是否是大冒险关卡
+            if(!isAdventure){
+                EventMgr.dispatch(EventType.Exit_Island_Level);
+            }
             this.node.destroy();
         });
     }
