@@ -164,7 +164,7 @@
       "a": 255
     },
     "_spriteFrame": {
-      "__uuid__": "1c9a18a5-fcac-4bef-ad0d-7fee000c5cc5@f9941",
+      "__uuid__": "a31d1bea-788a-4fb0-8bf5-8285d5a50eb9@f9941",
       "__expectedType__": "cc.SpriteFrame"
     },
     "_type": 0,
@@ -178,7 +178,7 @@
     "_fillStart": 0,
     "_fillRange": 0,
     "_isTrimmedMode": true,
-    "_useGrayscale": true,
+    "_useGrayscale": false,
     "_atlas": null,
     "_id": ""
   },
@@ -243,7 +243,7 @@
     "selectedFlag": null,
     "selectedFlag2": null,
     "selectedSpriteFrame": null,
-    "adaptiveSize": false,
+    "adaptiveSize": true,
     "rewad_progress": {
       "__id__": 2
     },
