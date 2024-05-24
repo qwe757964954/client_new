@@ -13,6 +13,7 @@ import { StudyModeView } from './sixModes/StudyModeView';
 import { WordMeaningView } from './sixModes/WordMeaningView';
 import { WordPracticeView } from './sixModes/WordPracticeView';
 import { WorldIsland } from './WorldIsland';
+import { WordSpellView } from './sixModes/WordSpellView';
 const { ccclass, property } = _decorator;
 /**大冒险 世界地图 何存发 2024年4月8日14:45:44 */
 @ccclass('WorldMapView')
@@ -45,6 +46,7 @@ export class WorldMapView extends Component {
     private _currentIslandProgress: IslandProgressData = null;//当前岛屿进度
 
     private _getingIslandStatus: boolean = false;//是否正在获取岛屿状态
+    private _getingWords: boolean = false;//是否正在获取单词
     start() {
         let winssize = GlobalConfig.WIN_SIZE;
         this.islandContainer.position = v3(-winssize.width / 2, 0, 0);
@@ -133,15 +135,22 @@ export class WorldMapView extends Component {
 
     //进入关卡
     private enterLevel(data: MapLevelData) {
+        if (this._getingWords) {
+            console.log('正在获取单词中', data);
+            return;
+        }
         console.log('进入关卡', data);
         this._currentLevelData = data;
-        this._currentLevelData.current_mode = 0;
+        this._currentLevelData.current_mode = GameMode.Spelling;
+        this._getingWords = true;
         ServiceMgr.studyService.getWordGameWords(data.big_id, data.small_id, data.micro_id, data.current_mode);
     }
 
     //获取关卡单词回包
     onWordGameWords(data: any) {
+        if (!this._getingWords) return;
         console.log('获取单词', data);
+        this._getingWords = false;
         let gameMode = this._currentLevelData.current_mode;
         let levelData = DataMgr.instance.getAdvLevelConfig(this._currentIslandID, this._currentLevelData.small_id);
         levelData.mapLevelData = this._currentLevelData;
@@ -159,6 +168,11 @@ export class WorldMapView extends Component {
             case GameMode.Practice:
                 ViewsManager.instance.showView(PrefabType.WordPracticeView, (node: Node) => {
                     node.getComponent(WordPracticeView).initData(data, levelData);
+                });
+                break;
+            case GameMode.Spelling:
+                ViewsManager.instance.showView(PrefabType.WordSpellView, (node: Node) => {
+                    node.getComponent(WordSpellView).initData(data, levelData);
                 });
                 break;
             default:

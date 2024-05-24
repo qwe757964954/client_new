@@ -16,9 +16,8 @@ import { User } from '../../models/User';
 import { ServiceMgr } from '../../net/ServiceManager';
 import { MsgListItem } from './MsgListItem';
 import { EmailListItem } from './EmailListItem';
-import { PropInfo } from '../../config/PropConfig';
 import { RewardItem } from '../common/RewardItem';
-import { ButtomSelectType } from '../setting/BottomItem';
+import { FriendTalkDialogView } from './FriendTalkDialogView';
 const { ccclass, property } = _decorator;
 
 @ccclass('FriendsDialogView')
@@ -517,6 +516,16 @@ export class FriendsDialogView extends Component {
         this.msgList.content.addChild(friendUnit);
     }
 
+    /** 设置所有的好友列表背景为未选中  */
+    setAllFriendListUnSelect() {
+        let ndFriendItem: Node = null;
+        let scriptFriendItem: FriendListItem = null;
+        for (let i = 0; i < this.friendList.content.children.length; i++) {
+            ndFriendItem = this.friendList.content.children[i];
+            ndFriendItem.getChildByName("bgImg").getComponent(Sprite).spriteFrame = this.sprfriendItemBgAry[1];
+        }
+    }
+
     /**点击朋友列表中的一项 */
     onFriendItemClck(data: FriendItemClickInfo) {
         if (!data) {
@@ -531,9 +540,10 @@ export class FriendsDialogView extends Component {
         this.roleInfoBox.active = true;
         this.msgInfoBox.active = false;
 
-        if (this._selectItem) { //原来的选中项设为非选中状态
+        /*if (this._selectItem) { //原来的选中项设为非选中状态
             this._selectItem.getChildByName("bgImg").getComponent(Sprite).spriteFrame = this.sprfriendItemBgAry[1];
-        }
+        }*/
+        this.setAllFriendListUnSelect();
         let dataFriend: FriendUnitInfo = data.info;
         let dataNode: Node = data.node;
         this.fname.string = dataFriend.RealName;
@@ -567,6 +577,7 @@ export class FriendsDialogView extends Component {
         this.roleContainer.removeAllChildren();
         this._role = null;
         this._role = instantiate(this.roleModel);
+        this._role.setScale(v3(1.5, 1.5, 1));
         this.roleContainer.addChild(this._role);
         NodeUtil.setLayerRecursively(this._role, Layers.Enum.UI_2D);
         let roleModel = this._role.getComponent(RoleBaseModel);
@@ -679,7 +690,22 @@ export class FriendsDialogView extends Component {
     }
 
     onTalkClick() {
-        ViewsManager.instance.showTip("和别人聊天");
+        //ViewsManager.instance.showTip("和别人聊天");
+        let ndFriendItem: Node = null;
+        let scriptFriendItem: FriendListItem = null;
+        let dataFriend: FriendUnitInfo = null;
+        for (let i = 0; i < this.friendList.content.children.length; i++) {
+            ndFriendItem = this.friendList.content.children[i];
+            scriptFriendItem = ndFriendItem.getComponent(FriendListItem);
+            dataFriend = scriptFriendItem._data;
+            if (dataFriend.FriendId == this._selectFriend.FriendId) {
+                ndFriendItem.getChildByName("newMsgBox").active = false;
+                break;
+            }
+        }
+        ViewsManager.instance.showView(PrefabType.FriendTalkDialogView, (node: Node) => {
+            node.getComponent(FriendTalkDialogView).init(this._selectFriend);
+        });
     }
 
     /**点击收取奖励 */

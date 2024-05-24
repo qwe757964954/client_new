@@ -1,3 +1,4 @@
+import { WordSpellView } from "../views/adventure/sixModes/WordSpellView";
 
 // 场景类型
 export const SceneType = {
@@ -34,6 +35,7 @@ export const PrefabType = {
     WorldMapView: { path: "adventure/WorldMapView", zindex: Hierarchy.POPUPLAYER, tips: "单词大冒险岛屿选择" },
     WordMeaningView: { path: "studyModes/WordMeaningView", zindex: Hierarchy.POPUPLAYER, tips: "词意模式" },
     WordPracticeView: { path: "studyModes/WordPraticeView", zindex: Hierarchy.POPUPLAYER, tips: "练习模式" },
+    WordSpellView: { path: "studyModes/WordSpellView", zindex: Hierarchy.POPUPLAYER, tips: "拼写模式" },
     TransitionView: { path: "common/TransitionView", zindex: Hierarchy.POPUPLAYER, tips: "过渡界面" },
 
     //**学习模式相关 end*/
@@ -146,5 +148,6 @@ export const PrefabType = {
     /*********************************************复习规划end***********************************************************/
     /*********************************************社交 start***********************************************************/
     FriendsDialogView: { path: "social/FriendsDialogView", zindex: Hierarchy.POPUPLAYER, tips: "好友界面" },
+    FriendTalkDialogView: { path: "social/FriendTalkDialogView", zindex: Hierarchy.POPUPLAYER, tips: "好友聊天界面" },
     /*********************************************社交 End*************************************************************/
 }

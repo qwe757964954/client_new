@@ -84,6 +84,11 @@ export const EventType = {
     Friend_SysMsg_List: "Friend_SysMsg_List", // 邮件列表
     Friend_RecvAward: "Friend_RecvAward", // 获得邮件附件奖励
     Friend_DelFriend: "Friend_DelFriend", // 删除好友
-
+    //下面是好友聊天相关
+    Friend_ClickChatFriendList: "Friend_ClickChatFriendList", //聊天框中好友点击某个朋友开始聊天
+    Friend_MsgList: "MyFriend_MsgList", //获取和某个好友的聊天消息列表
+    Friend_SelectEmotion: "Friend_SelectEmotion", //点击一个表情
+    Friend_MsgSend: "Friend_MsgSend", //向好友发送一个消息
+    Friend_RecMessage: "MyFriend_RecMessage", //收到一个好友消息
 
 }

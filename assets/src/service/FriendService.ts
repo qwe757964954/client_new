@@ -1,6 +1,6 @@
 import { _decorator, Component, Node } from 'cc';
 import { BaseControll } from '../script/BaseControll';
-import { c2sApplyFriendStatus, c2sApplyFriendTo, c2sEmailList, c2sFriendApplyList, c2sFriendDel, c2sFriendList, c2sMsgRecAwards, c2sRecommendList, EmailDataInfo, FriendResponseData, FriendUnitInfo } from '../models/FriendModel';
+import { c2sApplyFriendStatus, c2sApplyFriendTo, c2sEmailList, c2sFriendApplyList, c2sFriendDel, c2sFriendList, c2sFriendMsgList, c2sMsgRecAwards, c2sRecommendList, c2sSendFriendMsg, EmailDataInfo, FriendChatInfo, FriendChatNetResponse, FriendResponseData, FriendUnitInfo } from '../models/FriendModel';
 import { NetMgr } from '../net/NetManager';
 import { TextConfig } from '../config/TextConfig';
 import EventManager from '../util/EventManager';
@@ -234,6 +234,51 @@ export class FriendService extends BaseControll {
         EventManager.emit(EventType.Friend_DelFriend, sockData)
     }
 
+    // 请求该好友给我发来的消息
+    friendMsgList(friendId: number) {
+        let para: c2sFriendMsgList = new c2sFriendMsgList();
+        para.Id = friendId;
+        //NetMgr.sendMsg(para);
+        //下面是模拟
+        let data1: FriendChatInfo = {
+            CreateTime: 1716450171, // 2024-05-23 15:42:51
+            isShow: true,
+            AccountId: 1101,
+            Message: 100
+        };
+        let data2: FriendChatInfo = {
+            CreateTime: 1716450531, // 2024-05-23 15:48:51
+            isShow: true,
+            AccountId: 5,
+            Message: 101
+        };
+        let data3: FriendChatInfo = {
+            CreateTime: 1716450605, // 2024-05-23 15:55:51
+            isShow: true,
+            AccountId: 1102,
+            Message: 33
+        };
+
+        let data: FriendChatNetResponse = {
+            Code: 200,
+            Data: [data1, data2, data3],
+        };
+
+        EventManager.emit(EventType.Friend_MsgList, data);
+    }
+
+    /**发送给好友表情 */
+    friendMsgSend(friendId: number, Message: number) {
+        let para: c2sSendFriendMsg = new c2sSendFriendMsg();
+        para.FriendId = friendId;
+        para.Message = Message
+        //NetMgr.sendMsg(para);
+
+        //let 
+
+        EventManager.emit(EventType.Friend_MsgSend, null);
+
+    }
 
 
 
