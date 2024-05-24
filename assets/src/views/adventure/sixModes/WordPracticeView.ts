@@ -1,21 +1,20 @@
 import { _decorator, Label, Node } from 'cc';
+import { EventType } from '../../../config/EventType';
 import { NetConfig } from '../../../config/NetConfig';
 import { PrefabType } from '../../../config/PrefabType';
 import { AdvLevelConfig, DataMgr } from '../../../manager/DataMgr';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { ViewsManager } from '../../../manager/ViewsManager';
+import { GameMode } from '../../../models/AdventureModel';
 import { UnitWordModel } from '../../../models/TextbookModel';
+import { ServiceMgr } from '../../../net/ServiceManager';
 import CCUtil from '../../../util/CCUtil';
+import EventManager from '../../../util/EventManager';
 import List from '../../../util/list/List';
-import { BaseRemindView } from '../../common/BaseRemindView';
 import { TransitionView } from '../common/TransitionView';
 import { BaseModeView } from './BaseModeView';
 import { LetterItem } from './items/LetterItem';
 import { SelectLetterItem } from './items/SelectLetterItem';
-import { GameMode } from '../../../models/AdventureModel';
-import { ServiceMgr } from '../../../net/ServiceManager';
-import EventManager from '../../../util/EventManager';
-import { EventType } from '../../../config/EventType';
 import { WordSpellView } from './WordSpellView';
 const { ccclass, property } = _decorator;
 
@@ -136,6 +135,8 @@ export class WordPracticeView extends BaseModeView {
                 }
             });
         }
+        let word = this._wordsData[this._wordIndex].word
+        this.onGameSubmit(word,true);
     }
 
     //获取拼写模式单词数据用以跳转

@@ -1,7 +1,7 @@
-import { _decorator, Component, Label, Node } from 'cc';
-import { BaseModeView } from './BaseModeView';
-import { UnitWordModel } from '../../../models/TextbookModel';
+import { _decorator, Label, Node } from 'cc';
 import { GameMode } from '../../../models/AdventureModel';
+import { UnitWordModel } from '../../../models/TextbookModel';
+import { BaseModeView } from './BaseModeView';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordReadingView')

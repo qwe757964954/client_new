@@ -1,10 +1,10 @@
-import { _decorator, Component, instantiate, Label, Node, NodePool, Prefab } from 'cc';
-import { BaseModeView } from './BaseModeView';
-import { UnitWordModel } from '../../../models/TextbookModel';
-import { GameMode, SentenceData, WordsDetailData } from '../../../models/AdventureModel';
+import { _decorator, instantiate, Label, Node, NodePool, Prefab } from 'cc';
 import { DataMgr } from '../../../manager/DataMgr';
-import { SpellWordItem } from './items/SpellWordItem';
+import { GameMode, SentenceData, WordsDetailData } from '../../../models/AdventureModel';
+import { UnitWordModel } from '../../../models/TextbookModel';
 import CCUtil from '../../../util/CCUtil';
+import { BaseModeView } from './BaseModeView';
+import { SpellWordItem } from './items/SpellWordItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordSpellView')
@@ -106,8 +106,11 @@ export class WordSpellView extends BaseModeView {
         wordItem.select(minIdx);
         if (wordItem.isSelect)
             this._selectIdxs.push(minIdx);
-        else
+        else{
             this._selectIdxs.splice(this._selectIdxs.indexOf(selectIdx), 1);
+        }
+        let word = this._wordsData[this._wordIndex].word
+        this.onGameSubmit(word,true);
     }
 
     //获取不存在于数组中最小的值
