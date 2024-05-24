@@ -15,6 +15,10 @@ import CCUtil from '../../util/CCUtil';
 import { NodeUtil } from '../../util/NodeUtil';
 import { LevelConfig, rightPanelchange } from '../adventure/common/RightPanelchange';
 import { StudyModeView } from '../adventure/sixModes/StudyModeView';
+import { WordMeaningView } from '../adventure/sixModes/WordMeaningView';
+import { WordPracticeView } from '../adventure/sixModes/WordPracticeView';
+import { WordReadingView } from '../adventure/sixModes/WordReadingView';
+import { WordSpellView } from '../adventure/sixModes/WordSpellView';
 import { NavTitleView } from '../common/NavTitleView';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { ScrollMapView } from './ScrollMapView';
@@ -28,12 +32,12 @@ const { ccclass, property } = _decorator;
 
 //学习模式(0导学 3词意 7全拼）
 export enum LearnGameModel {
-    Tutoring=0,
-    Translate = 1,
-    Practice = 2,
-    WordMeaning=3,
-    Reed = 4,
-    AllSpelledOut=7,
+    Tutoring=0, /**导学模式 */
+    Spell = 1, /**拼模式 */
+    AllSpelledOut = 2,  /**全拼 */
+    Practice=3, /**练习模式 */
+    Reed = 4, /**读 */
+    WordMeaning=7, /**词意模式 */
 }
 
 @ccclass('BreakThroughView')
@@ -88,6 +92,8 @@ export class BreakThroughView extends BaseView {
         this.addModelListener(NetNotify.Classification_VocabularyWord,this.onVocabularyWord);
         this.addModelListener(NetNotify.Classification_UnitStatus,this.onUnitStatus);
         this.addModelListener(EventType.Enter_Island_Level,this.onEnterIsland);
+        this.addModelListener(EventType.Exit_Island_Level,this.onExitIsland);
+        
     }
     getUnitListStatus(){
         let params:BookUnitModel = {
@@ -143,38 +149,51 @@ export class BreakThroughView extends BaseView {
                 bookLevelData.game_mode = LearnGameModel.Reed;
                 this.gotoReed(data,bookLevelData);
                 break;
+            case LearnGameModel.Spell:
+                bookLevelData.game_mode = LearnGameModel.Spell;
+                this.gotoSpell(data,bookLevelData);
+                break;
             default:
                 break;
         }
+    }
+
+    onExitIsland(){
+        this._rightChallenge.hideView();
     }
 
     onEnterIsland(data:LevelConfig){
         console.log("onEnterIsland", data);
         this.reqVocabularyWord();
     }
+    /**进入拼 */
+    gotoSpell(wordData:VocabularyWordData,bookLevelData:BookLevelConfig){
+        ViewsManager.instance.showView(PrefabType.WordSpellView, (node: Node) => {
+            node.getComponent(WordSpellView).initData(wordData.data, bookLevelData);
+        });
+    }
+
     /**进入读模式 */
     gotoReed(wordData:VocabularyWordData,bookLevelData:BookLevelConfig){
         ViewsManager.instance.showView(PrefabType.WordReadingView, (node: Node) => {
-            node.getComponent(StudyModeView).initData(wordData.data, bookLevelData);
+            node.getComponent(WordReadingView).initData(wordData.data, bookLevelData);
         });
     }
     /**进入练模式 */
     gotoPractice(wordData:VocabularyWordData,bookLevelData:BookLevelConfig){
         ViewsManager.instance.showView(PrefabType.WordPracticeView, (node: Node) => {
-            node.getComponent(StudyModeView).initData(wordData.data, bookLevelData);
+            node.getComponent(WordPracticeView).initData(wordData.data, bookLevelData);
         });
     }
     /**进入译模式 */
     gotoMeaning(wordData:VocabularyWordData,bookLevelData:BookLevelConfig){
         ViewsManager.instance.showView(PrefabType.WordMeaningView, (node: Node) => {
-            node.getComponent(StudyModeView).initData(wordData.data, bookLevelData);
+            node.getComponent(WordMeaningView).initData(wordData.data, bookLevelData);
         });
     }
-    /**进入全拼 */
+    
     gotoAllSpelledOut(wordData:VocabularyWordData,bookLevelData:BookLevelConfig){
-        ViewsManager.instance.showView(PrefabType.WordSpellView, (node: Node) => {
-            node.getComponent(StudyModeView).initData(wordData.data, bookLevelData);
-        });
+        
     }
 
     /**进入学 */

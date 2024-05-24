@@ -121,7 +121,8 @@ export class WordPracticeView extends BaseModeView {
         item.removeFromParent();
         this._letterItems[index].getComponent(LetterItem).showLetter();
         this._currentLetterIdx++;
-
+        let word = this._wordsData[this._wordIndex].word
+        this.onGameSubmit(word, true);
         //当前词答题完毕
         if (this._currentLetterIdx >= this._currentWord.word.length) {
             this._wordIndex++;
@@ -135,8 +136,6 @@ export class WordPracticeView extends BaseModeView {
                 }
             });
         }
-        let word = this._wordsData[this._wordIndex].word
-        this.onGameSubmit(word, true);
     }
 
     protected modeOver(): void {

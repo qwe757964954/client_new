@@ -1,4 +1,5 @@
 import { _decorator, BlockInputEvents, Button, instantiate, Node, Prefab, Sprite, tween, UITransform, Vec3, view } from 'cc';
+import { EventType } from '../../../config/EventType';
 import { AdvLevelConfig, BookLevelConfig } from '../../../manager/DataMgr';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { ViewsManager } from '../../../manager/ViewsManager';
@@ -172,6 +173,8 @@ export class BaseModeView extends BaseView {
             // TBServer.reqReportResult(data);
         }
     }
+    
+
 
     //当前模式结束,跳转下一模式或结算
     protected modeOver() {
@@ -179,6 +182,10 @@ export class BaseModeView extends BaseView {
     }
     //单个单词学习情况上报
     onGameSubmit(word: string,isRight:boolean) {
+        /**单词上报仅限教材单词 */
+        if (this._levelData.hasOwnProperty('islandId')) {
+            return;
+        }
         let levelData: BookLevelConfig = this._levelData as BookLevelConfig;
         let costTime = Date.now() - this._costTime;
         let data: GameSubmitModel = {
@@ -292,6 +299,10 @@ export class BaseModeView extends BaseView {
 
     protected closeView() {
         ViewsManager.instance.showConfirm("确定退出学习吗?", () => {
+            let isAdventure = this._levelData.hasOwnProperty('islandId'); //是否是大冒险关卡
+            if(!isAdventure){
+                EventMgr.dispatch(EventType.Exit_Island_Level);
+            }
             this.node.destroy();
         });
     }
