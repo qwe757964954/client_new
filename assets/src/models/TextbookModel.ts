@@ -49,7 +49,7 @@ export interface SchoolBookGradeItemData{
 }
 
 export interface UnitListItemStatus extends BaseRepPacket{
-    data:UnitItemStatus[];
+    unit_list:UnitItemStatus[];
     gate_total:number,
 }
 

@@ -71,11 +71,11 @@ export class ScrollMapView extends Component {
         
     }
 
-    async loadMapItems(unitStatus:UnitListItemStatus) {
+    async loadMapItems() {
         let map_count = 0;
         let unit_count = 0;
-        for (let i = 0; i < unitStatus.data.length; i++) {
-            const itemData:UnitItemStatus = unitStatus.data[i];
+        for (let i = 0; i < this._unitStatus.length; i++) {
+            const itemData:UnitItemStatus = this._unitStatus[i];
             for (let j = 0; j < itemData.gate_list.length; j++) {
                 const gate:GateListItem = itemData.gate_list[j];
                 const index = unit_count % MapCoordinates.length;
@@ -109,8 +109,8 @@ export class ScrollMapView extends Component {
 
     /**添加地图单元点 */
     async initUnit(unitStatus:UnitListItemStatus){
-        this._unitStatus = unitStatus.data;
-        this.loadMapItems(unitStatus);
+        this._unitStatus = unitStatus.unit_list;
+        this.loadMapItems();
     }
 
     addMapBg(count:number){
