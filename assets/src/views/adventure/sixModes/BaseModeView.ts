@@ -4,14 +4,14 @@ import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { s2cAdventureResult, WordsDetailData } from '../../../models/AdventureModel';
 import { PetModel } from '../../../models/PetModel';
 import { RoleBaseModel } from '../../../models/RoleBaseModel';
-import { GameSubmitModel, ReportResultModel, UnitWordModel } from '../../../models/TextbookModel';
+import { GameSubmitModel, UnitWordModel } from '../../../models/TextbookModel';
 import { InterfacePath } from '../../../net/InterfacePath';
 import { NetNotify } from '../../../net/NetNotify';
 import { ServiceMgr } from '../../../net/ServiceManager';
 import { BaseView } from '../../../script/BaseView';
 import { TBServer } from '../../../service/TextbookService';
 import CCUtil from '../../../util/CCUtil';
-import EventManager from '../../../util/EventManager';
+import EventManager, { EventMgr } from '../../../util/EventManager';
 import { SmallMonsterModel } from '../../common/SmallMonsterModel';
 import { MonsterModel } from '../common/MonsterModel';
 const { ccclass, property } = _decorator;
@@ -148,15 +148,19 @@ export class BaseModeView extends BaseView {
             ServiceMgr.studyService.submitAdventureResult(levelData.islandId, levelData.levelId, levelData.mapLevelData.micro_id, levelData.mapLevelData.current_mode, costTime);
         } else {
             //教材关卡
-            let levelData: BookLevelConfig = this._levelData as BookLevelConfig;
-            let data: ReportResultModel = {
-                type_name: levelData.type_name,
-                book_name: levelData.book_name,
-                grade: levelData.grade,
-                unit: levelData.unit,
-                game_mode: this.gameMode,
-            }
-            TBServer.reqReportResult(data);
+            // let levelData: BookLevelConfig = this._levelData as BookLevelConfig;
+            // let data: ReportResultModel = {
+            //     type_name: levelData.type_name,
+            //     book_name: levelData.book_name,
+            //     grade: levelData.grade,
+            //     unit: levelData.unit,
+            //     game_mode: this.gameMode,
+            // }
+            let data = {code:200};
+            let levelData = this._levelData as BookLevelConfig;
+            levelData.word_num = 1;
+            EventMgr.dispatch(NetNotify.Classification_ReportResult, data);
+            // TBServer.reqReportResult(data);
         }
     }
 
@@ -177,7 +181,7 @@ export class BaseModeView extends BaseView {
             cost_time:costTime,
             word: word,
             small_id:levelData.small_id,
-            word_flag:"1"
+            word_flag:1
         }
         TBServer.reqGameSubmit(data);
     }
@@ -249,7 +253,8 @@ export class BaseModeView extends BaseView {
         if (this._levelData.hasOwnProperty('islandId')) { //大冒险关卡
             ServiceMgr.studyService.getAdventureWord(word);
         } else { //教材单词关卡
-            TBServer.reqWordDetail(word);
+            let levelData: BookLevelConfig = this._levelData as BookLevelConfig;
+            TBServer.reqWordDetail(word,levelData.id);
         }
     }
 

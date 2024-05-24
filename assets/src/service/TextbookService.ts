@@ -335,9 +335,10 @@ export default class _TextbookService extends BaseControll {
      * 请求
      * @param word 
      */
-    reqWordDetail(word:string){
+    reqWordDetail(word:string,id:string){
         let params:c2sWordDetail = new c2sWordDetail();
         params.word = word;
+        params.c_id = id;
         NetMgr.sendMsg(params);
     }
     /**
@@ -478,11 +479,15 @@ export default class _TextbookService extends BaseControll {
      * req
      * @param param 
      */
-    reqCollectWord(param:ReqCollectWord){
+    reqCollectWord(data:ReqCollectWord){
         let params:c2sCollectWord = new c2sCollectWord();
-        params.word = param.word;
-        params.c_id = param.c_id;
-        params.action = param.action;
+        if(isValid(data.word)){
+            params.word = data.word;
+        }
+        if(isValid(data.c_id)){
+            params.c_id = data.c_id;
+        }
+        params.action = data.action;
     }
     /**
      * 收藏与移除

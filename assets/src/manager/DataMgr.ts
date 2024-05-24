@@ -93,12 +93,14 @@ export class AdvLevelConfig {
 }
 //教材单词关卡配置
 export class BookLevelConfig {
+    id:string;//
     grade: string;
     unit: string;
     type_name: string;
     game_mode: number;
     small_id: number;
     book_name: string;
+    word_num: number;
 }
 //成就信息配置
 export class ArchConfig {

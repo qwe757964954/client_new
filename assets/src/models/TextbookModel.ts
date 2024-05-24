@@ -290,6 +290,7 @@ export class c2sReportResult {
 
 export class c2sWordDetail {
     command_id: string = InterfacePath.Classification_Word;
+    c_id:string;
     word:string;
 }
 
@@ -327,7 +328,7 @@ export class c2sGameSubmit {
     unit:string;
     small_id:number;
     game_mode:number;
-    word_flag:string;
+    word_flag:number;
     score:string;
 }
 
@@ -340,7 +341,7 @@ export interface GameSubmitModel {
     unit:string;
     small_id:number;
     game_mode:number;
-    word_flag:string;
+    word_flag:number;
     score?:string;
 }
 
@@ -412,15 +413,17 @@ export interface VocabularyWordData extends BaseRepPacket{
 }
 
 export interface ReqCollectWord {
-    word:string;
-    c_id:string;
+    id:string;
+    word?:string;
+    c_id?:string;
     action:number;
 }
 
 export class c2sCollectWord {
     command_id: string = InterfacePath.Classification_CollectWord;
-    word:string;
-    c_id:string;
+    id:string;
+    word?:string;
+    c_id?:string;
     action:number;
 }
 

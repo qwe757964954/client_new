@@ -11,6 +11,7 @@ import { User } from '../../models/User';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
+import CCUtil from '../../util/CCUtil';
 import { NodeUtil } from '../../util/NodeUtil';
 import { LevelConfig, rightPanelchange } from '../adventure/common/RightPanelchange';
 import { StudyModeView } from '../adventure/sixModes/StudyModeView';
@@ -60,9 +61,15 @@ export class BreakThroughView extends BaseView {
 
     start() {
         GlobalConfig.initRessolutionHeight();
+        this.initEvent();
         this.initUI();
     }
-
+    initEvent() {
+        CCUtil.onTouch(this.scrollMapNode, this.hideRightPanelchangeView, this);
+    }
+    removeEvent() {
+        CCUtil.offTouch(this.scrollMapNode, this.hideRightPanelchangeView, this);
+    }
     initUI(){
         this.initScrollMap();
         this.initNavTitle();
@@ -123,12 +130,14 @@ export class BreakThroughView extends BaseView {
     gotoTutoring(wordData:VocabularyWordData){
         ViewsManager.instance.showView(PrefabType.StudyModeView, (node: Node) => {
             let bookLevelData:BookLevelConfig = {
+                id:this._bookData.id,
                 grade:this._bookData.grade,
                 unit:this._selectitemStatus.unit,
                 type_name:this._bookData.type_name,
                 game_mode:LearnGameModel.Tutoring,
                 book_name:this._bookData.book_name,
-                small_id:this._selectGate.small_id
+                small_id:this._selectGate.small_id,
+                word_num:this._curUnitStatus.word_num,
             }
             node.getComponent(StudyModeView).initData(wordData.data, bookLevelData);
         });
@@ -214,6 +223,12 @@ export class BreakThroughView extends BaseView {
         })
     }
 
-    
+    hideRightPanelchangeView(){
+        // this._rightChallenge.hideView();
+    }
+    onDestroy(): void {
+        super.onDestroy();
+        this.removeEvent();
+    }
 }
 
