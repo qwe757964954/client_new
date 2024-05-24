@@ -31,7 +31,12 @@ export class SettingPlanView extends BasePopup {
     start() {
         this.setLeftRightDatePick();
         this.scheduleOnce(()=>{
-            this.dayScroll.scrollToNumber(`${7}`)
+            if(this._totoal_level <= 5){
+                this.levelScroll.scrollToNumber(`${this._totoal_level}`)
+            }else{
+                this.levelScroll.scrollToNumber(`${5}`)
+            }
+            
         },0.5);
         this.enableClickBlankToClose([this.node.getChildByName("small_dialog_bg")]).then(()=>{
             let data:PlanSaveData = {

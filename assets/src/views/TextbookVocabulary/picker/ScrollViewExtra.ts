@@ -42,8 +42,8 @@ export class ScrollViewExtra extends Component {
     init(listData:any){
         this.listData = listData;
         this.listData.unshift(" ");
-        // this.listData.unshift(" ");
-        // this.listData.push(" ");
+        this.listData.unshift(" ");
+        this.listData.push(" ");
         this.listData.push(" ");
         // 初始化
         this.addScrollChildIndex();
