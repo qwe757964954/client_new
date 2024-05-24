@@ -15,12 +15,12 @@ export interface PlanSaveData {
 @ccclass('SettingPlanView')
 export class SettingPlanView extends BasePopup {
     @property(ScrollViewExtra)
-    public levelScroll:ScrollViewExtra = null
+    public levelScroll:ScrollViewExtra = null;
     @property(ScrollViewExtra)
-    public dayScroll:ScrollViewExtra = null
+    public dayScroll:ScrollViewExtra = null;
 
     @property(Label)
-    public book_title:Label = null
+    public book_title:Label = null;
 
     private _levelSelect:number = 0;
     private _daySelect:number = 0;

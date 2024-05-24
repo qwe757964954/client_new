@@ -1,4 +1,4 @@
-import { _decorator, Component, Label, Node, Sprite } from 'cc';
+import { _decorator, Component, Label, Node, Sprite, UITransform } from 'cc';
 import { CurrentBookStatus } from '../../models/TextbookModel';
 import List from '../../util/list/List';
 import { UnitNumItem } from './UnitNumItem';
@@ -10,6 +10,9 @@ export class ChallengeBottomView extends Component {
     public collect_num: Label = null;   // 收单元
     @property(Label)
     public collect_total: Label = null;   // 总单元
+
+    @property(Label)
+    public more_text: Label = null;
 
     @property(List)
     public collectScroll:List = null;
@@ -30,6 +33,9 @@ export class ChallengeBottomView extends Component {
         this.chest_box.getComponent(Sprite).grayscale = !isComplete;
         this.collect_num.string = this._currentUnitIndex.toString();
         this.collect_total.string = this._totalUnit.toString();
+        let scroll_width = this.collectScroll.scrollView.getComponent(UITransform).width;
+        let content_width = this.collectScroll.scrollView.content.getComponent(UITransform).width;
+        this.more_text.node.active = content_width > scroll_width;
     }
 
     onLoadCollectHorizontal(item:Node, idx:number){
