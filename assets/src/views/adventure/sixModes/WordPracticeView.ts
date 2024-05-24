@@ -45,7 +45,7 @@ export class WordPracticeView extends BaseModeView {
     async initData(wordsdata: UnitWordModel[], levelData: any) {
         this.gameMode = GameMode.Practice;
         this._spilitData = await DataMgr.instance.getWordSplitConfig();
-        this._levelData = levelData;
+        super.initData(wordsdata, levelData);
         this.initWords(wordsdata);
         this.initEvent();
         this.initMonster(); //初始化怪物

@@ -112,11 +112,37 @@ export class BreakThroughView extends BaseView {
     onVocabularyWord(data:VocabularyWordData){
         console.log("onVocabularyWord", data);
         let game_model:LearnGameModel = this._curUnitStatus.game_mode as LearnGameModel;
+        let bookLevelData:BookLevelConfig = {
+            id:this._bookData.id,
+            grade:this._bookData.grade,
+            unit:this._selectitemStatus.unit,
+            type_name:this._bookData.type_name,
+            game_mode:LearnGameModel.Tutoring,
+            book_name:this._bookData.book_name,
+            small_id:this._selectGate.small_id,
+            word_num:this._curUnitStatus.word_num,
+        }
         switch (game_model) {
             case LearnGameModel.Tutoring:
-                this.gotoTutoring(data);
+                bookLevelData.game_mode = LearnGameModel.Tutoring;
+                this.gotoTutoring(data,bookLevelData);
                 break;
-        
+            case LearnGameModel.AllSpelledOut:
+                bookLevelData.game_mode = LearnGameModel.AllSpelledOut;
+                this.gotoAllSpelledOut(data,bookLevelData);
+                break;
+            case LearnGameModel.WordMeaning:
+                bookLevelData.game_mode = LearnGameModel.WordMeaning;
+                this.gotoMeaning(data,bookLevelData);
+                break;
+            case LearnGameModel.Practice:
+                bookLevelData.game_mode = LearnGameModel.Practice;
+                this.gotoPractice(data,bookLevelData);
+                break;
+            case LearnGameModel.Reed:
+                bookLevelData.game_mode = LearnGameModel.Reed;
+                this.gotoReed(data,bookLevelData);
+                break;
             default:
                 break;
         }
@@ -126,19 +152,34 @@ export class BreakThroughView extends BaseView {
         console.log("onEnterIsland", data);
         this.reqVocabularyWord();
     }
+    /**进入读模式 */
+    gotoReed(wordData:VocabularyWordData,bookLevelData:BookLevelConfig){
+        ViewsManager.instance.showView(PrefabType.WordReadingView, (node: Node) => {
+            node.getComponent(StudyModeView).initData(wordData.data, bookLevelData);
+        });
+    }
+    /**进入练模式 */
+    gotoPractice(wordData:VocabularyWordData,bookLevelData:BookLevelConfig){
+        ViewsManager.instance.showView(PrefabType.WordPracticeView, (node: Node) => {
+            node.getComponent(StudyModeView).initData(wordData.data, bookLevelData);
+        });
+    }
+    /**进入译模式 */
+    gotoMeaning(wordData:VocabularyWordData,bookLevelData:BookLevelConfig){
+        ViewsManager.instance.showView(PrefabType.WordMeaningView, (node: Node) => {
+            node.getComponent(StudyModeView).initData(wordData.data, bookLevelData);
+        });
+    }
+    /**进入全拼 */
+    gotoAllSpelledOut(wordData:VocabularyWordData,bookLevelData:BookLevelConfig){
+        ViewsManager.instance.showView(PrefabType.WordSpellView, (node: Node) => {
+            node.getComponent(StudyModeView).initData(wordData.data, bookLevelData);
+        });
+    }
+
     /**进入学 */
-    gotoTutoring(wordData:VocabularyWordData){
+    gotoTutoring(wordData:VocabularyWordData,bookLevelData:BookLevelConfig){
         ViewsManager.instance.showView(PrefabType.StudyModeView, (node: Node) => {
-            let bookLevelData:BookLevelConfig = {
-                id:this._bookData.id,
-                grade:this._bookData.grade,
-                unit:this._selectitemStatus.unit,
-                type_name:this._bookData.type_name,
-                game_mode:LearnGameModel.Tutoring,
-                book_name:this._bookData.book_name,
-                small_id:this._selectGate.small_id,
-                word_num:this._curUnitStatus.word_num,
-            }
             node.getComponent(StudyModeView).initData(wordData.data, bookLevelData);
         });
     }

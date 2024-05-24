@@ -64,13 +64,8 @@ export class StudyModeView extends BaseModeView {
     }
 
     async initData(wordsdata: UnitWordModel[], levelData: any) {
+        super.initData(wordsdata, levelData);
         this._spilitData = await DataMgr.instance.getWordSplitConfig();
-        this._levelData = levelData;
-        let isAdventure = this._levelData.hasOwnProperty('islandId'); //是否是大冒险关卡
-        /** 从关卡数据中获取单词学习到哪哪个单词*/
-        if (!isAdventure) {
-            this._wordIndex = this._levelData.word_num - 1;
-        }
         this.initWords(wordsdata);
         this.initMonster(); //初始化怪物
     }

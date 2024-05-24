@@ -76,7 +76,15 @@ export class BaseModeView extends BaseView {
     onLoad(): void {
 
     }
-
+    initData(wordsdata: UnitWordModel[], levelData: any) {
+        this._levelData = levelData;
+        let isAdventure = this._levelData.hasOwnProperty('islandId'); //是否是大冒险关卡
+        /** 从关卡数据中获取单词学习到哪哪个单词*/
+        if (!isAdventure) {
+            let levelData = this._levelData as BookLevelConfig
+            this._wordIndex = levelData.word_num - 1;
+        }
+    }
     onInitModuleEvent() {
         this.addModelListener(NetNotify.Classification_ReportResult, this.onUpResult);
         this.addModelListener(NetNotify.Classification_Word, this.onClassificationWord);

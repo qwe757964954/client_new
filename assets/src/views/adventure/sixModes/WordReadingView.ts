@@ -16,7 +16,7 @@ export class WordReadingView extends BaseModeView {
     wordSound: Node = null;
     async initData(wordsdata: UnitWordModel[], levelData: any) {
         this.gameMode = GameMode.Reading;
-        this._levelData = levelData;
+        super.initData(wordsdata, levelData);
         this.initWords(wordsdata);
         this.initEvent();
         this.initMonster(); //初始化怪物
