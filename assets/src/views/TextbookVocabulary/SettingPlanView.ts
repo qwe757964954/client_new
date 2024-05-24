@@ -29,6 +29,7 @@ export class SettingPlanView extends BasePopup {
     private _totoal_level:number = 20;
 
     start() {
+        console.log('this._totoal_level',this._totoal_level);
         this.setLeftRightDatePick();
         this.scheduleOnce(()=>{
             if(this._totoal_level <= 5){
@@ -76,8 +77,9 @@ export class SettingPlanView extends BasePopup {
             this.levelScroll.scrollToNumber(`${levels}`)
         })
     }
-    updateTitleName(title:string) {
+    updateTitleName(title:string,total_level:number) {
         this.book_title.string = title;
+        this._totoal_level = total_level;
     }
 
     onLoadLeftVerticalList(item:Node, idx:number){

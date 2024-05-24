@@ -129,24 +129,11 @@ export class TextbookChallengeView extends BaseView {
         }
     }
 
-    getCurrentUnit(){
-        return 0;
-        for (let index = 0; index < this._unitListArr.data.length; index++) {
-            const element = this._unitListArr[index];
-            if(element.studywordnum < element.totalwordnum){
-                return index
-            }
-        }
-        return this._unitListArr.data.length - 1;
-    }
-
     onUnitListStatus(data:UnitListItemStatus){
         this._unitListArr = data;
-        // this._currentUnitIndex = this.getCurrentUnit();
-        // this._bottomView.updateItemList(this._unitListArr.data,this._currentUnitIndex);
-        // this._unitDetailView.updateUnitProps(this._unitListArr.data[this._currentUnitIndex]);
+        this._unitDetailView.updateUnitTotal(this._unitListArr.gate_total);
     }
-    /**更新我的词书 */
+    /**获取词书单元信息 */
     getUnitListStatus(){
         let params:BookUnitModel = {
             type_name:this._bookData.type_name,

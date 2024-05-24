@@ -3,7 +3,7 @@ import { NetConfig } from '../../config/NetConfig';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { BookAwardListModel, BookPlanDetail, CurrentBookStatus } from '../../models/TextbookModel';
+import { BookPlanDetail, CurrentBookStatus } from '../../models/TextbookModel';
 import ImgUtil from '../../util/ImgUtil';
 import { SettingPlanView } from '../TextbookVocabulary/SettingPlanView';
 const { ccclass, property } = _decorator;
@@ -29,6 +29,8 @@ export class RightUnitView extends Component {
 
     private _curUnitStatus:CurrentBookStatus = null;
 
+    private _unitTotal:number = null;
+
     private _modifyCallback:(isSave:boolean)=>void = null;
 
     private _breakThroughCallback:()=>void = null;
@@ -45,9 +47,8 @@ export class RightUnitView extends Component {
         this.plan_label.string = `${data.rank_num}/${data.num}`;
     }
 
-    updateStudyProgress(data:BookAwardListModel){
-        
-        
+    updateUnitTotal(total_level:number){
+        this._unitTotal = total_level;
     }
 
     updateUnitProps(unitData:CurrentBookStatus){
@@ -100,7 +101,7 @@ export class RightUnitView extends Component {
         ViewsManager.instance.showPopup(PrefabType.SettingPlanView).then((node: Node)=>{
             let nodeScript:SettingPlanView = node.getComponent(SettingPlanView);
             let titleBookName = `${this._curUnitStatus.book_name}${this._curUnitStatus.grade}`;
-            nodeScript.updateTitleName(titleBookName);
+            nodeScript.updateTitleName(titleBookName,this._unitTotal);
         })
     }
     onChangeTextbookClick(){

@@ -4,11 +4,12 @@ import { PrefabType } from '../../config/PrefabType';
 import GlobalConfig from '../../GlobalConfig';
 import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { BookListItemData, SchoolBookGradeItemData, SchoolBookListGradeItemData, SchoolBookListItemData } from '../../models/TextbookModel';
+import { BookListItemData, SchoolBookGradeItemData, SchoolBookListGradeItemData, SchoolBookListItemData, UnitListItemStatus } from '../../models/TextbookModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
 import List from '../../util/list/List';
+import { BookUnitModel } from '../Challenge/TextbookChallengeView';
 import { NavTitleView } from '../common/NavTitleView';
 import { RightNavView } from './RightNavView';
 import { PlanSaveData, SettingPlanView } from './SettingPlanView';
@@ -29,10 +30,14 @@ export class SelectWordView extends BaseView {
     private _schoolBookListDataArr:SchoolBookListItemData = null;/**词书左侧导航数据 */
     private _tabTop:TabTopView = null;/**tabview */
     private _rightNav:RightNavView = null;/**左侧导航 */
-    private _tabIndex:number = 0;
-    private _leftNavIndex:number = 0; /**左侧导航索引 */
-    private _gradeSelectId:number = 0;
+    // private _tabIndex:number = 0;
+    // private _leftNavIndex:number = 0; /**左侧导航索引 */
+    // private _gradeSelectId:number = 0;
     private _planData:PlanSaveData = null;
+
+    private _curTypeName:string = "";
+    private _curBookName:string = "";
+    private _curGradeName:string = "";
     start() {
         GlobalConfig.initResolutionRules();
         this.initUI();
@@ -51,14 +56,15 @@ export class SelectWordView extends BaseView {
         this.addModelListener(EventType.Select_Word_Plan,this.onSelectWordPlan);
         this.addModelListener(NetNotify.Classification_PlanAdd,this.onAddPlan);
         this.addModelListener(NetNotify.Classification_AddPlanBook,this.onAddPlanBook);
+        this.addModelListener(NetNotify.Classification_UnitListStatus,this.onUnitListStatus);
 	}
     onSelectWordPlan(params:PlanSaveData){
         if(params.isSave){
             this._planData = params;
             let reqData = {
-                type_name:this._bookLiskData.data[this._tabIndex].type_name,
-                book_name:this._schoolBookListDataArr.data[this._leftNavIndex].book_name,
-                grade:this._schoolGradeListData.data[this._gradeSelectId].grade,
+                type_name:this._curTypeName,
+                book_name:this._curBookName,
+                grade:this._curGradeName,
                 rank_num:parseInt(this._planData.left),
                 num:parseInt(this._planData.right),
             }
@@ -68,7 +74,13 @@ export class SelectWordView extends BaseView {
             this.textBookScrollView.update(); 
         }
     }
-
+    onUnitListStatus(data:UnitListItemStatus){
+        ViewsManager.instance.showPopup(PrefabType.SettingPlanView).then((node: Node)=>{
+            let titleBookName = `${this._curBookName}${this._curGradeName}`
+            let nodeScript:SettingPlanView = node.getComponent(SettingPlanView)
+            nodeScript.updateTitleName(titleBookName,data.gate_total);
+        })
+    }
     onAddPlanBook(data){
         ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
             ViewsManager.instance.closeView(PrefabType.SelectWordView);
@@ -77,9 +89,9 @@ export class SelectWordView extends BaseView {
 
     onBookAdd(){
         let reqData = {
-            type_name:this._bookLiskData.data[this._tabIndex].type_name,
-            book_name:this._schoolBookListDataArr.data[this._leftNavIndex].book_name,
-            grade:this._schoolGradeListData.data[this._gradeSelectId].grade,
+            type_name:this._curTypeName,
+            book_name:this._curBookName,
+            grade:this._curGradeName,
             rank_num:parseInt(this._planData.left),
             num:parseInt(this._planData.right),
         }
@@ -100,16 +112,16 @@ export class SelectWordView extends BaseView {
         this._schoolBookListDataArr = data;
         this._rightNav.loadNavListData(this._schoolBookListDataArr.data,(selectId:number)=>{
             if(selectId >= 0){
-                this._leftNavIndex = selectId;
-                TBServer.reqSchoolBookGrade(this._bookLiskData.data[this._tabIndex].type_name,this._schoolBookListDataArr.data[this._leftNavIndex].book_name);
+                this._curBookName = this._schoolBookListDataArr.data[selectId].book_name;
+                TBServer.reqSchoolBookGrade(this._curTypeName,this._curBookName);
             }
         });
     }
     onBookList(data:BookListItemData){
         this._bookLiskData = data;
         this._tabTop.loadTabData(this._bookLiskData.data,(selectId:number)=>{
-            this._tabIndex = selectId;
-            TBServer.reqSchoolBook(this._bookLiskData.data[this._tabIndex].type_name);
+            this._curTypeName = this._bookLiskData.data[selectId].type_name
+            TBServer.reqSchoolBook(this._curTypeName);
         });
     }
  
@@ -175,17 +187,23 @@ export class SelectWordView extends BaseView {
         let tabContentItemScript:TabContentItem = item.getComponent(TabContentItem);
         let itemInfo:SchoolBookGradeItemData = this._schoolGradeListData.data[idx];
         console.log("book data",itemInfo);
-        tabContentItemScript.updateItemProps(idx,itemInfo,this._schoolBookListDataArr.data[this._leftNavIndex]);
+        tabContentItemScript.updateItemProps(idx,itemInfo,this._curBookName);
     }
+    /**获取词书单元信息 */
+    getUnitListStatus(){
+        let params:BookUnitModel = {
+            type_name:this._curTypeName,
+            book_name:this._curBookName,
+            grade:this._curGradeName
+        }
+        TBServer.reqUnitListStatus(params);
+    }
+
     onTextBookVerticalSelected(item: any, selectedId: number, lastSelectedId: number, val: number){
         if(selectedId === -1){return}
-        this._gradeSelectId = selectedId;
         let itemInfo:SchoolBookGradeItemData = this._schoolGradeListData.data[selectedId];
-        ViewsManager.instance.showPopup(PrefabType.SettingPlanView).then((node: Node)=>{
-            let titleBookName = `${this._schoolBookListDataArr.data[this._leftNavIndex].book_name}${itemInfo.grade}`
-            let nodeScript:SettingPlanView = node.getComponent(SettingPlanView)
-            nodeScript.updateTitleName(titleBookName);
-        })
+        this._curGradeName = itemInfo.grade;
+        this.getUnitListStatus();
     }
 }
 

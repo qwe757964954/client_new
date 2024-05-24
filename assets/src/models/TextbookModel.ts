@@ -50,6 +50,7 @@ export interface SchoolBookGradeItemData{
 
 export interface UnitListItemStatus extends BaseRepPacket{
     data:UnitItemStatus[];
+    gate_total:number,
 }
 
 

@@ -1,6 +1,6 @@
 import { _decorator, Label, Node } from 'cc';
 import { NetConfig } from '../../config/NetConfig';
-import { SchoolBookGradeItemData, SchoolBookItemData } from '../../models/TextbookModel';
+import { SchoolBookGradeItemData } from '../../models/TextbookModel';
 import ImgUtil from '../../util/ImgUtil';
 import ListItem from '../../util/list/ListItem';
 const { ccclass, property } = _decorator;
@@ -26,10 +26,10 @@ export class TabContentItem extends ListItem {
     start() {
 
     }
-    updateItemProps(idx:number,itemInfo:SchoolBookGradeItemData,dataSource:SchoolBookItemData){
+    updateItemProps(idx:number,itemInfo:SchoolBookGradeItemData,book_name:string){
         this.book_name.string = itemInfo.grade;
         this.word_num_text.string = `共${itemInfo.num}词`;
-        let bookImgUrl = `${NetConfig.assertUrl}/imgs/bookcover/${dataSource.book_name}/${itemInfo.grade}.jpg`;
+        let bookImgUrl = `${NetConfig.assertUrl}/imgs/bookcover/${book_name}/${itemInfo.grade}.jpg`;
         
         // item.getChildByName("bookImg").skin = GameData.ASSETS_URL + "/assets/imgs/bookcover/" + this.currentEditionItem.dataSource.Name + "/" + data.Name + ".jpg";
         ImgUtil.loadRemoteImage(bookImgUrl,this.item_img,186.797,252.651);
