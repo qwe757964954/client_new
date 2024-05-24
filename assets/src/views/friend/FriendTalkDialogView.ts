@@ -11,12 +11,16 @@ import { ChatListItem } from './ChatListItem';
 import { User } from '../../models/User';
 import { ChatContentItem } from './ChatContentItem';
 import { ChatEmoteItem } from './ChatEmoteItem';
+import { EffectUtil } from '../../util/EffectUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('FriendTalkDialogView')
 export class FriendTalkDialogView extends Component {
     @property({ type: Node, tooltip: "关闭按钮" })
     closeBtn: Node = null;
+
+    @property({ type: Node, tooltip: "内容根结点" })
+    public contentNd: Node = null;
 
     @property({ type: Node, tooltip: "发送表情按钮" })
     bqBtn: Node = null;
@@ -68,7 +72,10 @@ export class FriendTalkDialogView extends Component {
     private _sendFriendMsgEveId: string = "";     //向好友发送一个消息
     private _recvFriendMsgEveId: string = "";     //收到好友的消息
 
+    private _canClose: boolean = false; //是否可关闭
+
     protected onLoad(): void {
+        this._canClick = false;
         this._friendItemList = [];
         this._bqItemList = [];
         this._canClick = true;
@@ -82,6 +89,16 @@ export class FriendTalkDialogView extends Component {
         this._selectFriend = friend;
         this.addEvent();
         this.initData();
+
+        this.show();
+    }
+
+    /**弹出式窗口 */
+    private show() {
+        EffectUtil.centerPopup(this.contentNd);
+        setTimeout(() => {
+            this._canClose = true;
+        })
     }
 
     async initData() {
@@ -149,7 +166,19 @@ export class FriendTalkDialogView extends Component {
     }
 
     onCloseView() {
-        ViewsManager.instance.closeView(PrefabType.FriendTalkDialogView);
+        // ViewsManager.instance.closeView(PrefabType.FriendTalkDialogView);
+        if (!this._canClose) return;
+        this._canClose = false;
+        EffectUtil.centerClose(this.contentNd, () => {
+            //if (this._callBack) this._callBack();
+            this.dispose();
+        });
+    }
+
+    //销毁
+    dispose() {
+        //this.removeEvent();
+        this.node.destroy();
     }
 
     /**更新朋友列表 */

@@ -18,12 +18,16 @@ import { MsgListItem } from './MsgListItem';
 import { EmailListItem } from './EmailListItem';
 import { RewardItem } from '../common/RewardItem';
 import { FriendTalkDialogView } from './FriendTalkDialogView';
+import { EffectUtil } from '../../util/EffectUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('FriendsDialogView')
 export class FriendsDialogView extends Component {
     @property({ type: Node, tooltip: "关闭按钮" })
     public closeBtn: Node = null;
+
+    @property({ type: Node, tooltip: "所有内容根结点" })
+    public contentNd: Node = null;
 
     @property({ type: Node, tooltip: "tab1切换按钮" })
     public tab1: Node = null;
@@ -198,9 +202,12 @@ export class FriendsDialogView extends Component {
     private _recvEmailAwardEveId: string = ""; //获取我的邮件奖励事件  
     private _delFriendEveId: string = ""; //点击我的邮件列表中的一项 Friend_DelFriend
 
+    private _canClose: boolean = false;
+
     protected onLoad(): void {
         this._isClose = false;
         this._isShowInfo = false;
+        this._canClose = false;
         this._searchResult = null;
         this._allApplyBtnList = [];
         this._allIngoreBtnList = [];
@@ -229,6 +236,15 @@ export class FriendsDialogView extends Component {
         this.addEvent();
         this.initData();
 
+        this.show();
+    }
+
+    /**弹出窗口 */
+    private show() {
+        EffectUtil.centerPopup(this.contentNd);
+        setTimeout(() => {
+            this._canClose = true;
+        })
     }
 
     initUI() {
@@ -392,7 +408,7 @@ export class FriendsDialogView extends Component {
                 this.roleInfoBox.active = false;
                 this.msgInfoBox.active = true;
                 //this.emailList.node.active = false;
-                // PbServiceManager.friendService.sysMsgList(); //请求好友消息列表
+                ServiceMgr.friendService.sysMsgList(); //请求好友消息列表
                 break;
         }
     }
@@ -587,7 +603,19 @@ export class FriendsDialogView extends Component {
     }
 
     onCloseView() {
-        ViewsManager.instance.closeView(PrefabType.FriendsDialogView);
+        //ViewsManager.instance.closeView(PrefabType.FriendsDialogView);
+        if (!this._canClose) return;
+        this._canClose = false;
+        EffectUtil.centerClose(this.contentNd, () => {
+            //if (this._callBack) this._callBack();
+            this.dispose();
+        });
+    }
+
+    //销毁
+    dispose() {
+        //this.removeEvent();
+        this.node.destroy();
     }
 
     /**隐藏个人信息栏 */
