@@ -15,6 +15,10 @@ import CCUtil from '../../util/CCUtil';
 import { NodeUtil } from '../../util/NodeUtil';
 import { LevelConfig, rightPanelchange } from '../adventure/common/RightPanelchange';
 import { StudyModeView } from '../adventure/sixModes/StudyModeView';
+import { WordMeaningView } from '../adventure/sixModes/WordMeaningView';
+import { WordPracticeView } from '../adventure/sixModes/WordPracticeView';
+import { WordReadingView } from '../adventure/sixModes/WordReadingView';
+import { WordSpellView } from '../adventure/sixModes/WordSpellView';
 import { NavTitleView } from '../common/NavTitleView';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { ScrollMapView } from './ScrollMapView';
@@ -155,25 +159,25 @@ export class BreakThroughView extends BaseView {
     /**进入读模式 */
     gotoReed(wordData:VocabularyWordData,bookLevelData:BookLevelConfig){
         ViewsManager.instance.showView(PrefabType.WordReadingView, (node: Node) => {
-            node.getComponent(StudyModeView).initData(wordData.data, bookLevelData);
+            node.getComponent(WordReadingView).initData(wordData.data, bookLevelData);
         });
     }
     /**进入练模式 */
     gotoPractice(wordData:VocabularyWordData,bookLevelData:BookLevelConfig){
         ViewsManager.instance.showView(PrefabType.WordPracticeView, (node: Node) => {
-            node.getComponent(StudyModeView).initData(wordData.data, bookLevelData);
+            node.getComponent(WordPracticeView).initData(wordData.data, bookLevelData);
         });
     }
     /**进入译模式 */
     gotoMeaning(wordData:VocabularyWordData,bookLevelData:BookLevelConfig){
         ViewsManager.instance.showView(PrefabType.WordMeaningView, (node: Node) => {
-            node.getComponent(StudyModeView).initData(wordData.data, bookLevelData);
+            node.getComponent(WordMeaningView).initData(wordData.data, bookLevelData);
         });
     }
     /**进入全拼 */
     gotoAllSpelledOut(wordData:VocabularyWordData,bookLevelData:BookLevelConfig){
         ViewsManager.instance.showView(PrefabType.WordSpellView, (node: Node) => {
-            node.getComponent(StudyModeView).initData(wordData.data, bookLevelData);
+            node.getComponent(WordSpellView).initData(wordData.data, bookLevelData);
         });
     }
 

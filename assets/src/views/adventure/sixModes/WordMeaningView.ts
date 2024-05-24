@@ -175,6 +175,11 @@ export class WordMeaningView extends BaseModeView {
         answerNode.getChildByName("wordLabel").getComponent(Label).string = this._optionList[index].cn + " = " + this._optionList[index].en;
         let resSymbol = answerNode.getChildByName("resSymbol");
         resSymbol.active = true;
+
+        let word = this._wordsData[this._wordIndex].word
+        this.onGameSubmit(word,isRight);
+
+        
         if (isRight) {
             answerNode.getComponent(Sprite).spriteFrame = this.rightBg;
             resSymbol.getComponent(Sprite).spriteFrame = this.rightSymbol;
@@ -222,8 +227,7 @@ export class WordMeaningView extends BaseModeView {
                 this.showCurrentWord();
             }, 1);
         }
-        let word = this._wordsData[this._wordIndex].word
-        this.onGameSubmit(word,isRight);
+        
     }
 
     protected modeOver(): void {
