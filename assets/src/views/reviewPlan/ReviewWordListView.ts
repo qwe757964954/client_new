@@ -1,4 +1,4 @@
-import { _decorator, Component, Node } from 'cc';
+import { _decorator, Component, Node, Sprite, SpriteFrame } from 'cc';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
 import { ReviewWordItem } from './ReviewWordItem';
@@ -8,12 +8,14 @@ const { ccclass, property } = _decorator;
 export class ReviewWordListView extends Component {
     @property(Node)
     public btnClose: Node = null;//关闭按钮
-    @property(Node)
-    public btnTodayReview: Node = null;//今日复习
-    @property(Node)
-    public btnReview: Node = null;//全部待复习
+    @property(Sprite)
+    public btnTodayReview: Sprite = null;//今日复习
+    @property(Sprite)
+    public btnReview: Sprite = null;//全部待复习
     @property(List)
     public listView: List = null;//单词列表
+    @property([SpriteFrame])
+    public btnTitleFrames: SpriteFrame[] = [];//按钮标题图片
 
     private _dataAry: any[] = [];
 
@@ -38,7 +40,7 @@ export class ReviewWordListView extends Component {
     }
     /**初始化 */
     public init(): void {
-        this.showList();
+        this.showList(0);
     }
     /**关闭按钮点击 */
     public onClickClose(): void {
@@ -46,14 +48,22 @@ export class ReviewWordListView extends Component {
     }
     /**今日复习按钮点击 */
     public onClickTodayReview(): void {
-        this.showList();
+        this.showList(0);
     }
     /**全部待复习按钮点击 */
     public onClickReview(): void {
-        this.showList();
+        this.showList(1);
     }
     /**显示list */
-    public showList(): void {
+    public showList(type: number): void {
+        if (0 == type) {
+            this.btnTodayReview.spriteFrame = this.btnTitleFrames[0];
+            this.btnReview.spriteFrame = this.btnTitleFrames[1];
+        } else {
+            this.btnTodayReview.spriteFrame = this.btnTitleFrames[1];
+            this.btnReview.spriteFrame = this.btnTitleFrames[0];
+        }
+
         this._dataAry = [
             { word: "barely 1", mean: "1 adv.几乎不" },
             { word: "barely 2", mean: "2 adv.几乎不" },
