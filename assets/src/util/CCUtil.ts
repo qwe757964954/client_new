@@ -37,7 +37,7 @@ export default class CCUtil {
                 return;
             }
             cb(event, arg2, arg3, arg4, arg5);
-            node.name != "bg" && SoundMgr.click();
+            SoundMgr.click();
             this.clickLastTime = new Date().getTime();
         });
     }
