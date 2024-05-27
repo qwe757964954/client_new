@@ -1,4 +1,4 @@
-import { _decorator, Component, director, Label, Node, ProgressBar } from 'cc';
+import { _decorator, Asset, Component, director, Label, Node, ProgressBar } from 'cc';
 import { SceneType } from '../config/PrefabType';
 import GlobalConfig from '../GlobalConfig';
 import { ViewsManager } from '../manager/ViewsManager';
@@ -15,6 +15,8 @@ export class LoadingScene extends Component {
     @property(Node)
     public loadingLayer: Node = null;//加载层
 
+    @property(Asset)
+    manifest: Asset = null;//版本文件
     //进度条
     @property(ProgressBar)
     public progressBar: ProgressBar = null;
