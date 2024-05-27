@@ -6,7 +6,7 @@ import { ViewsManager } from '../../../manager/ViewsManager';
 import { s2cAdventureResult, WordsDetailData } from '../../../models/AdventureModel';
 import { PetModel } from '../../../models/PetModel';
 import { RoleBaseModel } from '../../../models/RoleBaseModel';
-import { GameSubmitModel, UnitWordModel } from '../../../models/TextbookModel';
+import { GameSubmitModel, ReqCollectWord, UnitWordModel } from '../../../models/TextbookModel';
 import { InterfacePath } from '../../../net/InterfacePath';
 import { NetNotify } from '../../../net/NetNotify';
 import { ServiceMgr } from '../../../net/ServiceManager';
@@ -89,6 +89,7 @@ export class BaseModeView extends BaseView {
     onInitModuleEvent() {
         this.addModelListener(NetNotify.Classification_ReportResult, this.onUpResult);
         this.addModelListener(NetNotify.Classification_Word, this.onClassificationWord);
+        this.addModelListener(NetNotify.Classification_CollectWord, this.onCollectWord);
     }
 
     async initRole() {
@@ -282,8 +283,14 @@ export class BaseModeView extends BaseView {
         }
         console.log("获取单词详情", data);
         this._detailData = data;
+        this.setCollect(data.collect_flag ? true : false);
     }
 
+    protected onCollectWord(data:any) {
+        console.log("onCollectWord",data);
+        this._detailData.collect_flag = this._detailData.collect_flag ? 0 : 1;
+        this.setCollect(this._detailData.collect_flag ? true : false);
+    }
     protected initEvent(): void {
         CCUtil.onTouch(this.btn_close.node, this.closeView, this);
         this._getResultEveId = EventManager.on(InterfacePath.Adventure_Result, this.onUpResult.bind(this));
@@ -324,10 +331,15 @@ export class BaseModeView extends BaseView {
         let isAdventure = this._levelData.hasOwnProperty('islandId'); //是否是大冒险关卡
         let wordData = this._wordsData[this._wordIndex];
         console.log('word', wordData);
-        if (isAdventure) { //大冒险关卡
-
+        if (!isAdventure) { //教材关卡
+            let reqParam:ReqCollectWord = {
+                word:wordData.word,
+                c_id:this._detailData.c_id,
+                action:this._detailData.collect_flag ? 0 : 1,
+            }
+            TBServer.reqCollectWord(reqParam);
         } else {
-            //教材关卡
+            //大冒险关卡
             
         }
 

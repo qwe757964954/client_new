@@ -82,6 +82,8 @@ export class c2sAdventureWord {
 export class WordsDetailData extends BaseRepPacket {
     word: string;
     cn: string; //单词释义
+    c_id:string;
+    collect_flag:number; 
     symbol: string;    //音标
     symbolus: string;  //美式音标
     syllable: string;  //音素拆分

@@ -42,6 +42,7 @@ export default class _TextbookService extends BaseControll {
         this.addModelListener(InterfacePath.Classification_GameSubmit,this.onGameSubmit);
         this.addModelListener(InterfacePath.Classification_CheckWord,this.onCheckWord);
         this.addModelListener(InterfacePath.Classification_VocabularyWord,this.onVocabularyWord);
+        this.addModelListener(InterfacePath.Classification_CollectWord,this.onCollectWord);
     }
     reqBookStatus() {
         let para: c2sBookStatus = new c2sBookStatus();
@@ -481,20 +482,23 @@ export default class _TextbookService extends BaseControll {
      */
     reqCollectWord(data:ReqCollectWord){
         let params:c2sCollectWord = new c2sCollectWord();
-        if(isValid(data.word)){
-            params.word = data.word;
-        }
-        if(isValid(data.c_id)){
-            params.c_id = data.c_id;
-        }
+        params.word = data.word;
+        params.c_id = data.c_id;
         params.action = data.action;
+        NetMgr.sendMsg(params);
     }
     /**
      * 收藏与移除
      * response
      */
     onCollectWord(data:any){
-
+        console.log("onCollectWord",data);
+        if(data.code !== 200){
+            console.log(data.msg);
+            ViewsManager.showTip(data.msg);
+            return;
+        }
+        EventMgr.dispatch(NetNotify.Classification_CollectWord, data);
     }
 };
 

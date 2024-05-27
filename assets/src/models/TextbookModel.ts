@@ -414,7 +414,6 @@ export interface VocabularyWordData extends BaseRepPacket{
 }
 
 export interface ReqCollectWord {
-    id:string;
     word?:string;
     c_id?:string;
     action:number;
@@ -422,7 +421,6 @@ export interface ReqCollectWord {
 
 export class c2sCollectWord {
     command_id: string = InterfacePath.Classification_CollectWord;
-    id:string;
     word?:string;
     c_id?:string;
     action:number;
