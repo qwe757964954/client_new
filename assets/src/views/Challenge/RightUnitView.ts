@@ -4,6 +4,7 @@ import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { BookPlanDetail, CurrentBookStatus } from '../../models/TextbookModel';
+import CCUtil from '../../util/CCUtil';
 import ImgUtil from '../../util/ImgUtil';
 import { SettingPlanView } from '../TextbookVocabulary/SettingPlanView';
 const { ccclass, property } = _decorator;
@@ -27,6 +28,17 @@ export class RightUnitView extends Component {
     @property(Node)
     public current_img:Node = null;
 
+    @property(Node)
+    public change_textbook:Node = null;
+    @property(Node)
+    public  break_through_btn:Node = null;
+    @property(Node)
+    public review_btn:Node = null;
+    @property(Node)
+    public check_word_btn:Node = null;
+    @property(Node)
+    public modify_plan_btn:Node = null;
+
     private _curUnitStatus:CurrentBookStatus = null;
 
     private _unitTotal:number = null;
@@ -40,9 +52,24 @@ export class RightUnitView extends Component {
     private _checkWordCallback:()=>void = null;
 
     start() {
-
+        this.initEvent();
+    }
+    initEvent() {
+        CCUtil.onTouch(this.change_textbook, this.onChangeTextbookClick, this);
+        CCUtil.onTouch(this.break_through_btn, this.onBreakThroughClick, this);
+        CCUtil.onTouch(this.review_btn, this.onReviewClick, this);
+        CCUtil.onTouch(this.check_word_btn, this.onCheckWordClick, this);
+        CCUtil.onTouch(this.modify_plan_btn, this.onModifyPlanClick, this);
     }
 
+    /**移除监听 */
+    removeEvent() {
+        CCUtil.offTouch(this.change_textbook, this.onChangeTextbookClick, this);
+        CCUtil.offTouch(this.break_through_btn, this.onBreakThroughClick, this);
+        CCUtil.offTouch(this.review_btn, this.onReviewClick, this);
+        CCUtil.offTouch(this.check_word_btn, this.onCheckWordClick, this);
+        CCUtil.offTouch(this.modify_plan_btn, this.onModifyPlanClick, this);
+    }
     updateRightPlan(data:BookPlanDetail) {
         this.plan_label.string = `${data.rank_num}/${data.num}`;
     }
@@ -108,6 +135,9 @@ export class RightUnitView extends Component {
         if(this._changeCallback){
             this._changeCallback();
         }
+    }
+    onDestroy(): void{
+        this.removeEvent();
     }
 }
 

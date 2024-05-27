@@ -3586,7 +3586,7 @@
   {
     "__type__": "cc.Node",
     "_name": "check_word_btn",
-    "_objFlags": 0,
+    "_objFlags": 512,
     "__editorExtras__": {},
     "_parent": {
       "__id__": 1
@@ -3643,7 +3643,7 @@
   {
     "__type__": "cc.Node",
     "_name": "check_bg",
-    "_objFlags": 0,
+    "_objFlags": 512,
     "__editorExtras__": {},
     "_parent": {
       "__id__": 143
@@ -3779,7 +3779,7 @@
   {
     "__type__": "cc.Node",
     "_name": "Label-009",
-    "_objFlags": 0,
+    "_objFlags": 512,
     "__editorExtras__": {},
     "_parent": {
       "__id__": 143
@@ -4838,6 +4838,21 @@
     },
     "current_img": {
       "__id__": 181
+    },
+    "change_textbook": {
+      "__id__": 52
+    },
+    "break_through_btn": {
+      "__id__": 109
+    },
+    "review_btn": {
+      "__id__": 126
+    },
+    "check_word_btn": {
+      "__id__": 143
+    },
+    "modify_plan_btn": {
+      "__id__": 162
     },
     "_id": ""
   },
