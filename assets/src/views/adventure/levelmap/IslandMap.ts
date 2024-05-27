@@ -1,10 +1,10 @@
-import { _decorator, Component, instantiate, Node, Prefab, Sprite, SpriteFrame, UITransform, Vec2, Vec3 } from 'cc';
-import { IslandStatusModel, MapLevelData } from '../../../models/AdventureModel';
-import { MapPointItem } from './MapPointItem';
-import { WorldIsland } from '../WorldIsland';
+import { _decorator, Component, instantiate, Node, Prefab, Sprite, SpriteFrame, Vec3 } from 'cc';
+import { EventType } from '../../../config/EventType';
+import { MapLevelData } from '../../../models/AdventureModel';
 import CCUtil from '../../../util/CCUtil';
 import EventManager from '../../../util/EventManager';
-import { EventType } from '../../../config/EventType';
+import { WorldIsland } from '../WorldIsland';
+import { MapPointItem } from './MapPointItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('IslandMap')

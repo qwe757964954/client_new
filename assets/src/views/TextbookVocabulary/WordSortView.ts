@@ -44,9 +44,13 @@ export class WordSortView extends Component {
         {menu_name:"学习时间倒序",order_type:CheckOrderType.LearningReverseOrder},
         {menu_name:"字母正序",order_type:CheckOrderType.AlphabeticalOrder},
         {menu_name:"字母倒序",order_type:CheckOrderType.AlphabeticalReverseOrder}];
+        
         if(type === CheckWordType.Collect){
-            this._menuDataArr.splice(2, 1);
-            this._menuDataArr.splice(2, 1);
+            this._menuDataArr = [
+            {menu_name:"收藏时间正序",order_type:CheckOrderType.LearningTimeOrder},
+            {menu_name:"收藏时间倒序",order_type:CheckOrderType.LearningReverseOrder},
+            {menu_name:"字母正序",order_type:CheckOrderType.AlphabeticalOrder},
+            {menu_name:"字母倒序",order_type:CheckOrderType.AlphabeticalReverseOrder}];
         }else if(type === CheckWordType.NotLearned){
             this._menuDataArr.splice(2, 1);
             this._menuDataArr.splice(2, 1);

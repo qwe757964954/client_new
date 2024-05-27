@@ -363,10 +363,11 @@ export enum CheckWordType {
 export enum CheckOrderType {
     UnitSortOrder=1,/**单元排序正序 */
     UnitReverseOrder=2,/**单元排序倒序 */
-    LearningTimeOrder=3,/**学习时间正序 */
-    LearningReverseOrder=4,/**学习时间倒序 */
-    AlphabeticalOrder=5,/**字母正序 */
-    AlphabeticalReverseOrder=6,/**字母倒序 */
+    AlphabeticalOrder=3,/**字母正序 */
+    AlphabeticalReverseOrder=4,/**字母倒序 */
+    LearningTimeOrder=5,/**学习时间正序 */
+    LearningReverseOrder=6,/**学习时间倒序 */
+    
 }
 
 export interface CheckWordModel {

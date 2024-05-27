@@ -71,6 +71,7 @@ export class TextbookRemindView extends BasePopup {
         this.closePop();
     }
     onDestroy(): void {
+        super.onDestroy();
         this.removeEvent();
     }
 }

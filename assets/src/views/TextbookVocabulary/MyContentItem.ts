@@ -1,7 +1,7 @@
 import { Label, Node, ProgressBar, _decorator } from 'cc';
 import { NetConfig } from '../../config/NetConfig';
+import { SoundMgr } from '../../manager/SoundMgr';
 import { MyTextbookStatus } from '../../models/TextbookModel';
-import CCUtil from '../../util/CCUtil';
 import ImgUtil from '../../util/ImgUtil';
 import ListItem from '../../util/list/ListItem';
 const { ccclass, property } = _decorator;
@@ -38,15 +38,6 @@ export class MyContentItem extends ListItem {
     private _bookStatus:MyTextbookStatus = null; // null
     private delCallback:(idx:number,bookStatus:MyTextbookStatus) => void = null;
     start() {
-        this.initEvent();
-    }
-    initEvent() {
-        CCUtil.onTouch(this.btn_delete, this.onDelMyTextbookClick, this);
-    }
-
-    /**移除监听 */
-    removeEvent() {
-        CCUtil.offTouch(this.btn_delete, this.onDelMyTextbookClick, this);
     }
     setDeleteClickCallback(callback) {
         this.delCallback = callback;
@@ -64,12 +55,10 @@ export class MyContentItem extends ListItem {
     }
 
     onDelMyTextbookClick(){
+        SoundMgr.click();
         if(this.delCallback){
             this.delCallback(this.idx,this._bookStatus);
         }
-    }
-    onDestroy(): void {
-        this.removeEvent();
     }
 }   
 

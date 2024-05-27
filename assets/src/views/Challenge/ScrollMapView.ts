@@ -1,4 +1,4 @@
-import { Component, EventTouch, Node, Prefab, ScrollView, Sprite, SpriteFrame, UITransform, Vec2, _decorator, instantiate } from 'cc';
+import { Component, Node, Prefab, ScrollView, Sprite, SpriteFrame, UITransform, Vec2, _decorator, instantiate } from 'cc';
 import { ResLoader } from '../../manager/ResLoader';
 import { MapLevelData } from '../../models/AdventureModel';
 import { GateListItem, UnitItemStatus, UnitListItemStatus } from '../../models/TextbookModel';
@@ -63,7 +63,7 @@ export class ScrollMapView extends Component {
     private _clickCallback:(itemStatus:UnitItemStatus,gate:GateListItem)=>void = null;
 
     private _unitStatus:UnitItemStatus[] = null;
-
+    private _pointItems: Node[] = [];
     start() {
     }
 
@@ -72,6 +72,7 @@ export class ScrollMapView extends Component {
     }
 
     async loadMapItems() {
+        this.removePointEvent();
         let map_count = 0;
         let unit_count = 0;
         for (let i = 0; i < this._unitStatus.length; i++) {
@@ -91,10 +92,13 @@ export class ScrollMapView extends Component {
     
                 let data:MapLevelData = {big_id:parseInt(stringWithoutUnit), small_id:gate.small_id,micro_id:gate.small_id};
                 itemScript.initData(data);
-                CCUtil.onTouch(itemNode, this.onItemClick, this);
+                CCUtil.onBtnClick(itemNode,()=>{
+                    this.onItemClick(itemNode);
+                });
                 this.mapScrollView.content.addChild(itemNode);
                 itemNode.setSiblingIndex(99);
                 itemNode.setPosition(point.x,point.y,0);
+                this._pointItems.push(itemNode);
                 let mapNode = this.mapScrollView.content.getChildByName(`bg_map_${map_count}`);
                 let uiTransform = mapNode.getComponent(UITransform);
                 let pos_2d = new Vec2(point.x,point.y);
@@ -138,8 +142,8 @@ export class ScrollMapView extends Component {
         this._clickCallback = callback;
     }
 
-    onItemClick(event:EventTouch){
-        let item:MapPointItem = event.currentTarget.getComponent(MapPointItem);
+    onItemClick(point: Node){
+        let item:MapPointItem = point.getComponent(MapPointItem);
         let data = item.data;
         let itemStatus:UnitItemStatus = this._unitStatus[data.big_id - 1];
         let small_id = data.small_id;
@@ -147,6 +151,15 @@ export class ScrollMapView extends Component {
         if(this._clickCallback){
             this._clickCallback(itemStatus,gate);
         }
+    }
+    removePointEvent() {
+        for (let i = 0; i < this._pointItems.length; i++) {
+            CCUtil.offTouch(this._pointItems[i], this.onItemClick.bind(this, this._pointItems[i]), this);
+        }
+    }
+
+    protected onDestroy(): void {
+        this.removePointEvent();
     }
 }
 
