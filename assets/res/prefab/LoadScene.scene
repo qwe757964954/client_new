@@ -1419,6 +1419,10 @@
     "loadingLayer": {
       "__id__": 29
     },
+    "manifest": {
+      "__uuid__": "ebcb1f2a-582c-4a65-982a-0f1d6832f176",
+      "__expectedType__": "cc.Asset"
+    },
     "progressBar": {
       "__id__": 21
     },
