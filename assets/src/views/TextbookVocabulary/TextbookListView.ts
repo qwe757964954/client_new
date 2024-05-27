@@ -5,6 +5,7 @@ import { CurrentBookStatus, MyTextbookStatus } from '../../models/TextbookModel'
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
+import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
 import { BookUnitModel } from '../Challenge/TextbookChallengeView';
 import { NavTitleView } from '../common/NavTitleView';
@@ -24,11 +25,23 @@ export class TextbookListView extends BaseView {
     @property(Node)
     public myTextbookLayout: Node = null;          // 我的词库
 
+    @property(Node)
+    public add_textbook_bg: Node = null;          // 我的词库
+
     private _myTextbookDataArr: MyTextbookStatus[] = [];
 
     private _curBookData: CurrentBookStatus = null;
     start() {
         this.initUI();
+        this.initEvent();
+    }
+    initEvent() {
+        CCUtil.onTouch(this.add_textbook_bg, this.onClickAddTextbook, this);
+    }
+
+    /**移除监听 */
+    removeEvent() {
+        CCUtil.offTouch(this.add_textbook_bg, this.onClickAddTextbook, this);
     }
     protected initUI() {
         this.initNavTitle();
@@ -168,6 +181,10 @@ export class TextbookListView extends BaseView {
         ViewsManager.instance.showView(PrefabType.SelectWordView, (node: Node) => {
             ViewsManager.instance.closeView(PrefabType.TextbookListView);
         });
+    }
+
+    onDestroy(): void {
+        this.removeEvent();
     }
 }
 

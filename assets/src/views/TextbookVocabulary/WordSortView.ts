@@ -1,5 +1,6 @@
 import { Component, Label, Layout, Node, UITransform, _decorator } from 'cc';
 import { CheckOrderType, CheckWordType } from '../../models/TextbookModel';
+import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
 const { ccclass, property } = _decorator;
 
@@ -15,13 +16,24 @@ export class WordSortView extends Component {
     @property(List)
     public menu_scroll:List = null;
 
+    @property(Node)
+    public sort_btn:Node = null;
+
     private _menuDataArr:SortMenuModel[] = [];
 
     private _word_check_select:number = 0;
 
     private _menuSelectCallback:(order_type:CheckOrderType)=>void = null;
     start() {
-        
+        this.initEvent();
+    }
+    initEvent() {
+        CCUtil.onTouch(this.sort_btn, this.onWorldSortClick, this);
+    }
+
+    /**移除监听 */
+    removeEvent() {
+        CCUtil.offTouch(this.sort_btn, this.onWorldSortClick, this);
     }
     initData(type:CheckWordType){
         console.log("initData___________",type);
@@ -33,9 +45,9 @@ export class WordSortView extends Component {
         {menu_name:"字母正序",order_type:CheckOrderType.AlphabeticalOrder},
         {menu_name:"字母倒序",order_type:CheckOrderType.AlphabeticalReverseOrder}];
         if(type === CheckWordType.Collect){
-            this._menuDataArr.splice(0, 1);
-            this._menuDataArr.splice(0, 1);
-        }else if(type === CheckWordType.AllWord){
+            this._menuDataArr.splice(2, 1);
+            this._menuDataArr.splice(2, 1);
+        }else if(type === CheckWordType.NotLearned){
             this._menuDataArr.splice(2, 1);
             this._menuDataArr.splice(2, 1);
         }
@@ -81,6 +93,9 @@ export class WordSortView extends Component {
         if(this._menuSelectCallback){
             this._menuSelectCallback(item_data.order_type);
         }
+    }
+    protected onDestroy(): void {
+        this.removeEvent();
     }
 }
 

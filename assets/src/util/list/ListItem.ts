@@ -9,6 +9,7 @@
 const { ccclass, property, disallowMultiple, menu, executionOrder } = _decorator;
 import { Button, Component, Enum, EventHandler, Node, Sprite, SpriteFrame, Tween, UITransform, Vec3, _decorator, isValid, tween } from 'cc';
 import { DEV } from 'cc/env';
+import { SoundMgr } from '../../manager/SoundMgr';
 import List from './List';
 
 enum SelectedType {
@@ -191,6 +192,7 @@ export default class ListItem extends Component {
     }
 
     onClickThis() {
+        SoundMgr.click();
         this.list.selectedId = this.listId;
     }
 

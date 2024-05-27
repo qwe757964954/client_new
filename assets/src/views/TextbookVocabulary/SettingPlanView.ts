@@ -1,6 +1,7 @@
 import { _decorator, Label, Node } from 'cc';
 import { EventType } from '../../config/EventType';
 import { BasePopup } from '../../script/BasePopup';
+import CCUtil from '../../util/CCUtil';
 import { EventMgr } from '../../util/EventManager';
 import { ScrollViewExtra } from './picker/ScrollViewExtra';
 const { ccclass, property } = _decorator;
@@ -21,6 +22,12 @@ export class SettingPlanView extends BasePopup {
 
     @property(Label)
     public book_title:Label = null;
+
+    @property(Node)
+    public saveBtn:Node = null;
+
+    @property(Node)
+    public cancelBtn:Node = null;
 
     private _levelSelect:number = 0;
     private _daySelect:number = 0;
@@ -47,8 +54,18 @@ export class SettingPlanView extends BasePopup {
             }
             EventMgr.dispatch(EventType.Select_Word_Plan,data);
         });
+        this.initEvent();
+    }
+    initEvent() {
+        CCUtil.onTouch(this.saveBtn, this.onClickSave, this);
+        CCUtil.onTouch(this.cancelBtn, this.onClickCancel, this);
     }
 
+    /**移除监听 */
+    removeEvent() {
+        CCUtil.offTouch(this.saveBtn, this.onClickSave, this);
+        CCUtil.offTouch(this.cancelBtn, this.onClickCancel, this);
+    }
     calculateDays(challengesPerDay: number){
         return Math.ceil(this._totoal_level / challengesPerDay);
     }
@@ -118,6 +135,9 @@ export class SettingPlanView extends BasePopup {
             isSave:true
         }
         EventMgr.dispatch(EventType.Select_Word_Plan,data);
+    }
+    onDestroy(): void {
+        this.removeEvent();
     }
 }
 

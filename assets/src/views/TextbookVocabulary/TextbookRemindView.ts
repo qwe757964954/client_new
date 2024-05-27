@@ -1,5 +1,6 @@
-import { _decorator, Label } from 'cc';
+import { _decorator, Label, Node } from 'cc';
 import { BasePopup } from '../../script/BasePopup';
+import CCUtil from '../../util/CCUtil';
 const { ccclass, property } = _decorator;
 
 export interface ITextbookRemindData {
@@ -20,7 +21,13 @@ export class TextbookRemindView extends BasePopup {
 
     @property(Label)
     public content_text: Label = null;
-    
+
+    @property(Node)
+    public btn_blue: Node = null;
+
+    @property(Node)
+    public btn_green: Node = null;
+
     private _callFunc:(isSure:boolean)=>void = null;
 
     start() {
@@ -29,6 +36,18 @@ export class TextbookRemindView extends BasePopup {
                 this._callFunc(false);
             }
         });
+        this.initEvent();
+    }
+
+    initEvent() {
+        CCUtil.onTouch(this.btn_blue, this.onClickSure, this);
+        CCUtil.onTouch(this.btn_green, this.onClickCancel, this);
+    }
+
+    /**移除监听 */
+    removeEvent() {
+        CCUtil.offTouch(this.btn_blue, this.onClickSure, this);
+        CCUtil.offTouch(this.btn_green, this.onClickCancel, this);
     }
 
     initRemind(data:ITextbookRemindData){
@@ -51,7 +70,9 @@ export class TextbookRemindView extends BasePopup {
         }
         this.closePop();
     }
-
+    onDestroy(): void {
+        this.removeEvent();
+    }
 }
 
 
