@@ -97,6 +97,12 @@ export class LoadingScene extends Component {
     }
     /**http请求版本 */
     httpReqVersionCheck() {
+        if (!sys.isNative) {
+            this._httpCheck = true;
+            this._downCheck = true;
+            this.checkVersionOver();
+            return;
+        }
         HttpManager.reqVersionCheck(this.httpReqVersionCheckSuccess.bind(this), this.httpReqVersionCheckFailed.bind(this));
     }
 }
