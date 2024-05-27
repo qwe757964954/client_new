@@ -1,5 +1,6 @@
-import { _decorator, Label, RichText } from 'cc';
+import { Label, Node, RichText, _decorator } from 'cc';
 import { BasePopup } from '../../script/BasePopup';
+import CCUtil from '../../util/CCUtil';
 const { ccclass, property } = _decorator;
 
 export interface IChallengeRemindData {
@@ -18,6 +19,9 @@ export class ChallengeRemindView extends BasePopup {
     @property(RichText)
     public content_text: RichText = null;
     
+    @property(Node)
+    public btn_blue: Node = null;
+
     private _callFunc:(isSure:boolean)=>void = null;
 
     start() {
@@ -26,8 +30,16 @@ export class ChallengeRemindView extends BasePopup {
                 this._callFunc(false);
             }
         });
+        this.initEvent();
+    }
+    initEvent() {
+        CCUtil.onTouch(this.btn_blue, this.onClickSure, this);
     }
 
+    /**移除监听 */
+    removeEvent() {
+        CCUtil.offTouch(this.btn_blue, this.onClickSure, this);
+    }
     initRemind(data:IChallengeRemindData){
         this.sure_text.string = data.sure_text;
         this.content_text.string = data.content_text;

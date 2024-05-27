@@ -1,6 +1,7 @@
-import { Button, Label, Node, ProgressBar, _decorator } from 'cc';
+import { Label, Node, ProgressBar, _decorator } from 'cc';
 import { NetConfig } from '../../config/NetConfig';
 import { MyTextbookStatus } from '../../models/TextbookModel';
+import CCUtil from '../../util/CCUtil';
 import ImgUtil from '../../util/ImgUtil';
 import ListItem from '../../util/list/ListItem';
 const { ccclass, property } = _decorator;
@@ -25,19 +26,28 @@ export class MyContentItem extends ListItem {
     @property(ProgressBar)
     public learnProgress:ProgressBar = null;          // 学习进度
 
-    @property(Button)
-    public btn_delete:Button = null;          // 关闭按钮
+    @property(Node)
+    public btn_delete:Node = null;          // 关闭按钮
 
     @property(Node)
     public flagBg:Node = null;
 
+
+    
     private idx:number = 0;
     private _bookStatus:MyTextbookStatus = null; // null
     private delCallback:(idx:number,bookStatus:MyTextbookStatus) => void = null;
     start() {
-
+        this.initEvent();
+    }
+    initEvent() {
+        CCUtil.onTouch(this.btn_delete, this.onDelMyTextbookClick, this);
     }
 
+    /**移除监听 */
+    removeEvent() {
+        CCUtil.offTouch(this.btn_delete, this.onDelMyTextbookClick, this);
+    }
     setDeleteClickCallback(callback) {
         this.delCallback = callback;
     }
@@ -58,7 +68,9 @@ export class MyContentItem extends ListItem {
             this.delCallback(this.idx,this._bookStatus);
         }
     }
-
+    onDestroy(): void {
+        this.removeEvent();
+    }
 }   
 
 
