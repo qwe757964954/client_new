@@ -415,14 +415,20 @@ export interface VocabularyWordData extends BaseRepPacket{
 
 export interface ReqCollectWord {
     word?:string;
-    c_id?:string;
+    type_name?:string;
+    book_name?:string;
+    grade?:string;
+    unit?:string;
     action:number;
 }
 
 export class c2sCollectWord {
     command_id: string = InterfacePath.Classification_CollectWord;
     word?:string;
-    c_id?:string;
+    type_name?:string;
+    book_name?:string;
+    grade?:string;
+    unit?:string;
     action:number;
 }
 

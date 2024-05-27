@@ -483,7 +483,10 @@ export default class _TextbookService extends BaseControll {
     reqCollectWord(data:ReqCollectWord){
         let params:c2sCollectWord = new c2sCollectWord();
         params.word = data.word;
-        params.c_id = data.c_id;
+        params.type_name = data.type_name;
+        params.book_name = data.book_name;
+        params.grade = data.grade;
+        params.unit = data.unit;
         params.action = data.action;
         NetMgr.sendMsg(params);
     }
