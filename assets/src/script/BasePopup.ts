@@ -1,5 +1,4 @@
 import { EventTouch, Node, NodeEventType, UITransform, Vec3, _decorator, easing, tween } from 'cc';
-import { SoundMgr } from '../manager/SoundMgr';
 import { BaseView } from './BaseView';
 const { ccclass, property } = _decorator;
 
@@ -46,7 +45,7 @@ export class BasePopup extends BaseView  {
                     if (needClose) {
                         this.node.off(NodeEventType.TOUCH_END, touchEndHandler, this);
                         resolve();
-                        SoundMgr.click();
+                        // SoundMgr.click();
                         this.closePop();   
                     }
                 }

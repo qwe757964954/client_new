@@ -1,9 +1,9 @@
-import { EventKeyboard, EventTouch, Input, KeyCode, Node, NodeEventType, SpriteFrame, Vec3, Widget, director, gfx, input, isValid } from "cc";
+import { Button, EventKeyboard, EventTouch, Input, KeyCode, Node, NodeEventType, SpriteFrame, Vec3, Widget, director, gfx, input, isValid } from "cc";
 import { SoundMgr } from "../manager/SoundMgr";
 
 export default class CCUtil {
     public static clickCall(event: EventTouch) {
-        // console.log("clickCall", event.currentTarget._name);
+        console.log("clickCall", event.currentTarget._name);
         SoundMgr.click();
     }
     // 触摸事件监听
@@ -14,6 +14,32 @@ export default class CCUtil {
             node.on(NodeEventType.TOUCH_END, callback, target);
             node.on(NodeEventType.TOUCH_END, CCUtil.clickCall, node);
         }
+    }
+    private static clickLastTime = 0;
+    /**
+     * 注册按钮事件
+     * @param {node} node 
+     * @param {function} cb 
+     * @param {boolean} clean 是否去除节点的已存在点击事件
+     */
+    static onBtnClick(node: Node, cb: Function, clean: boolean = true) {
+        if (node.getComponent && !node.getComponent(Button)) {
+            node.addComponent(Button).target = node;
+        }
+        if (clean) {
+            node.off("click");
+        }
+        node.on("click", (event, arg2, arg3, arg4, arg5) => {
+            let now = new Date().getTime();
+            if (now - this.clickLastTime < 150) {
+                console.log("点击间隔过于频繁，打回", (now - this.clickLastTime));
+                this.clickLastTime = new Date().getTime();
+                return;
+            }
+            cb(event, arg2, arg3, arg4, arg5);
+            node.name != "bg" && SoundMgr.click();
+            this.clickLastTime = new Date().getTime();
+        });
     }
     // 触摸事件解除
     public static offTouch(obj: any, callback: Function, target?: any) {
