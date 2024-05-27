@@ -1,24 +1,31 @@
-import { native, game } from "cc";
+import { JsonAsset, game, native } from "cc";
+import { LoadManager } from "../manager/LoadManager";
+import { ViewsMgr } from "../manager/ViewsManager";
 //版本检测下载类
-export default class DownloaderUtil{
-    private _assetsManager:native.AssetsManager;
+export default class DownloaderUtil {
+    private _assetsManager: native.AssetsManager;
     private _updateListener;
-    private _updating:boolean;
+    private _updating: boolean;
+    private _url: string;
+    private _storagePath: string;
 
-    public constructor(){
-        let manifestUrl = "version.manifest";
-        let storagePath = (native.fileUtils?.getWritablePath() ?? '/') + 'remote-asset';
-        this._assetsManager = native.AssetsManager.create(manifestUrl, storagePath);
+    public constructor(manifestUrl: string, url: string) {
+        this._storagePath = (native.fileUtils?.getWritablePath() ?? '/') + 'remote-asset';
+        this._assetsManager = native.AssetsManager.create(manifestUrl, this._storagePath);
 
         this._assetsManager.setVersionCompareHandle((arg1, arg2) => {
-            return arg1 === arg2 ? 0 : -1;
+            // return arg1 === arg2 ? 0 : -1;
+            return -1;
         });
         this._updateListener = null;
         this._updating = false;
-    }
+        this._url = url;
 
-    public checkUpdate(){
-        if(this._updating){
+        // LoadManager.loadRemoteEx(data.url + "project", { ext: '.json' }).then((manifest: JsonAsset) => {
+
+    }
+    public checkUpdate() {
+        if (this._updating) {
             return;
         }
         this._assetsManager.setEventCallback(this.checkCb.bind(this));
@@ -27,14 +34,23 @@ export default class DownloaderUtil{
         this._updating = true;
     }
 
-    public hotUpdate(){
-        if(this._updating){
+    public hotUpdate() {
+        if (this._updating) {
             return;
         }
-        this._assetsManager.setEventCallback(this.updateCb.bind(this));
+        LoadManager.loadRemote(this._url + "project.json").then((asset: JsonAsset) => {
+            let json = asset.json;
+            json["packageUrl"] = this._url;
+            json["remoteManifestUrl"] = this._url + "project.manifest";
+            json["remoteVersionUrl"] = this._url + "version.manifest";
+            let manifest = new native.Manifest(JSON.stringify(json), this._storagePath);
+            let result = this._assetsManager.loadRemoteManifest(manifest);
+            this._assetsManager.setEventCallback(this.updateCb.bind(this));
 
-        this._assetsManager.update();
-        this._updating = true;
+            this._assetsManager.update();
+            this._updating = true;
+            ViewsMgr.showTip("hotUpdate:" + this._assetsManager.getState().toString());
+        });
     }
 
     private checkCb(event: any) {
@@ -64,6 +80,7 @@ export default class DownloaderUtil{
     private updateCb(event: any) {
         var needRestart = false;
         var failed = false;
+        ViewsMgr.showAlert("updateCb" + event.getEventCode().toString());
         switch (event.getEventCode()) {
             case native.EventAssetsManager.ERROR_NO_LOCAL_MANIFEST:
                 console.log('No local manifest file found, hot update skipped.');

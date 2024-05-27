@@ -31,6 +31,19 @@ export class LoadManager {
             });
         });
     }
+    public static loadRemoteEx(url: string, options: { [k: string]: any; ext?: string; }): Promise<any | undefined> {
+        return new Promise((resolve, reject) => {
+            assetManager.loadRemote(url, options, (error: Error, assets: any) => {
+                if (error) {
+                    console.log("load->resource loadRemote failed:" + url);
+                    console.log("failed msg:" + error.message);
+                    reject(error);
+                    return;
+                }
+                resolve(assets);
+            });
+        });
+    }
     // 释放资源
     public static releaseAsset(asset: Asset) {
         if (asset) {
