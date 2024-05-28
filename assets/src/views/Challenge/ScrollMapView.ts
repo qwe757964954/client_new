@@ -1,10 +1,11 @@
-import { Component, Node, Prefab, ScrollView, Sprite, SpriteFrame, UITransform, Vec2, _decorator, instantiate } from 'cc';
+import { Component, Layout, Node, Prefab, Sprite, SpriteFrame, UITransform, Vec2, _decorator, instantiate } from 'cc';
 import { ResLoader } from '../../manager/ResLoader';
 import { MapLevelData } from '../../models/AdventureModel';
 import { GateListItem, UnitItemStatus, UnitListItemStatus } from '../../models/TextbookModel';
 import CCUtil from '../../util/CCUtil';
 import ImgUtil from '../../util/ImgUtil';
 import { MapPointItem } from '../adventure/levelmap/MapPointItem';
+import { MapTouchBetterController } from './MapCom/MapTouchBetterController';
 const { ccclass, property } = _decorator;
 
 /**地图坐标对象 */
@@ -54,8 +55,11 @@ const MapCoordinates:MapCoordinate[] = [{x:225.147,y:238.611},
 @ccclass('ScrollMapView')
 export class ScrollMapView extends Component {
 
-    @property(ScrollView)
-    mapScrollView:ScrollView = null;
+    @property(Node)
+    MapLaout:Node = null;    
+
+    @property(Node)
+    contentNode:Node = null;  
 
     @property(Prefab)
     mapItemPrefab:Prefab = null;
@@ -64,6 +68,9 @@ export class ScrollMapView extends Component {
 
     private _unitStatus:UnitItemStatus[] = null;
     private _pointItems: Node[] = [];
+
+    private _total_grade = 0;
+
     start() {
     }
 
@@ -72,40 +79,30 @@ export class ScrollMapView extends Component {
     }
 
     async loadMapItems() {
-        this.removePointEvent();
-        let map_count = 0;
         let unit_count = 0;
         for (let i = 0; i < this._unitStatus.length; i++) {
             const itemData:UnitItemStatus = this._unitStatus[i];
             for (let j = 0; j < itemData.gate_list.length; j++) {
                 const gate:GateListItem = itemData.gate_list[j];
                 const index = unit_count % MapCoordinates.length;
-                const xOffset = Math.floor(unit_count / MapCoordinates.length) * mapWidth;
                 const point: MapCoordinate = {
-                    x: MapCoordinates[index].x + xOffset,
+                    x: MapCoordinates[index].x - 1095,
                     y: MapCoordinates[index].y
                 };
                 let itemNode = instantiate(this.mapItemPrefab);
                 let itemScript:MapPointItem = itemNode.getComponent(MapPointItem);
                 itemScript.index = index;
                 const stringWithoutUnit: string = itemData.unit.replace("Unit ", "").trim();
-    
                 let data:MapLevelData = {big_id:parseInt(stringWithoutUnit), small_id:gate.small_id,micro_id:gate.small_id};
                 itemScript.initData(data);
-                CCUtil.onBtnClick(itemNode,()=>{
-                    this.onItemClick(itemNode);
+                CCUtil.onBtnClick(itemNode,(event)=>{
+                    this.onItemClick(event.node);
                 });
-                this.mapScrollView.content.addChild(itemNode);
-                itemNode.setSiblingIndex(99);
+                let map_count = this.calculateMapsNeeded(unit_count+1, MapCoordinates.length);
+                let mapNode = this.MapLaout.getChildByName(`bg_map_${map_count-1}`);
+                mapNode.addChild(itemNode);
                 itemNode.setPosition(point.x,point.y,0);
                 this._pointItems.push(itemNode);
-                let mapNode = this.mapScrollView.content.getChildByName(`bg_map_${map_count}`);
-                let uiTransform = mapNode.getComponent(UITransform);
-                let pos_2d = new Vec2(point.x,point.y);
-                if (uiTransform && !uiTransform.getBoundingBox().contains(pos_2d)) {
-                    map_count++;
-                    await this.addMapBg(map_count);
-                }
                 unit_count++;
             }
         }
@@ -114,24 +111,56 @@ export class ScrollMapView extends Component {
     /**添加地图单元点 */
     async initUnit(unitStatus:UnitListItemStatus){
         this._unitStatus = unitStatus.unit_list;
+        this._total_grade = unitStatus.gate_total;
+        this._unitStatus.sort((a, b) => {
+            // 将 unit 字符串转换为数字并比较
+            const unitA = parseInt(a.unit);
+            const unitB = parseInt(b.unit);
+            return unitA - unitB;
+        });
+        this.MapLaout.removeAllChildren();
+        await this.addMapBg();
         this.loadMapItems();
+        this.scheduleOnce(()=>{
+            this.scrollToNormal();
+        },0.2);
     }
 
-    addMapBg(count:number){
+    scrollToNormal(){
+        let content_script = this.contentNode.getComponent(MapTouchBetterController);
+        // content_script
+        let itemNode = this._pointItems[0];
+        // 获取父节点
+        let parentNode = itemNode.parent;
+        // 获取父节点的父节点
+        let grandparentNode = parentNode.parent;
+        // 获取子节点相对于世界坐标系的坐标
+        let worldPos = parentNode.getWorldPosition();
+        // 将世界坐标转换为父节点的父节点的局部坐标系
+        let grandparentLocalPos = grandparentNode.getComponent(UITransform).convertToNodeSpaceAR(worldPos);
+        console.log("grandparentLocalPos",grandparentLocalPos);
+        content_script.moveToTargetPos(grandparentLocalPos);
+    }
+
+    calculateMapsNeeded(totalLevels: number, levelsPerMap: number): number {
+        const mapsNeeded = Math.ceil(totalLevels / levelsPerMap);
+        return mapsNeeded;
+    }
+    addMapBg(){
         return new Promise<void>((resolve, reject) => {
             ResLoader.instance.load("adventure/bg/long_background/bg_map_01/spriteFrame", SpriteFrame, (err: Error | null, spriteFrame: SpriteFrame) => {
                 if (err) {
                     reject(err);
                 } else {
-                    let nd: Node = ImgUtil.create_2DNode(`bg_map_${count}`);
-                    nd.addComponent(Sprite).spriteFrame = spriteFrame;
-                    let uiTrans: UITransform = nd.getComponent(UITransform);
-                    uiTrans.anchorPoint = new Vec2(0, 0.5);
-                    this.mapScrollView.content.addChild(nd);
-                    nd.setSiblingIndex(1);
-                    let uiTransform = this.mapScrollView.content.getComponent(UITransform);
-                    uiTransform.width = uiTrans.width * (count + 1);
-                    nd.setPosition(uiTrans.width * count, 0, 0);
+                    let map_count = this.calculateMapsNeeded(this._total_grade, MapCoordinates.length);
+                    for (let index = 0; index < map_count; index++) {
+                        let nd: Node = ImgUtil.create_2DNode(`bg_map_${index}`);
+                        nd.addComponent(Sprite).spriteFrame = spriteFrame;
+                        let uiTrans: UITransform = nd.getComponent(UITransform);
+                        uiTrans.anchorPoint = new Vec2(0.5, 0.5);
+                        this.MapLaout.addChild(nd);
+                    }
+                    this.MapLaout.getComponent(Layout).updateLayout();
                     resolve();
                 }
             });

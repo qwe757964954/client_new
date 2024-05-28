@@ -55,20 +55,21 @@ export class RightUnitView extends Component {
         this.initEvent();
     }
     initEvent() {
-        CCUtil.onTouch(this.change_textbook, this.onChangeTextbookClick, this);
-        CCUtil.onTouch(this.break_through_btn, this.onBreakThroughClick, this);
-        CCUtil.onTouch(this.review_btn, this.onReviewClick, this);
-        CCUtil.onTouch(this.check_word_btn, this.onCheckWordClick, this);
-        CCUtil.onTouch(this.modify_plan_btn, this.onModifyPlanClick, this);
-    }
-
-    /**移除监听 */
-    removeEvent() {
-        CCUtil.offTouch(this.change_textbook, this.onChangeTextbookClick, this);
-        CCUtil.offTouch(this.break_through_btn, this.onBreakThroughClick, this);
-        CCUtil.offTouch(this.review_btn, this.onReviewClick, this);
-        CCUtil.offTouch(this.check_word_btn, this.onCheckWordClick, this);
-        CCUtil.offTouch(this.modify_plan_btn, this.onModifyPlanClick, this);
+        CCUtil.onBtnClick(this.change_textbook,()=>{
+            this.onChangeTextbookClick();
+        });
+        CCUtil.onBtnClick(this.break_through_btn,()=>{
+            this.onBreakThroughClick();
+        });
+        CCUtil.onBtnClick(this.review_btn,()=>{
+            this.onReviewClick();
+        });
+        CCUtil.onBtnClick(this.check_word_btn,()=>{
+            this.onCheckWordClick();
+        });
+        CCUtil.onBtnClick(this.modify_plan_btn,()=>{
+            this.onModifyPlanClick();
+        });
     }
     updateRightPlan(data:BookPlanDetail) {
         this.plan_label.string = `${data.rank_num}/${data.num}`;
@@ -137,7 +138,6 @@ export class RightUnitView extends Component {
         }
     }
     onDestroy(): void{
-        this.removeEvent();
     }
 }
 

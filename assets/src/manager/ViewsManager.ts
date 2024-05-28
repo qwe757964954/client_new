@@ -117,6 +117,11 @@ export class ViewsManager {
         } else {
             this._loadingPrefabMap[viewConfig.path] = 1;
         }
+        let tmpNode = new Node();
+        let tmpName = "tmp_" + viewConfig.path.replace("/", "_");
+        tmpNode.name = tmpName;
+        parent.addChild(tmpNode);
+
         LoadManager.loadPrefab(viewConfig.path, parent).then((node: Node) => {
             console.log("显示界面", viewConfig.path);
             node.name = viewConfig.path.replace("/", "_");
@@ -125,6 +130,14 @@ export class ViewsManager {
                 this._loadingPrefabMap[viewConfig.path]--;
             }
             if (callBack) callBack(node);
+            // 异常处理，避免预制体加载过程中被移除了
+            let tmpNode = parent.getChildByName(tmpName);
+            if (tmpNode) {
+                tmpNode.destroy();
+            } else {
+                console.log("界面已经被移除", viewConfig.path);
+                node.destroy();
+            }
         }).catch((error) => {
             console.log("显示界面 error", error);
             if (this._loadingPrefabMap.hasOwnProperty(viewConfig.path)) {
@@ -135,7 +148,9 @@ export class ViewsManager {
     // 关闭界面
     public closeView(viewConfig: PrefabConfig) {
         let parent = this.getParentNode(viewConfig.zindex);
-        parent?.getChildByName(viewConfig.path.replace("/", "_"))?.destroy();
+        let name = viewConfig.path.replace("/", "_");
+        parent?.getChildByName("tmp_" + name)?.destroy();
+        parent?.getChildByName(name)?.destroy();
     }
     // 是否存在界面
     public isExistView(viewConfig: PrefabConfig): boolean {
@@ -184,6 +199,21 @@ export class ViewsManager {
             node.getComponent(RewardView).init(data, callBack);
         });
     }
+    /**
+     * 显示加载界面
+     * ViewMgr.showWaiting()
+     */
+    public showWaiting() {
+        this.showView(PrefabType.WaitingView);
+    }
+    /**
+     * 移除加载界面
+     * ViewMgr.removeWaiting()
+     */
+    public removeWaiting() {
+        this.closeView(PrefabType.WaitingView);
+    }
+
     /**
      * 导航栏公共模块
      * @param parent 父节点
