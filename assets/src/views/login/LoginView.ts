@@ -7,9 +7,9 @@ import { SceneType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import GlobalConfig from '../../GlobalConfig';
 import { DataMgr } from '../../manager/DataMgr';
-import { ViewsManager } from '../../manager/ViewsManager';
+import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { s2cAccountLogin } from '../../models/NetModel';
-import { User } from '../../models/User';
+import { LoginType, User } from '../../models/User';
 import { HttpManager } from '../../net/HttpManager';
 import { InterfacePath } from '../../net/InterfacePath';
 import { NetMgr } from '../../net/NetManager';
@@ -81,6 +81,7 @@ export class LoginView extends BaseView {
     //初始化事件
     onInitModuleEvent() {
         this.addModelListener(InterfacePath.c2sAccountLogin, this.onAccountLogin.bind(this));
+        this.addModelListener(InterfacePath.c2sTokenLogin, this.onAccountLogin.bind(this));
         this.addModelListener(EventType.Socket_ReconnectFail, this.onSocketDis.bind(this));
     }
 
@@ -156,14 +157,11 @@ export class LoginView extends BaseView {
             }
             return;
         }
-        let account = StorageUtil.getData(KeyConfig.Last_Login_Account);
-        let password = StorageUtil.getData(KeyConfig.Last_Login_Pwd);
-        if (account && password) {
-            this.userNameEdit.string = account;
-            this.pwdEdit.string = password;
-            if (User.isAutoLogin) {
+        if (User.isAutoLogin) {
+            let token = StorageUtil.getData(KeyConfig.Last_Login_Token, "");
+            if (token && "" != token) {
                 User.isLogin = true;//标记账号已经登录过，用来重连
-                this.btnLoginFunc();
+                this.tokenLogin(token);
                 return;
             }
         }
@@ -171,6 +169,13 @@ export class LoginView extends BaseView {
     }
 
     initUI() {
+        let account = StorageUtil.getData(KeyConfig.Last_Login_Account);
+        let password = StorageUtil.getData(KeyConfig.Last_Login_Pwd);
+        if (account && password) {
+            this.userNameEdit.string = account;
+            this.pwdEdit.string = password;
+        }
+
         this.middle.active = true;
         this.loginBox.active = true;
         this.inputPhoneBox.active = false;
@@ -259,10 +264,7 @@ export class LoginView extends BaseView {
             })
             return;
         }
-        User.account = userName;
-        User.password = pwd;
-        NetMgr.setServer(NetConfig.server, NetConfig.port);
-        NetMgr.connectNet();
+        this.accountLogin(userName, pwd);
     }
 
     // 手机号下一步
@@ -440,7 +442,11 @@ export class LoginView extends BaseView {
     onAccountLogin(data: s2cAccountLogin) {
         this._isRequest = false;
         if (200 != data.code) {
-            ViewsManager.showAlert(data.msg ? data.msg : "数据异常");
+            console.log("登录失败", data.msg);
+            ViewsMgr.removeWaiting();
+            ViewsManager.showAlert(data.msg ? data.msg : "数据异常", () => {
+                this.initUI();
+            });
             return;
         }
         console.log("登录成功");
@@ -449,5 +455,39 @@ export class LoginView extends BaseView {
     /**连接断开 */
     onSocketDis() {
         this._isRequest = false;
+        ViewsMgr.removeWaiting();
+    }
+    /**连接服务器 */
+    connectServer() {
+        NetMgr.setServer(NetConfig.server, NetConfig.port);
+        NetMgr.connectNet();
+    }
+    /**账号密码登录 */
+    accountLogin(account: string, pwd: string) {
+        console.log("accountLogin account = ", account, " pwd = ", pwd);
+        ViewsMgr.showWaiting();
+        User.account = account;
+        User.password = pwd;
+        User.loginType = LoginType.account;
+        this.connectServer();
+    }
+    /**token登录 */
+    tokenLogin(token: string) {
+        ViewsMgr.showWaiting();
+        User.memberToken = token;
+        User.loginType = LoginType.token;
+        this.connectServer();
+    }
+    /**手机号验证码登录 */
+    mobileLogin(mobile: string, code: string) {
+        console.log("mobileLogin mobile = ", mobile, " code = ", code);
+    }
+    /**手机号一键登录 */
+    mobileQuickLogin(mobile: string) {
+        console.log("mobileQuickLogin mobile = ", mobile);
+    }
+    /**微信登录 */
+    wxLogin() {
+        console.log("wxLogin");
     }
 }

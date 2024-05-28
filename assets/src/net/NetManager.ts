@@ -3,7 +3,7 @@ import { EventType } from "../config/EventType";
 import { TextConfig } from "../config/TextConfig";
 import { ViewsManager } from "../manager/ViewsManager";
 import { BaseDataPacket } from "../models/NetModel";
-import { User } from "../models/User";
+import { LoginType, User } from "../models/User";
 import { EventMgr } from "../util/EventManager";
 import { ServiceMgr } from "./ServiceManager";
 import { Socket } from "./Socket";
@@ -95,7 +95,18 @@ class NetManager {
             ServiceMgr.accountService.accountInit();
             return;
         }
-        ServiceMgr.accountService.accountLogin();
+
+        if (User.memberToken && "" != User.memberToken) {
+            ServiceMgr.accountService.tokenLogin();
+        } else if (LoginType.account == User.loginType) {
+            ServiceMgr.accountService.accountLogin();
+        } else if (LoginType.phoneCode == User.loginType) {
+            ServiceMgr.accountService.phoneCodeLogin();
+        } else if (LoginType.phone == User.loginType) {
+            ServiceMgr.accountService.phoneQuickLogin();
+        } else if (LoginType.wechat == User.loginType) {
+            ServiceMgr.accountService.wxLogin();
+        }
     }
     //socket接收消息
     public onRecvMsg(data: string) {

@@ -1,6 +1,6 @@
 import { NetConfig } from "../config/NetConfig";
 import GlobalConfig from "../GlobalConfig";
-import { c2sAccountLogin, c2sCheckNotice, c2sMobileLogin, c2sReqSms, c2sSmsLogin, c2sTokenLogin, c2sWechatLogin } from "../models/NetModel";
+import { c2sAccountLogin, c2sCheckNotice, c2sMobileLogin, c2sReqSms, c2sSmsLogin, c2sTokenLoginOld, c2sWechatLogin } from "../models/NetModel";
 import HttpUtil from "../util/HttpUtil";
 
 // http管理类
@@ -22,7 +22,7 @@ export class HttpManager {
     }
     // token登录
     static reqTokenLogin(token: string, successFunc: Function, failedFunc: Function) {
-        let para: c2sTokenLogin = new c2sTokenLogin();
+        let para: c2sTokenLoginOld = new c2sTokenLoginOld();
         para.LoginToken = token;
         HttpUtil.post(NetConfig.tokenLogin, JSON.stringify(para)).then(
             (s: string) => {
