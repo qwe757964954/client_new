@@ -156,8 +156,8 @@ def getNewMainfestData():
     return {"packageUrl":"","remoteManifestUrl":"","remoteVersionUrl":"","version":"1.0.0","assets":{},"searchPaths":[]}
 
 def createChannelApk():
-    channelID = input("请输入渠道ID\n")
-    replaceLineContent(java_config_path, "    static public final int channelID = ", "    static public final int channelID = \"%d\"\n"%(channelID))
+    channelID = int(input("请输入渠道ID\n"))
+    replaceLineContent(java_config_path, "    static public final int channelID = ", "    static public final int channelID = %d;\n"%(channelID))
     os.system(creatorPath + " --project " + project_path + " --build configPath="+native_config_path+";stage=make")
 
 def getAssets(mainfestData, dirPath):

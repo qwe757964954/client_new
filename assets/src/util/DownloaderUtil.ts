@@ -1,10 +1,12 @@
 import { JsonAsset, game, native } from "cc";
 import { LoadManager } from "../manager/LoadManager";
-import { ViewsMgr } from "../manager/ViewsManager";
 //版本检测下载类
 export default class DownloaderUtil {
     private _assetsManager: native.AssetsManager;
-    private _updateListener;
+    private _successFunc: Function;
+    private _failFunc: Function;
+    private _progressFunc: Function;
+    // private _updateListener;
     private _updating: boolean;
     private _url: string;
     private _storagePath: string;
@@ -17,12 +19,8 @@ export default class DownloaderUtil {
             // return arg1 === arg2 ? 0 : -1;
             return -1;
         });
-        this._updateListener = null;
         this._updating = false;
         this._url = url;
-
-        // LoadManager.loadRemoteEx(data.url + "project", { ext: '.json' }).then((manifest: JsonAsset) => {
-
     }
     public checkUpdate() {
         if (this._updating) {
@@ -34,11 +32,17 @@ export default class DownloaderUtil {
         this._updating = true;
     }
 
-    public hotUpdate() {
+    public hotUpdate(successFunc?: Function, failFunc?: Function, progressFunc?: Function) {
         if (this._updating) {
+            if (failFunc) failFunc();
             return;
         }
-        LoadManager.loadRemote(this._url + "project.json").then((asset: JsonAsset) => {
+
+        this._successFunc = successFunc;
+        this._failFunc = failFunc;
+        this._progressFunc = progressFunc;
+
+        LoadManager.loadRemoteEx(this._url + "project.manifest", { ext: '.json' }).then((asset: JsonAsset) => {
             let json = asset.json;
             json["packageUrl"] = this._url;
             json["remoteManifestUrl"] = this._url + "project.manifest";
@@ -49,11 +53,12 @@ export default class DownloaderUtil {
 
             this._assetsManager.update();
             this._updating = true;
-            ViewsMgr.showTip("hotUpdate:" + this._assetsManager.getState().toString());
+        }).catch(() => {
+            if (failFunc) failFunc();
         });
     }
 
-    private checkCb(event: any) {
+    private checkCb(event: native.EventAssetsManager) {
         console.log('Code: ' + event.getEventCode());
         switch (event.getEventCode()) {
             case native.EventAssetsManager.ERROR_NO_LOCAL_MANIFEST:
@@ -77,10 +82,9 @@ export default class DownloaderUtil {
         this._updating = false;
     }
 
-    private updateCb(event: any) {
+    private updateCb(event: native.EventAssetsManager) {
         var needRestart = false;
         var failed = false;
-        ViewsMgr.showAlert("updateCb" + event.getEventCode().toString());
         switch (event.getEventCode()) {
             case native.EventAssetsManager.ERROR_NO_LOCAL_MANIFEST:
                 console.log('No local manifest file found, hot update skipped.');
@@ -97,6 +101,7 @@ export default class DownloaderUtil {
                 if (msg) {
                     console.log('Updated file: ' + msg);
                     // cc.log(event.getPercent()/100 + '% : ' + msg);
+                    if (this._progressFunc) this._progressFunc(event.getPercent());
                 }
                 break;
             case native.EventAssetsManager.ERROR_DOWNLOAD_MANIFEST:
@@ -111,6 +116,7 @@ export default class DownloaderUtil {
             case native.EventAssetsManager.UPDATE_FINISHED:
                 console.log('Update finished. ' + event.getMessage());
                 needRestart = true;
+                if (this._successFunc) this._successFunc();
                 break;
             case native.EventAssetsManager.UPDATE_FAILED:
                 console.log('Update failed. ' + event.getMessage());
@@ -118,9 +124,11 @@ export default class DownloaderUtil {
                 break;
             case native.EventAssetsManager.ERROR_UPDATING:
                 console.log('Asset update error: ' + event.getAssetId() + ', ' + event.getMessage());
+                failed = true;
                 break;
             case native.EventAssetsManager.ERROR_DECOMPRESS:
                 console.log(event.getMessage());
+                failed = true;
                 break;
             default:
                 break;
@@ -128,13 +136,12 @@ export default class DownloaderUtil {
 
         if (failed) {
             this._assetsManager.setEventCallback(null!);
-            this._updateListener = null;
             this._updating = false;
+            if (this._failFunc) this._failFunc();
         }
 
         if (needRestart) {
             this._assetsManager.setEventCallback(null!);
-            this._updateListener = null;
             // Prepend the manifest's search path
             var searchPaths = native.fileUtils.getSearchPaths();
             var newPaths = this._assetsManager.getLocalManifest().getSearchPaths();
