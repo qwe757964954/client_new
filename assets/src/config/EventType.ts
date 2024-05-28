@@ -92,5 +92,7 @@ export const EventType = {
     Friend_SelectEmotion: "Friend_SelectEmotion", //点击一个表情
     Friend_MsgSend: "Friend_MsgSend", //向好友发送一个消息
     Friend_RecMessage: "MyFriend_RecMessage", //收到一个好友消息
+    //背包物品相关
+    Bag_PropList: "Bag_PropList", //获取背包物品
 
 }

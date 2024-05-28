@@ -1,8 +1,17 @@
-import { _decorator, Asset, Component, director, Label, Node, ProgressBar } from 'cc';
+import { _decorator, Asset, Component, director, Label, Node, ProgressBar, sys } from 'cc';
 import { SceneType } from '../config/PrefabType';
+import { TextConfig } from '../config/TextConfig';
 import GlobalConfig from '../GlobalConfig';
-import { ViewsManager } from '../manager/ViewsManager';
+import { ViewsManager, ViewsMgr } from '../manager/ViewsManager';
+import { HttpManager } from '../net/HttpManager';
+import DownloaderUtil from '../util/DownloaderUtil';
 const { ccclass, property } = _decorator;
+
+
+class VersionCheck {
+    version: string = "";
+    url: string = "";
+}
 
 @ccclass('LoadingScene')
 export class LoadingScene extends Component {
@@ -28,6 +37,10 @@ export class LoadingScene extends Component {
 
     private _time: number = 0;//加载时间
     private _maxtime: number = 1.0;//最大加载时间
+    private _downloaderUtil: DownloaderUtil = null;//下载器
+    private _httpCheck: boolean = false;//http版本检测
+    private _downCheck: boolean = false;//下载版本检测
+    private _uiCheck: boolean = false;//ui版本检测
 
     start() {
         ViewsManager.instance.initLayer(this.sceneLayer, this.popupLayer, this.tipLayer, this.loadingLayer);
@@ -46,6 +59,7 @@ export class LoadingScene extends Component {
         }
         this.label.string = "Loading...100%";
         this.progressBar.progress = 1.0;
+        this._uiCheck = true;
         this.checkVersionOver();
     }
     // 版本检测
@@ -56,10 +70,57 @@ export class LoadingScene extends Component {
 
         this._time = 0;
         this._maxtime = 1.0;
+
+        this.httpReqVersionCheck();
     }
     //版本检测完成
     checkVersionOver() {
+        if (!this._uiCheck || !this._httpCheck || !this._downCheck) return;
         director.loadScene(SceneType.LoginScene);
+    }
+    /**http请求版本成功 */
+    httpReqVersionCheckSuccess(data: VersionCheck) {
+        console.log("httpReqVersionCheckSuccess", data.url);
+        this._httpCheck = true;
+        if (!sys.isNative || !data.url || "" == data.url) {
+            this._downCheck = true;
+            this.checkVersionOver();
+            return;
+        }
+
+        this._downloaderUtil = new DownloaderUtil(this.manifest.nativeUrl, data.url);
+        this.startDownload();
+    }
+    /**http请求版本失败 */
+    httpReqVersionCheckFailed() {
+        ViewsMgr.showAlert(TextConfig.Net_Error, this.httpReqVersionCheck.bind(this));
+    }
+    /**http请求版本 */
+    httpReqVersionCheck() {
+        if (!sys.isNative) {
+            this._httpCheck = true;
+            this._downCheck = true;
+            this.checkVersionOver();
+            return;
+        }
+        HttpManager.reqVersionCheck(this.httpReqVersionCheckSuccess.bind(this), this.httpReqVersionCheckFailed.bind(this));
+    }
+    /**开始下载更新 */
+    startDownload() {
+        this._downloaderUtil.hotUpdate(this.updateSuccess.bind(this), this.updateFailed.bind(this), this.updateProgress.bind(this));
+    }
+    /**更新成功 */
+    updateSuccess() {
+        ViewsMgr.showAlert("更新成功，准备资源中");
+    }
+    /**更新失败 */
+    updateFailed() {
+        ViewsMgr.showAlert("更新失败，请检测网络后再重试", this.startDownload.bind(this));
+    }
+    /**更新进度 */
+    updateProgress(num: number) {
+        console.log("updateProgress", num);
+        this.progressBar.progress = num;
     }
 }
 

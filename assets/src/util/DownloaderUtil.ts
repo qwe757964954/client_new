@@ -1,24 +1,29 @@
-import { native, game } from "cc";
+import { JsonAsset, game, native } from "cc";
+import { LoadManager } from "../manager/LoadManager";
 //版本检测下载类
-export default class DownloaderUtil{
-    private _assetsManager:native.AssetsManager;
-    private _updateListener;
-    private _updating:boolean;
+export default class DownloaderUtil {
+    private _assetsManager: native.AssetsManager;
+    private _successFunc: Function;
+    private _failFunc: Function;
+    private _progressFunc: Function;
+    // private _updateListener;
+    private _updating: boolean;
+    private _url: string;
+    private _storagePath: string;
 
-    public constructor(){
-        let manifestUrl = "version.manifest";
-        let storagePath = (native.fileUtils?.getWritablePath() ?? '/') + 'remote-asset';
-        this._assetsManager = native.AssetsManager.create(manifestUrl, storagePath);
+    public constructor(manifestUrl: string, url: string) {
+        this._storagePath = (native.fileUtils?.getWritablePath() ?? '/') + 'remote-asset';
+        this._assetsManager = native.AssetsManager.create(manifestUrl, this._storagePath);
 
         this._assetsManager.setVersionCompareHandle((arg1, arg2) => {
-            return arg1 === arg2 ? 0 : -1;
+            // return arg1 === arg2 ? 0 : -1;
+            return -1;
         });
-        this._updateListener = null;
         this._updating = false;
+        this._url = url;
     }
-
-    public checkUpdate(){
-        if(this._updating){
+    public checkUpdate() {
+        if (this._updating) {
             return;
         }
         this._assetsManager.setEventCallback(this.checkCb.bind(this));
@@ -27,17 +32,33 @@ export default class DownloaderUtil{
         this._updating = true;
     }
 
-    public hotUpdate(){
-        if(this._updating){
+    public hotUpdate(successFunc?: Function, failFunc?: Function, progressFunc?: Function) {
+        if (this._updating) {
+            if (failFunc) failFunc();
             return;
         }
-        this._assetsManager.setEventCallback(this.updateCb.bind(this));
 
-        this._assetsManager.update();
-        this._updating = true;
+        this._successFunc = successFunc;
+        this._failFunc = failFunc;
+        this._progressFunc = progressFunc;
+
+        LoadManager.loadRemoteEx(this._url + "project.manifest", { ext: '.json' }).then((asset: JsonAsset) => {
+            let json = asset.json;
+            json["packageUrl"] = this._url;
+            json["remoteManifestUrl"] = this._url + "project.manifest";
+            json["remoteVersionUrl"] = this._url + "version.manifest";
+            let manifest = new native.Manifest(JSON.stringify(json), this._storagePath);
+            let result = this._assetsManager.loadRemoteManifest(manifest);
+            this._assetsManager.setEventCallback(this.updateCb.bind(this));
+
+            this._assetsManager.update();
+            this._updating = true;
+        }).catch(() => {
+            if (failFunc) failFunc();
+        });
     }
 
-    private checkCb(event: any) {
+    private checkCb(event: native.EventAssetsManager) {
         console.log('Code: ' + event.getEventCode());
         switch (event.getEventCode()) {
             case native.EventAssetsManager.ERROR_NO_LOCAL_MANIFEST:
@@ -61,7 +82,7 @@ export default class DownloaderUtil{
         this._updating = false;
     }
 
-    private updateCb(event: any) {
+    private updateCb(event: native.EventAssetsManager) {
         var needRestart = false;
         var failed = false;
         switch (event.getEventCode()) {
@@ -80,6 +101,7 @@ export default class DownloaderUtil{
                 if (msg) {
                     console.log('Updated file: ' + msg);
                     // cc.log(event.getPercent()/100 + '% : ' + msg);
+                    if (this._progressFunc) this._progressFunc(event.getPercent());
                 }
                 break;
             case native.EventAssetsManager.ERROR_DOWNLOAD_MANIFEST:
@@ -94,6 +116,7 @@ export default class DownloaderUtil{
             case native.EventAssetsManager.UPDATE_FINISHED:
                 console.log('Update finished. ' + event.getMessage());
                 needRestart = true;
+                if (this._successFunc) this._successFunc();
                 break;
             case native.EventAssetsManager.UPDATE_FAILED:
                 console.log('Update failed. ' + event.getMessage());
@@ -101,9 +124,11 @@ export default class DownloaderUtil{
                 break;
             case native.EventAssetsManager.ERROR_UPDATING:
                 console.log('Asset update error: ' + event.getAssetId() + ', ' + event.getMessage());
+                failed = true;
                 break;
             case native.EventAssetsManager.ERROR_DECOMPRESS:
                 console.log(event.getMessage());
+                failed = true;
                 break;
             default:
                 break;
@@ -111,13 +136,12 @@ export default class DownloaderUtil{
 
         if (failed) {
             this._assetsManager.setEventCallback(null!);
-            this._updateListener = null;
             this._updating = false;
+            if (this._failFunc) this._failFunc();
         }
 
         if (needRestart) {
             this._assetsManager.setEventCallback(null!);
-            this._updateListener = null;
             // Prepend the manifest's search path
             var searchPaths = native.fileUtils.getSearchPaths();
             var newPaths = this._assetsManager.getLocalManifest().getSearchPaths();
