@@ -1,6 +1,6 @@
 import { EventType } from "../config/EventType";
 import { ViewsManager } from "../manager/ViewsManager";
-import { c2sAdventureResult, c2sAdventureWord, c2sIslandProgress, c2sIslandStatus, c2sWordGameWords, WordGameWordsData } from "../models/AdventureModel";
+import { c2sAdventureResult, c2sAdventureWord, c2sIslandProgress, c2sIslandStatus, c2sWordGameWords, c2sWordGroup, WordGameWordsData } from "../models/AdventureModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
 import { BaseControll } from "../script/BaseControll";
@@ -62,6 +62,15 @@ export default class StudyService extends BaseControll {
         para.micro_id = microId;
         para.game_mode = gameMode;
         para.cost_time = costTime;
+        NetMgr.sendMsg(para);
+    }
+
+    //获取组合模式选项
+    getWordGroup(bigId: number, smallId: number, microId: number) {
+        let para: c2sWordGroup = new c2sWordGroup();
+        para.big_id = bigId;
+        para.small_id = smallId;
+        para.micro_id = microId;
         NetMgr.sendMsg(para);
     }
 }

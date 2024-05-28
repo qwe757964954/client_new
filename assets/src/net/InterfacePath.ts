@@ -24,6 +24,7 @@ export const InterfacePath = {
     WordGame_Words: "3102",  // 获取大冒险单词
     Adventure_Result: "3104",  // 大冒险结果提交
     Adventure_Word: "3105", //大冒险单个单词详情
+    Words_Group: "3106", //获取组合模式单词选项
     /***********************************************选择词书 begin*********************************************/
     Classification_BookStatus: "3011", //我的词书-列表
     Classification_BookAdd: "3013", //我的词书-添加词书
