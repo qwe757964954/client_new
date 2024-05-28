@@ -1,4 +1,4 @@
-import { _decorator, BlockInputEvents, Button, instantiate, Node, Prefab, Sprite, tween, UITransform, Vec3, view } from 'cc';
+import { _decorator, BlockInputEvents, Button, instantiate, Label, Node, Prefab, Sprite, tween, UITransform, Vec3, view } from 'cc';
 import { EventType } from '../../../config/EventType';
 import { AdvLevelConfig, BookLevelConfig } from '../../../manager/DataMgr';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
@@ -46,6 +46,10 @@ export class BaseModeView extends BaseView {
     topNode: Node = null;
     @property(Prefab)
     public monsterModel: Prefab = null;//怪物动画
+    @property({ type: Label, tooltip: "错误次数" })
+    public errorNumLabel: Label = null;
+    @property({ type: Label, tooltip: "剩余时间" })
+    public timeLabel: Label = null;
 
     protected _pet: Node = null; //精灵
     protected _role: Node = null; //人物
@@ -167,14 +171,14 @@ export class BaseModeView extends BaseView {
             //     unit: levelData.unit,
             //     game_mode: this.gameMode,
             // }
-            let data = {code:200};
+            let data = { code: 200 };
             let levelData = this._levelData as BookLevelConfig;
             levelData.word_num = 1;
             EventMgr.dispatch(NetNotify.Classification_ReportResult, data);
             // TBServer.reqReportResult(data);
         }
     }
-    
+
 
 
     //当前模式结束,跳转下一模式或结算
@@ -182,7 +186,7 @@ export class BaseModeView extends BaseView {
 
     }
     //单个单词学习情况上报
-    onGameSubmit(word: string,isRight:boolean) {
+    onGameSubmit(word: string, isRight: boolean) {
         /**单词上报仅限教材单词 */
         if (this._levelData.hasOwnProperty('islandId')) {
             return;
@@ -197,8 +201,8 @@ export class BaseModeView extends BaseView {
             game_mode: this.gameMode,
             cost_time: costTime,
             word: word,
-            small_id:levelData.small_id,
-            word_flag:isRight ? 1 : 0
+            small_id: levelData.small_id,
+            word_flag: isRight ? 1 : 0
         }
         TBServer.reqGameSubmit(data);
     }
@@ -271,7 +275,7 @@ export class BaseModeView extends BaseView {
             ServiceMgr.studyService.getAdventureWord(word);
         } else { //教材单词关卡
             let levelData: BookLevelConfig = this._levelData as BookLevelConfig;
-            TBServer.reqWordDetail(word,levelData.id);
+            TBServer.reqWordDetail(word, levelData.id);
         }
     }
 
@@ -286,8 +290,8 @@ export class BaseModeView extends BaseView {
         this.setCollect(data.collect_flag ? true : false);
     }
 
-    protected onCollectWord(data:any) {
-        console.log("onCollectWord",data);
+    protected onCollectWord(data: any) {
+        console.log("onCollectWord", data);
         this._detailData.collect_flag = this._detailData.collect_flag ? 0 : 1;
         this.setCollect(this._detailData.collect_flag ? true : false);
     }
@@ -307,7 +311,7 @@ export class BaseModeView extends BaseView {
     protected closeView() {
         ViewsManager.instance.showConfirm("确定退出学习吗?", () => {
             let isAdventure = this._levelData.hasOwnProperty('islandId'); //是否是大冒险关卡
-            if(!isAdventure){
+            if (!isAdventure) {
                 EventMgr.dispatch(EventType.Exit_Island_Level);
             }
             this.node.destroy();
@@ -326,25 +330,25 @@ export class BaseModeView extends BaseView {
         this.btn_collect.getComponent(Sprite).grayscale = !isCollect
     }
     /**收藏单词 */
-    onClickCollectEvent(){
+    onClickCollectEvent() {
         console.log("onClickCollectEvent.....");
         let isAdventure = this._levelData.hasOwnProperty('islandId'); //是否是大冒险关卡
         let wordData = this._wordsData[this._wordIndex];
         console.log('word', wordData);
         if (!isAdventure) { //教材关卡
             let levelData = this._levelData as BookLevelConfig;
-            let reqParam:ReqCollectWord = {
-                word:wordData.word,
-                type_name:levelData.type_name,
-                book_name:levelData.book_name,
-                grade:levelData.grade,
-                unit:levelData.unit,
-                action:this._detailData.collect_flag ? 0 : 1,
+            let reqParam: ReqCollectWord = {
+                word: wordData.word,
+                type_name: levelData.type_name,
+                book_name: levelData.book_name,
+                grade: levelData.grade,
+                unit: levelData.unit,
+                action: this._detailData.collect_flag ? 0 : 1,
             }
             TBServer.reqCollectWord(reqParam);
         } else {
             //大冒险关卡
-            
+
         }
 
     }
