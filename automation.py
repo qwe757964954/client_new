@@ -152,6 +152,11 @@ def getUUIDManifestPath():
 
 uuid_manifest_path = getUUIDManifestPath()
 
+def restoreFiles():
+    os.system("git checkout " + local_manifest_path)
+    os.system("git checkout " + ts_version_path)
+    os.system("git checkout " + java_config_path)
+
 def getNewMainfestData():
     return {"packageUrl":"","remoteManifestUrl":"","remoteVersionUrl":"","version":"1.0.0","assets":{},"searchPaths":[]}
 
@@ -204,10 +209,13 @@ if __name__ == '__main__':
     option = int(input("Please input a number to go on:\n \
 1.打包资源和脚本 \n \
 2.打渠道包 \n \
+3.还原本次修改的文件 \n \
 "))
     if option == 1:
         generateResourcesAndScript()
     elif option == 2:
         createChannelApk()
+    elif option == 3:
+        restoreFiles()
     else:
         print("invalid option")
