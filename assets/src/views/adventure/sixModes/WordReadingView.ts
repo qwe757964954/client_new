@@ -14,6 +14,9 @@ export class WordReadingView extends BaseModeView {
     cnLabel: Label = null;
     @property({ type: Node, tooltip: "单词读音" })
     wordSound: Node = null;
+
+
+
     async initData(wordsdata: UnitWordModel[], levelData: any) {
         this.gameMode = GameMode.Reading;
         super.initData(wordsdata, levelData);
@@ -31,7 +34,10 @@ export class WordReadingView extends BaseModeView {
 
     //显示当前单词
     showCurrentWord() {
-
+        let wordData = this._wordsData[this._wordIndex];
+        console.log('word', wordData);
+        let word = wordData.word;
+        
     }
 
     protected initEvent(): void {
