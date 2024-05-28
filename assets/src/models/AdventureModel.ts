@@ -82,8 +82,8 @@ export class c2sAdventureWord {
 export class WordsDetailData extends BaseRepPacket {
     word: string;
     cn: string; //单词释义
-    c_id?:string;
-    collect_flag:number; 
+    c_id?: string;
+    collect_flag: number;
     symbol: string;    //音标
     symbolus: string;  //美式音标
     syllable: string;  //音素拆分
@@ -111,4 +111,26 @@ export class c2sAdventureResult {
 //大冒险结果提交返回
 export class s2cAdventureResult extends BaseRepPacket {
     data: { pass_num: number };
+}
+
+//组合模式拆分数据
+export class WordGroupModel {
+    word: string;
+    opt1: string;
+    opt2: string;
+    opt3: string;
+    opt4: string;
+    opt_num: number;
+}
+
+export class WordGroupData extends BaseRepPacket {
+    data: WordGroupModel[];
+}
+
+//大冒险获取组合模式选项
+export class c2sWordGroup {
+    command_id: string = InterfacePath.Words_Group;
+    big_id: number;
+    small_id: number;
+    micro_id: number;
 }

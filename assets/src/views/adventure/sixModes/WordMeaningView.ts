@@ -34,10 +34,6 @@ export class WordMeaningView extends BaseModeView {
     errorBg: SpriteFrame = null;
     @property({ type: SpriteFrame, tooltip: "正常背景" })
     normalBg: SpriteFrame = null;
-    @property({ type: Label, tooltip: "错误次数" })
-    errorNumLabel: Label = null;
-    @property({ type: Label, tooltip: "剩余时间" })
-    timeLabel: Label = null;
     @property({ type: SpriteFrame, tooltip: "正确符号" })
     rightSymbol: SpriteFrame = null;
     @property({ type: SpriteFrame, tooltip: "错误符号" })
@@ -177,9 +173,9 @@ export class WordMeaningView extends BaseModeView {
         resSymbol.active = true;
 
         let word = this._wordsData[this._wordIndex].word
-        this.onGameSubmit(word,isRight);
+        this.onGameSubmit(word, isRight);
 
-        
+
         if (isRight) {
             answerNode.getComponent(Sprite).spriteFrame = this.rightBg;
             resSymbol.getComponent(Sprite).spriteFrame = this.rightSymbol;
@@ -205,7 +201,7 @@ export class WordMeaningView extends BaseModeView {
                     this.showCurrentWord();
                 }
             });
-            
+
         } else {
             answerNode.getComponent(Sprite).spriteFrame = this.errorBg;
             resSymbol.getComponent(Sprite).spriteFrame = this.errorSymbol;
@@ -227,7 +223,7 @@ export class WordMeaningView extends BaseModeView {
                 this.showCurrentWord();
             }, 1);
         }
-        
+
     }
 
     protected modeOver(): void {
