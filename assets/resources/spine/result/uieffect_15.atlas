@@ -1,0 +1,20 @@
+
+uieffect_15.png
+size: 2048,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+images/glow_line
+  rotate: false
+  xy: 2, 2
+  size: 240, 135
+  orig: 240, 135
+  offset: 0, 0
+  index: -1
+images/go
+  rotate: false
+  xy: 2, 139
+  size: 1051, 683
+  orig: 1051, 683
+  offset: 0, 0
+  index: -1

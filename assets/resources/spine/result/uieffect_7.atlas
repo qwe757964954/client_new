@@ -1,0 +1,55 @@
+
+uieffect_7.png
+size: 2048,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+images/cool
+  rotate: false
+  xy: 2, 564
+  size: 817, 255
+  orig: 817, 255
+  offset: 0, 0
+  index: -1
+images/creat
+  rotate: false
+  xy: 2, 307
+  size: 817, 255
+  orig: 817, 255
+  offset: 0, 0
+  index: -1
+images/good
+  rotate: false
+  xy: 821, 564
+  size: 817, 255
+  orig: 817, 255
+  offset: 0, 0
+  index: -1
+images/good2
+  rotate: false
+  xy: 2, 50
+  size: 817, 255
+  orig: 817, 255
+  offset: 0, 0
+  index: -1
+images/good3
+  rotate: false
+  xy: 821, 307
+  size: 817, 255
+  orig: 817, 255
+  offset: 0, 0
+  index: -1
+images/good4
+  rotate: false
+  xy: 821, 50
+  size: 817, 255
+  orig: 817, 255
+  offset: 0, 0
+  index: -1
+images/perfect
+  rotate: true
+  xy: 1640, 2
+  size: 817, 255
+  orig: 817, 255
+  offset: 0, 0
+  index: -1
