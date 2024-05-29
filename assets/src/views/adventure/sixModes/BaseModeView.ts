@@ -77,10 +77,15 @@ export class BaseModeView extends BaseView {
         this._costTime = Date.now();
         let scaleNum = view.getVisibleSize().width / view.getDesignResolutionSize().width;
         this.topNode.setScale(scaleNum, scaleNum, 1);
+        this.initEvents();
     }
-    onLoad(): void {
 
+    initEvents() {
+        CCUtil.onBtnClick(this.btn_collect,()=>{
+            this.onClickCollectEvent();
+        });
     }
+
     initData(wordsdata: UnitWordModel[], levelData: any) {
         this._levelData = levelData;
         let isAdventure = this._levelData.hasOwnProperty('islandId'); //是否是大冒险关卡

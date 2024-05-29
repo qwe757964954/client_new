@@ -115,7 +115,10 @@ export class BreakThroughView extends BaseView {
             small_id:this._selectGate.small_id
         }
         TBServer.reqUnitStatus(reqParam);
-        this.reqVocabularyWord();
+        if(data.isNext){
+            this.reqVocabularyWord();
+        }
+        
     }
     getUnitListStatus(){
         let params:BookUnitModel = {
