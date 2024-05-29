@@ -202,7 +202,7 @@ export class BaseModeView extends BaseView {
             cost_time: costTime,
             word: word,
             small_id: levelData.small_id,
-            word_flag: isRight ? 1 : 0
+            status: isRight ? 1 : 0
         }
         TBServer.reqGameSubmit(data);
     }

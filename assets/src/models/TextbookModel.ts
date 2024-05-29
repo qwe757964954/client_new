@@ -329,8 +329,8 @@ export class c2sGameSubmit {
     unit:string;
     small_id:number;
     game_mode:number;
-    word_flag:number;
-    score:string;
+    status:number;
+    score?:string;
 }
 
 export interface GameSubmitModel {
@@ -342,7 +342,7 @@ export interface GameSubmitModel {
     unit:string;
     small_id:number;
     game_mode:number;
-    word_flag:number;
+    status:number;
     score?:string;
 }
 

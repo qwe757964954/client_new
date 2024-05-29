@@ -52,6 +52,9 @@ export class BreakThroughView extends BaseView {
     @property(Node)
     public scrollMapNode: Node = null;
 
+    @property(Node)
+    public bg: Node = null;
+
     public _scrollMap:ScrollMapView = null;
 
     private _bookData:CurrentBookStatus = null;
@@ -67,6 +70,10 @@ export class BreakThroughView extends BaseView {
         GlobalConfig.initRessolutionHeight();
         this.initEvent();
         this.initUI();
+
+        this.scheduleOnce(()=>{
+            this.bg.removeFromParent();
+        },0.5)
     }
     initEvent() {
         CCUtil.onTouch(this.scrollMapNode, this.hideRightPanelchangeView, this);
@@ -117,6 +124,7 @@ export class BreakThroughView extends BaseView {
 
     onVocabularyWord(data:VocabularyWordData){
         console.log("onVocabularyWord", data);
+        this._curUnitStatus.game_mode = 4;
         let game_model:LearnGameModel = this._curUnitStatus.game_mode as LearnGameModel;
         let bookLevelData:BookLevelConfig = {
             id:this._bookData.id,
@@ -128,6 +136,8 @@ export class BreakThroughView extends BaseView {
             small_id:this._selectGate.small_id,
             word_num:this._curUnitStatus.word_num,
         }
+        console.log("this._curUnitStatus+++++++++++++++++", this._curUnitStatus);
+        console.log("game_model+++++++++++++++++", game_model);
         switch (game_model) {
             case LearnGameModel.Tutoring:
                 bookLevelData.game_mode = LearnGameModel.Tutoring;
