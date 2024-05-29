@@ -3,6 +3,7 @@ export const InterfacePath = {
     /***********************************socket消息类型start********************************************/
 
     c2sAccountLogin: "1001",//账号密码登录
+    c2sTokenLogin: "1004",//token登录
     c2sBuildingList: "2005",//建筑列表
     c2sBuildingCreate: "2006",//新建建筑
     c2sBuildingEdit: "2007",//建筑修改

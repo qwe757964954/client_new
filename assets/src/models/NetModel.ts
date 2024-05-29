@@ -16,7 +16,7 @@ export class s2cCheckNotice {
     data: s2cMaintenanceInfo;
 }
 // token登录
-export class c2sTokenLogin {
+export class c2sTokenLoginOld {
     LoginToken: string;
 }
 export class s2cTokenLogin {
@@ -70,14 +70,19 @@ export class BaseDataPacket {
 export class BaseRepPacket {
     code: number;//返回码
     msg: string;//返回信息
-    command_id?:number;
-    seq?:number;
+    command_id?: number;
+    seq?: number;
 }
 /**账号密码登录 */
 export class c2sAccountLogin {
     command_id: string = InterfacePath.c2sAccountLogin;
     user_name: string;//账号
     password: string;//密码
+}
+/**token登录 */
+export class c2sTokenLogin {
+    command_id: string = InterfacePath.c2sTokenLogin;
+    token: string;//token
 }
 /**登录返回 */
 export class s2cAccountLoginDetailExtra {
