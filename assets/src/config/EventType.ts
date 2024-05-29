@@ -32,6 +32,8 @@ export const EventType = {
 
     Exit_Island_Level: "Exit_Island_Level",  //退出大冒险关卡
 
+    Goto_Textbook_Level: "Goto_Textbook_Level",  //进入单词大冒险
+    Goto_Textbook_Next_Level: "Goto_Textbook_Next_Level",  //进入单词大冒险下一关卡
     //大冒险学习模式相关
     WordGame_Words: "WordGame_Words",  // 获取单词数据
     Sys_Ani_Play: "Sys_Ani_Play",//播放动画

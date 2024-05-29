@@ -1,8 +1,11 @@
-import { _decorator, Label, Node } from 'cc';
+import { _decorator, JsonAsset, Label, Node, sys } from 'cc';
 import { EventType } from '../../../config/EventType';
 import { NetConfig } from '../../../config/NetConfig';
+import { PrefabType } from '../../../config/PrefabType';
 import { BookLevelConfig } from '../../../manager/DataMgr';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
+import { ResLoader } from '../../../manager/ResLoader';
+import { ViewsManager } from '../../../manager/ViewsManager';
 import { GameMode } from '../../../models/AdventureModel';
 import { GameSubmitModel, UnitWordModel } from '../../../models/TextbookModel';
 import { TBServer } from '../../../service/TextbookService';
@@ -38,8 +41,10 @@ export class WordReadingView extends BaseModeView {
         this.initEvent();
         this.initMonster(); //初始化怪物
         RecordApi.checkRecordPermission();
+        this.modeOver()
     }
     onInitModuleEvent(){
+        super.onInitModuleEvent();
         this.addModelListener(EventType.Get_Record_Result,this.getRecordResult); 
     }
     getRecordResult(response:RecordResponseData){
@@ -107,7 +112,7 @@ export class WordReadingView extends BaseModeView {
             game_mode: this.gameMode,
             cost_time: costTime,
             word: word,
-            score:`${response.result.overall}`,
+            score:response.result.overall,
             small_id: levelData.small_id,
             status: isRight ? 1 : 0
         }
@@ -151,16 +156,44 @@ export class WordReadingView extends BaseModeView {
         this.img_corrugation.active = true;
         this.btn_sound_recording.active = false;
         let word = this._wordsData[this._wordIndex].word;
-        RecordApi.onRecord(word);
+        if (sys.isNative) {
+            RecordApi.onRecord(word);
+        }
+        
     }
     /**波浪线结束录音 */
     corrugationEvent(){
         console.log('corrugationEvent');
         this.img_corrugation.active = false;
         this.btn_sound_recording.active = true;
+        if (!sys.isNative) {
+            ResLoader.instance.load(`adventure/sixModes/study/ReadData`, JsonAsset, async (err: Error | null, jsonData: JsonAsset) => {
+                if (err) {
+                    console.error(err);
+                } else {
+                    let response = jsonData.json as RecordResponseData;
+                    this.getRecordResult(response);
+                }
+            });
+            return;
+        }
         RecordApi.stopRecord();
     }
-
+    protected modeOver(): void {
+        console.log('朗读模式完成');
+        ViewsManager.instance.showView(PrefabType.WordReportView, (node: Node) => {
+            ViewsManager.instance.closeView(PrefabType.WordReadingView);
+            //跳转到下一场景
+            /*
+            node.getComponent(TransitionView).setTransitionCallback(() => {
+                ViewsManager.instance.showView(PrefabType.WordPracticeView, (node: Node) => {
+                    node.getComponent(WordPracticeView).initData(wordData, levelData);
+                    ViewsManager.instance.closeView(PrefabType.WordMeaningView);
+                });
+            });
+            */
+        });
+    }
     onDestroy(): void {
         super.onDestroy();
     }

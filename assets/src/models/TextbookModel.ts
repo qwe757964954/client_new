@@ -330,7 +330,7 @@ export class c2sGameSubmit {
     small_id:number;
     game_mode:number;
     status:number;
-    score?:string;
+    score?:number;
 }
 
 export interface GameSubmitModel {
@@ -343,7 +343,7 @@ export interface GameSubmitModel {
     small_id:number;
     game_mode:number;
     status:number;
-    score?:string;
+    score?:number;
 }
 
 // export enum AmoutType {

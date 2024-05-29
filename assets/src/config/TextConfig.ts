@@ -65,4 +65,6 @@ export const TextConfig = {
     Friend_EmailSys: "系统消息",
     Friend_RecvAwardSucc: "获得邮件奖励",
     Friend_DelFriendSucc: "删除好友成功",
+
+    All_level_Tip: "恭喜完成所有关卡",
 }

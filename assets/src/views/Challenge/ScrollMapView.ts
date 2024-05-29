@@ -1,10 +1,16 @@
-import { Component, Layout, Node, Prefab, Sprite, SpriteFrame, UITransform, Vec2, _decorator, instantiate } from 'cc';
+import { Layout, Node, Prefab, Sprite, SpriteFrame, UITransform, Vec2, _decorator, instantiate } from 'cc';
+import { EventType } from '../../config/EventType';
+import { TextConfig } from '../../config/TextConfig';
 import { ResLoader } from '../../manager/ResLoader';
+import { ViewsManager } from '../../manager/ViewsManager';
 import { MapLevelData } from '../../models/AdventureModel';
 import { GateListItem, UnitItemStatus, UnitListItemStatus } from '../../models/TextbookModel';
+import { BaseView } from '../../script/BaseView';
 import CCUtil from '../../util/CCUtil';
+import { EventMgr } from '../../util/EventManager';
 import ImgUtil from '../../util/ImgUtil';
 import { MapPointItem } from '../adventure/levelmap/MapPointItem';
+import { GotoUnitLevel } from './BreakThroughView';
 import { MapTouchBetterController } from './MapCom/MapTouchBetterController';
 const { ccclass, property } = _decorator;
 
@@ -53,7 +59,7 @@ const MapCoordinates:MapCoordinate[] = [{x:225.147,y:238.611},
     {x:2065.9,y:261.275}]
 
 @ccclass('ScrollMapView')
-export class ScrollMapView extends Component {
+export class ScrollMapView extends BaseView {
 
     @property(Node)
     MapLaout:Node = null;    
@@ -71,11 +77,13 @@ export class ScrollMapView extends Component {
 
     private _total_grade = 0;
 
+    public _curLevelIndex:number = 0;
+
     start() {
     }
 
-    update(deltaTime: number) {
-        
+    onInitModuleEvent(){
+        this.addModelListener(EventType.Goto_Textbook_Next_Level,this.gotoNextTextbookLevel);
     }
 
     async loadMapItems() {
@@ -91,7 +99,7 @@ export class ScrollMapView extends Component {
                 };
                 let itemNode = instantiate(this.mapItemPrefab);
                 let itemScript:MapPointItem = itemNode.getComponent(MapPointItem);
-                itemScript.index = index;
+                itemScript.index = unit_count;
                 const stringWithoutUnit: string = itemData.unit.replace("Unit ", "").trim();
                 let data:MapLevelData = {big_id:parseInt(stringWithoutUnit), small_id:gate.small_id,micro_id:gate.small_id};
                 itemScript.initData(data);
@@ -170,24 +178,50 @@ export class ScrollMapView extends Component {
     setClickCallback(callback:(itemStatus:UnitItemStatus,gate:GateListItem)=>void){
         this._clickCallback = callback;
     }
-
     onItemClick(point: Node){
         let item:MapPointItem = point.getComponent(MapPointItem);
+        this._curLevelIndex = item.index;
         let data = item.data;
         let itemStatus:UnitItemStatus = this._unitStatus[data.big_id - 1];
         let small_id = data.small_id;
         let gate:GateListItem = itemStatus.gate_list[small_id - 1];
-        if(this._clickCallback){
-            this._clickCallback(itemStatus,gate);
-        }
+        let param:GotoUnitLevel = {
+            itemStatus:itemStatus,
+            gate:gate,
+            isNext:false
+        } 
+        EventMgr.dispatch(EventType.Goto_Textbook_Level,param);
     }
+
+    gotoNextTextbookLevel(){
+        let next_level = this._curLevelIndex + 1;
+        if(next_level >= this._pointItems.length){
+            ViewsManager.showTip(TextConfig.All_level_Tip);
+            return;
+        }
+        let point:Node = this._pointItems[this._curLevelIndex + 1];
+        let item:MapPointItem = point.getComponent(MapPointItem);
+        this._curLevelIndex = item.index;
+        let data = item.data;
+        let itemStatus:UnitItemStatus = this._unitStatus[data.big_id - 1];
+        let small_id = data.small_id;
+        let gate:GateListItem = itemStatus.gate_list[small_id - 1];
+        let param:GotoUnitLevel = {
+            itemStatus:itemStatus,
+            gate:gate,
+            isNext:true
+        } 
+        EventMgr.dispatch(EventType.Goto_Textbook_Level,param);
+    }
+
     removePointEvent() {
         for (let i = 0; i < this._pointItems.length; i++) {
             CCUtil.offTouch(this._pointItems[i], this.onItemClick.bind(this, this._pointItems[i]), this);
         }
     }
 
-    protected onDestroy(): void {
+    onDestroy(): void {
+        super.onDestroy();
         this.removePointEvent();
     }
 }

@@ -40,6 +40,11 @@ export enum LearnGameModel {
     WordMeaning=7, /**词意模式 */
 }
 
+export interface GotoUnitLevel {
+    itemStatus:UnitItemStatus,
+    gate:GateListItem,
+    isNext: boolean
+}
 @ccclass('BreakThroughView')
 export class BreakThroughView extends BaseView {
     @property(Node)
@@ -70,10 +75,6 @@ export class BreakThroughView extends BaseView {
         GlobalConfig.initRessolutionHeight();
         this.initEvent();
         this.initUI();
-
-        this.scheduleOnce(()=>{
-            this.bg.removeFromParent();
-        },0.5)
     }
     initEvent() {
         CCUtil.onTouch(this.scrollMapNode, this.hideRightPanelchangeView, this);
@@ -100,7 +101,21 @@ export class BreakThroughView extends BaseView {
         this.addModelListener(NetNotify.Classification_UnitStatus,this.onUnitStatus);
         this.addModelListener(EventType.Enter_Island_Level,this.onEnterIsland);
         this.addModelListener(EventType.Exit_Island_Level,this.onExitIsland);
+        this.addModelListener(EventType.Goto_Textbook_Level,this.gotoTextbookLevel);
+    }
+    gotoTextbookLevel(data:GotoUnitLevel){
+        this._selectitemStatus = data.itemStatus;
+        this._selectGate = data.gate;
         
+        let reqParam:ReqUnitStatusParam = {
+            type_name:this._bookData.type_name,
+            book_name:this._bookData.book_name,
+            grade:this._bookData.grade,
+            unit:this._selectitemStatus.unit,
+            small_id:this._selectGate.small_id
+        }
+        TBServer.reqUnitStatus(reqParam);
+        this.reqVocabularyWord();
     }
     getUnitListStatus(){
         let params:BookUnitModel = {
@@ -124,7 +139,6 @@ export class BreakThroughView extends BaseView {
 
     onVocabularyWord(data:VocabularyWordData){
         console.log("onVocabularyWord", data);
-        this._curUnitStatus.game_mode = 4;
         let game_model:LearnGameModel = this._curUnitStatus.game_mode as LearnGameModel;
         let bookLevelData:BookLevelConfig = {
             id:this._bookData.id,
@@ -278,19 +292,6 @@ export class BreakThroughView extends BaseView {
     /**初始化地图模块 */
     initScrollMap(){
         this._scrollMap = this.scrollMapNode.getComponent(ScrollMapView);
-        this._scrollMap.setClickCallback((itemStatus:UnitItemStatus,gate:GateListItem) =>{
-            this._selectitemStatus = itemStatus;
-            this._selectGate = gate;
-            
-            let reqParam:ReqUnitStatusParam = {
-                type_name:this._bookData.type_name,
-                book_name:this._bookData.book_name,
-                grade:this._bookData.grade,
-                unit:this._selectitemStatus.unit,
-                small_id:this._selectGate.small_id
-            }
-            TBServer.reqUnitStatus(reqParam);
-        })
     }
 
     hideRightPanelchangeView(){
