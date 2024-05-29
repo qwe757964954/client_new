@@ -1,6 +1,8 @@
 import { _decorator, instantiate, Layers, Node, Prefab } from 'cc';
 import { EventType } from '../../../config/EventType';
 import { PrefabType } from '../../../config/PrefabType';
+import { GameRes } from '../../../GameRes';
+import { inf_SpineAniCreate } from '../../../manager/InterfaceDefines';
 import { ViewsManager } from '../../../manager/ViewsManager';
 import { RoleBaseModel } from '../../../models/RoleBaseModel';
 import { BaseView } from '../../../script/BaseView';
@@ -34,6 +36,15 @@ export class WordReportView extends BaseView {
     @property(Node)
     public role_node:Node = null;
 
+    @property(Node)
+    public result_sp:Node = null;
+
+    @property(Node)
+    public reward_sp:Node = null;
+
+    @property(Node)
+    public reward_line:Node = null;
+
     start() {
         this.initUI();
         this.initEvents();
@@ -43,6 +54,44 @@ export class WordReportView extends BaseView {
         this.initRolePlayer();
         this.reward_scroll.numItems = 7;
         this.condition_scroll.numItems = 3;
+        this.showResultSpAni();
+        this.showRewardSpAni();
+    }
+
+    showResultSpAni(){
+        let self = this;
+        let changeAni = function (aniName:string,isLoop:boolean = false) {
+            let spinePrams:inf_SpineAniCreate = {
+                resConf:GameRes.Spine_Result,
+                aniName:aniName,
+                trackIndex:0,
+                parentNode:self.result_sp,
+                isLoop:isLoop,
+                callEndFunc:()=>{
+                    if(aniName == "sta3"){
+                        changeAni("sta3_idle",true);
+                    }
+                }
+            }
+            self.result_sp.removeAllChildren();
+            EventMgr.dispatch(EventType.Sys_Ani_Play,spinePrams);
+        }
+        changeAni("sta3",false);
+    }
+
+    showRewardSpAni(){
+        let spinePrams:inf_SpineAniCreate = {
+            resConf:GameRes.Spine_Reward,
+            aniName:"animation_1",
+            trackIndex:0,
+            parentNode:this.reward_sp,
+            isLoop:false,
+            callEndFunc:()=>{
+                this.reward_line.active = true;
+            }
+        }
+        this.reward_sp.removeAllChildren();
+        EventMgr.dispatch(EventType.Sys_Ani_Play,spinePrams);
     }
 
     initEvents() {

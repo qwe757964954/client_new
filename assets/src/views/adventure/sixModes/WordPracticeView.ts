@@ -1,15 +1,12 @@
 import { _decorator, Label, Node } from 'cc';
-import { EventType } from '../../../config/EventType';
 import { NetConfig } from '../../../config/NetConfig';
 import { PrefabType } from '../../../config/PrefabType';
-import { AdvLevelConfig, DataMgr } from '../../../manager/DataMgr';
+import { DataMgr } from '../../../manager/DataMgr';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { ViewsManager } from '../../../manager/ViewsManager';
 import { GameMode } from '../../../models/AdventureModel';
 import { UnitWordModel } from '../../../models/TextbookModel';
-import { ServiceMgr } from '../../../net/ServiceManager';
 import CCUtil from '../../../util/CCUtil';
-import EventManager from '../../../util/EventManager';
 import List from '../../../util/list/List';
 import { TransitionView } from '../common/TransitionView';
 import { BaseModeView } from './BaseModeView';
@@ -101,7 +98,7 @@ export class WordPracticeView extends BaseModeView {
         this.wordMeanLabel.string = this._currentWord.cn;
         this.letterList.numItems = this._letterList.length;
         this.selectList.numItems = this._selectLetterList.length;
-
+        this.initWordDetail(word);
         this.playWordSound();
     }
 

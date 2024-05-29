@@ -1,6 +1,7 @@
+import { isValid } from "cc";
 import { EventType } from "../config/EventType";
 import { ViewsManager } from "../manager/ViewsManager";
-import { c2sAdventureResult, c2sAdventureWord, c2sIslandProgress, c2sIslandStatus, c2sWordGameWords, c2sWordGroup, WordGameWordsData } from "../models/AdventureModel";
+import { AdventureResultModel, c2sAdventureResult, c2sAdventureWord, c2sIslandProgress, c2sIslandStatus, c2sWordGameWords, c2sWordGroup, WordGameWordsData } from "../models/AdventureModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
 import { BaseControll } from "../script/BaseControll";
@@ -53,15 +54,32 @@ export default class StudyService extends BaseControll {
         console.log("onWordGameWords", data);
         EventManager.emit(EventType.WordGame_Words, data.data);
     }
-
+    /*
+    export class c2sAdventureResult {
+    command_id: string = InterfacePath.Adventure_Result;
+    big_id: number;
+    small_id: number;
+    micro_id: number;
+    game_mode: number;
+    cost_time: number;
+    status:number;
+    score?: number;
+    word: string;
+}
+    */
     //单词大冒险结果提交
-    submitAdventureResult(bigId: number, smallId: number, microId: number, gameMode: number, costTime: number) {
+    submitAdventureResult(params:AdventureResultModel) {
         let para: c2sAdventureResult = new c2sAdventureResult();
-        para.big_id = bigId;
-        para.small_id = smallId;
-        para.micro_id = microId;
-        para.game_mode = gameMode;
-        para.cost_time = costTime;
+        para.big_id = params.big_id;
+        para.small_id = params.small_id;
+        para.micro_id = params.micro_id;
+        para.game_mode = params.game_mode;
+        para.cost_time = params.cost_time;
+        para.status = params.status;
+        para.word = params.word;
+        if(isValid(params.score)){
+            para.score = params.score;
+        }
         NetMgr.sendMsg(para);
     }
 

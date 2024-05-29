@@ -115,7 +115,10 @@ export class BreakThroughView extends BaseView {
             small_id:this._selectGate.small_id
         }
         TBServer.reqUnitStatus(reqParam);
-        this.reqVocabularyWord();
+        if(data.isNext){
+            this.reqVocabularyWord();
+        }
+        
     }
     getUnitListStatus(){
         let params:BookUnitModel = {
@@ -139,6 +142,7 @@ export class BreakThroughView extends BaseView {
 
     onVocabularyWord(data:VocabularyWordData){
         console.log("onVocabularyWord", data);
+        // this._curUnitStatus.game_mode = 4
         let game_model:LearnGameModel = this._curUnitStatus.game_mode as LearnGameModel;
         let bookLevelData:BookLevelConfig = {
             id:this._bookData.id,

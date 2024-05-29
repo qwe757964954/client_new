@@ -2,12 +2,13 @@ import { _decorator, JsonAsset, Label, Node, sys } from 'cc';
 import { EventType } from '../../../config/EventType';
 import { NetConfig } from '../../../config/NetConfig';
 import { PrefabType } from '../../../config/PrefabType';
-import { BookLevelConfig } from '../../../manager/DataMgr';
+import { AdvLevelConfig, BookLevelConfig } from '../../../manager/DataMgr';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { ResLoader } from '../../../manager/ResLoader';
 import { ViewsManager } from '../../../manager/ViewsManager';
-import { GameMode } from '../../../models/AdventureModel';
+import { AdventureResultModel, GameMode } from '../../../models/AdventureModel';
 import { GameSubmitModel, UnitWordModel } from '../../../models/TextbookModel';
+import { ServiceMgr } from '../../../net/ServiceManager';
 import { TBServer } from '../../../service/TextbookService';
 import { RecordApi } from '../../../util/third/RecordApi';
 import { RecordResponseData } from '../../../util/third/RecordModel';
@@ -100,6 +101,19 @@ export class WordReadingView extends BaseModeView {
     gameSubmit(response:RecordResponseData,isRight?:boolean) {
         let word = this._wordsData[this._wordIndex].word;
         if (this._levelData.hasOwnProperty('islandId')) {
+            let levelData = this._levelData as AdvLevelConfig;
+            let costTime = Date.now() - this._costTime;
+            let params:AdventureResultModel = {
+                big_id:levelData.islandId,
+                small_id:levelData.levelId,
+                micro_id:levelData.mapLevelData.micro_id,
+                game_mode:levelData.mapLevelData.current_mode,
+                cost_time:costTime,
+                status:isRight ? 1 : 0,
+                score:response.result.overall,
+                word:word
+            }
+            ServiceMgr.studyService.submitAdventureResult(params);
             return;
         }
         let levelData: BookLevelConfig = this._levelData as BookLevelConfig;

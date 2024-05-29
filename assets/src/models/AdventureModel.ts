@@ -107,7 +107,22 @@ export class c2sAdventureResult {
     micro_id: number;
     game_mode: number;
     cost_time: number;
+    status:number;
+    score?: number;
+    word: string;
 }
+
+export interface AdventureResultModel {
+    big_id: number;
+    small_id: number;
+    micro_id: number;
+    game_mode: number;
+    cost_time: number;
+    status:number;
+    score?: number;
+    word: string;
+}
+
 //大冒险结果提交返回
 export class s2cAdventureResult extends BaseRepPacket {
     data: { pass_num: number };
