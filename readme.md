@@ -2,16 +2,9 @@
 <font color=FF0000> 修改引擎代码后记得编译才能生效 </font>
 
 ### 编辑器editbox报错
-#### cocos/ui/editbox/edit-box-impl.ts
-EditBoxImpl方法init最后 增加
-```
-screenAdapter.on('window-resize', this._resize, this);
-```
-EditBoxImpl方法clear最前面 增加
-```
-View.instance.off('canvas-resize', this._resize, this);
-screenAdapter.off('window-resize', this._resize, this);
-```
+##### error: [Scene] Cannot read property 'node' of nullTypeError: Cannot read property 'node' of null
+[Fix removing listener when editbox is closed](https://github.com/cocos/cocos-engine/pull/16648/files)
+[Modify editbox to update dom coordinates after update](https://github.com/cocos/cocos-engine/pull/16768/files)
 
 ## 打包脚本
 1. 打包资源和脚本
