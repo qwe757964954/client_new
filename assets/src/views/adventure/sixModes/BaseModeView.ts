@@ -3,7 +3,7 @@ import { EventType } from '../../../config/EventType';
 import { AdvLevelConfig, BookLevelConfig } from '../../../manager/DataMgr';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { ViewsManager } from '../../../manager/ViewsManager';
-import { s2cAdventureResult, WordsDetailData } from '../../../models/AdventureModel';
+import { AdventureResultModel, s2cAdventureResult, WordsDetailData } from '../../../models/AdventureModel';
 import { PetModel } from '../../../models/PetModel';
 import { RoleBaseModel } from '../../../models/RoleBaseModel';
 import { GameSubmitModel, ReqCollectWord, UnitWordModel } from '../../../models/TextbookModel';
@@ -163,9 +163,9 @@ export class BaseModeView extends BaseView {
         console.log("上报结果");
         let isAdventure = this._levelData.hasOwnProperty('islandId'); //是否是大冒险关卡
         if (isAdventure) { //大冒险关卡
-            let levelData = this._levelData as AdvLevelConfig;
-            let costTime = Date.now() - this._costTime;
-            ServiceMgr.studyService.submitAdventureResult(levelData.islandId, levelData.levelId, levelData.mapLevelData.micro_id, levelData.mapLevelData.current_mode, costTime);
+            // let levelData = this._levelData as AdvLevelConfig;
+            // let costTime = Date.now() - this._costTime;
+            // ServiceMgr.studyService.submitAdventureResult(levelData.islandId, levelData.levelId, levelData.mapLevelData.micro_id, levelData.mapLevelData.current_mode, costTime);
         } else {
             //教材关卡
             // let levelData: BookLevelConfig = this._levelData as BookLevelConfig;
@@ -190,10 +190,23 @@ export class BaseModeView extends BaseView {
     protected modeOver() {
 
     }
+
     //单个单词学习情况上报
     onGameSubmit(word: string, isRight: boolean) {
         /**单词上报仅限教材单词 */
         if (this._levelData.hasOwnProperty('islandId')) {
+            let levelData = this._levelData as AdvLevelConfig;
+            let costTime = Date.now() - this._costTime;
+            let params:AdventureResultModel = {
+                big_id:levelData.islandId,
+                small_id:levelData.levelId,
+                micro_id:levelData.mapLevelData.micro_id,
+                game_mode:levelData.mapLevelData.current_mode,
+                cost_time:costTime,
+                status:isRight ? 1 : 0,
+                word:word
+            }
+            ServiceMgr.studyService.submitAdventureResult(params);
             return;
         }
         let levelData: BookLevelConfig = this._levelData as BookLevelConfig;
