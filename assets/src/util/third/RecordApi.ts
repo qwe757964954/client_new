@@ -15,7 +15,7 @@ export class RecordApi {
     }
     // 接受检测内置语音结果
     public static getRecordResult(data: string) {
-        EventMgr.emit(EventType.Get_Record_Result, data);
+        EventMgr.emit(EventType.Get_Record_Result, JSON.parse(data));
     }
 
     /**检测录音权限 */
