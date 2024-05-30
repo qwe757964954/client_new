@@ -1,9 +1,9 @@
-import { _decorator, BlockInputEvents, Button, instantiate, Label, Node, Prefab, Sprite, tween, UITransform, Vec3, view } from 'cc';
+import { _decorator, BlockInputEvents, Button, instantiate, isValid, Label, Node, Prefab, Sprite, tween, UITransform, Vec3, view } from 'cc';
 import { EventType } from '../../../config/EventType';
 import { AdvLevelConfig, BookLevelConfig } from '../../../manager/DataMgr';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { ViewsManager } from '../../../manager/ViewsManager';
-import { AdventureResultModel, s2cAdventureResult, WordsDetailData } from '../../../models/AdventureModel';
+import { AdventureCollectWordModel, AdventureResultModel, s2cAdventureResult, WordsDetailData } from '../../../models/AdventureModel';
 import { PetModel } from '../../../models/PetModel';
 import { RoleBaseModel } from '../../../models/RoleBaseModel';
 import { GameSubmitModel, ReqCollectWord, UnitWordModel } from '../../../models/TextbookModel';
@@ -89,16 +89,28 @@ export class BaseModeView extends BaseView {
     initData(wordsdata: UnitWordModel[], levelData: any) {
         this._levelData = levelData;
         let isAdventure = this._levelData.hasOwnProperty('islandId'); //是否是大冒险关卡
-        /** 从关卡数据中获取单词学习到哪哪个单词*/
+        /** 从关卡数据中获取单词学习到哪个单词*/
         if (!isAdventure) {
             let levelData = this._levelData as BookLevelConfig
             this._wordIndex = levelData.word_num - 1;
+            /**如果当前关卡有错词，自动放到最后 */
+            if(levelData.cur_game_mode === this.gameMode && isValid(levelData.error_word)){
+                for (const key in levelData.error_word) {
+                    if (levelData.error_word.hasOwnProperty(key)) {
+                        const found = wordsdata.find(item => item.word === key);
+                        if (found) {
+                            wordsdata.push(found);
+                        }
+                    }
+                }
+            }
         }
     }
     onInitModuleEvent() {
         this.addModelListener(NetNotify.Classification_ReportResult, this.onUpResult);
         this.addModelListener(NetNotify.Classification_Word, this.onClassificationWord);
         this.addModelListener(NetNotify.Classification_CollectWord, this.onCollectWord);
+        this.addModelListener(EventType.Classification_AdventureCollectWord, this.onAdventureCollectWord);
     }
 
     async initRole() {
@@ -313,6 +325,11 @@ export class BaseModeView extends BaseView {
         this._detailData.collect_flag = this._detailData.collect_flag ? 0 : 1;
         this.setCollect(this._detailData.collect_flag ? true : false);
     }
+
+    protected onAdventureCollectWord(data: any) {
+        console.log("onAdventureCollectWord", data);
+    }
+
     protected initEvent(): void {
         CCUtil.onTouch(this.btn_close.node, this.closeView, this);
         this._getResultEveId = EventManager.on(InterfacePath.Adventure_Result, this.onUpResult.bind(this));
@@ -366,7 +383,14 @@ export class BaseModeView extends BaseView {
             TBServer.reqCollectWord(reqParam);
         } else {
             //大冒险关卡
-
+            let levelData = this._levelData as AdvLevelConfig;
+            let reqParam:AdventureCollectWordModel = {
+                big_id:levelData.islandId,
+                small_id:levelData.levelId,
+                micro_id:levelData.mapLevelData.micro_id,
+                action: this._detailData.collect_flag ? 0 : 1,
+            }
+            ServiceMgr.studyService.reqAdventureCollectWord(reqParam);
         }
 
     }

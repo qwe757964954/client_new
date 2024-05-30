@@ -142,26 +142,21 @@ export class BreakThroughView extends BaseView {
 
     onVocabularyWord(response:VocabularyWordData){
         console.log("onVocabularyWord", response);
-        if(isValid(this._curUnitStatus.error_word)){
-            for (const key in this._curUnitStatus.error_word) {
-                if (this._curUnitStatus.error_word.hasOwnProperty(key)) {
-                    const found = response.data.find(item => item.word === key);
-                    if (found) {
-                        response.data.push(found);
-                    }
-                }
-            }
-        }
+        
         let game_model:LearnGameModel = this._curUnitStatus.game_mode as LearnGameModel;
         let bookLevelData:BookLevelConfig = {
             id:this._bookData.id,
             grade:this._bookData.grade,
             unit:this._selectitemStatus.unit,
             type_name:this._bookData.type_name,
+            cur_game_mode:game_model,
             game_mode:LearnGameModel.Tutoring,
             book_name:this._bookData.book_name,
             small_id:this._selectGate.small_id,
             word_num:this._curUnitStatus.word_num,
+        }
+        if(isValid(this._curUnitStatus.error_word)){
+            bookLevelData.error_word = this._curUnitStatus.error_word;
         }
         console.log("this._curUnitStatus+++++++++++++++++", this._curUnitStatus);
         console.log("game_model+++++++++++++++++", game_model);

@@ -38,6 +38,7 @@ export class MapLevelData {
     small_type?: number;
     game_modes?: string;
     current_mode?: number;
+    flag_info?:any;
 }
 
 export class IslandStatusData extends BaseRepPacket {
@@ -170,3 +171,19 @@ export class c2sWordGroup {
     small_id: number;
     micro_id: number;
 }
+
+export class c2sAdventureCollectWord {
+    command_id: string = InterfacePath.Classification_AdventureCollectWord;
+    big_id: number;
+    small_id: number;
+    micro_id: number;
+    action: number;
+}
+
+export interface AdventureCollectWordModel {
+    big_id: number;
+    small_id: number;
+    micro_id: number;
+    action: number;
+}
+

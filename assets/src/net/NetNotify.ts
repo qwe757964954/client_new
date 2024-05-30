@@ -33,5 +33,6 @@ export const NetNotify = {
     NewWord_List:"NewWord_List", //我的生词列表
     NewWord_Add:"NewWord_Add", //添加到我的生词本
     NewWord_Del:"NewWord_Del", //移除生词本
+    Classification_AdventureCollectWord: "Classification_AdventureCollectWord", //单词大冒险收藏
     /***********************************************选择词书 end*********************************************/
 }

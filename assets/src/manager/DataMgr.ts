@@ -101,6 +101,8 @@ export class BookLevelConfig {
     small_id: number;
     book_name: string;
     word_num: number;
+    cur_game_mode: number;
+    error_word?:any;
 }
 //成就信息配置
 export class ArchConfig {
