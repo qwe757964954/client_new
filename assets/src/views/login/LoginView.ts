@@ -75,11 +75,13 @@ export class LoginView extends BaseView {
     private _codeTime: number = 0;          // 验证码时间
     private _loopID: number = null;             // 验证码循环id
 
-    private _isRequest: boolean = false;      // 是否正在请求
-
     start() {
         this.plQRCode.setBackCall(this.onPlQrCodeBack.bind(this));
         this.plActivationCode.setCallFunc(this.onPlActivationCodeBack.bind(this), this.onActivationCodeActive.bind(this));
+        this.initUI();
+
+        this.checkToken();
+        DataMgr.instance.initData();
     }
     //初始化事件
     onInitModuleEvent() {
@@ -89,7 +91,7 @@ export class LoginView extends BaseView {
 
         this.addModelListener(InterfacePath.Account_Init, this.userInitSuc.bind(this));//老接口
 
-        CCUtil.onTouch(this.btnWxLogin, this.btnWxLoginFunc, this);
+        CCUtil.onTouch(this.btnWxLogin, this.wxLogin, this);
         CCUtil.onTouch(this.btnAccountLogin, this.btnLoginClick, this);
         CCUtil.onTouch(this.btnAgree, this.btnUserAgreeClick, this);
         CCUtil.onTouch(this.btnPrivacy, this.btnPrivacyClick, this);
@@ -100,19 +102,11 @@ export class LoginView extends BaseView {
         CCUtil.onTouch(this.btnCodeLogin, this.btnPhoneCodeLoginClick, this);
     }
 
-    protected onEnable(): void {
-        this.middle.active = false;
-        // token检查
-        this.checkToken();
-        DataMgr.instance.initData();
-    }
-
     checkToken() {
         if (GlobalConfig.OLD_SERVER) {
             // 有token且登录成功直接进入主界面，否则初始化UI
             let loginInfoStr = StorageUtil.getData(LOGIN_INFO_KEY);
             if (!loginInfoStr) {
-                this.initUI();
                 return;
             }
             try {
@@ -121,36 +115,34 @@ export class LoginView extends BaseView {
                     this.userNameEdit.string = loginInfo.AccountName;
                     this.pwdEdit.string = loginInfo.LoginPwd;
                 }
-                this._isRequest = true;
+                this.middle.active = false;
                 HttpManager.reqTokenLogin(loginInfo?.LoginToken, (obj) => {
-                    this._isRequest = false;
                     if (!this.loginSuc(obj)) {
-                        this.initUI();
+                        this.middle.active = true;
                     }
                 }, () => {
-                    this._isRequest = false;
-                    this.initUI();
+                    this.middle.active = true;
                 });
             } catch (error) {
                 console.error(error);
-                this.initUI();
+                this.middle.active = true;
             }
             return;
         }
         if (User.isAutoLogin) {
             let token = StorageUtil.getData(KeyConfig.Last_Login_Token, "");
             if (token && "" != token) {
+                this.middle.active = false;
                 User.isLogin = true;//标记账号已经登录过，用来重连
                 this.tokenLogin(token);
                 return;
             }
         }
-        this.initUI();
     }
 
     initUI() {
-        let account = StorageUtil.getData(KeyConfig.Last_Login_Account);
-        let password = StorageUtil.getData(KeyConfig.Last_Login_Pwd);
+        let account = StorageUtil.getData(KeyConfig.Last_Login_Account, "");
+        let password = StorageUtil.getData(KeyConfig.Last_Login_Pwd, "");
         if (account && password) {
             this.userNameEdit.string = account;
             this.pwdEdit.string = password;
@@ -166,78 +158,10 @@ export class LoginView extends BaseView {
         this.btnWxLogin.active = false;// 微信登录按钮
     }
 
-    // // 手机号下一步
-    // btnPhoneNextFunc(data: Event, customEventData: string) {
-    //     let isChecked = (this.privacyAgreeBox.getComponent(Toggle)).isChecked;
-    //     console.log("btnPhoneNextFunc isChecked = ", isChecked);
-    //     if (!isChecked) {
-    //         return;
-    //     }
-    //     let phone = this.phoneEdit.string;
-    //     console.log("btnPhoneNextFunc phone = ", phone);
-    //     if (phone.length != 11) {
-    //         console.log("手机号输入错误");
-    //         return;
-    //     }
-    //     // // 直接登录
-    //     // HttpManager.reqMobileLogin(phone, "", (obj) => {
-    //     //     console.log("登录成功 obj = ", obj);
-    //     // }, () => {
-    //     //     console.log("登录失败");
-    //     // });
-    //     // 请求验证码
-    //     HttpManager.reqSms(phone, (obj) => {
-    //         console.log("验证码返回成功 obj = ", obj);
-    //         if (!obj || obj.Code != 200) {
-    //             console.log("验证码请求失败");
-    //             return;
-    //         }
-    //         console.log("验证码请求成功");
-    //         // 打开验证码输入框
-    //         if (customEventData != "getCodeButton") {
-    //             this.inputPhoneBox.active = false;
-    //             this.getCodeBox.active = true;
-    //         }
-    //         this.codeButton.active = false;
-    //         this.codeTime.node.active = true;
-    //         // 验证码倒计时循环
-    //         this._codeTime = 60;
-    //         this.codeTime.string = "(60s)";
-    //         if (this._loopID > 0) {
-    //             TimerMgr.stopLoop(this._loopID);
-    //             this._loopID = 0;
-    //         }
-    //         this._loopID = TimerMgr.loop(() => {
-    //             this._codeTime--;
-    //             this.codeTime.string = "(" + this._codeTime + "s)";
-    //             if (this._codeTime < 0) {
-    //                 this.codeButton.active = true;
-    //                 this.codeTime.node.active = false;
-    //                 TimerMgr.stopLoop(this._loopID);
-    //                 this._loopID = 0;
-    //             }
-    //         }, 1000);
-    //     }, () => {
-    //         console.log("验证码请求失败");
-    //     });
-    // }
-
-    // 微信登录
-    btnWxLoginFunc() {
-        console.log("btnWxLoginFunc");
-        // 调用sdk微信登录接口
-        HttpManager.reqWechatLogin("", (obj) => {
-            this.loginSuc(obj);
-        }, () => {
-            console.log("微信登录失败");
-        })
-    }
-
 
 
     // 账号密码登录
     btnLoginClick() {
-        if (this._isRequest) return;
         let isChecked = this.agreeToggle.isChecked;
         let userName = this.userNameEdit.string;
         let pwd = this.pwdEdit.string;
@@ -253,14 +177,11 @@ export class LoginView extends BaseView {
             ViewsMgr.showTip(TextConfig.Password_Null_Tip);
             return;
         }
-        this._isRequest = true;
         if (GlobalConfig.OLD_SERVER) {
             HttpManager.reqAccountLogin(userName, pwd, 0, (obj) => {
                 this.loginSuc(obj);
-                this._isRequest = false;
             }, () => {
                 console.log("账号密码登录失败");
-                this._isRequest = false;
             })
             return;
         }
@@ -345,13 +266,13 @@ export class LoginView extends BaseView {
     }
     /**二维码层返回 */
     onPlQrCodeBack() {
-        this.loginBox.active = true;
+        this.middle.active = true;
         this.plQRCode.node.active = false;
         this.plActivationCode.node.active = false;
     }
     /**激活码层返回 */
     onPlActivationCodeBack() {
-        this.loginBox.active = true;
+        this.middle.active = true;
         this.plQRCode.node.active = false;
         this.plActivationCode.node.active = false;
     }
@@ -365,20 +286,19 @@ export class LoginView extends BaseView {
     }
     /**显示二维码层 */
     showPlQRCode() {
-        this.loginBox.active = false;
+        this.middle.active = false;
         this.plQRCode.node.active = true;
         this.plActivationCode.node.active = false;
     }
     /**显示激活码层 */
     showPlActivationCode() {
-        this.loginBox.active = false;
+        this.middle.active = false;
         this.plQRCode.node.active = false;
         this.plActivationCode.node.active = true;
     }
 
     /**登录结果 */
     onAccountLogin(data: s2cAccountLogin) {
-        this._isRequest = false;
         if (200 != data.code) {
             console.log("登录失败", data.msg);
             ViewsMgr.removeWaiting();
@@ -392,12 +312,10 @@ export class LoginView extends BaseView {
     }
     /**连接断开 */
     onSocketDis() {
-        this._isRequest = false;
         ViewsMgr.removeWaiting();
     }
     /**连接服务器 */
     connectServer() {
-        NetMgr.setServer(NetConfig.server, NetConfig.port);
         NetMgr.connectNet();
     }
     /**账号密码登录 */
