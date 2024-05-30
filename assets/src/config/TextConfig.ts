@@ -27,6 +27,14 @@ export const TextConfig = {
     Net_Error: "网络异常，请检查后再试",
 
     Account_Logout_Tip: "账号已在其他地方登录，如不是本人操作，请修改密码后重新登录",
+    Agree_Maksure_Tip: "请先同意用户协议与隐私协议",
+    Account_Null_Tip: "账号不能为空",
+    Password_Null_Tip: "密码不能为空",
+    Phone_Null_Tip: "手机号不能为空",
+    Code_Null_Tip: "验证码不能为空",
+    Get_Code: "获取验证码",
+    Get_Code_Time: "({0}s)",
+    ActivationCode_Null_Tip: "激活码不能为空",
 
     US: "美",
     EN: "英",
