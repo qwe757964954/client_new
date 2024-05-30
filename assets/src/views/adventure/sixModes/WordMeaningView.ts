@@ -172,7 +172,7 @@ export class WordMeaningView extends BaseModeView {
         let resSymbol = answerNode.getChildByName("resSymbol");
         resSymbol.active = true;
 
-        let word = this._wordsData[this._wordIndex].word
+        let word = this._rightWordData.word;
         this.onGameSubmit(word, isRight);
 
 

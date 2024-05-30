@@ -97,7 +97,11 @@ export class WordReadingView extends BaseModeView {
     }
 
     gameSubmit(response:RecordResponseData,isRight?:boolean) {
-        let word = this._wordsData[this._wordIndex].word;
+        // let word:string = ""
+        // word = this._wordsData[this._wordIndex].word;
+        // if(this._wrongMode){
+
+        // }
         if (this._levelData.hasOwnProperty('islandId')) {
             let levelData = this._levelData as AdvLevelConfig;
             let costTime = Date.now() - this._costTime;
@@ -109,7 +113,7 @@ export class WordReadingView extends BaseModeView {
                 cost_time:costTime,
                 status:isRight ? 1 : 0,
                 score:response.result.overall,
-                word:word
+                word:this._rightWordData.word
             }
             ServiceMgr.studyService.submitAdventureResult(params);
             return;
@@ -123,7 +127,7 @@ export class WordReadingView extends BaseModeView {
             unit: levelData.unit,
             game_mode: this.gameMode,
             cost_time: costTime,
-            word: word,
+            word: this._rightWordData.word,
             score:response.result.overall,
             small_id: levelData.small_id,
             status: isRight ? 1 : 0

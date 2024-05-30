@@ -188,10 +188,12 @@ export class BreakThroughView extends BaseView {
             default:
                 break;
         }
+        this._scrollMap.removePointEvent();
     }
 
     onExitIsland(){
         this._rightChallenge.hideView();
+        this.getUnitListStatus();
     }
 
     onEnterIsland(data:LevelConfig){

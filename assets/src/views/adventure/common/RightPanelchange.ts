@@ -81,8 +81,6 @@ export class rightPanelchange extends Component {
     }
 
     updateView() {
-        
-        
         if (!this._monsterAni) {
             this._monsterAni = instantiate(this.monsterPrefab);
             this.monsterNode.addChild(this._monsterAni);
@@ -98,7 +96,6 @@ export class rightPanelchange extends Component {
             monsterModel.init("spine/monster/adventure/" + levelData.monsterAni);
             this.monsterNameTxt.string = levelData.monsterName;
         }
-
         // LoadManager.loadSprite("adventure/monster/" + this._data.bigId + "-" + this._data.smallId + "/spriteFrame", this.monster.getComponent(Sprite));
     }
 

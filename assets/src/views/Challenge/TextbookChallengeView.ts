@@ -10,7 +10,6 @@ import { User } from '../../models/User';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
-import { PoolMgr } from '../../util/PoolUtil';
 import StorageUtil from '../../util/StorageUtil';
 import { NavTitleView } from '../common/NavTitleView';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
@@ -136,10 +135,15 @@ export class TextbookChallengeView extends BaseView {
             if (err) {
                 error && console.error(err);
             }
-            for (let index = 0; index < data.gate_total; index++) {
-                let itemNode = instantiate(prefab);
-                PoolMgr.putNodePool("mapItemPool",itemNode);
-            }
+            // let nodePool:NodePool = PoolMgr.getNodePool("mapItemPool");
+            // let length = nodePool.size();
+            // console.log("onUnitListStatus.......",nodePool,length);
+            
+            // for (let index = 0; index < data.gate_total - length; index++) {
+            //     let itemNode = instantiate(prefab);
+            //     PoolMgr.putNodePool("mapItemPool",itemNode);
+            // }
+            // console.log("onUnitListStatus.......",nodePool,length);
         });
         this._unitDetailView.updateUnitTotal(this._unitListArr.gate_total);
     }

@@ -1,20 +1,19 @@
 import { _decorator, instantiate, Label, Node, NodePool, Prefab, Sprite, SpriteFrame } from 'cc';
+import { NetConfig } from '../../../config/NetConfig';
+import { PrefabType } from '../../../config/PrefabType';
 import { AdvLevelConfig, BookLevelConfig, DataMgr } from '../../../manager/DataMgr';
+import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
+import { ViewsManager } from '../../../manager/ViewsManager';
 import { GameMode, SentenceData, WordGroupData, WordGroupModel, WordsDetailData } from '../../../models/AdventureModel';
 import { UnitWordModel } from '../../../models/TextbookModel';
+import { InterfacePath } from '../../../net/InterfacePath';
+import { ServiceMgr } from '../../../net/ServiceManager';
 import CCUtil from '../../../util/CCUtil';
+import EventManager from '../../../util/EventManager';
+import { TransitionView } from '../common/TransitionView';
 import { BaseModeView } from './BaseModeView';
 import { SpellWordItem } from './items/SpellWordItem';
-import { ServiceMgr } from '../../../net/ServiceManager';
-import EventManager from '../../../util/EventManager';
-import { EventType } from '../../../config/EventType';
-import { InterfacePath } from '../../../net/InterfacePath';
-import { ViewsManager } from '../../../manager/ViewsManager';
-import { PrefabType } from '../../../config/PrefabType';
-import { TransitionView } from '../common/TransitionView';
 import { WordReadingView } from './WordReadingView';
-import { NetConfig } from '../../../config/NetConfig';
-import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordSpellView')
@@ -160,7 +159,7 @@ export class WordSpellView extends BaseModeView {
                 }
             }
             this.resultSprite.node.active = true;
-            let word = this._wordsData[this._wordIndex].word;
+            let word = this._rightWordData.word;
             this.onGameSubmit(word, isRight);
             if (isRight) { //回答正确
                 this._rightNum++;

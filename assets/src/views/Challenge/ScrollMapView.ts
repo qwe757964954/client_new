@@ -1,4 +1,4 @@
-import { Layout, Node, NodePool, Prefab, Sprite, SpriteFrame, UITransform, Vec2, _decorator, instantiate } from 'cc';
+import { Layout, Node, Prefab, Sprite, SpriteFrame, UITransform, Vec2, _decorator, instantiate } from 'cc';
 import { EventType } from '../../config/EventType';
 import { TextConfig } from '../../config/TextConfig';
 import { ResLoader } from '../../manager/ResLoader';
@@ -9,7 +9,6 @@ import { BaseView } from '../../script/BaseView';
 import CCUtil from '../../util/CCUtil';
 import { EventMgr } from '../../util/EventManager';
 import ImgUtil from '../../util/ImgUtil';
-import { PoolMgr } from '../../util/PoolUtil';
 import { MapPointItem } from '../adventure/levelmap/MapPointItem';
 import { GotoUnitLevel } from './BreakThroughView';
 import { MapTouchBetterController } from './MapCom/MapTouchBetterController';
@@ -88,7 +87,8 @@ export class ScrollMapView extends BaseView {
     }
     async loadMapItems() {
         let unit_count = 0;
-        let nodePool:NodePool = PoolMgr.getNodePool("mapItemPool");
+        this._pointItems = [];
+        // let nodePool:NodePool = PoolMgr.getNodePool("mapItemPool");
         for (let i = 0; i < this._unitStatus.length; i++) {
             const itemData: UnitItemStatus = this._unitStatus[i];
             
@@ -100,13 +100,11 @@ export class ScrollMapView extends BaseView {
                     y: MapCoordinates[index].y
                 };
     
-                let itemNode: Node;
-                if (nodePool.size() > 0) {
-                    itemNode = nodePool.get();
-                } else {
-                    itemNode = instantiate(this.mapItemPrefab);
-                    PoolMgr.putNodePool("mapItemPool",itemNode);
-                }
+                // let itemNode: Node = nodePool.get();
+            
+                // if(!isValid(itemNode)){
+                let itemNode = instantiate(this.mapItemPrefab);
+                // }
                 let itemScript: MapPointItem = itemNode.getComponent(MapPointItem);
                 itemScript.index = unit_count;
                 const stringWithoutUnit: string = itemData.unit.replace("Unit ", "").trim();
@@ -117,8 +115,8 @@ export class ScrollMapView extends BaseView {
                 });
                 let map_count = this.calculateMapsNeeded(unit_count + 1, MapCoordinates.length);
                 let mapNode = this.MapLaout.getChildByName(`bg_map_${map_count - 1}`);
-                mapNode.addChild(itemNode);
                 itemNode.setPosition(point.x, point.y, 0);
+                mapNode.addChild(itemNode);
                 this._pointItems.push(itemNode);
                 unit_count++;
             }
@@ -137,9 +135,9 @@ export class ScrollMapView extends BaseView {
         this.MapLaout.removeAllChildren();
         await this.addMapBg();
         this.loadMapItems();
-        this.scheduleOnce(()=>{
-            this.scrollToNormal();
-        },0.2);
+        // this.scheduleOnce(()=>{
+        //     this.scrollToNormal();
+        // },0.2);
     }
 
     scrollToNormal(){
@@ -223,14 +221,14 @@ export class ScrollMapView extends BaseView {
     }
 
     removePointEvent() {
-        for (let i = 0; i < this._pointItems.length; i++) {
-            CCUtil.offTouch(this._pointItems[i], this.onItemClick.bind(this, this._pointItems[i]), this);
-        }
+        // for (let i = 0; i < this._pointItems.length; i++) {
+        //     let itemNode = instantiate(this.mapItemPrefab);
+        //     PoolMgr.putNodePool("mapItemPool",itemNode);
+        // }
     }
 
     onDestroy(): void {
         super.onDestroy();
-        this.removePointEvent();
     }
 }
 
