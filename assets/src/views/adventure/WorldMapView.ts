@@ -12,8 +12,8 @@ import EventManager from '../../util/EventManager';
 import { StudyModeView } from './sixModes/StudyModeView';
 import { WordMeaningView } from './sixModes/WordMeaningView';
 import { WordPracticeView } from './sixModes/WordPracticeView';
-import { WorldIsland } from './WorldIsland';
 import { WordSpellView } from './sixModes/WordSpellView';
+import { WorldIsland } from './WorldIsland';
 const { ccclass, property } = _decorator;
 /**大冒险 世界地图 何存发 2024年4月8日14:45:44 */
 @ccclass('WorldMapView')

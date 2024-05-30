@@ -205,6 +205,7 @@ export interface UnitStatusData extends BaseRepPacket{
     game_mode:number;
     flag:number;
     word_num:number;
+    error_word?:any;
 }
 
 export interface UnitWordModel{

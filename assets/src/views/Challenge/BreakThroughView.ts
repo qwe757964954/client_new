@@ -1,4 +1,4 @@
-import { _decorator, error, instantiate, Layers, Node, Prefab, UITransform } from 'cc';
+import { _decorator, error, instantiate, isValid, Layers, Node, Prefab, UITransform } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import GlobalConfig from '../../GlobalConfig';
@@ -140,9 +140,18 @@ export class BreakThroughView extends BaseView {
         TBServer.reqVocabularyWord(reqParam);
     }
 
-    onVocabularyWord(data:VocabularyWordData){
-        console.log("onVocabularyWord", data);
-        // this._curUnitStatus.game_mode = 4
+    onVocabularyWord(response:VocabularyWordData){
+        console.log("onVocabularyWord", response);
+        if(isValid(this._curUnitStatus.error_word)){
+            for (const key in this._curUnitStatus.error_word) {
+                if (this._curUnitStatus.error_word.hasOwnProperty(key)) {
+                    const found = response.data.find(item => item.word === key);
+                    if (found) {
+                        response.data.push(found);
+                    }
+                }
+            }
+        }
         let game_model:LearnGameModel = this._curUnitStatus.game_mode as LearnGameModel;
         let bookLevelData:BookLevelConfig = {
             id:this._bookData.id,
@@ -159,27 +168,27 @@ export class BreakThroughView extends BaseView {
         switch (game_model) {
             case LearnGameModel.Tutoring:
                 bookLevelData.game_mode = LearnGameModel.Tutoring;
-                this.gotoTutoring(data,bookLevelData);
+                this.gotoTutoring(response,bookLevelData);
                 break;
             case LearnGameModel.AllSpelledOut:
                 bookLevelData.game_mode = LearnGameModel.AllSpelledOut;
-                this.gotoAllSpelledOut(data,bookLevelData);
+                this.gotoAllSpelledOut(response,bookLevelData);
                 break;
             case LearnGameModel.WordMeaning:
                 bookLevelData.game_mode = LearnGameModel.WordMeaning;
-                this.gotoMeaning(data,bookLevelData);
+                this.gotoMeaning(response,bookLevelData);
                 break;
             case LearnGameModel.Practice:
                 bookLevelData.game_mode = LearnGameModel.Practice;
-                this.gotoPractice(data,bookLevelData);
+                this.gotoPractice(response,bookLevelData);
                 break;
             case LearnGameModel.Reed:
                 bookLevelData.game_mode = LearnGameModel.Reed;
-                this.gotoReed(data,bookLevelData);
+                this.gotoReed(response,bookLevelData);
                 break;
             case LearnGameModel.Spell:
                 bookLevelData.game_mode = LearnGameModel.Spell;
-                this.gotoSpell(data,bookLevelData);
+                this.gotoSpell(response,bookLevelData);
                 break;
             default:
                 break;

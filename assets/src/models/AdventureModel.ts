@@ -57,7 +57,7 @@ export class IslandProgressData {
 }
 
 export class IslandProgressModel extends BaseRepPacket {
-
+    
 }
 
 //单词大冒险获取单词数据
