@@ -147,6 +147,7 @@ export class ViewsManager {
     }
     // 关闭界面
     public closeView(viewConfig: PrefabConfig) {
+        console.log("closeView", viewConfig.path);
         let parent = this.getParentNode(viewConfig.zindex);
         let name = viewConfig.path.replace("/", "_");
         parent?.getChildByName("tmp_" + name)?.destroy();
