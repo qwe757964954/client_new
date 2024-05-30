@@ -1,4 +1,4 @@
-import { _decorator, BlockInputEvents, Button, instantiate, Label, Node, Prefab, Sprite, tween, UITransform, Vec3, view } from 'cc';
+import { _decorator, BlockInputEvents, Button, instantiate, isValid, Label, Node, Prefab, Sprite, tween, UITransform, Vec3, view } from 'cc';
 import { EventType } from '../../../config/EventType';
 import { AdvLevelConfig, BookLevelConfig } from '../../../manager/DataMgr';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
@@ -89,10 +89,21 @@ export class BaseModeView extends BaseView {
     initData(wordsdata: UnitWordModel[], levelData: any) {
         this._levelData = levelData;
         let isAdventure = this._levelData.hasOwnProperty('islandId'); //是否是大冒险关卡
-        /** 从关卡数据中获取单词学习到哪哪个单词*/
+        /** 从关卡数据中获取单词学习到哪个单词*/
         if (!isAdventure) {
             let levelData = this._levelData as BookLevelConfig
             this._wordIndex = levelData.word_num - 1;
+            /**如果当前关卡有错词，自动放到最后 */
+            if(levelData.cur_game_mode === this.gameMode && isValid(levelData.error_word)){
+                for (const key in levelData.error_word) {
+                    if (levelData.error_word.hasOwnProperty(key)) {
+                        const found = wordsdata.find(item => item.word === key);
+                        if (found) {
+                            wordsdata.push(found);
+                        }
+                    }
+                }
+            }
         }
     }
     onInitModuleEvent() {

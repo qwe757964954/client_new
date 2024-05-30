@@ -1,4 +1,4 @@
-import { Layout, Node, Prefab, Sprite, SpriteFrame, UITransform, Vec2, _decorator, instantiate } from 'cc';
+import { Layout, Node, NodePool, Prefab, Sprite, SpriteFrame, UITransform, Vec2, _decorator, instantiate } from 'cc';
 import { EventType } from '../../config/EventType';
 import { TextConfig } from '../../config/TextConfig';
 import { ResLoader } from '../../manager/ResLoader';
@@ -85,7 +85,46 @@ export class ScrollMapView extends BaseView {
     onInitModuleEvent(){
         this.addModelListener(EventType.Goto_Textbook_Next_Level,this.gotoNextTextbookLevel);
     }
-
+    async loadMapItems() {
+        let unit_count = 0;
+        const nodePool = new NodePool();
+    
+        for (let i = 0; i < this._unitStatus.length; i++) {
+            const itemData: UnitItemStatus = this._unitStatus[i];
+            
+            for (let j = 0; j < itemData.gate_list.length; j++) {
+                const gate: GateListItem = itemData.gate_list[j];
+                const index = unit_count % MapCoordinates.length;
+                const point: MapCoordinate = {
+                    x: MapCoordinates[index].x - 1095,
+                    y: MapCoordinates[index].y
+                };
+    
+                let itemNode: Node;
+                if (nodePool.size() > 0) {
+                    itemNode = nodePool.get();
+                } else {
+                    itemNode = instantiate(this.mapItemPrefab);
+                }
+                let itemScript: MapPointItem = itemNode.getComponent(MapPointItem);
+                itemScript.index = unit_count;
+                const stringWithoutUnit: string = itemData.unit.replace("Unit ", "").trim();
+                let data: MapLevelData = { big_id: parseInt(stringWithoutUnit), small_id: gate.small_id, micro_id: gate.small_id, flag_info: gate.flag_info };
+                itemScript.initSmallData(data);
+                CCUtil.onBtnClick(itemNode,(event)=>{
+                    this.onItemClick(event.node);
+                });
+                let map_count = this.calculateMapsNeeded(unit_count + 1, MapCoordinates.length);
+                let mapNode = this.MapLaout.getChildByName(`bg_map_${map_count - 1}`);
+                mapNode.addChild(itemNode);
+                itemNode.setPosition(point.x, point.y, 0);
+                this._pointItems.push(itemNode);
+                unit_count++;
+            }
+        }
+    }
+    
+    /*
     async loadMapItems() {
         let unit_count = 0;
         for (let i = 0; i < this._unitStatus.length; i++) {
@@ -115,7 +154,7 @@ export class ScrollMapView extends BaseView {
             }
         }
     }
-
+    */
     /**添加地图单元点 */
     async initUnit(unitStatus:UnitListItemStatus){
         this._unitStatus = unitStatus.unit_list;
