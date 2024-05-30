@@ -101,8 +101,8 @@ export class ScrollMapView extends BaseView {
                 let itemScript:MapPointItem = itemNode.getComponent(MapPointItem);
                 itemScript.index = unit_count;
                 const stringWithoutUnit: string = itemData.unit.replace("Unit ", "").trim();
-                let data:MapLevelData = {big_id:parseInt(stringWithoutUnit), small_id:gate.small_id,micro_id:gate.small_id};
-                itemScript.initData(data);
+                let data:MapLevelData = {big_id:parseInt(stringWithoutUnit), small_id:gate.small_id,micro_id:gate.small_id,flag_info:gate.flag_info};
+                itemScript.initSmallData(data);
                 CCUtil.onBtnClick(itemNode,(event)=>{
                     this.onItemClick(event.node);
                 });
@@ -122,8 +122,8 @@ export class ScrollMapView extends BaseView {
         this._total_grade = unitStatus.gate_total;
         this._unitStatus.sort((a, b) => {
             // 将 unit 字符串转换为数字并比较
-            const unitA = parseInt(a.unit);
-            const unitB = parseInt(b.unit);
+            const unitA = parseInt(a.unit.replace("Unit ", "").trim());
+            const unitB = parseInt(a.unit.replace("Unit ", "").trim());
             return unitA - unitB;
         });
         this.MapLaout.removeAllChildren();

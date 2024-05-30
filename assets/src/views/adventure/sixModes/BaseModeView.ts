@@ -3,7 +3,7 @@ import { EventType } from '../../../config/EventType';
 import { AdvLevelConfig, BookLevelConfig } from '../../../manager/DataMgr';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { ViewsManager } from '../../../manager/ViewsManager';
-import { AdventureResultModel, s2cAdventureResult, WordsDetailData } from '../../../models/AdventureModel';
+import { AdventureCollectWordModel, AdventureResultModel, s2cAdventureResult, WordsDetailData } from '../../../models/AdventureModel';
 import { PetModel } from '../../../models/PetModel';
 import { RoleBaseModel } from '../../../models/RoleBaseModel';
 import { GameSubmitModel, ReqCollectWord, UnitWordModel } from '../../../models/TextbookModel';
@@ -99,6 +99,7 @@ export class BaseModeView extends BaseView {
         this.addModelListener(NetNotify.Classification_ReportResult, this.onUpResult);
         this.addModelListener(NetNotify.Classification_Word, this.onClassificationWord);
         this.addModelListener(NetNotify.Classification_CollectWord, this.onCollectWord);
+        this.addModelListener(EventType.Classification_AdventureCollectWord, this.onAdventureCollectWord);
     }
 
     async initRole() {
@@ -313,6 +314,11 @@ export class BaseModeView extends BaseView {
         this._detailData.collect_flag = this._detailData.collect_flag ? 0 : 1;
         this.setCollect(this._detailData.collect_flag ? true : false);
     }
+
+    protected onAdventureCollectWord(data: any) {
+        console.log("onAdventureCollectWord", data);
+    }
+
     protected initEvent(): void {
         CCUtil.onTouch(this.btn_close.node, this.closeView, this);
         this._getResultEveId = EventManager.on(InterfacePath.Adventure_Result, this.onUpResult.bind(this));
@@ -366,7 +372,14 @@ export class BaseModeView extends BaseView {
             TBServer.reqCollectWord(reqParam);
         } else {
             //大冒险关卡
-
+            let levelData = this._levelData as AdvLevelConfig;
+            let reqParam:AdventureCollectWordModel = {
+                big_id:levelData.islandId,
+                small_id:levelData.levelId,
+                micro_id:levelData.mapLevelData.micro_id,
+                action: this._detailData.collect_flag ? 0 : 1,
+            }
+            ServiceMgr.studyService.reqAdventureCollectWord(reqParam);
         }
 
     }

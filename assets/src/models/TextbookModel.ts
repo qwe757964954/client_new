@@ -62,6 +62,8 @@ export interface UnitItemStatus{
 
 export interface GateListItem{
     small_id:number,
+    flag:number,
+    flag_info:any,
 }
 
 // 我的词书
