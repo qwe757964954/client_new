@@ -49,11 +49,12 @@ export const InterfacePath = {
     Classification_ChangeTextbook: "3020", //切换教材
     Classification_CheckWord: "3008", //词表单词列表
     Classification_CollectWord: "3007", //教材单词收藏与移除
+    Classification_WordGroup: "3023", //教材单词组合模式选项
     Classification_GameSubmit: "3024", //单词提交
     Classification_TypeNameStatus: "Classification.TypeNameStatus", //大分类信息
     Classification_BookAwardList: "3006", // 教材单词课本奖励列表
     Classification_CurrentBook: "3019", // 当前词书信息
-    Classification_ReportResult: "3023", // 上报消息
+    Classification_ReportResult: "Classification.ReportResult", // 上报消息
     Classification_RecBookAward: "Classification.RecBookAward", //教材单词领取课本单词奖励
     Classification_SoundCommit: "Classification.SoundCommit", //教材单词语音评测上报
     Classification_WordSentence: "Classification.WordSentence", //通过单词获取句子

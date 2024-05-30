@@ -75,7 +75,9 @@ export class Socket {
     public sendMsg(msg?: string) {
         if (this._socket && this._socket.readyState === WebSocket.OPEN) {
             this._socket.send(msg);
+            return true;
         }
+        return false;
     }
 
     private onOpen() {

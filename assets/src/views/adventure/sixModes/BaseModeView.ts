@@ -81,7 +81,7 @@ export class BaseModeView extends BaseView {
     }
 
     initEvents() {
-        CCUtil.onBtnClick(this.btn_collect,()=>{
+        CCUtil.onBtnClick(this.btn_collect, () => {
             this.onClickCollectEvent();
         });
     }
@@ -95,24 +95,22 @@ export class BaseModeView extends BaseView {
             this._wordIndex = levelData.word_num - 1;
             /**如果当前关卡有错词，自动放到最后 */
             if(isValid(levelData.error_word)){
-                if(levelData.cur_game_mode === this.gameMode){
-                    for (const key in levelData.error_word) {
-                        if (levelData.error_word.hasOwnProperty(key)) {
-                            const found = wordsdata.find(item => item.word === key);
-                            if (found) {
-                                wordsdata.push(found);
-                            }
+                for (const key in levelData.error_word) {
+                    if (levelData.error_word.hasOwnProperty(key)) {
+                        const found = wordsdata.find(item => item.word === key);
+                        if (found) {
+                            wordsdata.push(found);
                         }
                     }
-                }else{
-                    console.log("wordsdata_________",wordsdata);
-                    const uniqueWordList: UnitWordModel[] = Object.values(wordsdata.reduce((acc, curr) => {
-                        acc[curr.word] = curr;
-                        return acc;
-                    }, {} as Record<string, UnitWordModel>));
-                    wordsdata = uniqueWordList;
-                    console.log("wordsdata_________",wordsdata);
                 }
+            }else{
+                console.log("wordsdata_________",wordsdata);
+                const uniqueWordList: UnitWordModel[] = Object.values(wordsdata.reduce((acc, curr) => {
+                    acc[curr.word] = curr;
+                    return acc;
+                }, {} as Record<string, UnitWordModel>));
+                wordsdata = uniqueWordList;
+                console.log("wordsdata_________",wordsdata);
             }
         }
     }
@@ -219,14 +217,14 @@ export class BaseModeView extends BaseView {
         if (this._levelData.hasOwnProperty('islandId')) {
             let levelData = this._levelData as AdvLevelConfig;
             let costTime = Date.now() - this._costTime;
-            let params:AdventureResultModel = {
-                big_id:levelData.islandId,
-                small_id:levelData.levelId,
-                micro_id:levelData.mapLevelData.micro_id,
-                game_mode:levelData.mapLevelData.current_mode,
-                cost_time:costTime,
-                status:isRight ? 1 : 0,
-                word:word
+            let params: AdventureResultModel = {
+                big_id: levelData.islandId,
+                small_id: levelData.levelId,
+                micro_id: levelData.mapLevelData.micro_id,
+                game_mode: levelData.mapLevelData.current_mode,
+                cost_time: costTime,
+                status: isRight ? 1 : 0,
+                word: word
             }
             ServiceMgr.studyService.submitAdventureResult(params);
             return;
@@ -312,7 +310,8 @@ export class BaseModeView extends BaseView {
     //获取单词详情
     initWordDetail(word: string) {
         if (this._levelData.hasOwnProperty('islandId')) { //大冒险关卡
-            ServiceMgr.studyService.getAdventureWord(word);
+            let levelData: AdvLevelConfig = this._levelData as AdvLevelConfig;
+            ServiceMgr.studyService.getAdventureWord(word, levelData.mapLevelData.big_id, levelData.mapLevelData.small_id, levelData.mapLevelData.micro_id);
         } else { //教材单词关卡
             let levelData: BookLevelConfig = this._levelData as BookLevelConfig;
             TBServer.reqWordDetail(word, levelData.id);
@@ -394,10 +393,10 @@ export class BaseModeView extends BaseView {
         } else {
             //大冒险关卡
             let levelData = this._levelData as AdvLevelConfig;
-            let reqParam:AdventureCollectWordModel = {
-                big_id:levelData.islandId,
-                small_id:levelData.levelId,
-                micro_id:levelData.mapLevelData.micro_id,
+            let reqParam: AdventureCollectWordModel = {
+                big_id: levelData.islandId,
+                small_id: levelData.levelId,
+                micro_id: levelData.mapLevelData.micro_id,
                 action: this._detailData.collect_flag ? 0 : 1,
             }
             ServiceMgr.studyService.reqAdventureCollectWord(reqParam);

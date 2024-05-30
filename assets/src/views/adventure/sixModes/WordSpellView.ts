@@ -1,5 +1,5 @@
-import { _decorator, instantiate, Label, Node, NodePool, Prefab } from 'cc';
-import { AdvLevelConfig, DataMgr } from '../../../manager/DataMgr';
+import { _decorator, instantiate, Label, Node, NodePool, Prefab, Sprite, SpriteFrame } from 'cc';
+import { AdvLevelConfig, BookLevelConfig, DataMgr } from '../../../manager/DataMgr';
 import { GameMode, SentenceData, WordGroupData, WordGroupModel, WordsDetailData } from '../../../models/AdventureModel';
 import { UnitWordModel } from '../../../models/TextbookModel';
 import CCUtil from '../../../util/CCUtil';
@@ -10,6 +10,11 @@ import EventManager from '../../../util/EventManager';
 import { EventType } from '../../../config/EventType';
 import { InterfacePath } from '../../../net/InterfacePath';
 import { ViewsManager } from '../../../manager/ViewsManager';
+import { PrefabType } from '../../../config/PrefabType';
+import { TransitionView } from '../common/TransitionView';
+import { WordReadingView } from './WordReadingView';
+import { NetConfig } from '../../../config/NetConfig';
+import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordSpellView')
@@ -24,12 +29,21 @@ export class WordSpellView extends BaseModeView {
     playBtn: Node = null;
     @property({ type: Label, tooltip: "中文Label" })
     cnLabel: Label = null;
+    @property({ type: Sprite, tooltip: "结果图片" })
+    resultSprite: Sprite = null;
+    @property({ type: SpriteFrame, tooltip: "正确图片" })
+    rightSprite: SpriteFrame = null;
+    @property({ type: SpriteFrame, tooltip: "错误图片" })
+    wrongSprite: SpriteFrame = null;
+    @property({ type: Node, tooltip: "播放例句按钮" })
+    playSentenceBtn: Node = null;
 
     protected _spilitData: any = null;
     private _items: Node[] = [];
     protected _nodePool: NodePool = new NodePool("spellWordItem");
 
     protected _selectIdxs: number[] = []; //当前选中的索引
+    protected _selectItems: Node[] = []; //选中item
     private _sentenceData: SentenceData = null; //句子数据
     private _wrongWordList: any[] = []; //错误单词列表
     private _wrongMode: boolean = false; //错误重答模式
@@ -37,9 +51,8 @@ export class WordSpellView extends BaseModeView {
     private _selectLock: boolean = false; //选择锁
     private _wordGroup: WordGroupModel[];
 
-    private _rightIdxs: number[] = []; //正确索引顺序
-
     private _getWordGroupEvId: string; //获取单词组合数据事件id
+    private _getTextBookWordGroupEvId: string; //获取教材单词组合数据事件id
     async initData(wordsdata: UnitWordModel[], levelData: any) {
         this.gameMode = GameMode.Spelling;
         this._spilitData = await DataMgr.instance.getWordSplitConfig();
@@ -58,7 +71,8 @@ export class WordSpellView extends BaseModeView {
             let levelData = this._levelData as AdvLevelConfig;
             ServiceMgr.studyService.getWordGroup(levelData.islandId, levelData.levelId, levelData.mapLevelData.micro_id);
         } else { //教材单词获取组合模式选项
-
+            let levelData = this._levelData as BookLevelConfig;
+            ServiceMgr.studyService.getTextbookWordGroup(levelData.type_name, levelData.book_name, levelData.grade, levelData.unit);
         }
     }
 
@@ -85,6 +99,7 @@ export class WordSpellView extends BaseModeView {
 
     showCurrentWord() {
         this._selectLock = false;
+        this.resultSprite.node.active = false;
         this._rightWordData = this._wrongMode ? this._wrongWordList.shift() : this._wordsData[this._wordIndex];
         let word = this._rightWordData.word;
         this.initWordDetail(word);
@@ -119,24 +134,102 @@ export class WordSpellView extends BaseModeView {
         }
     }
 
-    onItemClick(item: Node, idx: number) {
+    onItemClick(e: any) {
         if (this._selectLock) return;
+        let item = e.target;
         let wordItem = item.getComponent(SpellWordItem);
         let minIdx = this.getMinIdx(this._selectIdxs);
         let selectIdx = wordItem.selectIdx;
         wordItem.select(minIdx);
-        if (wordItem.isSelect)
+        if (wordItem.isSelect) {
             this._selectIdxs.push(minIdx);
-        else {
+            this._selectItems.push(item);
+        } else {
             this._selectIdxs.splice(this._selectIdxs.indexOf(selectIdx), 1);
+            this._selectItems.splice(this._selectItems.indexOf(item), 1);
         }
         let groupData = this.getGroupFromWord(this._wordsData[this._wordIndex].word);
         if (groupData.opt_num == this._selectIdxs.length) { //选择完毕
             this._selectLock = true;
+            let isRight = true;
             for (let i = 0; i < this._selectIdxs.length; i++) {
-
+                let idx = i + 1;
+                let item = this.getItemBySelectIdx(idx);
+                if (item.getComponent(SpellWordItem).word != groupData["opt" + idx]) {
+                    isRight = false;
+                }
+            }
+            this.resultSprite.node.active = true;
+            let word = this._wordsData[this._wordIndex].word;
+            this.onGameSubmit(word, isRight);
+            if (isRight) { //回答正确
+                this._rightNum++;
+                if (this._wrongMode) {
+                    if (this._wrongWordList.length == 0) {
+                        this._wrongMode = false;
+                        this._wordIndex++;
+                    }
+                } else {
+                    this._wordIndex++;
+                }
+                this.resultSprite.spriteFrame = this.rightSprite;
+                if (this._sentenceData) {
+                    this.sentenceLabel.string = this._sentenceData.sentence;
+                }
+                this.attackMonster().then(() => {
+                    if (this._wordIndex >= this._wordsData.length) {
+                        if (this._wrongWordList.length > 0) {
+                            this._wrongMode = true;
+                            this.showCurrentWord();
+                        } else {
+                            this.monsterEscape();
+                        }
+                    } else {
+                        this.showCurrentWord();
+                    }
+                });
+            } else { //回答错误
+                this.resultSprite.spriteFrame = this.wrongSprite;
+                if (this._wrongWordList.indexOf(this._rightWordData) == -1 && !this._wrongMode) {
+                    this._errorNum++;
+                    this.errorNumLabel.string = "错误次数：" + this._errorNum;
+                }
+                this._wrongWordList.push(this._rightWordData);
+                if (!this._wrongMode) {
+                    this._wordIndex++;
+                    if (this._wordIndex >= this._wordsData.length) {
+                        this._wrongMode = true;
+                    }
+                }
+                this.scheduleOnce(() => {
+                    this.showCurrentWord();
+                }, 1);
             }
         }
+    }
+
+    protected modeOver(): void {
+        console.log('拼模式完成');
+        ViewsManager.instance.showView(PrefabType.TransitionView, (node: Node) => {
+            let wordData = JSON.parse(JSON.stringify(this._wordsData));
+            let levelData = JSON.parse(JSON.stringify(this._levelData));
+            //跳转到下一场景
+            node.getComponent(TransitionView).setTransitionCallback(() => {
+                ViewsManager.instance.showView(PrefabType.WordReadingView, (node: Node) => {
+                    node.getComponent(WordReadingView).initData(wordData, levelData);
+                    ViewsManager.instance.closeView(PrefabType.WordSpellView);
+                });
+            });
+        });
+    }
+
+    getItemBySelectIdx(idx: number) {
+        for (let i = 0; i < this._selectItems.length; i++) {
+            if (this._selectItems[i].getComponent(SpellWordItem).selectIdx == idx) {
+                return this._selectItems[i];
+            }
+        }
+        return null;
     }
 
     //获取不存在于数组中最小的值
@@ -167,9 +260,8 @@ export class WordSpellView extends BaseModeView {
             let item = this.getSplitItem();
             item.getComponent(SpellWordItem).init(splits[i]);
             item.parent = this.itemNode;
-            CCUtil.onTouch(item, this.onItemClick.bind(this, item, i), this);
+            CCUtil.onTouch(item, this.onItemClick, this);
             this._items.push(item);
-            this._rightIdxs.push(splits.indexOf(groupData["opt" + (i + 1)]));
         }
     }
 
@@ -183,18 +275,28 @@ export class WordSpellView extends BaseModeView {
 
     clearSplitItems() {
         for (let i = 0; i < this._items.length; i++) {
-            for (let i = 0; i < this._items.length; i++) {
-                CCUtil.offTouch(this._items[i], this.onItemClick.bind(this, this._items[i], i), this);
-            }
+            this._items[i].getComponent(SpellWordItem).dispose();
+            CCUtil.offTouch(this._items[i], this.onItemClick, this);
             this._items[i].parent = null;
             this._nodePool.put(this._items[i]);
         }
+
         this._items = [];
+        this._selectIdxs = [];
+        this._selectItems = [];
+    }
+
+    playSentence() {
+        if (!this._sentenceData) return;
+        let url = NetConfig.assertUrl + "/sounds/glossary/sentence_tts/Emily/" + this._sentenceData.id + ".wav";
+        RemoteSoundMgr.playSound(url);
     }
 
     protected initEvent(): void {
         super.initEvent();
         this._getWordGroupEvId = EventManager.on(InterfacePath.Words_Group, this.onGetWordGroup.bind(this));
+        this._getTextBookWordGroupEvId = EventManager.on(InterfacePath.Classification_WordGroup, this.onGetWordGroup.bind(this));
+        CCUtil.onTouch(this.playSentenceBtn, this.playSentence, this);
     }
     protected removeEvent(): void {
         super.removeEvent();
@@ -202,6 +304,8 @@ export class WordSpellView extends BaseModeView {
             CCUtil.offTouch(this._items[i], this.onItemClick.bind(this, this._items[i], i), this);
         }
         EventManager.off(InterfacePath.Words_Group, this._getWordGroupEvId);
+        EventManager.off(InterfacePath.Classification_WordGroup, this._getTextBookWordGroupEvId);
+        CCUtil.offTouch(this.playSentenceBtn, this.playSentence, this);
     }
 
     onDestroy(): void {

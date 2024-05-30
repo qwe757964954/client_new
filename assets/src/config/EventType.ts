@@ -98,4 +98,6 @@ export const EventType = {
     //背包物品相关
     Bag_PropList: "Bag_PropList", //获取背包物品
 
+    //商店相关
+    Shop_GoodsList: "Shop_GoodsList", //获取商店商品列表
 }
