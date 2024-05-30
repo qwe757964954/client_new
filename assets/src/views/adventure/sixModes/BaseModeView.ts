@@ -91,7 +91,7 @@ export class BaseModeView extends BaseView {
         let isAdventure = this._levelData.hasOwnProperty('islandId'); //是否是大冒险关卡
         /** 从关卡数据中获取单词学习到哪个单词*/
         if (!isAdventure) {
-            let levelData = this._levelData as BookLevelConfig
+            let levelData = this._levelData as BookLevelConfig;
             this._wordIndex = levelData.word_num - 1;
             /**如果当前关卡有错词，自动放到最后 */
             if(isValid(levelData.error_word)){
