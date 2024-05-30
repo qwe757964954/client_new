@@ -1,7 +1,7 @@
 import { isValid } from "cc";
 import { EventType } from "../config/EventType";
 import { ViewsManager } from "../manager/ViewsManager";
-import { AdventureResultModel, c2sAdventureResult, c2sAdventureWord, c2sIslandProgress, c2sIslandStatus, c2sWordGameWords, c2sWordGroup, WordGameWordsData } from "../models/AdventureModel";
+import { AdventureResultModel, c2sAdventureResult, c2sAdventureWord, c2sIslandProgress, c2sIslandStatus, c2sTextbookWordGroup, c2sWordGameWords, c2sWordGroup, WordGameWordsData } from "../models/AdventureModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
 import { BaseControll } from "../script/BaseControll";
@@ -68,7 +68,7 @@ export default class StudyService extends BaseControll {
 }
     */
     //单词大冒险结果提交
-    submitAdventureResult(params:AdventureResultModel) {
+    submitAdventureResult(params: AdventureResultModel) {
         let para: c2sAdventureResult = new c2sAdventureResult();
         para.big_id = params.big_id;
         para.small_id = params.small_id;
@@ -77,7 +77,7 @@ export default class StudyService extends BaseControll {
         para.cost_time = params.cost_time;
         para.status = params.status;
         para.word = params.word;
-        if(isValid(params.score)){
+        if (isValid(params.score)) {
             para.score = params.score;
         }
         NetMgr.sendMsg(para);
@@ -89,6 +89,16 @@ export default class StudyService extends BaseControll {
         para.big_id = bigId;
         para.small_id = smallId;
         para.micro_id = microId;
+        NetMgr.sendMsg(para);
+    }
+
+    //获取教材单词组合模式选项
+    getTextbookWordGroup(type_name: string, book_name: string, grade: string, unit: string) {
+        let para: c2sTextbookWordGroup = new c2sTextbookWordGroup();
+        para.type_name = type_name;
+        para.book_name = book_name;
+        para.grade = grade;
+        para.unit = unit;
         NetMgr.sendMsg(para);
     }
 }

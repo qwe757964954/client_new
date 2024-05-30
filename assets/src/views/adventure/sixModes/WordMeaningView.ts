@@ -210,9 +210,6 @@ export class WordMeaningView extends BaseModeView {
                 this.errorNumLabel.string = "错误次数：" + this._errorNum;
             }
             this._wrongWordList.push(this._rightWordData);
-            if (!this._wrongMode && this._wrongWordList.length >= 3) {
-                this._wrongMode = true;
-            }
             if (!this._wrongMode) {
                 this._wordIndex++;
                 if (this._wordIndex >= this._wordsData.length) {

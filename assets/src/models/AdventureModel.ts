@@ -57,7 +57,7 @@ export class IslandProgressData {
 }
 
 export class IslandProgressModel extends BaseRepPacket {
-    
+
 }
 
 //单词大冒险获取单词数据
@@ -107,7 +107,7 @@ export class c2sAdventureResult {
     micro_id: number;
     game_mode: number;
     cost_time: number;
-    status:number;
+    status: number;
     score?: number;
     word: string;
 }
@@ -118,7 +118,7 @@ export interface AdventureResultModel {
     micro_id: number;
     game_mode: number;
     cost_time: number;
-    status:number;
+    status: number;
     score?: number;
     word: string;
 }
@@ -148,4 +148,13 @@ export class c2sWordGroup {
     big_id: number;
     small_id: number;
     micro_id: number;
+}
+
+//教材单词获取组合模式选项
+export class c2sTextbookWordGroup {
+    command_id: string = InterfacePath.Classification_WordGroup;
+    type_name: string;
+    book_name: string;
+    grade: string;
+    unit: string;
 }
