@@ -1,3 +1,4 @@
+import { Game, game } from "cc";
 import GlobalConfig from "../GlobalConfig";
 import { EventType } from "../config/EventType";
 import { NetConfig } from "../config/NetConfig";
@@ -27,6 +28,8 @@ class NetManager {
     private _reconnceTimeMax: number = 3;//最大重连次数
     private _sendFailedMsg: FailedMsgInfo[] = [];//发送失败的消息
     private _specialFailedMsg: FailedMsgInfo = null;//特殊发送失败的消息
+    private _enterBgTime: number = 0;//进入后台时间
+    private _isReconnectFailed: boolean = false;//是否重连失败
 
     private static s_NetManager: NetManager = null;
     public static instance() {
@@ -38,6 +41,8 @@ class NetManager {
     private constructor() {
         this._reconnceTime = 0;
         this.setServer(NetConfig.server, NetConfig.port);
+        game.on(Game.EVENT_HIDE, this.onEnterBackground, this);
+        game.on(Game.EVENT_SHOW, this.onEnterForeground, this);
     }
     //设置服务器信息
     public setServer(serverUrl: string, serverPort: number, webPort: number = 8080) {
@@ -171,13 +176,20 @@ class NetManager {
     // 弹出重连提示
     public showReconnectTips() {
         EventMgr.emit(EventType.Socket_ReconnectFail);
+        this._isReconnectFailed = true;
+        this.closeNet();
         ViewsMgr.closeAlertView();
         ViewsMgr.showAlert(TextConfig.Net_Error, () => {
-            // if (User.isLogin) {
-            this.resetReconnceTime();
-            this.connectNet();
-            // }
+            this.restartReconnect();
         });
+    }
+    // 重新开始重连
+    public restartReconnect() {
+        // if (User.isLogin) {
+        this._isReconnectFailed = false;
+        this.resetReconnceTime();
+        this.connectNet();
+        // }
     }
     //重连
     public reConnect() {
@@ -241,6 +253,20 @@ class NetManager {
         this._specialFailedMsg.data = data;
         this._specialFailedMsg.times = 1;
         return true;
+    }
+    /**退到后台 */
+    public onEnterBackground() {
+        this._enterBgTime = new Date().getTime();
+        console.log("onEnterBackground", this._enterBgTime);
+    }
+    /**进入前台 */
+    public onEnterForeground() {
+        let now = new Date().getTime();
+        console.log("onEnterForeground", now);
+        if (this._isReconnectFailed) {
+            ViewsMgr.closeAlertView();
+            this.restartReconnect();
+        }
     }
 }
 /**NetManager单例 */
