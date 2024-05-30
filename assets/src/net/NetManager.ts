@@ -1,5 +1,6 @@
 import GlobalConfig from "../GlobalConfig";
 import { EventType } from "../config/EventType";
+import { NetConfig } from "../config/NetConfig";
 import { TextConfig } from "../config/TextConfig";
 import { ViewsManager } from "../manager/ViewsManager";
 import { BaseDataPacket } from "../models/NetModel";
@@ -27,6 +28,7 @@ class NetManager {
     }
     private constructor() {
         this._reconnceTime = 0;
+        this.setServer(NetConfig.server, NetConfig.port);
     }
     //设置服务器信息
     public setServer(serverUrl: string, serverPort: number, webPort: number = 8080) {
