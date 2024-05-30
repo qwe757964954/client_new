@@ -99,6 +99,9 @@ export class WordGameWordsData extends BaseRepPacket {
 export class c2sAdventureWord {
     command_id: string = InterfacePath.Adventure_Word;
     word: string;
+    big_id: number;
+    small_id: number;
+    micro_id: number;
 }
 
 export class WordsDetailData extends BaseRepPacket {

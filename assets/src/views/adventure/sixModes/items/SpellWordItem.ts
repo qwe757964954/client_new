@@ -40,7 +40,13 @@ export class SpellWordItem extends Component {
             this.idxNode.active = false;
             this.selectIdx = -1;
         }
+    }
 
+    dispose() {
+        this.select_bg.active = false;
+        this.idxNode.active = false;
+        this.selectIdx = -1;
+        this.isSelect = false;
     }
 }
 

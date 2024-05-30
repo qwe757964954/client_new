@@ -18,9 +18,12 @@ export default class StudyService extends BaseControll {
     }
 
     //获取单个单词详情
-    getAdventureWord(word: string) {
+    getAdventureWord(word: string, big_id: number, small_id: number, micro_id: number) {
         let para: c2sAdventureWord = new c2sAdventureWord();
         para.word = word;
+        para.big_id = big_id;
+        para.small_id = small_id;
+        para.micro_id = micro_id;
         NetMgr.sendMsg(para);
     }
 

@@ -46,7 +46,7 @@ export class WorldMapView extends Component {
     private _getingIslandStatus: boolean = false;//是否正在获取岛屿状态
     private _getingWords: boolean = false;//是否正在获取单词
 
-    private _levelStatus:MicroListItem[] = [];
+    private _levelStatus: MicroListItem[] = [];
 
     start() {
         let winssize = GlobalConfig.WIN_SIZE;
@@ -60,13 +60,13 @@ export class WorldMapView extends Component {
         this.initData()
     }
 
-    onLoadMapHorizontal(item:Node, idx:number): void {
-        let item_script:WorldMapItem = item.getComponent(WorldMapItem);
+    onLoadMapHorizontal(item: Node, idx: number): void {
+        let item_script: WorldMapItem = item.getComponent(WorldMapItem);
         item_script.updateItemProps(idx);
     }
 
     onMapHorizontalSelected(item: any, selectedId: number, lastSelectedId: number, val: number) {
-        console.log("onMapHorizontalSelected",selectedId);
+        console.log("onMapHorizontalSelected", selectedId);
         this.switchLevels(selectedId);
     }
 
@@ -105,13 +105,13 @@ export class WorldMapView extends Component {
 
     //获取岛屿状态
     onGetIslandStatus(data: IslandStatusData) {
-        console.log('onGetIslandStatus',data);
+        console.log('onGetIslandStatus', data);
         this._getingIslandStatus = false;
         if (data.code != 200) {
             console.error('获取岛屿状态失败', data.msg);
             return;
         }
-        
+
         // let mapPoints: MapLevelData[] = [];
         // let levelStatus = data.data;
         // for (let i = 0; i < levelStatus.length; i++) {
@@ -153,7 +153,7 @@ export class WorldMapView extends Component {
         }
         console.log('进入关卡', data);
         this._currentLevelData = data;
-        this._currentLevelData.current_mode = GameMode.Spelling;
+        this._currentLevelData.current_mode = GameMode.Study;
         this._getingWords = true;
         ServiceMgr.studyService.getWordGameWords(data.big_id, data.small_id, data.micro_id, data.current_mode);
     }
