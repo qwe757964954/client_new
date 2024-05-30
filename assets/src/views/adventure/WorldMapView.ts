@@ -85,12 +85,12 @@ export class WorldMapView extends Component {
             return;
         }
         console.log('获取岛屿进度', data);
-        let process = data[4].process; //暂时取朗读模式进度
-        this._currentIslandProgress = new IslandProgressData();
-        this._currentIslandProgress.small_id = process.small_id;
-        this._currentIslandProgress.micro_id = process.micro_id;
-        this._currentIslandProgress.game_mode = 0;
-        ServiceMgr.studyService.getIslandStatus(this._currentIslandID);
+        // let process = data[4].process; //暂时取朗读模式进度
+        // this._currentIslandProgress = new IslandProgressData();
+        // this._currentIslandProgress.small_id = process.small_id;
+        // this._currentIslandProgress.micro_id = process.micro_id;
+        // this._currentIslandProgress.game_mode = 0;
+        // ServiceMgr.studyService.getIslandStatus(this._currentIslandID);
     }
 
     //获取岛屿状态

@@ -37,6 +37,8 @@ export class WordSpellView extends BaseModeView {
     private _selectLock: boolean = false; //选择锁
     private _wordGroup: WordGroupModel[];
 
+    private _rightIdxs: number[] = []; //正确索引顺序
+
     private _getWordGroupEvId: string; //获取单词组合数据事件id
     async initData(wordsdata: UnitWordModel[], levelData: any) {
         this.gameMode = GameMode.Spelling;
@@ -131,6 +133,9 @@ export class WordSpellView extends BaseModeView {
         let groupData = this.getGroupFromWord(this._wordsData[this._wordIndex].word);
         if (groupData.opt_num == this._selectIdxs.length) { //选择完毕
             this._selectLock = true;
+            for (let i = 0; i < this._selectIdxs.length; i++) {
+
+            }
         }
     }
 
@@ -157,12 +162,14 @@ export class WordSpellView extends BaseModeView {
         splits.sort((a, b) => {
             return Math.random() > 0.5 ? 1 : -1;
         }); //乱序
+
         for (let i = 0; i < splits.length; i++) {
             let item = this.getSplitItem();
             item.getComponent(SpellWordItem).init(splits[i]);
             item.parent = this.itemNode;
             CCUtil.onTouch(item, this.onItemClick.bind(this, item, i), this);
             this._items.push(item);
+            this._rightIdxs.push(splits.indexOf(groupData["opt" + (i + 1)]));
         }
     }
 
