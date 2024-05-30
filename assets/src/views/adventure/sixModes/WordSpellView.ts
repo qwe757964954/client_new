@@ -43,7 +43,7 @@ export class WordSpellView extends BaseModeView {
     protected _nodePool: NodePool = new NodePool("spellWordItem");
 
     protected _selectIdxs: number[] = []; //当前选中的索引
-    protected _selectItems: SpellWordItem[] = []; //选中item
+    protected _selectItems: Node[] = []; //选中item
     private _sentenceData: SentenceData = null; //句子数据
     private _wrongWordList: any[] = []; //错误单词列表
     private _wrongMode: boolean = false; //错误重答模式
@@ -134,18 +134,19 @@ export class WordSpellView extends BaseModeView {
         }
     }
 
-    onItemClick(item: Node, idx: number) {
+    onItemClick(e: any) {
         if (this._selectLock) return;
+        let item = e.target;
         let wordItem = item.getComponent(SpellWordItem);
         let minIdx = this.getMinIdx(this._selectIdxs);
         let selectIdx = wordItem.selectIdx;
         wordItem.select(minIdx);
         if (wordItem.isSelect) {
             this._selectIdxs.push(minIdx);
-            this._selectItems.push(wordItem);
+            this._selectItems.push(item);
         } else {
             this._selectIdxs.splice(this._selectIdxs.indexOf(selectIdx), 1);
-            this._selectItems.splice(this._selectItems.indexOf(wordItem), 1);
+            this._selectItems.splice(this._selectItems.indexOf(item), 1);
         }
         let groupData = this.getGroupFromWord(this._wordsData[this._wordIndex].word);
         if (groupData.opt_num == this._selectIdxs.length) { //选择完毕
@@ -154,12 +155,23 @@ export class WordSpellView extends BaseModeView {
             for (let i = 0; i < this._selectIdxs.length; i++) {
                 let idx = i + 1;
                 let item = this.getItemBySelectIdx(idx);
-                if (item.word != groupData["opt" + idx]) {
+                if (item.getComponent(SpellWordItem).word != groupData["opt" + idx]) {
                     isRight = false;
                 }
             }
             this.resultSprite.node.active = true;
+            let word = this._wordsData[this._wordIndex].word;
+            this.onGameSubmit(word, isRight);
             if (isRight) { //回答正确
+                this._rightNum++;
+                if (this._wrongMode) {
+                    if (this._wrongWordList.length == 0) {
+                        this._wrongMode = false;
+                        this._wordIndex++;
+                    }
+                } else {
+                    this._wordIndex++;
+                }
                 this.resultSprite.spriteFrame = this.rightSprite;
                 if (this._sentenceData) {
                     this.sentenceLabel.string = this._sentenceData.sentence;
@@ -213,7 +225,7 @@ export class WordSpellView extends BaseModeView {
 
     getItemBySelectIdx(idx: number) {
         for (let i = 0; i < this._selectItems.length; i++) {
-            if (this._selectItems[i].selectIdx == idx) {
+            if (this._selectItems[i].getComponent(SpellWordItem).selectIdx == idx) {
                 return this._selectItems[i];
             }
         }
@@ -248,7 +260,7 @@ export class WordSpellView extends BaseModeView {
             let item = this.getSplitItem();
             item.getComponent(SpellWordItem).init(splits[i]);
             item.parent = this.itemNode;
-            CCUtil.onTouch(item, this.onItemClick.bind(this, item, i), this);
+            CCUtil.onTouch(item, this.onItemClick, this);
             this._items.push(item);
         }
     }
@@ -263,13 +275,15 @@ export class WordSpellView extends BaseModeView {
 
     clearSplitItems() {
         for (let i = 0; i < this._items.length; i++) {
-            for (let i = 0; i < this._items.length; i++) {
-                CCUtil.offTouch(this._items[i], this.onItemClick.bind(this, this._items[i], i), this);
-            }
+            this._items[i].getComponent(SpellWordItem).dispose();
+            CCUtil.offTouch(this._items[i], this.onItemClick, this);
             this._items[i].parent = null;
             this._nodePool.put(this._items[i]);
         }
+
         this._items = [];
+        this._selectIdxs = [];
+        this._selectItems = [];
     }
 
     playSentence() {
