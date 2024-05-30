@@ -2,6 +2,7 @@ import AccountService from "../service/AccountService";
 import { BuildingService } from "../service/BuildingService";
 import { FriendService } from "../service/FriendService";
 import { PropService } from "../service/PropService";
+import { ShopService } from "../service/ShopService";
 import StudyService from "../service/StudyService";
 
 class ServiceManager {
@@ -11,6 +12,7 @@ class ServiceManager {
     public buildingService: BuildingService = null;
     public friendService: FriendService = null;  //好友社交服务
     public propService: PropService = null;  //背包物品服务
+    public shopService: ShopService = null;  //商城相关服务
 
     public static get i(): ServiceManager {
         if (!this._instance) {
@@ -27,6 +29,7 @@ class ServiceManager {
         this.buildingService = new BuildingService();
         this.friendService = new FriendService();
         this.propService = new PropService();
+        this.shopService = new ShopService();
     }
 }
 /**ServiceManager单例 */

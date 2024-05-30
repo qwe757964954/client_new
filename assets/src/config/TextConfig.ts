@@ -75,4 +75,10 @@ export const TextConfig = {
     Friend_DelFriendSucc: "删除好友成功",
 
     All_level_Tip: "恭喜完成所有关卡",
+	
+	//商店相关
+    Shop_Figure: "形象商店",
+    Shop_Fragment: "碎片区",
+    Shop_Building: "建筑商店",
+    Shop_Decoration: "装饰类",
 }
