@@ -57,8 +57,29 @@ export class IslandProgressData {
 }
 
 export class IslandProgressModel extends BaseRepPacket {
-    
+    micro_list: MicroListItem[];
+    micro_total_num: number;
+    micro_pass_num: number;
+    // code: number;
+    // msg: string;
 }
+
+export interface MicroListItem {
+    big_id: number;
+    small_id: number;
+    micro_id: number;
+    flag: number;
+    can_play: number;
+}
+
+export interface MicroData {
+    micro_list: MicroListItem[];
+    micro_total_num: number;
+    micro_pass_num: number;
+    code: number;
+    msg: string;
+}
+
 
 //单词大冒险获取单词数据
 export class c2sWordGameWords {
