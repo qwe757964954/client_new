@@ -38,7 +38,7 @@ export class MapLevelData {
     small_type?: number;
     game_modes?: string;
     current_mode?: number;
-    flag_info?:any;
+    flag_info?: any;
 }
 
 export class IslandStatusData extends BaseRepPacket {
@@ -129,7 +129,7 @@ export class c2sAdventureResult {
     micro_id: number;
     game_mode: number;
     cost_time: number;
-    status:number;
+    status: number;
     score?: number;
     word: string;
 }
@@ -140,7 +140,7 @@ export interface AdventureResultModel {
     micro_id: number;
     game_mode: number;
     cost_time: number;
-    status:number;
+    status: number;
     score?: number;
     word: string;
 }
@@ -172,6 +172,14 @@ export class c2sWordGroup {
     micro_id: number;
 }
 
+//教材单词获取组合模式选项
+export class c2sTextbookWordGroup {
+    command_id: string = InterfacePath.Classification_WordGroup;
+    type_name: string;
+    book_name: string;
+    grade: string;
+    unit: string;
+}
 export class c2sAdventureCollectWord {
     command_id: string = InterfacePath.Classification_AdventureCollectWord;
     big_id: number;
