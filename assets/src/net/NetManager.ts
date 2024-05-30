@@ -6,8 +6,15 @@ import { ViewsManager } from "../manager/ViewsManager";
 import { BaseDataPacket } from "../models/NetModel";
 import { LoginType, User } from "../models/User";
 import { EventMgr } from "../util/EventManager";
+import { InterfacePath } from "./InterfacePath";
 import { ServiceMgr } from "./ServiceManager";
 import { Socket } from "./Socket";
+/**失败消息信息 */
+class FailedMsgInfo {
+    public data: string;//数据
+    public times: number;//失败次数
+    public command_id: string;//命令id
+}
 //消息服务管理类
 class NetManager {
     private _serverUrl: string;//服务器地址
@@ -18,6 +25,8 @@ class NetManager {
     private _socket: Socket = null;
     private _reconnceTime: number;//重连次数
     private _reconnceTimeMax: number = 3;//最大重连次数
+    private _sendFailedMsg: FailedMsgInfo[] = [];//发送失败的消息
+    private _specialFailedMsg: FailedMsgInfo = null;//特殊发送失败的消息
 
     private static s_NetManager: NetManager = null;
     public static instance() {
@@ -78,7 +87,9 @@ class NetManager {
             obj.data = pbobj;
             let buffer = JSON.stringify(obj);
             // console.log("sendMsg msg2:", buffer);
-            this._socket.sendMsg(buffer);
+            if (!this._socket.sendMsg(buffer)) {
+                this.cacheFailedMsg(buffer, command_id);
+            }
         }
     }
     //关闭服务器
@@ -97,18 +108,20 @@ class NetManager {
             ServiceMgr.accountService.accountInit();
             return;
         }
-
-        if (User.memberToken && "" != User.memberToken) {
-            ServiceMgr.accountService.tokenLogin();
-        } else if (LoginType.account == User.loginType) {
-            ServiceMgr.accountService.accountLogin();
-        } else if (LoginType.phoneCode == User.loginType) {
-            ServiceMgr.accountService.phoneCodeLogin();
-        } else if (LoginType.phone == User.loginType) {
-            ServiceMgr.accountService.phoneQuickLogin();
-        } else if (LoginType.wechat == User.loginType) {
-            ServiceMgr.accountService.wxLogin();
+        if (!this.sendSpecialFailedMsg()) {
+            if (User.memberToken && "" != User.memberToken) {
+                ServiceMgr.accountService.tokenLogin();
+            } else if (LoginType.account == User.loginType) {
+                ServiceMgr.accountService.accountLogin();
+            } else if (LoginType.phoneCode == User.loginType) {
+                ServiceMgr.accountService.phoneCodeLogin();
+            } else if (LoginType.phone == User.loginType) {
+                ServiceMgr.accountService.phoneQuickLogin();
+            } else if (LoginType.wechat == User.loginType) {
+                ServiceMgr.accountService.wxLogin();
+            }
         }
+        this.sendFailedMsg();
     }
     //socket接收消息
     public onRecvMsg(data: string) {
@@ -159,10 +172,10 @@ class NetManager {
     public showReconnectTips() {
         EventMgr.emit(EventType.Socket_ReconnectFail);
         ViewsManager.showAlert(TextConfig.Net_Error, () => {
-            if (User.isLogin) {
-                this.resetReconnceTime();
-                this.connectNet();
-            }
+            // if (User.isLogin) {
+            this.resetReconnceTime();
+            this.connectNet();
+            // }
         });
     }
     //重连
@@ -177,6 +190,56 @@ class NetManager {
     /**重置重连次数 */
     public resetReconnceTime() {
         this._reconnceTime = 0;
+    }
+    /**发送特殊失败消息 */
+    public sendSpecialFailedMsg() {
+        if (!this._specialFailedMsg) return false;
+        if (!this._socket.sendMsg(this._specialFailedMsg.data)) {
+            this._specialFailedMsg.times++;
+        } else {
+            this._specialFailedMsg = null;
+        }
+        return true;
+    }
+    /**失败消息再次发送 */
+    public sendFailedMsg() {
+        let tmp = this._sendFailedMsg;
+        this._sendFailedMsg = [];
+        tmp.forEach(info => {
+            if (!this._socket.sendMsg(info.data)) {
+                info.times++;
+                if (info.times >= 3) return;
+                this._sendFailedMsg.push(info);
+            }
+        });
+    }
+    /**失败消息缓存 */
+    public cacheFailedMsg(data: string, command_id: string) {
+        if (this.cacheSpecialFailedMsg(data, command_id)) {
+            return;
+        }
+        if (this._sendFailedMsg.length > 50) {
+            console.log("cacheFailedMsg too many");
+            this._sendFailedMsg = [];
+        }
+        let info = new FailedMsgInfo();
+        info.data = data;
+        info.times = 1;
+        info.command_id = command_id;
+        this._sendFailedMsg.push(info);
+    }
+    /**特殊失败消息（登录） */
+    public cacheSpecialFailedMsg(data: string, command_id: string) {
+        if (InterfacePath.c2sAccountLogin != command_id && InterfacePath.c2sTokenLogin != command_id) {
+            return false;
+        }
+        if (!this._specialFailedMsg) {
+            this._specialFailedMsg = new FailedMsgInfo();
+        }
+        this._specialFailedMsg.command_id = command_id;
+        this._specialFailedMsg.data = data;
+        this._specialFailedMsg.times = 1;
+        return true;
     }
 }
 /**NetManager单例 */
