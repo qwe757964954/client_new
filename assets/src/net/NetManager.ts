@@ -2,7 +2,7 @@ import GlobalConfig from "../GlobalConfig";
 import { EventType } from "../config/EventType";
 import { NetConfig } from "../config/NetConfig";
 import { TextConfig } from "../config/TextConfig";
-import { ViewsManager } from "../manager/ViewsManager";
+import { ViewsMgr } from "../manager/ViewsManager";
 import { BaseDataPacket } from "../models/NetModel";
 import { LoginType, User } from "../models/User";
 import { EventMgr } from "../util/EventManager";
@@ -171,7 +171,8 @@ class NetManager {
     // 弹出重连提示
     public showReconnectTips() {
         EventMgr.emit(EventType.Socket_ReconnectFail);
-        ViewsManager.showAlert(TextConfig.Net_Error, () => {
+        ViewsMgr.closeAlertView();
+        ViewsMgr.showAlert(TextConfig.Net_Error, () => {
             // if (User.isLogin) {
             this.resetReconnceTime();
             this.connectNet();
