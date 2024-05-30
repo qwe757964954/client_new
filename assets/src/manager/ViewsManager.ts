@@ -213,6 +213,18 @@ export class ViewsManager {
     public removeWaiting() {
         this.closeView(PrefabType.WaitingView);
     }
+    /**关闭提示弹框 */
+    public closeAlertView() {
+        this.closeView(PrefabType.PopView);
+    }
+    /**关闭提示 */
+    public closeTipView() {
+        this.closeView(PrefabType.TipView);
+    }
+    /**关闭确定弹窗 */
+    public closeConfirmView() {
+        this.closeView(PrefabType.ConfirmView);
+    }
 
     /**
      * 导航栏公共模块
