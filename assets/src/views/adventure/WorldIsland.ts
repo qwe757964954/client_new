@@ -1,12 +1,10 @@
-import { _decorator, Button, Component, instantiate, Node, Prefab, ScrollView, tween, UITransform, v3 } from 'cc';
-import CCUtil from '../../util/CCUtil';
+import { _decorator, Button, Component, Node, UITransform } from 'cc';
 import { EventType } from '../../config/EventType';
+import { MapLevelData, MicroListItem } from '../../models/AdventureModel';
+import CCUtil from '../../util/CCUtil';
 import EventManager from '../../util/EventManager';
-import { MapPointItem } from './levelmap/MapPointItem';
-import { rightPanelchange } from './common/RightPanelchange';
-import GlobalConfig from '../../GlobalConfig';
-import { IslandProgressData, MapLevelData } from '../../models/AdventureModel';
 import List from '../../util/list/List';
+import { rightPanelchange } from './common/RightPanelchange';
 import { IslandMap } from './levelmap/IslandMap';
 const { ccclass, property } = _decorator;
 
@@ -40,7 +38,7 @@ export class WorldIsland extends Component {
         this.initEvent();
     }
 
-    setPointsData(bigId: number, pointsData: MapLevelData[], porogressData: IslandProgressData) {
+    setPointsData(bigId: number, pointsData: MapLevelData[], porogressData: MicroListItem) {
         this._bigId = bigId;
         //分割数组
         this._mapLevelsData = [];

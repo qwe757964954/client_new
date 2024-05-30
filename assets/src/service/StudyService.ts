@@ -1,7 +1,7 @@
 import { isValid } from "cc";
 import { EventType } from "../config/EventType";
 import { ViewsManager } from "../manager/ViewsManager";
-import { AdventureResultModel, c2sAdventureResult, c2sAdventureWord, c2sIslandProgress, c2sIslandStatus, c2sTextbookWordGroup, c2sWordGameWords, c2sWordGroup, WordGameWordsData } from "../models/AdventureModel";
+import { AdventureCollectWordModel, AdventureResultModel, c2sAdventureCollectWord, c2sAdventureResult, c2sAdventureWord, c2sIslandProgress, c2sIslandStatus, c2sTextbookWordGroup, c2sWordGameWords, c2sWordGroup, WordGameWordsData } from "../models/AdventureModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
 import { BaseControll } from "../script/BaseControll";
@@ -14,6 +14,7 @@ export default class StudyService extends BaseControll {
 
     onInitModuleEvent() {
         this.addModelListener(InterfacePath.WordGame_Words, this.onWordGameWords);
+        this.addModelListener(InterfacePath.Classification_AdventureCollectWord, this.onAdventureCollectWord);
     }
 
     //获取单个单词详情
@@ -100,5 +101,22 @@ export default class StudyService extends BaseControll {
         para.grade = grade;
         para.unit = unit;
         NetMgr.sendMsg(para);
+    }
+    //大冒险收藏单词
+    reqAdventureCollectWord(params: AdventureCollectWordModel) {
+        let para: c2sAdventureCollectWord = new c2sAdventureCollectWord();
+        para.big_id = params.big_id;
+        para.small_id = params.small_id;
+        para.micro_id = params.micro_id;
+        para.action = params.action;
+        NetMgr.sendMsg(para);
+    }
+    onAdventureCollectWord(data: any) {
+        if (data.code != 200) {
+            ViewsManager.showTip(data.msg);
+            return;
+        }
+        console.log("onAdventureCollectWord", data);
+        EventManager.emit(EventType.Classification_AdventureCollectWord, data.data);
     }
 }

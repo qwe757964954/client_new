@@ -38,6 +38,7 @@ export class MapLevelData {
     small_type?: number;
     game_modes?: string;
     current_mode?: number;
+    flag_info?: any;
 }
 
 export class IslandStatusData extends BaseRepPacket {
@@ -57,8 +58,29 @@ export class IslandProgressData {
 }
 
 export class IslandProgressModel extends BaseRepPacket {
-
+    micro_list: MicroListItem[];
+    micro_total_num: number;
+    micro_pass_num: number;
+    // code: number;
+    // msg: string;
 }
+
+export interface MicroListItem {
+    big_id: number;
+    small_id: number;
+    micro_id: number;
+    flag: number;
+    can_play: number;
+}
+
+export interface MicroData {
+    micro_list: MicroListItem[];
+    micro_total_num: number;
+    micro_pass_num: number;
+    code: number;
+    msg: string;
+}
+
 
 //单词大冒险获取单词数据
 export class c2sWordGameWords {
@@ -158,3 +180,18 @@ export class c2sTextbookWordGroup {
     grade: string;
     unit: string;
 }
+export class c2sAdventureCollectWord {
+    command_id: string = InterfacePath.Classification_AdventureCollectWord;
+    big_id: number;
+    small_id: number;
+    micro_id: number;
+    action: number;
+}
+
+export interface AdventureCollectWordModel {
+    big_id: number;
+    small_id: number;
+    micro_id: number;
+    action: number;
+}
+
