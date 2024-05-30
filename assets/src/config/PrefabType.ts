@@ -38,7 +38,7 @@ export const PrefabType = {
     WordReadingView: { path: "studyModes/WordReadingView", zindex: Hierarchy.POPUPLAYER, tips: "读模式" },
     WordReportView: { path: "studyModes/WordReportView", zindex: Hierarchy.POPUPLAYER, tips: "结算界面" },
     TransitionView: { path: "common/TransitionView", zindex: Hierarchy.POPUPLAYER, tips: "过渡界面" },
-
+    MapPointItem: { path: "adventure/levelMap/MapPointItem", zindex: Hierarchy.POPUPLAYER, tips: "地图节点" },
     //**学习模式相关 end*/
     /*********************************************公共相关start***********************************************************/
     TopAmoutView: { path: "common/TopAmoutView", zindex: Hierarchy.POPUPLAYER, tips: "数值公共模块" },
@@ -117,6 +117,8 @@ export const PrefabType = {
     EditAnimView: { path: "map/EditAnimView", zindex: Hierarchy.SCENELAYER, tips: "建筑编辑动画" },
     CountdownFrame: { path: "map/CountdownFrame", zindex: Hierarchy.SCENELAYER, tips: "倒计时框加速" },
     BuildingSuccessView: { path: "map/BuildingSuccessView", zindex: Hierarchy.POPUPLAYER, tips: "建筑成功界面" },
+    
+    
     /*********************************************地图相关end*************************************************************/
     /*********************************************宠物相关start*************************************************************/
     PetInteractionView: { path: "map/PetInteractionView", zindex: Hierarchy.POPUPLAYER, tips: "宠物交互界面" },

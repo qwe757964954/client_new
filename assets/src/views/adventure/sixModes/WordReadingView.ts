@@ -42,7 +42,6 @@ export class WordReadingView extends BaseModeView {
         this.initEvent();
         this.initMonster(); //初始化怪物
         RecordApi.checkRecordPermission();
-        this.modeOver()
     }
     onInitModuleEvent(){
         super.onInitModuleEvent();

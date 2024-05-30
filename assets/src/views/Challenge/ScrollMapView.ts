@@ -9,6 +9,7 @@ import { BaseView } from '../../script/BaseView';
 import CCUtil from '../../util/CCUtil';
 import { EventMgr } from '../../util/EventManager';
 import ImgUtil from '../../util/ImgUtil';
+import { PoolMgr } from '../../util/PoolUtil';
 import { MapPointItem } from '../adventure/levelmap/MapPointItem';
 import { GotoUnitLevel } from './BreakThroughView';
 import { MapTouchBetterController } from './MapCom/MapTouchBetterController';
@@ -87,8 +88,7 @@ export class ScrollMapView extends BaseView {
     }
     async loadMapItems() {
         let unit_count = 0;
-        const nodePool = new NodePool();
-    
+        let nodePool:NodePool = PoolMgr.getNodePool("mapItemPool");
         for (let i = 0; i < this._unitStatus.length; i++) {
             const itemData: UnitItemStatus = this._unitStatus[i];
             
@@ -105,6 +105,7 @@ export class ScrollMapView extends BaseView {
                     itemNode = nodePool.get();
                 } else {
                     itemNode = instantiate(this.mapItemPrefab);
+                    PoolMgr.putNodePool("mapItemPool",itemNode);
                 }
                 let itemScript: MapPointItem = itemNode.getComponent(MapPointItem);
                 itemScript.index = unit_count;
@@ -123,38 +124,6 @@ export class ScrollMapView extends BaseView {
             }
         }
     }
-    
-    /*
-    async loadMapItems() {
-        let unit_count = 0;
-        for (let i = 0; i < this._unitStatus.length; i++) {
-            const itemData:UnitItemStatus = this._unitStatus[i];
-            for (let j = 0; j < itemData.gate_list.length; j++) {
-                const gate:GateListItem = itemData.gate_list[j];
-                const index = unit_count % MapCoordinates.length;
-                const point: MapCoordinate = {
-                    x: MapCoordinates[index].x - 1095,
-                    y: MapCoordinates[index].y
-                };
-                let itemNode = instantiate(this.mapItemPrefab);
-                let itemScript:MapPointItem = itemNode.getComponent(MapPointItem);
-                itemScript.index = unit_count;
-                const stringWithoutUnit: string = itemData.unit.replace("Unit ", "").trim();
-                let data:MapLevelData = {big_id:parseInt(stringWithoutUnit), small_id:gate.small_id,micro_id:gate.small_id,flag_info:gate.flag_info};
-                itemScript.initSmallData(data);
-                CCUtil.onBtnClick(itemNode,(event)=>{
-                    this.onItemClick(event.node);
-                });
-                let map_count = this.calculateMapsNeeded(unit_count+1, MapCoordinates.length);
-                let mapNode = this.MapLaout.getChildByName(`bg_map_${map_count-1}`);
-                mapNode.addChild(itemNode);
-                itemNode.setPosition(point.x,point.y,0);
-                this._pointItems.push(itemNode);
-                unit_count++;
-            }
-        }
-    }
-    */
     /**添加地图单元点 */
     async initUnit(unitStatus:UnitListItemStatus){
         this._unitStatus = unitStatus.unit_list;

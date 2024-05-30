@@ -10,6 +10,7 @@ import { User } from '../../models/User';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
+import { PoolMgr } from '../../util/PoolUtil';
 import StorageUtil from '../../util/StorageUtil';
 import { NavTitleView } from '../common/NavTitleView';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
@@ -131,6 +132,15 @@ export class TextbookChallengeView extends BaseView {
 
     onUnitListStatus(data:UnitListItemStatus){
         this._unitListArr = data;
+        ResLoader.instance.load(`prefab/${PrefabType.MapPointItem.path}`, Prefab, (err: Error | null, prefab: Prefab) => {
+            if (err) {
+                error && console.error(err);
+            }
+            for (let index = 0; index < data.gate_total; index++) {
+                let itemNode = instantiate(prefab);
+                PoolMgr.putNodePool("mapItemPool",itemNode);
+            }
+        });
         this._unitDetailView.updateUnitTotal(this._unitListArr.gate_total);
     }
     /**获取词书单元信息 */

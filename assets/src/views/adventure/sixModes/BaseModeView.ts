@@ -94,14 +94,24 @@ export class BaseModeView extends BaseView {
             let levelData = this._levelData as BookLevelConfig
             this._wordIndex = levelData.word_num - 1;
             /**如果当前关卡有错词，自动放到最后 */
-            if(levelData.cur_game_mode === this.gameMode && isValid(levelData.error_word)){
-                for (const key in levelData.error_word) {
-                    if (levelData.error_word.hasOwnProperty(key)) {
-                        const found = wordsdata.find(item => item.word === key);
-                        if (found) {
-                            wordsdata.push(found);
+            if(isValid(levelData.error_word)){
+                if(levelData.cur_game_mode === this.gameMode){
+                    for (const key in levelData.error_word) {
+                        if (levelData.error_word.hasOwnProperty(key)) {
+                            const found = wordsdata.find(item => item.word === key);
+                            if (found) {
+                                wordsdata.push(found);
+                            }
                         }
                     }
+                }else{
+                    console.log("wordsdata_________",wordsdata);
+                    const uniqueWordList: UnitWordModel[] = Object.values(wordsdata.reduce((acc, curr) => {
+                        acc[curr.word] = curr;
+                        return acc;
+                    }, {} as Record<string, UnitWordModel>));
+                    wordsdata = uniqueWordList;
+                    console.log("wordsdata_________",wordsdata);
                 }
             }
         }
