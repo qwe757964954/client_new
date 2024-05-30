@@ -20,7 +20,7 @@ export class BasePopup extends BaseView  {
 
     closeAnim() {
         tween(this.node).to(0.2, { scale: new Vec3(0.0, 0.0, 0.0) }, { easing: easing.backIn }).call(() => {
-            this.node.destroy();
+            this.node.parent.destroy();
         }).start();
     }
     /**

@@ -1,4 +1,4 @@
-import { _decorator, error, instantiate, Layers, Node, Prefab, UITransform } from 'cc';
+import { _decorator, error, instantiate, isValid, Layers, Node, Prefab, UITransform } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import GlobalConfig from '../../GlobalConfig';
@@ -40,6 +40,11 @@ export enum LearnGameModel {
     WordMeaning=7, /**词意模式 */
 }
 
+export interface GotoUnitLevel {
+    itemStatus:UnitItemStatus,
+    gate:GateListItem,
+    isNext: boolean
+}
 @ccclass('BreakThroughView')
 export class BreakThroughView extends BaseView {
     @property(Node)
@@ -51,6 +56,9 @@ export class BreakThroughView extends BaseView {
 
     @property(Node)
     public scrollMapNode: Node = null;
+
+    @property(Node)
+    public bg: Node = null;
 
     public _scrollMap:ScrollMapView = null;
 
@@ -93,6 +101,23 @@ export class BreakThroughView extends BaseView {
         this.addModelListener(NetNotify.Classification_UnitStatus,this.onUnitStatus);
         this.addModelListener(EventType.Enter_Island_Level,this.onEnterIsland);
         this.addModelListener(EventType.Exit_Island_Level,this.onExitIsland);
+        this.addModelListener(EventType.Goto_Textbook_Level,this.gotoTextbookLevel);
+    }
+    gotoTextbookLevel(data:GotoUnitLevel){
+        this._selectitemStatus = data.itemStatus;
+        this._selectGate = data.gate;
+        
+        let reqParam:ReqUnitStatusParam = {
+            type_name:this._bookData.type_name,
+            book_name:this._bookData.book_name,
+            grade:this._bookData.grade,
+            unit:this._selectitemStatus.unit,
+            small_id:this._selectGate.small_id
+        }
+        TBServer.reqUnitStatus(reqParam);
+        if(data.isNext){
+            this.reqVocabularyWord();
+        }
         
     }
     getUnitListStatus(){
@@ -115,8 +140,18 @@ export class BreakThroughView extends BaseView {
         TBServer.reqVocabularyWord(reqParam);
     }
 
-    onVocabularyWord(data:VocabularyWordData){
-        console.log("onVocabularyWord", data);
+    onVocabularyWord(response:VocabularyWordData){
+        console.log("onVocabularyWord", response);
+        if(isValid(this._curUnitStatus.error_word)){
+            for (const key in this._curUnitStatus.error_word) {
+                if (this._curUnitStatus.error_word.hasOwnProperty(key)) {
+                    const found = response.data.find(item => item.word === key);
+                    if (found) {
+                        response.data.push(found);
+                    }
+                }
+            }
+        }
         let game_model:LearnGameModel = this._curUnitStatus.game_mode as LearnGameModel;
         let bookLevelData:BookLevelConfig = {
             id:this._bookData.id,
@@ -128,30 +163,32 @@ export class BreakThroughView extends BaseView {
             small_id:this._selectGate.small_id,
             word_num:this._curUnitStatus.word_num,
         }
+        console.log("this._curUnitStatus+++++++++++++++++", this._curUnitStatus);
+        console.log("game_model+++++++++++++++++", game_model);
         switch (game_model) {
             case LearnGameModel.Tutoring:
                 bookLevelData.game_mode = LearnGameModel.Tutoring;
-                this.gotoTutoring(data,bookLevelData);
+                this.gotoTutoring(response,bookLevelData);
                 break;
             case LearnGameModel.AllSpelledOut:
                 bookLevelData.game_mode = LearnGameModel.AllSpelledOut;
-                this.gotoAllSpelledOut(data,bookLevelData);
+                this.gotoAllSpelledOut(response,bookLevelData);
                 break;
             case LearnGameModel.WordMeaning:
                 bookLevelData.game_mode = LearnGameModel.WordMeaning;
-                this.gotoMeaning(data,bookLevelData);
+                this.gotoMeaning(response,bookLevelData);
                 break;
             case LearnGameModel.Practice:
                 bookLevelData.game_mode = LearnGameModel.Practice;
-                this.gotoPractice(data,bookLevelData);
+                this.gotoPractice(response,bookLevelData);
                 break;
             case LearnGameModel.Reed:
                 bookLevelData.game_mode = LearnGameModel.Reed;
-                this.gotoReed(data,bookLevelData);
+                this.gotoReed(response,bookLevelData);
                 break;
             case LearnGameModel.Spell:
                 bookLevelData.game_mode = LearnGameModel.Spell;
-                this.gotoSpell(data,bookLevelData);
+                this.gotoSpell(response,bookLevelData);
                 break;
             default:
                 break;
@@ -268,19 +305,6 @@ export class BreakThroughView extends BaseView {
     /**初始化地图模块 */
     initScrollMap(){
         this._scrollMap = this.scrollMapNode.getComponent(ScrollMapView);
-        this._scrollMap.setClickCallback((itemStatus:UnitItemStatus,gate:GateListItem) =>{
-            this._selectitemStatus = itemStatus;
-            this._selectGate = gate;
-            
-            let reqParam:ReqUnitStatusParam = {
-                type_name:this._bookData.type_name,
-                book_name:this._bookData.book_name,
-                grade:this._bookData.grade,
-                unit:this._selectitemStatus.unit,
-                small_id:this._selectGate.small_id
-            }
-            TBServer.reqUnitStatus(reqParam);
-        })
     }
 
     hideRightPanelchangeView(){

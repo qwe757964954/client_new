@@ -399,7 +399,7 @@ export default class _TextbookService extends BaseControll {
         params.unit = data.unit;
         params.game_mode = data.game_mode;
         params.small_id = data.small_id;
-        params.word_flag = data.word_flag;
+        params.status = data.status;
         if(isValid(data.score)){
             params.score = data.score;
         }

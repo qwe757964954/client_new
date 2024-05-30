@@ -1,5 +1,13 @@
 import { EventType } from "../config/EventType";
 import { EventMgr } from "../util/EventManager";
+/**登录类型 */
+export enum LoginType {
+    account = 1,//账号密码登录
+    phoneCode = 2,//手机号验证码登录
+    phone = 3,//手机号一键登录
+    wechat = 4,//微信登录
+    token = 5,//token登录
+}
 
 // 用户
 class UserModel {
@@ -13,7 +21,7 @@ class UserModel {
     }
     private _account: string;        // 账号
     private _password: string;       // 密码
-    private _loginType: number;      // 登录类型
+    private _loginType: LoginType;      // 登录类型
     private _isLogin: boolean = false; // 是否登录成功过
     public isAutoLogin: boolean = true; // 是否自动登录
 
@@ -77,6 +85,12 @@ class UserModel {
     }
     get password(): string {
         return this._password;
+    }
+    set loginType(loginType: LoginType) {
+        this._loginType = loginType;
+    }
+    get loginType(): LoginType {
+        return this._loginType;
     }
     set isLogin(isLogin: boolean) {
         this._isLogin = isLogin;

@@ -6109,6 +6109,12 @@
       "__uuid__": "454d1313-bf02-482a-a45a-97ea7e2bc8b4",
       "__expectedType__": "cc.Prefab"
     },
+    "errorNumLabel": {
+      "__id__": 309
+    },
+    "timeLabel": {
+      "__id__": 315
+    },
     "wordLabel": {
       "__id__": 80
     },
@@ -6146,12 +6152,6 @@
     "normalBg": {
       "__uuid__": "abeace1d-a74d-401f-9917-d1dc3e40f25e@f9941",
       "__expectedType__": "cc.SpriteFrame"
-    },
-    "errorNumLabel": {
-      "__id__": 309
-    },
-    "timeLabel": {
-      "__id__": 315
     },
     "rightSymbol": {
       "__uuid__": "385ae130-ddef-427f-9083-e6e42ddadeb7@f9941",

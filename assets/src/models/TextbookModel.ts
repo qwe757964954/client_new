@@ -205,6 +205,7 @@ export interface UnitStatusData extends BaseRepPacket{
     game_mode:number;
     flag:number;
     word_num:number;
+    error_word?:any;
 }
 
 export interface UnitWordModel{
@@ -329,8 +330,8 @@ export class c2sGameSubmit {
     unit:string;
     small_id:number;
     game_mode:number;
-    word_flag:number;
-    score:string;
+    status:number;
+    score?:number;
 }
 
 export interface GameSubmitModel {
@@ -342,8 +343,8 @@ export interface GameSubmitModel {
     unit:string;
     small_id:number;
     game_mode:number;
-    word_flag:number;
-    score?:string;
+    status:number;
+    score?:number;
 }
 
 // export enum AmoutType {

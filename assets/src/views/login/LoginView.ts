@@ -1,5 +1,4 @@
-import { _decorator, director, EditBox, Event, EventTouch, instantiate, isValid, Label, Node, Prefab, sys, Toggle } from 'cc';
-import { HTML5, NATIVE } from 'cc/env';
+import { _decorator, director, EditBox, Event, Label, Node, sys, Toggle } from 'cc';
 import { EventType } from '../../config/EventType';
 import { KeyConfig } from '../../config/KeyConfig';
 import { NetConfig } from '../../config/NetConfig';
@@ -7,17 +6,16 @@ import { SceneType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import GlobalConfig from '../../GlobalConfig';
 import { DataMgr } from '../../manager/DataMgr';
-import { ViewsManager } from '../../manager/ViewsManager';
+import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { s2cAccountLogin } from '../../models/NetModel';
-import { User } from '../../models/User';
+import { LoginType, User } from '../../models/User';
 import { HttpManager } from '../../net/HttpManager';
 import { InterfacePath } from '../../net/InterfacePath';
 import { NetMgr } from '../../net/NetManager';
 import { BaseView } from '../../script/BaseView';
+import CCUtil from '../../util/CCUtil';
 import EventManager from '../../util/EventManager';
 import StorageUtil from '../../util/StorageUtil';
-import { TimerMgr } from '../../util/TimerMgr';
-import { ServerItem } from './ServerItem';
 const { ccclass, property } = _decorator;
 
 // 隐私协议是否勾选过
@@ -29,11 +27,8 @@ const LOGIN_INFO_KEY = "login_info_key";
 export class LoginView extends BaseView {
     @property(Node)
     public middle: Node = null;              // middle节点
-
     @property(Node)
-    public downLoadBox: Node = null;         // downLoadBox
-    @property(Node)
-    public appleQrCode: Node = null;         // qrCode-apple
+    public btnWxLogin: Node = null;          // 微信登录按钮
 
     @property(Node)
     public loginBox: Node = null;            // 账号密码节点
@@ -42,16 +37,12 @@ export class LoginView extends BaseView {
     @property(EditBox)
     public pwdEdit: EditBox = null;          // 密码输入框
     @property(Node)
-    public eyeHide: Node = null;             // btnEye节点
-    @property(Node)
-    public eyeShow: Node = null;             // btnEye节点
+    public btnAccountLogin: Node = null;     // 账号登录按钮
 
     @property(Node)
     public inputPhoneBox: Node = null;       // 手机号输入框节点
     @property(EditBox)
     public phoneEdit: EditBox = null;        // 手机号输入框
-    @property(Node)
-    public getCodeBox: Node = null;          // 验证码输入框节点
     @property(EditBox)
     public codeEdit: EditBox = null;         // 验证码输入框
     @property(Node)
@@ -59,16 +50,10 @@ export class LoginView extends BaseView {
     @property(Label)
     public codeTime: Label = null;           // 验证码倒计时
 
-    @property(Node)
-    public privacyAgreeBox: Node = null;     // 隐私协议节点
+    @property(Toggle)
+    public agreeToggle: Toggle = null;       // 隐私协议
     @property(Node)
     public agreeTip: Node = null;            // 提示节点
-
-    @property(Prefab)
-    serverItemPrefab: Prefab = null;        // 服务器item
-    @property(Node)
-    serverContent: Node = null;              // 服务器列表content
-    serverItemList: Node[] = [];             // 服务器item列表
 
     private _codeTime: number = 60;          // 验证码时间
     private _loopID: number = 0;             // 验证码循环id
@@ -81,49 +66,18 @@ export class LoginView extends BaseView {
     //初始化事件
     onInitModuleEvent() {
         this.addModelListener(InterfacePath.c2sAccountLogin, this.onAccountLogin.bind(this));
+        this.addModelListener(InterfacePath.c2sTokenLogin, this.onAccountLogin.bind(this));
         this.addModelListener(EventType.Socket_ReconnectFail, this.onSocketDis.bind(this));
+
+        CCUtil.onTouch(this.btnWxLogin, this.btnWxLoginFunc, this);
+        CCUtil.onTouch(this.btnAccountLogin, this.btnLoginFunc, this);
     }
 
     protected onEnable(): void {
         this.middle.active = false;
-        this.downLoadBox.active = false;
         // token检查
         this.checkToken();
-
-        HttpManager.reqSelectServer((obj) => {
-            console.log("reqSelectServer obj = ", obj);
-            if (!isValid(this, true)) return;
-            let available_server = obj.available_server;
-            for (let k in available_server) {
-                let serverItem = instantiate(this.serverItemPrefab);
-                if (serverItem) {
-                    serverItem.getComponent(ServerItem).setData(k, available_server[k]);
-                    serverItem.parent = this.serverContent;
-                    serverItem.on(Node.EventType.TOUCH_END, this.onServerItemClick, this);
-                    this.serverItemList.push(serverItem);
-                }
-            }
-            if (this.serverItemList.length > 0) {
-                this.serverItemList[0].getComponent(ServerItem).selected = true;
-            }
-        }, () => {
-            console.log("reqSelectServer failed");
-        });
-
         DataMgr.instance.initData();
-    }
-
-    onServerItemClick(event: EventTouch) {
-        let item = event.target;
-        for (let i = 0; i < this.serverItemList.length; i++) {
-            let serverItem = this.serverItemList[i];
-            if (serverItem == item) {
-                serverItem.getComponent(ServerItem).selected = true;
-            }
-            else {
-                serverItem.getComponent(ServerItem).selected = false;
-            }
-        }
     }
 
     checkToken() {
@@ -156,14 +110,11 @@ export class LoginView extends BaseView {
             }
             return;
         }
-        let account = StorageUtil.getData(KeyConfig.Last_Login_Account);
-        let password = StorageUtil.getData(KeyConfig.Last_Login_Pwd);
-        if (account && password) {
-            this.userNameEdit.string = account;
-            this.pwdEdit.string = password;
-            if (User.isAutoLogin) {
+        if (User.isAutoLogin) {
+            let token = StorageUtil.getData(KeyConfig.Last_Login_Token, "");
+            if (token && "" != token) {
                 User.isLogin = true;//标记账号已经登录过，用来重连
-                this.btnLoginFunc();
+                this.tokenLogin(token);
                 return;
             }
         }
@@ -171,45 +122,25 @@ export class LoginView extends BaseView {
     }
 
     initUI() {
+        let account = StorageUtil.getData(KeyConfig.Last_Login_Account);
+        let password = StorageUtil.getData(KeyConfig.Last_Login_Pwd);
+        if (account && password) {
+            this.userNameEdit.string = account;
+            this.pwdEdit.string = password;
+        }
+
         this.middle.active = true;
         this.loginBox.active = true;
         this.inputPhoneBox.active = false;
-        this.getCodeBox.active = false;
-        this.privacyAgreeBox.active = true;
-        this.eyeHide.active = true;
-        this.eyeShow.active = false;
         // 隐私协议
         let privateHasCheck = StorageUtil.getData(PRIVATE_HAS_CHECK_KEY, "0") == "0" ? false : true;
-        (this.privacyAgreeBox.getComponent(Toggle)).isChecked = privateHasCheck;
+        this.agreeToggle.isChecked = privateHasCheck;
         this.agreeTip.active = !privateHasCheck;
-        // 下载模块
-        if (this.downLoadBox.getChildByName("Goole")) {
-            this.downLoadBox.getChildByName("Goole").active = !HTML5;
-        }
-        this.appleQrCode.active = false;
-        // 微信登录按钮
-        if (this.middle.getChildByName("WxLogin")) {
-            this.middle.getChildByName("WxLogin").active = NATIVE;
-        }
+        this.btnWxLogin.active = false;// 微信登录按钮
     }
 
     update(deltaTime: number) {
 
-    }
-
-    // 密码眼睛切换文本
-    btnEyeFunc() {
-        console.log("btnEyeFunc");
-        if (this.pwdEdit.inputFlag == EditBox.InputFlag.DEFAULT) {
-            this.pwdEdit.inputFlag = EditBox.InputFlag.PASSWORD;
-            this.eyeHide.active = true;
-            this.eyeShow.active = false;
-        }
-        else {
-            this.pwdEdit.inputFlag = EditBox.InputFlag.DEFAULT;
-            this.eyeHide.active = false;
-            this.eyeShow.active = true;
-        }
     }
 
     // loginBox和phoneBox切换
@@ -236,7 +167,7 @@ export class LoginView extends BaseView {
     // 账号密码登录
     btnLoginFunc() {
         if (this._isRequest) return;
-        let isChecked = (this.privacyAgreeBox.getComponent(Toggle)).isChecked;
+        let isChecked = this.agreeToggle.isChecked;
         console.log("btnLoginFunc isChecked = ", isChecked);
         if (!isChecked) {
             return;
@@ -259,71 +190,68 @@ export class LoginView extends BaseView {
             })
             return;
         }
-        User.account = userName;
-        User.password = pwd;
-        NetMgr.setServer(NetConfig.server, NetConfig.port);
-        NetMgr.connectNet();
+        this.accountLogin(userName, pwd);
     }
 
-    // 手机号下一步
-    btnPhoneNextFunc(data: Event, customEventData: string) {
-        let isChecked = (this.privacyAgreeBox.getComponent(Toggle)).isChecked;
-        console.log("btnPhoneNextFunc isChecked = ", isChecked);
-        if (!isChecked) {
-            return;
-        }
-        let phone = this.phoneEdit.string;
-        console.log("btnPhoneNextFunc phone = ", phone);
-        if (phone.length != 11) {
-            console.log("手机号输入错误");
-            return;
-        }
-        // // 直接登录
-        // HttpManager.reqMobileLogin(phone, "", (obj) => {
-        //     console.log("登录成功 obj = ", obj);
-        // }, () => {
-        //     console.log("登录失败");
-        // });
-        // 请求验证码
-        HttpManager.reqSms(phone, (obj) => {
-            console.log("验证码返回成功 obj = ", obj);
-            if (!obj || obj.Code != 200) {
-                console.log("验证码请求失败");
-                return;
-            }
-            console.log("验证码请求成功");
-            // 打开验证码输入框
-            if (customEventData != "getCodeButton") {
-                this.inputPhoneBox.active = false;
-                this.getCodeBox.active = true;
-            }
-            this.codeButton.active = false;
-            this.codeTime.node.active = true;
-            // 验证码倒计时循环
-            this._codeTime = 60;
-            this.codeTime.string = "(60s)";
-            if (this._loopID > 0) {
-                TimerMgr.stopLoop(this._loopID);
-                this._loopID = 0;
-            }
-            this._loopID = TimerMgr.loop(() => {
-                this._codeTime--;
-                this.codeTime.string = "(" + this._codeTime + "s)";
-                if (this._codeTime < 0) {
-                    this.codeButton.active = true;
-                    this.codeTime.node.active = false;
-                    TimerMgr.stopLoop(this._loopID);
-                    this._loopID = 0;
-                }
-            }, 1000);
-        }, () => {
-            console.log("验证码请求失败");
-        });
-    }
+    // // 手机号下一步
+    // btnPhoneNextFunc(data: Event, customEventData: string) {
+    //     let isChecked = (this.privacyAgreeBox.getComponent(Toggle)).isChecked;
+    //     console.log("btnPhoneNextFunc isChecked = ", isChecked);
+    //     if (!isChecked) {
+    //         return;
+    //     }
+    //     let phone = this.phoneEdit.string;
+    //     console.log("btnPhoneNextFunc phone = ", phone);
+    //     if (phone.length != 11) {
+    //         console.log("手机号输入错误");
+    //         return;
+    //     }
+    //     // // 直接登录
+    //     // HttpManager.reqMobileLogin(phone, "", (obj) => {
+    //     //     console.log("登录成功 obj = ", obj);
+    //     // }, () => {
+    //     //     console.log("登录失败");
+    //     // });
+    //     // 请求验证码
+    //     HttpManager.reqSms(phone, (obj) => {
+    //         console.log("验证码返回成功 obj = ", obj);
+    //         if (!obj || obj.Code != 200) {
+    //             console.log("验证码请求失败");
+    //             return;
+    //         }
+    //         console.log("验证码请求成功");
+    //         // 打开验证码输入框
+    //         if (customEventData != "getCodeButton") {
+    //             this.inputPhoneBox.active = false;
+    //             this.getCodeBox.active = true;
+    //         }
+    //         this.codeButton.active = false;
+    //         this.codeTime.node.active = true;
+    //         // 验证码倒计时循环
+    //         this._codeTime = 60;
+    //         this.codeTime.string = "(60s)";
+    //         if (this._loopID > 0) {
+    //             TimerMgr.stopLoop(this._loopID);
+    //             this._loopID = 0;
+    //         }
+    //         this._loopID = TimerMgr.loop(() => {
+    //             this._codeTime--;
+    //             this.codeTime.string = "(" + this._codeTime + "s)";
+    //             if (this._codeTime < 0) {
+    //                 this.codeButton.active = true;
+    //                 this.codeTime.node.active = false;
+    //                 TimerMgr.stopLoop(this._loopID);
+    //                 this._loopID = 0;
+    //             }
+    //         }, 1000);
+    //     }, () => {
+    //         console.log("验证码请求失败");
+    //     });
+    // }
 
     // 验证码登录
     btnPhoneLoginFunc() {
-        let isChecked = (this.privacyAgreeBox.getComponent(Toggle)).isChecked;
+        let isChecked = this.agreeToggle.isChecked;
         console.log("btnPhoneLoginFunc isChecked = ", isChecked);
         if (!isChecked) {
             return;
@@ -361,20 +289,6 @@ export class LoginView extends BaseView {
         }
         else if (customEventData == "yinsi") {
             sys.openURL(NetConfig.privacyPage);
-        }
-    }
-
-    // 下载
-    btnDownLoadFunc(data: Event, customEventData: string) {
-        console.log("btnDownLoadFunc customEventData = ", customEventData);
-        if (customEventData == "Goole") {
-            sys.openURL(NetConfig.gooleDown);
-        }
-        else if (customEventData == "Android") {
-            sys.openURL(NetConfig.androidDown);
-        }
-        else if (customEventData == "Apple") {
-            this.appleQrCode.active = !this.appleQrCode.active;
         }
     }
 
@@ -440,7 +354,11 @@ export class LoginView extends BaseView {
     onAccountLogin(data: s2cAccountLogin) {
         this._isRequest = false;
         if (200 != data.code) {
-            ViewsManager.showAlert(data.msg ? data.msg : "数据异常");
+            console.log("登录失败", data.msg);
+            ViewsMgr.removeWaiting();
+            ViewsManager.showAlert(data.msg ? data.msg : "数据异常", () => {
+                this.initUI();
+            });
             return;
         }
         console.log("登录成功");
@@ -449,5 +367,39 @@ export class LoginView extends BaseView {
     /**连接断开 */
     onSocketDis() {
         this._isRequest = false;
+        ViewsMgr.removeWaiting();
+    }
+    /**连接服务器 */
+    connectServer() {
+        NetMgr.setServer(NetConfig.server, NetConfig.port);
+        NetMgr.connectNet();
+    }
+    /**账号密码登录 */
+    accountLogin(account: string, pwd: string) {
+        console.log("accountLogin account = ", account, " pwd = ", pwd);
+        ViewsMgr.showWaiting();
+        User.account = account;
+        User.password = pwd;
+        User.loginType = LoginType.account;
+        this.connectServer();
+    }
+    /**token登录 */
+    tokenLogin(token: string) {
+        ViewsMgr.showWaiting();
+        User.memberToken = token;
+        User.loginType = LoginType.token;
+        this.connectServer();
+    }
+    /**手机号验证码登录 */
+    mobileLogin(mobile: string, code: string) {
+        console.log("mobileLogin mobile = ", mobile, " code = ", code);
+    }
+    /**手机号一键登录 */
+    mobileQuickLogin(mobile: string) {
+        console.log("mobileQuickLogin mobile = ", mobile);
+    }
+    /**微信登录 */
+    wxLogin() {
+        console.log("wxLogin");
     }
 }
