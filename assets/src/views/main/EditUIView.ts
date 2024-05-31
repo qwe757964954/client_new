@@ -120,6 +120,7 @@ export class EditUIView extends Component {
         this._itemsData = [];
         editConfig.forEach(info => {
             if (editType != EditType.Null && editType != info.type) return;
+            if (3 == info.id) return;//矿山，需特殊处理
             this._itemsData.push(info);
         });
         this.listView.numItems = this._itemsData.length;

@@ -76,6 +76,8 @@ export class EditItem extends Component {
         if (EditType.Land == this._data.type) {
             let size = this.getComponent(UITransform).contentSize;
             pos.y = size.height * 0.5 - MapConfig.gridInfo.height;
+        } else if (EditType.Decoration == this._data.type) {
+            pos.y = 50;
         }
         this.img.node.position = pos;
     }
