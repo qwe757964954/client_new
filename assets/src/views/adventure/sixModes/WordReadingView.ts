@@ -96,9 +96,11 @@ export class WordReadingView extends BaseModeView {
                     this._wrongMode = true;
                 }
             }
-            this.scheduleOnce(() => {
-                this.showCurrentWord();
-            }, 1);
+            this.playWordSound().then(()=>{
+                this.playWordSound().then(()=>{
+                    this.showCurrentWord();
+                });
+            })
         }
     }
 
@@ -157,11 +159,12 @@ export class WordReadingView extends BaseModeView {
         this.wordLabel.string = word;
         this.symbolLabel.string = this._rightWordData.symbol;
         this.initWordDetail(word);
+        // this.playWordSound();
     }
 
     //初始化单词详情
     playWordSound() {
-        let word = this._wordsData[this._wordIndex].word;
+        let word = this._rightWordData.word;
         let wordSoundUrl = "";
         wordSoundUrl = "/sounds/glossary/words/en/" + word + ".wav";
         return RemoteSoundMgr.playSound(NetConfig.assertUrl + wordSoundUrl);
