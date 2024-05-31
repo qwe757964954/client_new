@@ -117,8 +117,12 @@ export class WordPracticeView extends BaseModeView {
         if (index != this._currentLetterIdx) return;
         item.removeFromParent();
         this._letterItems[index].getComponent(LetterItem).showLetter();
+
         this._currentLetterIdx++;
-        
+        while (this._currentWord.word[this._currentLetterIdx] && this._currentWord.word[this._currentLetterIdx] == " ") {
+            this._currentLetterIdx++;
+        }
+
         //当前词答题完毕
         if (this._currentLetterIdx >= this._currentWord.word.length) {
             let word = this._currentWord.word;

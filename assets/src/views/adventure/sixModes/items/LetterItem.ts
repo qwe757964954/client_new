@@ -11,6 +11,8 @@ export class LetterItem extends Component {
         this.letterLabel.node.active = false;
         if (letter == " ") {
             this.getComponent(UIOpacity).opacity = 0;
+        } else {
+            this.getComponent(UIOpacity).opacity = 255;
         }
     }
 
