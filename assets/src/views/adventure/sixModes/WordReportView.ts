@@ -54,7 +54,7 @@ export class WordReportView extends BaseView {
 
     initUI() {
         this.initRolePlayer();
-        // this.reward_scroll.numItems = 7;
+        //  = 7;
         this.condition_scroll.numItems = 3;
     }
 
@@ -67,6 +67,7 @@ export class WordReportView extends BaseView {
             let idleAnim = `${curAnim}_idle`;
             this.showResultSpAni(curAnim,idleAnim);
             this.reward_scroll.numItems = Object.keys(this._resultSubmitResponse.award).length;
+            this.condition_scroll.numItems = this._resultSubmitResponse.flag_star_num;
             this.showRewardSpAni();
         }else{
             this.showResultSpAni("def","def_idle");
