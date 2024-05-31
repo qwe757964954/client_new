@@ -21,6 +21,8 @@ export class SelectLetterItem extends Component {
         this.bg.getComponent(Sprite).spriteFrame = this.getBg(data.color);
         if (data.letter == " ") {
             this.getComponent(UIOpacity).opacity = 0;
+        } else {
+            this.getComponent(UIOpacity).opacity = 255;
         }
     }
 
