@@ -69,6 +69,7 @@ class UserModel {
         this._account = "";
         this._password = "";
         this._loginToken = "";
+        this._loginType = null;
         this._memberToken = "";
         this._mobile = "";
         this.castleLevel = 1;

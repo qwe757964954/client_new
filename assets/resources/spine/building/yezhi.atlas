@@ -1,0 +1,20 @@
+
+yezhi.png
+size: 512,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+01_0
+  rotate: false
+  xy: 2, 110
+  size: 335, 254
+  orig: 335, 254
+  offset: 0, 0
+  index: -1
+01_11
+  rotate: false
+  xy: 2, 2
+  size: 110, 106
+  orig: 110, 106
+  offset: 0, 0
+  index: -1

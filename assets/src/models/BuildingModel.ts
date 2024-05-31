@@ -10,6 +10,7 @@ import { ServiceMgr } from "../net/ServiceManager";
 import { BaseComponent } from "../script/BaseComponent";
 import CCUtil from "../util/CCUtil";
 import EventManager from "../util/EventManager";
+import { NodeUtil } from "../util/NodeUtil";
 import { ToolUtil } from "../util/ToolUtil";
 import { BuildingBtnView } from "../views/map/BuildingBtnView";
 import { BuildingInfoView } from "../views/map/BuildingInfoView";
@@ -28,7 +29,7 @@ export class BuildingData {
     // 正在建造的队列（id，时间）
 }
 
-const defaultSpAnim = "animation";
+const defaultSpAnim = ["animation", "idle"];
 
 //建筑模型
 @ccclass('BuildingModel')
@@ -395,10 +396,7 @@ export class BuildingModel extends BaseComponent {
     }
     // 设置摄像头类型
     public setCameraType(type: number): void {
-        this.node.layer = type;
-        this.node.children.forEach(child => {
-            child.layer = type;
-        });
+        NodeUtil.setLayerRecursively(this.node, type);
     }
     /**是否点击到自己 像素点击，可能会出现性能问题*/
     public isTouchSelf(worldPos: Vec3): boolean {
@@ -462,12 +460,21 @@ export class BuildingModel extends BaseComponent {
             let animation = this._editInfo.animation;
             if (animation && animation.length > 0) {
                 LoadManager.loadSpine(animation, this.sp).then(() => {
-                    this.sp.setAnimation(0, defaultSpAnim, true);
-                    let pos = this.building.node.position.clone();
-                    pos.x = -6;
-                    pos.y = -4 - pos.y;
-                    this.sp.node.position = pos;
-                    // console.log("pos", pos.x, pos.y);
+                    if (this.sp.findAnimation(defaultSpAnim[0])) {
+                        this.sp.setAnimation(0, defaultSpAnim[0], true);
+                    } else {
+                        this.sp.setAnimation(0, defaultSpAnim[1], true);
+                    }
+
+                    if (this._editInfo.animpos) {
+                        this.sp.node.position = this._editInfo.animpos;
+                    } else {
+                        let pos = this.building.node.position.clone();
+                        pos.x = -16;
+                        pos.y = - pos.y;
+                        this.sp.node.position = pos;
+                        console.log("pos", pos.x, pos.y);
+                    }
                 });
             }
         } else {

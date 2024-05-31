@@ -1,4 +1,4 @@
-import { _decorator, Component, Label, Node, ProgressBar, sp, Sprite } from 'cc';
+import { _decorator, Component, Label, Node, ProgressBar, sp } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { PropID } from '../../config/PropConfig';
 import { TextConfig } from '../../config/TextConfig';
@@ -9,13 +9,14 @@ import { ToolUtil } from '../../util/ToolUtil';
 const { ccclass, property } = _decorator;
 
 const spAnimNames = ["jingtai", "danchou", "shilian"];
+const eggAnimNames = ["idle1", "crush1"];
 
 @ccclass('ReviewPlanView')
 export class ReviewPlanView extends Component {
     @property(sp.Skeleton)
     public sp: sp.Skeleton = null;//动画
-    @property(Sprite)
-    public egg: Sprite = null;//蛋
+    @property(sp.Skeleton)
+    public egg: sp.Skeleton = null;//蛋
     @property(Node)
     public btnBack: Node = null;//返回按钮
     @property(Node)
@@ -101,7 +102,11 @@ export class ReviewPlanView extends Component {
         let scale = ToolUtil.getValue(GlobalConfig.WIN_DESIGN_RATE, 0.78, 1.5);
         CCUtil.setNodeScale(this.plAnim, scale);
         if (scale < 1.0) CCUtil.setNodeScale(this.plRight, scale);
+
+        this.egg.node.active = false;
+
         this.sp.setCompleteListener(this.onAnimationComplete.bind(this));
+        this.egg.setCompleteListener(this.onAnimationComplete.bind(this));
     }
     /**设置UI层显示 */
     setUIVisible(isShow: boolean) {
@@ -119,6 +124,7 @@ export class ReviewPlanView extends Component {
         if (!this._canDraw) return;
         this._canDraw = false;
         this.sp.setAnimation(0, spAnimNames[1], false);
+        this.egg.node.active = false;
     }
     /**抽奖10次按钮 */
     onBtnDrawTimesClick() {
@@ -126,6 +132,7 @@ export class ReviewPlanView extends Component {
         this._canDraw = false;
         this.sp.setAnimation(0, spAnimNames[2], false);
         this.setUIVisible(false);
+        this.egg.node.active = false;
     }
     /**单词大冒险 今日复习按钮 */
     onBtnTodayReview1Click() {
@@ -156,8 +163,8 @@ export class ReviewPlanView extends Component {
         let name = trackEntry.animation.name;
         if (name === spAnimNames[1]) {
             console.log("单抽动画结束");
-            this._canDraw = true;
-            ViewsMgr.showRewards([{ id: PropID.stamina, num: 1 }]);
+            this.egg.node.active = true;
+            this.egg.setAnimation(0, eggAnimNames[1], false);
         } else if (name == spAnimNames[2]) {
             console.log("十连抽动画结束");
             ViewsMgr.showRewards([{ id: PropID.coin, num: 10 }, { id: PropID.diamond, num: 20 }], () => {
@@ -165,6 +172,9 @@ export class ReviewPlanView extends Component {
                 this.setUIVisible(true);
                 this._canDraw = true;
             });
+        } else if (name == eggAnimNames[1]) {
+            this._canDraw = true;
+            ViewsMgr.showRewards([{ id: PropID.stamina, num: 1 }]);
         }
     }
 }

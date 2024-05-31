@@ -1,3 +1,4 @@
+import { Vec3 } from "cc";
 import { PetInfo, PetInteractionInfo, PetMoodInfo } from "../config/PetConfig";
 import { PropInfo } from "../config/PropConfig";
 import { TextConfig } from "../config/TextConfig";
@@ -56,6 +57,7 @@ export class EditInfo {
     description: string;//描述
     function: string;//功能描述
     animation: string;//动画
+    animpos: Vec3;//位置
 }
 /**道具数据 */
 export class PropData {
@@ -93,7 +95,7 @@ export class AdvLevelConfig {
 }
 //教材单词关卡配置
 export class BookLevelConfig {
-    id:string;//
+    id: string;//
     grade: string;
     unit: string;
     type_name: string;
@@ -102,7 +104,7 @@ export class BookLevelConfig {
     book_name: string;
     word_num: number;
     cur_game_mode: number;
-    error_word?:any;
+    error_word?: any;
 }
 //成就信息配置
 export class ArchConfig {
@@ -213,6 +215,9 @@ export class DataMgr {
             }
             if (obj.animation && obj.animation.length > 0) {
                 obj.animation = ToolUtil.replace(TextConfig.Building_SpPath, obj.animation);
+            }
+            if (obj.animpos) {
+                obj.animpos = new Vec3(obj.animpos[0], obj.animpos[1], 0);
             }
             this.editInfo[obj.id] = obj;
         }
