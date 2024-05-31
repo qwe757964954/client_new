@@ -73,14 +73,15 @@ export class BreakThroughView extends BaseView {
 
     start() {
         GlobalConfig.initRessolutionHeight();
-        this.initEvent();
         this.initUI();
+        this.initEvent();
     }
     initEvent() {
-        CCUtil.onTouch(this.scrollMapNode, this.hideRightPanelchangeView, this);
+        CCUtil.onBtnClick(this.scrollMapNode.getChildByName("contentNode"), () => {
+            this.hideRightPanelchangeView();
+        });
     }
     removeEvent() {
-        CCUtil.offTouch(this.scrollMapNode, this.hideRightPanelchangeView, this);
     }
     initUI(){
         this.initScrollMap();
@@ -142,7 +143,6 @@ export class BreakThroughView extends BaseView {
 
     onVocabularyWord(response:VocabularyWordData){
         console.log("onVocabularyWord", response);
-        
         let game_model:LearnGameModel = this._curUnitStatus.game_mode as LearnGameModel;
         let bookLevelData:BookLevelConfig = {
             id:this._bookData.id,
@@ -188,10 +188,12 @@ export class BreakThroughView extends BaseView {
             default:
                 break;
         }
+        this._scrollMap.removePointEvent();
     }
 
     onExitIsland(){
         this._rightChallenge.hideView();
+        this.getUnitListStatus();
     }
 
     onEnterIsland(data:LevelConfig){
@@ -303,7 +305,8 @@ export class BreakThroughView extends BaseView {
     }
 
     hideRightPanelchangeView(){
-        // this._rightChallenge.hideView();
+        console.log("hideRightPanelchangeView");
+        this._rightChallenge.hideView();
     }
     onDestroy(): void {
         super.onDestroy();

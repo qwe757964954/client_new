@@ -1,0 +1,97 @@
+
+tjp.png
+size: 1024,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+dt_0
+  rotate: false
+  xy: 478, 59
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+dt_1
+  rotate: false
+  xy: 652, 100
+  size: 28, 26
+  orig: 28, 26
+  offset: 0, 0
+  index: -1
+dt_10
+  rotate: false
+  xy: 324, 56
+  size: 89, 70
+  orig: 89, 70
+  offset: 0, 0
+  index: -1
+dt_11
+  rotate: true
+  xy: 2, 17
+  size: 109, 320
+  orig: 109, 320
+  offset: 0, 0
+  index: -1
+dt_2
+  rotate: false
+  xy: 2, 2
+  size: 14, 13
+  orig: 14, 13
+  offset: 0, 0
+  index: -1
+dt_20
+  rotate: false
+  xy: 34, 2
+  size: 14, 13
+  orig: 14, 13
+  offset: 0, 0
+  index: -1
+dt_3
+  rotate: false
+  xy: 382, 25
+  size: 30, 29
+  orig: 30, 29
+  offset: 0, 0
+  index: -1
+dt_4
+  rotate: false
+  xy: 415, 59
+  size: 61, 67
+  orig: 61, 67
+  offset: 0, 0
+  index: -1
+dt_5
+  rotate: true
+  xy: 18, 2
+  size: 13, 14
+  orig: 13, 14
+  offset: 0, 0
+  index: -1
+dt_6
+  rotate: false
+  xy: 478, 77
+  size: 72, 49
+  orig: 72, 49
+  offset: 0, 0
+  index: -1
+dt_7
+  rotate: false
+  xy: 610, 87
+  size: 40, 39
+  orig: 40, 39
+  offset: 0, 0
+  index: -1
+dt_8
+  rotate: false
+  xy: 552, 73
+  size: 56, 53
+  orig: 56, 53
+  offset: 0, 0
+  index: -1
+dt_9
+  rotate: false
+  xy: 324, 17
+  size: 56, 37
+  orig: 56, 37
+  offset: 0, 0
+  index: -1

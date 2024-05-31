@@ -7,12 +7,14 @@ import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { ResLoader } from '../../../manager/ResLoader';
 import { ViewsManager } from '../../../manager/ViewsManager';
 import { AdventureResultModel, GameMode } from '../../../models/AdventureModel';
-import { GameSubmitModel, UnitWordModel } from '../../../models/TextbookModel';
+import { GameSubmitModel, GameSubmitResponse, UnitWordModel } from '../../../models/TextbookModel';
+import { NetNotify } from '../../../net/NetNotify';
 import { ServiceMgr } from '../../../net/ServiceManager';
 import { TBServer } from '../../../service/TextbookService';
 import { RecordApi } from '../../../util/third/RecordApi';
 import { RecordResponseData } from '../../../util/third/RecordModel';
 import { BaseModeView } from './BaseModeView';
+import { WordReportView } from './WordReportView';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordReadingView')
@@ -35,22 +37,24 @@ export class WordReadingView extends BaseModeView {
     private _wrongMode: boolean = false; //错误重答模式
     private _rightWordData: UnitWordModel = null; //正确单词数据
     private _wrongWordList: any[] = []; //错误单词列表
+
+    private _currentSubmitResponse:GameSubmitResponse = null;
+
     async initData(wordsdata: UnitWordModel[], levelData: any) {
         this.gameMode = GameMode.Reading;
-        super.initData(wordsdata, levelData);
+        wordsdata = this.updateTextbookWords(wordsdata, levelData);
         this.initWords(wordsdata);
         this.initEvent();
         this.initMonster(); //初始化怪物
         RecordApi.checkRecordPermission();
-        this.modeOver()
     }
     onInitModuleEvent(){
         super.onInitModuleEvent();
         this.addModelListener(EventType.Get_Record_Result,this.getRecordResult); 
+        this.addModelListener(NetNotify.Classification_GameSubmit,this.onGameSubmitResponse);
     }
     getRecordResult(response:RecordResponseData){
         console.log('getRecordResult  RecordResponseData', response);
-        this._wordIndex++;
         let isRight:boolean = response.result.overall > 80 ? true : false;
         this.gameSubmit(response,isRight);
         if (isRight) {
@@ -99,7 +103,12 @@ export class WordReadingView extends BaseModeView {
     }
 
     gameSubmit(response:RecordResponseData,isRight?:boolean) {
-        let word = this._wordsData[this._wordIndex].word;
+        // let word:string = ""
+        // word = this._wordsData[this._wordIndex].word;
+        // if(this._wrongMode){
+
+        // }
+        console.log("this._rightWordData.word______",this._rightWordData.word)
         if (this._levelData.hasOwnProperty('islandId')) {
             let levelData = this._levelData as AdvLevelConfig;
             let costTime = Date.now() - this._costTime;
@@ -111,7 +120,7 @@ export class WordReadingView extends BaseModeView {
                 cost_time:costTime,
                 status:isRight ? 1 : 0,
                 score:response.result.overall,
-                word:word
+                word:this._rightWordData.word
             }
             ServiceMgr.studyService.submitAdventureResult(params);
             return;
@@ -125,7 +134,7 @@ export class WordReadingView extends BaseModeView {
             unit: levelData.unit,
             game_mode: this.gameMode,
             cost_time: costTime,
-            word: word,
+            word: this._rightWordData.word,
             score:response.result.overall,
             small_id: levelData.small_id,
             status: isRight ? 1 : 0
@@ -169,7 +178,7 @@ export class WordReadingView extends BaseModeView {
         console.log('soundRecordEvent');
         this.img_corrugation.active = true;
         this.btn_sound_recording.active = false;
-        let word = this._wordsData[this._wordIndex].word;
+        let word = this._rightWordData.word;
         if (sys.isNative) {
             RecordApi.onRecord(word);
         }
@@ -193,9 +202,16 @@ export class WordReadingView extends BaseModeView {
         }
         RecordApi.stopRecord();
     }
+
+    onGameSubmitResponse(data:GameSubmitResponse){
+        this._currentSubmitResponse = data;
+    }
+
     protected modeOver(): void {
         console.log('朗读模式完成');
         ViewsManager.instance.showView(PrefabType.WordReportView, (node: Node) => {
+            let nodeScript = node.getComponent(WordReportView);
+            nodeScript.initData(this._currentSubmitResponse);
             ViewsManager.instance.closeView(PrefabType.WordReadingView);
             //跳转到下一场景
             /*

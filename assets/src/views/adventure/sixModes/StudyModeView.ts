@@ -1,4 +1,4 @@
-import { _decorator, instantiate, Label, Node, NodePool, Prefab, Sprite, tween, UITransform, Vec3 } from 'cc';
+import { _decorator, instantiate, Label, Node, NodePool, Prefab, Sprite, tween, UIOpacity, UITransform, Vec3 } from 'cc';
 import { NetConfig } from '../../../config/NetConfig';
 import { PrefabType } from '../../../config/PrefabType';
 import { DataMgr } from '../../../manager/DataMgr';
@@ -64,7 +64,7 @@ export class StudyModeView extends BaseModeView {
     }
 
     async initData(wordsdata: UnitWordModel[], levelData: any) {
-        super.initData(wordsdata, levelData);
+        wordsdata = this.updateTextbookWords(wordsdata, levelData);
         this._spilitData = await DataMgr.instance.getWordSplitConfig();
         this.initWords(wordsdata);
         this.initMonster(); //初始化怪物
@@ -131,8 +131,9 @@ export class StudyModeView extends BaseModeView {
         }
         for (let i = 0; i < splits.length; i++) {
             let item = this.getSplitItem();
+            // item.parent = this.splitNode;
             item.getComponent(WordSplitItem).init(splits[i]);
-            item.parent = this.splitNode;
+            this.splitNode.addChild(item);
             CCUtil.onTouch(item, this.onSplitItemClick.bind(this, item, i), this);
             this._spliteItems.push(item);
         }
@@ -201,10 +202,12 @@ export class StudyModeView extends BaseModeView {
             let pos = new Vec3(targetX, oldPos.y, 0);
             tween(this._spliteItems[i]).to(0.2, { position: pos }).start();
         }
+        this.wholeWordNode.active = true;
+        this.wholeWordNode.getComponent(UIOpacity).opacity = 0;
         this.scheduleOnce(() => {
-            this.wholeWordNode.active = true;
+            this.wholeWordNode.getComponent(UIOpacity).opacity = 255;
             let labelWidth = this.wholeWordLabel.getComponent(UITransform).contentSize.width;
-            this.wholeWordNode.getComponent(UITransform).width = labelWidth + 150;
+            this.wholeWordNode.getComponent(UITransform).width = labelWidth + 100;
             this.splitNode.active = false;
             this.playWordSound().then(() => {
                 this._wordIndex++;
@@ -219,7 +222,7 @@ export class StudyModeView extends BaseModeView {
             });
         }, 0.2);
         let word = this._wordsData[this._wordIndex].word
-        this.onGameSubmit(word,true);
+        this.onGameSubmit(word, true);
     }
 
     protected modeOver(): void {

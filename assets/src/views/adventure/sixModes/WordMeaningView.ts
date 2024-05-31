@@ -59,7 +59,7 @@ export class WordMeaningView extends BaseModeView {
 
     async initData(wordsdata: UnitWordModel[], levelData: any) {
         this.gameMode = GameMode.WordMeaning;
-        super.initData(wordsdata, levelData);
+        wordsdata = this.updateTextbookWords(wordsdata, levelData);
         this.initWords(wordsdata);
         this.initEvent();
         this.initMonster(); //初始化怪物
@@ -172,7 +172,7 @@ export class WordMeaningView extends BaseModeView {
         let resSymbol = answerNode.getChildByName("resSymbol");
         resSymbol.active = true;
 
-        let word = this._wordsData[this._wordIndex].word
+        let word = this._rightWordData.word;
         this.onGameSubmit(word, isRight);
 
 

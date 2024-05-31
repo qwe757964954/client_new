@@ -1,15 +1,15 @@
 import { _decorator, instantiate, Layers, Node, Prefab } from 'cc';
 import { EventType } from '../../../config/EventType';
-import { PrefabType } from '../../../config/PrefabType';
 import { GameRes } from '../../../GameRes';
 import { inf_SpineAniCreate } from '../../../manager/InterfaceDefines';
-import { ViewsManager } from '../../../manager/ViewsManager';
 import { RoleBaseModel } from '../../../models/RoleBaseModel';
+import { GameSubmitResponse } from '../../../models/TextbookModel';
 import { BaseView } from '../../../script/BaseView';
 import CCUtil from '../../../util/CCUtil';
 import { EventMgr } from '../../../util/EventManager';
 import List from '../../../util/list/List';
 import { NodeUtil } from '../../../util/NodeUtil';
+import { ReportItem } from './ReportItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordReportView')
@@ -45,20 +45,37 @@ export class WordReportView extends BaseView {
     @property(Node)
     public reward_line:Node = null;
 
+    private _resultSubmitResponse:GameSubmitResponse = null;
+
     start() {
-        this.initUI();
+        // this.initUI();
         this.initEvents();
     }
 
     initUI() {
         this.initRolePlayer();
-        this.reward_scroll.numItems = 7;
+        //  = 7;
         this.condition_scroll.numItems = 3;
-        this.showResultSpAni();
-        this.showRewardSpAni();
     }
 
-    showResultSpAni(){
+    initData(data:GameSubmitResponse) {
+        this._resultSubmitResponse = data;
+        console.log("initData___________",this._resultSubmitResponse.award)
+        if(this._resultSubmitResponse.pass_flag == 1){
+            let startAnim = ["sta","sta2","sta3"]
+            let curAnim = startAnim[this._resultSubmitResponse.flag_star_num - 1];
+            let idleAnim = `${curAnim}_idle`;
+            this.showResultSpAni(curAnim,idleAnim);
+            this.reward_scroll.numItems = Object.keys(this._resultSubmitResponse.award).length;
+            this.condition_scroll.numItems = this._resultSubmitResponse.flag_star_num;
+            this.showRewardSpAni();
+        }else{
+            this.showResultSpAni("def","def_idle");
+        }
+        
+    }
+
+    showResultSpAni(aniName:string,idleName:string){
         let self = this;
         let changeAni = function (aniName:string,isLoop:boolean = false) {
             let spinePrams:inf_SpineAniCreate = {
@@ -68,15 +85,15 @@ export class WordReportView extends BaseView {
                 parentNode:self.result_sp,
                 isLoop:isLoop,
                 callEndFunc:()=>{
-                    if(aniName == "sta3"){
-                        changeAni("sta3_idle",true);
+                    if(aniName == aniName){
+                        changeAni(idleName,true);
                     }
                 }
             }
             self.result_sp.removeAllChildren();
             EventMgr.dispatch(EventType.Sys_Ani_Play,spinePrams);
         }
-        changeAni("sta3",false);
+        changeAni(aniName,false);
     }
 
     showRewardSpAni(){
@@ -112,14 +129,16 @@ export class WordReportView extends BaseView {
 
     gotoNextLevel(){
         console.log("下一关卡")
-        ViewsManager.instance.closeView(PrefabType.WordReportView);
+        // ViewsManager.instance.closeView(PrefabType.WordReportView);
+        this.node.destroy();
         EventMgr.dispatch(EventType.Goto_Textbook_Next_Level);
     }
 
     gotoLevelList(){
         console.log("关卡列表")
         EventMgr.dispatch(EventType.Exit_Island_Level);
-        ViewsManager.instance.closeView(PrefabType.WordReportView);
+        this.node.destroy();
+        // ViewsManager.instance.closeView(PrefabType.WordReportView);
     }
     onInitModuleEvent(){
         
@@ -136,7 +155,10 @@ export class WordReportView extends BaseView {
     }
 
     onLoadRewardHorizontal(item:Node, idx:number){
-
+        let keys = Object.keys(this._resultSubmitResponse.award);
+        let key:string = keys[idx];
+        let item_script = item.getComponent(ReportItem);
+        item_script.updateItemProps(key,this._resultSubmitResponse.award[key]);
         // let unitStatus:UnitItemStatus = this._unitListArr[idx];
         // item_sript.updateRewardStatus(unitStatus.studywordnum >=unitStatus.totalwordnum);
     }

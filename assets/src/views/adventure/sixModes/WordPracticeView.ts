@@ -42,7 +42,7 @@ export class WordPracticeView extends BaseModeView {
     async initData(wordsdata: UnitWordModel[], levelData: any) {
         this.gameMode = GameMode.Practice;
         this._spilitData = await DataMgr.instance.getWordSplitConfig();
-        super.initData(wordsdata, levelData);
+        wordsdata = this.updateTextbookWords(wordsdata, levelData);
         this.initWords(wordsdata);
         this.initEvent();
         this.initMonster(); //初始化怪物
@@ -117,11 +117,16 @@ export class WordPracticeView extends BaseModeView {
         if (index != this._currentLetterIdx) return;
         item.removeFromParent();
         this._letterItems[index].getComponent(LetterItem).showLetter();
+
         this._currentLetterIdx++;
-        let word = this._wordsData[this._wordIndex].word
-        this.onGameSubmit(word, true);
+        while (this._currentWord.word[this._currentLetterIdx] && this._currentWord.word[this._currentLetterIdx] == " ") {
+            this._currentLetterIdx++;
+        }
+
         //当前词答题完毕
         if (this._currentLetterIdx >= this._currentWord.word.length) {
+            let word = this._currentWord.word;
+            this.onGameSubmit(word, true);
             this._wordIndex++;
             this._rightNum++;
 

@@ -1,20 +1,19 @@
 import { _decorator, instantiate, Label, Node, NodePool, Prefab, Sprite, SpriteFrame } from 'cc';
+import { NetConfig } from '../../../config/NetConfig';
+import { PrefabType } from '../../../config/PrefabType';
 import { AdvLevelConfig, BookLevelConfig, DataMgr } from '../../../manager/DataMgr';
+import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
+import { ViewsManager } from '../../../manager/ViewsManager';
 import { GameMode, SentenceData, WordGroupData, WordGroupModel, WordsDetailData } from '../../../models/AdventureModel';
 import { UnitWordModel } from '../../../models/TextbookModel';
+import { InterfacePath } from '../../../net/InterfacePath';
+import { ServiceMgr } from '../../../net/ServiceManager';
 import CCUtil from '../../../util/CCUtil';
+import EventManager from '../../../util/EventManager';
+import { TransitionView } from '../common/TransitionView';
 import { BaseModeView } from './BaseModeView';
 import { SpellWordItem } from './items/SpellWordItem';
-import { ServiceMgr } from '../../../net/ServiceManager';
-import EventManager from '../../../util/EventManager';
-import { EventType } from '../../../config/EventType';
-import { InterfacePath } from '../../../net/InterfacePath';
-import { ViewsManager } from '../../../manager/ViewsManager';
-import { PrefabType } from '../../../config/PrefabType';
-import { TransitionView } from '../common/TransitionView';
 import { WordReadingView } from './WordReadingView';
-import { NetConfig } from '../../../config/NetConfig';
-import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordSpellView')
@@ -56,7 +55,7 @@ export class WordSpellView extends BaseModeView {
     async initData(wordsdata: UnitWordModel[], levelData: any) {
         this.gameMode = GameMode.Spelling;
         this._spilitData = await DataMgr.instance.getWordSplitConfig();
-        super.initData(wordsdata, levelData);
+        wordsdata = this.updateTextbookWords(wordsdata, levelData);
         this.initWords(wordsdata);
         this.initEvent();
         this.initMonster(); //初始化怪物
@@ -113,7 +112,7 @@ export class WordSpellView extends BaseModeView {
             this._sentenceData = sentences[0];
         }
         if (this._sentenceData) {
-            let word = this._wordsData[this._wordIndex].word;
+            let word = this._rightWordData.word;
             let sentence = this._sentenceData.sentence;
             let lowerSent = sentence.toLowerCase();
             let lowerWord = word.toLowerCase();
@@ -148,7 +147,7 @@ export class WordSpellView extends BaseModeView {
             this._selectIdxs.splice(this._selectIdxs.indexOf(selectIdx), 1);
             this._selectItems.splice(this._selectItems.indexOf(item), 1);
         }
-        let groupData = this.getGroupFromWord(this._wordsData[this._wordIndex].word);
+        let groupData = this.getGroupFromWord(this._rightWordData.word);
         if (groupData.opt_num == this._selectIdxs.length) { //选择完毕
             this._selectLock = true;
             let isRight = true;
@@ -160,7 +159,7 @@ export class WordSpellView extends BaseModeView {
                 }
             }
             this.resultSprite.node.active = true;
-            let word = this._wordsData[this._wordIndex].word;
+            let word = this._rightWordData.word;
             this.onGameSubmit(word, isRight);
             if (isRight) { //回答正确
                 this._rightNum++;
@@ -244,11 +243,11 @@ export class WordSpellView extends BaseModeView {
     //初始化拆分节点
     initItemNode() {
         this.clearSplitItems();
-        let groupData = this.getGroupFromWord(this._wordsData[this._wordIndex].word);
+        let groupData = this.getGroupFromWord(this._rightWordData.word);
         let splits = [];
         console.log('groupData', groupData);
         if (!groupData) {
-            splits = [this._wordsData[this._wordIndex].word];
+            splits = [this._rightWordData.word];
         } else {
             splits = [groupData.opt1, groupData.opt2, groupData.opt3, groupData.opt4];
         }

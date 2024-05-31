@@ -12,6 +12,7 @@ import { LoginType, User } from '../../models/User';
 import { HttpManager } from '../../net/HttpManager';
 import { InterfacePath } from '../../net/InterfacePath';
 import { NetMgr } from '../../net/NetManager';
+import { ServiceMgr } from '../../net/ServiceManager';
 import { BaseView } from '../../script/BaseView';
 import CCUtil from '../../util/CCUtil';
 import StorageUtil from '../../util/StorageUtil';
@@ -76,6 +77,7 @@ export class LoginView extends BaseView {
     private _loopID: number = null;             // 验证码循环id
 
     start() {
+        this.connectServer();
         this.plQRCode.setBackCall(this.onPlQrCodeBack.bind(this));
         this.plActivationCode.setCallFunc(this.onPlActivationCodeBack.bind(this), this.onActivationCodeActive.bind(this));
         this.initUI();
@@ -325,14 +327,14 @@ export class LoginView extends BaseView {
         User.account = account;
         User.password = pwd;
         User.loginType = LoginType.account;
-        this.connectServer();
+        ServiceMgr.accountService.accountLogin();
     }
     /**token登录 */
     tokenLogin(token: string) {
         ViewsMgr.showWaiting();
         User.memberToken = token;
         User.loginType = LoginType.token;
-        this.connectServer();
+        ServiceMgr.accountService.tokenLogin();
     }
     /**手机号验证码登录 */
     mobileLogin(mobile: string, code: string) {

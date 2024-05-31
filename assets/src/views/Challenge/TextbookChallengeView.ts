@@ -131,6 +131,20 @@ export class TextbookChallengeView extends BaseView {
 
     onUnitListStatus(data:UnitListItemStatus){
         this._unitListArr = data;
+        ResLoader.instance.load(`prefab/${PrefabType.MapPointItem.path}`, Prefab, (err: Error | null, prefab: Prefab) => {
+            if (err) {
+                error && console.error(err);
+            }
+            // let nodePool:NodePool = PoolMgr.getNodePool("mapItemPool");
+            // let length = nodePool.size();
+            // console.log("onUnitListStatus.......",nodePool,length);
+            
+            // for (let index = 0; index < data.gate_total - length; index++) {
+            //     let itemNode = instantiate(prefab);
+            //     PoolMgr.putNodePool("mapItemPool",itemNode);
+            // }
+            // console.log("onUnitListStatus.......",nodePool,length);
+        });
         this._unitDetailView.updateUnitTotal(this._unitListArr.gate_total);
     }
     /**获取词书单元信息 */
