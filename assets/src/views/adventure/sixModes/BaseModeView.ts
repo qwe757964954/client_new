@@ -86,18 +86,15 @@ export class BaseModeView extends BaseView {
         });
     }
 
-    initData(wordsdata: UnitWordModel[], levelData: any) {
+    updateTextbookWords(wordsdata: UnitWordModel[], levelData: any) {
         this._levelData = levelData;
         let isAdventure = this._levelData.hasOwnProperty('islandId'); //是否是大冒险关卡
-        console.log("initData_________",wordsdata,isAdventure);
         /** 从关卡数据中获取单词学习到哪个单词*/
         if (!isAdventure) {
-            console.log("isAdventure_________",isAdventure);
             let levelData = this._levelData as BookLevelConfig;
             this._wordIndex = levelData.word_num - 1;
             /**如果当前关卡有错词，自动放到最后 */
             if(isValid(levelData.error_word)){
-                console.log("levelData.error_word_________",levelData.error_word);
                 if(levelData.cur_game_mode === this.gameMode){
                     for (const key in levelData.error_word) {
                         if (levelData.error_word.hasOwnProperty(key)) {
@@ -108,17 +105,15 @@ export class BaseModeView extends BaseView {
                         }
                     }
                 }else{
-                    console.log("wordsdata_________",wordsdata);
                     const uniqueWordList: UnitWordModel[] = Object.values(wordsdata.reduce((acc, curr) => {
                         acc[curr.word] = curr;
                         return acc;
                     }, {} as Record<string, UnitWordModel>));
                     wordsdata = uniqueWordList;
-                    console.log("wordsdata_________",wordsdata);
-                    
                 }
             }
         }
+        return wordsdata;
     }
     onInitModuleEvent() {
         this.addModelListener(NetNotify.Classification_ReportResult, this.onUpResult);

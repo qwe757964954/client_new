@@ -37,7 +37,7 @@ export class WordReadingView extends BaseModeView {
     private _wrongWordList: any[] = []; //错误单词列表
     async initData(wordsdata: UnitWordModel[], levelData: any) {
         this.gameMode = GameMode.Reading;
-        super.initData(wordsdata, levelData);
+        wordsdata = this.updateTextbookWords(wordsdata, levelData);
         this.initWords(wordsdata);
         this.initEvent();
         this.initMonster(); //初始化怪物
