@@ -64,7 +64,7 @@ export class StudyModeView extends BaseModeView {
     }
 
     async initData(wordsdata: UnitWordModel[], levelData: any) {
-        super.initData(wordsdata, levelData);
+        wordsdata = this.updateTextbookWords(wordsdata, levelData);
         this._spilitData = await DataMgr.instance.getWordSplitConfig();
         this.initWords(wordsdata);
         this.initMonster(); //初始化怪物
