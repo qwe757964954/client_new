@@ -438,7 +438,7 @@ export class BuildingModel extends BaseComponent {
         pos0.y = pos0.y - 0.5 * this._width * grids[0].height;
         g.fillColor = new Color(99, 210, 198, 180);
         grids.forEach(grid => {
-            if (grid.isCanBuilding()) return;
+            // if (grid.isCanBuilding()) return;
             let pos = grid.pos;
             let x = pos.x - pos0.x;
             let y = pos.y - pos0.y;
