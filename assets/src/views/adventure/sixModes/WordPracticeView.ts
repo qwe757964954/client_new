@@ -118,10 +118,11 @@ export class WordPracticeView extends BaseModeView {
         item.removeFromParent();
         this._letterItems[index].getComponent(LetterItem).showLetter();
         this._currentLetterIdx++;
-        let word = this._currentWord.word;
-        this.onGameSubmit(word, true);
+        
         //当前词答题完毕
         if (this._currentLetterIdx >= this._currentWord.word.length) {
+            let word = this._currentWord.word;
+            this.onGameSubmit(word, true);
             this._wordIndex++;
             this._rightNum++;
 

@@ -336,6 +336,12 @@ export class c2sGameSubmit {
     score?:number;
 }
 
+export interface GameSubmitResponse extends BaseRepPacket {
+    award?: any;
+    flag_star_num?: number;
+    pass_flag?: number;
+}
+
 export interface GameSubmitModel {
     word:string;
     type_name:string;

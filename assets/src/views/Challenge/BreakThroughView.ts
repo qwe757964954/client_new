@@ -143,7 +143,6 @@ export class BreakThroughView extends BaseView {
 
     onVocabularyWord(response:VocabularyWordData){
         console.log("onVocabularyWord", response);
-        
         let game_model:LearnGameModel = this._curUnitStatus.game_mode as LearnGameModel;
         let bookLevelData:BookLevelConfig = {
             id:this._bookData.id,
