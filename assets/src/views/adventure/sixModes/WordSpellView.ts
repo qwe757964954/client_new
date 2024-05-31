@@ -112,7 +112,7 @@ export class WordSpellView extends BaseModeView {
             this._sentenceData = sentences[0];
         }
         if (this._sentenceData) {
-            let word = this._wordsData[this._wordIndex].word;
+            let word = this._rightWordData.word;
             let sentence = this._sentenceData.sentence;
             let lowerSent = sentence.toLowerCase();
             let lowerWord = word.toLowerCase();
@@ -147,7 +147,7 @@ export class WordSpellView extends BaseModeView {
             this._selectIdxs.splice(this._selectIdxs.indexOf(selectIdx), 1);
             this._selectItems.splice(this._selectItems.indexOf(item), 1);
         }
-        let groupData = this.getGroupFromWord(this._wordsData[this._wordIndex].word);
+        let groupData = this.getGroupFromWord(this._rightWordData.word);
         if (groupData.opt_num == this._selectIdxs.length) { //选择完毕
             this._selectLock = true;
             let isRight = true;
@@ -243,11 +243,11 @@ export class WordSpellView extends BaseModeView {
     //初始化拆分节点
     initItemNode() {
         this.clearSplitItems();
-        let groupData = this.getGroupFromWord(this._wordsData[this._wordIndex].word);
+        let groupData = this.getGroupFromWord(this._rightWordData.word);
         let splits = [];
         console.log('groupData', groupData);
         if (!groupData) {
-            splits = [this._wordsData[this._wordIndex].word];
+            splits = [this._rightWordData.word];
         } else {
             splits = [groupData.opt1, groupData.opt2, groupData.opt3, groupData.opt4];
         }
