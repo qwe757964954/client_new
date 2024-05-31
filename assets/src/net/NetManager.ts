@@ -207,6 +207,7 @@ class NetManager {
     /**发送特殊失败消息 */
     public sendSpecialFailedMsg() {
         if (!this._specialFailedMsg) return false;
+        console.log("sendSpecialFailedMsg");
         if (!this._socket.sendMsg(this._specialFailedMsg.data)) {
             this._specialFailedMsg.times++;
         } else {
@@ -219,6 +220,7 @@ class NetManager {
         let tmp = this._sendFailedMsg;
         this._sendFailedMsg = [];
         tmp.forEach(info => {
+            console.log("sendFailedMsg");
             if (!this._socket.sendMsg(info.data)) {
                 info.times++;
                 if (info.times >= 3) return;

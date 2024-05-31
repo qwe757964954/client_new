@@ -34,6 +34,7 @@ export default class AccountService {
     }
     /**账号登录 */
     accountLogin() {
+        console.log("accountLogin", User.account, User.password);
         let para: c2sAccountLogin = new c2sAccountLogin();
         para.user_name = User.account;
         para.password = User.password;
