@@ -133,11 +133,13 @@ export class ScrollMapView extends BaseView {
             return unitA - unitB;
         });
         this.MapLaout.removeAllChildren();
-        await this.addMapBg();
-        this.loadMapItems();
-        // this.scheduleOnce(()=>{
-        //     this.scrollToNormal();
-        // },0.2);
+        this.addMapBg().then(()=>{
+            this.loadMapItems();
+            this.scheduleOnce(()=>{
+                this.MapLaout.setPosition(0,0,0)
+                this.scrollToNormal();
+            },0.2);
+        });
     }
 
     scrollToNormal(){
@@ -221,10 +223,7 @@ export class ScrollMapView extends BaseView {
     }
 
     removePointEvent() {
-        // for (let i = 0; i < this._pointItems.length; i++) {
-        //     let itemNode = instantiate(this.mapItemPrefab);
-        //     PoolMgr.putNodePool("mapItemPool",itemNode);
-        // }
+        // this.MapLaout.removeAllChildren();
     }
 
     onDestroy(): void {
