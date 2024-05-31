@@ -10,6 +10,11 @@ export class WordExamView extends BaseModeView {
     @property({ type: List, tooltip: '选项Item' })
     itemList: List = null;
 
+    private _selectLock: boolean = false;
+    private _rightWordData: UnitWordModel = null; //正确单词数据
+    private _wrongMode: boolean = false; //错误重答模式
+    private _wrongWordList: any[] = []; //错误单词列表
+
     async initData(wordsdata: UnitWordModel[], levelData: any) {
         this.gameMode = GameMode.Exam;
         super.initData(wordsdata, levelData);
@@ -26,6 +31,9 @@ export class WordExamView extends BaseModeView {
 
 
     showCurrentWord() {
+        this._selectLock = false;
+        this._rightWordData = this._wrongMode ? this._wrongWordList.shift() : this._wordsData[this._wordIndex];
+        console.log('word', this._rightWordData);
 
     }
 
