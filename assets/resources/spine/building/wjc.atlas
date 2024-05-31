@@ -1,0 +1,76 @@
+
+wjc.png
+size: 1024,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+wjc_0
+  rotate: false
+  xy: 616, 123
+  size: 31, 32
+  orig: 31, 32
+  offset: 0, 0
+  index: -1
+wjc_1
+  rotate: false
+  xy: 724, 199
+  size: 31, 32
+  orig: 31, 32
+  offset: 0, 0
+  index: -1
+wjc_2
+  rotate: false
+  xy: 245, 93
+  size: 31, 30
+  orig: 31, 30
+  offset: 0, 0
+  index: -1
+wjc_3
+  rotate: false
+  xy: 616, 93
+  size: 26, 28
+  orig: 26, 28
+  offset: 0, 0
+  index: -1
+wjc_4
+  rotate: false
+  xy: 212, 43
+  size: 31, 32
+  orig: 31, 32
+  offset: 0, 0
+  index: -1
+wjc_5
+  rotate: true
+  xy: 2, 2
+  size: 121, 208
+  orig: 121, 208
+  offset: 0, 0
+  index: -1
+wjc_6
+  rotate: false
+  xy: 212, 77
+  size: 31, 46
+  orig: 31, 46
+  offset: 0, 0
+  index: -1
+wjc_7
+  rotate: true
+  xy: 456, 82
+  size: 149, 158
+  orig: 149, 158
+  offset: 0, 0
+  index: -1
+wjc_8
+  rotate: false
+  xy: 616, 157
+  size: 106, 74
+  orig: 106, 74
+  offset: 0, 0
+  index: -1
+wjc_9
+  rotate: false
+  xy: 2, 125
+  size: 452, 106
+  orig: 452, 106
+  offset: 0, 0
+  index: -1
