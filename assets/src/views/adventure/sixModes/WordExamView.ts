@@ -17,7 +17,7 @@ export class WordExamView extends BaseModeView {
 
     async initData(wordsdata: UnitWordModel[], levelData: any) {
         this.gameMode = GameMode.Exam;
-        super.initData(wordsdata, levelData);
+        wordsdata = this.updateTextbookWords(wordsdata, levelData);
         this.initWords(wordsdata);
         this.initEvent();
         this.initMonster(); //初始化怪物
