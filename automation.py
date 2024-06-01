@@ -89,7 +89,8 @@ def copyFileTo(fileList,rDir,tDir):
     for r_file in fileList:
         if r_file.find("DS_Store") != -1 :
             continue
-        t_file = tDir + r_file.split(rDir)[1]
+        t_file = os.path.join(tDir, r_file)
+        r_file = os.path.join(rDir, r_file)
         createDir(t_file)
         shutil.copyfile(r_file,t_file)
         
@@ -177,12 +178,23 @@ def getAssets(mainfestData, dirPath):
         else:
             mainfestData["assets"][fileName] = {"md5":md5,"size":size}
 
+def difAssets(mainfest, oldMainfest):
+    assets = mainfest.get("assets")
+    oldAssets = oldMainfest.get("assets")
+    fileList = []
+    for key in assets:
+        value = assets[key]
+        oldValue = oldAssets[key] if oldAssets else None
+        if oldValue and value["md5"] == oldValue["md5"]:
+            continue
+        fileList.append(key)
+    return fileList
+
 # stage: 默认build创建目录与生产脚本资源，make生成包
 def generateResourcesAndScript():
     lastManifestData = loadJson(local_manifest_path)
     if not lastManifestData:
-        lastManifestData = {"version":"1.0.0"}
-        saveJson(local_manifest_path, lastManifestData)
+        lastManifestData = getNewMainfestData()
 
     version = input("请输入版本号(默认当前版本%s)\n"%(lastManifestData["version"]))
     if 0 == len(version):
@@ -200,7 +212,9 @@ def generateResourcesAndScript():
     getAssets(newMainfestData, js_export_dir)
     saveJson(publish_manifest_path, newMainfestData) # 生成project.manifest到指定目录
     shutil.copyfile(publish_manifest_path,uuid_manifest_path) # 生成的manifest覆盖输出的本地manifest
-    copy_folder(js_export_dir, publish_dir) # 生成的资源拷贝到指定目录
+    difFiles = difAssets(newMainfestData,lastManifestData) # 对比两个版本差异文件
+    copyFileTo(difFiles, js_export_dir, publish_dir) # 拷贝差异文件到指定目录
+    # copy_folder(js_export_dir, publish_dir) # 拷贝所有生成的资源到指定目录
     compress_directory(publish_dir, os.path.join(publish_base_dir, version+".zip"))
     shutil.copyfile(publish_manifest_path,local_manifest_path) # 输出的manifest覆盖到本地manifest
 
