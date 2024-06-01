@@ -135,17 +135,17 @@ export class ScrollMapView extends BaseView {
         this.MapLaout.removeAllChildren();
         this.addMapBg().then(()=>{
             this.loadMapItems();
-            this.scheduleOnce(()=>{
+            // this.scheduleOnce(()=>{
                 this.MapLaout.setPosition(0,0,0)
                 this.scrollToNormal();
-            },0.2);
+            // });
         });
     }
 
     scrollToNormal(){
         let content_script = this.contentNode.getComponent(MapTouchBetterController);
         // content_script
-        let itemNode = this._pointItems[0];
+        let itemNode = this._pointItems[6];
         // 获取父节点
         let parentNode = itemNode.parent;
         // 获取父节点的父节点
