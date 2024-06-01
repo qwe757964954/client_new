@@ -1,4 +1,4 @@
-import { _decorator, JsonAsset, Label, Node, sys } from 'cc';
+import { _decorator, isValid, JsonAsset, Label, Node, sys } from 'cc';
 import { EventType } from '../../../config/EventType';
 import { NetConfig } from '../../../config/NetConfig';
 import { PrefabType } from '../../../config/PrefabType';
@@ -11,6 +11,7 @@ import { GameSubmitModel, GameSubmitResponse, UnitWordModel } from '../../../mod
 import { NetNotify } from '../../../net/NetNotify';
 import { ServiceMgr } from '../../../net/ServiceManager';
 import { TBServer } from '../../../service/TextbookService';
+import CCUtil from '../../../util/CCUtil';
 import { RecordApi } from '../../../util/third/RecordApi';
 import { RecordResponseData } from '../../../util/third/RecordModel';
 import { BaseModeView } from './BaseModeView';
@@ -172,6 +173,12 @@ export class WordReadingView extends BaseModeView {
 
     protected initEvent(): void {
         super.initEvent();
+        CCUtil.onBtnClick(this.btn_sound_recording,()=>{
+            this.soundRecordEvent();
+        });
+        CCUtil.onBtnClick(this.img_corrugation,()=>{
+            this.corrugationEvent();
+        });
     }
     protected removeEvent(): void {
         super.removeEvent();
@@ -179,6 +186,9 @@ export class WordReadingView extends BaseModeView {
     /**录音按钮事件 */
     soundRecordEvent(){
         console.log('soundRecordEvent');
+        if(isValid(this._currentSubmitResponse) && this._currentSubmitResponse.word == this._rightWordData.word) {
+            return;
+        }
         this.img_corrugation.active = true;
         this.btn_sound_recording.active = false;
         let word = this._rightWordData.word;
