@@ -1,133 +1,180 @@
 {
-    "applicationId": "170445453700024c",
-    "audioUrl": "records.stkouyu.com/6656c863552cbd1f0000a116",
-    "dtLastResponse": "2024-05-29 14:17:09:590",
-    "eof": 1,
-    "recordId": "6656c863552cbd1f0000a116",
-    "refText": "teacher",
-    "result": {
-        "duration": "1.959",
-        "kernel_version": "6.5.6",
-        "overall": 96,
-        "pause_count": 0,
-        "pronunciation": 96,
-        "resource_version": "4.1.2",
-        "stress": 100,
-        "warning": [
-            {
-                "code": 1004,
-                "message": "Audio noisy!"
-            }
-        ],
-        "words": [
-            {
-                "charType": 0,
-                "pause": {
-                    "duration": 0,
-                    "type": 0
-                },
-                "phonemes": [
-                    {
-                        "phoneme": "t",
-                        "pronunciation": 100,
-                        "span": {
-                            "end": 89,
-                            "start": 74
-                        }
-                    },
-                    {
-                        "phoneme": "i",
-                        "pronunciation": 100,
-                        "span": {
-                            "end": 101,
-                            "start": 89
-                        }
-                    },
-                    {
-                        "phoneme": "tʃ",
-                        "pronunciation": 89,
-                        "span": {
-                            "end": 119,
-                            "start": 101
-                        }
-                    },
-                    {
-                        "phoneme": "ə",
-                        "pronunciation": 85,
-                        "span": {
-                            "end": 135,
-                            "start": 119
-                        }
-                    }
-                ],
-                "phonics": [
-                    {
-                        "overall": 100,
-                        "phoneme": [
-                            "t"
-                        ],
-                        "spell": "t"
-                    },
-                    {
-                        "overall": 100,
-                        "phoneme": [
-                            "i"
-                        ],
-                        "spell": "ea"
-                    },
-                    {
-                        "overall": 89,
-                        "phoneme": [
-                            "tʃ"
-                        ],
-                        "spell": "ch"
-                    },
-                    {
-                        "overall": 85,
-                        "phoneme": [
-                            "ə"
-                        ],
-                        "spell": "er"
-                    }
-                ],
-                "readType": 0,
-                "scores": {
-                    "overall": 96,
-                    "pronunciation": 96,
-                    "stress": [
-                        {
-                            "overall": 100,
-                            "phoneme_offset": 0,
-                            "phonetic": "ti",
-                            "ref_stress": 1,
-                            "spell": "tea",
-                            "stress": 1
-                        },
-                        {
-                            "overall": 87,
-                            "phoneme_offset": 2,
-                            "phonetic": "tʃə",
-                            "ref_stress": 0,
-                            "spell": "cher",
-                            "stress": 0
-                        }
-                    ]
-                },
-                "span": {
-                    "end": 135,
-                    "start": 74
-                },
-                "word": "teacher",
-                "word_parts": [
-                    {
-                        "beginIndex": 0,
-                        "charType": 0,
-                        "endIndex": 6,
-                        "part": "teacher"
-                    }
-                ]
-            }
-        ]
-    },
-    "tokenId": "6656c86433279373d3000002"
-}
+        "applicationId": "170445453700024c",
+        "audioUrl": "records.stkouyu.com/6659a8b5e138231f0000f2b9",
+        "dtLastResponse": "2024-05-31 18:38:48:301",
+        "eof": 1,
+        "recordId": "6659a8b5e138231f0000f2b9",
+        "refText": "umbrella",
+        "result": {
+            "duration": "2.279",
+            "kernel_version": "6.5.6",
+            "overall": 87,
+            "pause_count": 0,
+            "pronunciation": 87,
+            "resource_version": "4.1.2",
+            "stress": 0,
+            "words": [
+                {
+                    "charType": 0,
+                    "pause": {
+                        "duration": 0,
+                        "type": 0
+                    },
+                    "phonemes": [
+                        {
+                            "phoneme": "ʌ",
+                            "pronunciation": 69,
+                            "span": {
+                                "end": 108,
+                                "start": 96
+                            }
+                        },
+                        {
+                            "phoneme": "m",
+                            "pronunciation": 100,
+                            "span": {
+                                "end": 118,
+                                "start": 108
+                            }
+                        },
+                        {
+                            "phoneme": "b",
+                            "pronunciation": 66,
+                            "span": {
+                                "end": 123,
+                                "start": 118
+                            }
+                        },
+                        {
+                            "phoneme": "r",
+                            "pronunciation": 0,
+                            "span": {
+                                "end": 129,
+                                "start": 123
+                            }
+                        },
+                        {
+                            "phoneme": "ɛ",
+                            "pronunciation": 0,
+                            "span": {
+                                "end": 132,
+                                "start": 129
+                            }
+                        },
+                        {
+                            "phoneme": "l",
+                            "pronunciation": 25,
+                            "span": {
+                                "end": 153,
+                                "start": 132
+                            }
+                        },
+                        {
+                            "phoneme": "ə",
+                            "pronunciation": 88,
+                            "span": {
+                                "end": 175,
+                                "start": 153
+                            }
+                        }
+                    ],
+                    "phonics": [
+                        {
+                            "overall": 69,
+                            "phoneme": [
+                                "ʌ"
+                            ],
+                            "spell": "u"
+                        },
+                        {
+                            "overall": 100,
+                            "phoneme": [
+                                "m"
+                            ],
+                            "spell": "m"
+                        },
+                        {
+                            "overall": 66,
+                            "phoneme": [
+                                "b"
+                            ],
+                            "spell": "b"
+                        },
+                        {
+                            "overall": 0,
+                            "phoneme": [
+                                "r"
+                            ],
+                            "spell": "r"
+                        },
+                        {
+                            "overall": 0,
+                            "phoneme": [
+                                "ɛ"
+                            ],
+                            "spell": "e"
+                        },
+                        {
+                            "overall": 25,
+                            "phoneme": [
+                                "l"
+                            ],
+                            "spell": "ll"
+                        },
+                        {
+                            "overall": 88,
+                            "phoneme": [
+                                "ə"
+                            ],
+                            "spell": "a"
+                        }
+                    ],
+                    "readType": 0,
+                    "scores": {
+                        "overall": 57,
+                        "pronunciation": 57,
+                        "stress": [
+                            {
+                                "overall": 85,
+                                "phoneme_offset": 0,
+                                "phonetic": "ʌm",
+                                "ref_stress": 0,
+                                "spell": "um",
+                                "stress": 0
+                            },
+                            {
+                                "overall": 22,
+                                "phoneme_offset": 2,
+                                "phonetic": "brɛ",
+                                "ref_stress": 1,
+                                "spell": "bre",
+                                "stress": 0
+                            },
+                            {
+                                "overall": 57,
+                                "phoneme_offset": 5,
+                                "phonetic": "lə",
+                                "ref_stress": 0,
+                                "spell": "lla",
+                                "stress": 1
+                            }
+                        ]
+                    },
+                    "span": {
+                        "end": 175,
+                        "start": 96
+                    },
+                    "word": "umbrella",
+                    "word_parts": [
+                        {
+                            "beginIndex": 0,
+                            "charType": 0,
+                            "endIndex": 7,
+                            "part": "umbrella"
+                        }
+                    ]
+                }
+            ]
+        },
+        "tokenId": "6659a8b63327933145000009"
+    }

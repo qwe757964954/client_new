@@ -9,12 +9,11 @@ export interface MyTextbookListStatus extends BaseRepPacket{
 export interface MyTextbookStatus {
     book_name: string,
     grade: string,
-    score: number,
+    num:number,
+    remainder_num:number,
     study_word_num: number,
-    total_score: number,
     total_word_num: number,
     type_name: string,
-    unit:string,
     user_id:number,
 } 
 

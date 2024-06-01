@@ -60,6 +60,9 @@ export class BreakThroughView extends BaseView {
     @property(Node)
     public bg: Node = null;
 
+    @property(Node)
+    public mask_node: Node = null;
+
     public _scrollMap:ScrollMapView = null;
 
     private _bookData:CurrentBookStatus = null;
@@ -77,8 +80,9 @@ export class BreakThroughView extends BaseView {
         this.initEvent();
     }
     initEvent() {
-        CCUtil.onBtnClick(this.scrollMapNode.getChildByName("contentNode"), () => {
+        CCUtil.onBtnClick(this.mask_node, () => {
             this.hideRightPanelchangeView();
+            this.mask_node.active = false;
         });
     }
     removeEvent() {
@@ -192,7 +196,7 @@ export class BreakThroughView extends BaseView {
     }
 
     onExitIsland(){
-        this._rightChallenge.hideView();
+        this.hideRightPanelchangeView()
         this.getUnitListStatus();
     }
 
@@ -249,6 +253,7 @@ export class BreakThroughView extends BaseView {
             micro_id:this._curUnitStatus.small_id,
             game_modes:"word"}
         this._rightChallenge.openView(param);
+        this.mask_node.active = true;
     }
 
     onUnitStatus(data:UnitStatusData){
@@ -306,6 +311,7 @@ export class BreakThroughView extends BaseView {
 
     hideRightPanelchangeView(){
         console.log("hideRightPanelchangeView");
+        this.mask_node.active = false;
         this._rightChallenge.hideView();
     }
     onDestroy(): void {

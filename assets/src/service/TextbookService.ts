@@ -65,12 +65,11 @@ export default class _TextbookService extends BaseControll {
             let obj: MyTextbookStatus = {
                 book_name: element.book_name,
                 grade: element.grade,
-                score: element.score,
+                remainder_num: element.remainder_num,
                 study_word_num: element.study_word_num,
-                total_score: element.total_score,
+                num: element.num,
                 total_word_num: element.total_word_num,
                 type_name: element.type_name,
-                unit: element.unit,
                 user_id: element.user_id,
             }
             myTextbookList.data.push(obj);
