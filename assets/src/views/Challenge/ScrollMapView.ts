@@ -128,10 +128,21 @@ export class ScrollMapView extends BaseView {
         this._total_grade = unitStatus.gate_total;
         this._unitStatus.sort((a, b) => {
             // 将 unit 字符串转换为数字并比较
-            const unitA = parseInt(a.unit.replace("Unit ", "").trim());
-            const unitB = parseInt(a.unit.replace("Unit ", "").trim());
+            let unitA = 0;
+            let unitB = 0;
+            if (a.unit.includes("Unit ")) {
+                unitA = parseInt(a.unit.replace("Unit ", "").trim());
+            } else {
+                unitA = parseInt(a.unit);
+            }
+            if (a.unit.includes("Unit ")) {
+                unitB = parseInt(b.unit.replace("Unit ", "").trim());
+            } else {
+                unitB = parseInt(b.unit); 
+            }
             return unitA - unitB;
         });
+        console.log("initUnit____________",this._unitStatus);
         this.MapLaout.removeAllChildren();
         this.addMapBg().then(()=>{
             this.loadMapItems();
@@ -145,7 +156,7 @@ export class ScrollMapView extends BaseView {
     scrollToNormal(){
         let content_script = this.contentNode.getComponent(MapTouchBetterController);
         // content_script
-        let itemNode = this._pointItems[6];
+        let itemNode = this._pointItems[0];
         // 获取父节点
         let parentNode = itemNode.parent;
         // 获取父节点的父节点
