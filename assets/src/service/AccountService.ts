@@ -1,4 +1,5 @@
 import { director } from "cc";
+import { EventType } from "../config/EventType";
 import { KeyConfig } from "../config/KeyConfig";
 import { SceneType } from "../config/PrefabType";
 import { TextConfig } from "../config/TextConfig";
@@ -7,7 +8,7 @@ import { c2sAccountInit, c2sAccountLogin, c2sTokenLogin, s2cAccountLogin } from 
 import { LoginType, User } from "../models/User";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
-import EventManager from "../util/EventManager";
+import EventManager, { EventMgr } from "../util/EventManager";
 import StorageUtil from "../util/StorageUtil";
 
 //用户信息服务
@@ -90,6 +91,7 @@ export default class AccountService {
                 StorageUtil.removeData(KeyConfig.Last_Login_Token);
             }
         }
+        EventMgr.emit(EventType.Login_Success);
     }
     onAccountLogout() {
         NetMgr.closeNet();//主动关闭网络，不重连
