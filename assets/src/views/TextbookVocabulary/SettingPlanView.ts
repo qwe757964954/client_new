@@ -36,16 +36,6 @@ export class SettingPlanView extends BasePopup {
     private _totoal_level:number = 20;
 
     start() {
-        console.log('this._totoal_level',this._totoal_level);
-        this.setLeftRightDatePick();
-        this.scheduleOnce(()=>{
-            if(this._totoal_level <= 5){
-                this.levelScroll.scrollToNumber(`${this._totoal_level}`)
-            }else{
-                this.levelScroll.scrollToNumber(`${5}`)
-            }
-            
-        },0.5);
         this.enableClickBlankToClose([this.node.getChildByName("small_dialog_bg")]).then(()=>{
             let data:PlanSaveData = {
                 left:`${this._levelSelect}`,
@@ -97,6 +87,19 @@ export class SettingPlanView extends BasePopup {
     updateTitleName(title:string,total_level:number) {
         this.book_title.string = title;
         this._totoal_level = total_level;
+        this.levelScroll.setTotalLevel(total_level);
+        this.dayScroll.setTotalLevel(total_level);
+        console.log('this._totoal_level',this._totoal_level);
+        this.setLeftRightDatePick();
+        this.scheduleOnce(()=>{
+            if(this._totoal_level <= 5){
+                let days = this.calculateDays(this._totoal_level);
+                this.dayScroll.scrollToNumber(`${days}`)
+            }else{
+                let days = this.calculateDays(5);
+                this.dayScroll.scrollToNumber(`${days}`)
+            }
+        },0.2)
     }
 
     onLoadLeftVerticalList(item:Node, idx:number){

@@ -22,11 +22,17 @@ export class ScrollViewExtra extends Component {
     private contentY:number = null;
     private _selectCallFunc:(select_num:number)=>void = null;
     onLoad(): void {
+        
+
+        
+    }
+
+    setTotalLevel(total:number){
+        this.totalCount = total;
         this.nowOffsetY = 0;
         this.selectChildren = [];
         this.selectChildIndex = 0;
         this.listViewExtra.init([],this);
-
         let data = [];
         for (let i = 0; i < this.totalCount; i++) {
             let tempCount = i + 1;
@@ -178,7 +184,7 @@ export class ScrollViewExtra extends Component {
             const scrollOffset = this.scrollView.getScrollOffset();
             let count  = index - 1;
             const targetOffset = count * this.listViewExtra.itemHeight;
-            this.scrollView.scrollToOffset(new math.Vec2(scrollOffset.x, targetOffset), 0.2);
+            this.scrollView.scrollToOffset(new math.Vec2(scrollOffset.x, targetOffset),0.2);
         } else {
             console.error(`Item with number ${numberString} not found.`);
         }
