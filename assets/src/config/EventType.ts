@@ -4,6 +4,7 @@ export const EventType = {
     Socket_Dis: "SocketDis",//socket断开
     Socket_Close: "SocketClose",//socket关闭
     Socket_ReconnectFail: "SocketReconnectFail",//socket重连失败
+    Login_Success: "Login_Success",//登录成功
 
     Get_Record_Result: "GetRecordResult",//获取录音结果
 
