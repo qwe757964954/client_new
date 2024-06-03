@@ -65,10 +65,6 @@ export class AmoutItem extends ListItem {
                 console.log(err);
             }
         });
-
-
-        // AssetManager.
-
         // let image = new Image();
         // image.src = url;
         // image.onload = ()=>{

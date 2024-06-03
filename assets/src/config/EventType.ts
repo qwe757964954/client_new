@@ -33,6 +33,9 @@ export const EventType = {
 
     Exit_Island_Level: "Exit_Island_Level",  //退出大冒险关卡
 
+    Challenge_ReportResult: "Challenge_ReportResult",  //挑战上报结果
+    
+
     Goto_Textbook_Level: "Goto_Textbook_Level",  //进入单词大冒险
     Goto_Textbook_Next_Level: "Goto_Textbook_Next_Level",  //进入单词大冒险下一关卡
     //大冒险学习模式相关

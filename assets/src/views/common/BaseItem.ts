@@ -1,4 +1,4 @@
-import { _decorator, Component, Label, Node, Sprite, SpriteFrame } from 'cc';
+import { _decorator, Component, Label, Sprite, SpriteFrame } from 'cc';
 const { ccclass, property } = _decorator;
 
 /**道具基类 何存发 2024年4月11日15:47:14 */

@@ -57,6 +57,7 @@ export class WordCheckView extends BaseView {
         this.initNavTitle();
         this._tabTop = await this.initTabContent();
         this._tabTop.loadTabData(this._bookTabData,(selectId:number)=>{
+            this.wordCheckScrollView.scrollTo(0);
             this._currentType = (selectId+1) as CheckWordType;
             this.wordSortView.initData(this._currentType);
             this.onRequestCheckWord();
