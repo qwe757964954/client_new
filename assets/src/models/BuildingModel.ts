@@ -19,6 +19,12 @@ import { EditAnimView } from "../views/map/EditAnimView";
 import { GridModel } from "./GridModel";
 const { ccclass, property } = _decorator;
 /**建筑数据(服务端为准) */
+class BuildingProduceData {
+    type: number;//生产类型
+    sec: number;//剩余时间(s)
+    time: number;//生产完成时间(s)
+    canGet: boolean;//是否可获得
+}
 export class BuildingData {
     public id: number;//建筑唯一索引id
     public level: number = 1;//建筑等级
@@ -27,6 +33,7 @@ export class BuildingData {
     public time: number = 0;//建筑时间
     public queueMaxCount: number = 5;//队列最大数量
     // 正在建造的队列（id，时间）
+    public queue: BuildingProduceData[] = [];
 }
 
 const defaultSpAnim = ["animation", "idle"];
@@ -331,7 +338,7 @@ export class BuildingModel extends BaseComponent {
             ViewsManager.showTip(TextConfig.Building_Cell_Tip);
             return;
         }
-        ViewsManager.showTip(TextConfig.Function_Tip);
+        ServiceMgr.buildingService.reqBuildingSell(this._buildingID);
     }
     // 翻转
     public flip(): void {
@@ -540,5 +547,28 @@ export class BuildingModel extends BaseComponent {
             return;
         }
         this._countdownFrame.node.active = this._countdownFrameShow;
+    }
+    /**添加生产队列 */
+    public addProduct(type: number, sec: number) {
+        let data = new BuildingProduceData;
+        data.type = type;
+        data.sec = sec;
+        data.time = ToolUtil.now() + sec;
+        data.canGet = sec <= 0;
+        this.buildingData.queue.push(data);
+    }
+    /**清理生产队列 */
+    public clearProduct() {
+        this.buildingData.queue = [];
+    }
+    /**每秒刷新 */
+    public updateBySec() {
+        if (this.buildingData.queue.length == 0) return;
+        let now = ToolUtil.now();
+        this.buildingData.queue.forEach(element => {
+            if (element.time <= now) {
+                element.canGet = true;
+            }
+        });
     }
 }

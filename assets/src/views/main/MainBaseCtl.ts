@@ -1,3 +1,4 @@
+import { EventMgr } from "../../util/EventManager";
 import { MainScene } from "./MainScene";
 
 // 基础控制器
@@ -15,5 +16,24 @@ export class MainBaseCtl {
     }
     // 销毁
     public dispose(): void {
+    }
+
+
+    private _eventlistener = {};
+    public addEvent(name: string, callback: Function) {
+        this.delEvent(name);
+        this._eventlistener[name] = EventMgr.on(name, callback);
+    }
+    public delEvent(name: string) {
+        if (Object.prototype.hasOwnProperty.call(this._eventlistener, name)) {
+            EventMgr.off(name, this._eventlistener[name])
+            this._eventlistener[name] = null;
+        }
+    }
+    public clearEvent() {
+        for (let event in this._eventlistener) {
+            this.delEvent(event);
+        }
+        this._eventlistener = {};
     }
 }

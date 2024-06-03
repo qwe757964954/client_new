@@ -3,9 +3,8 @@ import { MapStatus } from "../../config/MapConfig";
 import { ViewsManager } from "../../manager/ViewsManager";
 import { BuildingModel } from "../../models/BuildingModel";
 import { GridModel } from "../../models/GridModel";
-import { s2cBuildingCreate, s2cBuildingEdit } from "../../models/NetModel";
+import { s2cBuildingCreate, s2cBuildingEdit, s2cBuildingSell } from "../../models/NetModel";
 import { InterfacePath } from "../../net/InterfacePath";
-import { EventMgr } from "../../util/EventManager";
 import { MainScene } from "../main/MainScene";
 import { MapBaseCtl } from "./MapBaseCtl";
 
@@ -17,8 +16,8 @@ export class BuildEditCtl extends MapBaseCtl {
     private _dtScreenPos: Vec3 = new Vec3();//屏幕坐标差
     private _isBuildingMove: boolean = false;//建筑是否移动
 
-    private _buildingEditHandle: string;//建筑编辑事件
-    private _buildingCreateHandle: string;//建筑创建事件
+    // private _buildingEditHandle: string;//建筑编辑事件
+    // private _buildingCreateHandle: string;//建筑创建事件
 
     constructor(mainScene: MainScene, callBack?: Function) {
         super(mainScene, callBack);
@@ -27,13 +26,13 @@ export class BuildEditCtl extends MapBaseCtl {
     }
     // 初始化事件
     initEvent() {
-        this._buildingEditHandle = EventMgr.on(InterfacePath.c2sBuildingEdit, this.onBuildingEdit.bind(this));
-        this._buildingCreateHandle = EventMgr.on(InterfacePath.c2sBuildingCreate, this.onBuildingCreate.bind(this));
+        this.addEvent(InterfacePath.c2sBuildingEdit, this.onBuildingEdit.bind(this));
+        this.addEvent(InterfacePath.c2sBuildingCreate, this.onBuildingCreate.bind(this));
+        this.addEvent(InterfacePath.c2sBuildingSell, this.onBuildingSell.bind(this));
     }
     // 销毁
     public dispose(): void {
-        EventMgr.off(InterfacePath.c2sBuildingEdit, this._buildingEditHandle);
-        EventMgr.off(InterfacePath.c2sBuildingCreate, this._buildingCreateHandle);
+        this.clearEvent();
     }
     /** 建筑编辑返回 */
     onBuildingEdit(data: s2cBuildingEdit) {
@@ -44,6 +43,16 @@ export class BuildEditCtl extends MapBaseCtl {
         }
         let building = this._mainScene.findBuilding(data.id);
         building?.saveData();
+    }
+    /**建筑卖出返回 */
+    onBuildingSell(data: s2cBuildingSell) {
+        if (this._mainScene.getMapCtl() != this) return;
+        if (200 != data.code) {
+            ViewsManager.showAlert(data.msg);
+            return;
+        }
+        let building = this._mainScene.findBuilding(data.id);
+        building?.sell(true);
     }
     /** 建筑创建返回 */
     onBuildingCreate(data: s2cBuildingCreate) {

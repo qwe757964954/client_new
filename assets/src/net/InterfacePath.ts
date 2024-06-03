@@ -8,6 +8,11 @@ export const InterfacePath = {
     c2sBuildingCreate: "2006",//新建建筑
     c2sBuildingEdit: "2007",//建筑修改
     c2sLandUpdate: "2008",//地块更新
+    c2sBuildingUpgrade: "2009",//建筑升级
+    c2sBuildingSell: "2010",//建筑出售
+    c2sBuildingProduceAdd: "2011",//建筑生产队列添加
+    c2sBuildingProduceDelete: "2012",//建筑生产队列移除
+    c2sBuildingProduceGet: "2013",//建筑生产领取
 
     s2cAccountLogout: "10001",//登录被顶号返回
 

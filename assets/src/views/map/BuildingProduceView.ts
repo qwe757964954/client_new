@@ -1,19 +1,23 @@
-import { _decorator, Component, EventTouch, Label, Layers, Node, Sprite, Vec3, Widget } from 'cc';
+import { _decorator, EventTouch, Label, Layers, Node, Sprite, Vec3, Widget } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import GlobalConfig from '../../GlobalConfig';
-import { DataMgr, ProduceInfo } from '../../manager/DataMgr';
-import { ViewsManager } from '../../manager/ViewsManager';
+import { BuildProduceInfo, DataMgr } from '../../manager/DataMgr';
+import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { BuildingModel } from '../../models/BuildingModel';
+import { s2cBuildingProduceAdd, s2cBuildingProduceDelete, s2cBuildingProduceGet, s2cBuildingUpgrade } from '../../models/NetModel';
+import { InterfacePath } from '../../net/InterfacePath';
+import { BaseComponent } from '../../script/BaseComponent';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
 import { ToolUtil } from '../../util/ToolUtil';
 import { BuildingProduceItem } from './BuildingProduceItem';
 import { BuildingUpgradeView } from './BuildingUpgradeView';
+import { ProduceQueueItem } from './ProduceQueueItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('BuildingProduceView')
-export class BuildingProduceView extends Component {
+export class BuildingProduceView extends BaseComponent {
     @property(Sprite)
     public btnClose: Sprite = null;//关闭按钮
     @property(Node)
@@ -40,7 +44,9 @@ export class BuildingProduceView extends Component {
     private _preCallBack: Function = null;
     private _nextCallBack: Function = null;
 
-    private _produceData: ProduceInfo[] = null;
+    // private _produceData: ProduceInfo[] = null;
+    private _produceInfo: BuildProduceInfo = null;
+    private _remainingNum: number = 0;
 
     onLoad() {
         this.adaptUI();
@@ -66,6 +72,11 @@ export class BuildingProduceView extends Component {
         CCUtil.onTouch(this.btnLeft, this.onClickLeft, this);
         CCUtil.onTouch(this.btnRight, this.onClickRight, this);
         CCUtil.onTouch(this.btnUpgrade, this.onClickUpgrade, this);
+
+        this.addModelListener(InterfacePath.c2sBuildingUpgrade, this.onBuildingUpgrade);
+        this.addModelListener(InterfacePath.c2sBuildingProduceAdd, this.onBuildingProduceAdd);
+        this.addModelListener(InterfacePath.c2sBuildingProduceDelete, this.onBuildingProduceDelete);
+        this.addModelListener(InterfacePath.c2sBuildingProduceGet, this.onBuildingProduceGet);
     }
     // 移除事件
     removeEvent() {
@@ -73,6 +84,8 @@ export class BuildingProduceView extends Component {
         CCUtil.offTouch(this.btnLeft, this.onClickLeft, this);
         CCUtil.offTouch(this.btnRight, this.onClickRight, this);
         CCUtil.offTouch(this.btnUpgrade, this.onClickUpgrade, this);
+
+        this.removeAllModelListener();
     }
     // 处理销毁
     dispose() {
@@ -95,12 +108,9 @@ export class BuildingProduceView extends Component {
         let editInfo = building.editInfo;
         this.labelName.string = editInfo.name;
         let produceInfo = DataMgr.instance.buildProduceInfo[editInfo.id];
-        this._produceData = produceInfo?.data;
-        let count = produceInfo ? produceInfo.count : 0;
-        this.listView.numItems = count;
-        let buildingData = this._building.buildingData;
-        this.leftListView.numItems = buildingData.queueMaxCount;
-        this.btnUpgrade.active = buildingData.level < count;
+        this._produceInfo = produceInfo;
+        this.onUpdateQueue();
+        this.onUpdateLevelProduce();
     }
     /**设置回调 */
     setCallBack(closeCallBack: Function) {
@@ -145,18 +155,80 @@ export class BuildingProduceView extends Component {
     }
     /**list加载 */
     onLoadProduceInfoList(item: Node, idx: number) {
-        let data = this._produceData[idx + 1];
-        item.getComponent(BuildingProduceItem)?.initData(data, this._building.buildingData.level, 5);
+        let data = this._produceInfo.data[idx + 1];
+        let produceItem = item.getComponent(BuildingProduceItem);
+        produceItem.initData(data, this._building.buildingData.level, this._building.buildingID);
+        console.log("onLoadProduceInfoList", this._remainingNum);
+        produceItem.setNum(this._remainingNum);
     }
     onLoadLeftList(item: Node, idx: number) {
-        CCUtil.offTouch(item, this.onLeftListClick, this);
-        CCUtil.onTouch(item, this.onLeftListClick, this);
+        let queue = this._building.buildingData.queue;
+        let data = queue[idx];
+        console.log("onLoadLeftList", idx, data);
+        if (!data) {
+            item.getComponent(ProduceQueueItem)?.init(null);
+            return;
+        }
+        let produceData = this._produceInfo.data[data.type];
+        item.getComponent(ProduceQueueItem)?.init(data.time, produceData.res_png, this._building.buildingID, idx, produceData.res_time);
     }
     /**list点击 */
     onLeftListClick(event: EventTouch) {
         // console.log("onLeftListClick", event);
         // event.target.active = false;
         ViewsManager.showTip(TextConfig.Function_Tip);
+    }
+    /**建筑升级 */
+    onBuildingUpgrade(data: s2cBuildingUpgrade) {
+        if (data.id != this._building.buildingID) return;
+        this._building.buildingData.level = data.level;
+    }
+    /**建筑生产队列添加 */
+    onBuildingProduceAdd(data: s2cBuildingProduceAdd) {
+        console.log("onBuildingProduceAdd", this._building.buildingID);
+        if (data.id != this._building.buildingID) return;
+        this._building.clearProduct();
+        data.remaining_infos.forEach((info) => {
+            this._building.addProduct(info.product_type, info.remaining_seconds);
+        });
+        this.onUpdateQueue();
+    }
+    /**建筑生产队列移除 */
+    onBuildingProduceDelete(data: s2cBuildingProduceDelete) {
+        if (data.id != this._building.buildingID) return;
+        this._building.clearProduct();
+        data.remaining_infos.forEach((info) => {
+            this._building.addProduct(info.product_type, info.remaining_seconds);
+        });
+        this.onUpdateQueue();
+    }
+    /**建筑生产获取 */
+    onBuildingProduceGet(data: s2cBuildingProduceGet) {
+        if (data.id != this._building.buildingID) return;
+        this._building.clearProduct();
+        data.remaining_infos.forEach((info) => {
+            this._building.addProduct(info.product_type, info.remaining_seconds);
+        });
+        this.onUpdateQueue();
+
+        let list = ToolUtil.propMapToList(data.product_items);
+        ViewsMgr.showRewards(list);
+    }
+    /**更新队列 */
+    onUpdateQueue() {
+        let buildingData = this._building.buildingData;
+        this._remainingNum = buildingData.queueMaxCount - buildingData.queue.length;
+        console.log("onUpdateQueue", this._remainingNum, buildingData.queueMaxCount, buildingData.queue.length);
+        this.leftListView.numItems = buildingData.queueMaxCount;
+        this.listView.content.children.forEach((item: Node) => {
+            item.getComponent(BuildingProduceItem)?.setNum(this._remainingNum);
+        });
+    }
+    /**更新等级生产 */
+    onUpdateLevelProduce() {
+        let count = this._produceInfo ? this._produceInfo.count : 0;
+        this.listView.numItems = count;
+        this.btnUpgrade.active = this._building.buildingData.level < count;
     }
 }
 

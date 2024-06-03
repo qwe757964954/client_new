@@ -102,6 +102,11 @@ export class s2cAccountLogin extends BaseRepPacket {
     token: string;//token
     detail: s2cAccountLoginDetail;
 }
+/**建筑生产信息 */
+export class s2cBuildingProduceInfo {
+    product_type: number;//生产类型
+    remaining_seconds: number;//剩余时间(s)
+}
 /**建筑列表 */
 export class c2sBuildingList {
     command_id: string = InterfacePath.c2sBuildingList;
@@ -112,6 +117,9 @@ export class s2cBuildingListInfo {
     x: number;//建筑x坐标
     y: number;//建筑y坐标
     direction: number;//建筑方向 0:未翻转, 1: 翻转
+    level: number;//建筑等级
+    hide: number;//是否回收 0:未回收, 1: 已回收
+    remaining_infos: s2cBuildingProduceInfo[];//生产信息
 }
 /**建筑列表返回*/
 export class s2cBuildingList extends BaseRepPacket {
@@ -152,6 +160,65 @@ export class c2sLandUpdate {
 }
 /**地块更新返回 */
 export class s2cLandUpdate extends BaseRepPacket {
+}
+/**建筑升级 */
+export class c2sBuildingUpgrade {
+    command_id: string = InterfacePath.c2sBuildingUpgrade;
+    id: number;//建筑唯一索引id
+    level: number;//建筑等级
+}
+/**建筑升级返回 */
+export class s2cBuildingUpgrade extends BaseRepPacket {
+    id: number;//建筑唯一索引id
+    level: number;//建筑等级
+}
+/**建筑卖出 */
+export class c2sBuildingSell {
+    command_id: string = InterfacePath.c2sBuildingSell;
+    id: number;//建筑唯一索引id
+}
+/**建筑卖出返回 */
+export class s2cBuildingSell extends BaseRepPacket {
+    id: number;//建筑唯一索引id
+}
+/**建筑生产队列添加 */
+export class c2sBuildingProduceAdd {
+    command_id: string = InterfacePath.c2sBuildingProduceAdd;
+    id: number;//建筑唯一索引id
+    product_type: number[];//生产类型
+}
+/**建筑生产队列添加返回 */
+export class s2cBuildingProduceAdd extends BaseRepPacket {
+    id: number;//建筑唯一索引id
+    remaining_infos: s2cBuildingProduceInfo[];//生产信息
+}
+/**建筑生产队列删除 */
+export class c2sBuildingProduceDelete {
+    command_id: string = InterfacePath.c2sBuildingProduceDelete;
+    id: number;//建筑唯一索引id
+    product_num: number;//生产索引
+}
+/**建筑生产队列删除返回 */
+export class s2cBuildingProduceDelete extends BaseRepPacket {
+    id: number;//建筑唯一索引id
+    remaining_infos: s2cBuildingProduceInfo[];//生产信息
+}
+/**建筑生产物品 */
+export class s2cProductItem {
+    coin: number;//金币
+    diamond: number;//钻石
+}
+/**建筑生产领取 */
+export class c2sBuildingProduceGet {
+    command_id: string = InterfacePath.c2sBuildingProduceGet;
+    id: number;//建筑唯一索引id
+    product_num: number;//生产索引
+}
+/**建筑生产领取返回 */
+export class s2cBuildingProduceGet extends BaseRepPacket {
+    id: number;//建筑唯一索引id
+    product_items: s2cProductItem[];//生产物品
+    remaining_infos: s2cBuildingProduceInfo[];//生产信息
 }
 
 /**********************************以上是新接口*************************************/
