@@ -3,7 +3,7 @@ import { MapStatus } from "../../config/MapConfig";
 import { ViewsManager } from "../../manager/ViewsManager";
 import { BuildingModel } from "../../models/BuildingModel";
 import { GridModel } from "../../models/GridModel";
-import { s2cBuildingCreate, s2cBuildingEdit, s2cBuildingSell } from "../../models/NetModel";
+import { s2cBuildingCreate, s2cBuildingEdit, s2cBuildingRecycle, s2cBuildingSell } from "../../models/NetModel";
 import { InterfacePath } from "../../net/InterfacePath";
 import { MainScene } from "../main/MainScene";
 import { MapBaseCtl } from "./MapBaseCtl";
@@ -29,6 +29,7 @@ export class BuildEditCtl extends MapBaseCtl {
         this.addEvent(InterfacePath.c2sBuildingEdit, this.onBuildingEdit.bind(this));
         this.addEvent(InterfacePath.c2sBuildingCreate, this.onBuildingCreate.bind(this));
         this.addEvent(InterfacePath.c2sBuildingSell, this.onBuildingSell.bind(this));
+        this.addEvent(InterfacePath.c2sBuildingRecycle, this.onBuildingRecycle.bind(this));
     }
     // 销毁
     public dispose(): void {
@@ -66,6 +67,16 @@ export class BuildEditCtl extends MapBaseCtl {
             building.buildingID = data.id;
             building.saveData();
         }
+    }
+    /**建筑回收返回 */
+    onBuildingRecycle(data: s2cBuildingRecycle) {
+        if (this._mainScene.getMapCtl() != this) return;
+        if (200 != data.code) {
+            ViewsManager.showAlert(data.msg);
+            return;
+        }
+        let building = this._mainScene.findBuilding(data.id);
+        building?.recycle();
     }
     // 设置选中建筑
     public set selectBuilding(building: BuildingModel) {

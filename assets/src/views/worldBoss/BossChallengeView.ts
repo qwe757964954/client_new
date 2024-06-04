@@ -51,6 +51,7 @@ export class BossChallengeView extends BaseView {
     private _bossGame:BossGameInfo = null;
     protected _pet: Node = null; //精灵
     protected _role: Node = null; //人物
+    private _monsterPos:Vec3 = null;
     onLoad(): void {
         this.initUI();
         this.initEvent();
@@ -92,6 +93,7 @@ export class BossChallengeView extends BaseView {
     initMonster(bossData:BossInfo){
         this._monster = instantiate(this.monsterModel);
         this.monster.addChild(this._monster);
+        this._monsterPos = new Vec3(this._monster.position);
         NodeUtil.setLayerRecursively(this._monster,Layers.Enum.UI_2D);
         this._monster.setScale(bossData.challengeScale, bossData.challengeScale, bossData.challengeScale);
         let monsterModel = this._monster.getComponent(MonsterModel);
@@ -136,6 +138,7 @@ export class BossChallengeView extends BaseView {
         });
     }
     onChallengeReportResult(params:{result:AnswerType}){
+        
         console.log(params);
         if(params.result == AnswerType.Correct){
             this.attackMonster().then(() => {
@@ -166,16 +169,16 @@ export class BossChallengeView extends BaseView {
     }
     monsterAttackShow(target: Node) {
         return new Promise((resolve, reject) => {
-            let monsterPos = new Vec3(this._monster.position);
+            
             let spNode = this._monster.getChildByName("sp")
             let sp_real_width = spNode.getComponent(UITransform).width * spNode.scale.x * this._monster.scale.x*0.5;
             let targetTranform = target.parent.getComponent(UITransform);
             let monsterTransform = this.monsterContainer.getComponent(UITransform);
             let targetpos = monsterTransform.convertToNodeSpaceAR(targetTranform.convertToWorldSpaceAR(new Vec3(0, 0, 0)));
             this._monster.getComponent(MonsterModel).move();
-            tween(this._monster).to(1, { position: new Vec3(targetpos.x + sp_real_width, monsterPos.y, targetpos.z) }).call(() => { 
+            tween(this._monster).to(1, { position: new Vec3(targetpos.x + sp_real_width, this._monsterPos.y, targetpos.z) }).call(() => { 
                 this._monster.getComponent(MonsterModel).hit().then(() => { 
-                    tween(this._monster).to(0.5, { position: monsterPos }).start(); 
+                    tween(this._monster).to(0.5, { position: this._monsterPos }).start(); 
                     resolve(true);
                 });
                 // this._monster.getComponent(MonsterModel).hit().then(() => { tween(this._monster).to(0.5, { position: monsterPos }).start(); resolve(true); 

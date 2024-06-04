@@ -4126,11 +4126,17 @@
     "labelName": {
       "__id__": 160
     },
+    "labelLevel": {
+      "__id__": 166
+    },
     "btnUpgrade": {
       "__id__": 15
     },
     "plLeft": {
       "__id__": 56
+    },
+    "labelQueue": {
+      "__id__": 98
     },
     "_id": ""
   },

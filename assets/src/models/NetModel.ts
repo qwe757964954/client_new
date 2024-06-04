@@ -134,6 +134,7 @@ export class c2sBuildingEdit {
     x: number;//建筑x坐标
     y: number;//建筑y坐标
     direction: number;//建筑方向
+    hide: number;//是否回收 0:未回收, 1: 已回收
 }
 /**建筑修改返回 */
 export class s2cBuildingEdit extends BaseRepPacket {
@@ -179,6 +180,15 @@ export class c2sBuildingSell {
 }
 /**建筑卖出返回 */
 export class s2cBuildingSell extends BaseRepPacket {
+    id: number;//建筑唯一索引id
+}
+/**建筑回收 */
+export class c2sBuildingRecycle {
+    command_id: string = InterfacePath.c2sBuildingRecycle;
+    id: number;//建筑唯一索引id
+}
+/**建筑回收返回 */
+export class s2cBuildingRecycle extends BaseRepPacket {
     id: number;//建筑唯一索引id
 }
 /**建筑生产队列添加 */

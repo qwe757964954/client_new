@@ -130,4 +130,16 @@ export class ToolUtil {
             }
         }
     }
+    /**判断数组是否变化 */
+    static arrayIsChange(arr1: number[], arr2: number[]): boolean {
+        if (arr1.length != arr2.length) return true;
+        arr1 = arr1.slice();
+        arr2 = arr2.slice();
+        arr1.sort();
+        arr2.sort();
+        for (let i = 0; i < arr1.length; i++) {
+            if (arr1[i] != arr2[i]) return true;
+        }
+        return false;
+    }
 }
