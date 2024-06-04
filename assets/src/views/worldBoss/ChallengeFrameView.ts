@@ -21,6 +21,7 @@ export class ChallengeFrameView extends Component {
 
     private _bossWords:BossGameWord[] = []; 
     private _currentWord:BossGameWord = null;
+    private _isMoving:boolean = false;
     start() {
 
     }
@@ -47,16 +48,21 @@ export class ChallengeFrameView extends Component {
         item_sript.updatePropsItem(wordInfo,idx);
     }
     onAnswerVerticalSelected(item: any, selectedId: number, lastSelectedId: number, val: number){
-        console.log("onBossVerticalSelected",selectedId);
+        
         if(!isValid(selectedId) || selectedId < 0 || !isValid(item)){return;}
+        if(selectedId >= this._bossWords.length){return;}
+        if(this._isMoving){return}
+        this._isMoving = true;
+        console.log("onBossVerticalSelected",selectedId);
         let wordInfo:BossGameWord = this._bossWords[selectedId];
         let status:AnswerType = this._currentWord.En == wordInfo.En ? AnswerType.Correct :  AnswerType.Error;
         let item_sript:ChallengeAnswerItem = item.getComponent(ChallengeAnswerItem);
         item_sript.changeItemStatus(status);
         this.removeWord(wordInfo);
-        this.scheduleOnce(()=>{
-            EventMgr.dispatch(EventType.Challenge_ReportResult,{result:status});
-        },0.5)
+        this.scheduleOnce(() => {
+            this._isMoving = false;
+        },2)
+        EventMgr.dispatch(EventType.Challenge_ReportResult,{result:status});
         
     }
 
