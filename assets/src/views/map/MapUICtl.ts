@@ -6,7 +6,7 @@ import { TextConfig } from "../../config/TextConfig";
 import { DataMgr, EditInfo } from "../../manager/DataMgr";
 import { ViewsMgr } from "../../manager/ViewsManager";
 import { BgModel } from "../../models/BgModel";
-import { BuildingModel } from "../../models/BuildingModel";
+import { BuildingModel, RecycleData } from "../../models/BuildingModel";
 import { GridModel } from "../../models/GridModel";
 import { LandModel } from "../../models/LandModel";
 import { s2cBuildingList, s2cBuildingListInfo, s2cBuildingProduceAdd, s2cBuildingProduceDelete, s2cBuildingProduceGet } from "../../models/NetModel";
@@ -225,7 +225,10 @@ export class MapUICtl extends MainBaseCtl {
         // list.push({ id: 1, bid: 3, x: 0, y: 0, direction: 0 });
         list.forEach(element => {
             if (element.hide) {
-                this._mainScene.addRecycleBuilding(element.id, element.bid);
+                let recycleData = new RecycleData();
+                recycleData.bid = element.bid;
+                recycleData.data = BuildingModel.getBuildingDataByMsg(element);
+                this._mainScene.addRecycleBuilding(recycleData);
                 return;
             }
             let editInfo = DataMgr.instance.editInfo[element.bid];
@@ -519,9 +522,9 @@ export class MapUICtl extends MainBaseCtl {
             }
             let building = this.newBuilding(data, grid.x, grid.y);
             if (building) {
-                let buildingID = this._mainScene.getRecycleBuilding(data.id);
-                if (null != buildingID) {
-                    building.buildingID = buildingID;
+                let recycleData = this._mainScene.getRecycleBuilding(data.id);
+                if (null != recycleData) {
+                    building.restoreRecycleData(recycleData);
                 }
             }
             return building;
