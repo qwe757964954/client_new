@@ -18,6 +18,10 @@ import { CountdownFrame } from "../views/map/CountdownFrame";
 import { EditAnimView } from "../views/map/EditAnimView";
 import { GridModel } from "./GridModel";
 const { ccclass, property } = _decorator;
+export enum BuildingIDType {
+    castle = 0,//城堡
+    mine = 3,//矿山
+}
 /**建筑数据(服务端为准) */
 class BuildingProduceData {
     type: number;//生产类型
@@ -111,7 +115,7 @@ export class BuildingModel extends BaseComponent {
             this.show(true);
         }
         /**是否是矿山，需特殊处理 */
-        if (3 == editInfo.id) {
+        if (BuildingIDType.mine == editInfo.id) {
             this.isCanEdit = false;
             this.pos = new Vec3(MapConfig.minePos.x, MapConfig.minePos.y, 0);
         }

@@ -742,4 +742,15 @@ export class MapUICtl extends MainBaseCtl {
         }
         return null;
     }
+    findAllBuilding(typeID: number) {
+        let ary = [];
+        let children = this._mainScene.buildingLayer.children;
+        for (let i = 0; i < children.length; i++) {
+            const element = children[i];
+            let building = element.getComponent(BuildingModel);
+            if (!building) continue;
+            if (building.editInfo.id == typeID) ary.push(building);
+        }
+        return ary;
+    }
 }

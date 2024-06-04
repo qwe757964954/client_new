@@ -444,6 +444,9 @@ export class MainScene extends Component {
     findBuildingByIdx(idx: number) {
         return this._mapUICtl.findBuildingByIdx(idx);
     }
+    findAllBuilding(typeID: number) {
+        return this._mapUICtl.findAllBuilding(typeID);
+    }
     /**展示建筑建造界面 */
     showBuildingProduceView(selectBuilding: BuildingModel) {
         ViewsManager.instance.showView(PrefabType.BuildingProduceView, (node: Node) => {

@@ -1,6 +1,7 @@
 import { _decorator, color, Component, Label, Node, Prefab, ScrollView, Sprite, SpriteFrame } from 'cc';
 import { MapStatus } from '../../config/MapConfig';
 import { DataMgr, EditInfo, EditType } from '../../manager/DataMgr';
+import { BuildingIDType } from '../../models/BuildingModel';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
 import { EditItem } from '../map/EditItem';
@@ -44,6 +45,7 @@ export class EditUIView extends Component {
     //设置主场景
     public set mainScene(mainScene: MainScene) {
         this._mainScene = mainScene;
+        this.showEditType(EditType.Null);
     }
     // 初始化事件
     initEvent() {
@@ -113,6 +115,7 @@ export class EditUIView extends Component {
     }
     /**显示对应编辑类型 */
     showEditType(editType: EditType) {
+        if (!this._mainScene) return;
         if (editType == this._editType) return;
         this._editType = editType;
 
@@ -120,8 +123,18 @@ export class EditUIView extends Component {
         this._itemsData = [];
         editConfig.forEach(info => {
             if (editType != EditType.Null && editType != info.type) return;
-            if (3 == info.id) return;//矿山，需特殊处理
-            this._itemsData.push(info);
+            if (BuildingIDType.mine == info.id) return;//矿山，需特殊处理
+            if (EditType.Decoration == info.type || EditType.Land == info.type) {
+                this._itemsData.push(info);
+            } else {
+                let ary = this._mainScene.findAllBuilding(info.id);
+                if (BuildingIDType.castle == info.id) {
+                    console.log("ary", ary);
+                }
+                if (!ary || ary.length <= 0) {
+                    this._itemsData.push(info);
+                }
+            }
         });
         this.listView.numItems = this._itemsData.length;
         // this.listView.scrollTo(0, 0);
