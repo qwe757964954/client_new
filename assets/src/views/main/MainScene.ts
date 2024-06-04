@@ -1,7 +1,7 @@
 import { _decorator, Camera, Canvas, Component, EventMouse, EventTouch, Layers, Node, Prefab, sp, UITransform, Vec3 } from 'cc';
 import { EventType } from '../../config/EventType';
 import { MapStatus } from '../../config/MapConfig';
-import { BuildingModel } from '../../models/BuildingModel';
+import { BuildingModel, RecycleData } from '../../models/BuildingModel';
 import EventManager from '../../util/EventManager';
 import { BuildEditCtl } from '../map/BuildEditCtl';
 import { LandEditCtl } from '../map/LandEditCtl';
@@ -81,7 +81,7 @@ export class MainScene extends Component {
     private _mapUICtl: MapUICtl = null;//地图界面控制器
 
     private _loadCount: number = 0;//加载计数
-    private _recycleBuildingAry: { id: number, bid: number }[] = [];//回收建筑信息
+    private _recycleBuildingAry: RecycleData[] = [];//回收建筑信息
     /**=========================事件handle============================ */
     private _buildingBtnViewCloseHandle: string;//建筑按钮视图关闭事件
 
@@ -534,26 +534,28 @@ export class MainScene extends Component {
         this._mainUIView.node.active = true;
     }
     /**回收建筑 */
-    addRecycleBuilding(id: number, bid: number) {
-        this._recycleBuildingAry.push({ id: id, bid: bid });
+    addRecycleBuilding(data: RecycleData) {
+        // console.log("addRecycleBuilding", data);
+        this._recycleBuildingAry.push(data);
     }
     /**获取回收建筑 */
     getRecycleBuilding(bid: number) {
+        // console.log("getRecycleBuilding", bid, this._recycleBuildingAry);
         let index = -1;
-        let id = 0;
+        let data = null;
         for (let i = 0; i < this._recycleBuildingAry.length; i++) {
             let element = this._recycleBuildingAry[i];
             if (element.bid == bid) {
                 index = i;
-                id = element.id;
+                data = element;
                 break;
             }
         }
         if (index > -1) {
             this._recycleBuildingAry.splice(index, 1);
-            return id;
+            return data;
         }
-        return null;
+        return data;
     }
 }
 

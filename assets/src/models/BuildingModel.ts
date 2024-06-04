@@ -19,10 +19,16 @@ import { CountdownFrame } from "../views/map/CountdownFrame";
 import { EditAnimView } from "../views/map/EditAnimView";
 import { ProduceItemView } from "../views/map/ProduceItemView";
 import { GridModel } from "./GridModel";
+import { s2cBuildingListInfo } from "./NetModel";
 const { ccclass, property } = _decorator;
 export enum BuildingIDType {
     castle = 0,//城堡
     mine = 3,//矿山
+}
+/**回收数据 */
+export class RecycleData {
+    public bid: number;//建筑id
+    public data: BuildingData;//建筑数据
 }
 /**建筑数据(服务端为准) */
 class BuildingProduceData {
@@ -67,6 +73,8 @@ export class BuildingModel extends BaseComponent {
     private _isFlip: boolean = false;//是否翻转
     private _isShow: boolean = false;//是否显示
     private _isNew: boolean = false;//是否是新建
+    private _isRecycle: boolean = false;//是否是回收
+    public isSell: boolean = false;//是否卖出
 
     // private _dataX:number;//数据x
     // private _dataY:number;//数据y
@@ -143,6 +151,8 @@ export class BuildingModel extends BaseComponent {
     // 销毁
     protected onDestroy(): void {
         this.destoryEvent();
+        this.clearTimer();
+        EventManager.emit(EventType.EditUIView_Refresh);
     }
     /**清理定时器 */
     public clearTimer() {
@@ -326,6 +336,7 @@ export class BuildingModel extends BaseComponent {
         this._dataIsFlip = this._isFlip;
         this._dataIsShow = this._isShow;
         this._isNew = false;
+        this._isRecycle = false;
         this.closeBtnView();
         this.closeLongView();
     }
@@ -347,6 +358,7 @@ export class BuildingModel extends BaseComponent {
             ViewsManager.showTip(TextConfig.Building_Cell_Tip);
             return;
         }
+        this.isSell = true;
         this.recycle();//与回收差别?，如不能还原则需修改逻辑
     }
     /**请求卖出 */
@@ -363,7 +375,7 @@ export class BuildingModel extends BaseComponent {
     }
     // 回收按钮点击
     public recycleBtnClick(): void {
-        if (this._buildingID) {
+        if (!this._isRecycle && this._buildingID) {
             ServiceMgr.buildingService.reqBuildingRecycle(this._buildingID);
         } else {
             this.recycle();
@@ -666,5 +678,38 @@ export class BuildingModel extends BaseComponent {
             return;
         }
         this._produceItemView.node.active = this._produceItemViewShow;
+    }
+    /**获取回收数据 */
+    public getRecycleData() {
+        let data = new RecycleData();
+        data.bid = this._editInfo.id;
+        data.data = this.buildingData;
+        return data;
+    }
+    /**从回收数据还原 */
+    public restoreRecycleData(data: RecycleData) {
+        console.log("restoreRecycleData", data, this._buildingID, this._editInfo.id);
+        if (this._buildingID || data.bid != this._editInfo.id) return;
+        this.buildingID = data.data.id;
+        this.buildingData = data.data;
+        this._isRecycle = true;
+        if (EditType.Buiding == this._editInfo.type || EditType.LandmarkBuiding == this._editInfo.type) {
+            this.checkProduce();
+        }
+    }
+    /**消息对象转换成数据 */
+    static getBuildingDataByMsg(msg: s2cBuildingListInfo) {
+        let data = new BuildingData();
+        data.id = msg.id;
+        data.level = msg.level;
+        let now = ToolUtil.now();
+        msg.remaining_infos.forEach(element => {
+            let tmpData = new BuildingProduceData();
+            tmpData.type = element.product_type;
+            tmpData.sec = element.remaining_seconds;
+            tmpData.time = now + element.remaining_seconds;
+            data.queue.push(tmpData);
+        });
+        return data;
     }
 }

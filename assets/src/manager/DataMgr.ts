@@ -108,7 +108,7 @@ export class BookLevelConfig {
     cur_game_mode: number;
     error_word?: any;
     time_remaining: number;
-    error_num: number;
+    error_num?: number;
 }
 //成就信息配置
 export class ArchConfig {

@@ -13,6 +13,11 @@ export class MapEditCtl extends MapBaseCtl {
     private _cacheDataAry: BuildingModel[] = [];//缓存数据
 
     private _buildingRemoveHandle: string;//建筑移除事件
+    constructor(mainScene: any, callBack?: Function) {
+        super(mainScene, callBack);
+
+        this.initEvent();
+    }
     // 初始化事件
     public initEvent(): void {
         this._buildingRemoveHandle = EventManager.on(EventType.BuidingModel_Remove, this.onBuildingRemove.bind(this));
@@ -83,8 +88,8 @@ export class MapEditCtl extends MapBaseCtl {
         //     return;
         // }
         // this._cacheDataAry.push(building);
-        if (building.buildingID) {
-            this._mainScene.addRecycleBuilding(building.buildingID, building.editInfo.id);
+        if (building.buildingID && !building.isSell) {
+            this._mainScene.addRecycleBuilding(building.getRecycleData());
         }
     }
 }
