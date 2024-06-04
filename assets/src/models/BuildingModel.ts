@@ -73,6 +73,7 @@ export class BuildingModel extends BaseComponent {
     private _isFlip: boolean = false;//是否翻转
     private _isShow: boolean = false;//是否显示
     private _isNew: boolean = false;//是否是新建
+    private _isRecycle: boolean = false;//是否是回收
     public isSell: boolean = false;//是否卖出
 
     // private _dataX:number;//数据x
@@ -335,6 +336,7 @@ export class BuildingModel extends BaseComponent {
         this._dataIsFlip = this._isFlip;
         this._dataIsShow = this._isShow;
         this._isNew = false;
+        this._isRecycle = false;
         this.closeBtnView();
         this.closeLongView();
     }
@@ -373,7 +375,7 @@ export class BuildingModel extends BaseComponent {
     }
     // 回收按钮点击
     public recycleBtnClick(): void {
-        if (this._buildingID) {
+        if (!this._isRecycle && this._buildingID) {
             ServiceMgr.buildingService.reqBuildingRecycle(this._buildingID);
         } else {
             this.recycle();
@@ -690,6 +692,7 @@ export class BuildingModel extends BaseComponent {
         if (this._buildingID || data.bid != this._editInfo.id) return;
         this.buildingID = data.data.id;
         this.buildingData = data.data;
+        this._isRecycle = true;
         if (EditType.Buiding == this._editInfo.type || EditType.LandmarkBuiding == this._editInfo.type) {
             this.checkProduce();
         }
