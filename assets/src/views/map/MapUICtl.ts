@@ -4,17 +4,18 @@ import { EventType } from "../../config/EventType";
 import { MapConfig } from "../../config/MapConfig";
 import { TextConfig } from "../../config/TextConfig";
 import { DataMgr, EditInfo } from "../../manager/DataMgr";
+import { ViewsMgr } from "../../manager/ViewsManager";
 import { BgModel } from "../../models/BgModel";
 import { BuildingModel } from "../../models/BuildingModel";
 import { GridModel } from "../../models/GridModel";
 import { LandModel } from "../../models/LandModel";
-import { s2cBuildingList, s2cBuildingListInfo } from "../../models/NetModel";
+import { s2cBuildingList, s2cBuildingListInfo, s2cBuildingProduceAdd, s2cBuildingProduceDelete, s2cBuildingProduceGet } from "../../models/NetModel";
 import { RoleBaseModel } from "../../models/RoleBaseModel";
 import { RoleModel } from "../../models/RoleModel";
 import { InterfacePath } from "../../net/InterfacePath";
 import { ServiceMgr } from "../../net/ServiceManager";
 import { BaseComponent } from "../../script/BaseComponent";
-import EventManager, { EventMgr } from "../../util/EventManager";
+import EventManager from "../../util/EventManager";
 import { TimerMgr } from "../../util/TimerMgr";
 import { ToolUtil } from "../../util/ToolUtil";
 import { MainBaseCtl } from "../main/MainBaseCtl";
@@ -39,10 +40,6 @@ export class MapUICtl extends MainBaseCtl {
     private _roleModelAry: RoleBaseModel[] = [];//角色模型数组
     private _isNeedUpdateVisible: boolean = false;//是否需要更新可视区域
     private _isNeedSort: boolean = false;//是否需要重新排序
-    private _buidingSortHandler: string;//建筑需要重新排序handle
-    private _roleMoveHandler: string;//角色需要移动handle
-    private _roleSortHandler: string;//角色需要重新排序handle
-    private _buildingListHandle: string;//建筑列表handle
     private _roleIsShow: boolean = true;//角色是否显示
     private _countdownFrameIsShow: boolean = true;//建筑倒计时框是否显示
 
@@ -99,17 +96,17 @@ export class MapUICtl extends MainBaseCtl {
     }
     // 初始化事件
     initEvent() {
-        this._buidingSortHandler = EventMgr.on(EventType.Building_Need_Sort, this.buildingSort.bind(this));
-        this._roleMoveHandler = EventMgr.on(EventType.Role_Need_Move, this.roleMove.bind(this));
-        this._roleSortHandler = EventMgr.on(EventType.Role_Need_Sort, this.roleSort.bind(this));
-        this._buildingListHandle = EventMgr.on(InterfacePath.c2sBuildingList, this.onBuildingList.bind(this));
+        this.addEvent(EventType.Building_Need_Sort, this.buildingSort.bind(this));
+        this.addEvent(EventType.Role_Need_Move, this.roleMove.bind(this));
+        this.addEvent(EventType.Role_Need_Sort, this.roleSort.bind(this));
+        this.addEvent(InterfacePath.c2sBuildingList, this.onBuildingList.bind(this));
+        this.addEvent(InterfacePath.c2sBuildingProduceAdd, this.onBuildingProduceAdd.bind(this));
+        this.addEvent(InterfacePath.c2sBuildingProduceDelete, this.onBuildingProduceDelete.bind(this));
+        this.addEvent(InterfacePath.c2sBuildingProduceGet, this.onBuildingProduceGet.bind(this));
     }
     // 移除事件
     removeEvent() {
-        EventMgr.off(EventType.Building_Need_Sort, this._buidingSortHandler);
-        EventMgr.off(EventType.Role_Need_Move, this._roleMoveHandler);
-        EventMgr.off(EventType.Role_Need_Sort, this._roleSortHandler);
-        EventMgr.off(InterfacePath.c2sBuildingList, this._buildingListHandle);
+        this.clearEvent();
     }
     // 获取格子信息
     getGridInfo(i: number, j: number) {
@@ -235,9 +232,7 @@ export class MapUICtl extends MainBaseCtl {
             let building = this.newBuilding(editInfo, element.x, element.y, 1 == element.direction, false);
             building.buildingID = element.id;
             building.buildingData.level = element.level;
-            element.remaining_infos.forEach(info => {
-                building.addProduct(info.product_type, info.remaining_seconds);
-            });
+            building.setProducts(element.remaining_infos);
             building.showCountDownView();
         });
     }
@@ -752,5 +747,26 @@ export class MapUICtl extends MainBaseCtl {
             if (building.editInfo.id == typeID) ary.push(building);
         }
         return ary;
+    }
+    /**建筑生产队列添加 */
+    onBuildingProduceAdd(data: s2cBuildingProduceAdd) {
+        let building = this.findBuilding(data.id);
+        if (!building) return;
+        building.setProducts(data.remaining_infos);
+    }
+    /**建筑生产队列移除 */
+    onBuildingProduceDelete(data: s2cBuildingProduceDelete) {
+        let building = this.findBuilding(data.id);
+        if (!building) return;
+        building.setProducts(data.remaining_infos);
+    }
+    /**建筑生产获取 */
+    onBuildingProduceGet(data: s2cBuildingProduceGet) {
+        let building = this.findBuilding(data.id);
+        if (!building) return;
+        building.setProducts(data.remaining_infos);
+
+        let list = ToolUtil.propMapToList(data.product_items);
+        ViewsMgr.showRewards(list);
     }
 }

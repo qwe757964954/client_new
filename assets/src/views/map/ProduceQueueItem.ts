@@ -89,12 +89,17 @@ export class ProduceQueueItem extends Component {
             return;
         }
         let now = ToolUtil.now();
-        if (this._time <= now) {
-            ServiceMgr.buildingService.reqBuildingProduceGet(this._buildingID, this._product_num);
+        let left = this._time - now;
+        if (left <= 0) {
+            ServiceMgr.buildingService.reqBuildingProduceGet(this._buildingID);
             return;
         }
-        ViewsMgr.showConfirm(TextConfig.Building_Product_Delete, () => {
+        if (left <= this._res_time) {
+            ViewsMgr.showConfirm(TextConfig.Building_Product_Delete, () => {
+                ServiceMgr.buildingService.reqBuildingProduceDelete(this._buildingID, this._product_num);
+            });
+        } else {
             ServiceMgr.buildingService.reqBuildingProduceDelete(this._buildingID, this._product_num);
-        });
+        }
     }
 }

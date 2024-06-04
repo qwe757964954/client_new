@@ -193,28 +193,19 @@ export class BuildingProduceView extends BaseComponent {
     onBuildingProduceAdd(data: s2cBuildingProduceAdd) {
         console.log("onBuildingProduceAdd", this._building.buildingID);
         if (data.id != this._building.buildingID) return;
-        this._building.clearProduct();
-        data.remaining_infos.forEach((info) => {
-            this._building.addProduct(info.product_type, info.remaining_seconds);
-        });
+        this._building.setProducts(data.remaining_infos);
         this.onUpdateQueue();
     }
     /**建筑生产队列移除 */
     onBuildingProduceDelete(data: s2cBuildingProduceDelete) {
         if (data.id != this._building.buildingID) return;
-        this._building.clearProduct();
-        data.remaining_infos.forEach((info) => {
-            this._building.addProduct(info.product_type, info.remaining_seconds);
-        });
+        this._building.setProducts(data.remaining_infos);
         this.onUpdateQueue();
     }
     /**建筑生产获取 */
     onBuildingProduceGet(data: s2cBuildingProduceGet) {
         if (data.id != this._building.buildingID) return;
-        this._building.clearProduct();
-        data.remaining_infos.forEach((info) => {
-            this._building.addProduct(info.product_type, info.remaining_seconds);
-        });
+        this._building.setProducts(data.remaining_infos);
         this.onUpdateQueue();
 
         let list = ToolUtil.propMapToList(data.product_items);

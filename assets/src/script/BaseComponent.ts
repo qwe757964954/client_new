@@ -14,7 +14,7 @@ export class BaseComponent extends Component {
 	constructor(name: string) {
 		super(name);
 		this._className = name;
-		console.log(`${this._className}初始化...`);
+		// console.log(`${this._className}初始化...`);
 		this.onInitModuleEvent();
 	}
 	/**override 初始化模块事件，子类需重写该方法 */

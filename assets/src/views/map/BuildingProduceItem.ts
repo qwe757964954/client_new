@@ -66,7 +66,7 @@ export class BuildingProduceItem extends ListItem {
         this.labelTime.string = ToolUtil.getSecFormatStr(time);
 
         this._buildingID = id;
-        this._level = level;
+        this._level = data.level;
 
         if (data.level > level) {
             let cbLevel = User.castleLevel;//城堡等级

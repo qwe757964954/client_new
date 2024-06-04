@@ -3,7 +3,7 @@ import { EventType } from "../config/EventType";
 import { MapConfig } from "../config/MapConfig";
 import { PrefabType } from "../config/PrefabType";
 import { TextConfig } from "../config/TextConfig";
-import { DataMgr, EditInfo } from "../manager/DataMgr";
+import { DataMgr, EditInfo, EditType } from "../manager/DataMgr";
 import { LoadManager } from "../manager/LoadManager";
 import { ViewsManager } from "../manager/ViewsManager";
 import { ServiceMgr } from "../net/ServiceManager";
@@ -11,11 +11,13 @@ import { BaseComponent } from "../script/BaseComponent";
 import CCUtil from "../util/CCUtil";
 import EventManager from "../util/EventManager";
 import { NodeUtil } from "../util/NodeUtil";
+import { TimerMgr } from "../util/TimerMgr";
 import { ToolUtil } from "../util/ToolUtil";
 import { BuildingBtnView } from "../views/map/BuildingBtnView";
 import { BuildingInfoView } from "../views/map/BuildingInfoView";
 import { CountdownFrame } from "../views/map/CountdownFrame";
 import { EditAnimView } from "../views/map/EditAnimView";
+import { ProduceItemView } from "../views/map/ProduceItemView";
 import { GridModel } from "./GridModel";
 const { ccclass, property } = _decorator;
 export enum BuildingIDType {
@@ -27,7 +29,6 @@ class BuildingProduceData {
     type: number;//生产类型
     sec: number;//剩余时间(s)
     time: number;//生产完成时间(s)
-    canGet: boolean;//是否可获得
 }
 export class BuildingData {
     public id: number;//建筑唯一索引id
@@ -78,20 +79,21 @@ export class BuildingModel extends BaseComponent {
     private _longViewShow: boolean = false;//长按界面是否显示
     private _countdownFrame: CountdownFrame = null;//倒计时界面
     private _countdownFrameShow: boolean = false;//倒计时界面是否显示
+    private _produceItemView: ProduceItemView = null;//生产物品界面
+    private _produceItemViewShow: boolean = false;//生产物品界面是否显示
 
-    // private _mapScaleHandle:string//地图缩放事件句柄
     private _pos: Vec3 = new Vec3(0, 0, 0);//位置
     private _isFixImgPos: boolean = false;//是否固定图片位置
     private _isLoad: boolean = false;//是否加载图片
     public isCanEdit: boolean = true;//是否可以编辑
+    private _timer: number = null;//每秒定时器
+    private _produceItemAry: number[] = [];//可以领取的生产物品类型
 
     // 初始化事件
     public initEvent() {
-        // this._mapScaleHandle = EventManager.on(EventType.Map_Scale, this.onCameraScale.bind(this));//每个建筑都监听，效率太低了，同时只有一个建筑需要
     }
     // 销毁事件
     public destoryEvent() {
-        // EventManager.off(EventType.Map_Scale, this._mapScaleHandle);
     }
     // 初始化数据
     initData(x: number, y: number, editInfo: EditInfo, isFlip: boolean, isNew: boolean) {
@@ -119,6 +121,10 @@ export class BuildingModel extends BaseComponent {
             this.isCanEdit = false;
             this.pos = new Vec3(MapConfig.minePos.x, MapConfig.minePos.y, 0);
         }
+        this.clearTimer();
+        if (EditType.Buiding == editInfo.type || EditType.LandmarkBuiding == editInfo.type) {
+            this._timer = TimerMgr.loop(this.updateBySec.bind(this), 1000);
+        }
     }
     set buildingID(id: number) {
         if (this._buildingID) return;
@@ -137,6 +143,13 @@ export class BuildingModel extends BaseComponent {
     // 销毁
     protected onDestroy(): void {
         this.destoryEvent();
+    }
+    /**清理定时器 */
+    public clearTimer() {
+        if (this._timer) {
+            TimerMgr.stopLoop(this._timer);
+            this._timer = null;
+        }
     }
     // 设置所占格子。清理以前老数据，设置新数据，更新节点位置
     public set grids(grids: GridModel[]) {
@@ -561,8 +574,17 @@ export class BuildingModel extends BaseComponent {
         data.type = type;
         data.sec = sec;
         data.time = ToolUtil.now() + sec;
-        data.canGet = sec <= 0;
         this.buildingData.queue.push(data);
+    }
+    /**设置生产队列 */
+    public setProducts(ary: { product_type: number, remaining_seconds: number }[]) {
+        this.clearProduct();
+        ary.forEach(element => {
+            this.addProduct(element.product_type, element.remaining_seconds);
+        });
+        if (EditType.Buiding == this._editInfo.type || EditType.LandmarkBuiding == this._editInfo.type) {
+            this.checkProduce();
+        }
     }
     /**清理生产队列 */
     public clearProduct() {
@@ -570,12 +592,79 @@ export class BuildingModel extends BaseComponent {
     }
     /**每秒刷新 */
     public updateBySec() {
-        if (this.buildingData.queue.length == 0) return;
+        this.checkProduce();
+    }
+    /**检测生产物品 */
+    public checkProduce() {
+        let ary = [];
         let now = ToolUtil.now();
         this.buildingData.queue.forEach(element => {
             if (element.time <= now) {
-                element.canGet = true;
+                ary.push(element.type);
             }
         });
+        if (ary.length <= 0) {
+            this.hideProduces();
+            return;
+        }
+        if (ToolUtil.arrayIsChange(this._produceItemAry, ary)) {
+            this._produceItemAry = ary;
+            this.showProduces();
+        }
+    }
+    /**领取生产物品 */
+    public getProduce() {
+        if (this.buildingData.queue.length == 0) return false;
+        let canGet = false;
+        let now = ToolUtil.now();
+        for (let i = 0; i < this.buildingData.queue.length; i++) {
+            const element = this.buildingData.queue[i];
+            if (element.time <= now) {
+                canGet = true;
+                break;
+            }
+        }
+        if (canGet) {
+            ServiceMgr.buildingService.reqBuildingProduceGet(this._buildingID);
+        }
+        return canGet;
+    }
+    /**获取生产物品图片 */
+    public getProduceImg() {
+        let produceInfo = DataMgr.instance.buildProduceInfo[this._editInfo.id];
+        let ary = [];
+        this._produceItemAry.forEach(type => {
+            let info = produceInfo.data[type];
+            ary.push(info.res_png);
+        })
+        return ary;
+    }
+    /**显示生产物品 */
+    public showProduces() {
+        this._produceItemViewShow = true;
+        if (this._produceItemView) {
+            this._produceItemView.node.active = true;
+            this._produceItemView.init(this.getProduceImg());
+            return;
+        }
+        LoadManager.loadPrefab(PrefabType.ProduceItemView.path, this.node).then((node: Node) => {
+            let pos = new Vec3(this.building.node.position);
+            pos.y += this.building.getComponent(UITransform).height;
+            node.position = pos;
+            this._produceItemView = node.getComponent(ProduceItemView);
+            this._produceItemView.node.active = this._produceItemViewShow;
+            if (this._produceItemViewShow) {
+                this._produceItemView.init(this.getProduceImg());
+            }
+        });
+    }
+    /**隐藏生产物品 */
+    public hideProduces() {
+        if (!this._produceItemViewShow) return;
+        this._produceItemViewShow = false;
+        if (!this._produceItemView) {
+            return;
+        }
+        this._produceItemView.node.active = this._produceItemViewShow;
     }
 }

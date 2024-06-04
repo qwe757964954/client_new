@@ -215,7 +215,9 @@ export class MainScene extends Component {
             if (EditType.Null == editInfo.type) {
                 this.showCastleView(building);
             } else if (DataMgr.instance.buildProduceInfo[editInfo.id]) {
-                this.showBuildingProduceView(building);
+                if (!building.getProduce()) {
+                    this.showBuildingProduceView(building);
+                }
             } else {
                 ViewsMgr.showTip(TextConfig.Function_Tip2);
             }

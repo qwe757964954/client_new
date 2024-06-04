@@ -83,7 +83,7 @@ export class BuildingService extends BaseControll {
         NetMgr.sendMsg(para);
     }
     /**建筑生产获取 */
-    reqBuildingProduceGet(id: number, product_num: number) {
+    reqBuildingProduceGet(id: number, product_num: number = null) {
         console.log("reqBuildingProduceGet", id, product_num);
         let para = new c2sBuildingProduceGet();
         para.id = id;
