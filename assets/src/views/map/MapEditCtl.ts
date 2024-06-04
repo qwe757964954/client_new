@@ -78,10 +78,13 @@ export class MapEditCtl extends MapBaseCtl {
     // 建筑移除事件
     onBuildingRemove(building: BuildingModel): void {
         // TODO 上一步下一步保存
-        if (building.isNew) {
-            building.node.destroy();
-            return;
+        // if (building.isNew) {
+        //     building.node.destroy();
+        //     return;
+        // }
+        // this._cacheDataAry.push(building);
+        if (building.buildingID) {
+            this._mainScene.addRecycleBuilding(building.buildingID, building.editInfo.id);
         }
-        this._cacheDataAry.push(building);
     }
 }

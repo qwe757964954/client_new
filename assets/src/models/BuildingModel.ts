@@ -346,8 +346,11 @@ export class BuildingModel extends BaseComponent {
     }
     // 回收按钮点击
     public recycleBtnClick(): void {
-        ViewsManager.showTip(TextConfig.Function_Tip);
-        // this.recycle();
+        if (this._buildingID) {
+            ServiceMgr.buildingService.reqBuildingRecycle(this._buildingID);
+        } else {
+            this.recycle();
+        }
     }
     // 回收
     public recycle() {

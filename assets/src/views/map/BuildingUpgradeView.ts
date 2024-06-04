@@ -1,9 +1,13 @@
-import { _decorator, Component, Label, Node, Sprite } from 'cc';
+import { _decorator, Label, Node, Sprite } from 'cc';
 import { TextConfig } from '../../config/TextConfig';
 import { DataMgr, PropData } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
-import { ViewsManager } from '../../manager/ViewsManager';
+import { ViewsMgr } from '../../manager/ViewsManager';
 import { BuildingModel } from '../../models/BuildingModel';
+import { s2cBuildingUpgrade } from '../../models/NetModel';
+import { InterfacePath } from '../../net/InterfacePath';
+import { ServiceMgr } from '../../net/ServiceManager';
+import { BaseComponent } from '../../script/BaseComponent';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
 import { ToolUtil } from '../../util/ToolUtil';
@@ -11,7 +15,7 @@ import { RewardItem } from '../common/RewardItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('BuildingUpgradeView')
-export class BuildingUpgradeView extends Component {
+export class BuildingUpgradeView extends BaseComponent {
     @property(List)
     public listView: List = null;//列表
     @property(Label)
@@ -30,6 +34,7 @@ export class BuildingUpgradeView extends Component {
     public img: Sprite = null;//图片)
 
     private _upgradeNeed: PropData[] = null;
+    private _building: BuildingModel = null;
 
     start() {
         this.initEvent();
@@ -40,13 +45,17 @@ export class BuildingUpgradeView extends Component {
     initEvent() {
         CCUtil.onTouch(this.btnUpgrade, this.onClickUpgrade, this);
         CCUtil.onTouch(this.btnClose, this.onClickClose, this);
+        this.addEvent(InterfacePath.c2sBuildingUpgrade, this.onBuildingUpgrade.bind(this));
     }
     removeEvent() {
         CCUtil.offTouch(this.btnUpgrade, this.onClickUpgrade, this);
         CCUtil.offTouch(this.btnClose, this.onClickClose, this);
+
+        this.clearEvent();
     }
     /** 初始化 */
     public init(building: BuildingModel) {
+        this._building = building;
         let editInfo = building.editInfo;
         let produceInfo = DataMgr.instance.buildProduceInfo[editInfo.id];
         let buildingData = building.buildingData;
@@ -64,7 +73,7 @@ export class BuildingUpgradeView extends Component {
     }
     /** 升级按钮 */
     public onClickUpgrade() {
-        ViewsManager.showTip(TextConfig.Function_Tip);
+        ServiceMgr.buildingService.reqBuildingUpgrade(this._building.buildingID, this._building.buildingData.level);
     }
     /**关闭按钮 */
     public onClickClose() {
@@ -74,6 +83,14 @@ export class BuildingUpgradeView extends Component {
     onLoadList(node: Node, idx: number) {
         let rewardItem = node.getComponent(RewardItem);
         rewardItem.init(this._upgradeNeed[idx]);
+    }
+    /**升级结果 */
+    onBuildingUpgrade(data: s2cBuildingUpgrade) {
+        if (200 == data.code) {
+            this.node.destroy();
+            return;
+        }
+        ViewsMgr.showAlert(data.msg);
     }
 }
 

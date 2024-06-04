@@ -227,10 +227,14 @@ export class MapUICtl extends MainBaseCtl {
         if (!list || list.length <= 0) return;
         // list.push({ id: 1, bid: 3, x: 0, y: 0, direction: 0 });
         list.forEach(element => {
-            if (element.hide) return;
+            if (element.hide) {
+                this._mainScene.addRecycleBuilding(element.id, element.bid);
+                return;
+            }
             let editInfo = DataMgr.instance.editInfo[element.bid];
             let building = this.newBuilding(editInfo, element.x, element.y, 1 == element.direction, false);
             building.buildingID = element.id;
+            building.buildingData.level = element.level;
             element.remaining_infos.forEach(info => {
                 building.addProduct(info.product_type, info.remaining_seconds);
             });
@@ -518,7 +522,14 @@ export class MapUICtl extends MainBaseCtl {
                     }
                 }
             }
-            return this.newBuilding(data, grid.x, grid.y);
+            let building = this.newBuilding(data, grid.x, grid.y);
+            if (building) {
+                let buildingID = this._mainScene.getRecycleBuilding(data.id);
+                if (null != buildingID) {
+                    building.buildingID = buildingID;
+                }
+            }
+            return building;
         }
         return null;
         // return this.newBuilding(data, 20, 20);

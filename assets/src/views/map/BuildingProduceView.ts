@@ -34,10 +34,14 @@ export class BuildingProduceView extends BaseComponent {
     public leftListView: List = null;//列表
     @property(Label)
     public labelName: Label = null;//名字
+    @property(Label)
+    public labelLevel: Label = null;//等级
     @property(Node)
     public btnUpgrade: Node = null;//升级按钮
     @property(Node)
     public plLeft: Node = null;//左边层
+    @property(Label)
+    public labelQueue: Label = null;//队列
 
     private _building: BuildingModel = null;
     private _closeCallBack: Function = null;
@@ -73,10 +77,10 @@ export class BuildingProduceView extends BaseComponent {
         CCUtil.onTouch(this.btnRight, this.onClickRight, this);
         CCUtil.onTouch(this.btnUpgrade, this.onClickUpgrade, this);
 
-        this.addModelListener(InterfacePath.c2sBuildingUpgrade, this.onBuildingUpgrade);
-        this.addModelListener(InterfacePath.c2sBuildingProduceAdd, this.onBuildingProduceAdd);
-        this.addModelListener(InterfacePath.c2sBuildingProduceDelete, this.onBuildingProduceDelete);
-        this.addModelListener(InterfacePath.c2sBuildingProduceGet, this.onBuildingProduceGet);
+        this.addEvent(InterfacePath.c2sBuildingUpgrade, this.onBuildingUpgrade.bind(this));
+        this.addEvent(InterfacePath.c2sBuildingProduceAdd, this.onBuildingProduceAdd.bind(this));
+        this.addEvent(InterfacePath.c2sBuildingProduceDelete, this.onBuildingProduceDelete.bind(this));
+        this.addEvent(InterfacePath.c2sBuildingProduceGet, this.onBuildingProduceGet.bind(this));
     }
     // 移除事件
     removeEvent() {
@@ -85,7 +89,7 @@ export class BuildingProduceView extends BaseComponent {
         CCUtil.offTouch(this.btnRight, this.onClickRight, this);
         CCUtil.offTouch(this.btnUpgrade, this.onClickUpgrade, this);
 
-        this.removeAllModelListener();
+        this.clearEvent();
     }
     // 处理销毁
     dispose() {
@@ -180,8 +184,10 @@ export class BuildingProduceView extends BaseComponent {
     }
     /**建筑升级 */
     onBuildingUpgrade(data: s2cBuildingUpgrade) {
+        if (200 != data.code) return;
         if (data.id != this._building.buildingID) return;
         this._building.buildingData.level = data.level;
+        this.onUpdateLevelProduce();
     }
     /**建筑生产队列添加 */
     onBuildingProduceAdd(data: s2cBuildingProduceAdd) {
@@ -217,6 +223,7 @@ export class BuildingProduceView extends BaseComponent {
     /**更新队列 */
     onUpdateQueue() {
         let buildingData = this._building.buildingData;
+        this.labelQueue.string = ToolUtil.replace(TextConfig.Queue_Text, buildingData.queue.length, buildingData.queueMaxCount);
         this._remainingNum = buildingData.queueMaxCount - buildingData.queue.length;
         console.log("onUpdateQueue", this._remainingNum, buildingData.queueMaxCount, buildingData.queue.length);
         this.leftListView.numItems = buildingData.queueMaxCount;
@@ -226,9 +233,11 @@ export class BuildingProduceView extends BaseComponent {
     }
     /**更新等级生产 */
     onUpdateLevelProduce() {
+        let level = this._building.buildingData.level;
+        this.labelLevel.string = ToolUtil.replace(TextConfig.Level_Text, level);
         let count = this._produceInfo ? this._produceInfo.count : 0;
         this.listView.numItems = count;
-        this.btnUpgrade.active = this._building.buildingData.level < count;
+        this.btnUpgrade.active = level < count;
     }
 }
 
