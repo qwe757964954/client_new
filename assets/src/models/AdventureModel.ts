@@ -15,12 +15,14 @@ export class SentenceData {
     id: string;
     cn: string;
     sentence: string;
+    word: string;
+    match_mean: string;
+    source: string;
 }
 
 //大冒险岛屿状态
 export class c2sIslandStatus {
     command_id: string = InterfacePath.Island_Status;
-    big_id: number;
 }
 
 export class IslandStatusModel {
@@ -28,6 +30,7 @@ export class IslandStatusModel {
     micros: { game_modes: string, micro_id: number }[]; //小关数据
     small_id: number;
     small_type: number; //关卡类型
+    num: number;
 }
 
 export class MapLevelData {
@@ -42,7 +45,8 @@ export class MapLevelData {
 }
 
 export class IslandStatusData extends BaseRepPacket {
-    data: IslandStatusModel[];
+    data: IslandStatusModel;
+    num: number;
 }
 
 //大冒险岛屿进度
@@ -71,6 +75,7 @@ export interface MicroListItem {
     micro_id: number;
     flag: number;
     can_play: number;
+    flag_info?: any;
 }
 
 export interface MicroData {
@@ -149,8 +154,11 @@ export interface AdventureResultModel {
 }
 
 //大冒险结果提交返回
-export class s2cAdventureResult extends BaseRepPacket {
-    data: { pass_num: number };
+export class AdventureResult extends BaseRepPacket {
+    pass_flag: number;
+    award?: any;
+    flag_star_num: number;
+    word: string;
 }
 
 //组合模式拆分数据
@@ -198,3 +206,30 @@ export interface AdventureCollectWordModel {
     action: number;
 }
 
+export class c2sAdventureWordSentence {
+    command_id: string = InterfacePath.WordGame_Sentence;
+    word: string;
+}
+
+export class AdventureWordSentenceData extends BaseRepPacket {
+    data: SentenceData;
+}
+
+export class c2sAdvLevelProgress {
+    command_id: string = InterfacePath.Adventure_LevelProgress;
+    big_id: number;
+    small_id: number;
+    micro_id: number;
+}
+
+export class LevelProgressData extends BaseRepPacket {
+    big_id: number;
+    small_id: number;
+    micro_id: number;
+    game_mode: number;
+    flag: number;
+    pass_num: number;
+    word_num: number;
+    error_word: any;
+    time_remaining: number;
+}

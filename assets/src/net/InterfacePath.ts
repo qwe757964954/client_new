@@ -29,9 +29,11 @@ export const InterfacePath = {
     Island_Status: "3100",  // 大冒险岛屿状态
     Island_Progress: "3101",  // 大冒险岛屿进度
     WordGame_Words: "3102",  // 获取大冒险单词
+    WordGame_Sentence: "3103",  // 获取单词句子
     Adventure_Result: "3104",  // 大冒险结果提交
     Adventure_Word: "3105", //大冒险单个单词详情
     Words_Group: "3106", //获取组合模式单词选项
+    Adventure_LevelProgress: "3107", //大冒险当前关卡进度
     Classification_AdventureCollectWord: "3108", //单词大冒险收藏
     /***********************************************选择词书 begin*********************************************/
     Classification_BookStatus: "3011", //我的词书-列表

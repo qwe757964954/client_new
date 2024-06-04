@@ -29,12 +29,13 @@ export const EventType = {
     Expand_the_level_page: "Expand_the_level_page",//拓展关卡
 
     Enter_Island_Level: "Enter_Island_Level",  //进入大冒险关卡
+    Enter_Level_Test: "Enter_Level_Test",  //进入关卡测试
     Exit_World_Island: "Exit_World_Island",  //退出岛屿界面
 
     Exit_Island_Level: "Exit_Island_Level",  //退出大冒险关卡
 
     Challenge_ReportResult: "Challenge_ReportResult",  //挑战上报结果
-    
+
 
     Goto_Textbook_Level: "Goto_Textbook_Level",  //进入单词大冒险
     Goto_Textbook_Next_Level: "Goto_Textbook_Next_Level",  //进入单词大冒险下一关卡
@@ -45,6 +46,7 @@ export const EventType = {
     Sys_Ani_Stop: "Sys_Ani_Stop",//停止动画
     Classification_Word: "Classification_Word",//单个单词详情
     MapPoint_Click: "MapPoint_Click", //点击了地图点
+    Update_MapPoint: "Update_MapPoint",//更新地图点数据
 
     /**选择词书模块相关事件 */
     Select_Word_Plan: "Select_Word_Plan",//选择计划

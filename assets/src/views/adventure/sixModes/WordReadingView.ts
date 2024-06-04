@@ -39,8 +39,6 @@ export class WordReadingView extends BaseModeView {
     private _rightWordData: UnitWordModel = null; //正确单词数据
     private _wrongWordList: any[] = []; //错误单词列表
 
-    private _currentSubmitResponse:GameSubmitResponse = null;
-
     async initData(wordsdata: UnitWordModel[], levelData: any) {
         this.gameMode = GameMode.Reading;
         wordsdata = this.updateTextbookWords(wordsdata, levelData);
@@ -49,15 +47,15 @@ export class WordReadingView extends BaseModeView {
         this.initMonster(); //初始化怪物
         RecordApi.checkRecordPermission();
     }
-    onInitModuleEvent(){
+    onInitModuleEvent() {
         super.onInitModuleEvent();
-        this.addModelListener(EventType.Get_Record_Result,this.getRecordResult); 
-        this.addModelListener(NetNotify.Classification_GameSubmit,this.onGameSubmitResponse);
+        this.addModelListener(EventType.Get_Record_Result, this.getRecordResult);
+        this.addModelListener(NetNotify.Classification_GameSubmit, this.onGameSubmitResponse);
     }
-    getRecordResult(response:RecordResponseData){
+    getRecordResult(response: RecordResponseData) {
         console.log('getRecordResult  RecordResponseData', response);
-        let isRight:boolean = response.result.overall > 80 ? true : false;
-        this.gameSubmit(response,isRight);
+        let isRight: boolean = response.result.overall > 80 ? true : false;
+        this.gameSubmit(response, isRight);
         if (isRight) {
             this._rightNum++;
             if (this._wrongMode) {
@@ -75,7 +73,7 @@ export class WordReadingView extends BaseModeView {
                         this._wrongMode = true;
                         this.showCurrentWord();
                     } else {
-                        this.monsterEscape();
+                        this.monsterDie();
                     }
                 } else {
                     this.showCurrentWord();
@@ -83,8 +81,9 @@ export class WordReadingView extends BaseModeView {
             });
 
         } else {
-            if (this._wrongWordList.indexOf(this._rightWordData) == -1 && !this._wrongMode) {
+            if (this._wrongWordList.indexOf(this._rightWordData) == -1 && !this._wrongMode && !this._errorWords[this._rightWordData.word]) {
                 this._errorNum++;
+                this._levelData.error_num = this._errorNum;
                 this.errorNumLabel.string = "错误次数：" + this._errorNum;
             }
             this._wrongWordList.push(this._rightWordData);
@@ -97,33 +96,33 @@ export class WordReadingView extends BaseModeView {
                     this._wrongMode = true;
                 }
             }
-            this.playWordSound().then(()=>{
-                this.playWordSound().then(()=>{
+            this.playWordSound().then(() => {
+                this.playWordSound().then(() => {
                     this.showCurrentWord();
                 });
             })
         }
     }
 
-    gameSubmit(response:RecordResponseData,isRight?:boolean) {
+    gameSubmit(response: RecordResponseData, isRight?: boolean) {
         // let word:string = ""
         // word = this._wordsData[this._wordIndex].word;
         // if(this._wrongMode){
 
         // }
-        console.log("this._rightWordData.word______",this._rightWordData.word)
+        console.log("this._rightWordData.word______", this._rightWordData.word)
         if (this._levelData.hasOwnProperty('islandId')) {
             let levelData = this._levelData as AdvLevelConfig;
             let costTime = Date.now() - this._costTime;
-            let params:AdventureResultModel = {
-                big_id:levelData.islandId,
-                small_id:levelData.levelId,
-                micro_id:levelData.mapLevelData.micro_id,
-                game_mode:levelData.mapLevelData.current_mode,
-                cost_time:costTime,
-                status:isRight ? 1 : 0,
-                score:response.result.overall,
-                word:this._rightWordData.word
+            let params: AdventureResultModel = {
+                big_id: levelData.islandId,
+                small_id: levelData.levelId,
+                micro_id: levelData.mapLevelData.micro_id,
+                game_mode: levelData.mapLevelData.current_mode,
+                cost_time: costTime,
+                status: isRight ? 1 : 0,
+                score: response.result.overall,
+                word: this._rightWordData.word
             }
             ServiceMgr.studyService.submitAdventureResult(params);
             return;
@@ -138,7 +137,7 @@ export class WordReadingView extends BaseModeView {
             game_mode: this.gameMode,
             cost_time: costTime,
             word: this._rightWordData.word,
-            score:response.result.overall,
+            score: response.result.overall,
             small_id: levelData.small_id,
             status: isRight ? 1 : 0
         }
@@ -184,7 +183,7 @@ export class WordReadingView extends BaseModeView {
         super.removeEvent();
     }
     /**录音按钮事件 */
-    soundRecordEvent(){
+    soundRecordEvent() {
         console.log('soundRecordEvent');
         if(isValid(this._currentSubmitResponse) && this._currentSubmitResponse.word == this._rightWordData.word) {
             return;
@@ -195,10 +194,10 @@ export class WordReadingView extends BaseModeView {
         if (sys.isNative) {
             RecordApi.onRecord(word);
         }
-        
+
     }
     /**波浪线结束录音 */
-    corrugationEvent(){
+    corrugationEvent() {
         console.log('corrugationEvent');
         this.img_corrugation.active = false;
         this.btn_sound_recording.active = true;
@@ -216,7 +215,7 @@ export class WordReadingView extends BaseModeView {
         RecordApi.stopRecord();
     }
 
-    onGameSubmitResponse(data:GameSubmitResponse){
+    onGameSubmitResponse(data: GameSubmitResponse) {
         this._currentSubmitResponse = data;
     }
 

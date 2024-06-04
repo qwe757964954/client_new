@@ -7,19 +7,21 @@ const { ccclass, property } = _decorator;
 export class WorldMapItem extends ListItem {
 
     @property(Node)
-    public icon:Node = null;
+    public icon: Node = null;
     start() {
 
     }
 
-    updateItemProps(idx:number){
+    updateItemProps(idx: number, currentPass: number) {
         let img_url = `adventure/worldMap/img_map_${idx}/spriteFrame`
         ResLoader.instance.load(img_url, SpriteFrame, (err: Error | null, spriteFrame: SpriteFrame) => {
             if (err) {
                 error && console.error(err);
                 return;
             }
-            this.icon.getComponent(Sprite).spriteFrame = spriteFrame;
+            let sp = this.icon.getComponent(Sprite);
+            sp.spriteFrame = spriteFrame;
+            sp.grayscale = (idx > currentPass - 1);
         });
     }
 }

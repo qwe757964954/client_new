@@ -1,11 +1,12 @@
-import { _decorator, Button, Component, Node, UITransform } from 'cc';
+import { _decorator, Button, Component, instantiate, Node, Prefab, UITransform, Vec3 } from 'cc';
 import { EventType } from '../../config/EventType';
-import { MapLevelData, MicroListItem } from '../../models/AdventureModel';
+import { IslandProgressModel, MapLevelData, MicroListItem } from '../../models/AdventureModel';
 import CCUtil from '../../util/CCUtil';
 import EventManager from '../../util/EventManager';
 import List from '../../util/list/List';
 import { rightPanelchange } from './common/RightPanelchange';
 import { IslandMap } from './levelmap/IslandMap';
+import { RoleBaseModel } from '../../models/RoleBaseModel';
 const { ccclass, property } = _decorator;
 
 /**魔法森林 何存发 2024年4月9日17:51:36 */
@@ -27,19 +28,40 @@ export class WorldIsland extends Component {
     @property({ type: Node, tooltip: "地图容器" })
     public mapContent: Node = null;
 
+    @property({ type: Prefab, tooltip: "角色模型" })
+    public roleModel: Prefab = null;
+    @property({ type: Node, tooltip: "角色容器" })
+    public roleContainer: Node = null;
+    @property({ type: Node, tooltip: "精灵容器" })
+    public petContainer: Node = null;
+    @property({ type: Prefab, tooltip: "精灵预制体" })
+    public petModel: Prefab = null;
+    @property({ type: Node, tooltip: "人物精灵动画容器" })
+    public roleAniContainer: Node = null;
+
+    protected _pet: Node = null; //精灵
+    protected _role: Node = null; //人物
+
     private _bigId: number = 1; //岛屿id
     private _mapBaseCount: number = 12; //地图点数量
-    private _mapLevelsData: MapLevelData[][] = [];
+    private _mapLevelsData: MicroListItem[][] = [];
     private static mapPoints: Map<number, number[][]> = null; //各岛屿地图点坐标
 
     private _mapPointClickEvId: string;
+    private _mapPointUpdateEvId: string;
+
+    private _passNum: number;
+    private _progressData: IslandProgressModel = null;
     start() {
         this.initUI();
         this.initEvent();
     }
 
-    setPointsData(bigId: number, pointsData: MapLevelData[], porogressData: MicroListItem) {
+    setPointsData(bigId: number, progresssData: IslandProgressModel) {
+        this._progressData = progresssData;
         this._bigId = bigId;
+        this._passNum = progresssData.micro_pass_num;
+        let pointsData = progresssData.micro_list;
         //分割数组
         this._mapLevelsData = [];
         for (let i = 0; i < pointsData.length; i += this._mapBaseCount) {
@@ -68,7 +90,53 @@ export class WorldIsland extends Component {
     }
 
     onMapPointRender(item: Node, idx: number) {
-        item.getComponent(IslandMap).setData(this._bigId, this._mapLevelsData[idx]);
+        let posData = item.getComponent(IslandMap).setData(this._bigId, this._mapLevelsData[idx], this._passNum);
+        if (posData) {
+            console.log('地图点坐标', posData);
+            let pos: Vec3 = posData.position;
+            this.roleAniContainer.position = new Vec3(pos.x - 150, pos.y, 0);
+            posData.map.setAniNode(this.roleAniContainer);
+        }
+    }
+
+    updatePointData(big_id: number, small_id: number, micro_id: number, star: number) {
+        let mapoint = null;
+        let microList = this._progressData.micro_list;
+        let currentIdx = -1;
+        for (let i = 0; i < microList.length; i++) {
+            if (microList[i].big_id == big_id && microList[i].small_id == small_id && microList[i].micro_id == micro_id) {
+                currentIdx = i;
+                mapoint = microList[i];
+                break;
+            }
+        }
+        if (mapoint) {
+            if (!mapoint.flag_info) {
+                mapoint.flag_info = {}
+            }
+            if (star == 1) {
+                mapoint.flag_info.star_one = 1;
+            } else if (star == 2) {
+                mapoint.flag_info.star_one = 1;
+                mapoint.flag_info.star_two = 1;
+            } else if (star == 3) {
+                mapoint.flag_info.star_one = 1;
+                mapoint.flag_info.star_two = 1;
+                mapoint.flag_info.star_three = 1;
+            }
+            mapoint.flag = 1;
+            if (currentIdx == this._passNum) { //是否是当前进度关卡
+                this._passNum++;
+                if (this._passNum < microList.length) {
+                    microList[this._passNum].can_play = 1;
+                }
+            }
+            this.mapPointList.numItems = this._mapLevelsData.length;
+        }
+    }
+
+    onUpdatePoint(data: { big_id: number, small_id: number, micro_id: number, star: number }) {
+        this.updatePointData(data.big_id, data.small_id, data.micro_id, data.star);
     }
 
     static initMapPoints() {
@@ -92,6 +160,24 @@ export class WorldIsland extends Component {
         let nodesize = this.levelPanel.node.getComponent(UITransform).contentSize;
         this.levelPanel.node.setPosition(-nodesize.width, 100);
         this.levelPanel.hideView();
+
+        this.initPet();
+        this.initRole();
+    }
+
+    async initRole() {
+        this._role = instantiate(this.roleModel);
+        this.roleContainer.addChild(this._role);
+        let roleModel = this._role.getComponent(RoleBaseModel);
+        roleModel.init(101, 1, [9500, 9700, 9701, 9702, 9703]);
+        roleModel.show(true);
+    }
+    async initPet() {
+        this._pet = instantiate(this.petModel);
+        this.petContainer.addChild(this._pet);
+        let roleModel = this._pet.getComponent(RoleBaseModel);
+        roleModel.init(101, 1);
+        roleModel.show(true);
     }
 
     /**初始化监听事件 */
@@ -101,6 +187,7 @@ export class WorldIsland extends Component {
         CCUtil.onTouch(this.btn_pos, this.openLevelView, this)
 
         this._mapPointClickEvId = EventManager.on(EventType.MapPoint_Click, this.mapPointClick.bind(this));
+        this._mapPointUpdateEvId = EventManager.on(EventType.Update_MapPoint, this.onUpdatePoint.bind(this));
     }
     /**移除监听 */
     private removeEvent() {
@@ -108,6 +195,7 @@ export class WorldIsland extends Component {
         CCUtil.offTouch(this.btn_details, this.onBtnDetailsClick, this)
         CCUtil.offTouch(this.btn_pos, this.openLevelView, this)
         EventManager.off(EventType.MapPoint_Click, this._mapPointClickEvId);
+        EventManager.off(EventType.Update_MapPoint, this._mapPointUpdateEvId);
     }
 
     onBtnDetailsClick() {
@@ -122,7 +210,6 @@ export class WorldIsland extends Component {
     private onBtnBackClick() {
         EventManager.emit(EventType.Exit_World_Island);
     }
-
 
     protected onDestroy(): void {
         this.removeEvent()

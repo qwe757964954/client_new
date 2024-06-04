@@ -37,7 +37,7 @@ export class MonsterModel extends Component {
         });
     }
 
-    inHit(){
+    inHit() {
         return new Promise((resolve) => {
             this.monster.setCompleteListener(() => {
                 this.monster.setCompleteListener(null);
@@ -60,7 +60,14 @@ export class MonsterModel extends Component {
     }
 
     die() {
-        this.monster.setAnimation(0, 'die', false);
+        // this.monster.setAnimation(0, 'die', false);
+        return new Promise((resolve) => {
+            this.monster.setCompleteListener(() => {
+                this.monster.setCompleteListener(null);
+                resolve(true);
+            })
+            this.monster.setAnimation(0, 'die', false);
+        });
     }
 
     flee() {
