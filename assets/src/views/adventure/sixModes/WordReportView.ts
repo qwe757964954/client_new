@@ -2,6 +2,7 @@ import { _decorator, instantiate, Layers, Node, Prefab } from 'cc';
 import { EventType } from '../../../config/EventType';
 import { GameRes } from '../../../GameRes';
 import { inf_SpineAniCreate } from '../../../manager/InterfaceDefines';
+import { AdventureResult } from '../../../models/AdventureModel';
 import { RoleBaseModel } from '../../../models/RoleBaseModel';
 import { GameSubmitResponse } from '../../../models/TextbookModel';
 import { BaseView } from '../../../script/BaseView';
@@ -10,7 +11,6 @@ import { EventMgr } from '../../../util/EventManager';
 import List from '../../../util/list/List';
 import { NodeUtil } from '../../../util/NodeUtil';
 import { ReportItem } from './ReportItem';
-import { AdventureResult } from '../../../models/AdventureModel';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordReportView')
@@ -163,7 +163,7 @@ export class WordReportView extends BaseView {
     }
 
     onLoadConditionVertical(item: Node, idx: number) {
-
+        let item_script = item.getComponent(ConditionItem);
     }
 }
 

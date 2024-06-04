@@ -158,9 +158,11 @@ export class BreakThroughView extends BaseView {
             book_name:this._bookData.book_name,
             small_id:this._selectGate.small_id,
             word_num:this._curUnitStatus.word_num,
+            time_remaining:this._curUnitStatus.time_remaining,
         }
         if(isValid(this._curUnitStatus.error_word)){
             bookLevelData.error_word = this._curUnitStatus.error_word;
+            bookLevelData.error_num = this._curUnitStatus.error_word.length;
         }
         console.log("this._curUnitStatus+++++++++++++++++", this._curUnitStatus);
         console.log("game_model+++++++++++++++++", game_model);
@@ -251,7 +253,10 @@ export class BreakThroughView extends BaseView {
         let param:MapLevelData = {small_id:this._curUnitStatus.small_id,
             big_id:parseInt(removedString),
             micro_id:this._curUnitStatus.small_id,
-            game_modes:"word"}
+            game_modes:"word",
+            flag_info:this._selectGate.flag_info}
+
+            
         this._rightChallenge.openView(param);
         this.mask_node.active = true;
     }

@@ -206,6 +206,7 @@ export interface UnitStatusData extends BaseRepPacket{
     game_mode:number;
     flag:number;
     word_num:number;
+    time_remaining:number;
     error_word?:any;
 }
 
