@@ -1,4 +1,4 @@
-import { _decorator, Component, instantiate, Label, Node, Prefab, tween, UITransform, Vec3 } from 'cc';
+import { _decorator, Component, instantiate, isValid, Label, Node, Prefab, Sprite, tween, UITransform, Vec3 } from 'cc';
 import { EventType } from '../../../config/EventType';
 import { DataMgr } from '../../../manager/DataMgr';
 import { MapLevelData } from '../../../models/AdventureModel';
@@ -20,6 +20,8 @@ export class rightPanelchange extends Component {
     public monsterNode: Node = null;
     @property({ type: [Node], tooltip: "星星" })
     public stars: Node[] = [];
+    @property({ type: [Node], tooltip: "星星条件" })
+    public starConditions: Node[] = [];
     @property(Label)
     public levelTxt: Label = null;
     @property(Label)
@@ -70,7 +72,7 @@ export class rightPanelchange extends Component {
         this._data = param;
 
         this.updateView();
-        this.node.active = true
+        this.node.active = true;
         let node_size = this.node.getComponent(UITransform);
         tween(this.node).by(0.3, { position: new Vec3(-node_size.width, 0, 0) }).call(() => {
             // this.node.active = false
@@ -95,6 +97,25 @@ export class rightPanelchange extends Component {
             this.levelTxt.string = this._data.small_id + '-' + this._data.micro_id;
             monsterModel.init("spine/monster/adventure/" + levelData.monsterAni);
             this.monsterNameTxt.string = levelData.monsterName;
+        }
+        let data = this._data;
+        //有星星
+        if (isValid(data.flag_info) && isValid(data.flag_info.star_one)) {
+            if (isValid(data.flag_info.star_one)) {
+                this.stars[0].getComponent(Sprite).grayscale = false;
+                this.starConditions[0].getComponent(Sprite).grayscale = false;
+                this.starConditions[0].getChildByName("star").getComponent(Sprite).grayscale = false;
+            }
+            if (isValid(data.flag_info.star_two)) {
+                this.stars[1].getComponent(Sprite).grayscale = false;
+                this.starConditions[1].getComponent(Sprite).grayscale = false;
+                this.starConditions[1].getChildByName("star").getComponent(Sprite).grayscale = false;
+            }
+            if (isValid(data.flag_info.star_three)) {
+                this.stars[2].getComponent(Sprite).grayscale = false;
+                this.starConditions[1].getComponent(Sprite).grayscale = false;
+                this.starConditions[1].getChildByName("star").getComponent(Sprite).grayscale = false;
+            }
         }
         // LoadManager.loadSprite("adventure/monster/" + this._data.bigId + "-" + this._data.smallId + "/spriteFrame", this.monster.getComponent(Sprite));
     }

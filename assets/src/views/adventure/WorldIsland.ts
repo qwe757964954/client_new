@@ -1,6 +1,6 @@
 import { _decorator, Button, Component, Node, UITransform } from 'cc';
 import { EventType } from '../../config/EventType';
-import { MapLevelData, MicroListItem } from '../../models/AdventureModel';
+import { IslandProgressModel, MapLevelData, MicroListItem } from '../../models/AdventureModel';
 import CCUtil from '../../util/CCUtil';
 import EventManager from '../../util/EventManager';
 import List from '../../util/list/List';
@@ -29,17 +29,24 @@ export class WorldIsland extends Component {
 
     private _bigId: number = 1; //岛屿id
     private _mapBaseCount: number = 12; //地图点数量
-    private _mapLevelsData: MapLevelData[][] = [];
+    private _mapLevelsData: MicroListItem[][] = [];
     private static mapPoints: Map<number, number[][]> = null; //各岛屿地图点坐标
 
     private _mapPointClickEvId: string;
+    private _mapPointUpdateEvId: string;
+
+    private _passNum: number;
+    private _progressData: IslandProgressModel = null;
     start() {
         this.initUI();
         this.initEvent();
     }
 
-    setPointsData(bigId: number, pointsData: MapLevelData[], porogressData: MicroListItem) {
+    setPointsData(bigId: number, progresssData: IslandProgressModel) {
+        this._progressData = progresssData;
         this._bigId = bigId;
+        this._passNum = progresssData.micro_pass_num;
+        let pointsData = progresssData.micro_list;
         //分割数组
         this._mapLevelsData = [];
         for (let i = 0; i < pointsData.length; i += this._mapBaseCount) {
@@ -68,7 +75,47 @@ export class WorldIsland extends Component {
     }
 
     onMapPointRender(item: Node, idx: number) {
-        item.getComponent(IslandMap).setData(this._bigId, this._mapLevelsData[idx]);
+        item.getComponent(IslandMap).setData(this._bigId, this._mapLevelsData[idx], this._passNum);
+    }
+
+    updatePointData(big_id: number, small_id: number, micro_id: number, star: number) {
+        let mapoint = null;
+        let microList = this._progressData.micro_list;
+        let currentIdx = -1;
+        for (let i = 0; i < microList.length; i++) {
+            if (microList[i].big_id == big_id && microList[i].small_id == small_id && microList[i].micro_id == micro_id) {
+                currentIdx = i;
+                mapoint = microList[i];
+                break;
+            }
+        }
+        if (mapoint) {
+            if (!mapoint.flag_info) {
+                mapoint.flag_info = {}
+            }
+            if (star == 1) {
+                mapoint.flag_info.star_one = 1;
+            } else if (star == 2) {
+                mapoint.flag_info.star_one = 1;
+                mapoint.flag_info.star_two = 1;
+            } else if (star == 3) {
+                mapoint.flag_info.star_one = 1;
+                mapoint.flag_info.star_two = 1;
+                mapoint.flag_info.star_three = 1;
+            }
+            mapoint.flag = 1;
+            if (currentIdx == this._passNum) { //是否是当前进度关卡
+                this._passNum++;
+                if (this._passNum < microList.length) {
+                    microList[this._passNum].can_play = 1;
+                }
+            }
+            this.mapPointList.numItems = this._mapLevelsData.length;
+        }
+    }
+
+    onUpdatePoint(data: { big_id: number, small_id: number, micro_id: number, star: number }) {
+        this.updatePointData(data.big_id, data.small_id, data.micro_id, data.star);
     }
 
     static initMapPoints() {
@@ -101,6 +148,7 @@ export class WorldIsland extends Component {
         CCUtil.onTouch(this.btn_pos, this.openLevelView, this)
 
         this._mapPointClickEvId = EventManager.on(EventType.MapPoint_Click, this.mapPointClick.bind(this));
+        this._mapPointUpdateEvId = EventManager.on(EventType.Update_MapPoint, this.onUpdatePoint.bind(this));
     }
     /**移除监听 */
     private removeEvent() {
@@ -108,6 +156,7 @@ export class WorldIsland extends Component {
         CCUtil.offTouch(this.btn_details, this.onBtnDetailsClick, this)
         CCUtil.offTouch(this.btn_pos, this.openLevelView, this)
         EventManager.off(EventType.MapPoint_Click, this._mapPointClickEvId);
+        EventManager.off(EventType.Update_MapPoint, this._mapPointUpdateEvId);
     }
 
     onBtnDetailsClick() {

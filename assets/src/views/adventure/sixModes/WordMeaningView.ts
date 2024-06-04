@@ -205,9 +205,11 @@ export class WordMeaningView extends BaseModeView {
         } else {
             answerNode.getComponent(Sprite).spriteFrame = this.errorBg;
             resSymbol.getComponent(Sprite).spriteFrame = this.errorSymbol;
-            if (this._wrongWordList.indexOf(this._rightWordData) == -1 && !this._wrongMode) {
+            if (this._wrongWordList.indexOf(this._rightWordData) == -1 && !this._wrongMode && !this._errorWords[this._rightWordData.word]) {
                 this._errorNum++;
+                this._levelData.error_num = this._errorNum;
                 this.errorNumLabel.string = "错误次数：" + this._errorNum;
+
             }
             this._wrongWordList.push(this._rightWordData);
             if (!this._wrongMode) {

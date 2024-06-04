@@ -41,6 +41,7 @@ export const EventType = {
     Sys_Ani_Stop: "Sys_Ani_Stop",//停止动画
     Classification_Word: "Classification_Word",//单个单词详情
     MapPoint_Click: "MapPoint_Click", //点击了地图点
+    Update_MapPoint: "Update_MapPoint",//更新地图点数据
 
     /**选择词书模块相关事件 */
     Select_Word_Plan: "Select_Word_Plan",//选择计划

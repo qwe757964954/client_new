@@ -1,10 +1,11 @@
 import { _decorator, Component, instantiate, Node, Prefab, Sprite, SpriteFrame, Vec3 } from 'cc';
 import { EventType } from '../../../config/EventType';
-import { MapLevelData } from '../../../models/AdventureModel';
+import { MapLevelData, MicroListItem } from '../../../models/AdventureModel';
 import CCUtil from '../../../util/CCUtil';
 import EventManager from '../../../util/EventManager';
 import { WorldIsland } from '../WorldIsland';
 import { MapPointItem } from './MapPointItem';
+import { ViewsMgr } from '../../../manager/ViewsManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('IslandMap')
@@ -21,14 +22,16 @@ export class IslandMap extends Component {
 
     private _pointItems: Node[] = [];
 
+    private _progressData: number;
 
     start() {
 
     }
 
     //设置数据
-    setData(islandId: number, mapPoints: MapLevelData[]) {
+    setData(islandId: number, mapPoints: MicroListItem[], progressData: number) {
         this.removePointEvent();
+        this._progressData = progressData;
         for (let i = 0; i < this._pointItems.length; i++) {
             this._pointItems[i].active = false;
         }
@@ -47,7 +50,11 @@ export class IslandMap extends Component {
     }
 
     onPointClick(point: Node) {
-        let data: MapLevelData = point.getComponent(MapPointItem).data;
+        let data: MicroListItem = point.getComponent(MapPointItem).data as MicroListItem;
+        if (!data.can_play) {
+            ViewsMgr.showTip("请先通过前置关卡");
+            return;
+        }
         EventManager.emit(EventType.MapPoint_Click, data);
     }
 

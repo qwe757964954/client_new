@@ -1,7 +1,7 @@
 import { isValid } from "cc";
 import { EventType } from "../config/EventType";
 import { ViewsManager } from "../manager/ViewsManager";
-import { AdventureCollectWordModel, AdventureResultModel, c2sAdventureCollectWord, c2sAdventureResult, c2sAdventureWord, c2sIslandProgress, c2sIslandStatus, c2sTextbookWordGroup, c2sWordGameWords, c2sWordGroup, WordGameWordsData } from "../models/AdventureModel";
+import { AdventureCollectWordModel, AdventureResultModel, c2sAdventureCollectWord, c2sAdventureResult, c2sAdventureWord, c2sAdventureWordSentence, c2sAdvLevelProgress, c2sIslandProgress, c2sIslandStatus, c2sTextbookWordGroup, c2sWordGameWords, c2sWordGroup, WordGameWordsData } from "../models/AdventureModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
 import { BaseControll } from "../script/BaseControll";
@@ -28,9 +28,8 @@ export default class StudyService extends BaseControll {
     }
 
     //获取大冒险岛屿状态
-    getIslandStatus(bigId: number) {
+    getIslandStatus() {
         let para: c2sIslandStatus = new c2sIslandStatus();
-        para.big_id = bigId;
         NetMgr.sendMsg(para);
     }
 
@@ -121,5 +120,21 @@ export default class StudyService extends BaseControll {
         }
         console.log("onAdventureCollectWord", data);
         EventManager.emit(EventType.Classification_AdventureCollectWord, data.data);
+    }
+
+    //获取大冒险单词例句
+    getAdvWordSentence(word: string) {
+        let para: c2sAdventureWordSentence = new c2sAdventureWordSentence();
+        para.word = word;
+        NetMgr.sendMsg(para);
+    }
+
+    //获取大冒险关卡进度
+    getAdvLevelProgress(big_id: number, small_id: number, micro_id: number) {
+        let para: c2sAdvLevelProgress = new c2sAdvLevelProgress();
+        para.big_id = big_id;
+        para.small_id = small_id;
+        para.micro_id = micro_id;
+        NetMgr.sendMsg(para);
     }
 }

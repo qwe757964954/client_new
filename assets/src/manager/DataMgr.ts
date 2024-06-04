@@ -2,7 +2,7 @@ import { Vec3 } from "cc";
 import { PetInfo, PetInteractionInfo, PetMoodInfo } from "../config/PetConfig";
 import { PropInfo } from "../config/PropConfig";
 import { TextConfig } from "../config/TextConfig";
-import { MapLevelData } from "../models/AdventureModel";
+import { LevelProgressData, MapLevelData } from "../models/AdventureModel";
 import { ToolUtil } from "../util/ToolUtil";
 import { LoadManager } from "./LoadManager";
 
@@ -92,6 +92,8 @@ export class AdvLevelConfig {
     monsterAni: string;
     miniMonsterAni: string;
     mapLevelData: MapLevelData;
+    progressData: LevelProgressData;
+    error_num: number;
 }
 //教材单词关卡配置
 export class BookLevelConfig {
@@ -105,6 +107,8 @@ export class BookLevelConfig {
     word_num: number;
     cur_game_mode: number;
     error_word?: any;
+    time_remaining: number;
+    error_num: number;
 }
 //成就信息配置
 export class ArchConfig {
