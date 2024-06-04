@@ -16,6 +16,7 @@ export const EventType = {
     Role_Need_Move: "RoleNeedMove",//角色需要移动
     Role_Need_Sort: "RoleNeedSort",//角色需要排序
     GridRect_Need_Draw: "GridRectNeedDraw",//格子需要绘制
+    EditUIView_Refresh: "EditUIViewRefresh",//编辑界面刷新
 
     Stamina_Update: "StaminaUpdate",//体力更新
     Coin_Update: "CoinUpdate",//金币更新

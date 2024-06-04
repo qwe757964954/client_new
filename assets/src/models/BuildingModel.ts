@@ -73,6 +73,7 @@ export class BuildingModel extends BaseComponent {
     private _isFlip: boolean = false;//是否翻转
     private _isShow: boolean = false;//是否显示
     private _isNew: boolean = false;//是否是新建
+    public isSell: boolean = false;//是否卖出
 
     // private _dataX:number;//数据x
     // private _dataY:number;//数据y
@@ -150,6 +151,7 @@ export class BuildingModel extends BaseComponent {
     protected onDestroy(): void {
         this.destoryEvent();
         this.clearTimer();
+        EventManager.emit(EventType.EditUIView_Refresh);
     }
     /**清理定时器 */
     public clearTimer() {
@@ -354,6 +356,7 @@ export class BuildingModel extends BaseComponent {
             ViewsManager.showTip(TextConfig.Building_Cell_Tip);
             return;
         }
+        this.isSell = true;
         this.recycle();//与回收差别?，如不能还原则需修改逻辑
     }
     /**请求卖出 */
@@ -683,6 +686,7 @@ export class BuildingModel extends BaseComponent {
     }
     /**从回收数据还原 */
     public restoreRecycleData(data: RecycleData) {
+        console.log("restoreRecycleData", data, this._buildingID, this._editInfo.id);
         if (this._buildingID || data.bid != this._editInfo.id) return;
         this.buildingID = data.data.id;
         this.buildingData = data.data;

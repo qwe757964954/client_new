@@ -1,7 +1,9 @@
-import { _decorator, color, Component, Label, Node, Prefab, ScrollView, Sprite, SpriteFrame } from 'cc';
+import { _decorator, color, Label, Node, Prefab, ScrollView, Sprite, SpriteFrame } from 'cc';
+import { EventType } from '../../config/EventType';
 import { MapStatus } from '../../config/MapConfig';
 import { DataMgr, EditInfo, EditType } from '../../manager/DataMgr';
 import { BuildingIDType } from '../../models/BuildingModel';
+import { BaseComponent } from '../../script/BaseComponent';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
 import { EditItem } from '../map/EditItem';
@@ -9,7 +11,7 @@ import { MainScene } from './MainScene';
 const { ccclass, property } = _decorator;
 
 @ccclass('EditUIView')
-export class EditUIView extends Component {
+export class EditUIView extends BaseComponent {
     @property(Sprite)
     public btnAll: Sprite = null;//标题所有按钮
     @property(Sprite)
@@ -55,6 +57,8 @@ export class EditUIView extends Component {
         CCUtil.onTouch(this.btnDecoration, this.onBtnDecorationClick, this);
         CCUtil.onTouch(this.btnLand, this.onBtnLandClick, this);
         CCUtil.onTouch(this.btnClose, this.onBtnCloseClick, this);
+
+        this.addEvent(EventType.EditUIView_Refresh, this.onRefresh.bind(this));
     }
 
     // 移除监听
@@ -65,6 +69,8 @@ export class EditUIView extends Component {
         CCUtil.offTouch(this.btnDecoration, this.onBtnDecorationClick, this);
         CCUtil.offTouch(this.btnLand, this.onBtnLandClick, this);
         CCUtil.offTouch(this.btnClose, this.onBtnCloseClick, this);
+
+        this.clearEvent();
     }
     //销毁
     onDestroy() {
@@ -112,6 +118,7 @@ export class EditUIView extends Component {
     // 编辑元素点击
     onEditItemClick(editItem: EditItem) {
         this._mainScene.onBuildLandClick(editItem.data);
+        this.onRefresh();
     }
     /**显示对应编辑类型 */
     showEditType(editType: EditType) {
@@ -128,9 +135,6 @@ export class EditUIView extends Component {
                 this._itemsData.push(info);
             } else {
                 let ary = this._mainScene.findAllBuilding(info.id);
-                if (BuildingIDType.castle == info.id) {
-                    console.log("ary", ary);
-                }
                 if (!ary || ary.length <= 0) {
                     this._itemsData.push(info);
                 }
@@ -154,6 +158,13 @@ export class EditUIView extends Component {
     onLoadItem(item: Node, idx: number) {
         let info = this._itemsData[idx];
         item.getComponent(EditItem).initData(info, this.onEditItemClick.bind(this));
+    }
+    /**刷新 */
+    onRefresh() {
+        console.log("onRefresh", this._editType);
+        let editType = this._editType;
+        this._editType = null;
+        this.showEditType(editType);
     }
 }
 

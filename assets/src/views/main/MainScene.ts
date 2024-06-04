@@ -535,10 +535,12 @@ export class MainScene extends Component {
     }
     /**回收建筑 */
     addRecycleBuilding(data: RecycleData) {
+        // console.log("addRecycleBuilding", data);
         this._recycleBuildingAry.push(data);
     }
     /**获取回收建筑 */
     getRecycleBuilding(bid: number) {
+        // console.log("getRecycleBuilding", bid, this._recycleBuildingAry);
         let index = -1;
         let data = null;
         for (let i = 0; i < this._recycleBuildingAry.length; i++) {

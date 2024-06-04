@@ -523,6 +523,7 @@ export class MapUICtl extends MainBaseCtl {
             let building = this.newBuilding(data, grid.x, grid.y);
             if (building) {
                 let recycleData = this._mainScene.getRecycleBuilding(data.id);
+                // console.log("getRecycleBuilding start", data.id, recycleData);
                 if (null != recycleData) {
                     building.restoreRecycleData(recycleData);
                 }
