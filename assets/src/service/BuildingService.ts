@@ -1,4 +1,4 @@
-import { c2sBuildingCreate, c2sBuildingEdit, c2sBuildingList, c2sLandUpdate } from "../models/NetModel";
+import { c2sBuildingCreate, c2sBuildingEdit, c2sBuildingList, c2sBuildingProduceAdd, c2sBuildingProduceDelete, c2sBuildingProduceGet, c2sBuildingSell, c2sBuildingUpgrade, c2sLandUpdate } from "../models/NetModel";
 import { NetMgr } from "../net/NetManager";
 import { BaseControll } from "../script/BaseControll";
 
@@ -41,6 +41,45 @@ export class BuildingService extends BaseControll {
         // console.log("reqLandUpdate", map);
         let para = new c2sLandUpdate();
         para.update_land = map;
+        NetMgr.sendMsg(para);
+    }
+    /**建筑升级 */
+    reqBuildingUpgrade(id: number, level: number) {
+        console.log("reqBuildingUpgrade", id, level);
+        let para = new c2sBuildingUpgrade();
+        para.id = id;
+        para.level = level;
+        NetMgr.sendMsg(para);
+    }
+    /**建筑卖出 */
+    reqBuildingSell(id: number) {
+        console.log("reqBuildingSell", id);
+        let para = new c2sBuildingSell();
+        para.id = id;
+        NetMgr.sendMsg(para);
+    }
+    /**建筑生产队列添加 */
+    reqBuildingProduceAdd(id: number, product_type: number[]) {
+        console.log("reqBuildingProduceAdd", id, product_type);
+        let para = new c2sBuildingProduceAdd();
+        para.id = id;
+        para.product_type = product_type;
+        NetMgr.sendMsg(para);
+    }
+    /**建筑生产队列删除 */
+    reqBuildingProduceDelete(id: number, product_num: number) {
+        console.log("reqBuildingProduceRemove", id, product_num);
+        let para = new c2sBuildingProduceDelete();
+        para.id = id;
+        para.product_num = product_num;
+        NetMgr.sendMsg(para);
+    }
+    /**建筑生产获取 */
+    reqBuildingProduceGet(id: number, product_num: number) {
+        console.log("reqBuildingProduceGet", id, product_num);
+        let para = new c2sBuildingProduceGet();
+        para.id = id;
+        para.product_num = product_num;
         NetMgr.sendMsg(para);
     }
 }

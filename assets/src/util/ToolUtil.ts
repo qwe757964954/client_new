@@ -1,4 +1,6 @@
 import { Node, UIOpacity, Vec2, Vec3, tween } from "cc";
+import { PropID } from "../config/PropConfig";
+import { PropData } from "../manager/DataMgr";
 
 const Time_S = "{0}秒"
 const Time_M = "{0}分钟"
@@ -84,5 +86,48 @@ export class ToolUtil {
     /**获取值 */
     static getValue(val: number, min: number, max: number): number {
         return Math.min(Math.max(val, min), max);
+    }
+    /**获取当前时间(s) */
+    static now() {
+        return Math.floor(Date.now() / 1000);
+    }
+    /**是字典 */
+    static isMap(value: any): boolean {
+        return typeof value === 'object' && value !== null && !Array.isArray(value);
+    }
+    /**是数组 */
+    static isArray(value: any): boolean {
+        return Array.isArray(value);
+    }
+    /**道具字典转换 */
+    static propMapToList(map: any): PropData[] {
+        let list = [];
+        if (ToolUtil.isArray(map)) {
+            map.forEach(element => {
+                ToolUtil.propMapToListEx(element, list);
+            });
+        } else if (ToolUtil.isMap(map)) {
+            ToolUtil.propMapToListEx(map, list);
+        }
+        return list;
+    }
+    static propMapToListEx(map: any, list: PropData[]) {
+        if (ToolUtil.isArray(map)) {
+            list = list.concat(ToolUtil.propMapToList(map));
+            return;
+        }
+        if (!ToolUtil.isMap(map)) {
+            return;
+        }
+        for (let key in map) {
+            if (Object.prototype.hasOwnProperty.call(map, key)) {
+                let value = map[key];
+                if ("coin" == key) {
+                    list.push({ id: PropID.coin, num: value });
+                } else if ("diamond" == key) {
+                    list.push({ id: PropID.diamond, num: value });
+                }
+            }
+        }
     }
 }

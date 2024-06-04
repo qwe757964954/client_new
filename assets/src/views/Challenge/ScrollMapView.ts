@@ -128,17 +128,28 @@ export class ScrollMapView extends BaseView {
         this._total_grade = unitStatus.gate_total;
         this._unitStatus.sort((a, b) => {
             // 将 unit 字符串转换为数字并比较
-            const unitA = parseInt(a.unit.replace("Unit ", "").trim());
-            const unitB = parseInt(a.unit.replace("Unit ", "").trim());
+            let unitA = 0;
+            let unitB = 0;
+            if (a.unit.includes("Unit ")) {
+                unitA = parseInt(a.unit.replace("Unit ", "").trim());
+            } else {
+                unitA = parseInt(a.unit);
+            }
+            if (a.unit.includes("Unit ")) {
+                unitB = parseInt(b.unit.replace("Unit ", "").trim());
+            } else {
+                unitB = parseInt(b.unit); 
+            }
             return unitA - unitB;
         });
+        console.log("initUnit____________",this._unitStatus);
         this.MapLaout.removeAllChildren();
         this.addMapBg().then(()=>{
             this.loadMapItems();
-            this.scheduleOnce(()=>{
+            // this.scheduleOnce(()=>{
                 this.MapLaout.setPosition(0,0,0)
                 this.scrollToNormal();
-            },0.2);
+            // });
         });
     }
 

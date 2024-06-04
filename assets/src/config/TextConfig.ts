@@ -20,6 +20,8 @@ export const TextConfig = {
     Building_Cell_Tip: "此建筑不能售卖!",
     // Building_Edit_Error: "该建筑不能编辑!",
     Building_New_Error: "该位置建筑不能放置!",
+    Building_Product_Full: "生产队列已满",
+    Building_Product_Delete: "是否删除此生产",
 
     Role_Text1: "点我做啥",
     Role_Text2: "不能移动的位置",
@@ -75,8 +77,8 @@ export const TextConfig = {
     Friend_DelFriendSucc: "删除好友成功",
 
     All_level_Tip: "恭喜完成所有关卡",
-	
-	//商店相关
+
+    //商店相关
     Shop_Figure: "形象商店",
     Shop_Fragment: "碎片区",
     Shop_Building: "建筑商店",

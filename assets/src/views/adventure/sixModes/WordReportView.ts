@@ -49,14 +49,12 @@ export class WordReportView extends BaseView {
     private _resultSubmitResponse: GameSubmitResponse | AdventureResult = null;
 
     start() {
-        // this.initUI();
+        this.initUI();
         this.initEvents();
     }
 
     initUI() {
         this.initRolePlayer();
-        //  = 7;
-        this.condition_scroll.numItems = 3;
     }
 
     initData(data: GameSubmitResponse) {

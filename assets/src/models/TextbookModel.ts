@@ -339,6 +339,7 @@ export interface GameSubmitResponse extends BaseRepPacket {
     award?: any;
     flag_star_num?: number;
     pass_flag?: number;
+    word?: string;
 }
 
 export interface GameSubmitModel {

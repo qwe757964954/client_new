@@ -4,7 +4,6 @@ import DebugConfig from "./DebugConfig";
 import { TextConfig } from "./config/TextConfig";
 import { DataMgr } from "./manager/DataMgr";
 import { SpineAniManager } from "./manager/SpineAniManager";
-import FileUtil from "./util/FileUtil";
 import { ToolUtil } from "./util/ToolUtil";
 
 
@@ -56,7 +55,7 @@ export default class GlobalConfig {
         if (DebugConfig.WRITE_LOG) {
             console.log = function (...args) {
                 tmplog(...args);
-                FileUtil.instance().log(...args);
+                // FileUtil.instance().log(...args);
             }
         }
 
@@ -64,7 +63,7 @@ export default class GlobalConfig {
         // 错误信息，出错文件，出错行号，出错列号，错误详情
         if (DebugConfig.ERROR_LOG) {
             window.onerror = function (...args) {
-                FileUtil.instance().errorLog(...args);
+                // FileUtil.instance().errorLog(...args);
             }
         }
         if (DebugConfig.SHOW_FPS) {

@@ -2,8 +2,9 @@ import { _decorator, Label, Node, Sprite } from 'cc';
 import { TextConfig } from '../../config/TextConfig';
 import { DataMgr, ProduceInfo, PropData } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
-import { ViewsManager } from '../../manager/ViewsManager';
+import { ViewsMgr } from '../../manager/ViewsManager';
 import { User } from '../../models/User';
+import { ServiceMgr } from '../../net/ServiceManager';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
 import ListItem from '../../util/list/ListItem';
@@ -36,6 +37,9 @@ export class BuildingProduceItem extends ListItem {
     public lockNode: Node = null;//锁定节点
 
     private _expend: PropData[] = null;
+    private _num: number = 0;
+    private _buildingID: number = 0;
+    private _level: number = 0;
 
     start() {
         this.initEvent();
@@ -55,11 +59,14 @@ export class BuildingProduceItem extends ListItem {
     }
 
     /**初始化数据 */
-    initData(data: ProduceInfo, level: number, num: number) {
+    initData(data: ProduceInfo, level: number, id: number) {
         LoadManager.loadSprite(data.res_png, this.img);
         this.labelName.string = data.res_name;
         let time = data.res_time;
         this.labelTime.string = ToolUtil.getSecFormatStr(time);
+
+        this._buildingID = id;
+        this._level = level;
 
         let cbLevel = User.castleLevel;//城堡等级
         if (data.unlock > cbLevel || data.level > level) {
@@ -70,13 +77,10 @@ export class BuildingProduceItem extends ListItem {
         }
         this.produceNode.active = true;
         this.lockNode.active = false;
-        this.labelNum.string = ToolUtil.replace(TextConfig.Prop_Show, num.toString());
 
         let expand = data.expend;
         this._expend = expand;
         this.scrollView.numItems = expand ? expand.length : 0;
-
-        // TODO
     }
     /**list加载 */
     onLoadListItem(item: Node, idx: number) {
@@ -87,13 +91,25 @@ export class BuildingProduceItem extends ListItem {
     }
     /**生产按钮点击 */
     onClickProduce() {
-        // TODO
-        ViewsManager.showTip(TextConfig.Function_Tip);
+        if (this._num <= 0) {
+            ViewsMgr.showTip(TextConfig.Building_Product_Full);
+            return;
+        }
+        ServiceMgr.buildingService.reqBuildingProduceAdd(this._buildingID, [this._level]);
     }
     /**次数按钮点击 */
     onClickTimes() {
-        // TODO
-        ViewsManager.showTip(TextConfig.Function_Tip);
+        if (this._num <= 0) {
+            ViewsMgr.showTip(TextConfig.Building_Product_Full);
+            return;
+        }
+        let ary = new Array(this._num).fill(this._level);
+        ServiceMgr.buildingService.reqBuildingProduceAdd(this._buildingID, ary);
+    }
+    /**设置队列剩余数量 */
+    setNum(num: number) {
+        this._num = num;
+        this.labelNum.string = ToolUtil.replace(TextConfig.Prop_Show, num.toString());
     }
 }
 
