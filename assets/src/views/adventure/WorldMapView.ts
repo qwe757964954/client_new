@@ -41,6 +41,7 @@ export class WorldMapView extends Component {
     private _enterLevelEveId: string; //进入关卡
     private _getWordsEveId: string; //获取单词
     private _getLevelProgressEveId: string; //获取关卡进度
+    private _enterTestEveId: string; //进入测试
 
     private _currentIslandID: number = 0;//当前岛屿id
     private _currentLevelData: MapLevelData = null;//当前关卡数据
@@ -106,7 +107,7 @@ export class WorldMapView extends Component {
         console.log('获取岛屿进度', data);
 
         if (this._currentIsland) {
-            this._currentIsland.removeFromParent();
+            this._currentIsland.destroy();
         }
         let copynode = instantiate(this.islandPref);
         this._currentIsland = copynode;
@@ -129,8 +130,9 @@ export class WorldMapView extends Component {
     /**隐藏视图 */
     hideIsland() {
         if (this._currentIsland) {
-            this._currentIsland.removeFromParent();
+            this._currentIsland.destroy();
         }
+        this._getingIslandStatus = false;
     }
 
     //进入关卡
@@ -140,6 +142,18 @@ export class WorldMapView extends Component {
             return;
         }
         console.log('进入关卡', data);
+        this._currentLevelData = data;
+        // this._currentLevelData.current_mode = GameMode.Study;
+        this._getingWords = true;
+        ServiceMgr.studyService.getAdvLevelProgress(data.big_id, data.small_id, data.micro_id);
+    }
+
+    //进入关卡测试
+    private enterTest(data: MapLevelData) {
+        if (this._getingWords) {
+            console.log('正在获取单词中', data);
+            return;
+        }
         this._currentLevelData = data;
         // this._currentLevelData.current_mode = GameMode.Study;
         this._getingWords = true;
@@ -207,6 +221,7 @@ export class WorldMapView extends Component {
         this._islandStatusId = EventManager.on(InterfacePath.Island_Status, this.onGetIslandStatus.bind(this));
         this._islandProgressId = EventManager.on(InterfacePath.Island_Progress, this.onGetIslandProgress.bind(this));
         this._getLevelProgressEveId = EventManager.on(InterfacePath.Adventure_LevelProgress, this.onGetLevelProgress.bind(this));
+        this._enterTestEveId = EventManager.on(EventType.Enter_Level_Test, this.enterTest)
         CCUtil.onTouch(this.btn_back.node, this.onBtnBackClick, this)
 
     }
@@ -221,6 +236,7 @@ export class WorldMapView extends Component {
         EventManager.off(InterfacePath.Island_Status, this._islandStatusId);
         EventManager.off(InterfacePath.Island_Progress, this._islandProgressId);
         EventManager.off(InterfacePath.Adventure_LevelProgress, this._getLevelProgressEveId);
+        EventManager.off(EventType.Enter_Level_Test, this._enterTestEveId)
         CCUtil.offTouch(this.btn_back.node, this.onBtnBackClick, this)
 
     }

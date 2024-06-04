@@ -23,6 +23,7 @@ export class IslandMap extends Component {
     private _pointItems: Node[] = [];
 
     private _progressData: number;
+    private _aniNode: Node = null;
 
     start() {
 
@@ -38,6 +39,7 @@ export class IslandMap extends Component {
         this._pointItems = [];
         this.bg.spriteFrame = this.islandBg[islandId - 1];
         let points = WorldIsland.getMapPointsByBigId(islandId);
+        let posData: { map: IslandMap, position: Vec3 } = null;
         for (let i = 0; i < mapPoints.length; i++) {
             let mapPoint = instantiate(this.mapPointPrefab);
             mapPoint.position = new Vec3(points[i][0], points[i][1], 0);
@@ -46,7 +48,23 @@ export class IslandMap extends Component {
             mapPoint.getComponent(MapPointItem).initData(mapPoints[i]);
             this._pointItems.push(mapPoint);
             CCUtil.onTouch(mapPoint, this.onPointClick.bind(this, mapPoint), this);
+            if (mapPoints[i].flag == 0 && mapPoints[i].can_play == 1) { //当前关卡
+                posData = { map: this, position: mapPoint.position };
+            }
         }
+        if (!posData) {
+            if (this._aniNode) {
+                this._aniNode.active = false;
+            }
+            this._aniNode = null;
+        }
+        return posData;
+    }
+
+    setAniNode(aniNode: Node) {
+        this.node.addChild(aniNode);
+        aniNode.active = true;
+        this._aniNode = aniNode;
     }
 
     onPointClick(point: Node) {

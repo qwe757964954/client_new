@@ -158,6 +158,7 @@ export class AdventureResult extends BaseRepPacket {
     pass_flag: number;
     award?: any;
     flag_star_num: number;
+    word: string;
 }
 
 //组合模式拆分数据

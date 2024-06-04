@@ -929,11 +929,11 @@
     "renderEvent": {
       "__id__": 48
     },
-    "selectedMode": 1,
+    "selectedMode": 2,
     "selectedEvent": {
       "__id__": 49
     },
-    "repeatEventSingle": false,
+    "repeatEventSingle": true,
     "_id": ""
   },
   {

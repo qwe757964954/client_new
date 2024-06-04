@@ -5,6 +5,9 @@ import { MapLevelData } from '../../../models/AdventureModel';
 import CCUtil from '../../../util/CCUtil';
 import EventManager from '../../../util/EventManager';
 import { MonsterModel } from './MonsterModel';
+import List from '../../../util/list/List';
+import { BaseItem } from '../../common/BaseItem';
+import { ViewsMgr } from '../../../manager/ViewsManager';
 const { ccclass, property } = _decorator;
 
 export interface LevelConfig {
@@ -32,14 +35,13 @@ export class rightPanelchange extends Component {
     btn_test: Node = null;
     @property({ type: Prefab, tooltip: "怪物预制" })
     public monsterPrefab: Prefab = null;
+    @property({ type: List, tooltip: "奖励列表" })
+    public rewardList: List = null;
 
     private _data: MapLevelData = null;
     private _eveId: string;
     private _monsterAni: Node = null;
-
-    start() {
-
-    }
+    private _rewardData: any[] = []; //奖励数据
 
     /** 更新 */
     update(deltaTime: number) {
@@ -47,6 +49,40 @@ export class rightPanelchange extends Component {
     }
 
     onLoad() {
+        //测试数据
+        this._rewardData = [{
+            id: 1,
+            num: 1000,
+            star: 1
+        }, {
+            id: 2,
+            num: 500,
+            star: 0
+        }, {
+            id: 3,
+            num: 10,
+            star: 2
+        }, {
+            id: 4,
+            num: 10,
+            star: 3
+        }, {
+            id: 5,
+            num: 10,
+            star: 0
+        }, {
+            id: 6,
+            num: 10,
+            star: 0
+        }, {
+            id: 7,
+            num: 10,
+            star: 0
+        }, {
+            id: 8,
+            num: 10,
+            star: 0
+        }]
         this.initEvent();
         this.initUI()
     }
@@ -58,11 +94,19 @@ export class rightPanelchange extends Component {
     private levelClick() {
         EventManager.emit(EventType.Enter_Island_Level, this._data);
     }
-    private touchNodeArr: Node[] = [];
+
+    private startTest() {
+        if (!isValid(this._data.flag_info)) {
+            ViewsMgr.showTip("通过本关后解锁");
+            return;
+        }
+        EventManager.emit(EventType.Enter_Level_Test, this._data);
+    }
 
     initEvent() {
         CCUtil.onTouch(this.btn_close, this.hideView, this);
         CCUtil.onTouch(this.btn_start, this.levelClick, this);
+        CCUtil.onTouch(this.btn_test, this.startTest, this);
         this._eveId = EventManager.on(EventType.Expand_the_level_page, this.openView.bind(this));
 
     }
@@ -100,24 +144,38 @@ export class rightPanelchange extends Component {
         }
         let data = this._data;
         //有星星
-        if (isValid(data.flag_info) && isValid(data.flag_info.star_one)) {
-            if (isValid(data.flag_info.star_one)) {
-                this.stars[0].getComponent(Sprite).grayscale = false;
-                this.starConditions[0].getComponent(Sprite).grayscale = false;
-                this.starConditions[0].getChildByName("star").getComponent(Sprite).grayscale = false;
+        if (isValid(data.flag_info)) {
+            let isGet = isValid(data.flag_info.star_one);
+            this.stars[0].getComponent(Sprite).grayscale = !isGet;
+            this.starConditions[0].getComponent(Sprite).grayscale = !isGet;
+            this.starConditions[0].getChildByName("star").getComponent(Sprite).grayscale = !isGet;
+
+            isGet = isValid(data.flag_info.star_two);
+            this.stars[1].getComponent(Sprite).grayscale = !isGet;
+            this.starConditions[1].getComponent(Sprite).grayscale = !isGet;
+            this.starConditions[1].getChildByName("star").getComponent(Sprite).grayscale = !isGet;
+
+            isGet = isValid(data.flag_info.star_three);
+            this.stars[2].getComponent(Sprite).grayscale = !isGet;
+            this.starConditions[2].getComponent(Sprite).grayscale = !isGet;
+            this.starConditions[2].getChildByName("star").getComponent(Sprite).grayscale = !isGet;
+
+            this.btn_test.getComponent(Sprite).grayscale = false;
+
+        } else {
+            for (let i = 0; i < 3; i++) {
+                this.stars[i].getComponent(Sprite).grayscale = true;
+                this.starConditions[i].getComponent(Sprite).grayscale = true;
+                this.starConditions[i].getChildByName("star").getComponent(Sprite).grayscale = true;
             }
-            if (isValid(data.flag_info.star_two)) {
-                this.stars[1].getComponent(Sprite).grayscale = false;
-                this.starConditions[1].getComponent(Sprite).grayscale = false;
-                this.starConditions[1].getChildByName("star").getComponent(Sprite).grayscale = false;
-            }
-            if (isValid(data.flag_info.star_three)) {
-                this.stars[2].getComponent(Sprite).grayscale = false;
-                this.starConditions[1].getComponent(Sprite).grayscale = false;
-                this.starConditions[1].getChildByName("star").getComponent(Sprite).grayscale = false;
-            }
+            this.btn_test.getComponent(Sprite).grayscale = true;
         }
+        this.rewardList.numItems = this._rewardData.length;
         // LoadManager.loadSprite("adventure/monster/" + this._data.bigId + "-" + this._data.smallId + "/spriteFrame", this.monster.getComponent(Sprite));
+    }
+
+    onRewardItemRender(item: Node, idx: number) {
+        item.getComponent(BaseItem).setData(this._rewardData[idx]);
     }
 
     hideView() {
@@ -130,6 +188,7 @@ export class rightPanelchange extends Component {
     removeEvent() {
         CCUtil.offTouch(this.btn_close, this.hideView, this);
         CCUtil.offTouch(this.btn_start, this.levelClick, this);
+        CCUtil.offTouch(this.btn_test, this.startTest, this);
         EventManager.off(EventType.Expand_the_level_page, this._eveId);
 
     }
