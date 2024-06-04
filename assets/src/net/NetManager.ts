@@ -210,7 +210,9 @@ class NetManager {
         console.log("sendSpecialFailedMsg");
         if (!this._socket.sendMsg(this._specialFailedMsg.data)) {
             this._specialFailedMsg.times++;
+            console.log("sendSpecialFailedMsg failed", this._specialFailedMsg.times);
         } else {
+            console.log("sendSpecialFailedMsg success");
             this._specialFailedMsg = null;
         }
         return true;
@@ -223,8 +225,11 @@ class NetManager {
             console.log("sendFailedMsg");
             if (!this._socket.sendMsg(info.data)) {
                 info.times++;
+                console.log("sendFailedMsg failed", info.times);
                 if (info.times >= 3) return;
                 this._sendFailedMsg.push(info);
+            } else {
+                console.log("sendFailedMsg success");
             }
         });
     }

@@ -66,6 +66,10 @@ export class RewardView extends Component {
                 }
             }).start();
         }
+        if (data.length <= 0) {
+            if (this._callBack) this._callBack();
+            this.node.destroy();
+        }
     }
 }
 

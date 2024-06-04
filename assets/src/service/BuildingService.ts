@@ -1,4 +1,4 @@
-import { c2sBuildingCreate, c2sBuildingEdit, c2sBuildingList, c2sBuildingProduceAdd, c2sBuildingProduceDelete, c2sBuildingProduceGet, c2sBuildingSell, c2sBuildingUpgrade, c2sLandUpdate } from "../models/NetModel";
+import { c2sBuildingCreate, c2sBuildingEdit, c2sBuildingList, c2sBuildingProduceAdd, c2sBuildingProduceDelete, c2sBuildingProduceGet, c2sBuildingRecycle, c2sBuildingSell, c2sBuildingUpgrade, c2sLandUpdate } from "../models/NetModel";
 import { NetMgr } from "../net/NetManager";
 import { BaseControll } from "../script/BaseControll";
 
@@ -16,13 +16,21 @@ export class BuildingService extends BaseControll {
         NetMgr.sendMsg(para);
     }
     /**建筑编辑 */
-    reqBuildingEdit(id: number, x: number, y: number, isFlip: boolean = false) {
+    reqBuildingEdit(id: number, x: number, y: number, isFlip: boolean = false, hide: number = 0) {
         console.log("reqBuildingEdit", id, x, y, isFlip);
         let para = new c2sBuildingEdit();
         para.id = id;
         para.x = x;
         para.y = y;
         para.direction = isFlip ? 1 : 0;
+        para.hide = hide;
+        NetMgr.sendMsg(para);
+    }
+    /**建筑回收 */
+    reqBuildingRecycle(id: number) {
+        console.log("reqBuildingRecycle", id);
+        let para = new c2sBuildingRecycle();
+        para.id = id;
         NetMgr.sendMsg(para);
     }
     /**新建建筑 */
