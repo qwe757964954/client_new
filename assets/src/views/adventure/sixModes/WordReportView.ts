@@ -12,6 +12,7 @@ import List from '../../../util/list/List';
 import { NodeUtil } from '../../../util/NodeUtil';
 import { ConditionItem } from './ConditionItem';
 import { ReportItem } from './ReportItem';
+import { ViewsMgr } from '../../../manager/ViewsManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordReportView')
@@ -126,8 +127,9 @@ export class WordReportView extends BaseView {
     }
     gotoEvaluation() {
         console.log("测评模式")
-        this.node.destroy();
-        EventMgr.dispatch(EventType.Goto_Exam_Mode);
+        ViewsMgr.showTip("测评模式暂未开放");
+        // this.node.destroy();
+        // EventMgr.dispatch(EventType.Goto_Exam_Mode);
     }
 
     gotoNextLevel() {

@@ -420,13 +420,13 @@ export class MapTouchBetterController extends Component {
 
         // 获取地图容器的尺寸
         let containerTransform = mapContainer.getComponent(UITransform);
-        let containerSize = v2(containerTransform.width, containerTransform.height);
+        let containerSize = v2(containerTransform.width , containerTransform.height);
 
         // 计算目标位置相对于地图容器的位置
         let relativePos = targetPos.clone().subtract(mapContainer.position);
 
         // 获取地图的当前缩放比例
-        let currentScale = mapContainer.scale.x * this.defaultScaling; // 假设地图是等比缩放的
+        let currentScale = mapContainer.scale.x; // 假设地图是等比缩放的
         // 计算目标位置的可见区域范围
         let visibleRect = rect(0, 0, containerSize.x / currentScale, containerSize.y / currentScale);
 
@@ -446,6 +446,7 @@ export class MapTouchBetterController extends Component {
             }
             // 计算新的地图位置
             let newMapPos = mapContainer.position.clone().subtract(v3(offsetX, offsetY, 0));
+            console.log("newMapPos________",newMapPos)
             this.gatherTouchMove(newMapPos);
             // 移动地图到新的位置
             mapContainer.setPosition(newMapPos);

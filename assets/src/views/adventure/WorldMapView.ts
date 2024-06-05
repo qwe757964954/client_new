@@ -157,6 +157,8 @@ export class WorldMapView extends Component {
 
     //进入关卡测试
     private enterTest(data: MapLevelData) {
+        ViewsMgr.showTip("测评模式暂未开放");
+        return;
         if (this._getingWords) {
             console.log('正在获取单词中', data);
             return;
