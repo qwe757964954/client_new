@@ -191,6 +191,7 @@ export class BuildingProduceView extends BaseComponent {
     onBuildingUpgrade(data: s2cBuildingUpgrade) {
         if (200 != data.code) return;
         if (data.id != this._building.buildingID) return;
+        ViewsMgr.showTip(TextConfig.Building_Upgrade_Success);
         this._building.buildingData.level = data.level;
         this.onUpdateLevelProduce();
     }
