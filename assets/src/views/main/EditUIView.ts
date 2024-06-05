@@ -41,9 +41,6 @@ export class EditUIView extends BaseComponent {
     private _editType: EditType = null;//编辑类型
     private _lastSelect: Sprite = null;//上次选中
     private _itemsData: EditInfo[] = null;//编辑数据
-    start() {
-        this.initEvent();
-    }
     //设置主场景
     public set mainScene(mainScene: MainScene) {
         this._mainScene = mainScene;
@@ -74,7 +71,6 @@ export class EditUIView extends BaseComponent {
     }
     //销毁
     onDestroy() {
-        this.removeEvent();
     }
     // 标题所有按钮点击 
     onBtnAllClick() {
@@ -107,8 +103,10 @@ export class EditUIView extends BaseComponent {
     }
     protected onEnable(): void {
         this.initData();
+        this.initEvent();
     }
     protected onDisable(): void {
+        this.removeEvent();
     }
     // 初始化数据
     initData() {

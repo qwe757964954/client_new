@@ -132,15 +132,13 @@ export class MainUIView extends Component {
     }
     //BOSS点击
     public onClickBoss() {
-        // ViewsManager.showTip(TextConfig.Function_Tip);
-        ViewsManager.instance.showView(PrefabType.WorldBossView, (node: Node) => {
-        });
+        ViewsManager.showTip(TextConfig.Function_Tip);
+        // ViewsManager.instance.showView(PrefabType.WorldBossView);
     }
     //商店点击
     public onClickShop() {
-        // ViewsManager.showTip(TextConfig.Function_Tip);
-        ViewsManager.instance.showView(PrefabType.ShopUIView, (node: Node) => {
-        });
+        ViewsManager.showTip(TextConfig.Function_Tip);
+        // ViewsManager.instance.showView(PrefabType.ShopUIView);
     }
     //任务点击
     public onClickTask() {
