@@ -91,9 +91,9 @@ export class WordReadingView extends BaseModeView {
                 this.errorNumLabel.string = "错误次数：" + this._errorNum;
             }
             this._wrongWordList.push(this._rightWordData);
-            if (!this._wrongMode && this._wrongWordList.length >= 3) {
-                this._wrongMode = true;
-            }
+            // if (!this._wrongMode && this._wrongWordList.length >= 3) {
+            //     this._wrongMode = true;
+            // }
             if (!this._wrongMode) {
                 this._wordIndex++;
                 if (this._wordIndex >= this._wordsData.length) {
@@ -226,9 +226,13 @@ export class WordReadingView extends BaseModeView {
         console.log("onGameSubmitResponse....",data);
         this._currentSubmitResponse = data;
         this._currentSubmitResponse as GameSubmitResponse;
+        if(this._currentSubmitResponse.pass_flag == 1){
+            this.gotoResult();
+            return;
+        }
     }
 
-    protected modeOver(): void {
+    protected gotoResult(): void {
         console.log('朗读模式完成');
         ViewsManager.instance.showView(PrefabType.WordReportView, (node: Node) => {
             let nodeScript = node.getComponent(WordReportView);

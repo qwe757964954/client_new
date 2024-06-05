@@ -254,7 +254,7 @@ export class ScrollMapView extends BaseView {
         let item:MapPointItem = point.getComponent(MapPointItem);
         this._curLevelIndex = item.index;
         let data = item.data;
-        let itemStatus:UnitItemStatus = this._unitStatus[data.big_id - 1];
+        let itemStatus:UnitItemStatus = this._unitStatus.find(item => item.unit === data.big_id);
         let small_id = data.small_id;
         let gate:GateListItem = itemStatus.gate_list[small_id - 1];
         let param:GotoUnitLevel = {

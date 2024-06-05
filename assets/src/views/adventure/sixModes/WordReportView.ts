@@ -2,6 +2,7 @@ import { _decorator, instantiate, Layers, Node, Prefab } from 'cc';
 import { EventType } from '../../../config/EventType';
 import { GameRes } from '../../../GameRes';
 import { inf_SpineAniCreate } from '../../../manager/InterfaceDefines';
+import { ViewsMgr } from '../../../manager/ViewsManager';
 import { AdventureResult } from '../../../models/AdventureModel';
 import { RoleBaseModel } from '../../../models/RoleBaseModel';
 import { GameSubmitResponse } from '../../../models/TextbookModel';
@@ -12,7 +13,6 @@ import List from '../../../util/list/List';
 import { NodeUtil } from '../../../util/NodeUtil';
 import { ConditionItem } from './ConditionItem';
 import { ReportItem } from './ReportItem';
-import { ViewsMgr } from '../../../manager/ViewsManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordReportView')
@@ -61,8 +61,6 @@ export class WordReportView extends BaseView {
 
     initData(data: GameSubmitResponse) {
         this._resultSubmitResponse = data;
-        console.log("initData___________000", this._resultSubmitResponse)
-        console.log("initData___________", this._resultSubmitResponse.award)
         if (this._resultSubmitResponse.pass_flag == 1) {
             let startAnim = ["sta", "sta2", "sta3"]
             let curAnim = startAnim[this._resultSubmitResponse.flag_star_num - 1];
