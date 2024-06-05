@@ -177,6 +177,7 @@ export class rightPanelchange extends Component {
             this.btn_test.getComponent(Sprite).grayscale = true;
         }
         this.rewardList.numItems = this._rewardData.length;
+        this.btn_test.getComponent(Sprite).grayscale = true;
         // LoadManager.loadSprite("adventure/monster/" + this._data.bigId + "-" + this._data.smallId + "/spriteFrame", this.monster.getComponent(Sprite));
     }
 
