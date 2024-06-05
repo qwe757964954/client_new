@@ -722,12 +722,12 @@
     "_string": "1111-1",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 19,
+    "_actualFontSize": 18,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
     "_overflow": 2,
-    "_enableWrapText": true,
+    "_enableWrapText": false,
     "_font": {
       "__uuid__": "a446d5bd-e204-4bf8-a0a0-865931b6d0ad",
       "__expectedType__": "cc.TTFFont"

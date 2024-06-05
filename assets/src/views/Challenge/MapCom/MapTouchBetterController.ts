@@ -38,7 +38,7 @@ export class MapTouchBetterController extends Component {
     @property({
         tooltip: '图片初始缩放'
     })
-    public defaultScaling: number = 1;
+    public defaultScaling: number = 1.5;
 
     @property({
         tooltip: '图片缩放最小scale'
@@ -420,7 +420,7 @@ export class MapTouchBetterController extends Component {
 
         // 获取地图容器的尺寸
         let containerTransform = mapContainer.getComponent(UITransform);
-        let containerSize = v2(containerTransform.width, containerTransform.height);
+        let containerSize = v2(containerTransform.width , containerTransform.height);
 
         // 计算目标位置相对于地图容器的位置
         let relativePos = targetPos.clone().subtract(mapContainer.position);
@@ -446,6 +446,7 @@ export class MapTouchBetterController extends Component {
             }
             // 计算新的地图位置
             let newMapPos = mapContainer.position.clone().subtract(v3(offsetX, offsetY, 0));
+            console.log("newMapPos________",newMapPos)
             this.gatherTouchMove(newMapPos);
             // 移动地图到新的位置
             mapContainer.setPosition(newMapPos);
