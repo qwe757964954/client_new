@@ -9,7 +9,10 @@ export class ExamItem extends Component {
     letterLabel: Label = null;
     private _select: boolean = false;
 
+    letter: string = "";
+
     setData(letter: string) {
+        this.letter = letter;
         this.letterLabel.string = letter;
         this.select = false;
     }

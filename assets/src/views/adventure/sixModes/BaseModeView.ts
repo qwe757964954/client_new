@@ -1,9 +1,9 @@
-import { _decorator, BlockInputEvents, Button, instantiate, isValid, Label, Node, Prefab, Sprite, tween, UITransform, Vec3, view } from 'cc';
+import { _decorator, BlockInputEvents, Button, instantiate, isValid, Label, Node, Prefab, Sprite, tween, UIOpacity, UITransform, Vec3, view } from 'cc';
 import { EventType } from '../../../config/EventType';
 import { AdvLevelConfig, BookLevelConfig } from '../../../manager/DataMgr';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { ViewsManager } from '../../../manager/ViewsManager';
-import { AdventureCollectWordModel, AdventureResultModel, AdventureResult, WordsDetailData } from '../../../models/AdventureModel';
+import { AdventureCollectWordModel, AdventureResultModel, AdventureResult, WordsDetailData, GameMode } from '../../../models/AdventureModel';
 import { PetModel } from '../../../models/PetModel';
 import { RoleBaseModel } from '../../../models/RoleBaseModel';
 import { GameSubmitModel, GameSubmitResponse, ReqCollectWord, UnitWordModel } from '../../../models/TextbookModel';
@@ -158,7 +158,7 @@ export class BaseModeView extends BaseView {
             console.log("progressData", progressData);
         }
         this.timeLabel.string = "剩余时间:" + ToolUtil.secondsToTimeFormat(this._remainTime);
-        if (this._remainTime > 0) {
+        if (this._remainTime > 0 && this.gameMode != GameMode.Exam) {
             this.schedule(this.onTimer, 1);
         }
         this._errorNum = levelData.error_num;
@@ -206,6 +206,10 @@ export class BaseModeView extends BaseView {
             this.monster.addChild(this._monster);
             let monsterModel = this._monster.getComponent(MonsterModel);
             monsterModel.init("spine/monster/adventure/" + lvData.monsterAni);
+            if (this.gameMode == GameMode.Exam) {
+                this.monster.getComponent(UIOpacity).opacity = 125;
+                return;
+            }
             let len = this._wordsData.length - this._errorNum - 1;
             if (len > 4) {
                 len = 4;
@@ -230,6 +234,9 @@ export class BaseModeView extends BaseView {
             this._monster.scale = new Vec3(-scale.x, scale.y, 1);
             let monsterModel = this._monster.getComponent(MonsterModel);
             monsterModel.init("spine/TextbookVocabulary/" + "10018");
+            if (this.gameMode == GameMode.Exam) {
+                this.monster.getComponent(UIOpacity).opacity = 125;
+            }
         }
     }
 
