@@ -153,6 +153,11 @@ export class BuildingProduceView extends BaseComponent {
     }
     /**升级 */
     onClickUpgrade() {
+        let queue = this._building.buildingData.queue;
+        if (queue && queue.length > 0) {
+            ViewsMgr.showTip(TextConfig.Building_Upgrade_Error);
+            return;
+        }
         ViewsManager.instance.showView(PrefabType.BuildingUpgradeView, (node: Node) => {
             node.getComponent(BuildingUpgradeView).init(this._building);
         });
