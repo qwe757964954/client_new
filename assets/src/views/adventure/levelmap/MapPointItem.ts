@@ -62,7 +62,8 @@ export class MapPointItem extends Component {
     //教材单词关卡点初始化
     initSmallData(data: MapLevelData) {
         this.data = data;
-        this.levelLabel.string = data.big_id + "-" + data.small_id;
+        let big_id = data.big_id.replace("Unit ", "").trim();
+        this.levelLabel.string = big_id + "-" + data.small_id;
         this.clearPointStars();
         if (isValid(data.flag_info) && isValid(data.flag_info.star_one)) {
             if (isValid(data.flag_info.star_one)) {

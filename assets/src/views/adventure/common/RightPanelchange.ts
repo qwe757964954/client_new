@@ -1,13 +1,13 @@
 import { _decorator, Component, instantiate, isValid, Label, Node, Prefab, Sprite, tween, UITransform, Vec3 } from 'cc';
 import { EventType } from '../../../config/EventType';
 import { DataMgr } from '../../../manager/DataMgr';
+import { ViewsMgr } from '../../../manager/ViewsManager';
 import { MapLevelData } from '../../../models/AdventureModel';
 import CCUtil from '../../../util/CCUtil';
 import EventManager from '../../../util/EventManager';
-import { MonsterModel } from './MonsterModel';
 import List from '../../../util/list/List';
 import { BaseItem } from '../../common/BaseItem';
-import { ViewsMgr } from '../../../manager/ViewsManager';
+import { MonsterModel } from './MonsterModel';
 const { ccclass, property } = _decorator;
 
 export interface LevelConfig {
@@ -133,7 +133,8 @@ export class rightPanelchange extends Component {
         }
         let monsterModel = this._monsterAni.getComponent(MonsterModel);
         if (this._data.game_modes && this._data.game_modes === "word") {
-            this.levelTxt.string = this._data.big_id + '-' + this._data.small_id;
+            let big_id = this._data.big_id.replace("Unit ", "").trim();
+            this.levelTxt.string = big_id + '-' + this._data.small_id;
             monsterModel.init("spine/TextbookVocabulary/" + "10018");
             this.monsterNameTxt.string = "缝合怪";
         } else {
