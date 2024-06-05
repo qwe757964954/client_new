@@ -294,7 +294,18 @@ export class c2sReportResult {
 
 export class c2sWordDetail {
     command_id: string = InterfacePath.Classification_Word;
-    c_id:string;
+    type_name:string;
+    book_name:string;
+    grade:string;
+    unit:string;
+    word:string;
+}
+
+export interface ReqWordDetail{
+    type_name:string;
+    book_name:string;
+    grade:string;
+    unit:string;
     word:string;
 }
 

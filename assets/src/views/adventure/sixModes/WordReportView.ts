@@ -10,6 +10,7 @@ import CCUtil from '../../../util/CCUtil';
 import { EventMgr } from '../../../util/EventManager';
 import List from '../../../util/list/List';
 import { NodeUtil } from '../../../util/NodeUtil';
+import { ConditionItem } from './ConditionItem';
 import { ReportItem } from './ReportItem';
 const { ccclass, property } = _decorator;
 
@@ -59,6 +60,7 @@ export class WordReportView extends BaseView {
 
     initData(data: GameSubmitResponse) {
         this._resultSubmitResponse = data;
+        console.log("initData___________000", this._resultSubmitResponse)
         console.log("initData___________", this._resultSubmitResponse.award)
         if (this._resultSubmitResponse.pass_flag == 1) {
             let startAnim = ["sta", "sta2", "sta3"]

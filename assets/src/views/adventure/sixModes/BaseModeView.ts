@@ -3,10 +3,10 @@ import { EventType } from '../../../config/EventType';
 import { AdvLevelConfig, BookLevelConfig } from '../../../manager/DataMgr';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { ViewsManager } from '../../../manager/ViewsManager';
-import { AdventureCollectWordModel, AdventureResultModel, AdventureResult, WordsDetailData } from '../../../models/AdventureModel';
+import { AdventureCollectWordModel, AdventureResult, AdventureResultModel, WordsDetailData } from '../../../models/AdventureModel';
 import { PetModel } from '../../../models/PetModel';
 import { RoleBaseModel } from '../../../models/RoleBaseModel';
-import { GameSubmitModel, GameSubmitResponse, ReqCollectWord, UnitWordModel } from '../../../models/TextbookModel';
+import { GameSubmitModel, GameSubmitResponse, ReqCollectWord, ReqWordDetail, UnitWordModel } from '../../../models/TextbookModel';
 import { InterfacePath } from '../../../net/InterfacePath';
 import { NetNotify } from '../../../net/NetNotify';
 import { ServiceMgr } from '../../../net/ServiceManager';
@@ -14,9 +14,9 @@ import { BaseView } from '../../../script/BaseView';
 import { TBServer } from '../../../service/TextbookService';
 import CCUtil from '../../../util/CCUtil';
 import EventManager, { EventMgr } from '../../../util/EventManager';
+import { ToolUtil } from '../../../util/ToolUtil';
 import { SmallMonsterModel } from '../../common/SmallMonsterModel';
 import { MonsterModel } from '../common/MonsterModel';
-import { ToolUtil } from '../../../util/ToolUtil';
 const { ccclass, property } = _decorator;
 
 /**学习模式公共部分 */
@@ -274,16 +274,14 @@ export class BaseModeView extends BaseView {
             //     unit: levelData.unit,
             //     game_mode: this.gameMode,
             // }
-            let data = { code: 200 };
-            let levelData = this._levelData as BookLevelConfig;
-            levelData.word_num = 1;
-            EventMgr.dispatch(NetNotify.Classification_ReportResult, data);
+            // let data = { code: 200 };
+            // let levelData = this._levelData as BookLevelConfig;
+            // levelData.word_num = 1;
+            // EventMgr.dispatch(NetNotify.Classification_ReportResult, data);
             // TBServer.reqReportResult(data);
+            this._upResultSucce = true;
         }
     }
-
-
-
     //当前模式结束,跳转下一模式或结算
     protected modeOver() {
 
@@ -401,7 +399,14 @@ export class BaseModeView extends BaseView {
             ServiceMgr.studyService.getAdventureWord(word, levelData.mapLevelData.big_id, levelData.mapLevelData.small_id, levelData.mapLevelData.micro_id);
         } else { //教材单词关卡
             let levelData: BookLevelConfig = this._levelData as BookLevelConfig;
-            TBServer.reqWordDetail(word, levelData.id);
+            let data:ReqWordDetail = {
+                type_name: levelData.type_name,
+                book_name: levelData.book_name,
+                grade: levelData.grade,
+                unit: levelData.unit,
+                word: word,
+            }
+            TBServer.reqWordDetail(data);
         }
     }
 
