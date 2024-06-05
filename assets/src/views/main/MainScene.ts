@@ -203,6 +203,7 @@ export class MainScene extends Component {
     // 建筑点击
     onBuildingClick(building: BuildingModel) {
         if (!building) return;
+        SoundMgr.click();
         console.log("onBuildingClick", building);
         if (MapStatus.EDIT == this._mapStatus) {
             if (!building.isCanEdit) return;
