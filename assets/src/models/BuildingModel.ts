@@ -93,6 +93,7 @@ export class BuildingModel extends BaseComponent {
     private _pos: Vec3 = new Vec3(0, 0, 0);//位置
     private _isFixImgPos: boolean = false;//是否固定图片位置
     private _isLoad: boolean = false;//是否加载图片
+    private _isLoadOver: boolean = false;//图片是否加载完成
     public isCanEdit: boolean = true;//是否可以编辑
     private _timer: number = null;//每秒定时器
     private _produceItemAry: number[] = [];//可以领取的生产物品类型
@@ -494,6 +495,7 @@ export class BuildingModel extends BaseComponent {
         if (isShow && !this._isLoad) {
             this._isLoad = true;
             LoadManager.loadSprite(DataMgr.getEditPng(this._editInfo), this.building).then(() => {
+                this._isLoadOver = true;
                 if (callBack) callBack();
             });
             let animation = this._editInfo.animation;
@@ -608,6 +610,7 @@ export class BuildingModel extends BaseComponent {
     }
     /**检测生产物品 */
     public checkProduce() {
+        if (!this._isLoadOver) return;
         let ary = [];
         let now = ToolUtil.now();
         this.buildingData.queue.forEach(element => {
