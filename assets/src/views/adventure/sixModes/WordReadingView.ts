@@ -217,13 +217,16 @@ export class WordReadingView extends BaseModeView {
     }
 
     onGameSubmitResponse(data: GameSubmitResponse) {
+        console.log("onGameSubmitResponse....",data);
         this._currentSubmitResponse = data;
+        this._currentSubmitResponse as GameSubmitResponse;
     }
 
     protected modeOver(): void {
         console.log('朗读模式完成');
         ViewsManager.instance.showView(PrefabType.WordReportView, (node: Node) => {
             let nodeScript = node.getComponent(WordReportView);
+            console.log('朗读模式完成',this._currentSubmitResponse);
             nodeScript.initData(this._currentSubmitResponse);
             ViewsManager.instance.closeView(PrefabType.WordReadingView);
             //跳转到下一场景

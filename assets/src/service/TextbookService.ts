@@ -1,6 +1,6 @@
 import { isValid } from "cc";
 import { ViewsManager } from "../manager/ViewsManager";
-import { CheckWordModel, CurrentBookStatus, GameSubmitModel, ModifyPlanData, MyTextbookListStatus, MyTextbookStatus, ReportResultModel, ReqCollectWord, ReqPlanData, ReqUnitStatusParam, c2sAddBookStatus, c2sAddPlanBookStatus, c2sAddPlanStatus, c2sBookAwardList, c2sBookPlanDetail, c2sBookStatus, c2sChangeTextbook, c2sCheckWord, c2sCollectWord, c2sCurrentBook, c2sDelBookStatus, c2sGameSubmit, c2sModifyPlanStatus, c2sReportResult, c2sSchoolBook, c2sSchoolBookGrade, c2sSearchBookList, c2sUnitListStatus, c2sUnitStatus, c2sVocabularyWord, c2sWordDetail } from "../models/TextbookModel";
+import { CheckWordModel, CurrentBookStatus, GameSubmitModel, ModifyPlanData, MyTextbookListStatus, MyTextbookStatus, ReportResultModel, ReqCollectWord, ReqPlanData, ReqUnitStatusParam, ReqWordDetail, c2sAddBookStatus, c2sAddPlanBookStatus, c2sAddPlanStatus, c2sBookAwardList, c2sBookPlanDetail, c2sBookStatus, c2sChangeTextbook, c2sCheckWord, c2sCollectWord, c2sCurrentBook, c2sDelBookStatus, c2sGameSubmit, c2sModifyPlanStatus, c2sReportResult, c2sSchoolBook, c2sSchoolBookGrade, c2sSearchBookList, c2sUnitListStatus, c2sUnitStatus, c2sVocabularyWord, c2sWordDetail } from "../models/TextbookModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
 import { NetNotify } from "../net/NetNotify";
@@ -335,10 +335,13 @@ export default class _TextbookService extends BaseControll {
      * 请求
      * @param word 
      */
-    reqWordDetail(word:string,id:string){
+    reqWordDetail(data:ReqWordDetail){
         let params:c2sWordDetail = new c2sWordDetail();
-        params.word = word;
-        params.c_id = id;
+        params.word = data.word;
+        params.type_name = data.type_name;
+        params.unit = data.unit;
+        params.book_name = data.book_name;
+        params.grade = data.grade;
         NetMgr.sendMsg(params);
     }
     /**

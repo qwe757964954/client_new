@@ -249,9 +249,9 @@ export class BreakThroughView extends BaseView {
         let posx = content_size.width / 2 + node_size.width / 2;
         this._rightChallenge.node.setPosition(posx,0,0);
         this._rightChallenge.node.active = true;
-        const removedString = this._curUnitStatus.unit.replace("Unit ", "").trim();
+        // const removedString = this._curUnitStatus.unit.replace("Unit ", "").trim();
         let param:MapLevelData = {small_id:this._curUnitStatus.small_id,
-            big_id:parseInt(removedString),
+            big_id:this._curUnitStatus.unit,
             micro_id:this._curUnitStatus.small_id,
             game_modes:"word",
             flag_info:this._selectGate.flag_info}
