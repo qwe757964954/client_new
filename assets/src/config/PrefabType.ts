@@ -36,6 +36,7 @@ export const PrefabType = {
     WordPracticeView: { path: "studyModes/WordPraticeView", zindex: Hierarchy.POPUPLAYER, tips: "练习模式" },
     WordSpellView: { path: "studyModes/WordSpellView", zindex: Hierarchy.POPUPLAYER, tips: "拼写模式" },
     WordReadingView: { path: "studyModes/WordReadingView", zindex: Hierarchy.POPUPLAYER, tips: "读模式" },
+    WordExamView: { path: "studyModes/WordExamView", zindex: Hierarchy.POPUPLAYER, tips: "测试模式" },
     WordReportView: { path: "studyModes/WordReportView", zindex: Hierarchy.POPUPLAYER, tips: "结算界面" },
     TransitionView: { path: "common/TransitionView", zindex: Hierarchy.POPUPLAYER, tips: "过渡界面" },
     MapPointItem: { path: "adventure/levelMap/MapPointItem", zindex: Hierarchy.POPUPLAYER, tips: "地图节点" },

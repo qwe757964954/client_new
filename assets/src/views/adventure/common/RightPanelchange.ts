@@ -43,6 +43,8 @@ export class rightPanelchange extends Component {
     private _monsterAni: Node = null;
     private _rewardData: any[] = []; //奖励数据
 
+    private _isTweening: boolean = false;
+
     /** 更新 */
     update(deltaTime: number) {
 
@@ -117,8 +119,11 @@ export class rightPanelchange extends Component {
 
         this.updateView();
         this.node.active = true;
+        if (this._isTweening) return;
+        this._isTweening = true;
         let node_size = this.node.getComponent(UITransform);
         tween(this.node).by(0.3, { position: new Vec3(-node_size.width, 0, 0) }).call(() => {
+            this._isTweening = false;
             // this.node.active = false
         }).start();
         // tween(this.node).to(0.3, { position: v3(178, 100, 0) }).call(() => {

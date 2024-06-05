@@ -7,6 +7,7 @@ import List from '../../util/list/List';
 import { rightPanelchange } from './common/RightPanelchange';
 import { IslandMap } from './levelmap/IslandMap';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
+import { ViewsMgr } from '../../manager/ViewsManager';
 const { ccclass, property } = _decorator;
 
 /**魔法森林 何存发 2024年4月9日17:51:36 */
@@ -133,6 +134,28 @@ export class WorldIsland extends Component {
             }
             this.mapPointList.numItems = this._mapLevelsData.length;
         }
+    }
+
+    getNextLevelData(big_id: number, small_id: number, micro_id: number): MicroListItem {
+        let currentIdx = -1;
+        let microList = this._progressData.micro_list;
+        let nextPoint: MicroListItem = null;
+        //找到当前地图点
+        for (let i = 0; i < microList.length; i++) {
+            if (microList[i].big_id == big_id && microList[i].small_id == small_id && microList[i].micro_id == micro_id) {
+                currentIdx = i;
+                break;
+            }
+        }
+        if (currentIdx == -1) return null;
+        if (currentIdx == microList.length - 1) { //岛屿通关
+            ViewsMgr.showTip("已通关第" + big_id + "岛屿");
+            return null;
+        } else {
+            currentIdx++;
+            nextPoint = microList[currentIdx];
+        }
+        return nextPoint;
     }
 
     onUpdatePoint(data: { big_id: number, small_id: number, micro_id: number, star: number }) {

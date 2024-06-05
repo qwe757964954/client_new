@@ -8,7 +8,7 @@ import { GameMode, IslandProgressModel, IslandStatusData, LevelProgressData, Map
 import { InterfacePath } from '../../net/InterfacePath';
 import { ServiceMgr } from '../../net/ServiceManager';
 import CCUtil from '../../util/CCUtil';
-import EventManager from '../../util/EventManager';
+import EventManager, { EventMgr } from '../../util/EventManager';
 import List from '../../util/list/List';
 import { StudyModeView } from './sixModes/StudyModeView';
 import { WordMeaningView } from './sixModes/WordMeaningView';
@@ -18,6 +18,7 @@ import { WorldIsland } from './WorldIsland';
 import { WorldMapItem } from './WorldMapItem';
 import { WordReadingView } from './sixModes/WordReadingView';
 import { UnitWordModel } from '../../models/TextbookModel';
+import { WordExamView } from './sixModes/WordExamView';
 const { ccclass, property } = _decorator;
 /**大冒险 世界地图 何存发 2024年4月8日14:45:44 */
 @ccclass('WorldMapView')
@@ -71,6 +72,10 @@ export class WorldMapView extends Component {
         console.log("onMapHorizontalSelected", selectedId);
         if (selectedId > this._currentPassIsland - 1) {
             ViewsMgr.showTip("请先通关前置岛屿");
+            return;
+        }
+        if (selectedId > 1) {
+            ViewsMgr.showTip("岛屿暂未开放");
             return;
         }
         this.switchLevels(selectedId);
@@ -133,6 +138,8 @@ export class WorldMapView extends Component {
             this._currentIsland.destroy();
         }
         this._getingIslandStatus = false;
+        this._levelProgressData = null;
+        this._currentLevelData = null;
     }
 
     //进入关卡
@@ -155,9 +162,14 @@ export class WorldMapView extends Component {
             return;
         }
         this._currentLevelData = data;
-        // this._currentLevelData.current_mode = GameMode.Study;
+        this._currentLevelData.current_mode = GameMode.Exam;
         this._getingWords = true;
-        ServiceMgr.studyService.getAdvLevelProgress(data.big_id, data.small_id, data.micro_id);
+        if (this._levelProgressData) { //已有当前关数据
+            this._levelProgressData.game_mode = GameMode.Exam;
+            ServiceMgr.studyService.getWordGameWords(this._currentLevelData.big_id, this._currentLevelData.small_id, this._currentLevelData.micro_id, this._currentLevelData.current_mode);
+        } else {
+            ServiceMgr.studyService.getAdvLevelProgress(data.big_id, data.small_id, data.micro_id);
+        }
     }
 
     onGetLevelProgress(data: LevelProgressData) {
@@ -166,8 +178,27 @@ export class WorldMapView extends Component {
             return;
         }
         this._levelProgressData = data;
-        this._currentLevelData.current_mode = this._levelProgressData.game_mode;
+        if (this._currentLevelData.current_mode != GameMode.Exam) { //不是测试模式
+            this._currentLevelData.current_mode = this._levelProgressData.game_mode;
+        }
         ServiceMgr.studyService.getWordGameWords(this._currentLevelData.big_id, this._currentLevelData.small_id, this._currentLevelData.micro_id, this._currentLevelData.current_mode);
+    }
+
+    goNextLevel() {
+        if (!this._currentIsland) return;
+        this._getingIslandStatus = false;
+        this._currentLevelData = null;
+        let nextLevel = this._currentIsland.getComponent(WorldIsland).getNextLevelData(this._levelProgressData.big_id, this._levelProgressData.small_id, this._levelProgressData.micro_id);
+        if (nextLevel) {
+            this.enterLevel(nextLevel);
+        }
+    }
+
+    //进入测试模式
+    goExamMode() {
+        if (this._currentLevelData) {
+            this.enterTest(this._currentLevelData);
+        }
     }
 
     //获取关卡单词回包
@@ -205,6 +236,11 @@ export class WorldMapView extends Component {
                     node.getComponent(WordReadingView).initData(data, levelData);
                 });
                 break;
+            case GameMode.Exam: //测试模式
+                ViewsManager.instance.showView(PrefabType.WordExamView, (node: Node) => {
+                    node.getComponent(WordExamView).initData(data, levelData);
+                });
+                break;
             default:
                 break;
         }
@@ -221,7 +257,9 @@ export class WorldMapView extends Component {
         this._islandStatusId = EventManager.on(InterfacePath.Island_Status, this.onGetIslandStatus.bind(this));
         this._islandProgressId = EventManager.on(InterfacePath.Island_Progress, this.onGetIslandProgress.bind(this));
         this._getLevelProgressEveId = EventManager.on(InterfacePath.Adventure_LevelProgress, this.onGetLevelProgress.bind(this));
-        this._enterTestEveId = EventManager.on(EventType.Enter_Level_Test, this.enterTest)
+        this._enterTestEveId = EventManager.on(EventType.Enter_Level_Test, this.enterTest.bind(this))
+        EventMgr.addListener(EventType.Goto_Textbook_Next_Level, this.goNextLevel.bind(this));
+        EventMgr.addListener(EventType.Goto_Exam_Mode, this.goExamMode.bind(this));
         CCUtil.onTouch(this.btn_back.node, this.onBtnBackClick, this)
 
     }
@@ -237,6 +275,8 @@ export class WorldMapView extends Component {
         EventManager.off(InterfacePath.Island_Progress, this._islandProgressId);
         EventManager.off(InterfacePath.Adventure_LevelProgress, this._getLevelProgressEveId);
         EventManager.off(EventType.Enter_Level_Test, this._enterTestEveId)
+        EventMgr.removeListener(EventType.Goto_Textbook_Next_Level, this);
+        EventMgr.removeListener(EventType.Goto_Exam_Mode, this);
         CCUtil.offTouch(this.btn_back.node, this.onBtnBackClick, this)
 
     }

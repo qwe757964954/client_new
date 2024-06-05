@@ -158,6 +158,7 @@ export class WordReadingView extends BaseModeView {
         let word = this._rightWordData.word;
         this.wordLabel.string = word;
         this.symbolLabel.string = this._rightWordData.symbol;
+        this.cnLabel.string = this._rightWordData.cn;
         this.initWordDetail(word);
         // this.playWordSound();
     }
@@ -172,10 +173,10 @@ export class WordReadingView extends BaseModeView {
 
     protected initEvent(): void {
         super.initEvent();
-        CCUtil.onBtnClick(this.btn_sound_recording,()=>{
+        CCUtil.onBtnClick(this.btn_sound_recording, () => {
             this.soundRecordEvent();
         });
-        CCUtil.onBtnClick(this.img_corrugation,()=>{
+        CCUtil.onBtnClick(this.img_corrugation, () => {
             this.corrugationEvent();
         });
     }
@@ -185,7 +186,7 @@ export class WordReadingView extends BaseModeView {
     /**录音按钮事件 */
     soundRecordEvent() {
         console.log('soundRecordEvent');
-        if(isValid(this._currentSubmitResponse) && this._currentSubmitResponse.word == this._rightWordData.word) {
+        if (isValid(this._currentSubmitResponse) && this._currentSubmitResponse.word == this._rightWordData.word) {
             return;
         }
         this.img_corrugation.active = true;

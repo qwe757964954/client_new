@@ -40,6 +40,7 @@ export const EventType = {
 
     Goto_Textbook_Level: "Goto_Textbook_Level",  //进入单词大冒险
     Goto_Textbook_Next_Level: "Goto_Textbook_Next_Level",  //进入单词大冒险下一关卡
+    Goto_Exam_Mode: "Goto_Exam_Mode", //进入考试模式
     //大冒险学习模式相关
     WordGame_Words: "WordGame_Words",  // 获取单词数据
     Classification_AdventureCollectWord: "Classification_AdventureCollectWord",  // 获取单词数据
