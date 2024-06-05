@@ -38,7 +38,7 @@ export class MapTouchBetterController extends Component {
     @property({
         tooltip: '图片初始缩放'
     })
-    public defaultScaling: number = 1;
+    public defaultScaling: number = 1.5;
 
     @property({
         tooltip: '图片缩放最小scale'
@@ -426,7 +426,7 @@ export class MapTouchBetterController extends Component {
         let relativePos = targetPos.clone().subtract(mapContainer.position);
 
         // 获取地图的当前缩放比例
-        let currentScale = mapContainer.scale.x; // 假设地图是等比缩放的
+        let currentScale = mapContainer.scale.x * this.defaultScaling; // 假设地图是等比缩放的
         // 计算目标位置的可见区域范围
         let visibleRect = rect(0, 0, containerSize.x / currentScale, containerSize.y / currentScale);
 
