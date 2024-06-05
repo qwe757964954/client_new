@@ -6,7 +6,7 @@ import { TextConfig } from "../../config/TextConfig";
 import { DataMgr, EditInfo } from "../../manager/DataMgr";
 import { ViewsMgr } from "../../manager/ViewsManager";
 import { BgModel } from "../../models/BgModel";
-import { BuildingModel, RecycleData } from "../../models/BuildingModel";
+import { BuildingIDType, BuildingModel, RecycleData } from "../../models/BuildingModel";
 import { GridModel } from "../../models/GridModel";
 import { LandModel } from "../../models/LandModel";
 import { s2cBuildingList, s2cBuildingListInfo, s2cBuildingProduceAdd, s2cBuildingProduceDelete, s2cBuildingProduceGet } from "../../models/NetModel";
@@ -237,6 +237,11 @@ export class MapUICtl extends MainBaseCtl {
             building.buildingData.level = element.level;
             building.setProducts(element.remaining_infos);
             building.showCountDownView();
+
+            if (BuildingIDType.castle == element.bid) {
+                let pos = building.node.position;
+                this.mapMoveTo(pos.x, pos.y);
+            }
         });
     }
     /** 初始化角色 */

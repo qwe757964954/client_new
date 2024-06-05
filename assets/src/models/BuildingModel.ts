@@ -368,7 +368,11 @@ export class BuildingModel extends BaseComponent {
             ViewsManager.showTip(TextConfig.Building_Cell_Tip);
             return;
         }
-        ServiceMgr.buildingService.reqBuildingSell(this._buildingID);
+        if (this._buildingID) {
+            ServiceMgr.buildingService.reqBuildingSell(this._buildingID);
+        } else {
+            this.sell(true);
+        }
     }
     // 翻转
     public flip(): void {
