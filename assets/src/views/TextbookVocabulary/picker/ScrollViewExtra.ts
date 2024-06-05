@@ -47,10 +47,10 @@ export class ScrollViewExtra extends Component {
     }
     init(listData:any){
         this.listData = listData;
-        this.listData.unshift(" ");
+        // this.listData.unshift(" ");
         this.listData.unshift(" ");
         this.listData.push(" ");
-        this.listData.push(" ");
+        // this.listData.push(" ");
         // 初始化
         this.addScrollChildIndex();
     }
@@ -135,12 +135,16 @@ export class ScrollViewExtra extends Component {
                 jsItem.labNum.color = new Color("#843C2F");
             }
         }
-        let jsItem = this.selectChildren[idx].getComponent(DateListItemNew);
-        console.log(">>>>>>>>>> 选择结果:",this.selectChildren,idx,jsItem.labNum.string);
-        if(this._selectCallFunc){
-            this._selectCallFunc(parseInt(jsItem.labNum.string));
-        }
-        // 这里回调，传出选择结果
+        // if(isValid(this.selectChildren[idx])){
+            // 这里回调，传出选择结果
+            let jsItem = this.selectChildren[idx].getComponent(DateListItemNew);
+            console.log(">>>>>>>>>> 选择结果:",this.selectChildren,idx,jsItem.labNum.string);
+            if(this._selectCallFunc){
+                this._selectCallFunc(parseInt(jsItem.labNum.string));
+            }
+        // }
+        
+        
     }
 
     scrolling(scroll:ScrollView){
