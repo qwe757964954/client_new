@@ -35,7 +35,7 @@ export class IslandStatusModel {
 
 export class MapLevelData {
     flag?: number;
-    big_id: number;
+    big_id: any;
     small_id: number;
     micro_id: number;
     small_type?: number;
