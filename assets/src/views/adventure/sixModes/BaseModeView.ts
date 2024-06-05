@@ -3,7 +3,7 @@ import { EventType } from '../../../config/EventType';
 import { AdvLevelConfig, BookLevelConfig } from '../../../manager/DataMgr';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { ViewsManager } from '../../../manager/ViewsManager';
-import { AdventureCollectWordModel, AdventureResultModel, AdventureResult, WordsDetailData, GameMode } from '../../../models/AdventureModel';
+import { AdventureCollectWordModel, AdventureResult, AdventureResultModel, GameMode, WordsDetailData } from '../../../models/AdventureModel';
 import { PetModel } from '../../../models/PetModel';
 import { RoleBaseModel } from '../../../models/RoleBaseModel';
 import { GameSubmitModel, GameSubmitResponse, ReqCollectWord, ReqWordDetail, UnitWordModel } from '../../../models/TextbookModel';
@@ -115,6 +115,7 @@ export class BaseModeView extends BaseView {
                     }
                 } else {
                     levelData.error_num = 0;
+                    this._wordIndex = 0;
                     const uniqueWordList: UnitWordModel[] = Object["values"](wordsdata.reduce((acc, curr) => {
                         acc[curr.word] = curr;
                         return acc;

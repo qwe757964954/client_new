@@ -1,4 +1,4 @@
-import { _decorator, isValid, JsonAsset, Label, Node, sys } from 'cc';
+import { _decorator, JsonAsset, Label, Node, sys } from 'cc';
 import { EventType } from '../../../config/EventType';
 import { NetConfig } from '../../../config/NetConfig';
 import { PrefabType } from '../../../config/PrefabType';
@@ -39,9 +39,12 @@ export class WordReadingView extends BaseModeView {
     private _rightWordData: UnitWordModel = null; //正确单词数据
     private _wrongWordList: any[] = []; //错误单词列表
 
+    private _turnIsBegin:boolean = false;
+
     async initData(wordsdata: UnitWordModel[], levelData: any) {
         this.gameMode = GameMode.Reading;
         wordsdata = this.updateTextbookWords(wordsdata, levelData);
+        console.log("WordReadingView...wordsdata....",wordsdata);
         this.initWords(wordsdata);
         this.initEvent();
         this.initMonster(); //初始化怪物
@@ -78,6 +81,7 @@ export class WordReadingView extends BaseModeView {
                 } else {
                     this.showCurrentWord();
                 }
+                this._turnIsBegin = false;
             });
 
         } else {
@@ -99,6 +103,7 @@ export class WordReadingView extends BaseModeView {
             this.playWordSound().then(() => {
                 this.playWordSound().then(() => {
                     this.showCurrentWord();
+                    this._turnIsBegin = false;
                 });
             })
         }
@@ -186,9 +191,10 @@ export class WordReadingView extends BaseModeView {
     /**录音按钮事件 */
     soundRecordEvent() {
         console.log('soundRecordEvent');
-        if (isValid(this._currentSubmitResponse) && this._currentSubmitResponse.word == this._rightWordData.word) {
+        if (this._turnIsBegin) {
             return;
         }
+        this._turnIsBegin = true;
         this.img_corrugation.active = true;
         this.btn_sound_recording.active = false;
         let word = this._rightWordData.word;

@@ -416,23 +416,20 @@ export class MapTouchBetterController extends Component {
     }
 
     public moveToTargetPos(targetPos: Vec3): void {
-        let mapContainer = this.map;
-
-        // 获取地图容器的尺寸
-        let containerTransform = mapContainer.getComponent(UITransform);
-        let containerSize = v2(containerTransform.width , containerTransform.height);
-
-        // 计算目标位置相对于地图容器的位置
-        let relativePos = targetPos.clone().subtract(mapContainer.position);
-
-        // 获取地图的当前缩放比例
-        let currentScale = mapContainer.scale.x; // 假设地图是等比缩放的
-        // 计算目标位置的可见区域范围
-        let visibleRect = rect(0, 0, containerSize.x / currentScale, containerSize.y / currentScale);
-
-        // 检查目标位置是否在可见区域内
+        const mapContainer = this.map;
+        const containerTransform = mapContainer.getComponent(UITransform);
+        const containerSize = new Vec2(containerTransform.width, containerTransform.height);
+        const currentScale = mapContainer.scale.x;
+    
+        // Convert target position to node space
+        const relativePos = targetPos.clone().subtract(mapContainer.position);
+    
+        // Calculate the visible rect considering current scale
+        const visibleRect = rect(0, 0, containerSize.x / currentScale, containerSize.y / currentScale);
+    
+        // Check if target position is within the visible rect
         if (!visibleRect.contains(v2(relativePos.x, relativePos.y))) {
-            // 如果目标位置不可见，则计算需要移动的偏移量
+            // Calculate the offset needed to move the target position within the visible rect
             let offsetX = 0, offsetY = 0;
             if (relativePos.x < visibleRect.x) {
                 offsetX = relativePos.x - visibleRect.x;
@@ -444,15 +441,18 @@ export class MapTouchBetterController extends Component {
             } else if (relativePos.y > visibleRect.y + visibleRect.height) {
                 offsetY = relativePos.y - (visibleRect.y + visibleRect.height);
             }
-            // 计算新的地图位置
-            let newMapPos = mapContainer.position.clone().subtract(v3(offsetX, offsetY, 0));
-            console.log("newMapPos________",newMapPos)
+    
+            // Calculate the new map position by subtracting the offset
+            const newMapPos = mapContainer.position.clone().subtract(v3(offsetX, offsetY, 0));
+    
+            // Move the map to the new position
             this.gatherTouchMove(newMapPos);
-            // 移动地图到新的位置
+            console.log("newMapPos______________",newMapPos)
             mapContainer.setPosition(newMapPos);
         }
-        
+        this.smoothOperate(mapContainer, targetPos, this.defaultScaling);
     }
+    
 
 
     private dealSelect(nodePos: Vec3): void {
