@@ -107,8 +107,8 @@ export class ScrollMapView extends BaseView {
                 // }
                 let itemScript: MapPointItem = itemNode.getComponent(MapPointItem);
                 itemScript.index = unit_count;
-                const stringWithoutUnit: string = itemData.unit.replace("Unit ", "").trim();
-                let data: MapLevelData = { big_id: parseInt(stringWithoutUnit), small_id: gate.small_id, micro_id: gate.small_id, flag_info: gate.flag_info };
+                // const stringWithoutUnit: string = itemData.unit.replace("Unit ", "").trim();
+                let data: MapLevelData = { big_id: itemData.unit, small_id: gate.small_id, micro_id: gate.small_id, flag_info: gate.flag_info };
                 itemScript.initSmallData(data);
                 CCUtil.onBtnClick(itemNode,(event)=>{
                     this.onItemClick(event.node);
@@ -126,23 +126,54 @@ export class ScrollMapView extends BaseView {
     async initUnit(unitStatus:UnitListItemStatus){
         this._unitStatus = unitStatus.unit_list;
         this._total_grade = unitStatus.gate_total;
+
         this._unitStatus.sort((a, b) => {
-            // 将 unit 字符串转换为数字并比较
-            let unitA = 0;
-            let unitB = 0;
-            if (a.unit.includes("Unit ")) {
-                unitA = parseInt(a.unit.replace("Unit ", "").trim());
-            } else {
-                unitA = parseInt(a.unit);
+            const unitA = a.unit;
+            const unitB = b.unit;
+
+            // Check if both units are numbers
+            const isANumber = !isNaN(Number(unitA));
+            const isBNumber = !isNaN(Number(unitB));
+
+            // If both are numbers, compare them numerically
+            if (isANumber && isBNumber) {
+                return Number(unitA) - Number(unitB);
             }
-            if (a.unit.includes("Unit ")) {
-                unitB = parseInt(b.unit.replace("Unit ", "").trim());
-            } else {
-                unitB = parseInt(b.unit); 
+
+            // If one is a number and the other is not, prioritize the non-number unit
+            if (isANumber !== isBNumber) {
+                return isANumber ? 1 : -1;
             }
-            return unitA - unitB;
+
+            // If both are not numbers, compare them as strings
+            // Split the strings into parts and compare each part numerically if possible
+            const partsA = unitA.split(/(\d+)/).filter(Boolean);
+            const partsB = unitB.split(/(\d+)/).filter(Boolean);
+
+            for (let i = 0; i < Math.min(partsA.length, partsB.length); i++) {
+                const partA = partsA[i];
+                const partB = partsB[i];
+                const numA = parseInt(partA, 10);
+                const numB = parseInt(partB, 10);
+
+                if (!isNaN(numA) && !isNaN(numB)) {
+                    // If both parts are numbers, compare them numerically
+                    if (numA !== numB) {
+                        return numA - numB;
+                    }
+                } else {
+                    // If one or both parts are not numbers, compare them as strings
+                    const comparison = partA.localeCompare(partB);
+                    if (comparison !== 0) {
+                        return comparison;
+                    }
+                }
+            }
+
+            // If all parts are equal, compare based on length (shorter comes first)
+            return partsA.length - partsB.length;
         });
-        console.log("initUnit____________",this._unitStatus);
+
         this.MapLaout.removeAllChildren();
         this.addMapBg().then(()=>{
             this.loadMapItems();
@@ -201,7 +232,8 @@ export class ScrollMapView extends BaseView {
         let item:MapPointItem = point.getComponent(MapPointItem);
         this._curLevelIndex = item.index;
         let data = item.data;
-        let itemStatus:UnitItemStatus = this._unitStatus[data.big_id - 1];
+        // let itemStatus:UnitItemStatus = this._unitStatus[data.big_id - 1];
+        let itemStatus:UnitItemStatus = this._unitStatus.find(item => item.unit === data.big_id);
         let small_id = data.small_id;
         let gate:GateListItem = itemStatus.gate_list[small_id - 1];
         let param:GotoUnitLevel = {
