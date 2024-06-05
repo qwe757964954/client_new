@@ -126,6 +126,8 @@ export class WordReportView extends BaseView {
     }
     gotoEvaluation() {
         console.log("测评模式")
+        this.node.destroy();
+        EventMgr.dispatch(EventType.Goto_Exam_Mode);
     }
 
     gotoNextLevel() {
