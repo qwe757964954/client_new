@@ -39,12 +39,12 @@ export class WordReadingView extends BaseModeView {
     private _rightWordData: UnitWordModel = null; //正确单词数据
     private _wrongWordList: any[] = []; //错误单词列表
 
-    private _turnIsBegin:boolean = false;
+    private _turnIsBegin: boolean = false;
 
     async initData(wordsdata: UnitWordModel[], levelData: any) {
         this.gameMode = GameMode.Reading;
         wordsdata = this.updateTextbookWords(wordsdata, levelData);
-        console.log("WordReadingView...wordsdata....",wordsdata);
+        console.log("WordReadingView...wordsdata....", wordsdata);
         this.initWords(wordsdata);
         this.initEvent();
         this.initMonster(); //初始化怪物
@@ -223,10 +223,10 @@ export class WordReadingView extends BaseModeView {
     }
 
     onGameSubmitResponse(data: GameSubmitResponse) {
-        console.log("onGameSubmitResponse....",data);
+        console.log("onGameSubmitResponse....", data);
         this._currentSubmitResponse = data;
         this._currentSubmitResponse as GameSubmitResponse;
-        if(this._currentSubmitResponse.pass_flag == 1){
+        if (this._currentSubmitResponse.pass_flag == 1) {
             this.gotoResult();
             return;
         }
@@ -236,7 +236,7 @@ export class WordReadingView extends BaseModeView {
         console.log('朗读模式完成');
         ViewsManager.instance.showView(PrefabType.WordReportView, (node: Node) => {
             let nodeScript = node.getComponent(WordReportView);
-            console.log('朗读模式完成',this._currentSubmitResponse);
+            console.log('朗读模式完成', this._currentSubmitResponse);
             nodeScript.initData(this._currentSubmitResponse);
             ViewsManager.instance.closeView(PrefabType.WordReadingView);
             //跳转到下一场景

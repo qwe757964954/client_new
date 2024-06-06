@@ -1,4 +1,4 @@
-import { _decorator, Button, Component, instantiate, Node, Prefab, UITransform, Vec3 } from 'cc';
+import { _decorator, Button, Component, director, instantiate, Node, Prefab, UITransform, Vec3 } from 'cc';
 import { EventType } from '../../config/EventType';
 import { IslandProgressModel, MapLevelData, MicroListItem } from '../../models/AdventureModel';
 import CCUtil from '../../util/CCUtil';
@@ -8,6 +8,7 @@ import { rightPanelchange } from './common/RightPanelchange';
 import { IslandMap } from './levelmap/IslandMap';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
 import { ViewsMgr } from '../../manager/ViewsManager';
+import { SceneType } from '../../config/PrefabType';
 const { ccclass, property } = _decorator;
 
 /**魔法森林 何存发 2024年4月9日17:51:36 */
@@ -222,7 +223,7 @@ export class WorldIsland extends Component {
     }
 
     onBtnDetailsClick() {
-
+        EventManager.emit(EventType.Exit_World_Island);
     }
 
     /**打开闯关界面 */
@@ -231,7 +232,8 @@ export class WorldIsland extends Component {
     }
     /**返回关卡模式 */
     private onBtnBackClick() {
-        EventManager.emit(EventType.Exit_World_Island);
+        // EventManager.emit(EventType.Exit_World_Island);
+        director.loadScene(SceneType.MainScene);
     }
 
     protected onDestroy(): void {

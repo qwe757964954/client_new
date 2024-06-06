@@ -102,6 +102,8 @@ export class rightPanelchange extends Component {
             ViewsMgr.showTip("通过本关后解锁");
             return;
         }
+        ViewsMgr.showTip("测评模式暂未开放");
+        return;
         EventManager.emit(EventType.Enter_Level_Test, this._data);
     }
 
