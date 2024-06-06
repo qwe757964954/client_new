@@ -29,6 +29,8 @@ export default class GlobalConfig {
     public static IS_NARROW: boolean = false;//是否是窄屏
     public static MAIN_RATE_MAX: number = 1.55;//主场景最大比例（适配方案）
 
+    public static USE_US: boolean = true; //使用美音
+
     private static _isInit: boolean = false;
     public static setSize() {
         this.WIN_SIZE = View.instance.getVisibleSize();
