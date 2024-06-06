@@ -86,4 +86,6 @@ export const TextConfig = {
     Shop_Fragment: "碎片区",
     Shop_Building: "建筑商店",
     Shop_Decoration: "装饰类",
+    Reading_Success_Tip: "朗读单词正确",
+    Reading_Error_Tip: "朗读单词错误",
 }
