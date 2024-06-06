@@ -97,6 +97,8 @@ export default class AccountService {
     onAccountLogout() {
         NetMgr.closeNet();//主动关闭网络，不重连
         ViewsManager.showAlert(TextConfig.Account_Logout_Tip, () => {
+            User.isAutoLogin = false;
+            User.resetData();
             director.loadScene(SceneType.LoginScene);
         });
     }
