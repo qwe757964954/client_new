@@ -3,6 +3,7 @@ import { SceneType } from '../config/PrefabType';
 import { TextConfig } from '../config/TextConfig';
 import GlobalConfig from '../GlobalConfig';
 import { ViewsManager, ViewsMgr } from '../manager/ViewsManager';
+import { HttpManager } from '../net/HttpManager';
 import DownloaderUtil from '../util/DownloaderUtil';
 const { ccclass, property } = _decorator;
 
@@ -96,13 +97,7 @@ export class LoadingScene extends Component {
     }
     /**http请求版本 */
     httpReqVersionCheck() {
-        // if (!sys.isNative) {
-            this._httpCheck = true;
-            this._downCheck = true;
-            this.checkVersionOver();
-        //     return;
-        // }
-        // HttpManager.reqVersionCheck(this.httpReqVersionCheckSuccess.bind(this), this.httpReqVersionCheckFailed.bind(this));
+        HttpManager.reqVersionCheck(this.httpReqVersionCheckSuccess.bind(this), this.httpReqVersionCheckFailed.bind(this));
     }
     /**开始下载更新 */
     startDownload() {

@@ -51,7 +51,7 @@ class NetCfg {
         this.smsLogin = this.currentUrl + "/api/smslogin";//短信登录
         this.wechatLogin = this.currentUrl + "/api/wechatlogin";//微信登录
         this.accountLogin = this.currentUrl + "/api/account_login";//账号密码登录
-        this.versionCheck = "http://192.168.1.58:8888/test";//版本检测
+        this.versionCheck = "http://39.108.215.220:9801/version";//版本检测
     }
     public converToDebug() {
         if (!DebugConfig.TEST_SERVER) return;
