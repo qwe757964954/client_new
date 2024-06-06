@@ -57,7 +57,7 @@ export class WordReadingView extends BaseModeView {
     }
     getRecordResult(response: RecordResponseData) {
         console.log('getRecordResult  RecordResponseData', response);
-        let isRight: boolean = response.result.overall > 80 ? true : false;
+        let isRight: boolean = response.result.overall > 60 ? true : false;
         this.gameSubmit(response, isRight);
         if (isRight) {
             this._rightNum++;
