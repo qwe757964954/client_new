@@ -2,6 +2,7 @@ import { _decorator, JsonAsset, Label, Node, sys } from 'cc';
 import { EventType } from '../../../config/EventType';
 import { NetConfig } from '../../../config/NetConfig';
 import { PrefabType } from '../../../config/PrefabType';
+import { TextConfig } from '../../../config/TextConfig';
 import { AdvLevelConfig, BookLevelConfig } from '../../../manager/DataMgr';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { ResLoader } from '../../../manager/ResLoader';
@@ -60,6 +61,7 @@ export class WordReadingView extends BaseModeView {
         let isRight: boolean = response.result.overall > 60 ? true : false;
         this.gameSubmit(response, isRight);
         if (isRight) {
+            ViewsManager.showTip(TextConfig.Reading_Success_Tip);
             this._rightNum++;
             if (this._wrongMode) {
                 if (this._wrongWordList.length == 0) {
@@ -85,6 +87,7 @@ export class WordReadingView extends BaseModeView {
             });
 
         } else {
+            ViewsManager.showTip(TextConfig.Reading_Error_Tip);
             if (this._wrongWordList.indexOf(this._rightWordData) == -1 && !this._wrongMode && !this._errorWords[this._rightWordData.word]) {
                 this._errorNum++;
                 this._levelData.error_num = this._errorNum;
