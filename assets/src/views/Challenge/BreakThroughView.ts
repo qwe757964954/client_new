@@ -88,17 +88,18 @@ export class BreakThroughView extends BaseView {
     removeEvent() {
     }
     initUI(){
-        this.initScrollMap();
+        
         this.initNavTitle();
         this.initAmout();
         this.initRightChange();
-        this.getUnitListStatus();
         DataMgr.instance.getAdventureLevelConfig();
     }
 
-    initData(data:CurrentBookStatus){
+    initData(data:CurrentBookStatus,unitData:UnitListItemStatus){
         this._bookData = data;
-        
+        this._curUnitList = unitData;
+        this.initScrollMap();
+        this._scrollMap.initUnit(unitData);
     }
     onInitModuleEvent(){
         this.addModelListener(NetNotify.Classification_UnitListStatus,this.onUnitListStatus);

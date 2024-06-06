@@ -1,4 +1,4 @@
-import { _decorator, error, instantiate, isValid, Node, Prefab, view, Widget } from 'cc';
+import { _decorator, error, instantiate, isValid, Node, Prefab, SpriteFrame, view, Widget } from 'cc';
 import { EventType } from '../../config/EventType';
 import { KeyConfig } from '../../config/KeyConfig';
 import { PrefabType } from '../../config/PrefabType';
@@ -135,15 +135,11 @@ export class TextbookChallengeView extends BaseView {
             if (err) {
                 error && console.error(err);
             }
-            // let nodePool:NodePool = PoolMgr.getNodePool("mapItemPool");
-            // let length = nodePool.size();
-            // console.log("onUnitListStatus.......",nodePool,length);
-            
-            // for (let index = 0; index < data.gate_total - length; index++) {
-            //     let itemNode = instantiate(prefab);
-            //     PoolMgr.putNodePool("mapItemPool",itemNode);
-            // }
-            // console.log("onUnitListStatus.......",nodePool,length);
+        });
+        ResLoader.instance.load("adventure/bg/long_background/bg_map_01/spriteFrame", SpriteFrame, (err: Error | null, spriteFrame: SpriteFrame) => {
+            if (err) {
+                error && console.error(err);
+            }
         });
         this._unitDetailView.updateUnitTotal(this._unitListArr.gate_total);
     }
@@ -212,7 +208,7 @@ export class TextbookChallengeView extends BaseView {
                 this._unitDetailView.setBreakThroughCallback(() => {
                     ViewsManager.instance.showView(PrefabType.BreakThroughView, (node) => {
                         let itemScript = node.getComponent(BreakThroughView);
-                        itemScript.initData(this._bookData);
+                        itemScript.initData(this._bookData,this._unitListArr);
                         ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);
                     });
                 });

@@ -417,6 +417,7 @@ export class MapTouchBetterController extends Component {
 
     public moveToTargetPos(targetPos: Vec3): void {
         const mapContainer = this.map;
+        
         const containerTransform = mapContainer.getComponent(UITransform);
         const containerSize = new Vec2(containerTransform.width, containerTransform.height);
         const currentScale = mapContainer.scale.x;
@@ -426,7 +427,8 @@ export class MapTouchBetterController extends Component {
     
         // Calculate the visible rect considering current scale
         const visibleRect = rect(0, 0, containerSize.x / currentScale, containerSize.y / currentScale);
-    
+        console.log("visibleRect______________",visibleRect);
+        console.log("relativePos______________",relativePos);
         // Check if target position is within the visible rect
         if (!visibleRect.contains(v2(relativePos.x, relativePos.y))) {
             // Calculate the offset needed to move the target position within the visible rect
