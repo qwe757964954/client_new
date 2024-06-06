@@ -52,10 +52,10 @@ export class TextbookChallengeView extends BaseView {
         GlobalConfig.initResolutionRules();
     }
     protected async initUI(){
+        await this.initLeftMonster();
         this.initNavTitle();
         this.initAmout();
         await this.initChallengeBottom();
-        await this.initLeftMonster();
         await this.initRightBookUnitInfo();
         TBServer.reqCurrentBook();
         let first_enter = StorageUtil.getData(KeyConfig.FIRST_TEXTBOOK_CHALLENGE,"1");

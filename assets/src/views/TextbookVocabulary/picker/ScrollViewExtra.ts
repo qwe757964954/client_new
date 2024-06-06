@@ -22,9 +22,6 @@ export class ScrollViewExtra extends Component {
     private contentY:number = null;
     private _selectCallFunc:(select_num:number)=>void = null;
     onLoad(): void {
-        
-
-        
     }
 
     setTotalLevel(total:number){

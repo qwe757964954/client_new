@@ -33,9 +33,6 @@ export class RightRankView extends Component {
     
     private _rankData:WorldBossResponse = null;
     start() {
-        
-        
-
         this.chest_node.removeAllChildren();
         let resConf = {bundle:GameBundle.NORMAL,path:"spine/chest/chest_divine/chest_divine.json"}
         let spinePrams:inf_SpineAniCreate = {

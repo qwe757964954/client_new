@@ -47,7 +47,7 @@ export class MyContentItem extends ListItem {
         this.idx = idx;
         this._bookStatus = itemInfo;
         this.item_name.string = `${itemInfo.book_name}(${itemInfo.grade})`;
-        this.learnProgress.progress = itemInfo.study_word_num/itemInfo.total_word_num; itemInfo
+        this.learnProgress.progress = itemInfo.study_word_num/itemInfo.total_word_num;
         this.collect_text.string = `剩余天数${itemInfo.remainder_num}`;
         this.already_learned_text.string = `已学  ${itemInfo.study_word_num}/${itemInfo.total_word_num}`;
         let bookImgUrl = `${NetConfig.assertUrl}/imgs/bookcover/${itemInfo.book_name}/${itemInfo.grade}.jpg`;
