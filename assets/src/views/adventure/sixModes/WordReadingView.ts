@@ -7,7 +7,7 @@ import { AdvLevelConfig, BookLevelConfig } from '../../../manager/DataMgr';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { ResLoader } from '../../../manager/ResLoader';
 import { ViewsManager } from '../../../manager/ViewsManager';
-import { AdventureResultModel, GameMode } from '../../../models/AdventureModel';
+import { AdventureResult, AdventureResultModel, GameMode } from '../../../models/AdventureModel';
 import { GameSubmitModel, GameSubmitResponse, UnitWordModel } from '../../../models/TextbookModel';
 import { NetNotify } from '../../../net/NetNotify';
 import { ServiceMgr } from '../../../net/ServiceManager';
@@ -17,6 +17,7 @@ import { RecordApi } from '../../../util/third/RecordApi';
 import { RecordResponseData } from '../../../util/third/RecordModel';
 import { BaseModeView } from './BaseModeView';
 import { WordReportView } from './WordReportView';
+import { MonsterModel } from '../common/MonsterModel';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordReadingView')
@@ -110,6 +111,16 @@ export class WordReadingView extends BaseModeView {
                 });
             })
         }
+    }
+
+    //怪物死亡
+    monsterDie() {
+        this.reportResult();
+        this._monster.getComponent(MonsterModel).die().then(() => {
+            if (this._currentSubmitResponse.pass_flag == 1) {
+                this.gotoResult();
+            }
+        })
     }
 
     gameSubmit(response: RecordResponseData, isRight?: boolean) {
@@ -229,10 +240,10 @@ export class WordReadingView extends BaseModeView {
         console.log("onGameSubmitResponse....", data);
         this._currentSubmitResponse = data;
         this._currentSubmitResponse as GameSubmitResponse;
-        if (this._currentSubmitResponse.pass_flag == 1) {
-            this.gotoResult();
-            return;
-        }
+        // if (this._currentSubmitResponse.pass_flag == 1) {
+        //     this.gotoResult();
+        //     return;
+        // }
     }
 
     protected gotoResult(): void {
