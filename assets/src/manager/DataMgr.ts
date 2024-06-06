@@ -9,17 +9,22 @@ import { LoadManager } from "./LoadManager";
 const ConfigPath = {
     RoleSlot: "role_slots",
     RoleSlotConfig: "dress_up",
-    EditInfo: "building",
-    ProduceInfo: "produce",
+    // EditInfo: "building",
+    // ProduceInfo: "produce",
     WordSplit: "word_split",
     AdventureLevel: "adventure_level",
-    PropConfig: "propConfig",
-    PetInteraction: "petInteraction",
-    PetMoodConfig: "petMoodConfig",
-    PetConfig: "petConfig",
+    // PropConfig: "propConfig",
+    // PetInteraction: "petInteraction",
+    // PetMoodConfig: "petMoodConfig",
+    // PetConfig: "petConfig",
     ArchConfig: "AchConfig",
     MedalConfig: "medal",
     HelpConfig: "gameHelp",
+
+    BuildingConfig: "building",
+    PetConfig: "pet",
+    ProduceConfig: "produce",
+    ItemInfoConfig: "item_info",
 }
 
 //角色插槽
@@ -66,6 +71,7 @@ export class PropData {
 }
 /**生产信息 */
 export class ProduceInfo {
+    id: number;//id
     level: number;//等级
     unlock: number;//解锁等级
     res_name: string;//资源名字
@@ -134,9 +140,8 @@ export class MedalConfig {
     Ce: number;
 }
 
-
 //数据管理器
-export class DataMgr {
+export class DataManager {
 
     public roleSlot: RoleSlot[] = [];//角色插槽
     public roleSlotConfig: RoleSlotConfig[] = [];//角色插槽配置
@@ -155,12 +160,15 @@ export class DataMgr {
     private _isInit: boolean = false;
     public defaultLand: EditInfo = null;//默认地块
 
-    public static _instance: DataMgr = null;
-    public static get instance(): DataMgr {
+    public static _instance: DataManager = null;
+    public static get instance(): DataManager {
         if (this._instance == null) {
-            this._instance = new DataMgr();
+            this._instance = new DataManager();
         }
         return this._instance;
+    }
+    public get instance() {
+        return this;
     }
     private constructor() {
     }
@@ -172,10 +180,10 @@ export class DataMgr {
         console.time("DataMgr initData");
         await this.initRoleSlot();
         await this.initRoleSlotConfig();
-        await this.initPropConfig();
-        await this.initEditInfo();
+        await this.initItemInfoConfig();
+        await this.initBuildingConfig();
         await this.initBuildProduceInfo();
-        await this.initPetInteractionConfig();
+        await this.initPetConfig();
         await this.initAchieveConfig();
         await this.initMedalConfig();
         await this.initHelpConfig();
@@ -205,11 +213,12 @@ export class DataMgr {
             this.roleSlotConfig[obj.PropId] = obj;
         }
     }
-    /** 初始化编辑信息 */
-    public async initEditInfo() {
-        let json = await LoadManager.loadJson(ConfigPath.EditInfo);
-        for (let k in json) {
-            let obj: EditInfo = json[k];
+    /** 初始化建筑配置 */
+    public async initBuildingConfig() {
+        let json = await LoadManager.loadJson(ConfigPath.BuildingConfig);
+        let building_info = json.building_info;
+        for (let k in building_info) {
+            let obj = building_info[k];
             if (0 == obj.enable) continue;
             if (obj.type == EditType.Land) {
                 obj.png = ToolUtil.replace(TextConfig.Building_Path1, obj.png);
@@ -219,9 +228,13 @@ export class DataMgr {
             }
             if (obj.animation && obj.animation.length > 0) {
                 obj.animation = ToolUtil.replace(TextConfig.Building_SpPath, obj.animation);
+            } else {
+                obj.animation = null;
             }
-            if (obj.animpos) {
+            if (obj.animpos && obj.animpos.length > 0) {
                 obj.animpos = new Vec3(obj.animpos[0], obj.animpos[1], 0);
+            } else {
+                obj.animpos = null;
             }
             this.editInfo[obj.id] = obj;
         }
@@ -242,9 +255,10 @@ export class DataMgr {
     }
     /** 初始化建筑生产信息 */
     public async initBuildProduceInfo() {
-        let json = await LoadManager.loadJson(ConfigPath.ProduceInfo);
-        for (let k in json) {
-            let value = json[k];
+        let json = await LoadManager.loadJson(ConfigPath.ProduceConfig);
+        let produce = json.produce;
+        for (let k in produce) {
+            let value = produce[k];
             let obj: BuildProduceInfo = this.buildProduceInfo[value.id];
             if (!obj) {
                 obj = new BuildProduceInfo();
@@ -265,35 +279,31 @@ export class DataMgr {
             obj.count++;
         }
     }
-    /**初始化道具配置 */
-    public async initPropConfig() {
-        let json = await LoadManager.loadJson(ConfigPath.PropConfig);
-        for (let k in json) {
-            let obj: PropInfo = json[k];
+    /**初始化物品配置 */
+    public async initItemInfoConfig() {
+        let json = await LoadManager.loadJson(ConfigPath.ItemInfoConfig);
+        let item_info = json.item_info;
+        for (let k in item_info) {
+            let obj: PropInfo = item_info[k];
             obj.png = ToolUtil.replace(TextConfig.Prop_Path, obj.png);
             obj.frame = ToolUtil.replace(TextConfig.Prop_Path, obj.frame);
             this.propConfig[obj.id] = obj;
         }
     }
-    /**初始化宠物交互配置 */
-    public async initPetInteractionConfig() {
-        let json = await LoadManager.loadJson(ConfigPath.PetInteraction);
-        for (let k in json) {
-            this.petInteraction.push(json[k]);
-        }
-    }
-    /**初始化心情信息 */
-    public async initPetMoodConfig() {
-        let json = await LoadManager.loadJson(ConfigPath.PetMoodConfig);
-        for (let k in json) {
-            this.petMoodConfig.push(json[k]);
-        }
-    }
-    /**初始化宠物信息 */
+    /**初始化宠物配置 */
     public async initPetConfig() {
         let json = await LoadManager.loadJson(ConfigPath.PetConfig);
-        for (let k in json) {
-            this.petConfig.push(json[k]);
+        let pet_upgrade = json.pet_upgrade;
+        for (let k in pet_upgrade) {
+            this.petConfig.push(pet_upgrade[k]);
+        }
+        let pet_interaction = json.pet_interaction;
+        for (let k in pet_interaction) {
+            this.petInteraction.push(pet_interaction[k]);
+        }
+        let pet_mood = json.pet_mood;
+        for (let k in pet_mood) {
+            this.petMoodConfig.push(pet_mood[k]);
         }
     }
 
@@ -364,7 +374,7 @@ export class DataMgr {
     }
 
     /**获取编辑图片 */
-    static getEditPng(editInfo: EditInfo): string {
+    public getEditPng(editInfo: EditInfo): string {
         // if (editInfo.type == EditType.Land) {
         //     return ToolUtil.replace(TextConfig.Building_Path1, editInfo.png);
         // }
@@ -372,7 +382,9 @@ export class DataMgr {
         return editInfo.png;
     }
     /**获取道具信息 */
-    static getPropInfo(id: number): PropInfo {
-        return DataMgr.instance.propConfig[id];
+    public getPropInfo(id: number): PropInfo {
+        return this.propConfig[id];
     }
 }
+
+export const DataMgr = DataManager.instance;

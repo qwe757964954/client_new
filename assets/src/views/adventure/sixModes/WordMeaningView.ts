@@ -10,6 +10,8 @@ import { WordDetailView } from '../../common/WordDetailView';
 import { TransitionView } from '../common/TransitionView';
 import { BaseModeView } from './BaseModeView';
 import { WordPracticeView } from './WordPracticeView';
+import MD5Util from '../../../util/MD5Util';
+import GlobalConfig from '../../../GlobalConfig';
 const { ccclass, property } = _decorator;
 
 /**词意模式页面*/
@@ -132,7 +134,10 @@ export class WordMeaningView extends BaseModeView {
 
     playSentenceSound() {
         if (!this._sentenceData) return;
-        let url = NetConfig.assertUrl + "/sounds/glossary/sentence_tts/Emily/" + this._sentenceData.id + ".wav";
+        // let url = NetConfig.assertUrl + "/sounds/glossary/sentence_tts/Emily/" + this._sentenceData.id + ".wav";
+        let soundName = MD5Util.hex_md5(this._sentenceData.sentence);
+        let type = GlobalConfig.USE_US ? "us" : "en";
+        let url = NetConfig.assertUrl + "/sounds/sentence/" + type + "/" + soundName + ".wav"
         RemoteSoundMgr.playSound(url);
     }
 

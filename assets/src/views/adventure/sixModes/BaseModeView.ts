@@ -254,16 +254,6 @@ export class BaseModeView extends BaseView {
         }).start();
     }
 
-    //怪物死亡
-    monsterDie() {
-        this.reportResult();
-        this._monster.getComponent(MonsterModel).die().then(() => {
-            if (this._upResultSucce) {
-                this.modeOver();
-            }
-        })
-    }
-
     //上报结果
     reportResult() {
         console.log("上报结果");
@@ -437,6 +427,8 @@ export class BaseModeView extends BaseView {
 
     protected onAdventureCollectWord(data: any) {
         console.log("onAdventureCollectWord", data);
+        this._detailData.collect_flag = this._detailData.collect_flag ? 0 : 1;
+        this.setCollect(this._detailData.collect_flag ? true : false);
     }
 
     protected initEvent(): void {

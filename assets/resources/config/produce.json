@@ -1,1 +1,307 @@
-[{"id":1,"level":1,"unlock":1,"res_name":"普通木头","res_png":"img_wood","res_time":60,"produce":[4,5],"expend":"","upgrade_need":"","upgrade_time":""},{"id":1,"level":2,"unlock":2,"res_name":"一捆木头","res_png":"img_wood2","res_time":300,"produce":[4,10],"expend":"","upgrade_need":[7,50,10,50],"upgrade_time":""},{"id":1,"level":3,"unlock":3,"res_name":"一摞木头","res_png":"img_wood3","res_time":600,"produce":[4,15],"expend":"","upgrade_need":[8,80,10,80],"upgrade_time":""},{"id":2,"level":1,"unlock":1,"res_name":"工匠手套","res_png":"img_gloves","res_time":60,"produce":[5,5],"expend":[4,2],"upgrade_need":"","upgrade_time":""},{"id":2,"level":2,"unlock":2,"res_name":"雷霆铁锤","res_png":"img_hammer","res_time":180,"produce":[7,5],"expend":[4,3,6,3],"upgrade_need":[7,50,10,50],"upgrade_time":""},{"id":2,"level":3,"unlock":3,"res_name":"星光之锄","res_png":"img_hoe","res_time":300,"produce":[8,5],"expend":[4,5,6,5],"upgrade_need":[8,80,10,80],"upgrade_time":""},{"id":3,"level":1,"unlock":1,"res_name":"紫晶石","res_png":"img_crystal","res_time":180,"produce":[10,3],"expend":[5,10,9,6],"upgrade_need":"","upgrade_time":""},{"id":3,"level":2,"unlock":3,"res_name":"一团紫晶石","res_png":"img_crystal2","res_time":360,"produce":[10,5],"expend":[7,10,9,10],"upgrade_need":[7,50,10,50],"upgrade_time":""},{"id":3,"level":3,"unlock":5,"res_name":"一袋紫晶石","res_png":"img_crystal3","res_time":600,"produce":[10,15],"expend":[8,10,9,20],"upgrade_need":[8,80,10,80],"upgrade_time":""},{"id":4,"level":1,"unlock":1,"res_name":"魔法卷轴","res_png":"img_scroll","res_time":100,"produce":[6,3],"expend":"","upgrade_need":"","upgrade_time":""},{"id":4,"level":2,"unlock":2,"res_name":"一叠卷轴","res_png":"img_scroll2","res_time":300,"produce":[6,5],"expend":"","upgrade_need":[7,50,10,50],"upgrade_time":""},{"id":4,"level":3,"unlock":3,"res_name":"一摞卷轴","res_png":"img_scroll3","res_time":600,"produce":[6,10],"expend":"","upgrade_need":[8,80,10,80],"upgrade_time":""},{"id":5,"level":1,"unlock":1,"res_name":"新鲜果汁","res_png":"img_juice","res_time":100,"produce":[9,3],"expend":"","upgrade_need":"","upgrade_time":""},{"id":5,"level":2,"unlock":2,"res_name":"一组果汁","res_png":"img_juice2","res_time":300,"produce":[9,5],"expend":"","upgrade_need":[7,50,10,50],"upgrade_time":""},{"id":5,"level":3,"unlock":3,"res_name":"一套果汁","res_png":"img_juice3","res_time":600,"produce":[9,10],"expend":"","upgrade_need":[8,80,10,80],"upgrade_time":""}]
+{
+    "produce": [
+        {
+            "id": 1,
+            "level": 1,
+            "unlock": 1,
+            "res_name": "普通木头",
+            "res_png": "img_wood",
+            "res_time": 60,
+            "produce": [
+                4,
+                5
+            ],
+            "expend": [],
+            "upgrade_need": [],
+            "upgrade_time": 0
+        },
+        {
+            "id": 1,
+            "level": 2,
+            "unlock": 2,
+            "res_name": "一捆木头",
+            "res_png": "img_wood2",
+            "res_time": 300,
+            "produce": [
+                4,
+                10
+            ],
+            "expend": [],
+            "upgrade_need": [
+                7,
+                50,
+                10,
+                50
+            ],
+            "upgrade_time": 0
+        },
+        {
+            "id": 1,
+            "level": 3,
+            "unlock": 3,
+            "res_name": "一摞木头",
+            "res_png": "img_wood3",
+            "res_time": 600,
+            "produce": [
+                4,
+                15
+            ],
+            "expend": [],
+            "upgrade_need": [
+                8,
+                80,
+                10,
+                80
+            ],
+            "upgrade_time": 0
+        },
+        {
+            "id": 2,
+            "level": 1,
+            "unlock": 1,
+            "res_name": "工匠手套",
+            "res_png": "img_gloves",
+            "res_time": 60,
+            "produce": [
+                5,
+                5
+            ],
+            "expend": [
+                4,
+                2
+            ],
+            "upgrade_need": [],
+            "upgrade_time": 0
+        },
+        {
+            "id": 2,
+            "level": 2,
+            "unlock": 2,
+            "res_name": "雷霆铁锤",
+            "res_png": "img_hammer",
+            "res_time": 180,
+            "produce": [
+                7,
+                5
+            ],
+            "expend": [
+                4,
+                3,
+                6,
+                3
+            ],
+            "upgrade_need": [
+                7,
+                50,
+                10,
+                50
+            ],
+            "upgrade_time": 0
+        },
+        {
+            "id": 2,
+            "level": 3,
+            "unlock": 3,
+            "res_name": "星光之锄",
+            "res_png": "img_hoe",
+            "res_time": 300,
+            "produce": [
+                8,
+                5
+            ],
+            "expend": [
+                4,
+                5,
+                6,
+                5
+            ],
+            "upgrade_need": [
+                8,
+                80,
+                10,
+                80
+            ],
+            "upgrade_time": 0
+        },
+        {
+            "id": 3,
+            "level": 1,
+            "unlock": 1,
+            "res_name": "紫晶石",
+            "res_png": "img_crystal",
+            "res_time": 180,
+            "produce": [
+                10,
+                3
+            ],
+            "expend": [
+                5,
+                10,
+                9,
+                6
+            ],
+            "upgrade_need": [],
+            "upgrade_time": 0
+        },
+        {
+            "id": 3,
+            "level": 2,
+            "unlock": 3,
+            "res_name": "一团紫晶石",
+            "res_png": "img_crystal2",
+            "res_time": 360,
+            "produce": [
+                10,
+                5
+            ],
+            "expend": [
+                7,
+                10,
+                9,
+                10
+            ],
+            "upgrade_need": [
+                7,
+                50,
+                10,
+                50
+            ],
+            "upgrade_time": 0
+        },
+        {
+            "id": 3,
+            "level": 3,
+            "unlock": 5,
+            "res_name": "一袋紫晶石",
+            "res_png": "img_crystal3",
+            "res_time": 600,
+            "produce": [
+                10,
+                15
+            ],
+            "expend": [
+                8,
+                10,
+                9,
+                20
+            ],
+            "upgrade_need": [
+                8,
+                80,
+                10,
+                80
+            ],
+            "upgrade_time": 0
+        },
+        {
+            "id": 4,
+            "level": 1,
+            "unlock": 1,
+            "res_name": "魔法卷轴",
+            "res_png": "img_scroll",
+            "res_time": 100,
+            "produce": [
+                6,
+                3
+            ],
+            "expend": [],
+            "upgrade_need": [],
+            "upgrade_time": 0
+        },
+        {
+            "id": 4,
+            "level": 2,
+            "unlock": 2,
+            "res_name": "一叠卷轴",
+            "res_png": "img_scroll2",
+            "res_time": 300,
+            "produce": [
+                6,
+                5
+            ],
+            "expend": [],
+            "upgrade_need": [
+                7,
+                50,
+                10,
+                50
+            ],
+            "upgrade_time": 0
+        },
+        {
+            "id": 4,
+            "level": 3,
+            "unlock": 3,
+            "res_name": "一摞卷轴",
+            "res_png": "img_scroll3",
+            "res_time": 600,
+            "produce": [
+                6,
+                10
+            ],
+            "expend": [],
+            "upgrade_need": [
+                8,
+                80,
+                10,
+                80
+            ],
+            "upgrade_time": 0
+        },
+        {
+            "id": 5,
+            "level": 1,
+            "unlock": 1,
+            "res_name": "新鲜果汁",
+            "res_png": "img_juice",
+            "res_time": 100,
+            "produce": [
+                9,
+                3
+            ],
+            "expend": [],
+            "upgrade_need": [],
+            "upgrade_time": 0
+        },
+        {
+            "id": 5,
+            "level": 2,
+            "unlock": 2,
+            "res_name": "一组果汁",
+            "res_png": "img_juice2",
+            "res_time": 300,
+            "produce": [
+                9,
+                5
+            ],
+            "expend": [],
+            "upgrade_need": [
+                7,
+                50,
+                10,
+                50
+            ],
+            "upgrade_time": 0
+        },
+        {
+            "id": 5,
+            "level": 3,
+            "unlock": 3,
+            "res_name": "一套果汁",
+            "res_png": "img_juice3",
+            "res_time": 600,
+            "produce": [
+                9,
+                10
+            ],
+            "expend": [],
+            "upgrade_need": [
+                8,
+                80,
+                10,
+                80
+            ],
+            "upgrade_time": 0
+        }
+    ]
+}

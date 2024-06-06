@@ -9,6 +9,8 @@ import { WordDetailPanel } from './WordDetailPanel';
 import { SearchWordDetail, WordSentence } from './SearchWordView';
 import { TextConfig } from '../../config/TextConfig';
 import { WordsDetailData } from '../../models/AdventureModel';
+import MD5Util from '../../util/MD5Util';
+import GlobalConfig from '../../GlobalConfig';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordSearchView')
@@ -134,59 +136,60 @@ export class WordSearchView extends Component {
     }
 
     private onWordDetail(data: WordsDetailData): void {
-        if (!this._sentenceData) {
-            let sentensDatas = data.sentence_list;
-            let sentData;
-            if (sentensDatas && sentensDatas.length > 0) {
-                let sentencData = sentensDatas[0];
-                let sentData: WordSentence = {
-                    Word: data.word,
-                    En: sentencData.sentence,
-                    Cn: sentencData.cn,
-                    Id: sentencData.id,
-                }
-                //sentData = sentensDatas[0]; //第0句第一句例句
-                //sentData.Word = data.word;
-                let word = data.word;
-                let sentence: string = sentData.En; //英语部分
-                this._sentenceId = sentData.Id;
 
-                let lowerSent: string = sentence.toLowerCase(); //句子变小写
-                let lowerWord = word.toLowerCase(); //单词变小写
-                let startIndex = lowerSent.indexOf(lowerWord); //寻找单词的位置
-                if (startIndex != 0) { //如果单词在中间位置
-                    startIndex = lowerSent.indexOf(" " + lowerWord); //前面的空格也算？
-                }
-                let endIndex = startIndex + word.length; // 单词结束位置
-                //单词结束后，后面可能还有空格，和标点符号
-                /*while (endIndex <= sentence.length - 1 && sentence[endIndex] != " "
-                    && sentence[endIndex] != "," && sentence[endIndex] != "."
-                    && sentence[endIndex] != "!" && sentence[endIndex] != "?") {
-                    endIndex++;
-                }*/
-                var strHead: string = "";
-                var strMid: string = ""
-                var strTail: string = "";
-                if (startIndex === -1) { //如果没有找到
-                    this.sentenceTxt.string = "<color=#6C331F>" + sentence + "</color>";
-                }
-                else if (startIndex === 0) { //如果单词出现在首位
-                    strTail = sentence.substring(endIndex);
-                    this.sentenceTxt.string = "<color=#ff4e00>" + word + "</color>" + "<color=#6C331F>" + strTail + "</color>";
-                }
-                else if (startIndex > 0 && startIndex <= sentence.length - 1) { //单词在中间
-                    strHead = sentence.substring(0, startIndex);
-                    strMid = sentence.substring(startIndex, endIndex + 1);
-                    strTail = sentence.substring(endIndex + 1);
-                    this.sentenceTxt.string = "<color=#6C331F>" + strHead + "</color>" +
-                        "<color=#ff4e00>" + strMid + "</color>" + "<color=#6C331F>" + strTail + "</color>";
-                }
-                else {
-                    this.sentenceTxt.string = "<color=#6C331F>" + sentence + "</color>";
-                }
-                this.sentenceChTxt.string = sentData.Cn; //中文部分
+        let sentensDatas = data.sentence_list;
+        if (sentensDatas && sentensDatas.length > 0) {
+            let sentencData = sentensDatas[0];
+            let sentData: WordSentence = {
+                Word: data.word,
+                En: sentencData.sentence,
+                Cn: sentencData.cn,
+                Id: sentencData.id,
             }
+            //sentData = sentensDatas[0]; //第0句第一句例句
+            //sentData.Word = data.word;
+
+            let word = data.word;
+            let sentence: string = sentData.En; //英语部分
+            this._sentenceId = sentData.Id;
+            this._sentenceData = sentData;
+
+            let lowerSent: string = sentence.toLowerCase(); //句子变小写
+            let lowerWord = word.toLowerCase(); //单词变小写
+            let startIndex = lowerSent.indexOf(lowerWord); //寻找单词的位置
+            if (startIndex != 0) { //如果单词在中间位置
+                startIndex = lowerSent.indexOf(" " + lowerWord); //前面的空格也算？
+            }
+            let endIndex = startIndex + word.length; // 单词结束位置
+            //单词结束后，后面可能还有空格，和标点符号
+            /*while (endIndex <= sentence.length - 1 && sentence[endIndex] != " "
+                && sentence[endIndex] != "," && sentence[endIndex] != "."
+                && sentence[endIndex] != "!" && sentence[endIndex] != "?") {
+                endIndex++;
+            }*/
+            var strHead: string = "";
+            var strMid: string = ""
+            var strTail: string = "";
+            if (startIndex === -1) { //如果没有找到
+                this.sentenceTxt.string = "<color=#6C331F>" + sentence + "</color>";
+            }
+            else if (startIndex === 0) { //如果单词出现在首位
+                strTail = sentence.substring(endIndex);
+                this.sentenceTxt.string = "<color=#ff4e00>" + word + "</color>" + "<color=#6C331F>" + strTail + "</color>";
+            }
+            else if (startIndex > 0 && startIndex <= sentence.length - 1) { //单词在中间
+                strHead = sentence.substring(0, startIndex);
+                strMid = sentence.substring(startIndex, endIndex + 1);
+                strTail = sentence.substring(endIndex + 1);
+                this.sentenceTxt.string = "<color=#6C331F>" + strHead + "</color>" +
+                    "<color=#ff4e00>" + strMid + "</color>" + "<color=#6C331F>" + strTail + "</color>";
+            }
+            else {
+                this.sentenceTxt.string = "<color=#6C331F>" + sentence + "</color>";
+            }
+            this.sentenceChTxt.string = sentData.Cn; //中文部分
         }
+
     }
 
     /**关闭页面 TODO*/
@@ -222,9 +225,13 @@ export class WordSearchView extends Component {
 
     /**播放单词例句声音 */
     private onPlaySentence() {
-        //SoundUtil.playSound("/assets/sounds/glossary/sentence_tts/Emily/" + this.sentenceId + ".wav")
-        let wordSoundUrl = "/sounds/glossary/sentence_tts/Emily/" + this._sentenceId + ".wav";
-        RemoteSoundMgr.playSound(NetConfig.assertUrl + wordSoundUrl);
+        // let wordSoundUrl = "/sounds/glossary/sentence_tts/Emily/" + this._sentenceId + ".wav";
+        // RemoteSoundMgr.playSound(NetConfig.assertUrl + wordSoundUrl);
+
+        let soundName = MD5Util.hex_md5(this._sentenceData.En);
+        let type = GlobalConfig.USE_US ? "us" : "en";
+        let url = NetConfig.assertUrl + "/sounds/sentence/" + type + "/" + soundName + ".wav"
+        RemoteSoundMgr.playSound(url);
     }
 
     /**显示更多例句 */

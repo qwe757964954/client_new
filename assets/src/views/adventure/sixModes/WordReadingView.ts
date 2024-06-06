@@ -15,6 +15,7 @@ import { TBServer } from '../../../service/TextbookService';
 import CCUtil from '../../../util/CCUtil';
 import { RecordApi } from '../../../util/third/RecordApi';
 import { RecordResponseData } from '../../../util/third/RecordModel';
+import { MonsterModel } from '../common/MonsterModel';
 import { BaseModeView } from './BaseModeView';
 import { WordReportView } from './WordReportView';
 const { ccclass, property } = _decorator;
@@ -110,6 +111,16 @@ export class WordReadingView extends BaseModeView {
                 });
             })
         }
+    }
+
+    //怪物死亡
+    monsterDie() {
+        this.reportResult();
+        this._monster.getComponent(MonsterModel).die().then(() => {
+            if (this._currentSubmitResponse.pass_flag == 1) {
+                this.gotoResult();
+            }
+        })
     }
 
     gameSubmit(response: RecordResponseData, isRight?: boolean) {
@@ -232,7 +243,8 @@ export class WordReadingView extends BaseModeView {
     }
 
     update(deltaTime: number) {
-        if (!this._turnIsBegin && this._currentSubmitResponse && this._currentSubmitResponse.pass_flag == 1) {
+        let isAdventure = this._levelData.hasOwnProperty('islandId'); //是否是大冒险关卡
+        if (!isAdventure && !this._turnIsBegin && this._currentSubmitResponse && this._currentSubmitResponse.pass_flag == 1) {
             this.gotoResult();
         }
     }

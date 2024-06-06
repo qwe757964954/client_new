@@ -1,0 +1,282 @@
+{
+    "pet_upgrade": [
+        {
+            "id": 101,
+            "name": "",
+            "level": 1,
+            "amethyst": 1,
+            "coin": 2,
+            "diamond": 3,
+            "roleLevel": 1,
+            "intimacy": 4
+        },
+        {
+            "id": 101,
+            "name": "",
+            "level": 2,
+            "amethyst": 1,
+            "coin": 2,
+            "diamond": 3,
+            "roleLevel": 1,
+            "intimacy": 4
+        },
+        {
+            "id": 101,
+            "name": "",
+            "level": 3,
+            "amethyst": 1,
+            "coin": 2,
+            "diamond": 3,
+            "roleLevel": 1,
+            "intimacy": 4
+        },
+        {
+            "id": 101,
+            "name": "",
+            "level": 4,
+            "amethyst": 1,
+            "coin": 2,
+            "diamond": 3,
+            "roleLevel": 1,
+            "intimacy": 4
+        },
+        {
+            "id": 101,
+            "name": "",
+            "level": 5,
+            "amethyst": 1,
+            "coin": 2,
+            "diamond": 3,
+            "roleLevel": 1,
+            "intimacy": 4
+        },
+        {
+            "id": 101,
+            "name": "",
+            "level": 6,
+            "amethyst": 1,
+            "coin": 2,
+            "diamond": 3,
+            "roleLevel": 1,
+            "intimacy": 4
+        },
+        {
+            "id": 102,
+            "name": "",
+            "level": 1,
+            "amethyst": 1,
+            "coin": 2,
+            "diamond": 3,
+            "roleLevel": 1,
+            "intimacy": 4
+        },
+        {
+            "id": 102,
+            "name": "",
+            "level": 2,
+            "amethyst": 1,
+            "coin": 2,
+            "diamond": 3,
+            "roleLevel": 1,
+            "intimacy": 4
+        },
+        {
+            "id": 102,
+            "name": "",
+            "level": 3,
+            "amethyst": 1,
+            "coin": 2,
+            "diamond": 3,
+            "roleLevel": 1,
+            "intimacy": 4
+        },
+        {
+            "id": 102,
+            "name": "",
+            "level": 4,
+            "amethyst": 1,
+            "coin": 2,
+            "diamond": 3,
+            "roleLevel": 1,
+            "intimacy": 4
+        },
+        {
+            "id": 102,
+            "name": "",
+            "level": 5,
+            "amethyst": 1,
+            "coin": 2,
+            "diamond": 3,
+            "roleLevel": 1,
+            "intimacy": 4
+        },
+        {
+            "id": 102,
+            "name": "",
+            "level": 6,
+            "amethyst": 1,
+            "coin": 2,
+            "diamond": 3,
+            "roleLevel": 1,
+            "intimacy": 4
+        },
+        {
+            "id": 103,
+            "name": "",
+            "level": 1,
+            "amethyst": 1,
+            "coin": 2,
+            "diamond": 3,
+            "roleLevel": 1,
+            "intimacy": 4
+        },
+        {
+            "id": 103,
+            "name": "",
+            "level": 2,
+            "amethyst": 1,
+            "coin": 2,
+            "diamond": 3,
+            "roleLevel": 1,
+            "intimacy": 4
+        },
+        {
+            "id": 103,
+            "name": "",
+            "level": 3,
+            "amethyst": 1,
+            "coin": 2,
+            "diamond": 3,
+            "roleLevel": 1,
+            "intimacy": 4
+        },
+        {
+            "id": 103,
+            "name": "",
+            "level": 4,
+            "amethyst": 1,
+            "coin": 2,
+            "diamond": 3,
+            "roleLevel": 1,
+            "intimacy": 4
+        },
+        {
+            "id": 103,
+            "name": "",
+            "level": 5,
+            "amethyst": 1,
+            "coin": 2,
+            "diamond": 3,
+            "roleLevel": 1,
+            "intimacy": 4
+        },
+        {
+            "id": 103,
+            "name": "",
+            "level": 6,
+            "amethyst": 1,
+            "coin": 2,
+            "diamond": 3,
+            "roleLevel": 1,
+            "intimacy": 4
+        }
+    ],
+    "pet_interaction": [
+        {
+            "id": 11,
+            "name": "糯米糍",
+            "type": 1,
+            "score": 25
+        },
+        {
+            "id": 12,
+            "name": "披萨",
+            "type": 1,
+            "score": 25
+        },
+        {
+            "id": 13,
+            "name": "烤肉串",
+            "type": 1,
+            "score": 50
+        },
+        {
+            "id": 14,
+            "name": "烤鸡",
+            "type": 1,
+            "score": 50
+        },
+        {
+            "id": 15,
+            "name": "烤乳猪",
+            "type": 1,
+            "score": 75
+        },
+        {
+            "id": 16,
+            "name": "毛巾",
+            "type": 2,
+            "score": 25
+        },
+        {
+            "id": 17,
+            "name": "香水",
+            "type": 2,
+            "score": 50
+        },
+        {
+            "id": 18,
+            "name": "花洒",
+            "type": 2,
+            "score": 75
+        },
+        {
+            "id": 19,
+            "name": "玩球",
+            "type": 3,
+            "score": 25
+        },
+        {
+            "id": 20,
+            "name": "唱歌",
+            "type": 3,
+            "score": 50
+        },
+        {
+            "id": 21,
+            "name": "烟花",
+            "type": 3,
+            "score": 75
+        }
+    ],
+    "pet_mood": [
+        {
+            "id": 1,
+            "name": "伤心",
+            "score": 25,
+            "intimacy": 1,
+            "png": "pet_img_mood1"
+        },
+        {
+            "id": 2,
+            "name": "一般",
+            "score": 50,
+            "intimacy": 2,
+            "png": "pet_img_mood2"
+        },
+        {
+            "id": 3,
+            "name": "满足",
+            "score": 75,
+            "intimacy": 3,
+            "png": "pet_img_mood3"
+        },
+        {
+            "id": 4,
+            "name": "开心",
+            "score": 100,
+            "intimacy": 5,
+            "png": "pet_img_mood4"
+        }
+    ]
+}
