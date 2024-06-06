@@ -168,7 +168,7 @@ export class CastleInfoView extends BaseComponent {
         }
         ViewsMgr.showTip(TextConfig.Building_Upgrade_Success);
         this._building.buildingData.level = data.level;
-        let building = this._building
+        let building = this._building;
         this.labelLevel.string = ToolUtil.replace(TextConfig.Level_Text, building.buildingData.level);;
         if (data.level >= 5) {
             this.nodeMaxLevel.active = true;

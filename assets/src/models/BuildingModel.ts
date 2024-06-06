@@ -444,6 +444,16 @@ export class BuildingModel extends BaseComponent {
     }
     /**是否点击到自己 像素点击，可能会出现性能问题*/
     public isTouchSelf(worldPos: Vec3): boolean {
+        if (this._btnView && this._btnView.active) {
+            let transform = this._btnView.getComponent(UITransform);
+            let rect: Rect = new Rect(0, 0, transform.width, transform.height);
+            rect.x = -transform.anchorX * transform.width;
+            rect.y = -transform.anchorY * transform.height;
+            let pos = transform.convertToNodeSpaceAR(worldPos);
+            if (rect.contains(new Vec2(pos.x, pos.y))) {
+                return true;
+            }
+        }
         // if (this._editInfo.id != 30) return false;//争对某类建筑测试
         let transform = this.building.getComponent(UITransform);
         let rect: Rect = new Rect(0, 0, transform.width, transform.height);
