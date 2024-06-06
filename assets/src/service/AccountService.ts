@@ -76,6 +76,7 @@ export default class AccountService {
                 User.roleID = extra.role_id;
                 User.level = extra.level;
                 User.exp = extra.exp;
+                User.nick = extra.nick_name;
             }
             if (LoginType.account == User.loginType) {
                 StorageUtil.saveData(KeyConfig.Last_Login_Account, User.account);

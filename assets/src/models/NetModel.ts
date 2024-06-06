@@ -93,6 +93,9 @@ export class s2cAccountLoginDetailExtra {
     role_id: number;//角色id
     level: number;//等级
     exp: number;//经验
+    nick_name: string;//昵称
+    avatar: string;//头像
+    phone: string;//手机号
 }
 export class s2cAccountLoginDetail {
     extra: s2cAccountLoginDetailExtra;//额外信息
