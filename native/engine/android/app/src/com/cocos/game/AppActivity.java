@@ -215,8 +215,8 @@ public class AppActivity extends CocosActivity {
     private int _checkAudioPermissionCode = 1;
     private String[] _perms = {
             Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_PHONE_STATE
+//            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+//            Manifest.permission.READ_PHONE_STATE
     };
     //检测录音权限
     public void checkAudioPermission(){
