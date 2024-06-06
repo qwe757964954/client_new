@@ -1,15 +1,19 @@
-import { _decorator, Button, Component, instantiate, Label, Layers, Node, Vec3, Widget } from 'cc';
+import { _decorator, Button, instantiate, Label, Layers, Node, Vec3, Widget } from 'cc';
 import { TextConfig } from '../../config/TextConfig';
 import GlobalConfig from '../../GlobalConfig';
 import { ViewsMgr } from '../../manager/ViewsManager';
 import { BuildingModel } from '../../models/BuildingModel';
+import { s2cBuildingUpgrade } from '../../models/NetModel';
+import { InterfacePath } from '../../net/InterfacePath';
+import { ServiceMgr } from '../../net/ServiceManager';
+import { BaseComponent } from '../../script/BaseComponent';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
 import { ToolUtil } from '../../util/ToolUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('CastleInfoView')
-export class CastleInfoView extends Component {
+export class CastleInfoView extends BaseComponent {
     @property(List)
     public listView: List = null;//列表
     @property(Label)
@@ -74,11 +78,15 @@ export class CastleInfoView extends Component {
     initEvent() {
         CCUtil.onTouch(this.btnClose, this.onBtnCloseClick, this);
         CCUtil.onTouch(this.btnUpgrade, this.onBtnUpgradeClick, this);
+
+        this.addEvent(InterfacePath.c2sBuildingUpgrade, this.onBuildingUpgrade.bind(this));
     }
 
     removeEvent() {
         CCUtil.offTouch(this.btnClose, this.onBtnCloseClick, this);
         CCUtil.offTouch(this.btnUpgrade, this.onBtnUpgradeClick, this);
+
+        this.clearEvent();
     }
     /**初始化 */
     init(building: BuildingModel) {
@@ -128,7 +136,8 @@ export class CastleInfoView extends Component {
     }
     /**升级按钮 */
     onBtnUpgradeClick() {
-        ViewsMgr.showTip(TextConfig.Function_Tip);
+        // ViewsMgr.showTip(TextConfig.Function_Tip);
+        ServiceMgr.buildingService.reqBuildingUpgrade(this._building.buildingID, this._building.buildingData.level);
     }
     /**goto按钮 */
     onBtnGotoClick(id: number) {
@@ -149,6 +158,27 @@ export class CastleInfoView extends Component {
             this._building.removeFromParent();
             this._building = null;
         }
+    }
+    /**建筑升级回调 */
+    onBuildingUpgrade(data: s2cBuildingUpgrade) {
+        if (data.id != this._building.buildingID) return;
+        if (200 != data.code) {
+            ViewsMgr.showTip(data.msg);
+            return;
+        }
+        ViewsMgr.showTip(TextConfig.Building_Upgrade_Success);
+        this._building.buildingData.level = data.level;
+        let building = this._building;
+        this.labelLevel.string = ToolUtil.replace(TextConfig.Level_Text, building.buildingData.level);;
+        if (data.level >= 5) {
+            this.nodeMaxLevel.active = true;
+            this.plUpgrade.active = false;
+            return;
+        }
+        this.nodeMaxLevel.active = false;
+        this.plUpgrade.active = true;
+        this.labelLevel1.string = ToolUtil.replace(TextConfig.Level_Text, building.buildingData.level);
+        this.labelLevel2.string = ToolUtil.replace(TextConfig.Level_Text, building.buildingData.level + 1);
     }
 }
 
