@@ -147,6 +147,7 @@ export class WordPracticeView extends BaseModeView {
             let levelData = JSON.parse(JSON.stringify(this._levelData));
             //跳转到下一场景
             node.getComponent(TransitionView).setTransitionCallback(() => {
+                console.log("过渡界面回调_________________________");
                 ViewsManager.instance.showView(PrefabType.WordSpellView, (node: Node) => {
                     node.getComponent(WordSpellView).initData(wordData, levelData);
                     ViewsManager.instance.closeView(PrefabType.WordPracticeView);

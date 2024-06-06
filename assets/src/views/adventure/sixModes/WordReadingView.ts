@@ -229,9 +229,11 @@ export class WordReadingView extends BaseModeView {
         console.log("onGameSubmitResponse....", data);
         this._currentSubmitResponse = data;
         this._currentSubmitResponse as GameSubmitResponse;
-        if (this._currentSubmitResponse.pass_flag == 1) {
+    }
+
+    update(deltaTime: number) {
+        if (!this._turnIsBegin && this._currentSubmitResponse && this._currentSubmitResponse.pass_flag == 1) {
             this.gotoResult();
-            return;
         }
     }
 

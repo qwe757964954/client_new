@@ -232,6 +232,7 @@ export class WordMeaningView extends BaseModeView {
             let levelData = JSON.parse(JSON.stringify(this._levelData));
             //跳转到下一场景
             node.getComponent(TransitionView).setTransitionCallback(() => {
+                console.log("过渡界面回调_________________________");
                 ViewsManager.instance.showView(PrefabType.WordPracticeView, (node: Node) => {
                     node.getComponent(WordPracticeView).initData(wordData, levelData);
                     ViewsManager.instance.closeView(PrefabType.WordMeaningView);

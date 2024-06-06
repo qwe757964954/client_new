@@ -231,6 +231,7 @@ export class StudyModeView extends BaseModeView {
             let wordData = JSON.parse(JSON.stringify(this._wordsData));
             let levelData = JSON.parse(JSON.stringify(this._levelData));
             node.getComponent(TransitionView).setTransitionCallback(() => {
+                console.log("过渡界面回调_________________________");
                 ViewsManager.instance.showView(PrefabType.WordMeaningView, (node: Node) => {
                     node.getComponent(WordMeaningView).initData(wordData, levelData);
                     ViewsManager.instance.closeView(PrefabType.StudyModeView);
