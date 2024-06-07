@@ -17,6 +17,10 @@ export const TextConfig = {
     Function_Tip: "功能暂未开放，敬请期待",
     Function_Tip2: "暂时没有该功能",
 
+    Update_New: "发现新版本，需要更新",
+    Update_Error: "更新失败，请检测网络后再重试",
+    Update_Success: "更新成功，是否立即重启游戏",
+
     Building_Sure_Tip: "有重叠建筑，暂时不能保存!",
     Building_Cell_Tip: "此建筑不能售卖!",
     // Building_Edit_Error: "该建筑不能编辑!",

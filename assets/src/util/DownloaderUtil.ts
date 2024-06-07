@@ -1,5 +1,7 @@
-import { JsonAsset, game, native } from "cc";
+import { JsonAsset, assetManager, game, native } from "cc";
+import { TextConfig } from "../config/TextConfig";
 import { LoadManager } from "../manager/LoadManager";
+import { ViewsMgr } from "../manager/ViewsManager";
 //版本检测下载类
 export default class DownloaderUtil {
     private _assetsManager: native.AssetsManager;
@@ -42,17 +44,20 @@ export default class DownloaderUtil {
         this._failFunc = failFunc;
         this._progressFunc = progressFunc;
 
-        LoadManager.loadRemoteEx(this._url + "project.manifest", { ext: '.json' }).then((asset: JsonAsset) => {
+        assetManager.cacheManager.removeCache(this._url + "project.manifest");
+        LoadManager.loadRemoteEx(this._url + "project.manifest", { ext: '.json', cacheEnabled: false }).then((asset: JsonAsset) => {
             let json = asset.json;
             json["packageUrl"] = this._url;
             json["remoteManifestUrl"] = this._url + "project.manifest";
             json["remoteVersionUrl"] = this._url + "version.manifest";
+            console.log("url project.manifest:", json["version"]);
             let manifest = new native.Manifest(JSON.stringify(json), this._storagePath);
             let result = this._assetsManager.loadRemoteManifest(manifest);
             this._assetsManager.setEventCallback(this.updateCb.bind(this));
 
             this._assetsManager.update();
             this._updating = true;
+            LoadManager.releaseAsset(asset);
         }).catch(() => {
             if (failFunc) failFunc();
         });
@@ -154,9 +159,10 @@ export default class DownloaderUtil {
             native.fileUtils.setSearchPaths(searchPaths);
 
             // restart game.
-            setTimeout(() => {
-                game.restart();
-            }, 1000)
+            // setTimeout(() => {
+            //     game.restart();
+            // }, 1000)
+            ViewsMgr.showAlert(TextConfig.Update_Success, game.restart);
         }
     }
 }
