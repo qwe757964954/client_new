@@ -92,6 +92,7 @@ def copyFileTo(fileList,rDir,tDir):
         t_file = os.path.join(tDir, r_file)
         r_file = os.path.join(rDir, r_file)
         createDir(t_file)
+        print("copy %s to %s" % (r_file, t_file))
         shutil.copyfile(r_file,t_file)
         
 #替换文件一行内容
@@ -215,7 +216,7 @@ def generateResourcesAndScript():
     difFiles = difAssets(newMainfestData,lastManifestData) # 对比两个版本差异文件
     copyFileTo(difFiles, js_export_dir, publish_dir) # 拷贝差异文件到指定目录
     # copy_folder(js_export_dir, publish_dir) # 拷贝所有生成的资源到指定目录
-    compress_directory(publish_dir, os.path.join(publish_base_dir, version+".zip"))
+    # compress_directory(publish_dir, os.path.join(publish_base_dir, version+".zip"))
     shutil.copyfile(publish_manifest_path,local_manifest_path) # 输出的manifest覆盖到本地manifest
 
 if __name__ == '__main__':

@@ -89,7 +89,7 @@ export class LoadingScene extends Component {
         }
 
         this._downloaderUtil = new DownloaderUtil(this.manifest.nativeUrl, data.url);
-        this.startDownload();
+        ViewsMgr.showAlert(TextConfig.Update_New, this.startDownload.bind(this));
     }
     /**http请求版本失败 */
     httpReqVersionCheckFailed() {
@@ -105,15 +105,17 @@ export class LoadingScene extends Component {
     }
     /**更新成功 */
     updateSuccess() {
-        ViewsMgr.showAlert("更新成功，准备资源中");
+        this.progressBar.progress = 1.0;
+        // ViewsMgr.showAlert(TextConfig.Update_Success);
     }
     /**更新失败 */
     updateFailed() {
-        ViewsMgr.showAlert("更新失败，请检测网络后再重试", this.startDownload.bind(this));
+        ViewsMgr.showAlert(TextConfig.Update_Error, this.startDownload.bind(this));
     }
     /**更新进度 */
     updateProgress(num: number) {
         console.log("updateProgress", num);
+        if (typeof num != "number") return;
         this.progressBar.progress = num;
     }
 }
