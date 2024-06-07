@@ -48,7 +48,7 @@ export class TextbookChallengeView extends BaseView {
     private _planData:BookPlanDetail = null;
     // EventMgr.dispatch(NetNotify.Classification_UnitListStatus,dataArr);
     start() {
-        this.initUI();
+        super.start();
         GlobalConfig.initResolutionRules();
     }
     protected async initUI(){

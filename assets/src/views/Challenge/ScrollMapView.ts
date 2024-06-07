@@ -78,10 +78,6 @@ export class ScrollMapView extends BaseView {
     private _total_grade = 0;
 
     public _curLevelIndex:number = 0;
-
-    start() {
-    }
-
     onInitModuleEvent(){
         this.addModelListener(EventType.Goto_Textbook_Next_Level,this.gotoNextTextbookLevel);
     }
@@ -267,10 +263,6 @@ export class ScrollMapView extends BaseView {
 
     removePointEvent() {
         // this.MapLaout.removeAllChildren();
-    }
-
-    onDestroy(): void {
-        super.onDestroy();
     }
 }
 

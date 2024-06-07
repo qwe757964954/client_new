@@ -50,11 +50,6 @@ export class WordReportView extends BaseView {
 
     private _resultSubmitResponse: GameSubmitResponse | AdventureResult = null;
 
-    start() {
-        this.initUI();
-        this.initEvents();
-    }
-
     initUI() {
         this.initRolePlayer();
     }
@@ -111,7 +106,7 @@ export class WordReportView extends BaseView {
         EventMgr.dispatch(EventType.Sys_Ani_Play, spinePrams);
     }
 
-    initEvents() {
+    initEvent() {
         CCUtil.onBtnClick(this.evaluation_btn, () => {
             this.gotoEvaluation();
         });

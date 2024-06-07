@@ -57,11 +57,6 @@ export class GrammarTrainingView extends BaseView {
     private _tabData:string[] = ["grammar/item_bg1/spriteFrame",
     "grammar/item_bg2/spriteFrame",
     "grammar/item_bg3/spriteFrame"]
-
-    start() {
-        this.initUI();
-    }
-
     initUI() {
         this.initNavTitle();
         this.initAmout();

@@ -52,10 +52,6 @@ export class BossChallengeView extends BaseView {
     protected _pet: Node = null; //精灵
     protected _role: Node = null; //人物
     private _monsterPos:Vec3 = null;
-    onLoad(): void {
-        this.initUI();
-        this.initEvent();
-    }
     initUI(){
         this.initChallengeFrame();
         this.initRole(); //初始化角色
@@ -150,10 +146,6 @@ export class BossChallengeView extends BaseView {
             });
         }
     }
-    onDestroy() {
-        super.onDestroy();
-		this.removeEvent();
-	};
 
     //怪物攻击
 

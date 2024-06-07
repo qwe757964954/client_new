@@ -76,21 +76,14 @@ export class BaseModeView extends BaseView {
     protected _remainTime: number = 0; //剩余时间
     protected _errorWords: any = {}; //错误单词
     start() {
+        super.start();
         this.node.getChildByName("img_bg").addComponent(BlockInputEvents);
         this.initRole(); //初始化角色
         this.initPet(); //初始化精灵
         this._costTime = Date.now();
         let scaleNum = view.getVisibleSize().width / view.getDesignResolutionSize().width;
         this.topNode.setScale(scaleNum, scaleNum, 1);
-        this.initEvents();
     }
-
-    initEvents() {
-        CCUtil.onBtnClick(this.btn_collect, () => {
-            this.onClickCollectEvent();
-        });
-    }
-
     updateTextbookWords(wordsdata: UnitWordModel[], levelData: any) {
         this._levelData = levelData;
         let isAdventure = this._levelData.hasOwnProperty('islandId'); //是否是大冒险关卡
@@ -436,6 +429,9 @@ export class BaseModeView extends BaseView {
         this._getResultEveId = EventManager.on(InterfacePath.Adventure_Result, this.onUpResult.bind(this));
         EventManager.on(NetNotify.Classification_ReportResult, this.onUpResult.bind(this));
         this._wordDetailEveId = EventManager.on(InterfacePath.Adventure_Word, this.onClassificationWord.bind(this));
+        CCUtil.onBtnClick(this.btn_collect, () => {
+            this.onClickCollectEvent();
+        });
     }
     protected removeEvent(): void {
         CCUtil.offTouch(this.btn_close.node, this.closeView, this);
@@ -455,7 +451,7 @@ export class BaseModeView extends BaseView {
         });
     }
     onDestroy(): void {
-        this.removeEvent();
+        super.onDestroy();
         RemoteSoundMgr.clearAudio();
     }
 

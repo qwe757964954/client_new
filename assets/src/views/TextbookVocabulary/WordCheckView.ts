@@ -38,8 +38,8 @@ export class WordCheckView extends BaseView {
     private _wordUnits:{ [unit: string]: CheckWordItem[] } = {};
 
     start() {
+        super.start();
         this.initTabData();
-        this.initUI();
     }
 
     initTabData(){

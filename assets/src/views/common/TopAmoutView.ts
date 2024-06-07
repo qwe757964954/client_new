@@ -24,10 +24,6 @@ export class TopAmoutView extends BaseView {
     public acmoutScroll:List = null;
 
     private _dataArr:AmoutItemData[] = [];
-
-    start() {
-
-    }
     
     protected onInitModuleEvent() {
 		this.addModelListener(EventType.Diamond_Update,this.onUpdateDiamond);

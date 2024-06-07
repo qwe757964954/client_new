@@ -31,10 +31,6 @@ export class TextbookListView extends BaseView {
     private _myTextbookDataArr: MyTextbookStatus[] = [];
 
     private _curBookData: CurrentBookStatus = null;
-    start() {
-        this.initUI();
-        this.initEvent();
-    }
     initEvent() {
         CCUtil.onTouch(this.add_textbook_bg, this.onClickAddTextbook, this);
     }
@@ -181,10 +177,6 @@ export class TextbookListView extends BaseView {
         ViewsManager.instance.showView(PrefabType.SelectWordView, (node: Node) => {
             ViewsManager.instance.closeView(PrefabType.TextbookListView);
         });
-    }
-
-    onDestroy(): void {
-        this.removeEvent();
     }
 }
 
