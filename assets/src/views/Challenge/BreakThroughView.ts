@@ -75,9 +75,8 @@ export class BreakThroughView extends BaseView {
     private _selectGate:GateListItem = null;
 
     start() {
+        super.start();
         GlobalConfig.initRessolutionHeight();
-        this.initUI();
-        this.initEvent();
     }
     initEvent() {
         CCUtil.onBtnClick(this.mask_node, () => {
@@ -319,10 +318,6 @@ export class BreakThroughView extends BaseView {
         console.log("hideRightPanelchangeView");
         this.mask_node.active = false;
         this._rightChallenge.hideView();
-    }
-    onDestroy(): void {
-        super.onDestroy();
-        this.removeEvent();
     }
 }
 

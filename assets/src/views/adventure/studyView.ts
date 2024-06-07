@@ -23,20 +23,15 @@ export class studyView extends BaseView {
 
     @property({ type: ScrollView, tooltip: "滚动容器" })
     public scrollView: ScrollView = null;
-    start() {
-
-    }
 
     update(deltaTime: number) {
 
     }
 
     onLoad(): void {
-        this.initUI()
-        this.initEvent()
     }
     /**初始化ui */
-    private initUI() {
+    initUI() {
 
     }
 
@@ -93,13 +88,6 @@ export class studyView extends BaseView {
         CCUtil.offTouch(this.closeBtn, this.closeView, this)
 
     }
-
-    onDestroy() {
-        super.onDestroy();
-        this.removeEvent()
-    }
-
-
 }
 
 

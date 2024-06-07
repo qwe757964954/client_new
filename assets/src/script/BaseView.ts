@@ -47,7 +47,20 @@ export class BaseView extends Component{
     }
     onLoad() {
 		this.onLoadBefore()
-	};
+	}
+	start() {
+		this.initUI();
+        this.initEvent();
+	}
+	protected initUI(){
+
+    }
+	protected initEvent(){
+
+    }
+    protected removeEvent(){
+        
+    }
 	/**override 定时器的回调更新，子类需重写该方法 */
 	protected onSchedulerUpdate(dt?: number) {
 
@@ -108,6 +121,7 @@ export class BaseView extends Component{
     //销毁
 	onDestroy() {
 		this.onDestroyBefore()
+		this.removeEvent();
 	};
 }
 

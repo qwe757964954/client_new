@@ -77,10 +77,11 @@ export class LoginView extends BaseView {
     private _loopID: number = null;             // 验证码循环id
 
     start() {
+        super.start();
         this.connectServer();
         this.plQRCode.setBackCall(this.onPlQrCodeBack.bind(this));
         this.plActivationCode.setCallFunc(this.onPlActivationCodeBack.bind(this), this.onActivationCodeActive.bind(this));
-        this.initUI();
+        
 
         this.checkToken();
         DataMgr.instance.initData();

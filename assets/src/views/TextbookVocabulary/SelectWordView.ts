@@ -39,8 +39,9 @@ export class SelectWordView extends BaseView {
     private _curBookName:string = "";
     private _curGradeName:string = "";
     start() {
+        super.start();
         GlobalConfig.initResolutionRules();
-        this.initUI();
+        
     }
     protected initUI(){
         this.initNavTitle();

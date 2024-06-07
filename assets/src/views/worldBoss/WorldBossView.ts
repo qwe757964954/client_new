@@ -31,10 +31,6 @@ export class WorldBossView extends BaseView {
     private _leftView:WorldLeftNavView = null;
     private _rightRankView:RightRankView = null;
     private _worldRankData:WorldBossResponse = null;
-    start() {
-        this.initUI();
-        this.initEvent();
-    }
     initEvent(){
         CCUtil.onTouch(this.challenge_btn, this.onChallengeWorldBoss, this);
     }
@@ -175,7 +171,6 @@ export class WorldBossView extends BaseView {
             nodeScript.initData(this._worldRankData.Data.Game)
         });
     }
-
 }
 
 

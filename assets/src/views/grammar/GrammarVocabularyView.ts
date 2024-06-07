@@ -22,12 +22,6 @@ export class GrammarVocabularyView extends BaseView {
     private _jsonAarr:string[] = ["grammar/grammar","grammar/grammar1","grammar/grammar2"];
 
     private _vocabularyData:ResponseData = null;
-
-    start() {
-        this.initUI();
-
-    }
-
     async setSelectId(select_id:number){
         this._select_id = select_id;
         await this.loadRankData(this._select_id);
