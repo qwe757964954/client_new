@@ -1,0 +1,273 @@
+{
+    "Code": 200,
+    "Data": {
+        "Level": 138,
+        "MedalList": [
+            {
+                "MedalConfId": 11601
+            },
+            {
+                "MedalConfId": 10601
+            },
+            {
+                "MedalConfId": 11101
+            }
+        ],
+        "RecStatusList": [
+            {
+                "CurrentAchConfId": 101002,
+                "Mid": 1,
+                "Status": 0,
+                "NextIds": [
+
+                ]
+            },
+            {
+                "CurrentAchConfId": 102030,
+                "Mid": 2,
+                "Status": 1,
+                "NextIds": [
+
+                ]
+            },
+            {
+                "CurrentAchConfId": 103001,
+                "Mid": 3,
+                "Status": 1,
+                "NextIds": [
+                    103002
+                ]
+            },
+            {
+                "CurrentAchConfId": 107010,
+                "Mid": 4,
+                "Status": 0,
+                "NextIds": [
+
+                ]
+            },
+            {
+                "CurrentAchConfId": 108200,
+                "Mid": 5,
+                "Status": 2,
+                "NextIds": [
+
+                ]
+            },
+            {
+                "CurrentAchConfId": 109016,
+                "Mid": 6,
+                "Status": 1,
+                "NextIds": [
+                    109018,
+                    109020,
+                    109022,
+                    109024,
+                    109026,
+                    109028,
+                    109030
+                ]
+            },
+            {
+                "CurrentAchConfId": 110105,
+                "Mid": 7,
+                "Status": 1,
+                "NextIds": [
+                    110110,
+                    110115,
+                    110120,
+                    110125,
+                    110130,
+                    110135,
+                    110140,
+                    110145,
+                    110150,
+                    110155,
+                    110160,
+                    110165,
+                    110170,
+                    110175,
+                    110180,
+                    110185,
+                    110190,
+                    110195,
+                    110200
+                ]
+            },
+            {
+                "CurrentAchConfId": 111010,
+                "Mid": 8,
+                "Status": 1,
+                "NextIds": [
+                    111012,
+                    111014
+                ]
+            },
+            {
+                "CurrentAchConfId": 201002,
+                "Mid": 9,
+                "Status": 0,
+                "NextIds": [
+
+                ]
+            },
+            {
+                "CurrentAchConfId": 202002,
+                "Mid": 10,
+                "Status": 1,
+                "NextIds": [
+
+                ]
+            },
+            {
+                "CurrentAchConfId": 0,
+                "Mid": 11,
+                "Status": 0,
+                "NextIds": [
+
+                ]
+            },
+            {
+                "CurrentAchConfId": 204001,
+                "Mid": 12,
+                "Status": 0,
+                "NextIds": [
+
+                ]
+            },
+            {
+                "CurrentAchConfId": 205005,
+                "Mid": 13,
+                "Status": 2,
+                "NextIds": [
+
+                ]
+            },
+            {
+                "CurrentAchConfId": 208005,
+                "Mid": 16,
+                "Status": 2,
+                "NextIds": [
+
+                ]
+            },
+            {
+                "CurrentAchConfId": 301100,
+                "Mid": 18,
+                "Status": 0,
+                "NextIds": [
+
+                ]
+            },
+            {
+                "CurrentAchConfId": 302030,
+                "Mid": 19,
+                "Status": 0,
+                "NextIds": [
+
+                ]
+            },
+            {
+                "CurrentAchConfId": 303030,
+                "Mid": 20,
+                "Status": 0,
+                "NextIds": [
+
+                ]
+            },
+            {
+                "CurrentAchConfId": 304500,
+                "Mid": 21,
+                "Status": 0,
+                "NextIds": [
+
+                ]
+            },
+            {
+                "CurrentAchConfId": 305001,
+                "Mid": 22,
+                "Status": 1,
+                "NextIds": [
+
+                ]
+            },
+            {
+                "CurrentAchConfId": 306001,
+                "Mid": 23,
+                "Status": 0,
+                "NextIds": [
+
+                ]
+            },
+            {
+                "CurrentAchConfId": 401030,
+                "Mid": 24,
+                "Status": 0,
+                "NextIds": [
+
+                ]
+            },
+            {
+                "CurrentAchConfId": 402001,
+                "Mid": 25,
+                "Status": 0,
+                "NextIds": [
+
+                ]
+            },
+            {
+                "CurrentAchConfId": 403020,
+                "Mid": 26,
+                "Status": 1,
+                "NextIds": [
+
+                ]
+            },
+            {
+                "CurrentAchConfId": 501001,
+                "Mid": 27,
+                "Status": 0,
+                "NextIds": [
+
+                ]
+            },
+            {
+                "CurrentAchConfId": 502005,
+                "Mid": 28,
+                "Status": 0,
+                "NextIds": [
+
+                ]
+            }
+        ],
+        "Statistics": [
+            {
+                "AchType": 1,
+                "AchTotalNum": 261,
+                "AchEndNum": 107
+            },
+            {
+                "AchType": 2,
+                "AchTotalNum": 31,
+                "AchEndNum": 4
+            },
+            {
+                "AchType": 3,
+                "AchTotalNum": 32,
+                "AchEndNum": 2
+            },
+            {
+                "AchType": 4,
+                "AchTotalNum": 52,
+                "AchEndNum": 2
+            },
+            {
+                "AchType": 5,
+                "AchTotalNum": 9,
+                "AchEndNum": 0
+            }
+        ]
+    },
+    "Msg": "请求成功",
+    "Path": "Ach.Info"
+}

@@ -21,3 +21,27 @@ export const taskInfos = [
     { id: 5, aniurl: "chest_legend", x: 625, y: -20 }
   ];
   
+  export const AchevementRewardInfos = [
+    { id: 1, title: "成就总览", imageUrl: "totallook" },
+    { id: 2, title: "角色成长", imageUrl: "juese" },
+    { id: 3, title: "精灵培养", imageUrl: "jingling" },
+    { id: 4, title: "副本活动", imageUrl: "fuben" },
+    { id: 5, title: "能力培养", imageUrl: "jineng" },
+    { id: 6, title: "社交", imageUrl: "shejiao" },
+    { id: 7, title: "我的勋章", imageUrl: "badge" },
+  ];
+
+  // Achievement Interface
+export interface AchievementDataInfo {
+  AchId: number;        // 成就ID
+  Info: string;         // 成就信息
+  Awards: string;       // 奖励 (可能是逗号分隔的奖励字符串)
+  Type: number;         // 成就类型
+  Title: string;        // 成就标题
+  T: number;            // 等级或阶段
+  SendFlag: number;     // 发送标志
+  Score: number;        // 得分
+  MedalId: number;      // 奖牌ID
+  Bid: number;          // 先前的成就ID (可能为0)
+  Mid: number;          // 成就组ID
+}

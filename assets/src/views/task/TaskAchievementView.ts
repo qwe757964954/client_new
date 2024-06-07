@@ -1,14 +1,33 @@
-import { Prefab, Widget, _decorator, error, instantiate, isValid } from 'cc';
+import { JsonAsset, Prefab, Widget, _decorator, error, instantiate, isValid } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { ResLoader } from '../../manager/ResLoader';
 import { BaseView } from '../../script/BaseView';
+import { AchievementDataInfo } from './TaskInfo';
 const { ccclass, property } = _decorator;
 
 @ccclass('TaskAchievementView')
 export class TaskAchievementView extends BaseView {
-    protected initUI(){
+
+    private _AchievementDataInfo:AchievementDataInfo[] = null;
+
+    protected async initUI(){
+        await this.loadRankData();
+        console.log("_AchievementDataInfo_______________",this._AchievementDataInfo);
         this.initRewardView();
         this.initRightView();
+    }
+    async loadRankData(): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            ResLoader.instance.load(`task/WeekAchieveData`, JsonAsset, async (err: Error | null, jsonData: JsonAsset) => {
+                if (err) {
+                    console.error(err);
+                    reject(err);
+                } else {
+                    this._AchievementDataInfo = jsonData.json as AchievementDataInfo[];
+                    resolve();
+                }
+            });
+        });
     }
     initRewardView(){
         ResLoader.instance.load(`prefab/${PrefabType.AchievementRewardView.path}`, Prefab, (err: Error | null, prefab: Prefab) => {
@@ -18,8 +37,6 @@ export class TaskAchievementView extends BaseView {
             }
             let node = instantiate(prefab);
             this.node.addChild(node);
-            // this._challengeFrame = node.getComponent(ChallengeFrameView);
-            // this._challengeFrame.onLoadWordData(this._bossGame.Words);
             let widgetCom = node.getComponent(Widget);
             if (!isValid(widgetCom)) {
                 widgetCom = node.addComponent(Widget);
@@ -38,8 +55,6 @@ export class TaskAchievementView extends BaseView {
             }
             let node = instantiate(prefab);
             this.node.addChild(node);
-            // this._challengeFrame = node.getComponent(ChallengeFrameView);
-            // this._challengeFrame.onLoadWordData(this._bossGame.Words);
             let widgetCom = node.getComponent(Widget);
             if (!isValid(widgetCom)) {
                 widgetCom = node.addComponent(Widget);
