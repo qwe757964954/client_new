@@ -141,8 +141,8 @@ export class MainUIView extends Component {
     //任务点击
     public onClickTask() {
         console.log("onClickTask");
-        ViewsManager.showTip(TextConfig.Function_Tip);
-        // RemoteSoundMgr.playSound("https://www.chuangciyingyu.com/audio/test/68146.wav");
+        // ViewsManager.showTip(TextConfig.Function_Tip);
+        ViewsManager.instance.showView(PrefabType.WeekTaskView);
     }
     //任务前往点击
     public onClickTaskGo() {

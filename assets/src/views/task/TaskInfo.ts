@@ -1,0 +1,23 @@
+
+export const taskInfos = [
+    { id: 1, title: "登录天数", description: "登录2次" },
+    { id: 2, title: "登陆时长", description: "登陆时长达到40分钟" },
+    { id: 3, title: "词意模式新通关", description: "本周通3关新的词意模式" },
+    { id: 4, title: "抄写模式新通关", description: "本周通3关新的抄写模式" },
+    { id: 5, title: "组合模式新通关", description: "本周通3关新的组合模式" },
+    { id: 6, title: "朗读模式新通关", description: "本周通3关新的朗读模式" },
+    { id: 7, title: "拼写模式新通关", description: "本周通3关新的拼写模式" },
+    { id: 8, title: "本周采矿次数", description: "本周采矿2次" },
+    { id: 9, title: "本周浇树次数", description: "本周浇树2次" },
+    { id: 10, title: "完成复习规划", description: "完成复习规划1次" }
+  ];
+
+  // Box animation data array
+ export const boxAniData = [
+    { id: 1, aniurl: "chest_tutor", x: 130, y: -20 },
+    { id: 2, aniurl: "chest_uncommon", x: 255, y: -20 },
+    { id: 3, aniurl: "chest_rare", x: 380, y: -20 },
+    { id: 4, aniurl: "chest_epic", x: 510, y: -20 },
+    { id: 5, aniurl: "chest_legend", x: 625, y: -20 }
+  ];
+  

@@ -151,6 +151,17 @@ export const PrefabType = {
     FriendTalkDialogView: { path: "social/FriendTalkDialogView", zindex: Hierarchy.POPUPLAYER, tips: "好友聊天界面" },
     /*********************************************社交 End*************************************************************/
     /*********************************************背包 start***********************************************************/
-    BagView: { path: "bag/BagView", zindex: Hierarchy.POPUPLAYER, tips: "背包界面" }
+    BagView: { path: "bag/BagView", zindex: Hierarchy.POPUPLAYER, tips: "背包界面" },
     /*********************************************背包 end***********************************************************/
+
+    /*********************************************每周任务 start***********************************************************/
+    WeekTaskView: { path: "task/WeekTaskView", zindex: Hierarchy.POPUPLAYER, tips: "每周任务界面" },
+    TaskAwardView: { path: "task/TaskAwardView", zindex: Hierarchy.POPUPLAYER, tips: "每周任务界面" },
+    RightRewardView: { path: "task/RightRewardView", zindex: Hierarchy.POPUPLAYER, tips: "每周任务界面" },
+    AchievementRewardView: { path: "task/AchievementRewardView", zindex: Hierarchy.POPUPLAYER, tips: "每周任务界面" },
+    RightAchievementView: { path: "task/RightAchievementView", zindex: Hierarchy.POPUPLAYER, tips: "每周任务界面" },
+    TaskView: { path: "task/TaskView", zindex: Hierarchy.POPUPLAYER, tips: "每周任务界面" },
+    TaskAchievementView: { path: "task/TaskAchievementView", zindex: Hierarchy.POPUPLAYER, tips: "每周任务界面" },
+    TaskTabView: { path: "task/TaskTabView", zindex: Hierarchy.POPUPLAYER, tips: "每周任务界面" },
+    /*********************************************每周任务 End*************************************************************/
 }
