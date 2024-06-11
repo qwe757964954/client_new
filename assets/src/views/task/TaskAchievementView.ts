@@ -20,7 +20,6 @@ export class TaskAchievementView extends BaseView {
     private _achievementListData:ArchConfig[] = [];
     protected async initUI(){
         await this.loadRankData();
-        console.log("_AchievementDataInfo_______________",this._AchievementDataInfo);
         // this.scroll_list.numItems = this._AchievementDataInfo;
         this.loadAchievementConfig();
     }
@@ -30,7 +29,6 @@ export class TaskAchievementView extends BaseView {
 	}
 
     subTabItemClick(data){
-        console.log("subTabItemClick",data);
         this._subSelectData = data;
         this.showItemList(data.id);
     }
@@ -57,7 +55,6 @@ export class TaskAchievementView extends BaseView {
             const statusData = statusList[index];
             // console.log("statusData....",statusData)
             let cfgData: ArchConfig = DataMgr.instance.archConfig[statusData.CurrentAchConfId];
-            console.log("statusData....",statusData,cfgData)
             if(isValid(cfgData)){
                 cfgData.Status = statusData.Status;
                 cfgData.NextIds = statusData.NextIds;
@@ -72,8 +69,7 @@ export class TaskAchievementView extends BaseView {
             }
         }
         
-        this._listData = listData;  
-        console.log("this._listData",this._listData);
+        this._listData = listData;
         this.showItemList(1);
     }
 
@@ -100,20 +96,17 @@ export class TaskAchievementView extends BaseView {
             return a.Status > b.Status ? -1 : 1;
         });
         this._achievementListData = dataList;
-        console.log("this._achievementListData....",this._achievementListData);
         this.scroll_list.numItems = this._achievementListData.length;
         this.scroll_list.scrollView.scrollToTop();
     }
 
     onLoadTabHorizontal(item:Node, idx:number){
         let item_sript:WeekAchievementItem = item.getComponent(WeekAchievementItem);
-        console.log("onLoadTabHorizontal",idx);
         item_sript.updateAchievementProps(this._achievementListData[idx]);
     }
 
     onTabListHorizontalSelected(item: any, selectedId: number, lastSelectedId: number, val: number) {
         if(!isValid(selectedId) || selectedId < 0 || !isValid(item)){return;}
-        console.log("onTabListHorizontalSelected",selectedId);
     }
 
 }
