@@ -1,5 +1,6 @@
 import { Vec3 } from "cc";
 import { BuildingModel } from "./BuildingModel";
+import { CloudModel } from "./CloudModel";
 import { LandModel } from "./LandModel";
 //格子模型
 export class GridModel {
@@ -11,6 +12,7 @@ export class GridModel {
     private _height: number;//高
     private _building: BuildingModel = null;//建筑（可能是临时的）
     private _land: LandModel = null;//地块
+    private _cloud: CloudModel = null;//乌云
 
     private _dataBuilding: BuildingModel = null;//数据建筑
 
@@ -49,6 +51,12 @@ export class GridModel {
     set land(model: LandModel) {
         this._land = model;
     }
+    get cloud(): CloudModel {
+        return this._cloud;
+    }
+    set cloud(model: CloudModel) {
+        this._cloud = model;
+    }
     //保存数据
     saveData() {
         this._dataBuilding = this._building;
@@ -65,6 +73,7 @@ export class GridModel {
     //是否建筑可以摆放
     isCanBuilding() {
         // console.log("isSameBuilding", this._building, this._dataBuilding);
+        if (this._cloud) return false;
         if (!this._dataBuilding) return true;
         return this._building === this._dataBuilding;
     }

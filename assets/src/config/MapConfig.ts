@@ -107,4 +107,13 @@ export const MapConfig = {
         "map/land/dikuaihua6/spriteFrame",
         "map/land/dikuaihua7/spriteFrame",
     ],
+    cloud: [
+        "map/cloud/lock_yun1/spriteFrame",
+        "map/cloud/lock_yun2/spriteFrame",
+        "map/cloud/lock_yun3/spriteFrame",
+        "map/cloud/lock_yun4/spriteFrame",
+        "map/cloud/lock_yun5/spriteFrame",
+        "map/cloud/lock_yun6/spriteFrame",
+        "map/cloud/lock_yun7/spriteFrame",
+    ]
 }

@@ -73,6 +73,9 @@ export class LandModel extends Component {
         let pos = new Vec3(gridPos.x, gridPos.y - this._width * gridInfo.height, 0);
         this.node.position = pos;
     }
+    public get grids(): GridModel[] {
+        return this._grids;
+    }
     //显示地块
     public showLand(callBack?: Function) {
         this.releaseAsset();
