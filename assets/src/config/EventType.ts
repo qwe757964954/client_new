@@ -108,4 +108,6 @@ export const EventType = {
 
     //商店相关
     Shop_GoodsList: "Shop_GoodsList", //获取商店商品列表
+
+    Sub_Tab_Item_Click: "Sub_Tab_Item_Click",  //成就挑战子item点击
 }

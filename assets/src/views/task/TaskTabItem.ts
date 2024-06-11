@@ -1,4 +1,6 @@
 import { Label, Node, UITransform, _decorator, isValid } from 'cc';
+import { EventType } from '../../config/EventType';
+import { EventMgr } from '../../util/EventManager';
 import List from '../../util/list/List';
 import ListItem from '../../util/list/ListItem';
 import { AchevementRewardInfos, TaskTabInfos } from './TaskInfo';
@@ -57,6 +59,7 @@ export class TaskTabItem extends ListItem {
     onSubItemListHorizontalSelected(item: any, selectedId: number, lastSelectedId: number, val: number) {
         if(!isValid(selectedId) || selectedId < 0 || !isValid(item)){return;}
         console.log("onSubItemListHorizontalSelected",selectedId);
+        EventMgr.dispatch(EventType.Sub_Tab_Item_Click,AchevementRewardInfos[selectedId]);
     }
 
 }

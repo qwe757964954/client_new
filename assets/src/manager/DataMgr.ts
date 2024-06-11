@@ -130,7 +130,7 @@ export class ArchConfig {
     Bid: number;
     Mid: number;
     Status: number;
-    NextIds: number;
+    NextIds: number[];
 }
 /**勋章信息配置 */
 export class MedalConfig {
@@ -324,7 +324,7 @@ export class DataManager {
             obj.Bid = Number(json[k].Bid);
             obj.Mid = Number(json[k].Mid);
             obj.Status = -1;
-            obj.NextIds = -1;
+            obj.NextIds = [];
             this.archConfig[obj.AchId] = obj;
             //this.archConfig.push(obj);
         }
