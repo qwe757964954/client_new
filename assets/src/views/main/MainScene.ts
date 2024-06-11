@@ -27,6 +27,8 @@ import { LandEditUIView } from './LandEditUIView';
 import { MainUIView } from './MainUIView';
 const { ccclass, property } = _decorator;
 
+const loadingSpNames = ["start", "click", "end"];
+
 @ccclass('MainScene')
 export class MainScene extends Component {
     @property(Prefab)
@@ -39,6 +41,8 @@ export class MainScene extends Component {
     public roleModel: Prefab = null;//角色
     @property(Prefab)
     public petModel: Prefab = null;//精灵
+    @property(Prefab)
+    public cloudModel: Prefab = null;//乌云
     @property(Node)
     public bgLayer: Node = null;//背景层
     @property(Node)
@@ -47,6 +51,8 @@ export class MainScene extends Component {
     public lineLayer: Node = null;//编辑层
     @property(Node)
     public buildingLayer: Node = null;//建筑层
+    @property(Node)
+    public cloudLayer: Node = null;//乌云层
     @property(Camera)
     public mapCamera: Camera = null;//地图摄像机
     @property(Canvas)
@@ -98,10 +104,12 @@ export class MainScene extends Component {
     loadOverCall() {
         this._loadCount--;
         // 等动画完成后再移除加载层
-        // if (this._loadCount <= 0) {
-        //     this._loadCount = 0;
-        //     this.loadingNode.active = false;
-        // }
+        if (this._loadCount <= 0) {
+            this._loadCount = 0;
+            this.loadingSp.clearAnimations();
+            this.loadingNode.active = false;
+            // this.loadingSp.setAnimation(0, loadingSpNames[2], false);
+        }
     }
     /**获取加载回调 */
     getLoadOverCall() {
@@ -111,12 +119,13 @@ export class MainScene extends Component {
     // 显示加载动画
     showLoading() {
         this.loadingNode.active = true;
-        // this.loadingSp.setAnimation(0, "animation", true);
+        // this.loadingSp.setAnimation(0, loadingSpNames[0], false);
+        this.loadingSp.setAnimation(0, loadingSpNames[1], true);
         this.loadingSp.setCompleteListener(this.onLoadingAnimationComplete.bind(this));
     }
     /**loading动画完成 */
     onLoadingAnimationComplete(trackEntry: sp.spine.TrackEntry) {
-        if (this._loadCount <= 0) {
+        if (this._loadCount <= 0 && trackEntry.animation.name == loadingSpNames[2]) {
             this.loadingSp.clearAnimations();
             this.loadingNode.active = false;
         }

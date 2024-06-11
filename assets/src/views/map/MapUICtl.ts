@@ -7,6 +7,7 @@ import { DataMgr, EditInfo } from "../../manager/DataMgr";
 import { ViewsMgr } from "../../manager/ViewsManager";
 import { BgModel } from "../../models/BgModel";
 import { BuildingIDType, BuildingModel, RecycleData } from "../../models/BuildingModel";
+import { CloudModel } from "../../models/CloudModel";
 import { GridModel } from "../../models/GridModel";
 import { LandModel } from "../../models/LandModel";
 import { s2cBuildingList, s2cBuildingListInfo, s2cBuildingProduceAdd, s2cBuildingProduceDelete, s2cBuildingProduceGet } from "../../models/NetModel";
@@ -38,6 +39,7 @@ export class MapUICtl extends MainBaseCtl {
     private _bgModelAry: BgModel[] = [];//背景模型数组
     private _landModelAry: LandModel[] = [];//地块模型数组
     private _roleModelAry: RoleBaseModel[] = [];//角色模型数组
+    private _cloudModelAry: CloudModel[] = [];//乌云模型数组
     private _isNeedUpdateVisible: boolean = false;//是否需要更新可视区域
     private _isNeedSort: boolean = false;//是否需要重新排序
     private _roleIsShow: boolean = true;//角色是否显示
@@ -314,6 +316,54 @@ export class MapUICtl extends MainBaseCtl {
             this._roleModelAry.push(roleModel);
             this.buildingRoleSort();
         }
+    }
+    /**初始化乌云 */
+    public initCloud() {
+        this._landModelAry.forEach(element => {
+            if (element.y <= 16) return;
+            let node = instantiate(this._mainScene.cloudModel);
+            this._mainScene.cloudLayer.addChild(node);
+            let cloud = node.getComponent(CloudModel);
+            cloud.initData(element.x, element.y, element.width);
+            cloud.grids = element.grids;
+            this._cloudModelAry.push(cloud);
+        });
+        this.refreshCloudShowType();
+    }
+    /**是否存在乌云 */
+    public hasCloud(x: number, y: number): boolean {
+        let gridInfo = this.getGridInfo(x, y);
+        if (!gridInfo) return false;
+        return gridInfo.cloud != null;
+    }
+    /**刷新乌云显示类型 */
+    public refreshCloudShowType() {
+        this._cloudModelAry.forEach(element => {
+            let x = element.x;
+            let y = element.y;
+            let width = element.width;
+            let has1 = this.getGridInfo(x + width, y);
+            let has2 = this.getGridInfo(x, y - width);
+            if (!has1 && !has2) {
+                element.showID = 0;
+                return;
+            }
+            let has3 = this.getGridInfo(x - width, y);
+            if (!has2 && !has3) {
+                element.showID = 1;
+                return;
+            }
+            let has4 = this.getGridInfo(x, y + width);
+            if (!has1 && !has4) {
+                element.showID = 4;
+                return;
+            }
+            if (!has3 && !has4) {
+                element.showID = 3;
+                return;
+            }
+            element.showID = 2;
+        });
     }
     // 摄像头缩放大小
     get cameraRate(): number {
@@ -600,6 +650,10 @@ export class MapUICtl extends MainBaseCtl {
             //     g.stroke();
             // }
         });
+        /**乌云动态加载 */
+        this._cloudModelAry.forEach(element => {
+            element.show(visibleRect.intersects(element.getRect()), this.getLoadOverCall());
+        });
     }
     // 角色移动
     roleMove(roleModel: RoleBaseModel) {
@@ -721,6 +775,7 @@ export class MapUICtl extends MainBaseCtl {
         this.initBuilding(data.build_list);
         this.initLand(data.land_dict);
         // this.initRole();
+        this.initCloud();
 
         TimerMgr.once(this.getLoadOverCall(), 500);//注意一定要加延时
         this.updateCameraVisible();
