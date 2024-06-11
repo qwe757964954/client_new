@@ -1,20 +1,23 @@
-import { JsonAsset, Prefab, Widget, _decorator, error, instantiate, isValid } from 'cc';
-import { PrefabType } from '../../config/PrefabType';
+import { JsonAsset, Node, _decorator, isValid } from 'cc';
 import { ResLoader } from '../../manager/ResLoader';
 import { BaseView } from '../../script/BaseView';
-import { AchievementDataInfo } from './TaskInfo';
+import List from '../../util/list/List';
+import { AchInfoResponse } from './TaskInfo';
+import { WeekAchievementItem } from './WeekAchievementItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('TaskAchievementView')
 export class TaskAchievementView extends BaseView {
 
-    private _AchievementDataInfo:AchievementDataInfo[] = null;
+    @property(List)
+    public scroll_list: List = null;
+
+    private _AchievementDataInfo:AchInfoResponse = null;
 
     protected async initUI(){
         await this.loadRankData();
         console.log("_AchievementDataInfo_______________",this._AchievementDataInfo);
-        this.initRewardView();
-        this.initRightView();
+        // this.scroll_list.numItems = this._AchievementDataInfo;
     }
     async loadRankData(): Promise<void> {
         return new Promise<void>((resolve, reject) => {
@@ -23,48 +26,23 @@ export class TaskAchievementView extends BaseView {
                     console.error(err);
                     reject(err);
                 } else {
-                    this._AchievementDataInfo = jsonData.json as AchievementDataInfo[];
+                    console.log(jsonData.json);
+                    this._AchievementDataInfo = jsonData.json as AchInfoResponse;
                     resolve();
                 }
             });
         });
     }
-    initRewardView(){
-        ResLoader.instance.load(`prefab/${PrefabType.AchievementRewardView.path}`, Prefab, (err: Error | null, prefab: Prefab) => {
-            if (err) {
-                error && console.error(err);
-                return;
-            }
-            let node = instantiate(prefab);
-            this.node.addChild(node);
-            let widgetCom = node.getComponent(Widget);
-            if (!isValid(widgetCom)) {
-                widgetCom = node.addComponent(Widget);
-                widgetCom.isAlignTop = true;
-                widgetCom.isAlignLeft = true;
-            }
-            widgetCom.top = 221.75;
-            widgetCom.left = 5.868;
-        });
+    onLoadTabHorizontal(item:Node, idx:number){
+        let item_sript:WeekAchievementItem = item.getComponent(WeekAchievementItem);
+        console.log("onLoadTabHorizontal",idx);
     }
-    initRightView(){
-        ResLoader.instance.load(`prefab/${PrefabType.RightAchievementView.path}`, Prefab, (err: Error | null, prefab: Prefab) => {
-            if (err) {
-                error && console.error(err);
-                return;
-            }
-            let node = instantiate(prefab);
-            this.node.addChild(node);
-            let widgetCom = node.getComponent(Widget);
-            if (!isValid(widgetCom)) {
-                widgetCom = node.addComponent(Widget);
-                widgetCom.isAlignRight = true;
-                widgetCom.isAlignBottom = true;
-            }
-            widgetCom.bottom = 15.226;
-            widgetCom.right = 13.4085;
-        });
+
+    onTabListHorizontalSelected(item: any, selectedId: number, lastSelectedId: number, val: number) {
+        if(!isValid(selectedId) || selectedId < 0 || !isValid(item)){return;}
+        console.log("onTabListHorizontalSelected",selectedId);
     }
+
 }
 
 

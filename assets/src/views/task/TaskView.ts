@@ -17,7 +17,7 @@ export class TaskView extends BaseView {
 
     async initUI(){
         await this.initRewardView();
-        await this.initRightRewardView();
+        // await this.initRightRewardView();
         this.taskList.numItems = taskInfos.length;
         this.taskList.selectedId = 0;
     }
@@ -36,10 +36,10 @@ export class TaskView extends BaseView {
                 if (!isValid(widgetCom)) {
                     widgetCom = node.addComponent(Widget);
                     widgetCom.isAlignTop = true;
-                    widgetCom.isAlignLeft = true;
+                    widgetCom.isAlignRight = true;
                 }
-                widgetCom.top = 221.004;
-                widgetCom.left = 7.2975;
+                widgetCom.top = 123;
+                widgetCom.right = 78;
                 resolve(null);
             });
         })

@@ -36,13 +36,13 @@ export class WeekTaskView extends BaseView {
     initNavTitle(){
         ViewsManager.addNavigation(this.top_layout,0,0).then((navScript: NavTitleView) => {
             navScript.updateNavigationProps(`每周任务`,()=>{
-                ViewsManager.instance.closeView(PrefabType.WorldBossView);
+                ViewsManager.instance.closeView(PrefabType.WeekTaskView);
             });
         });
     }
     /**初始化游戏数值 */
     initAmout(){
-        ViewsManager.addAmout(this.top_layout,11.314,160.722).then((amoutScript: TopAmoutView) => {
+        ViewsManager.addAmout(this.top_layout,6.501,71.254).then((amoutScript: TopAmoutView) => {
             let dataArr:AmoutItemData[] = [{type:AmoutType.Diamond,num:User.diamond},
                 {type:AmoutType.Coin,num:User.coin},
                 {type:AmoutType.Energy,num:User.stamina}];
@@ -62,8 +62,8 @@ export class WeekTaskView extends BaseView {
                 this.node.addChild(node);
                 this._tabView = node.getComponent(TaskTabView);
                 this._tabView.setTabSelectClick((selectId:number)=>{
-                    this._weekTask.node.active = selectId == 0;
-                    this._achievementView.node.active = selectId == 1;
+                    this._weekTask.node.active = selectId == 1;
+                    this._achievementView.node.active = selectId == 0;
                 })
                 let widgetCom = node.getComponent(Widget);
                 if (!isValid(widgetCom)) {
@@ -71,8 +71,8 @@ export class WeekTaskView extends BaseView {
                     widgetCom.isAlignTop = true;
                     widgetCom.isAlignLeft = true;
                 }
-                widgetCom.top = 134.284;
-                widgetCom.left = 5.868;
+                widgetCom.top = 129;
+                widgetCom.left = 50;
                 widgetCom.updateAlignment();
 
                 resolve(null);
