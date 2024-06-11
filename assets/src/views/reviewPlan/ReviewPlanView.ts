@@ -9,7 +9,7 @@ import { ToolUtil } from '../../util/ToolUtil';
 const { ccclass, property } = _decorator;
 
 const spAnimNames = ["jingtai", "danchou", "shilian"];
-const eggAnimNames = ["idle1", "crush1"];
+const eggAnimNames = ["idle1", "crush1", "idle2", "crush2", "idle3", "crush3", "idle4", "crush4", "idle5", "crush5"];
 
 @ccclass('ReviewPlanView')
 export class ReviewPlanView extends Component {
@@ -63,6 +63,7 @@ export class ReviewPlanView extends Component {
     public progressBar2: ProgressBar = null;//复习进度
 
     private _canDraw: boolean = true;//是否可以抽奖
+    private _eggID: number = 0;//蛋ID
 
     start() {
         this.init();
@@ -164,7 +165,8 @@ export class ReviewPlanView extends Component {
         if (name === spAnimNames[1]) {
             console.log("单抽动画结束");
             this.egg.node.active = true;
-            this.egg.setAnimation(0, eggAnimNames[1], false);
+            this._eggID = ToolUtil.getRandomInt(0, 4);
+            this.egg.setAnimation(0, eggAnimNames[this._eggID * 2 + 1], false);
         } else if (name == spAnimNames[2]) {
             console.log("十连抽动画结束");
             ViewsMgr.showRewards([{ id: PropID.coin, num: 10 }, { id: PropID.diamond, num: 20 }], () => {
@@ -172,7 +174,7 @@ export class ReviewPlanView extends Component {
                 this.setUIVisible(true);
                 this._canDraw = true;
             });
-        } else if (name == eggAnimNames[1]) {
+        } else if (name == eggAnimNames[this._eggID * 2 + 1]) {
             this._canDraw = true;
             ViewsMgr.showRewards([{ id: PropID.stamina, num: 1 }]);
         }
