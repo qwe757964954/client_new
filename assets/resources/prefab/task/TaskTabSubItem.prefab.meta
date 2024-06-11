@@ -2,12 +2,12 @@
   "ver": "1.1.50",
   "importer": "prefab",
   "imported": true,
-  "uuid": "8ae93f1c-93b6-4473-9377-fefc7efad1ab",
+  "uuid": "929aad50-8370-49e8-961a-ca7c8baea058",
   "files": [
     ".json"
   ],
   "subMetas": {},
   "userData": {
-    "syncNodeName": "AchievementRewardView"
+    "syncNodeName": "TaskTabSubItem"
   }
 }
