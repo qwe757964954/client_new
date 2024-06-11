@@ -106,9 +106,9 @@ export class MainScene extends Component {
         // 等动画完成后再移除加载层
         if (this._loadCount <= 0) {
             this._loadCount = 0;
-            this.loadingSp.clearAnimations();
-            this.loadingNode.active = false;
-            // this.loadingSp.setAnimation(0, loadingSpNames[2], false);
+            // this.loadingSp.clearAnimations();
+            // this.loadingNode.active = false;
+            this.loadingSp.setAnimation(0, loadingSpNames[2], false);
         }
     }
     /**获取加载回调 */
