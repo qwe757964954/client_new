@@ -58,7 +58,6 @@ export class TaskTabItem extends ListItem {
 
     onSubItemListHorizontalSelected(item: any, selectedId: number, lastSelectedId: number, val: number) {
         if(!isValid(selectedId) || selectedId < 0 || !isValid(item)){return;}
-        console.log("onSubItemListHorizontalSelected",selectedId);
         EventMgr.dispatch(EventType.Sub_Tab_Item_Click,AchevementRewardInfos[selectedId]);
     }
 

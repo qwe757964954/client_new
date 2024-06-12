@@ -1,13 +1,12 @@
 import { _decorator, isValid, Node } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { CurrentBookStatus, MyTextbookStatus } from '../../models/TextbookModel';
+import { CurrentBookStatus, MyTextbookListStatus, MyTextbookStatus } from '../../models/TextbookModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
-import { BookUnitModel } from '../Challenge/TextbookChallengeView';
 import { NavTitleView } from '../common/NavTitleView';
 import { MyContentItem } from './MyContentItem';
 import { ITextbookRemindData, TextbookRemindView } from './TextbookRemindView';
@@ -63,9 +62,7 @@ export class TextbookListView extends BaseView {
         let select_id = 0;
         for (let index = 0; index < this._myTextbookDataArr.length; index++) {
             const element = this._myTextbookDataArr[index];
-            if (element.book_name == this._curBookData.book_name &&
-                element.type_name == this._curBookData.type_name &&
-                element.grade == this._curBookData.grade) {
+            if (element.book_id == this._curBookData.book_id) {
                 select_id = index;
                 break;
             }
@@ -73,10 +70,10 @@ export class TextbookListView extends BaseView {
         return select_id;
     }
 
-    onBookStatus(data: MyTextbookStatus[]) {
+    onBookStatus(bookData: MyTextbookListStatus) {
         //判断data是数组，并且长度大于1
-        if (Array.isArray(data) && data.length > 0) {
-            this._myTextbookDataArr = data;
+        if (Array.isArray(bookData.data) && bookData.data.length > 0) {
+            this._myTextbookDataArr = bookData.data;
             this.myScrollView.numItems = this._myTextbookDataArr.length;
             let select_id = this.getSelectDataIndex()
             this.myScrollView.selectedId = -1;
@@ -139,21 +136,14 @@ export class TextbookListView extends BaseView {
             content_text: `是否切换\n《${itemInfo.book_name}${itemInfo.grade}》为当前在学`,
             callFunc: (isSure: boolean) => {
                 if (isSure) {
-                    let bookData: BookUnitModel = {
-                        type_name: itemInfo.type_name,
-                        book_name: itemInfo.book_name,
-                        grade: itemInfo.grade
-                    }
-                    TBServer.reqChangeTextbook(bookData);
+                    TBServer.reqChangeTextbook(itemInfo.book_id);
                 }else{
                     let select_id = this.getSelectDataIndex()
                     this.myScrollView.selectedId = select_id;
                 }
             }
         }
-        if (itemInfo.book_name !== this._curBookData.book_name ||
-            itemInfo.type_name !== this._curBookData.type_name ||
-            itemInfo.grade !== this._curBookData.grade) {
+        if (itemInfo.book_id !== this._curBookData.book_id) {
             this.showRemainCalL(data);
         }
     }

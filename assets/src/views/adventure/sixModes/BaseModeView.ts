@@ -299,10 +299,8 @@ export class BaseModeView extends BaseView {
         let levelData: BookLevelConfig = this._levelData as BookLevelConfig;
         let costTime = Date.now() - this._costTime;
         let data: GameSubmitModel = {
-            type_name: levelData.type_name,
-            book_name: levelData.book_name,
-            grade: levelData.grade,
-            unit: levelData.unit,
+            book_id: levelData.book_id,
+            unit_id: levelData.unit_id,
             game_mode: this.gameMode,
             cost_time: costTime,
             word: word,
@@ -391,10 +389,8 @@ export class BaseModeView extends BaseView {
         } else { //教材单词关卡
             let levelData: BookLevelConfig = this._levelData as BookLevelConfig;
             let data: ReqWordDetail = {
-                type_name: levelData.type_name,
-                book_name: levelData.book_name,
-                grade: levelData.grade,
-                unit: levelData.unit,
+                book_id: levelData.book_id,
+                unit_id: levelData.unit_id,
                 word: word,
             }
             TBServer.reqWordDetail(data);
@@ -472,10 +468,8 @@ export class BaseModeView extends BaseView {
             let levelData = this._levelData as BookLevelConfig;
             let reqParam: ReqCollectWord = {
                 word: wordData.word,
-                type_name: levelData.type_name,
-                book_name: levelData.book_name,
-                grade: levelData.grade,
-                unit: levelData.unit,
+                book_id: levelData.book_id,
+                unit_id: levelData.unit_id,
                 action: this._detailData.collect_flag ? 0 : 1,
             }
             TBServer.reqCollectWord(reqParam);

@@ -22,7 +22,6 @@ import { WordSpellView } from '../adventure/sixModes/WordSpellView';
 import { NavTitleView } from '../common/NavTitleView';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { ScrollMapView } from './ScrollMapView';
-import { BookUnitModel } from './TextbookChallengeView';
 const { ccclass, property } = _decorator;
 
 // export enum ChangeHeadTypeEnum {
@@ -113,10 +112,8 @@ export class BreakThroughView extends BaseView {
         this._selectGate = data.gate;
         
         let reqParam:ReqUnitStatusParam = {
-            type_name:this._bookData.type_name,
-            book_name:this._bookData.book_name,
-            grade:this._bookData.grade,
-            unit:this._selectitemStatus.unit,
+            book_id:this._bookData.book_id,
+            unit_id:this._selectitemStatus.unit_id,
             small_id:this._selectGate.small_id
         }
         TBServer.reqUnitStatus(reqParam);
@@ -126,20 +123,13 @@ export class BreakThroughView extends BaseView {
         
     }
     getUnitListStatus(){
-        let params:BookUnitModel = {
-            type_name:this._bookData.type_name,
-            book_name:this._bookData.book_name,
-            grade:this._bookData.grade
-        }
-        TBServer.reqUnitListStatus(params);
+        TBServer.reqUnitListStatus(this._bookData.book_id);
     }
 
     reqVocabularyWord(){
         let reqParam:ReqUnitStatusParam = {
-            type_name:this._bookData.type_name,
-            book_name:this._bookData.book_name,
-            grade:this._bookData.grade,
-            unit:this._selectitemStatus.unit,
+            book_id:this._bookData.book_id,
+            unit_id:this._selectitemStatus.unit_id,
             small_id:this._selectGate.small_id
         }
         TBServer.reqVocabularyWord(reqParam);
@@ -149,13 +139,11 @@ export class BreakThroughView extends BaseView {
         console.log("onVocabularyWord", response);
         let game_model:LearnGameModel = this._curUnitStatus.game_mode as LearnGameModel;
         let bookLevelData:BookLevelConfig = {
-            id:this._bookData.id,
-            grade:this._bookData.grade,
-            unit:this._selectitemStatus.unit,
-            type_name:this._bookData.type_name,
+            book_id:this._bookData.book_id,
+            unit:this._selectitemStatus.unit_name,
+            unit_id:this._selectitemStatus.unit_id,
             cur_game_mode:game_model,
             game_mode:LearnGameModel.Tutoring,
-            book_name:this._bookData.book_name,
             small_id:this._selectGate.small_id,
             word_num:this._curUnitStatus.word_num,
             time_remaining:this._curUnitStatus.time_remaining,
@@ -251,7 +239,7 @@ export class BreakThroughView extends BaseView {
         this._rightChallenge.node.active = true;
         // const removedString = this._curUnitStatus.unit.replace("Unit ", "").trim();
         let param:MapLevelData = {small_id:this._curUnitStatus.small_id,
-            big_id:this._curUnitStatus.unit,
+            big_id:this._curUnitStatus.unit_name,
             micro_id:this._curUnitStatus.small_id,
             game_modes:"word",
             flag_info:this._selectGate.flag_info}

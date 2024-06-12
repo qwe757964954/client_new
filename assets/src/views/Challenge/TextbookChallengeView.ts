@@ -23,9 +23,10 @@ const { ccclass, property } = _decorator;
 
 
 export interface BookUnitModel {
-    type_name:string,
-    book_name:string,
-    grade:string
+    type_name?:string,
+    book_name?:string,
+    grade?:string
+
 }
 
 
@@ -100,12 +101,7 @@ export class TextbookChallengeView extends BaseView {
         this._bottomView.updateItemList(data);
     }
     onPlanModify(data:any){
-        let params:BookUnitModel = {
-            type_name:this._bookData.type_name,
-            book_name:this._bookData.book_name,
-            grade:this._bookData.grade
-        }
-        TBServer.reqBookPlanDetail(params);
+        TBServer.reqBookPlanDetail(this._bookData.book_id);
     }
 
     onBookAwardList(data:BookAwardListModel){
@@ -121,8 +117,7 @@ export class TextbookChallengeView extends BaseView {
         ViewsManager.instance.closePopup(PrefabType.SettingPlanView);
         if(params.isSave){
             let modifyData:ModifyPlanData = {
-                plan_id:this._planData.id,
-                rank_num:parseInt(params.left),
+                cu_id:this._planData.cu_id,
                 num:parseInt(params.right)
             }
             TBServer.reqModifyPlan(modifyData);
@@ -145,24 +140,14 @@ export class TextbookChallengeView extends BaseView {
     }
     /**获取词书单元信息 */
     getUnitListStatus(){
-        let params:BookUnitModel = {
-            type_name:this._bookData.type_name,
-            book_name:this._bookData.book_name,
-            grade:this._bookData.grade
-        }
-        TBServer.reqUnitListStatus(params);
+        TBServer.reqUnitListStatus(this._bookData.book_id);
     }
 
     /**获取词书计划详情 */
     getBookPlanDetail(){
-        let params:BookUnitModel = {
-            type_name:this._bookData.type_name,
-            book_name:this._bookData.book_name,
-            grade:this._bookData.grade
-        }
-        TBServer.reqBookPlanDetail(params);
+        TBServer.reqBookPlanDetail(this._bookData.book_id);
         /**顺带请求学习奖励list */
-        TBServer.reqBookAwardList(this._bookData.type_name,this._bookData.book_name);
+        // TBServer.reqBookAwardList(this._bookData.type_name,this._bookData.book_name);
     }
     /**初始化导航栏 */
     initNavTitle(){

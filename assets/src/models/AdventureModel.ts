@@ -186,10 +186,8 @@ export class c2sWordGroup {
 //教材单词获取组合模式选项
 export class c2sTextbookWordGroup {
     command_id: string = InterfacePath.Classification_WordGroup;
-    type_name: string;
-    book_name: string;
-    grade: string;
-    unit: string;
+    book_id: string;
+    unit_id: string;
 }
 export class c2sAdventureCollectWord {
     command_id: string = InterfacePath.Classification_AdventureCollectWord;

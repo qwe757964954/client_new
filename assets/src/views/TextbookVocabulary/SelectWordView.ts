@@ -9,7 +9,6 @@ import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
 import List from '../../util/list/List';
-import { BookUnitModel } from '../Challenge/TextbookChallengeView';
 import { NavTitleView } from '../common/NavTitleView';
 import { RightNavView } from './RightNavView';
 import { PlanSaveData, SettingPlanView } from './SettingPlanView';
@@ -38,6 +37,8 @@ export class SelectWordView extends BaseView {
     private _curTypeName:string = "";
     private _curBookName:string = "";
     private _curGradeName:string = "";
+    private _curBookid:string = "";
+    private _curPhaseId:number = 0;
     start() {
         super.start();
         GlobalConfig.initResolutionRules();
@@ -63,10 +64,7 @@ export class SelectWordView extends BaseView {
         if(params.isSave){
             this._planData = params;
             let reqData = {
-                type_name:this._curTypeName,
-                book_name:this._curBookName,
-                grade:this._curGradeName,
-                rank_num:parseInt(this._planData.left),
+                book_id:this._curBookid,
                 num:parseInt(this._planData.right),
             }
             TBServer.reqAddPlanBook(reqData);
@@ -90,10 +88,7 @@ export class SelectWordView extends BaseView {
 
     onBookAdd(){
         let reqData = {
-            type_name:this._curTypeName,
-            book_name:this._curBookName,
-            grade:this._curGradeName,
-            rank_num:parseInt(this._planData.left),
+            book_id:this._curBookid,
             num:parseInt(this._planData.right),
         }
         TBServer.reqPlanAdd(reqData)
@@ -114,7 +109,7 @@ export class SelectWordView extends BaseView {
         this._rightNav.loadNavListData(this._schoolBookListDataArr.data,(selectId:number)=>{
             if(selectId >= 0){
                 this._curBookName = this._schoolBookListDataArr.data[selectId].book_name;
-                TBServer.reqSchoolBookGrade(this._curTypeName,this._curBookName);
+                TBServer.reqSchoolBookGrade(this._curPhaseId,this._curBookName);
             }
         });
     }
@@ -122,7 +117,8 @@ export class SelectWordView extends BaseView {
         this._bookLiskData = data;
         this._tabTop.loadTabData(this._bookLiskData.data,(selectId:number)=>{
             this._curTypeName = this._bookLiskData.data[selectId].type_name
-            TBServer.reqSchoolBook(this._curTypeName);
+            this._curPhaseId = this._bookLiskData.data[selectId].phase_id
+            TBServer.reqSchoolBook(this._curPhaseId);
         });
     }
  
@@ -192,17 +188,13 @@ export class SelectWordView extends BaseView {
     }
     /**获取词书单元信息 */
     getUnitListStatus(){
-        let params:BookUnitModel = {
-            type_name:this._curTypeName,
-            book_name:this._curBookName,
-            grade:this._curGradeName
-        }
-        TBServer.reqUnitListStatus(params);
+        TBServer.reqUnitListStatus(this._curBookid);
     }
 
     onTextBookVerticalSelected(item: any, selectedId: number, lastSelectedId: number, val: number){
         if(selectedId === -1){return}
         let itemInfo:SchoolBookGradeItemData = this._schoolGradeListData.data[selectedId];
+        this._curBookid = itemInfo.book_id;
         this._curGradeName = itemInfo.grade;
         this.getUnitListStatus();
     }

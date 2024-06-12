@@ -1,6 +1,7 @@
-import { _decorator, instantiate, Label, Node, NodePool, Prefab, Sprite, SpriteFrame } from 'cc';
+import { _decorator, instantiate, isValid, Label, Node, NodePool, Prefab, Sprite, SpriteFrame } from 'cc';
 import { NetConfig } from '../../../config/NetConfig';
 import { PrefabType } from '../../../config/PrefabType';
+import GlobalConfig from '../../../GlobalConfig';
 import { AdvLevelConfig, BookLevelConfig, DataMgr } from '../../../manager/DataMgr';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { ViewsManager } from '../../../manager/ViewsManager';
@@ -9,13 +10,11 @@ import { UnitWordModel } from '../../../models/TextbookModel';
 import { InterfacePath } from '../../../net/InterfacePath';
 import { ServiceMgr } from '../../../net/ServiceManager';
 import CCUtil from '../../../util/CCUtil';
-import EventManager from '../../../util/EventManager';
+import MD5Util from '../../../util/MD5Util';
 import { TransitionView } from '../common/TransitionView';
 import { BaseModeView } from './BaseModeView';
 import { SpellWordItem } from './items/SpellWordItem';
 import { WordReadingView } from './WordReadingView';
-import MD5Util from '../../../util/MD5Util';
-import GlobalConfig from '../../../GlobalConfig';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordSpellView')
@@ -30,8 +29,8 @@ export class WordSpellView extends BaseModeView {
     playBtn: Node = null;
     @property({ type: Label, tooltip: "中文Label" })
     cnLabel: Label = null;
-    @property({ type: Sprite, tooltip: "结果图片" })
-    resultSprite: Sprite = null;
+    @property({ type: Node, tooltip: "结果图片" })
+    resultSprite: Node = null;
     @property({ type: SpriteFrame, tooltip: "正确图片" })
     rightSprite: SpriteFrame = null;
     @property({ type: SpriteFrame, tooltip: "错误图片" })
@@ -66,6 +65,11 @@ export class WordSpellView extends BaseModeView {
     //获取关卡单词回包
     initWords(data: UnitWordModel[]) {
         console.log('initWords', data);
+        console.log(this.node);
+        if(!isValid(this.resultSprite)){
+            this.resultSprite = this.node.getChildByName('frame').getChildByName('resultIcon'); //
+        }
+        console.log("this.resultSprite_____",this.resultSprite);
         this._wordsData = data;
         let isAdventure = this._levelData.hasOwnProperty('islandId'); //是否是大冒险关卡
         if (isAdventure) { //单词大冒险获取组合模式选项
@@ -73,8 +77,14 @@ export class WordSpellView extends BaseModeView {
             ServiceMgr.studyService.getWordGroup(levelData.islandId, levelData.levelId, levelData.mapLevelData.micro_id);
         } else { //教材单词获取组合模式选项
             let levelData = this._levelData as BookLevelConfig;
-            ServiceMgr.studyService.getTextbookWordGroup(levelData.type_name, levelData.book_name, levelData.grade, levelData.unit);
+            ServiceMgr.studyService.getTextbookWordGroup(levelData.book_id, levelData.unit_id);
         }
+    }
+
+    onInitModuleEvent(){
+        super.onInitModuleEvent();
+        this.addModelListener(InterfacePath.Words_Group,this.onGetWordGroup);
+        this.addModelListener(InterfacePath.Classification_WordGroup,this.onGetWordGroup);
     }
 
     onGetWordGroup(data: WordGroupData) {
@@ -83,6 +93,7 @@ export class WordSpellView extends BaseModeView {
             return;
         }
         console.log("wordGroups:", data.data);
+        this.resultSprite.active = false;
         this._wordGroup = data.data;
         this.showCurrentWord();
     }
@@ -100,7 +111,7 @@ export class WordSpellView extends BaseModeView {
 
     showCurrentWord() {
         this._selectLock = false;
-        this.resultSprite.node.active = false;
+        this.resultSprite.active = false;
         this._rightWordData = this._wrongMode ? this._wrongWordList.shift() : this._wordsData[this._wordIndex];
         let word = this._rightWordData.word;
         this.initWordDetail(word);
@@ -160,7 +171,7 @@ export class WordSpellView extends BaseModeView {
                     isRight = false;
                 }
             }
-            this.resultSprite.node.active = true;
+            this.resultSprite.active = true;
             let word = this._rightWordData.word;
             this.onGameSubmit(word, isRight);
             if (isRight) { //回答正确
@@ -173,7 +184,7 @@ export class WordSpellView extends BaseModeView {
                 } else {
                     this._wordIndex++;
                 }
-                this.resultSprite.spriteFrame = this.rightSprite;
+                this.resultSprite.getComponent(Sprite).spriteFrame = this.rightSprite;
                 if (this._sentenceData) {
                     this.sentenceLabel.string = this._sentenceData.sentence;
                 }
@@ -190,7 +201,7 @@ export class WordSpellView extends BaseModeView {
                     }
                 });
             } else { //回答错误
-                this.resultSprite.spriteFrame = this.wrongSprite;
+                this.resultSprite.getComponent(Sprite).spriteFrame = this.wrongSprite;
                 if (this._wrongWordList.indexOf(this._rightWordData) == -1 && !this._wrongMode && !this._errorWords[this._rightWordData.word]) {
                     this._errorNum++;
                     this._levelData.error_num = this._errorNum;
@@ -217,10 +228,10 @@ export class WordSpellView extends BaseModeView {
             let levelData = JSON.parse(JSON.stringify(this._levelData));
             //跳转到下一场景
             node.getComponent(TransitionView).setTransitionCallback(() => {
-                console.log("过渡界面回调_________________________");
                 ViewsManager.instance.showView(PrefabType.WordReadingView, (node: Node) => {
-                    node.getComponent(WordReadingView).initData(wordData, levelData);
                     ViewsManager.instance.closeView(PrefabType.WordSpellView);
+                    this.node.destroy();
+                    node.getComponent(WordReadingView).initData(wordData, levelData);
                 });
             });
         });
@@ -300,17 +311,15 @@ export class WordSpellView extends BaseModeView {
 
     protected initEvent(): void {
         super.initEvent();
-        this._getWordGroupEvId = EventManager.on(InterfacePath.Words_Group, this.onGetWordGroup.bind(this));
-        this._getTextBookWordGroupEvId = EventManager.on(InterfacePath.Classification_WordGroup, this.onGetWordGroup.bind(this));
+        
         CCUtil.onTouch(this.playSentenceBtn, this.playSentence, this);
     }
     protected removeEvent(): void {
+        console.log("WordSpellView.......removeEvent")
         super.removeEvent();
         for (let i = 0; i < this._items.length; i++) {
             CCUtil.offTouch(this._items[i], this.onItemClick.bind(this, this._items[i], i), this);
         }
-        EventManager.off(InterfacePath.Words_Group, this._getWordGroupEvId);
-        EventManager.off(InterfacePath.Classification_WordGroup, this._getTextBookWordGroupEvId);
         CCUtil.offTouch(this.playSentenceBtn, this.playSentence, this);
     }
 

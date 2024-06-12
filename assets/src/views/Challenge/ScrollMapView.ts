@@ -104,7 +104,7 @@ export class ScrollMapView extends BaseView {
                 let itemScript: MapPointItem = itemNode.getComponent(MapPointItem);
                 itemScript.index = unit_count;
                 // const stringWithoutUnit: string = itemData.unit.replace("Unit ", "").trim();
-                let data: MapLevelData = { big_id: itemData.unit, small_id: gate.small_id, micro_id: gate.small_id, flag_info: gate.flag_info };
+                let data: MapLevelData = { big_id: itemData.unit_name, small_id: gate.small_id, micro_id: gate.small_id, flag_info: gate.flag_info };
                 itemScript.initSmallData(data);
                 CCUtil.onBtnClick(itemNode,(event)=>{
                     this.onItemClick(event.node);
@@ -124,8 +124,8 @@ export class ScrollMapView extends BaseView {
         this._total_grade = unitStatus.gate_total;
 
         this._unitStatus.sort((a, b) => {
-            const unitA = a.unit;
-            const unitB = b.unit;
+            const unitA = a.unit_name;
+            const unitB = b.unit_name;
 
             // Check if both units are numbers
             const isANumber = !isNaN(Number(unitA));
@@ -229,7 +229,7 @@ export class ScrollMapView extends BaseView {
         this._curLevelIndex = item.index;
         let data = item.data;
         // let itemStatus:UnitItemStatus = this._unitStatus[data.big_id - 1];
-        let itemStatus:UnitItemStatus = this._unitStatus.find(item => item.unit === data.big_id);
+        let itemStatus:UnitItemStatus = this._unitStatus.find(item => item.unit_name === data.big_id);
         let small_id = data.small_id;
         let gate:GateListItem = itemStatus.gate_list[small_id - 1];
         let param:GotoUnitLevel = {
@@ -250,7 +250,7 @@ export class ScrollMapView extends BaseView {
         let item:MapPointItem = point.getComponent(MapPointItem);
         this._curLevelIndex = item.index;
         let data = item.data;
-        let itemStatus:UnitItemStatus = this._unitStatus.find(item => item.unit === data.big_id);
+        let itemStatus:UnitItemStatus = this._unitStatus.find(item => item.unit_name === data.big_id);
         let small_id = data.small_id;
         let gate:GateListItem = itemStatus.gate_list[small_id - 1];
         let param:GotoUnitLevel = {

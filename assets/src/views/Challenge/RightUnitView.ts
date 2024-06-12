@@ -7,6 +7,7 @@ import { BookPlanDetail, CurrentBookStatus } from '../../models/TextbookModel';
 import CCUtil from '../../util/CCUtil';
 import ImgUtil from '../../util/ImgUtil';
 import { SettingPlanView } from '../TextbookVocabulary/SettingPlanView';
+import { TextbookUtil } from '../TextbookVocabulary/TextbookUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('RightUnitView')
@@ -72,7 +73,8 @@ export class RightUnitView extends Component {
         });
     }
     updateRightPlan(data:BookPlanDetail) {
-        this.plan_label.string = `${data.rank_num}/${data.num}`;
+        let level = TextbookUtil.calculateLevels(data.gate_total,data.num);
+        this.plan_label.string = `${level}/${data.num}`;
     }
 
     updateUnitTotal(total_level:number){
@@ -81,7 +83,7 @@ export class RightUnitView extends Component {
 
     updateUnitProps(unitData:CurrentBookStatus){
         console.log("updateUnitProps",unitData);
-        this.plan_label.string = `${unitData.rank_num}/${unitData.num}`;
+        // this.plan_label.string = `${unitData.rank_num}/${unitData.num}`;
         this._curUnitStatus = unitData;
         this.title_label.string = unitData.book_name;
         this.grade_label.string = unitData.grade;

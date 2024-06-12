@@ -4,6 +4,7 @@ import { BasePopup } from '../../script/BasePopup';
 import CCUtil from '../../util/CCUtil';
 import { EventMgr } from '../../util/EventManager';
 import { ScrollViewExtra } from './picker/ScrollViewExtra';
+import { TextbookUtil } from './TextbookUtil';
 const { ccclass, property } = _decorator;
 
 export interface PlanSaveData {
@@ -56,14 +57,6 @@ export class SettingPlanView extends BasePopup {
         CCUtil.offTouch(this.saveBtn, this.onClickSave, this);
         CCUtil.offTouch(this.cancelBtn, this.onClickCancel, this);
     }
-    calculateDays(challengesPerDay: number){
-        return Math.ceil(this._totoal_level / challengesPerDay);
-    }
-
-    calculateLevels(days:number){
-        return Math.ceil(this._totoal_level / days);
-    }
-
     setLeftRightDatePick() {
         this.levelScroll.initSelectCallFunc((select_num:number)=>{
             if(this._levelSelect === select_num){
@@ -71,7 +64,7 @@ export class SettingPlanView extends BasePopup {
             }
             this._levelSelect = select_num;
             console.log("_leftSelect....",select_num);
-            let days = this.calculateDays(select_num);
+            let days = TextbookUtil.calculateDays(this._totoal_level,select_num);
             this.dayScroll.scrollToNumber(`${days}`)
         })
         this.dayScroll.initSelectCallFunc((select_num:number)=>{
@@ -80,7 +73,7 @@ export class SettingPlanView extends BasePopup {
             }
             console.log("_rightSelect....",select_num);
             this._daySelect = select_num;
-            let levels = this.calculateLevels(select_num);
+            let levels = TextbookUtil.calculateLevels(this._totoal_level,select_num);
             this.levelScroll.scrollToNumber(`${levels}`)
         })
     }
@@ -93,10 +86,10 @@ export class SettingPlanView extends BasePopup {
         this.setLeftRightDatePick();
         this.scheduleOnce(()=>{
             if(this._totoal_level <= 5){
-                let days = this.calculateDays(this._totoal_level);
+                let days = TextbookUtil.calculateDays(this._totoal_level,this._totoal_level);
                 this.dayScroll.scrollToNumber(`${days}`)
             }else{
-                let days = this.calculateDays(5);
+                let days = TextbookUtil.calculateDays(this._totoal_level,5);
                 this.dayScroll.scrollToNumber(`${days}`)
             }
         },0.2)

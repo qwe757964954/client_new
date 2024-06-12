@@ -96,12 +96,10 @@ export default class StudyService extends BaseControll {
     }
 
     //获取教材单词组合模式选项
-    getTextbookWordGroup(type_name: string, book_name: string, grade: string, unit: string) {
+    getTextbookWordGroup(book_id:string, unit_id: string) {
         let para: c2sTextbookWordGroup = new c2sTextbookWordGroup();
-        para.type_name = type_name;
-        para.book_name = book_name;
-        para.grade = grade;
-        para.unit = unit;
+        para.book_id = book_id;
+        para.unit_id = unit_id;
         NetMgr.sendMsg(para);
     }
     //大冒险收藏单词

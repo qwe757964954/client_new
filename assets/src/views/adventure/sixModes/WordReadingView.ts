@@ -42,7 +42,7 @@ export class WordReadingView extends BaseModeView {
     private _wrongWordList: any[] = []; //错误单词列表
 
     private _turnIsBegin: boolean = false;
-
+    private _finished: boolean = false;
     async initData(wordsdata: UnitWordModel[], levelData: any) {
         this.gameMode = GameMode.Reading;
         wordsdata = this.updateTextbookWords(wordsdata, levelData);
@@ -149,10 +149,8 @@ export class WordReadingView extends BaseModeView {
         let levelData: BookLevelConfig = this._levelData as BookLevelConfig;
         let costTime = Date.now() - this._costTime;
         let data: GameSubmitModel = {
-            type_name: levelData.type_name,
-            book_name: levelData.book_name,
-            grade: levelData.grade,
-            unit: levelData.unit,
+            book_id: levelData.book_id,
+            unit_id: levelData.unit_id,
             game_mode: this.gameMode,
             cost_time: costTime,
             word: this._rightWordData.word,
@@ -167,6 +165,7 @@ export class WordReadingView extends BaseModeView {
     initWords(data: UnitWordModel[]) {
         console.log('initWords', data);
         this._wordsData = data;
+        this._finished = false;
         this.showCurrentWord();
     }
 
@@ -244,13 +243,14 @@ export class WordReadingView extends BaseModeView {
 
     update(deltaTime: number) {
         let isAdventure = this._levelData.hasOwnProperty('islandId'); //是否是大冒险关卡
-        if (!isAdventure && !this._turnIsBegin && this._currentSubmitResponse && this._currentSubmitResponse.pass_flag == 1) {
+        if (!isAdventure && !this._turnIsBegin && this._currentSubmitResponse && this._currentSubmitResponse.pass_flag == 1 && !this._finished) {
             this.gotoResult();
         }
     }
 
     protected gotoResult(): void {
         console.log('朗读模式完成');
+        this._finished = true;
         ViewsManager.instance.showView(PrefabType.WordReportView, (node: Node) => {
             let nodeScript = node.getComponent(WordReportView);
             console.log('朗读模式完成', this._currentSubmitResponse);

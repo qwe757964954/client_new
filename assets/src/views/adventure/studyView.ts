@@ -40,7 +40,7 @@ export class studyView extends BaseView {
     }
     onCurrentBookStatus(curBook: CurrentBookStatus): void {
         /**当前词书状态 */
-        if (isValid(curBook.type_name) && isValid(curBook.book_name) && isValid(curBook.grade)) {
+        if (isValid(curBook.book_id) && isValid(curBook.book_name) && isValid(curBook.grade)) {
             ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
             });
         } else {

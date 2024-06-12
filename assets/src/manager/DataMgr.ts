@@ -103,13 +103,11 @@ export class AdvLevelConfig {
 }
 //教材单词关卡配置
 export class BookLevelConfig {
-    id: string;//
-    grade: string;
+    book_id: string;//
+    unit_id: string;//
     unit: string;
-    type_name: string;
     game_mode: number;
     small_id: number;
-    book_name: string;
     word_num: number;
     cur_game_mode: number;
     error_word?: any;

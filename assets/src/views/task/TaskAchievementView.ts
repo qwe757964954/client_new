@@ -40,7 +40,6 @@ export class TaskAchievementView extends BaseView {
                     console.error(err);
                     reject(err);
                 } else {
-                    console.log(jsonData.json);
                     this._AchievementDataInfo = jsonData.json as AchInfoResponse;
                     resolve();
                 }
@@ -70,6 +69,7 @@ export class TaskAchievementView extends BaseView {
         }
         
         this._listData = listData;
+        console.log("this._listData....",this._listData)
         this.showItemList(1);
     }
 

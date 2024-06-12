@@ -7,14 +7,16 @@ export interface MyTextbookListStatus extends BaseRepPacket{
 
 /**我的词书数据 */
 export interface MyTextbookStatus {
-    book_name: string,
-    grade: string,
-    num:number,
-    remainder_num:number,
-    study_word_num: number,
-    total_word_num: number,
-    type_name: string,
-    user_id:number,
+    book_id: string;          // Unique identifier for the book
+    book_name: string;        // Name of the book
+    grade: string;            // Grade level (e.g., "二上")
+    num: number;              // A numerical value (context not specified)
+    phase_id: number;         // Identifier for the phase
+    remainder_num: number;    // Number of remaining items (context not specified)
+    status: number;           // Status code (e.g., 1 for active)
+    study_word_num: number;   // Number of studied words
+    total_word_num: number;   // Total number of words
+    user_id: number;          // Identifier for the user
 } 
 
 export interface BookListItemData extends BaseRepPacket{
@@ -26,7 +28,8 @@ export interface BookItemData {
     name?:string,
     num?:number,
     sort_no?:number,
-    type_name?:string
+    type_name?:string,
+    phase_id:number
 }
 
 export interface SchoolBookListItemData extends BaseRepPacket{
@@ -43,10 +46,11 @@ export interface SchoolBookListGradeItemData extends BaseRepPacket{
 }
 
 export interface SchoolBookGradeItemData{
+    book_id:string,
+    book_name:string,
     grade:string,
     num:number,
 }
-
 export interface UnitListItemStatus extends BaseRepPacket{
     unit_list:UnitItemStatus[];
     gate_total:number,
@@ -55,7 +59,8 @@ export interface UnitListItemStatus extends BaseRepPacket{
 
 export interface UnitItemStatus{
     num:number,
-    unit:string,
+    unit_id:string,
+    unit_name:string,
     gate_list:GateListItem[];
 }
 
@@ -73,37 +78,21 @@ export class c2sBookStatus {
 // 删除我的词书
 export class c2sDelBookStatus {
     command_id: string = InterfacePath.Classification_BookDel;
-    type_name:string;
-    book_name:string;
-    grade:string;
-}
-//添加我的词书
-
-export class c2sAddBookStatus {
-    command_id: string = InterfacePath.Classification_BookAdd;
-    type_name:string;
-    book_name:string;
-    grade:string;
+    book_id:string;
 }
 
 //添加计划
 
 export class c2sAddPlanStatus {
     command_id: string = InterfacePath.Classification_PlanAdd;
-    type_name:string;
-    book_name:string;
-    grade:string;
-    rank_num:number;
+    book_id:string;
     num:number;
 }
 
 //添加书附带添加计划
 export class c2sAddPlanBookStatus {
     command_id: string = InterfacePath.Classification_AddPlanBook;
-    type_name:string;
-    book_name:string;
-    grade:string;
-    rank_num:number;
+    book_id:string;
     num:number;
 }
 
@@ -111,8 +100,7 @@ export class c2sAddPlanBookStatus {
 
 export class c2sModifyPlanStatus {
     command_id: string = InterfacePath.Classification_PlanModify;
-    plan_id:string;
-    rank_num:number;
+    cu_id:string;
     num:number;
 }
 
@@ -125,12 +113,12 @@ export class c2sSearchBookList{
 //获取教材课本
 export class c2sSchoolBook{
     command_id: string = InterfacePath.Classification_SchoolBook;
-    type_name:string;
+    phase_id:number;
 }
 //教材课本-年级
 export class c2sSchoolBookGrade{
     command_id: string = InterfacePath.Classification_SchoolGrade;
-    type_name:string;
+    phase_id:number;
     book_name:string;
 }
 
@@ -138,23 +126,17 @@ export class c2sSchoolBookGrade{
 
 export class c2sUnitListStatus{
     command_id:string = InterfacePath.Classification_UnitListStatus;
-    type_name:string;
-    book_name:string;
-    grade:string;
+    book_id:string;
 }
 //添加计划请求model
 export interface ReqPlanData{
-    type_name:string;
-    book_name:string;
-    grade:string;
-    rank_num:number;
+    book_id:string;
     num:number;
 }
 
 //修改计划请求model
 export interface ModifyPlanData{
-    plan_id:string;
-    rank_num:number;
+    cu_id:string;
     num:number;
 }
 
@@ -162,52 +144,42 @@ export interface ModifyPlanData{
 
 export class c2sBookPlanDetail {
     command_id: string = InterfacePath.Classification_BookPlanDetail;
-    type_name:string;
-    book_name:string;
-    grade:string;
+    book_id:string;
 }
 
 export interface BookPlanDetail extends BaseRepPacket{
-    book_name:string;
-    grade:string;
-    id:string;
+    book_id:string;
+    cu_id:string;
     num:number;
-    rank_num:number;
-    type_name:string;
     user_id:number;
+    gate_total:number;
 }
 
 export interface ReqUnitStatusParam{
-    type_name:string;
-    book_name:string;
-    grade:string;
-    unit:string;
+    book_id:string
+    unit_id:string;
     small_id:number;
 }
 
 //我的单词--词书年级单元学习情况列表接口
 export class c2sUnitStatus {
     command_id: string = InterfacePath.Classification_UnitStatus;
-    type_name:string;
-    book_name:string;
-    grade:string;
-    unit:string;
+    book_id:string;
+    unit_id:string;
     small_id:number;
 }
 
 export interface UnitStatusData extends BaseRepPacket{
-    type_name:string;
-    book_name:string;
-    grade:string;
-    unit:string;
-    small_id:number;
-    user_id:number;
-    user_name:string;
-    game_mode:number;
-    flag:number;
-    word_num:number;
-    time_remaining:number;
-    error_word?:any;
+    book_id: string;            // Unique identifier for the book
+    error_word: any;  // An object for errors, assuming it's a flexible structure
+    flag: number;               // A numerical flag
+    game_mode: number;          // Game mode identifier
+    pass_num: number;           // Number of passes
+    small_id: number;           // Identifier for a smaller unit or sub-id
+    time_remaining: number;     // Time remaining, possibly in seconds
+    unit_id: string;            // Unique identifier for the unit
+    unit_name: string;          // Name of the unit
+    word_num: number;           // Number of words
 }
 
 export interface UnitWordModel{
@@ -258,21 +230,18 @@ export class c2sCurrentBook {
 
 
 export interface CurrentBookStatus extends BaseRepPacket {
-    user_id?:number;
-    book_name?:string;
-    type_name?:string;
-    grade?:string;
-    unit?:string;
-    status?:number;
-    score?:number;
-    total_score?:number;
-    study_word_num?:number;
-    total_word_num?:number;
-    id?:string;
-    num?:number;
-    rank_num?:number;
-    unit_pass_num?:number;
-    unit_total_num?:number;
+    book_id: string;           // "c35b5822693fb6ca584cf7c1a500a7c3"
+    book_name: string;         // "人教版新起点"
+    gate_pass_num: number;     // 0
+    gate_total_num: number;    // 9
+    grade: string;             // "一下"
+    phase_id: number;          // 10006
+    status: number;            // 1
+    study_word_num: number;    // 0
+    total_word_num: number;    // 45
+    unit_pass_num: number;     // 0
+    unit_total_num: number;    // 6
+    user_id: number;           // 4
 }
 
 export interface ReportResultModel{ 
@@ -294,18 +263,14 @@ export class c2sReportResult {
 
 export class c2sWordDetail {
     command_id: string = InterfacePath.Classification_Word;
-    type_name:string;
-    book_name:string;
-    grade:string;
-    unit:string;
+    book_id:string;
+    unit_id:string;
     word:string;
 }
 
 export interface ReqWordDetail{
-    type_name:string;
-    book_name:string;
-    grade:string;
-    unit:string;
+    book_id:string;
+    unit_id:string;
     word:string;
 }
 
@@ -328,19 +293,15 @@ export interface WordDetailStatus extends BaseRepPacket {
 }
 export class c2sChangeTextbook {
     command_id: string = InterfacePath.Classification_ChangeTextbook;
-    type_name:string;
-    book_name:string;
-    grade:string;
+    book_id:string;
 }
 
 export class c2sGameSubmit {
     command_id: string = InterfacePath.Classification_GameSubmit;
     word:string;
-    type_name:string;
-    book_name:string;
-    grade:string;
+    book_id:string;
     cost_time:number;
-    unit:string;
+    unit_id:string;
     small_id:number;
     game_mode:number;
     status:number;
@@ -356,11 +317,9 @@ export interface GameSubmitResponse extends BaseRepPacket {
 
 export interface GameSubmitModel {
     word:string;
-    type_name:string;
-    book_name:string;
-    grade:string;
+    book_id:string;
     cost_time:number;
-    unit:string;
+    unit_id:string;
     small_id:number;
     game_mode:number;
     status:number;
@@ -424,10 +383,8 @@ export interface CheckWordItem {
 
 export class c2sVocabularyWord {
     command_id: string = InterfacePath.Classification_VocabularyWord;
-    grade:string;
-    type_name:string;
-    book_name:string;
-    unit:string;
+    book_id:string;
+    unit_id:string;
     small_id:number;
 }
 
@@ -437,20 +394,16 @@ export interface VocabularyWordData extends BaseRepPacket{
 
 export interface ReqCollectWord {
     word?:string;
-    type_name?:string;
-    book_name?:string;
-    grade?:string;
-    unit?:string;
+    unit_id?:string;
+    book_id?:string;
     action:number;
 }
 
 export class c2sCollectWord {
     command_id: string = InterfacePath.Classification_CollectWord;
+    book_id?:string;
     word?:string;
-    type_name?:string;
-    book_name?:string;
-    grade?:string;
-    unit?:string;
+    unit_id?:string;
     action:number;
 }
 

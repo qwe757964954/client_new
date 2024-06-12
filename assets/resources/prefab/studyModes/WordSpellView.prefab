@@ -2923,7 +2923,7 @@
       "__id__": 56
     },
     "_children": [],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 123
@@ -3948,7 +3948,7 @@
       "__id__": 89
     },
     "resultSprite": {
-      "__id__": 125
+      "__id__": 122
     },
     "rightSprite": {
       "__uuid__": "e64de7de-742c-4684-8d53-edd590c06ae0@f9941",

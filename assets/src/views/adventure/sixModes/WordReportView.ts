@@ -1,8 +1,9 @@
 import { _decorator, instantiate, Layers, Node, Prefab } from 'cc';
 import { EventType } from '../../../config/EventType';
+import { PrefabType } from '../../../config/PrefabType';
 import { GameRes } from '../../../GameRes';
 import { inf_SpineAniCreate } from '../../../manager/InterfaceDefines';
-import { ViewsMgr } from '../../../manager/ViewsManager';
+import { ViewsManager, ViewsMgr } from '../../../manager/ViewsManager';
 import { AdventureResult } from '../../../models/AdventureModel';
 import { RoleBaseModel } from '../../../models/RoleBaseModel';
 import { GameSubmitResponse } from '../../../models/TextbookModel';
@@ -127,7 +128,7 @@ export class WordReportView extends BaseView {
 
     gotoNextLevel() {
         console.log("下一关卡")
-        // ViewsManager.instance.closeView(PrefabType.WordReportView);
+        ViewsManager.instance.closeView(PrefabType.WordReportView);
         this.node.destroy();
         EventMgr.dispatch(EventType.Goto_Textbook_Next_Level);
     }
