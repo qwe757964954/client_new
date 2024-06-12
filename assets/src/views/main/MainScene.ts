@@ -51,8 +51,6 @@ export class MainScene extends Component {
     public lineLayer: Node = null;//编辑层
     @property(Node)
     public buildingLayer: Node = null;//建筑层
-    @property(Node)
-    public cloudLayer: Node = null;//乌云层
     @property(Camera)
     public mapCamera: Camera = null;//地图摄像机
     @property(Canvas)

@@ -322,7 +322,7 @@ export class MapUICtl extends MainBaseCtl {
         this._landModelAry.forEach(element => {
             if (element.y <= 16) return;
             let node = instantiate(this._mainScene.cloudModel);
-            this._mainScene.cloudLayer.addChild(node);
+            this._mainScene.buildingLayer.addChild(node);
             let cloud = node.getComponent(CloudModel);
             cloud.initData(element.x, element.y, element.width);
             cloud.grids = element.grids;
@@ -625,16 +625,19 @@ export class MapUICtl extends MainBaseCtl {
         this._landModelAry.forEach(element => {
             element.show(visibleRect.intersects(element.getRect()), this.getLoadOverCall());
         });
-        //建筑动态加载
+        //建筑角色乌云动态加载
         this._mainScene.buildingLayer.children.forEach(element => {
-            let building = element.getComponent(BuildingModel);
-            if (!building) {
-                let role = element.getComponent(RoleBaseModel);
-                if (!role) return;
-                role.show(visibleRect.intersects(role.getRect()), this.getLoadOverCall());
-                return;
-            };
-            building.show(visibleRect.intersects(building.getRect()), this.getLoadOverCall());
+            let base = element.getComponent(BaseComponent);
+            if (!base) return;
+            base.show(visibleRect.intersects(base.getRect()), this.getLoadOverCall());
+            // let building = element.getComponent(BuildingModel);
+            // if (!building) {
+            //     let role = element.getComponent(RoleBaseModel);
+            //     if (!role) return;
+            //     role.show(visibleRect.intersects(role.getRect()), this.getLoadOverCall());
+            //     return;
+            // };
+            // building.show(visibleRect.intersects(building.getRect()), this.getLoadOverCall());
             //for test 显示区域
             // {
             //     let rect = building.getRect();
@@ -650,10 +653,10 @@ export class MapUICtl extends MainBaseCtl {
             //     g.stroke();
             // }
         });
-        /**乌云动态加载 */
-        this._cloudModelAry.forEach(element => {
-            element.show(visibleRect.intersects(element.getRect()), this.getLoadOverCall());
-        });
+        // /**乌云动态加载 */
+        // this._cloudModelAry.forEach(element => {
+        //     element.show(visibleRect.intersects(element.getRect()), this.getLoadOverCall());
+        // });
     }
     // 角色移动
     roleMove(roleModel: RoleBaseModel) {
