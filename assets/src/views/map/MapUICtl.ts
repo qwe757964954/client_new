@@ -13,6 +13,7 @@ import { LandModel } from "../../models/LandModel";
 import { s2cBuildingList, s2cBuildingListInfo, s2cBuildingProduceAdd, s2cBuildingProduceDelete, s2cBuildingProduceGet } from "../../models/NetModel";
 import { RoleBaseModel } from "../../models/RoleBaseModel";
 import { RoleModel } from "../../models/RoleModel";
+import { User } from "../../models/User";
 import { InterfacePath } from "../../net/InterfacePath";
 import { ServiceMgr } from "../../net/ServiceManager";
 import { BaseComponent } from "../../script/BaseComponent";
@@ -80,8 +81,6 @@ export class MapUICtl extends MainBaseCtl {
 
         if (GlobalConfig.OLD_SERVER) {
             this.initLand({});
-            // this.initBuilding();
-            // this.initRole();
             this.updateCameraVisible();
             return;
         }
@@ -247,70 +246,35 @@ export class MapUICtl extends MainBaseCtl {
         });
     }
     /** 初始化角色 */
-    public async initRole() {
-        // for test 人物角色
+    public initRole() {
+        if (!User.roleID) return;
+        let roleID = User.roleID;
+        let slotsAry = [
+            [9500, 9700, 9701, 9702, 9703],
+            [9550, 9800, 9801, 9802, 9803, 9805],
+            [9600, 9900, 9901, 9902, 9903]
+        ]
+        let slots = slotsAry[roleID - 1];
+        if (roleID < 100) roleID += 100;
+        // 角色
         {
             let role = instantiate(this._mainScene.roleModel);
             this._mainScene.buildingLayer.addChild(role);
             let roleModel = role.getComponent(RoleBaseModel);
-            roleModel.init(101, 1, [9500, 9700, 9701, 9702, 9703]);
-            let grid = this.getGridInfo(20, 20);
+            roleModel.init(roleID, 1, slots);
+            let grid = this.getGridInfo(12, 0);
             roleModel.grid = grid;
             this.roleMove(roleModel);
             this._roleModelAry.push(roleModel);
             this.buildingRoleSort();
         }
-        {
-            let role = instantiate(this._mainScene.roleModel);
-            this._mainScene.buildingLayer.addChild(role);
-            let roleModel = role.getComponent(RoleBaseModel);
-            roleModel.init(102, 1, [9550, 9800, 9801, 9802, 9803, 9805]);
-            let grid = this.getGridInfo(35, 40);
-            roleModel.grid = grid;
-            this.roleMove(roleModel);
-            this._roleModelAry.push(roleModel);
-            this.buildingRoleSort();
-        }
-        {
-            let role = instantiate(this._mainScene.roleModel);
-            this._mainScene.buildingLayer.addChild(role);
-            let roleModel = role.getComponent(RoleBaseModel);
-            roleModel.init(103, 1, [9600, 9900, 9901, 9902, 9903]);
-            let grid = this.getGridInfo(20, 40);
-            roleModel.grid = grid;
-            this.roleMove(roleModel);
-            this._roleModelAry.push(roleModel);
-            this.buildingRoleSort();
-        }
-        // for test 精灵
+        // 精灵
         {
             let role = instantiate(this._mainScene.petModel);
             this._mainScene.buildingLayer.addChild(role);
             let roleModel = role.getComponent(RoleBaseModel);
-            roleModel.init(103, 1);
-            let grid = this.getGridInfo(21, 21);
-            roleModel.grid = grid;
-            this.roleMove(roleModel);
-            this._roleModelAry.push(roleModel);
-            this.buildingRoleSort();
-        }
-        {
-            let role = instantiate(this._mainScene.petModel);
-            this._mainScene.buildingLayer.addChild(role);
-            let roleModel = role.getComponent(RoleBaseModel);
-            roleModel.init(103, 2);
-            let grid = this.getGridInfo(35, 30);
-            roleModel.grid = grid;
-            this.roleMove(roleModel);
-            this._roleModelAry.push(roleModel);
-            this.buildingRoleSort();
-        }
-        {
-            let role = instantiate(this._mainScene.petModel);
-            this._mainScene.buildingLayer.addChild(role);
-            let roleModel = role.getComponent(RoleBaseModel);
-            roleModel.init(103, 3);
-            let grid = this.getGridInfo(21, 41);
+            roleModel.init(roleID, 1);
+            let grid = this.getGridInfo(12, 0);
             roleModel.grid = grid;
             this.roleMove(roleModel);
             this._roleModelAry.push(roleModel);
@@ -684,10 +648,10 @@ export class MapUICtl extends MainBaseCtl {
             let grid2 = this.getGridInfo(grid.x - i, grid.y);
             let grid3 = this.getGridInfo(grid.x, grid.y + i);
             let grid4 = this.getGridInfo(grid.x, grid.y - i);
-            if (grid1 && !grid1.building) grids.push(grid1);
-            if (grid2 && !grid2.building) grids.push(grid2);
-            if (grid3 && !grid3.building) grids.push(grid3);
-            if (grid4 && !grid4.building) grids.push(grid4);
+            if (grid1 && !grid1.building && !grid1.cloud) grids.push(grid1);
+            if (grid2 && !grid2.building && !grid2.cloud) grids.push(grid2);
+            if (grid3 && !grid3.building && !grid3.cloud) grids.push(grid3);
+            if (grid4 && !grid4.building && !grid4.cloud) grids.push(grid4);
         }
         if (0 == grids.length) {
             roleModel.standby();
@@ -777,7 +741,7 @@ export class MapUICtl extends MainBaseCtl {
     onBuildingList(data: s2cBuildingList) {
         this.initBuilding(data.build_list);
         this.initLand(data.land_dict);
-        // this.initRole();
+        this.initRole();
         this.initCloud();
 
         TimerMgr.once(this.getLoadOverCall(), 500);//注意一定要加延时
