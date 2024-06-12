@@ -1,4 +1,4 @@
-import { Component } from "cc";
+import { Component, Rect } from "cc";
 import { EventMgr } from "../util/EventManager";
 
 // 基础组件
@@ -82,5 +82,13 @@ export class BaseComponent extends Component {
 			this.delEvent(event);
 		}
 		this._eventlistener = {};
+	}
+	/**获取显示范围 */
+	public getRect() {
+		return new Rect(0, 0, 1, 1);
+	}
+	/**显示与否 */
+	public show(isShow: boolean, callBack?: Function) {
+		if (callBack) callBack();
 	}
 }

@@ -11,6 +11,8 @@ export enum RewardItemType {
     PngNum = 2,//只显示图片和数量
 }
 
+const defaultFramePath = "common/img_bg_item1/spriteFrame";
+
 @ccclass('RewardItem')
 @executeInEditMode(true)
 export class RewardItem extends Component {
@@ -66,6 +68,19 @@ export class RewardItem extends Component {
         LoadManager.loadSprite(propInfo.png, this.img);
         if (this._type == RewardItemType.Normal) {
             LoadManager.loadSprite(propInfo.frame, this.frame);
+        }
+    }
+    initByPng(pngPath: string, num?: number, framePath?: string) {
+        LoadManager.loadSprite(pngPath, this.img);
+        if (null != num) {
+            this.num.string = num.toString();
+        }
+        if (this._type == RewardItemType.Normal) {
+            if (framePath) {
+                LoadManager.loadSprite(framePath, this.frame);
+            } else {
+                LoadManager.loadSprite(defaultFramePath, this.frame);
+            }
         }
     }
 }

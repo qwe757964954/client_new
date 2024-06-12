@@ -41,6 +41,7 @@ public class TSBridge {
             @Override
             public void run() {
                 try{
+                    Log.e(Config.LOGTAG,"tsToJava："+arg0);
                     if(arg0.equals("onRecord")){
                         TSBridge.onRecord(arg1);
                     }else if(arg0.equals("playRecord")){
@@ -70,6 +71,7 @@ public class TSBridge {
     }
     static public void javaToTs(String arg0, String arg1){
         try {
+            Log.e(Config.LOGTAG,"javaToTs："+arg0);
             CocosHelper.runOnGameThread(new Runnable() {
                 @Override
                 public void run() {

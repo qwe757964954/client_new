@@ -1,4 +1,5 @@
-import { _decorator, Component, Label, Layers, Node } from 'cc';
+import { _decorator, Component, Label, Layers, Node, Vec3 } from 'cc';
+import { PropID } from '../../config/PropConfig';
 import { PetModel } from '../../models/PetModel';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
@@ -33,13 +34,23 @@ export class PetInfoView extends Component {
         this.removeEvent();
     }
     /**初始化数据 */
-    init(removeCall?: Function) {
+    init(id: number, level: number, removeCall?: Function) {
         this._removeCall = removeCall;
 
         this.listView.numItems = 6;
-        this.pet.init(101, 1);
+        this.pet.init(id, level);
         this.pet.show(true);
         NodeUtil.setLayerRecursively(this.pet.node, Layers.Enum.UI_2D);
+        if (level <= 2) {//特殊处理，后面考虑走配置
+            this.pet.node.scale = new Vec3(1.5, 1.5, 1);
+        }
+
+        this.rewardItems[0].init({ id: PropID.amethyst, num: 10 });
+        this.rewardItems[1].init({ id: PropID.coin, num: 20 });
+        this.rewardItems[2].init({ id: PropID.diamond, num: 30 });
+        this.rewardItems[3].initByPng("map/img_token_gold/spriteFrame", 2);
+        this.rewardItems[4].init({ id: PropID.soul, num: 40 });
+        this.rewardItems[5].initByPng("map/pet/pet_img_mood_icon/spriteFrame", 60);
     }
     /**初始化事件 */
     initEvent() {

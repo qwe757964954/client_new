@@ -1,9 +1,7 @@
 import { _decorator, Rect, sp, Sprite, Tween, tween, TweenSystem, UITransform, Vec2, Vec3 } from 'cc';
 import { EventType } from '../config/EventType';
 import { MapConfig, RoleInfo } from '../config/MapConfig';
-import { TextConfig } from '../config/TextConfig';
 import { LoadManager } from '../manager/LoadManager';
-import { ViewsManager } from '../manager/ViewsManager';
 import { BaseComponent } from '../script/BaseComponent';
 import EventManager from '../util/EventManager';
 import { TimerMgr } from '../util/TimerMgr';
@@ -249,7 +247,7 @@ export class RoleBaseModel extends BaseComponent {
     /** 点击显示 */
     public onClickShow() {
         this.standby();
-        ViewsManager.showAlert(TextConfig.Role_Text1);//TODO 效果
+        //TODO 效果
     }
     /** 拖拽开始 */
     public onDragStart() {

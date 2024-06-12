@@ -1,13 +1,16 @@
-import { _decorator, Component, Sprite, UITransform, Vec3 } from 'cc';
+import { _decorator, Label, Sprite, UITransform, Vec3 } from 'cc';
 import { MapConfig } from '../config/MapConfig';
 import { LoadManager } from '../manager/LoadManager';
+import { BaseComponent } from '../script/BaseComponent';
 import { GridModel } from './GridModel';
 const { ccclass, property } = _decorator;
 /**云 */
 @ccclass('CloudModel')
-export class CloudModel extends Component {
+export class CloudModel extends BaseComponent {
     @property(Sprite)
     public img: Sprite = null;//图片
+    @property(Label)
+    public label: Label = null;//文字
 
     // y从上往下，x从右往左
     private _x: number;//x格子坐标
@@ -23,6 +26,7 @@ export class CloudModel extends Component {
         this._x = x;
         this._y = y;
         this._width = width;
+        this.label.node.active = false;
     }
     public get x(): number {
         return this._x;
@@ -50,6 +54,7 @@ export class CloudModel extends Component {
         let gridPos = gridInfo.pos;
         let pos = new Vec3(gridPos.x, gridPos.y - this._width * gridInfo.height, 1);
         this.node.position = pos;
+        this._zIndex = -pos.y;
     }
     public set showID(showID: number) {
         this._showID = showID;
