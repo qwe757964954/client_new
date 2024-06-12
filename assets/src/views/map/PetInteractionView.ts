@@ -32,6 +32,8 @@ export class PetInteractionView extends Component {
     @property(PetModel)
     public pet: PetModel = null;//宠物
 
+    private _petID: number = null;//宠物id
+    private _petLevel: number = null;//宠物等级
     private _data: PetInteractionInfo[] = null;//数据
     private _type: PetInteractionType = null;//类型
     private _removeCall: Function = null;//移除回调
@@ -58,6 +60,8 @@ export class PetInteractionView extends Component {
     }
     init(id: number, level: number) {
         this.showTye(PetInteractionType.eat);
+        this._petID = id;
+        this._petLevel = level;
 
         this.pet.init(id, level);
         this.pet.show(true);
@@ -116,7 +120,7 @@ export class PetInteractionView extends Component {
     onInfoClick() {
         ViewsManager.instance.showView(PrefabType.PetInfoView, (node: Node) => {
             this.node.active = false;
-            node.getComponent(PetInfoView).init(() => {
+            node.getComponent(PetInfoView).init(this._petID, this._petLevel, () => {
                 this.node.active = true;
             });
         });
