@@ -37,6 +37,16 @@
 
 -keep public class com.google.** { *; }
 
+-keep public class com.app.util.PhoneUtil
+-keep public class com.app.util.STUtil
+-keep public class com.app.util.WxUtil
+
+# 声通混淆配置
+-keep class com.stkouyu.** { *; }
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
+
 -dontwarn android.webkit.WebView
 -dontwarn android.net.http.SslError
 -dontwarn android.webkit.WebViewClient
