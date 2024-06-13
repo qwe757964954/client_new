@@ -125,9 +125,7 @@ export class WordCheckView extends BaseView {
 
     onRequestCheckWord(){
         let params:CheckWordModel = {
-            type_name:this._bookData.type_name,
-            book_name:this._bookData.book_name,
-            grade:this._bookData.grade,
+            book_id:this._bookData.book_id,
             word_type:this._currentType,
             order_type:this._orderType,
         }

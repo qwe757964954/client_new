@@ -361,9 +361,7 @@ export default class _TextbookService extends BaseControll {
      */
     reqCheckWord(data:CheckWordModel){
         let params:c2sCheckWord = new c2sCheckWord();
-        params.type_name = data.type_name;
-        params.book_name = data.book_name;
-        params.grade = data.grade;
+        params.book_id = data.book_id;
         params.word_type = data.word_type;
         params.order_type = data.order_type;
         NetMgr.sendMsg(params);

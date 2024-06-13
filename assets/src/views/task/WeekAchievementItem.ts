@@ -1,4 +1,4 @@
-import { Label, Node, UITransform, _decorator } from 'cc';
+import { Label, Node, ScrollView, UITransform, _decorator } from 'cc';
 import { PropID } from '../../config/PropConfig';
 import { ArchConfig, PropData } from '../../manager/DataMgr';
 import List from '../../util/list/List';
@@ -22,6 +22,14 @@ export class WeekAchievementItem extends ListItem {
     award_list:List = null;
 
     private _propsData:PropData[] = [];
+
+    protected start(): void {
+        let scroll:ScrollView = this.award_list.scrollView;
+        scroll.node.off(Node.EventType.TOUCH_START, scroll._onTouchBegan, scroll, true);
+        scroll.node.off(Node.EventType.TOUCH_MOVE, scroll._onTouchMoved, scroll, true);    
+        scroll.node.off(Node.EventType.TOUCH_END, scroll._onTouchEnded, scroll, true);        
+        scroll.node.off(Node.EventType.TOUCH_CANCEL, scroll._onTouchCancelled, scroll, true);
+    }
 
     updateAchievementProps(data: ArchConfig) {
         console.log('updateAchievementProps...............', data);

@@ -29,7 +29,7 @@ export interface BookItemData {
     num?:number,
     sort_no?:number,
     type_name?:string,
-    phase_id:number
+    phase_id?:number
 }
 
 export interface SchoolBookListItemData extends BaseRepPacket{
@@ -351,18 +351,14 @@ export enum CheckOrderType {
 }
 
 export interface CheckWordModel {
-    type_name:string;
-    book_name:string;
-    grade:string;
+    book_id:string;
     word_type:CheckWordType;
     order_type:CheckOrderType;
 }
 
 export class c2sCheckWord {
     command_id: string = InterfacePath.Classification_CheckWord;
-    grade:string;
-    type_name:string;
-    book_name:string;
+    book_id:string;
     word_type:CheckWordType;
     order_type:CheckOrderType;
 }
