@@ -14,6 +14,7 @@ import { TextConfig } from '../../config/TextConfig';
 import { DataMgr, EditInfo, EditType } from '../../manager/DataMgr';
 import { SoundMgr } from '../../manager/SoundMgr';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
+import { CloudModel } from '../../models/CloudModel';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
 import { RoleModel } from '../../models/RoleModel';
 import CCUtil from '../../util/CCUtil';
@@ -298,6 +299,11 @@ export class MainScene extends Component {
             role.onDragEndEx();
         }
     }
+    /**乌云点击 */
+    onCloudClick(cloud: CloudModel) {
+        if (!cloud) return;
+        cloud.onCloudClick();
+    }
     // 新建建筑与地块
     onBuildLandClick(data: EditInfo) {
         console.log("onBuidLandClick", data);
@@ -411,6 +417,10 @@ export class MainScene extends Component {
     // 点击到角色
     getTouchRole(x: number, y: number) {
         return this._mapUICtl.getTouchRole(x, y);
+    }
+    /**点击到乌云 */
+    getTouchCloud(x: number, y: number) {
+        return this._mapUICtl.getTouchCloud(x, y);
     }
     // 设置建筑物格子
     setBuildingGrid(building: BuildingModel, gridX: number, gridY: number) {

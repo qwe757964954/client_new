@@ -10,7 +10,7 @@ import { BuildingIDType, BuildingModel, RecycleData } from "../../models/Buildin
 import { CloudModel } from "../../models/CloudModel";
 import { GridModel } from "../../models/GridModel";
 import { LandModel } from "../../models/LandModel";
-import { s2cBuildingList, s2cBuildingListInfo, s2cBuildingProduceAdd, s2cBuildingProduceDelete, s2cBuildingProduceGet } from "../../models/NetModel";
+import { s2cBuildingList, s2cBuildingListInfo, s2cBuildingProduceAdd, s2cBuildingProduceDelete, s2cBuildingProduceGet, s2cCloudUnlock, s2cCloudUnlockGet } from "../../models/NetModel";
 import { RoleBaseModel } from "../../models/RoleBaseModel";
 import { RoleModel } from "../../models/RoleModel";
 import { User } from "../../models/User";
@@ -104,6 +104,8 @@ export class MapUICtl extends MainBaseCtl {
         this.addEvent(InterfacePath.c2sBuildingProduceAdd, this.onBuildingProduceAdd.bind(this));
         this.addEvent(InterfacePath.c2sBuildingProduceDelete, this.onBuildingProduceDelete.bind(this));
         this.addEvent(InterfacePath.c2sBuildingProduceGet, this.onBuildingProduceGet.bind(this));
+        this.addEvent(InterfacePath.c2sCloudUnlock, this.onCloudUnlock.bind(this));
+        this.addEvent(InterfacePath.c2sCloudUnlockGet, this.onCloudUnlockGet.bind(this));
     }
     // 移除事件
     removeEvent() {
@@ -282,13 +284,19 @@ export class MapUICtl extends MainBaseCtl {
         }
     }
     /**初始化乌云 */
-    public initCloud() {
+    public initCloud(map: { [key: string]: number }) {
         this._landModelAry.forEach(element => {
             if (element.y <= 16) return;
+            let key = ToolUtil.replace(TextConfig.Land_Key, element.x, element.y);
+            let leftTime = null;
+            if (map.hasOwnProperty(key)) {
+                leftTime = map[key];
+                if (leftTime < 0) return;
+            }
             let node = instantiate(this._mainScene.cloudModel);
             this._mainScene.buildingLayer.addChild(node);
             let cloud = node.getComponent(CloudModel);
-            cloud.initData(element.x, element.y, element.width);
+            cloud.initData(element.x, element.y, element.width, leftTime);
             cloud.grids = element.grids;
             this._cloudModelAry.push(cloud);
         });
@@ -418,6 +426,11 @@ export class MapUICtl extends MainBaseCtl {
         }
         // console.log("getTouchBuilding", worldPos.x, worldPos.y, children.length);
         return null;
+    }
+    /**点击到乌云 */
+    getTouchCloud(x: number, y: number) {
+        let grid = this.getTouchGrid(x, y);
+        return grid?.cloud;
     }
     /** 点击到角色 */
     getTouchRole(x: number, y: number) {
@@ -742,7 +755,7 @@ export class MapUICtl extends MainBaseCtl {
         this.initBuilding(data.build_list);
         this.initLand(data.land_dict);
         this.initRole();
-        this.initCloud();
+        this.initCloud(data.cloud_dict);
 
         TimerMgr.once(this.getLoadOverCall(), 500);//注意一定要加延时
         this.updateCameraVisible();
@@ -798,6 +811,44 @@ export class MapUICtl extends MainBaseCtl {
         building.setProducts(data.remaining_infos);
 
         let list = ToolUtil.propMapToList(data.product_items);
+        ViewsMgr.showRewards(list);
+    }
+    /**乌云解锁结果 */
+    onCloudUnlock(data: s2cCloudUnlock) {
+        if (200 != data.code) {
+            ViewsMgr.showAlert(data.msg);
+            return;
+        }
+        for (const key in data.cloud_dict) {
+            let ary = key.split("_");
+            let x = Number(ary[0]);
+            let y = Number(ary[1]);
+            let gridInfo = this.getGridInfo(x, y);
+            if (!gridInfo) return;
+            let cloud = gridInfo.cloud;
+            if (!cloud) return;
+            cloud.unlockTime = data.cloud_dict[key];
+        }
+    }
+    /**乌云解锁获取结果 */
+    onCloudUnlockGet(data: s2cCloudUnlockGet) {
+        if (200 != data.code) {
+            ViewsMgr.showAlert(data.msg);
+            return;
+        }
+        for (const key in data.cloud_dict) {
+            let ary = key.split("_");
+            let x = Number(ary[0]);
+            let y = Number(ary[1]);
+            let gridInfo = this.getGridInfo(x, y);
+            if (!gridInfo) return;
+            let cloud = gridInfo.cloud;
+            if (!cloud) return;
+            cloud.showCloudDispose(() => {
+                this._cloudModelAry = this._cloudModelAry.filter(element => element != cloud);
+            });
+        }
+        let list = ToolUtil.propMapToList(data.award_items);
         ViewsMgr.showRewards(list);
     }
 }

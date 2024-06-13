@@ -1,4 +1,4 @@
-import { c2sBuildingCreate, c2sBuildingEdit, c2sBuildingList, c2sBuildingProduceAdd, c2sBuildingProduceDelete, c2sBuildingProduceGet, c2sBuildingRecycle, c2sBuildingSell, c2sBuildingUpgrade, c2sLandUpdate } from "../models/NetModel";
+import { c2sBuildingCreate, c2sBuildingEdit, c2sBuildingList, c2sBuildingProduceAdd, c2sBuildingProduceDelete, c2sBuildingProduceGet, c2sBuildingRecycle, c2sBuildingSell, c2sBuildingUpgrade, c2sCloudUnlock, c2sCloudUnlockGet, c2sLandUpdate } from "../models/NetModel";
 import { NetMgr } from "../net/NetManager";
 import { BaseControll } from "../script/BaseControll";
 
@@ -88,6 +88,20 @@ export class BuildingService extends BaseControll {
         let para = new c2sBuildingProduceGet();
         para.id = id;
         para.product_num = product_num;
+        NetMgr.sendMsg(para);
+    }
+    /**乌云解锁 */
+    reqCloudUnlock(ary: string[]) {
+        console.log("reqCloudUnlock", ary);
+        let para = new c2sCloudUnlock();
+        para.unlock_cloud = ary;
+        NetMgr.sendMsg(para);
+    }
+    /**乌云解锁获取 */
+    reqCloudUnlockGet(ary: string[]) {
+        console.log("reqCloudUnlockGet", ary);
+        let para = new c2sCloudUnlockGet();
+        para.unlock_cloud = ary;
         NetMgr.sendMsg(para);
     }
 }
