@@ -2,7 +2,7 @@
 <font color=FF0000> 修改引擎代码后记得编译才能生效 </font>
 
 ### 编辑器editbox报错
-##### error: [Scene] Cannot read property 'node' of nullTypeError: Cannot read property 'node' of null
+##### error: [Scene] Cannot read property 'node' of null，TypeError: Cannot read property 'node' of null
 [Fix removing listener when editbox is closed](https://github.com/cocos/cocos-engine/pull/16648/files)
 [Modify editbox to update dom coordinates after update](https://github.com/cocos/cocos-engine/pull/16768/files)
 
@@ -25,7 +25,7 @@ windows下双击automation.bat选择执行
 #### 3. extensions/
 工程插件
 #### 4. native/ 
-ios、adnroid非引擎代码
+ios、android非引擎代码
 #### 5. updateDatas/ 
 热更新数据
 #### 6. ./automation.py
