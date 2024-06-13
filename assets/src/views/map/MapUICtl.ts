@@ -285,6 +285,7 @@ export class MapUICtl extends MainBaseCtl {
     }
     /**初始化乌云 */
     public initCloud(map: { [key: string]: number }) {
+        if (!map) return;
         this._landModelAry.forEach(element => {
             if (element.y <= 16) return;
             let key = ToolUtil.replace(TextConfig.Land_Key, element.x, element.y);
