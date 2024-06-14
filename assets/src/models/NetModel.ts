@@ -128,6 +128,7 @@ export class s2cBuildingListInfo {
 export class s2cBuildingList extends BaseRepPacket {
     build_list: s2cBuildingListInfo[];//建筑列表
     land_dict: { [key: string]: number };//地块字典
+    cloud_dict: { [key: string]: number };//乌云字典
 }
 /**建筑修改（地块修改） */
 export class c2sBuildingEdit {
@@ -232,6 +233,25 @@ export class s2cBuildingProduceGet extends BaseRepPacket {
     id: number;//建筑唯一索引id
     product_items: s2cProductItem[];//生产物品
     remaining_infos: s2cBuildingProduceInfo[];//生产信息
+}
+/**乌云解锁 */
+export class c2sCloudUnlock {
+    command_id: string = InterfacePath.c2sCloudUnlock;
+    unlock_cloud: string[];//乌云位置x_y数组
+}
+/**乌云解锁返回 */
+export class s2cCloudUnlock extends BaseRepPacket {
+    cloud_dict: { [key: string]: number };//乌云字典
+}
+/**乌云解锁获取 */
+export class c2sCloudUnlockGet {
+    command_id: string = InterfacePath.c2sCloudUnlockGet;
+    unlock_cloud: string[];//乌云位置x_y数组
+}
+/**乌云解锁获取返回 */
+export class s2cCloudUnlockGet extends BaseRepPacket {
+    cloud_dict: { [key: string]: number };//乌云字典
+    award_items: s2cProductItem[];//奖励物品
 }
 
 /**********************************以上是新接口*************************************/

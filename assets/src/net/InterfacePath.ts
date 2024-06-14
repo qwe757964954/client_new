@@ -14,6 +14,8 @@ export const InterfacePath = {
     c2sBuildingProduceAdd: "2012",//建筑生产队列添加
     c2sBuildingProduceDelete: "2013",//建筑生产队列移除
     c2sBuildingProduceGet: "2014",//建筑生产领取
+    c2sCloudUnlock: "2015",//乌云解锁
+    c2sCloudUnlockGet: "2016",//乌云解锁领取
 
     s2cAccountLogout: "10001",//登录被顶号返回
 

@@ -1,5 +1,6 @@
 import { EventMouse, EventTouch } from "cc";
 import { BuildingModel } from "../../models/BuildingModel";
+import { CloudModel } from "../../models/CloudModel";
 import { RoleBaseModel } from "../../models/RoleBaseModel";
 import { TimerMgr } from "../../util/TimerMgr";
 import { MapBaseCtl } from "../map/MapBaseCtl";
@@ -12,6 +13,7 @@ export class MapNormalCtl extends MapBaseCtl {
     private _isLongClick: boolean = false;//是否长按点击
 
     private _touchRole: RoleBaseModel = null;//触摸角色
+    private _touchCloud: CloudModel = null;//触摸乌云
 
 
     /** 点击开始 */
@@ -28,6 +30,10 @@ export class MapNormalCtl extends MapBaseCtl {
                     this._mainScene.onRoleDragStart(this._touchRole);
                 }
             }, 100);
+            return true;
+        }
+        this._touchCloud = this._mainScene.getTouchCloud(pos.x, pos.y);
+        if (this._touchCloud) {
             return true;
         }
         this._touchBuilding = this._mainScene.getTouchBuilding(pos.x, pos.y);//for test
@@ -66,10 +72,12 @@ export class MapNormalCtl extends MapBaseCtl {
                 TimerMgr.stop(this._timer);
                 this._timer = null;
             }
+
             this._touchBuilding = null;
             if (!this._isLongClick) {
                 this._touchRole = null;
             }
+            this._touchCloud = null;
         }
 
         if (1 == touches.length) {
@@ -97,6 +105,9 @@ export class MapNormalCtl extends MapBaseCtl {
                 this._mainScene.onRoleClick(this._touchRole);
             }
         }
+        if (this._touchCloud) {
+            this._mainScene.onCloudClick(this._touchCloud);
+        }
         if (this._touchBuilding && !this._isLongClick) {
             this._mainScene.onBuildingClick(this._touchBuilding);
         }
@@ -104,6 +115,7 @@ export class MapNormalCtl extends MapBaseCtl {
         this._touchBuilding = null;
         this._isLongClick = false;
         this._touchRole = null;
+        this._touchCloud = null;
         return super.onTouchEnd(e);
     }
     //点击取消
@@ -116,6 +128,7 @@ export class MapNormalCtl extends MapBaseCtl {
         this._touchBuilding = null;
         this._isLongClick = false;
         this._touchRole = null;
+        this._touchCloud = null;
         return super.onTouchCancel(e);
     }
     //滚轮事件
@@ -132,6 +145,7 @@ export class MapNormalCtl extends MapBaseCtl {
         this._touchBuilding = null;
         this._isLongClick = false;
         this._touchRole = null;
+        this._touchCloud = null;
         super.clearData();
     }
     // 确定事件

@@ -1,5 +1,6 @@
 import { EventTouch } from "cc";
 import { MapStatus } from "../../config/MapConfig";
+import { TextConfig } from "../../config/TextConfig";
 import { EditInfo } from "../../manager/DataMgr";
 import { ViewsManager } from "../../manager/ViewsManager";
 import { LandModel } from "../../models/LandModel";
@@ -103,7 +104,7 @@ export class LandEditCtl extends MapBaseCtl {
     }
     // 缓存修改地块
     cacheLand(land: LandModel): void {
-        this._landCache.set(ToolUtil.replace("{0}_{1}", land.x, land.y), land);
+        this._landCache.set(ToolUtil.replace(TextConfig.Land_Key, land.x, land.y), land);
     }
     // 缓存地块还原
     recoverLand(): void {
