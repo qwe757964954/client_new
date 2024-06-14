@@ -86,6 +86,13 @@ export class CloudModel extends BaseComponent {
             this.label.node.active = false;
         }
     }
+    /**清理格子 */
+    public clearGrids(): void {
+        if (!this._grids) return;
+        for (let i = 0; i < this._grids.length; i++) {
+            this._grids[i].cloud = null;
+        }
+    }
     /**清理定时器 */
     public clearTimer(): void {
         if (this._timer) {
@@ -147,6 +154,7 @@ export class CloudModel extends BaseComponent {
     }
     /**乌云散开 */
     showCloudDispose(callBack?: Function) {
+        this.clearGrids();
         if (callBack) callBack(this);
         this.node.destroy();
     }

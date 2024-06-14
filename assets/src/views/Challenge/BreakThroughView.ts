@@ -6,7 +6,7 @@ import { BookLevelConfig, DataMgr } from '../../manager/DataMgr';
 import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { MapLevelData } from '../../models/AdventureModel';
-import { CurrentBookStatus, GateListItem, ReqUnitStatusParam, UnitItemStatus, UnitListItemStatus, UnitStatusData, VocabularyWordData } from '../../models/TextbookModel';
+import { CurrentBookStatus, GateListItem, ReqUnitStatusParam, ReqUnitType, UnitItemStatus, UnitListItemStatus, UnitStatusData, VocabularyWordData } from '../../models/TextbookModel';
 import { User } from '../../models/User';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
@@ -15,6 +15,7 @@ import CCUtil from '../../util/CCUtil';
 import { NodeUtil } from '../../util/NodeUtil';
 import { LevelConfig, rightPanelchange } from '../adventure/common/RightPanelchange';
 import { StudyModeView } from '../adventure/sixModes/StudyModeView';
+import { WordExamView } from '../adventure/sixModes/WordExamView';
 import { WordMeaningView } from '../adventure/sixModes/WordMeaningView';
 import { WordPracticeView } from '../adventure/sixModes/WordPracticeView';
 import { WordReadingView } from '../adventure/sixModes/WordReadingView';
@@ -33,7 +34,7 @@ const { ccclass, property } = _decorator;
 export enum LearnGameModel {
     Tutoring=0, /**导学模式 */
     Spell = 1, /**拼模式 */
-    AllSpelledOut = 2,  /**全拼 */
+    AllSpelledOut = 2,  /**测评模式 */
     Practice=3, /**练习模式 */
     Reed = 4, /**读 */
     WordMeaning=7, /**词意模式 */
@@ -106,24 +107,25 @@ export class BreakThroughView extends BaseView {
         this.addModelListener(EventType.Enter_Island_Level,this.onEnterIsland);
         this.addModelListener(EventType.Exit_Island_Level,this.onExitIsland);
         this.addModelListener(EventType.Goto_Textbook_Level,this.gotoTextbookLevel);
+        this.addModelListener(EventType.Enter_Level_Test,this.gotoLevelTest);
     }
     gotoTextbookLevel(data:GotoUnitLevel){
         this._selectitemStatus = data.itemStatus;
         this._selectGate = data.gate;
-        
-        let reqParam:ReqUnitStatusParam = {
-            book_id:this._bookData.book_id,
-            unit_id:this._selectitemStatus.unit_id,
-            small_id:this._selectGate.small_id
-        }
-        TBServer.reqUnitStatus(reqParam);
-        if(data.isNext){
-            this.reqVocabularyWord();
-        }
-        
+        this.showRightChallengeView();
     }
     getUnitListStatus(){
         TBServer.reqUnitListStatus(this._bookData.book_id);
+    }
+
+    gotoLevelTest(){
+        let reqParam:ReqUnitStatusParam = {
+            book_id:this._bookData.book_id,
+            unit_id:this._selectitemStatus.unit_id,
+            small_id:this._selectGate.small_id,
+            category:ReqUnitType.Test
+        }
+        TBServer.reqUnitStatus(reqParam);
     }
 
     reqVocabularyWord(){
@@ -192,7 +194,12 @@ export class BreakThroughView extends BaseView {
 
     onEnterIsland(data:LevelConfig){
         console.log("onEnterIsland", data);
-        this.reqVocabularyWord();
+        let reqParam:ReqUnitStatusParam = {
+            book_id:this._bookData.book_id,
+            unit_id:this._selectitemStatus.unit_id,
+            small_id:this._selectGate.small_id
+        }
+        TBServer.reqUnitStatus(reqParam);
     }
     /**进入拼 */
     gotoSpell(wordData:VocabularyWordData,bookLevelData:BookLevelConfig){
@@ -219,9 +226,11 @@ export class BreakThroughView extends BaseView {
             node.getComponent(WordMeaningView).initData(wordData.data, bookLevelData);
         });
     }
-    
+    /**进入测评模式 */
     gotoAllSpelledOut(wordData:VocabularyWordData,bookLevelData:BookLevelConfig){
-        
+        ViewsManager.instance.showView(PrefabType.WordExamView, (node: Node) => {
+            node.getComponent(WordExamView).initData(wordData.data, bookLevelData);
+        });
     }
 
     /**进入学 */
@@ -238,9 +247,9 @@ export class BreakThroughView extends BaseView {
         this._rightChallenge.node.setPosition(posx,0,0);
         this._rightChallenge.node.active = true;
         // const removedString = this._curUnitStatus.unit.replace("Unit ", "").trim();
-        let param:MapLevelData = {small_id:this._curUnitStatus.small_id,
-            big_id:this._curUnitStatus.unit_name,
-            micro_id:this._curUnitStatus.small_id,
+        let param:MapLevelData = {small_id:this._selectGate.small_id,
+            big_id:this._selectitemStatus.unit_name,
+            micro_id:this._selectGate.small_id,
             game_modes:"word",
             flag_info:this._selectGate.flag_info}
 
@@ -251,7 +260,7 @@ export class BreakThroughView extends BaseView {
 
     onUnitStatus(data:UnitStatusData){
         this._curUnitStatus = data;
-        this.showRightChallengeView();
+        this.reqVocabularyWord();
     }
 
     onUnitListStatus(data:UnitListItemStatus){

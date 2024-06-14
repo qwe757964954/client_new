@@ -54,9 +54,7 @@ export class SelectWordView extends BaseView {
 		this.addModelListener(NetNotify.Classification_List,this.onBookList);
         this.addModelListener(NetNotify.Classification_SchoolBook,this.onSchoolBookList);
         this.addModelListener(NetNotify.Classification_SchoolGrade,this.onSchoolGradeList);
-        this.addModelListener(NetNotify.Classification_BookAdd,this.onBookAdd);
         this.addModelListener(EventType.Select_Word_Plan,this.onSelectWordPlan);
-        this.addModelListener(NetNotify.Classification_PlanAdd,this.onAddPlan);
         this.addModelListener(NetNotify.Classification_AddPlanBook,this.onAddPlanBook);
         this.addModelListener(NetNotify.Classification_UnitListStatus,this.onUnitListStatus);
 	}
@@ -84,14 +82,6 @@ export class SelectWordView extends BaseView {
         ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
             ViewsManager.instance.closeView(PrefabType.SelectWordView);
         });
-    }
-
-    onBookAdd(){
-        let reqData = {
-            book_id:this._curBookid,
-            num:parseInt(this._planData.right),
-        }
-        TBServer.reqPlanAdd(reqData)
     }
 
     onAddPlan(){

@@ -54,6 +54,8 @@ export class MainScene extends Component {
     public buildingLayer: Node = null;//建筑层
     @property(Camera)
     public mapCamera: Camera = null;//地图摄像机
+    @property(Camera)
+    public mapUICamera: Camera = null;//地图UI摄像机
     @property(Canvas)
     public touchCanvas: Canvas = null;//监听点击画布
     @property(Camera)

@@ -176,6 +176,12 @@ export class BaseModeView extends BaseView {
         this.addModelListener(NetNotify.Classification_Word, this.onClassificationWord);
         this.addModelListener(NetNotify.Classification_CollectWord, this.onCollectWord);
         this.addModelListener(EventType.Classification_AdventureCollectWord, this.onAdventureCollectWord);
+        this.addModelListener(NetNotify.Classification_GameSubmit, this.onGameSubmitResponse);
+    }
+    onGameSubmitResponse(data: GameSubmitResponse) {
+        console.log("onGameSubmitResponse....", data);
+        this._currentSubmitResponse = data;
+        this._currentSubmitResponse as GameSubmitResponse;
     }
 
     async initRole() {

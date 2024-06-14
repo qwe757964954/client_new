@@ -1,4 +1,4 @@
-import { _decorator, Component, instantiate, isValid, Label, Node, Prefab, Sprite, tween, UITransform, Vec3 } from 'cc';
+import { _decorator, Button, Component, instantiate, isValid, Label, Node, Prefab, Sprite, tween, UITransform, Vec3 } from 'cc';
 import { EventType } from '../../../config/EventType';
 import { DataMgr } from '../../../manager/DataMgr';
 import { ViewsMgr } from '../../../manager/ViewsManager';
@@ -102,15 +102,17 @@ export class rightPanelchange extends Component {
             ViewsMgr.showTip("通过本关后解锁");
             return;
         }
-        ViewsMgr.showTip("测评模式暂未开放");
-        return;
+        // ViewsMgr.showTip("测评模式暂未开放");
+        // return;
         EventManager.emit(EventType.Enter_Level_Test, this._data);
     }
 
     initEvent() {
         CCUtil.onTouch(this.btn_close, this.hideView, this);
         CCUtil.onTouch(this.btn_start, this.levelClick, this);
-        CCUtil.onTouch(this.btn_test, this.startTest, this);
+        CCUtil.onBtnClick(this.btn_test,()=>{
+            this.startTest();
+        });
         this._eveId = EventManager.on(EventType.Expand_the_level_page, this.openView.bind(this));
 
     }
@@ -152,7 +154,7 @@ export class rightPanelchange extends Component {
         }
         let data = this._data;
         //有星星
-        if (isValid(data.flag_info)) {
+        if (isValid(data.flag_info) && isValid(data.flag_info.star_one)) {
             let isGet = isValid(data.flag_info.star_one);
             this.stars[0].getComponent(Sprite).grayscale = !isGet;
             this.starConditions[0].getComponent(Sprite).grayscale = !isGet;
@@ -169,7 +171,7 @@ export class rightPanelchange extends Component {
             this.starConditions[2].getChildByName("star").getComponent(Sprite).grayscale = !isGet;
 
             this.btn_test.getComponent(Sprite).grayscale = false;
-
+            this.btn_test.getComponent(Button).enabled = true;
         } else {
             for (let i = 0; i < 3; i++) {
                 this.stars[i].getComponent(Sprite).grayscale = true;
@@ -177,9 +179,11 @@ export class rightPanelchange extends Component {
                 this.starConditions[i].getChildByName("star").getComponent(Sprite).grayscale = true;
             }
             this.btn_test.getComponent(Sprite).grayscale = true;
+            this.btn_test.getComponent(Button).enabled = false;
         }
         this.rewardList.numItems = this._rewardData.length;
-        this.btn_test.getComponent(Sprite).grayscale = true;
+        // this.btn_test.getComponent(Sprite).grayscale = true;
+        // this.btn_test.getComponent(Button).enabled = false;
         // LoadManager.loadSprite("adventure/monster/" + this._data.bigId + "-" + this._data.smallId + "/spriteFrame", this.monster.getComponent(Sprite));
     }
 

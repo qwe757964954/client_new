@@ -4,21 +4,21 @@ import { PrefabType } from '../../config/PrefabType';
 import GlobalConfig from '../../GlobalConfig';
 import { DataMgr } from '../../manager/DataMgr';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
-import { GameMode, IslandProgressModel, IslandStatusData, LevelProgressData, MapLevelData, MicroListItem } from '../../models/AdventureModel';
+import { GameMode, IslandProgressModel, IslandStatusData, LevelProgressData, MapLevelData } from '../../models/AdventureModel';
+import { UnitWordModel } from '../../models/TextbookModel';
 import { InterfacePath } from '../../net/InterfacePath';
 import { ServiceMgr } from '../../net/ServiceManager';
 import CCUtil from '../../util/CCUtil';
 import EventManager, { EventMgr } from '../../util/EventManager';
 import List from '../../util/list/List';
 import { StudyModeView } from './sixModes/StudyModeView';
+import { WordExamView } from './sixModes/WordExamView';
 import { WordMeaningView } from './sixModes/WordMeaningView';
 import { WordPracticeView } from './sixModes/WordPracticeView';
+import { WordReadingView } from './sixModes/WordReadingView';
 import { WordSpellView } from './sixModes/WordSpellView';
 import { WorldIsland } from './WorldIsland';
 import { WorldMapItem } from './WorldMapItem';
-import { WordReadingView } from './sixModes/WordReadingView';
-import { UnitWordModel } from '../../models/TextbookModel';
-import { WordExamView } from './sixModes/WordExamView';
 const { ccclass, property } = _decorator;
 /**大冒险 世界地图 何存发 2024年4月8日14:45:44 */
 @ccclass('WorldMapView')
@@ -157,8 +157,8 @@ export class WorldMapView extends Component {
 
     //进入关卡测试
     private enterTest(data: MapLevelData) {
-        ViewsMgr.showTip("测评模式暂未开放");
-        return;
+        // ViewsMgr.showTip("测评模式暂未开放");
+        // return;
         if (this._getingWords) {
             console.log('正在获取单词中', data);
             return;

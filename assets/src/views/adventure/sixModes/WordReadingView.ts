@@ -8,8 +8,7 @@ import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { ResLoader } from '../../../manager/ResLoader';
 import { ViewsManager } from '../../../manager/ViewsManager';
 import { AdventureResultModel, GameMode } from '../../../models/AdventureModel';
-import { GameSubmitModel, GameSubmitResponse, UnitWordModel } from '../../../models/TextbookModel';
-import { NetNotify } from '../../../net/NetNotify';
+import { GameSubmitModel, UnitWordModel } from '../../../models/TextbookModel';
 import { ServiceMgr } from '../../../net/ServiceManager';
 import { TBServer } from '../../../service/TextbookService';
 import CCUtil from '../../../util/CCUtil';
@@ -55,7 +54,6 @@ export class WordReadingView extends BaseModeView {
     onInitModuleEvent() {
         super.onInitModuleEvent();
         this.addModelListener(EventType.Get_Record_Result, this.getRecordResult);
-        this.addModelListener(NetNotify.Classification_GameSubmit, this.onGameSubmitResponse);
     }
     getRecordResult(response: RecordResponseData) {
         console.log('getRecordResult  RecordResponseData', response);
@@ -235,12 +233,6 @@ export class WordReadingView extends BaseModeView {
         RecordApi.stopRecord();
     }
 
-    onGameSubmitResponse(data: GameSubmitResponse) {
-        console.log("onGameSubmitResponse....", data);
-        this._currentSubmitResponse = data;
-        this._currentSubmitResponse as GameSubmitResponse;
-    }
-
     update(deltaTime: number) {
         let isAdventure = this._levelData.hasOwnProperty('islandId'); //是否是大冒险关卡
         if (!isAdventure && !this._turnIsBegin && this._currentSubmitResponse && this._currentSubmitResponse.pass_flag == 1 && !this._finished) {
@@ -254,7 +246,7 @@ export class WordReadingView extends BaseModeView {
         ViewsManager.instance.showView(PrefabType.WordReportView, (node: Node) => {
             let nodeScript = node.getComponent(WordReportView);
             console.log('朗读模式完成', this._currentSubmitResponse);
-            nodeScript.initData(this._currentSubmitResponse);
+            nodeScript.initData(this._currentSubmitResponse,this.gameMode);
             ViewsManager.instance.closeView(PrefabType.WordReadingView);
             //跳转到下一场景
             /*
