@@ -357,6 +357,7 @@ export class MapUICtl extends MainBaseCtl {
             return;
         }
         this._mainScene.mapCamera.orthoHeight = this._cameraHeight;
+        this._mainScene.mapUICamera.orthoHeight = this._cameraHeight;
         this._cameraRate = this._cameraHeight / this._uiCameraHeight;
         this.mapMove(0, 0);//限制map位置
         // 摄像头缩放事件通知
@@ -395,6 +396,7 @@ export class MapUICtl extends MainBaseCtl {
             this._cameraPos.y = -maxY;
         }
         this._mainScene.mapCamera.node.position = this._cameraPos;
+        this._mainScene.mapUICamera.node.position = this._cameraPos;
 
         this.updateCameraVisible();
     }
