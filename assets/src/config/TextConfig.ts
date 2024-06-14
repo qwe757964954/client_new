@@ -94,4 +94,7 @@ export const TextConfig = {
     Shop_Decoration: "装饰类",
     Reading_Success_Tip: "朗读单词正确",
     Reading_Error_Tip: "朗读单词错误",
+
+    ReviewPlan_Study: "已学单词:{0}",
+    ReviewPlan_Review: "已复习单词:{0}",
 }

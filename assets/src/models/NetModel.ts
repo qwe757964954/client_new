@@ -254,6 +254,22 @@ export class s2cCloudUnlockGet extends BaseRepPacket {
     award_items: s2cProductItem[];//奖励物品
 }
 
+/**复习规划 */
+export class c2sReviewPlan {
+    command_id: string = InterfacePath.c2sReviewPlan;
+}
+/**复习规划返回 */
+export class s2cReviewPlanInfo {
+    study_num: number;//学习单词数
+    review_num: number;//复习单词数
+    today_need_review_num: number;//今日需要复习单词数
+    today_review_num: number;//今日已复习单词数
+}
+export class s2cReviewPlan extends BaseRepPacket {
+    classification: s2cReviewPlanInfo;//教材单词
+    word_game: s2cReviewPlanInfo;//单词大冒险
+}
+
 /**********************************以上是新接口*************************************/
 
 //新手引导

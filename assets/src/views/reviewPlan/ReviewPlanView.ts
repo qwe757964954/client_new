@@ -1,9 +1,13 @@
-import { _decorator, Component, Label, Node, ProgressBar, sp } from 'cc';
+import { _decorator, Label, Node, ProgressBar, sp } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { PropID } from '../../config/PropConfig';
 import { TextConfig } from '../../config/TextConfig';
 import GlobalConfig from '../../GlobalConfig';
 import { ViewsMgr } from '../../manager/ViewsManager';
+import { s2cReviewPlan } from '../../models/NetModel';
+import { InterfacePath } from '../../net/InterfacePath';
+import { ServiceMgr } from '../../net/ServiceManager';
+import { BaseComponent } from '../../script/BaseComponent';
 import CCUtil from '../../util/CCUtil';
 import { ToolUtil } from '../../util/ToolUtil';
 const { ccclass, property } = _decorator;
@@ -12,7 +16,7 @@ const spAnimNames = ["jingtai", "danchou", "shilian"];
 const eggAnimNames = ["idle1", "crush1", "idle2", "crush2", "idle3", "crush3", "idle4", "crush4", "idle5", "crush5"];
 
 @ccclass('ReviewPlanView')
-export class ReviewPlanView extends Component {
+export class ReviewPlanView extends BaseComponent {
     @property(sp.Skeleton)
     public sp: sp.Skeleton = null;//动画
     @property(sp.Skeleton)
@@ -69,6 +73,9 @@ export class ReviewPlanView extends Component {
         this.init();
         this.initEvent();
     }
+    protected onEnable(): void {
+        ServiceMgr.studyService.reqReviewPlan();
+    }
     protected onDestroy(): void {
         this.removeEvent();
     }
@@ -83,6 +90,8 @@ export class ReviewPlanView extends Component {
         CCUtil.onTouch(this.btnTodayReview2, this.onBtnTodayReview2Click, this);
         CCUtil.onTouch(this.btnReview2, this.onBtnReview2Click, this);
         CCUtil.onTouch(this.labelTip2, this.onLabelTip2Click, this);
+
+        this.addEvent(InterfacePath.c2sReviewPlan, this.onRepReviewPlan.bind(this));
     }
     /**移除事件 */
     removeEvent() {
@@ -95,6 +104,8 @@ export class ReviewPlanView extends Component {
         CCUtil.offTouch(this.btnTodayReview2, this.onBtnTodayReview2Click, this);
         CCUtil.offTouch(this.btnReview2, this.onBtnReview2Click, this);
         CCUtil.offTouch(this.labelTip2, this.onLabelTip2Click, this);
+
+        this.clearEvent();
     }
     /**初始化 */
     init() {
@@ -177,6 +188,23 @@ export class ReviewPlanView extends Component {
         } else if (name == eggAnimNames[this._eggID * 2 + 1]) {
             this._canDraw = true;
             ViewsMgr.showRewards([{ id: PropID.stamina, num: 1 }]);
+        }
+    }
+    /**复习规划返回 */
+    onRepReviewPlan(data: s2cReviewPlan) {
+        if (200 != data.code) {
+            ViewsMgr.showAlert(data.msg);
+            return;
+        }
+        let info = data.word_game;
+        if (info) {
+            this.labelStudy1.string = ToolUtil.replace(TextConfig.ReviewPlan_Study, info.study_num);
+            this.labelReview1.string = ToolUtil.replace(TextConfig.ReviewPlan_Review, info.review_num);
+        }
+        info = data.classification;
+        if (info) {
+            this.labelStudy2.string = ToolUtil.replace(TextConfig.ReviewPlan_Study, info.study_num);
+            this.labelReview2.string = ToolUtil.replace(TextConfig.ReviewPlan_Review, info.review_num);
         }
     }
 }
