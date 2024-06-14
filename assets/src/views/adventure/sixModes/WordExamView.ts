@@ -1,12 +1,11 @@
-import { _decorator, Component, instantiate, Label, Node, NodePool, Prefab, Sprite, SpriteFrame, Vec3 } from 'cc';
-import { BaseModeView } from './BaseModeView';
-import List from '../../../util/list/List';
-import { UnitWordModel } from '../../../models/TextbookModel';
-import { GameMode } from '../../../models/AdventureModel';
-import { ExamItem } from './items/ExamItem';
-import CCUtil from '../../../util/CCUtil';
-import { ViewsManager } from '../../../manager/ViewsManager';
+import { _decorator, instantiate, Label, Node, NodePool, Prefab, Sprite, SpriteFrame, Vec3 } from 'cc';
 import { PrefabType } from '../../../config/PrefabType';
+import { ViewsManager } from '../../../manager/ViewsManager';
+import { GameMode } from '../../../models/AdventureModel';
+import { GameSubmitResponse, UnitWordModel } from '../../../models/TextbookModel';
+import List from '../../../util/list/List';
+import { BaseModeView } from './BaseModeView';
+import { ExamItem } from './items/ExamItem';
 import { WordReportView } from './WordReportView';
 const { ccclass, property } = _decorator;
 
@@ -52,7 +51,6 @@ export class WordExamView extends BaseModeView {
         this._wordsData = data;
         this.showCurrentWord();
     }
-
     showCurrentWord() {
         this.resultIcon.node.active = false;
         this._selectLock = false;
@@ -127,13 +125,17 @@ export class WordExamView extends BaseModeView {
         }
         this.initExamItem();
     }
-
+    onGameSubmitResponse(data: GameSubmitResponse) {
+        console.log("onGameSubmitResponse....", data);
+        this._currentSubmitResponse = data;
+        this._currentSubmitResponse as GameSubmitResponse;
+    }
     protected modeOver(): void {
         console.log('评测完成，显示结算');
         if (this._currentSubmitResponse.pass_flag == 1) { //通关
             ViewsManager.instance.showView(PrefabType.WordReportView, (node: Node) => {
                 let nodeScript = node.getComponent(WordReportView);
-                nodeScript.initData(this._currentSubmitResponse);
+                nodeScript.initData(this._currentSubmitResponse,this.gameMode);
                 ViewsManager.instance.closeView(PrefabType.WordExamView);
             });
         }
