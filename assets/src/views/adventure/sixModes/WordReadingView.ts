@@ -132,8 +132,8 @@ export class WordReadingView extends BaseModeView {
             let levelData = this._levelData as AdvLevelConfig;
             let costTime = Date.now() - this._costTime;
             let params: AdventureResultModel = {
-                big_id: levelData.islandId,
-                small_id: levelData.levelId,
+                big_id: levelData.bigId,
+                small_id: levelData.smallId,
                 micro_id: levelData.mapLevelData.micro_id,
                 game_mode: levelData.mapLevelData.current_mode,
                 cost_time: costTime,

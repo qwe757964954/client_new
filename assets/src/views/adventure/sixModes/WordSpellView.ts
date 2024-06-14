@@ -74,7 +74,7 @@ export class WordSpellView extends BaseModeView {
         let isAdventure = this._levelData.hasOwnProperty('islandId'); //是否是大冒险关卡
         if (isAdventure) { //单词大冒险获取组合模式选项
             let levelData = this._levelData as AdvLevelConfig;
-            ServiceMgr.studyService.getWordGroup(levelData.islandId, levelData.levelId, levelData.mapLevelData.micro_id);
+            ServiceMgr.studyService.getWordGroup(levelData.bigId, levelData.smallId, levelData.mapLevelData.micro_id);
         } else { //教材单词获取组合模式选项
             let levelData = this._levelData as BookLevelConfig;
             ServiceMgr.studyService.getTextbookWordGroup(levelData.book_id, levelData.unit_id);

@@ -182,6 +182,7 @@ export class BaseModeView extends BaseView {
         console.log("onGameSubmitResponse....", data);
         this._currentSubmitResponse = data;
         this._currentSubmitResponse as GameSubmitResponse;
+        this.checkResult();
     }
 
     async initRole() {
@@ -291,8 +292,8 @@ export class BaseModeView extends BaseView {
             let levelData = this._levelData as AdvLevelConfig;
             let costTime = Date.now() - this._costTime;
             let params: AdventureResultModel = {
-                big_id: levelData.islandId,
-                small_id: levelData.levelId,
+                big_id: levelData.bigId,
+                small_id: levelData.smallId,
                 micro_id: levelData.mapLevelData.micro_id,
                 game_mode: levelData.mapLevelData.current_mode,
                 cost_time: costTime,
@@ -369,6 +370,30 @@ export class BaseModeView extends BaseView {
         });
     }
 
+    //怪物攻击精灵
+    monsterAttack() {
+        return new Promise((resolve, reject) => {
+            if (!this._monster) {
+                resolve(true);
+                return;
+            }
+            let target = this._pet;
+            let monsterPos = new Vec3(this._monster.position);
+            let targetTranform = target.parent.getComponent(UITransform);
+            let transform = this.monster.getComponent(UITransform);
+            let targetpos = transform.convertToNodeSpaceAR(targetTranform.convertToWorldSpaceAR(new Vec3(0, 0, 0)));
+            let startPosx = targetpos.x + 100;
+            tween(this._monster).to(0.5, { position: new Vec3(startPosx, targetpos.y, targetpos.z) }).call(() => {
+                this._monster.getComponent(MonsterModel).hit("atk1").then(() => {
+                    tween(this._monster).to(0.5, { position: monsterPos }).start();
+                    this._pet.getComponent(PetModel).inHit().then(() => {
+                        resolve(true);
+                    });
+                });
+            }).start();
+        });
+    }
+
     //获取大冒险上报结果
     onUpResult(data: AdventureResult) {
         console.log("大冒险上报结果", data);
@@ -384,7 +409,13 @@ export class BaseModeView extends BaseView {
                 pointData.star = data.flag_star_num;
                 EventManager.emit(EventType.Update_MapPoint, pointData);
             }
+            this.checkResult();
         }
+    }
+
+    //检测上报结果是否失败
+    checkResult() {
+
     }
 
     //获取单词详情
@@ -483,8 +514,8 @@ export class BaseModeView extends BaseView {
             //大冒险关卡
             let levelData = this._levelData as AdvLevelConfig;
             let reqParam: AdventureCollectWordModel = {
-                big_id: levelData.islandId,
-                small_id: levelData.levelId,
+                big_id: levelData.bigId,
+                small_id: levelData.smallId,
                 micro_id: levelData.mapLevelData.micro_id,
                 action: this._detailData.collect_flag ? 0 : 1,
             }

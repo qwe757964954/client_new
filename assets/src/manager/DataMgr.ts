@@ -91,9 +91,8 @@ export class BuildProduceInfo {
 
 //大冒险关卡配置
 export class AdvLevelConfig {
-    islandId: number;
-    levelId: number;
-    type: number;
+    bigId: number;
+    smallId: number;
     monsterName: string;
     monsterAni: string;
     miniMonsterAni: string;
@@ -358,15 +357,16 @@ export class DataManager {
     //获取大冒险关卡数据
     public async getAdventureLevelConfig() {
         if (this.adventureLevelConfig != null) return this.adventureLevelConfig;
-        this.adventureLevelConfig = await LoadManager.loadJson(ConfigPath.AdventureLevel);
+        let config = await LoadManager.loadJson(ConfigPath.AdventureLevel);
+        this.adventureLevelConfig = config.adventure_level;
         return this.adventureLevelConfig;
     }
 
     //获取指定关卡配置
-    public getAdvLevelConfig(islandId: number, levelId: number): AdvLevelConfig {
+    public getAdvLevelConfig(bigId: number, smallId: number): AdvLevelConfig {
         if (this.adventureLevelConfig == null) return null;
         let cfgData = this.adventureLevelConfig.find((cfg) => {
-            return cfg.islandId == islandId && cfg.levelId == levelId;
+            return cfg.bigId == bigId && cfg.smallId == smallId;
         });
         return cfgData;
     }
