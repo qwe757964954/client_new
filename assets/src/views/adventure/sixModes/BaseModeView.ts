@@ -285,8 +285,8 @@ export class BaseModeView extends BaseView {
             let levelData = this._levelData as AdvLevelConfig;
             let costTime = Date.now() - this._costTime;
             let params: AdventureResultModel = {
-                big_id: levelData.islandId,
-                small_id: levelData.levelId,
+                big_id: levelData.bigId,
+                small_id: levelData.smallId,
                 micro_id: levelData.mapLevelData.micro_id,
                 game_mode: levelData.mapLevelData.current_mode,
                 cost_time: costTime,
@@ -477,8 +477,8 @@ export class BaseModeView extends BaseView {
             //大冒险关卡
             let levelData = this._levelData as AdvLevelConfig;
             let reqParam: AdventureCollectWordModel = {
-                big_id: levelData.islandId,
-                small_id: levelData.levelId,
+                big_id: levelData.bigId,
+                small_id: levelData.smallId,
                 micro_id: levelData.mapLevelData.micro_id,
                 action: this._detailData.collect_flag ? 0 : 1,
             }

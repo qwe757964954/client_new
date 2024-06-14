@@ -66,25 +66,25 @@ export class WordSpellView extends BaseModeView {
     initWords(data: UnitWordModel[]) {
         console.log('initWords', data);
         console.log(this.node);
-        if(!isValid(this.resultSprite)){
+        if (!isValid(this.resultSprite)) {
             this.resultSprite = this.node.getChildByName('frame').getChildByName('resultIcon'); //
         }
-        console.log("this.resultSprite_____",this.resultSprite);
+        console.log("this.resultSprite_____", this.resultSprite);
         this._wordsData = data;
         let isAdventure = this._levelData.hasOwnProperty('islandId'); //是否是大冒险关卡
         if (isAdventure) { //单词大冒险获取组合模式选项
             let levelData = this._levelData as AdvLevelConfig;
-            ServiceMgr.studyService.getWordGroup(levelData.islandId, levelData.levelId, levelData.mapLevelData.micro_id);
+            ServiceMgr.studyService.getWordGroup(levelData.bigId, levelData.smallId, levelData.mapLevelData.micro_id);
         } else { //教材单词获取组合模式选项
             let levelData = this._levelData as BookLevelConfig;
             ServiceMgr.studyService.getTextbookWordGroup(levelData.book_id, levelData.unit_id);
         }
     }
 
-    onInitModuleEvent(){
+    onInitModuleEvent() {
         super.onInitModuleEvent();
-        this.addModelListener(InterfacePath.Words_Group,this.onGetWordGroup);
-        this.addModelListener(InterfacePath.Classification_WordGroup,this.onGetWordGroup);
+        this.addModelListener(InterfacePath.Words_Group, this.onGetWordGroup);
+        this.addModelListener(InterfacePath.Classification_WordGroup, this.onGetWordGroup);
     }
 
     onGetWordGroup(data: WordGroupData) {
@@ -311,7 +311,7 @@ export class WordSpellView extends BaseModeView {
 
     protected initEvent(): void {
         super.initEvent();
-        
+
         CCUtil.onTouch(this.playSentenceBtn, this.playSentence, this);
     }
     protected removeEvent(): void {
