@@ -2,7 +2,7 @@ import { _decorator, instantiate, Label, Node, NodePool, Prefab, Sprite, SpriteF
 import { PrefabType } from '../../../config/PrefabType';
 import { ViewsManager } from '../../../manager/ViewsManager';
 import { GameMode } from '../../../models/AdventureModel';
-import { GameSubmitResponse, UnitWordModel } from '../../../models/TextbookModel';
+import { UnitWordModel } from '../../../models/TextbookModel';
 import List from '../../../util/list/List';
 import { BaseModeView } from './BaseModeView';
 import { ExamItem } from './items/ExamItem';
@@ -118,6 +118,22 @@ export class WordExamView extends BaseModeView {
                 console.log("选择错误");
                 this.resultIcon.spriteFrame = this.wrongIcon;
                 this.onGameSubmit(this._rightWordData.word, false);
+                if (this._wrongWordList.indexOf(this._rightWordData) == -1 && !this._wrongMode && !this._errorWords[this._rightWordData.word]) {
+                    this._errorNum++;
+                    this._levelData.error_num = this._errorNum;
+                    this.errorNumLabel.string = "错误次数：" + this._errorNum;
+    
+                }
+                this._wrongWordList.push(this._rightWordData);
+                if (!this._wrongMode) {
+                    this._wordIndex++;
+                    if (this._wordIndex >= this._wordsData.length) {
+                        this._wrongMode = true;
+                    }
+                }
+                this.monsterAttack().then(() => {
+                    this.showCurrentWord();
+                });
             }
             this.resultIcon.node.active = true;
         } else {
@@ -136,27 +152,8 @@ export class WordExamView extends BaseModeView {
     checkResult() {
         if (!this._currentSubmitResponse) return;
         //失败
-        if (this._currentSubmitResponse.pass_flag == 2) {
-            this.monsterAttack().then(() => {
-                this.modeOver();
-            });
-        } else {
-            if (this._wrongWordList.indexOf(this._rightWordData) == -1 && !this._wrongMode && !this._errorWords[this._rightWordData.word]) {
-                this._errorNum++;
-                this._levelData.error_num = this._errorNum;
-                this.errorNumLabel.string = "错误次数：" + this._errorNum;
-
-            }
-            this._wrongWordList.push(this._rightWordData);
-            if (!this._wrongMode) {
-                this._wordIndex++;
-                if (this._wordIndex >= this._wordsData.length) {
-                    this._wrongMode = true;
-                }
-            }
-            this.scheduleOnce(() => {
-                this.showCurrentWord();
-            }, 1);
+        if (this._currentSubmitResponse.pass_flag >= 1) {
+            this.modeOver();
         }
     }
 

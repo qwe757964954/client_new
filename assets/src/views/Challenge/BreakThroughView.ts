@@ -108,6 +108,7 @@ export class BreakThroughView extends BaseView {
         this.addModelListener(EventType.Exit_Island_Level,this.onExitIsland);
         this.addModelListener(EventType.Goto_Textbook_Level,this.gotoTextbookLevel);
         this.addModelListener(EventType.Enter_Level_Test,this.gotoLevelTest);
+        this.addModelListener(EventType.Goto_Break_Through_Textbook_Next_Level,this.gotoNextLevelTest);
     }
     gotoTextbookLevel(data:GotoUnitLevel){
         this._selectitemStatus = data.itemStatus;
@@ -116,6 +117,18 @@ export class BreakThroughView extends BaseView {
     }
     getUnitListStatus(){
         TBServer.reqUnitListStatus(this._bookData.book_id);
+    }
+    /**下一关卡 */
+    gotoNextLevelTest(data:GotoUnitLevel){
+        this._selectitemStatus = data.itemStatus;
+        this._selectGate = data.gate;
+        this.hideRightPanelchangeView();
+        let reqParam:ReqUnitStatusParam = {
+            book_id:this._bookData.book_id,
+            unit_id:this._selectitemStatus.unit_id,
+            small_id:this._selectGate.small_id
+        }
+        TBServer.reqUnitStatus(reqParam);
     }
 
     gotoLevelTest(){
@@ -252,8 +265,6 @@ export class BreakThroughView extends BaseView {
             micro_id:this._selectGate.small_id,
             game_modes:"word",
             flag_info:this._selectGate.flag_info}
-
-            
         this._rightChallenge.openView(param);
         this.mask_node.active = true;
     }

@@ -258,7 +258,7 @@ export class ScrollMapView extends BaseView {
             gate:gate,
             isNext:true
         } 
-        EventMgr.dispatch(EventType.Goto_Textbook_Level,param);
+        EventMgr.dispatch(EventType.Goto_Break_Through_Textbook_Next_Level,param);
     }
 
     removePointEvent() {

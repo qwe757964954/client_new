@@ -409,7 +409,7 @@ export class BaseModeView extends BaseView {
                 pointData.star = data.flag_star_num;
                 EventManager.emit(EventType.Update_MapPoint, pointData);
             }
-            this.checkResult();
+            // this.checkResult();
         }
     }
 
