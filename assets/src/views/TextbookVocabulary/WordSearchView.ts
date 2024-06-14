@@ -1,16 +1,16 @@
-import { _decorator, Component, EventTouch, instantiate, Label, Node, Prefab, RichText, Sprite, SpriteFrame, tween, UITransform, v3 } from 'cc';
-import { ViewsManager } from '../../manager/ViewsManager';
-import { PrefabType } from '../../config/PrefabType';
-import CCUtil from '../../util/CCUtil';
+import { _decorator, Component, EventTouch, instantiate, Label, Node, Prefab, RichText, Sprite, SpriteFrame, tween, v3 } from 'cc';
 import { NetConfig } from '../../config/NetConfig';
-import ImgUtil from '../../util/ImgUtil';
-import { RemoteSoundMgr } from '../../manager/RemoteSoundManager';
-import { WordDetailPanel } from './WordDetailPanel';
-import { SearchWordDetail, WordSentence } from './SearchWordView';
+import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
-import { WordsDetailData } from '../../models/AdventureModel';
-import MD5Util from '../../util/MD5Util';
 import GlobalConfig from '../../GlobalConfig';
+import { RemoteSoundMgr } from '../../manager/RemoteSoundManager';
+import { ViewsManager } from '../../manager/ViewsManager';
+import { WordsDetailData } from '../../models/AdventureModel';
+import CCUtil from '../../util/CCUtil';
+import ImgUtil from '../../util/ImgUtil';
+import { ToolUtil } from '../../util/ToolUtil';
+import { WordSentence } from './SearchWordView';
+import { WordDetailPanel } from './WordDetailPanel';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordSearchView')
@@ -228,7 +228,7 @@ export class WordSearchView extends Component {
         // let wordSoundUrl = "/sounds/glossary/sentence_tts/Emily/" + this._sentenceId + ".wav";
         // RemoteSoundMgr.playSound(NetConfig.assertUrl + wordSoundUrl);
 
-        let soundName = MD5Util.hex_md5(this._sentenceData.En);
+        let soundName = ToolUtil.md5(this._sentenceData.En);
         let type = GlobalConfig.USE_US ? "us" : "en";
         let url = NetConfig.assertUrl + "/sounds/sentence/" + type + "/" + soundName + ".wav"
         RemoteSoundMgr.playSound(url);

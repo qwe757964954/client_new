@@ -10,7 +10,7 @@ import { UnitWordModel } from '../../../models/TextbookModel';
 import { InterfacePath } from '../../../net/InterfacePath';
 import { ServiceMgr } from '../../../net/ServiceManager';
 import CCUtil from '../../../util/CCUtil';
-import MD5Util from '../../../util/MD5Util';
+import { ToolUtil } from '../../../util/ToolUtil';
 import { TransitionView } from '../common/TransitionView';
 import { BaseModeView } from './BaseModeView';
 import { SpellWordItem } from './items/SpellWordItem';
@@ -66,10 +66,10 @@ export class WordSpellView extends BaseModeView {
     initWords(data: UnitWordModel[]) {
         console.log('initWords', data);
         console.log(this.node);
-        if(!isValid(this.resultSprite)){
+        if (!isValid(this.resultSprite)) {
             this.resultSprite = this.node.getChildByName('frame').getChildByName('resultIcon'); //
         }
-        console.log("this.resultSprite_____",this.resultSprite);
+        console.log("this.resultSprite_____", this.resultSprite);
         this._wordsData = data;
         let isAdventure = this._levelData.hasOwnProperty('islandId'); //是否是大冒险关卡
         if (isAdventure) { //单词大冒险获取组合模式选项
@@ -81,10 +81,10 @@ export class WordSpellView extends BaseModeView {
         }
     }
 
-    onInitModuleEvent(){
+    onInitModuleEvent() {
         super.onInitModuleEvent();
-        this.addModelListener(InterfacePath.Words_Group,this.onGetWordGroup);
-        this.addModelListener(InterfacePath.Classification_WordGroup,this.onGetWordGroup);
+        this.addModelListener(InterfacePath.Words_Group, this.onGetWordGroup);
+        this.addModelListener(InterfacePath.Classification_WordGroup, this.onGetWordGroup);
     }
 
     onGetWordGroup(data: WordGroupData) {
@@ -303,7 +303,7 @@ export class WordSpellView extends BaseModeView {
     playSentence() {
         if (!this._sentenceData) return;
         // let url = NetConfig.assertUrl + "/sounds/glossary/sentence_tts/Emily/" + this._sentenceData.id + ".wav";
-        let soundName = MD5Util.hex_md5(this._sentenceData.sentence);
+        let soundName = ToolUtil.md5(this._sentenceData.sentence);
         let type = GlobalConfig.USE_US ? "us" : "en";
         let url = NetConfig.assertUrl + "/sounds/sentence/" + type + "/" + soundName + ".wav"
         RemoteSoundMgr.playSound(url);
@@ -311,7 +311,7 @@ export class WordSpellView extends BaseModeView {
 
     protected initEvent(): void {
         super.initEvent();
-        
+
         CCUtil.onTouch(this.playSentenceBtn, this.playSentence, this);
     }
     protected removeEvent(): void {

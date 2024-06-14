@@ -1,4 +1,5 @@
 import { Node, UIOpacity, Vec2, Vec3, tween } from "cc";
+import CryptoES from 'crypto-es';
 import { PropID } from "../config/PropConfig";
 import { PropData } from "../manager/DataMgr";
 
@@ -141,5 +142,9 @@ export class ToolUtil {
             if (arr1[i] != arr2[i]) return true;
         }
         return false;
+    }
+    /**md5 */
+    static md5(str: string): string {
+        return CryptoES.MD5(str).toString();
     }
 }

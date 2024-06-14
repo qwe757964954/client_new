@@ -1,10 +1,10 @@
 import { _decorator, Component, Label, Node, RichText } from 'cc';
-import CCUtil from '../../util/CCUtil';
-import { RemoteSoundMgr } from '../../manager/RemoteSoundManager';
 import { NetConfig } from '../../config/NetConfig';
-import { WordSentence } from './SearchWordView';
-import MD5Util from '../../util/MD5Util';
 import GlobalConfig from '../../GlobalConfig';
+import { RemoteSoundMgr } from '../../manager/RemoteSoundManager';
+import CCUtil from '../../util/CCUtil';
+import { ToolUtil } from '../../util/ToolUtil';
+import { WordSentence } from './SearchWordView';
 const { ccclass, property } = _decorator;
 
 @ccclass('SentenseItem')
@@ -94,7 +94,7 @@ export class DetailSentenseItem extends Component {
         // let wordSoundUrl = "/sounds/glossary/sentence_tts/Emily/" + this._sentenceId + ".wav";
         // RemoteSoundMgr.playSound(NetConfig.assertUrl + wordSoundUrl);
 
-        let soundName = MD5Util.hex_md5(this._sentenceData.En);
+        let soundName = ToolUtil.md5(this._sentenceData.En);
         let type = GlobalConfig.USE_US ? "us" : "en";
         let url = NetConfig.assertUrl + "/sounds/sentence/" + type + "/" + soundName + ".wav"
         RemoteSoundMgr.playSound(url);

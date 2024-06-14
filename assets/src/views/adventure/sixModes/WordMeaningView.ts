@@ -1,17 +1,17 @@
 import { _decorator, Label, Node, Sprite, SpriteFrame, tween, Vec3 } from 'cc';
 import { NetConfig } from '../../../config/NetConfig';
 import { PrefabType } from '../../../config/PrefabType';
+import GlobalConfig from '../../../GlobalConfig';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { ViewsManager } from '../../../manager/ViewsManager';
 import { GameMode, SentenceData, WordsDetailData } from '../../../models/AdventureModel';
 import { UnitWordModel } from '../../../models/TextbookModel';
 import CCUtil from '../../../util/CCUtil';
+import { ToolUtil } from '../../../util/ToolUtil';
 import { WordDetailView } from '../../common/WordDetailView';
 import { TransitionView } from '../common/TransitionView';
 import { BaseModeView } from './BaseModeView';
 import { WordPracticeView } from './WordPracticeView';
-import MD5Util from '../../../util/MD5Util';
-import GlobalConfig from '../../../GlobalConfig';
 const { ccclass, property } = _decorator;
 
 /**词意模式页面*/
@@ -135,7 +135,7 @@ export class WordMeaningView extends BaseModeView {
     playSentenceSound() {
         if (!this._sentenceData) return;
         // let url = NetConfig.assertUrl + "/sounds/glossary/sentence_tts/Emily/" + this._sentenceData.id + ".wav";
-        let soundName = MD5Util.hex_md5(this._sentenceData.sentence);
+        let soundName = ToolUtil.md5(this._sentenceData.sentence);
         let type = GlobalConfig.USE_US ? "us" : "en";
         let url = NetConfig.assertUrl + "/sounds/sentence/" + type + "/" + soundName + ".wav"
         RemoteSoundMgr.playSound(url);
