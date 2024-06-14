@@ -48,14 +48,14 @@ export class MonsterModel extends Component {
         });
     }
 
-    public hit() {
+    public hit(aciton: string = 'attack') {
         return new Promise((resolve) => {
             this.monster.setCompleteListener(() => {
                 this.monster.setCompleteListener(null);
                 this.monster.setAnimation(0, 'idle', true);
                 resolve(true);
             })
-            this.monster.setAnimation(0, 'attack', false);
+            this.monster.setAnimation(0, aciton, false);
         });
     }
 

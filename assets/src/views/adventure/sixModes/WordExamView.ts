@@ -88,15 +88,28 @@ export class WordExamView extends BaseModeView {
         this._fillLetters[this._currentLetterIdx] = selectLetter;
         this._currentLetterIdx++;
         if (this._currentLetterIdx == this._fillLetters.length) { //判断是否正确
-            this._wordIndex++;
             if (this._fillLetters.join("") == this._rightWordData.word) { //正确
                 console.log("选择正确");
                 this.resultIcon.spriteFrame = this.rightIcon;
                 this.onGameSubmit(this._rightWordData.word, true);
                 this._rightNum++;
+                if (this._wrongMode) {
+                    if (this._wrongWordList.length == 0) {
+                        this._wrongMode = false;
+                        this._wordIndex++;
+                    }
+                } else {
+                    this._wordIndex++;
+                }
+
                 this.attackMonster().then(() => {
                     if (this._wordIndex >= this._wordsData.length) {
-                        this.modeOver();
+                        if (this._wrongWordList.length > 0) {
+                            this._wrongMode = true;
+                            this.showCurrentWord();
+                        } else {
+                            this.modeOver();
+                        }
                     } else {
                         this.showCurrentWord();
                     }
@@ -105,12 +118,6 @@ export class WordExamView extends BaseModeView {
                 console.log("选择错误");
                 this.resultIcon.spriteFrame = this.wrongIcon;
                 this.onGameSubmit(this._rightWordData.word, false);
-                this._errorNum++;
-                if (this._wordIndex >= this._wordsData.length) {
-                    this.modeOver();
-                } else {
-                    this.showCurrentWord();
-                }
             }
             this.resultIcon.node.active = true;
         } else {
@@ -125,17 +132,40 @@ export class WordExamView extends BaseModeView {
         }
         this.initExamItem();
     }
-    onGameSubmitResponse(data: GameSubmitResponse) {
-        console.log("onGameSubmitResponse....", data);
-        this._currentSubmitResponse = data;
-        this._currentSubmitResponse as GameSubmitResponse;
+
+    checkResult() {
+        if (!this._currentSubmitResponse) return;
+        //失败
+        if (this._currentSubmitResponse.pass_flag == 2) {
+            this.monsterAttack().then(() => {
+                this.modeOver();
+            });
+        } else {
+            if (this._wrongWordList.indexOf(this._rightWordData) == -1 && !this._wrongMode && !this._errorWords[this._rightWordData.word]) {
+                this._errorNum++;
+                this._levelData.error_num = this._errorNum;
+                this.errorNumLabel.string = "错误次数：" + this._errorNum;
+
+            }
+            this._wrongWordList.push(this._rightWordData);
+            if (!this._wrongMode) {
+                this._wordIndex++;
+                if (this._wordIndex >= this._wordsData.length) {
+                    this._wrongMode = true;
+                }
+            }
+            this.scheduleOnce(() => {
+                this.showCurrentWord();
+            }, 1);
+        }
     }
+
     protected modeOver(): void {
         console.log('评测完成，显示结算');
-        if (this._currentSubmitResponse.pass_flag == 1) { //通关
+        if (this._currentSubmitResponse.pass_flag == 1 || this._currentSubmitResponse.pass_flag == 2) { //成功或失败
             ViewsManager.instance.showView(PrefabType.WordReportView, (node: Node) => {
                 let nodeScript = node.getComponent(WordReportView);
-                nodeScript.initData(this._currentSubmitResponse,this.gameMode);
+                nodeScript.initData(this._currentSubmitResponse, this.gameMode);
                 ViewsManager.instance.closeView(PrefabType.WordExamView);
             });
         }
