@@ -3,7 +3,7 @@ import { EventType } from '../../../config/EventType';
 import { PrefabType } from '../../../config/PrefabType';
 import { GameRes } from '../../../GameRes';
 import { inf_SpineAniCreate } from '../../../manager/InterfaceDefines';
-import { ViewsManager, ViewsMgr } from '../../../manager/ViewsManager';
+import { ViewsManager } from '../../../manager/ViewsManager';
 import { AdventureResult } from '../../../models/AdventureModel';
 import { RoleBaseModel } from '../../../models/RoleBaseModel';
 import { GameSubmitResponse } from '../../../models/TextbookModel';
@@ -55,7 +55,8 @@ export class WordReportView extends BaseView {
         this.initRolePlayer();
     }
 
-    initData(data: GameSubmitResponse) {
+    initData(data: GameSubmitResponse,gameModel:number) {
+        this.evaluation_btn.active = gameModel !== 2;
         this._resultSubmitResponse = data;
         if (this._resultSubmitResponse.pass_flag == 1) {
             let startAnim = ["sta", "sta2", "sta3"]
@@ -121,9 +122,8 @@ export class WordReportView extends BaseView {
     }
     gotoEvaluation() {
         console.log("测评模式")
-        ViewsMgr.showTip("测评模式暂未开放");
-        // this.node.destroy();
-        // EventMgr.dispatch(EventType.Goto_Exam_Mode);
+        this.node.destroy();
+        EventMgr.dispatch(EventType.Enter_Level_Test);
     }
 
     gotoNextLevel() {

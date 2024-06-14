@@ -1,6 +1,6 @@
 import { isValid } from "cc";
 import { ViewsManager } from "../manager/ViewsManager";
-import { CheckWordModel, GameSubmitModel, ModifyPlanData, MyTextbookStatus, ReportResultModel, ReqCollectWord, ReqPlanData, ReqUnitStatusParam, ReqWordDetail, c2sAddPlanBookStatus, c2sBookAwardList, c2sBookPlanDetail, c2sBookStatus, c2sChangeTextbook, c2sCheckWord, c2sCollectWord, c2sCurrentBook, c2sDelBookStatus, c2sGameSubmit, c2sModifyPlanStatus, c2sReportResult, c2sSchoolBook, c2sSchoolBookGrade, c2sSearchBookList, c2sUnitListStatus, c2sUnitStatus, c2sVocabularyWord, c2sWordDetail } from "../models/TextbookModel";
+import { CheckWordModel, GameSubmitModel, ModifyPlanData, MyTextbookStatus, ReportResultModel, ReqCollectWord, ReqPlanData, ReqUnitStatusParam, ReqUnitType, ReqWordDetail, c2sAddPlanBookStatus, c2sBookAwardList, c2sBookPlanDetail, c2sBookStatus, c2sChangeTextbook, c2sCheckWord, c2sCollectWord, c2sCurrentBook, c2sDelBookStatus, c2sGameSubmit, c2sModifyPlanStatus, c2sReportResult, c2sSchoolBook, c2sSchoolBookGrade, c2sSearchBookList, c2sUnitListStatus, c2sUnitStatus, c2sVocabularyWord, c2sWordDetail } from "../models/TextbookModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
 import { NetNotify } from "../net/NetNotify";
@@ -183,11 +183,15 @@ export default class _TextbookService extends BaseControll {
         }
         EventMgr.dispatch(NetNotify.Classification_BookPlanDetail, data);
     }
-    reqUnitStatus(param: ReqUnitStatusParam) {
+    reqUnitStatus(data: ReqUnitStatusParam) {
         let params: c2sUnitStatus = new c2sUnitStatus();
-        params.book_id = param.book_id;
-        params.unit_id = param.unit_id;
-        params.small_id = param.small_id;
+        params.book_id = data.book_id;
+        params.unit_id = data.unit_id;
+        params.small_id = data.small_id;
+        params.category = ReqUnitType.Normal;
+        if(isValid(data.category)){
+            params.category = data.category;
+        }
         NetMgr.sendMsg(params);
     }
     onUnitStatus(data: any) {

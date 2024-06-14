@@ -151,6 +151,12 @@ export interface ReqUnitStatusParam{
     book_id:string
     unit_id:string;
     small_id:number;
+    category?:number;
+}
+
+export enum ReqUnitType {
+    Normal= 1,/**常规 */
+    Test= 2,/**测评 */
 }
 
 //我的单词--词书年级单元学习情况列表接口
@@ -159,6 +165,7 @@ export class c2sUnitStatus {
     book_id:string;
     unit_id:string;
     small_id:number;
+    category?:number;
 }
 
 export interface UnitStatusData extends BaseRepPacket{
