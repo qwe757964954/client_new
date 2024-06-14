@@ -81,14 +81,6 @@ export class c2sDelBookStatus {
     book_id:string;
 }
 
-//添加计划
-
-export class c2sAddPlanStatus {
-    command_id: string = InterfacePath.Classification_PlanAdd;
-    book_id:string;
-    num:number;
-}
-
 //添加书附带添加计划
 export class c2sAddPlanBookStatus {
     command_id: string = InterfacePath.Classification_AddPlanBook;

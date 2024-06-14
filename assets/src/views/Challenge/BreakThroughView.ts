@@ -33,7 +33,7 @@ const { ccclass, property } = _decorator;
 export enum LearnGameModel {
     Tutoring=0, /**导学模式 */
     Spell = 1, /**拼模式 */
-    AllSpelledOut = 2,  /**全拼 */
+    AllSpelledOut = 2,  /**测评模式 */
     Practice=3, /**练习模式 */
     Reed = 4, /**读 */
     WordMeaning=7, /**词意模式 */
@@ -106,6 +106,7 @@ export class BreakThroughView extends BaseView {
         this.addModelListener(EventType.Enter_Island_Level,this.onEnterIsland);
         this.addModelListener(EventType.Exit_Island_Level,this.onExitIsland);
         this.addModelListener(EventType.Goto_Textbook_Level,this.gotoTextbookLevel);
+        this.addModelListener(EventType.Enter_Level_Test,this.gotoLevelTest);
     }
     gotoTextbookLevel(data:GotoUnitLevel){
         this._selectitemStatus = data.itemStatus;
@@ -124,6 +125,19 @@ export class BreakThroughView extends BaseView {
     }
     getUnitListStatus(){
         TBServer.reqUnitListStatus(this._bookData.book_id);
+    }
+
+    gotoLevelTest(){
+        let bookLevelData:BookLevelConfig = {
+            book_id:this._bookData.book_id,
+            unit:this._selectitemStatus.unit_name,
+            unit_id:this._selectitemStatus.unit_id,
+            cur_game_mode:LearnGameModel.AllSpelledOut,
+            game_mode:LearnGameModel.AllSpelledOut,
+            small_id:this._selectGate.small_id,
+            word_num:this._curUnitStatus.word_num,
+            time_remaining:this._curUnitStatus.time_remaining,
+        }
     }
 
     reqVocabularyWord(){
@@ -219,7 +233,7 @@ export class BreakThroughView extends BaseView {
             node.getComponent(WordMeaningView).initData(wordData.data, bookLevelData);
         });
     }
-    
+    /**进入测评模式 */
     gotoAllSpelledOut(wordData:VocabularyWordData,bookLevelData:BookLevelConfig){
         
     }

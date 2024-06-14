@@ -37,7 +37,6 @@ export const InterfacePath = {
     Classification_AdventureCollectWord: "3108", //单词大冒险收藏
     /***********************************************选择词书 begin*********************************************/
     Classification_BookStatus: "3011", //我的词书-列表
-    Classification_PlanAdd: "3016", //我的词书-添加计划
     Classification_PlanModify: "3017", //我的词书-修改计划
     Classification_BookDel: "3014", //我的词书-删除词书
     Classification_List: "3001", //获取分类汇总列表
