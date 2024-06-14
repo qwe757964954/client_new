@@ -6,6 +6,8 @@
 [Fix removing listener when editbox is closed](https://github.com/cocos/cocos-engine/pull/16648/files)
 [Modify editbox to update dom coordinates after update](https://github.com/cocos/cocos-engine/pull/16768/files)
 
+### <font color=FF0000> 注意： </font>第一次打开项目执行npm i，安装依赖的库
+
 ## 打包脚本
 1. 打包资源和脚本
 2. 打渠道包
