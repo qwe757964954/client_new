@@ -460,7 +460,6 @@ export class BaseModeView extends BaseView {
     protected initEvent(): void {
         CCUtil.onTouch(this.btn_close.node, this.closeView, this);
         this._getResultEveId = EventManager.on(InterfacePath.Adventure_Result, this.onUpResult.bind(this));
-        EventManager.on(NetNotify.Classification_ReportResult, this.onUpResult.bind(this));
         this._wordDetailEveId = EventManager.on(InterfacePath.Adventure_Word, this.onClassificationWord.bind(this));
         CCUtil.onBtnClick(this.btn_collect, () => {
             this.onClickCollectEvent();
@@ -469,7 +468,6 @@ export class BaseModeView extends BaseView {
     protected removeEvent(): void {
         CCUtil.offTouch(this.btn_close.node, this.closeView, this);
         EventManager.off(InterfacePath.Adventure_Result, this._getResultEveId);
-        EventManager.off(NetNotify.Classification_ReportResult, this.onUpResult.bind(this));
         EventManager.off(InterfacePath.Adventure_Word, this._wordDetailEveId);
         this.unschedule(this.onTimer);
     }
