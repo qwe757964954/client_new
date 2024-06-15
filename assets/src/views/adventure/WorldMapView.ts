@@ -152,7 +152,7 @@ export class WorldMapView extends Component {
         this._currentLevelData = data;
         // this._currentLevelData.current_mode = GameMode.Study;
         this._getingWords = true;
-        ServiceMgr.studyService.getAdvLevelProgress(data.big_id, data.small_id, data.micro_id);
+        ServiceMgr.studyService.getAdvLevelProgress(data.big_id, data.small_id, data.micro_id, 1);
     }
 
     //进入关卡测试
@@ -168,9 +168,9 @@ export class WorldMapView extends Component {
         this._getingWords = true;
         if (this._levelProgressData) { //已有当前关数据
             this._levelProgressData.game_mode = GameMode.Exam;
-            ServiceMgr.studyService.getWordGameWords(this._currentLevelData.big_id, this._currentLevelData.small_id, this._currentLevelData.micro_id, this._currentLevelData.current_mode);
+            ServiceMgr.studyService.getWordGameWords(this._currentLevelData.big_id, this._currentLevelData.small_id, this._currentLevelData.micro_id);
         } else {
-            ServiceMgr.studyService.getAdvLevelProgress(data.big_id, data.small_id, data.micro_id);
+            ServiceMgr.studyService.getAdvLevelProgress(data.big_id, data.small_id, data.micro_id, 2);
         }
     }
 
@@ -183,7 +183,7 @@ export class WorldMapView extends Component {
         if (this._currentLevelData.current_mode != GameMode.Exam) { //不是测试模式
             this._currentLevelData.current_mode = this._levelProgressData.game_mode;
         }
-        ServiceMgr.studyService.getWordGameWords(this._currentLevelData.big_id, this._currentLevelData.small_id, this._currentLevelData.micro_id, this._currentLevelData.current_mode);
+        ServiceMgr.studyService.getWordGameWords(this._currentLevelData.big_id, this._currentLevelData.small_id, this._currentLevelData.micro_id);
     }
 
     goNextLevel() {

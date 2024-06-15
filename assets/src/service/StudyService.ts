@@ -42,12 +42,11 @@ export default class StudyService extends BaseControll {
     }
 
     //获取大冒险关卡单词
-    getWordGameWords(bigId: number, smallId: number, microId: number, gameMode: number) {
+    getWordGameWords(bigId: number, smallId: number, microId: number) {
         let para: c2sWordGameWords = new c2sWordGameWords();
         para.big_id = bigId;
         para.small_id = smallId;
         para.micro_id = microId;
-        para.game_mode = gameMode;
         NetMgr.sendMsg(para);
     }
     onWordGameWords(data: WordGameWordsData) {
@@ -129,11 +128,12 @@ export default class StudyService extends BaseControll {
     }
 
     //获取大冒险关卡进度
-    getAdvLevelProgress(big_id: number, small_id: number, micro_id: number) {
+    getAdvLevelProgress(big_id: number, small_id: number, micro_id: number, category: number) {
         let para: c2sAdvLevelProgress = new c2sAdvLevelProgress();
         para.big_id = big_id;
         para.small_id = small_id;
         para.micro_id = micro_id;
+        para.category = category;
         NetMgr.sendMsg(para);
     }
 

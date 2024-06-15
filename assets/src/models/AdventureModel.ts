@@ -93,7 +93,6 @@ export class c2sWordGameWords {
     big_id: number;
     small_id: number;
     micro_id: number;
-    game_mode: number;
 }
 
 export class WordGameWordsData extends BaseRepPacket {
@@ -218,6 +217,7 @@ export class c2sAdvLevelProgress {
     big_id: number;
     small_id: number;
     micro_id: number;
+    category: number;
 }
 
 export class LevelProgressData extends BaseRepPacket {
