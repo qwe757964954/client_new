@@ -115,7 +115,7 @@ export class WordSpellView extends BaseModeView {
         this.resultSprite.active = false;
         this._rightWordData = this._wrongMode ? this._wrongWordList.shift() : this._wordsData[this._wordIndex];
         let word = this._rightWordData.word;
-        this.initWordDetail(word);
+        this.initWordDetail(this._rightWordData);
         this.initItemNode();
     }
 

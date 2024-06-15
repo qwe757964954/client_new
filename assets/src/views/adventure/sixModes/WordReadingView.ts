@@ -176,7 +176,7 @@ export class WordReadingView extends BaseModeView {
         this.wordLabel.string = word;
         this.symbolLabel.string = this._rightWordData.symbol;
         this.cnLabel.string = this._rightWordData.cn;
-        this.initWordDetail(word);
+        this.initWordDetail(this._rightWordData );
         // this.playWordSound();
     }
 

@@ -99,7 +99,7 @@ export class WordPracticeView extends BaseModeView {
         this.wordMeanLabel.string = this._currentWord.cn;
         this.letterList.numItems = this._letterList.length;
         this.selectList.numItems = this._selectLetterList.length;
-        this.initWordDetail(word);
+        this.initWordDetail(this._currentWord);
         this.playWordSound();
     }
 

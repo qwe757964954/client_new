@@ -6,7 +6,7 @@ import { ViewsManager } from '../../../manager/ViewsManager';
 import { AdventureCollectWordModel, AdventureResult, AdventureResultModel, GameMode, WordsDetailData } from '../../../models/AdventureModel';
 import { PetModel } from '../../../models/PetModel';
 import { RoleBaseModel } from '../../../models/RoleBaseModel';
-import { GameSubmitModel, GameSubmitResponse, ReqCollectWord, ReqWordDetail, UnitWordModel } from '../../../models/TextbookModel';
+import { GameSubmitModel, GameSubmitResponse, ReqCollectWord, UnitWordModel } from '../../../models/TextbookModel';
 import { InterfacePath } from '../../../net/InterfacePath';
 import { NetNotify } from '../../../net/NetNotify';
 import { ServiceMgr } from '../../../net/ServiceManager';
@@ -424,18 +424,13 @@ export class BaseModeView extends BaseView {
     }
 
     //获取单词详情
-    initWordDetail(word: string) {
+    initWordDetail(wordData: UnitWordModel) {
         if (this._levelData.hasOwnProperty('islandId')) { //大冒险关卡
             let levelData: AdvLevelConfig = this._levelData as AdvLevelConfig;
-            ServiceMgr.studyService.getAdventureWord(word, levelData.mapLevelData.big_id, levelData.mapLevelData.small_id, levelData.mapLevelData.micro_id);
+            ServiceMgr.studyService.getAdventureWord(wordData.w_id, levelData.mapLevelData.big_id, levelData.mapLevelData.small_id, levelData.mapLevelData.micro_id);
         } else { //教材单词关卡
             let levelData: BookLevelConfig = this._levelData as BookLevelConfig;
-            let data: ReqWordDetail = {
-                book_id: levelData.book_id,
-                unit_id: levelData.unit_id,
-                word: word,
-            }
-            TBServer.reqWordDetail(data);
+            TBServer.reqWordDetail(wordData.w_id);
         }
     }
 
