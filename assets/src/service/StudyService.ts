@@ -2,7 +2,7 @@ import { isValid } from "cc";
 import { EventType } from "../config/EventType";
 import { ViewsManager } from "../manager/ViewsManager";
 import { AdventureCollectWordModel, AdventureResultModel, c2sAdventureCollectWord, c2sAdventureResult, c2sAdventureWord, c2sAdventureWordSentence, c2sAdvLevelProgress, c2sIslandProgress, c2sIslandStatus, c2sTextbookWordGroup, c2sWordGameWords, c2sWordGroup, WordGameWordsData } from "../models/AdventureModel";
-import { c2sReviewPlan } from "../models/NetModel";
+import { c2sReviewPlan, c2sReviewPlanList } from "../models/NetModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
 import { BaseControll } from "../script/BaseControll";
@@ -137,9 +137,17 @@ export default class StudyService extends BaseControll {
         NetMgr.sendMsg(para);
     }
 
-    /**复习计划 */
+    /**复习规划 */
     reqReviewPlan() {
         let para: c2sReviewPlan = new c2sReviewPlan();
+        NetMgr.sendMsg(para);
+    }
+    /**复习规划列表 */
+    reqReviewPlanList(source: number, review_type: string) {
+        console.log("reqReviewPlanList", source, review_type);
+        let para: c2sReviewPlanList = new c2sReviewPlanList();
+        para.source = source;
+        para.review_type = review_type;
         NetMgr.sendMsg(para);
     }
 }
