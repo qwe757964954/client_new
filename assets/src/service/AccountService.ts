@@ -91,6 +91,13 @@ export default class AccountService {
                 User.memberToken = "";
                 StorageUtil.removeData(KeyConfig.Last_Login_Token);
             }
+            if (SceneType.LoginScene != director.getScene().name) {
+                ViewsManager.showAlert(data.msg, () => {
+                    User.isAutoLogin = false;
+                    User.resetData();
+                    director.loadScene(SceneType.LoginScene);
+                });
+            }
         }
         EventMgr.emit(EventType.Login_Success);
     }

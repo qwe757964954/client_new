@@ -142,7 +142,7 @@ export class MainUIView extends Component {
     public onClickTask() {
         console.log("onClickTask");
         // ViewsManager.showTip(TextConfig.Function_Tip);
-        ViewsManager.instance.showView(PrefabType.WeekTaskView);
+        ViewsMgr.showView(PrefabType.WeekTaskView);
     }
     //任务前往点击
     public onClickTaskGo() {
