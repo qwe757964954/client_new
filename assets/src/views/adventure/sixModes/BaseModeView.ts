@@ -504,9 +504,7 @@ export class BaseModeView extends BaseView {
         if (!isAdventure) { //教材关卡
             let levelData = this._levelData as BookLevelConfig;
             let reqParam: ReqCollectWord = {
-                word: wordData.word,
-                book_id: levelData.book_id,
-                unit_id: levelData.unit_id,
+                w_id: wordData.w_id,
                 action: this._detailData.collect_flag ? 0 : 1,
             }
             TBServer.reqCollectWord(reqParam);
