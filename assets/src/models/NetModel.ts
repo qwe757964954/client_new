@@ -285,6 +285,50 @@ export class s2cReviewPlanList extends BaseRepPacket {
     today_timestamp: number;//今日时间戳
     need_review_list: s2cReviewPlanListInfo[];//复习规划列表
 }
+/**宠物信息 */
+export class c2sPetInfo {
+    command_id: string = InterfacePath.c2sPetInfo;
+}
+/**宠物信息返回 */
+export class s2cPetInfo {
+    user_id: number;//用户id
+    level: number;//等级
+    mood: number;//心情分
+    intimacy: number;//亲密度
+    daily_counts: number[];//每日互动次数
+    explore_award: boolean;//是否有探索奖励
+    next_update_second: number;//下次心情状态和亲密度更新时间
+    next_explore_second: number;//下次探索奖励更新时间
+}
+export class s2cPetInfoRep extends BaseRepPacket {
+    pet_info: s2cPetInfo;//宠物信息
+}
+/**宠物互动 */
+export class c2sPetInteraction {
+    private command_id: string = InterfacePath.c2sPetInteraction;
+    interact_id: number;//互动id
+}
+/**宠物互动返回 */
+export class s2cPetInteraction extends BaseRepPacket {
+    pet_info: s2cPetInfo;//宠物信息
+}
+/**宠物升级 */
+export class c2sPetUpgrade {
+    command_id: string = InterfacePath.c2sPetUpgrade;
+    level: number;//等级
+}
+/**宠物升级返回 */
+export class s2cPetUpgrade extends BaseRepPacket {
+    level: number;//等级
+}
+/**领取探索奖励 */
+export class c2sPetGetReward {
+    command_id: string = InterfacePath.c2sPetGetReward;
+}
+/**领取探索奖励返回 */
+export class s2cPetGetReward extends BaseRepPacket {
+    explore_aware: s2cProductItem[];//奖励信息
+}
 
 /**********************************以上是新接口*************************************/
 

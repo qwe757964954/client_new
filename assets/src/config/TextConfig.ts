@@ -97,4 +97,7 @@ export const TextConfig = {
 
     ReviewPlan_Study: "已学单词:{0}",
     ReviewPlan_Review: "已复习单词:{0}",
+
+    PetInteraction_Tip: "互动次数不足",
+    PetUpgrade_Tip: "升级成功",
 }

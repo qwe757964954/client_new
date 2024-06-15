@@ -1,4 +1,4 @@
-import { c2sBuildingCreate, c2sBuildingEdit, c2sBuildingList, c2sBuildingProduceAdd, c2sBuildingProduceDelete, c2sBuildingProduceGet, c2sBuildingRecycle, c2sBuildingSell, c2sBuildingUpgrade, c2sCloudUnlock, c2sCloudUnlockGet, c2sLandUpdate } from "../models/NetModel";
+import { c2sBuildingCreate, c2sBuildingEdit, c2sBuildingList, c2sBuildingProduceAdd, c2sBuildingProduceDelete, c2sBuildingProduceGet, c2sBuildingRecycle, c2sBuildingSell, c2sBuildingUpgrade, c2sCloudUnlock, c2sCloudUnlockGet, c2sLandUpdate, c2sPetGetReward, c2sPetInfo, c2sPetInteraction, c2sPetUpgrade } from "../models/NetModel";
 import { NetMgr } from "../net/NetManager";
 import { BaseControll } from "../script/BaseControll";
 
@@ -102,6 +102,33 @@ export class BuildingService extends BaseControll {
         console.log("reqCloudUnlockGet", ary);
         let para = new c2sCloudUnlockGet();
         para.unlock_cloud = ary;
+        NetMgr.sendMsg(para);
+    }
+
+    /**宠物信息 */
+    reqPetInfo() {
+        console.log("reqPetInfo");
+        let para = new c2sPetInfo();
+        NetMgr.sendMsg(para);
+    }
+    /**宠物互动 */
+    reqPetInteraction(id: number) {
+        console.log("reqPetInteraction", id);
+        let para = new c2sPetInteraction();
+        para.interact_id = id;
+        NetMgr.sendMsg(para);
+    }
+    /**宠物升级 */
+    reqPetUpgrade(level: number) {
+        console.log("reqPetUpgrade", level);
+        let para = new c2sPetUpgrade();
+        para.level = level;
+        NetMgr.sendMsg(para);
+    }
+    /**宠物领取奖励 */
+    reqPetGetReward() {
+        console.log("reqPetGetReward");
+        let para = new c2sPetGetReward();
         NetMgr.sendMsg(para);
     }
 }

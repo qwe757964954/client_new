@@ -303,5 +303,18 @@ export class RoleBaseModel extends BaseComponent {
         rect.y += pos.y;
         return rect;
     }
+    /**等级更新 */
+    public updateLevel(level: number) {
+        if (this._level == level) return;
+        this._level = level;
+        if (RoleType.role == this._roleType) {
+            this._roleInfo = MapConfig.roleInfo[this._roleID][level - 1];
+        } else {
+            this._roleInfo = MapConfig.spriteInfo[this._roleID][level - 1];
+        }
+        LoadManager.loadSpine(this._roleInfo.spPath, this.role).then((skeletonData: sp.SkeletonData) => {
+            this.initAction();
+        });
+    }
 }
 
