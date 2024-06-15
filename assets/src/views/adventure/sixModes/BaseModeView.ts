@@ -80,7 +80,7 @@ export class BaseModeView extends BaseView {
         this.node.getChildByName("img_bg").addComponent(BlockInputEvents);
         this.initRole(); //初始化角色
         this.initPet(); //初始化精灵
-        this._costTime = Date.now();
+        
         let scaleNum = view.getVisibleSize().width / view.getDesignResolutionSize().width;
         this.topNode.setScale(scaleNum, scaleNum, 1);
     }
@@ -158,6 +158,10 @@ export class BaseModeView extends BaseView {
         this._errorNum = levelData.error_num;
         this.errorNumLabel.string = "错误次数:" + this._errorNum;
         return wordsdata;
+    }
+
+    updateConstTime(){
+        this._costTime = Date.now();
     }
 
     onTimer() {
@@ -305,6 +309,7 @@ export class BaseModeView extends BaseView {
         }
         let levelData: BookLevelConfig = this._levelData as BookLevelConfig;
         let costTime = Date.now() - this._costTime;
+        console.log("costTime.....",costTime,this._costTime);
         let data: GameSubmitModel = {
             book_id: levelData.book_id,
             unit_id: levelData.unit_id,

@@ -56,6 +56,7 @@ export class WordPracticeView extends BaseModeView {
     }
 
     showCurrentWord() {
+        super.updateConstTime();
         this.clearItems();
         this._currentLetterIdx = 0;
         this._currentWord = this._wordsData[this._wordIndex];

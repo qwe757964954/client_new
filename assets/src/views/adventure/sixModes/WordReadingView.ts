@@ -169,6 +169,7 @@ export class WordReadingView extends BaseModeView {
 
     //显示当前单词
     showCurrentWord() {
+        super.updateConstTime();
         this._rightWordData = this._wrongMode ? this._wrongWordList.shift() : this._wordsData[this._wordIndex];
         console.log('word', this._rightWordData);
         let word = this._rightWordData.word;
