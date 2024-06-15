@@ -79,6 +79,7 @@ export class WordMeaningView extends BaseModeView {
 
     //显示当前单词
     showCurrentWord() {
+        super.updateConstTime();
         this._selectLock = false;
         this._rightWordData = this._wrongMode ? this._wrongWordList.shift() : this._wordsData[this._wordIndex];
         console.log('word', this._rightWordData);

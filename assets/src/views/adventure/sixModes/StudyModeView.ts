@@ -94,6 +94,7 @@ export class StudyModeView extends BaseModeView {
 
     //显示当前单词
     showCurrentWord() {
+        super.updateConstTime();
         this._isCombine = false;
         let wordData = this._wordsData[this._wordIndex];
         console.log('word', wordData);

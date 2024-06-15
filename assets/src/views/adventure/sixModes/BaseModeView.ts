@@ -6,7 +6,7 @@ import { ViewsManager } from '../../../manager/ViewsManager';
 import { AdventureCollectWordModel, AdventureResult, AdventureResultModel, GameMode, WordsDetailData } from '../../../models/AdventureModel';
 import { PetModel } from '../../../models/PetModel';
 import { RoleBaseModel } from '../../../models/RoleBaseModel';
-import { GameSubmitModel, GameSubmitResponse, ReqCollectWord, ReqWordDetail, UnitWordModel } from '../../../models/TextbookModel';
+import { GameSubmitModel, GameSubmitResponse, ReqCollectWord, UnitWordModel } from '../../../models/TextbookModel';
 import { InterfacePath } from '../../../net/InterfacePath';
 import { NetNotify } from '../../../net/NetNotify';
 import { ServiceMgr } from '../../../net/ServiceManager';
@@ -80,7 +80,7 @@ export class BaseModeView extends BaseView {
         this.node.getChildByName("img_bg").addComponent(BlockInputEvents);
         this.initRole(); //初始化角色
         this.initPet(); //初始化精灵
-        this._costTime = Date.now();
+        
         let scaleNum = view.getVisibleSize().width / view.getDesignResolutionSize().width;
         this.topNode.setScale(scaleNum, scaleNum, 1);
     }
@@ -158,6 +158,10 @@ export class BaseModeView extends BaseView {
         this._errorNum = levelData.error_num;
         this.errorNumLabel.string = "错误次数:" + this._errorNum;
         return wordsdata;
+    }
+
+    updateConstTime(){
+        this._costTime = Date.now();
     }
 
     onTimer() {
@@ -306,6 +310,7 @@ export class BaseModeView extends BaseView {
         }
         let levelData: BookLevelConfig = this._levelData as BookLevelConfig;
         let costTime = Date.now() - this._costTime;
+        console.log("costTime.....",costTime,this._costTime);
         let data: GameSubmitModel = {
             book_id: levelData.book_id,
             unit_id: levelData.unit_id,
@@ -426,12 +431,7 @@ export class BaseModeView extends BaseView {
             ServiceMgr.studyService.getAdventureWord(word.w_id);
         } else { //教材单词关卡
             let levelData: BookLevelConfig = this._levelData as BookLevelConfig;
-            let data: ReqWordDetail = {
-                book_id: levelData.book_id,
-                unit_id: levelData.unit_id,
-                word: word.word,
-            }
-            TBServer.reqWordDetail(data);
+            TBServer.reqWordDetail(word.w_id);
         }
     }
 
@@ -462,7 +462,6 @@ export class BaseModeView extends BaseView {
         console.log("initEvent");
         CCUtil.onTouch(this.btn_close.node, this.closeView, this);
         this._getResultEveId = EventManager.on(InterfacePath.Adventure_Result, this.onUpResult.bind(this));
-        EventManager.on(NetNotify.Classification_ReportResult, this.onUpResult.bind(this));
         this._wordDetailEveId = EventManager.on(InterfacePath.Adventure_Word, this.onClassificationWord.bind(this));
         CCUtil.onBtnClick(this.btn_collect, () => {
             this.onClickCollectEvent();
@@ -471,7 +470,6 @@ export class BaseModeView extends BaseView {
     protected removeEvent(): void {
         CCUtil.offTouch(this.btn_close.node, this.closeView, this);
         EventManager.off(InterfacePath.Adventure_Result, this._getResultEveId);
-        EventManager.off(NetNotify.Classification_ReportResult, this.onUpResult.bind(this));
         EventManager.off(InterfacePath.Adventure_Word, this._wordDetailEveId);
         this.unschedule(this.onTimer);
     }
@@ -506,9 +504,7 @@ export class BaseModeView extends BaseView {
         if (!isAdventure) { //教材关卡
             let levelData = this._levelData as BookLevelConfig;
             let reqParam: ReqCollectWord = {
-                word: wordData.word,
-                book_id: levelData.book_id,
-                unit_id: levelData.unit_id,
+                w_id: wordData.w_id,
                 action: this._detailData.collect_flag ? 0 : 1,
             }
             TBServer.reqCollectWord(reqParam);

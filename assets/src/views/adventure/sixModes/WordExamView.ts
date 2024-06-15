@@ -51,6 +51,7 @@ export class WordExamView extends BaseModeView {
         this.showCurrentWord();
     }
     showCurrentWord() {
+        super.updateConstTime();
         this.resultIcon.node.active = false;
         this._selectLock = false;
         this._currentLetterIdx = 0;

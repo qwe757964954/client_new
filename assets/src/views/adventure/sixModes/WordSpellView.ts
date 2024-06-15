@@ -109,6 +109,7 @@ export class WordSpellView extends BaseModeView {
     }
 
     showCurrentWord() {
+        super.updateConstTime();
         this._selectLock = false;
         this.resultSprite.active = false;
         this._rightWordData = this._wrongMode ? this._wrongWordList.shift() : this._wordsData[this._wordIndex];
