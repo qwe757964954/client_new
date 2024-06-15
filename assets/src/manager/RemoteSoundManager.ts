@@ -1,4 +1,6 @@
 import { assetManager, AudioClip } from "cc";
+import { NetConfig } from "../config/NetConfig";
+import GlobalConfig from "../GlobalConfig";
 import AudioUtil from "../util/AudioUtil";
 
 class RemoteSoundManager {
@@ -48,6 +50,16 @@ class RemoteSoundManager {
             assetManager.releaseAsset(asset);
         });
         this._cacheAsset.clear();
+    }
+
+    /**中美音类型字符串 */
+    getSoundType() {
+        return GlobalConfig.USE_US ? "us" : "en";
+    }
+    /**播放单词音频 */
+    playWord(word: String): Promise<any> {
+        let url = NetConfig.assertUrl + "/sounds/glossary/words/en/" + this.getSoundType() + ".wav";
+        return RemoteSoundMgr.playSound(url);
     }
 }
 

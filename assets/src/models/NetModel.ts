@@ -269,6 +269,22 @@ export class s2cReviewPlan extends BaseRepPacket {
     classification: s2cReviewPlanInfo;//教材单词
     word_game: s2cReviewPlanInfo;//单词大冒险
 }
+/**复习规划列表 */
+export class c2sReviewPlanList {
+    command_id: string = InterfacePath.c2sReviewPlanList;
+    review_type: string;//复习类型 today 表示今日待复习 all 表示所有待复习
+    source: number;//来源 2表示单词大冒险 1表示教材单词
+}
+/**复习规划列表返回 */
+export class s2cReviewPlanListInfo {
+    w_id: string;//单词id
+    word: string;//单词
+    next_review_time: number;//下次复习时间
+}
+export class s2cReviewPlanList extends BaseRepPacket {
+    today_timestamp: number;//今日时间戳
+    need_review_list: s2cReviewPlanListInfo[];//复习规划列表
+}
 
 /**********************************以上是新接口*************************************/
 

@@ -10,6 +10,7 @@ import { ServiceMgr } from '../../net/ServiceManager';
 import { BaseComponent } from '../../script/BaseComponent';
 import CCUtil from '../../util/CCUtil';
 import { ToolUtil } from '../../util/ToolUtil';
+import { ReviewSourceType, ReviewWordListView } from './ReviewWordListView';
 const { ccclass, property } = _decorator;
 
 const spAnimNames = ["jingtai", "danchou", "shilian"];
@@ -148,7 +149,9 @@ export class ReviewPlanView extends BaseComponent {
     }
     /**单词大冒险 今日复习按钮 */
     onBtnTodayReview1Click() {
-        ViewsMgr.showView(PrefabType.ReviewWordListView);
+        ViewsMgr.showView(PrefabType.ReviewWordListView, (node: Node) => {
+            node.getComponent(ReviewWordListView).init(ReviewSourceType.word_game);
+        });
     }
     /**单词大冒险 复习按钮 */
     onBtnReview1Click() {
@@ -160,7 +163,9 @@ export class ReviewPlanView extends BaseComponent {
     }
     /**教材单词 今日复习按钮 */
     onBtnTodayReview2Click() {
-        ViewsMgr.showView(PrefabType.ReviewWordListView);
+        ViewsMgr.showView(PrefabType.ReviewWordListView, (node: Node) => {
+            node.getComponent(ReviewWordListView).init(ReviewSourceType.classification);
+        });
     }
     /**教材单词 复习按钮 */
     onBtnReview2Click() {
