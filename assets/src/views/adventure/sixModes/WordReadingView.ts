@@ -47,7 +47,6 @@ export class WordReadingView extends BaseModeView {
         wordsdata = this.updateTextbookWords(wordsdata, levelData);
         console.log("WordReadingView...wordsdata....", wordsdata);
         this.initWords(wordsdata);
-        this.initEvent();
         this.initMonster(); //初始化怪物
         RecordApi.checkRecordPermission();
     }
@@ -128,7 +127,7 @@ export class WordReadingView extends BaseModeView {
 
         // }
         console.log("this._rightWordData.word______", this._rightWordData.word)
-        if (this._levelData.hasOwnProperty('islandId')) {
+        if (this._levelData.hasOwnProperty('bigId')) {
             let levelData = this._levelData as AdvLevelConfig;
             let costTime = Date.now() - this._costTime;
             let params: AdventureResultModel = {
@@ -175,7 +174,7 @@ export class WordReadingView extends BaseModeView {
         this.wordLabel.string = word;
         this.symbolLabel.string = this._rightWordData.symbol;
         this.cnLabel.string = this._rightWordData.cn;
-        this.initWordDetail(word);
+        this.initWordDetail(this._rightWordData);
         // this.playWordSound();
     }
 
@@ -234,7 +233,7 @@ export class WordReadingView extends BaseModeView {
     }
 
     update(deltaTime: number) {
-        let isAdventure = this._levelData.hasOwnProperty('islandId'); //是否是大冒险关卡
+        let isAdventure = this._levelData.hasOwnProperty('bigId'); //是否是大冒险关卡
         if (!isAdventure && !this._turnIsBegin && this._currentSubmitResponse && this._currentSubmitResponse.pass_flag == 1 && !this._finished) {
             this.gotoResult();
         }

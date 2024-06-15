@@ -42,7 +42,6 @@ export class WordExamView extends BaseModeView {
         this.gameMode = GameMode.Exam;
         wordsdata = this.updateTextbookWords(wordsdata, levelData);
         this.initWords(wordsdata);
-        this.initEvent();
         this.initMonster(); //初始化怪物
     }
 

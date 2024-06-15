@@ -86,7 +86,7 @@ export class BaseModeView extends BaseView {
     }
     updateTextbookWords(wordsdata: UnitWordModel[], levelData: any) {
         this._levelData = levelData;
-        let isAdventure = this._levelData.hasOwnProperty('islandId'); //是否是大冒险关卡
+        let isAdventure = this._levelData.hasOwnProperty('bigId'); //是否是大冒险关卡
         this._isAdventure = isAdventure;
         /** 从关卡数据中获取单词学习到哪个单词*/
         if (!isAdventure) {
@@ -172,6 +172,7 @@ export class BaseModeView extends BaseView {
         this.timeLabel.string = "剩余时间:" + ToolUtil.secondsToTimeFormat(this._remainTime);
     }
     onInitModuleEvent() {
+        console.log("onInitModuleEvent..base");
         this.addModelListener(NetNotify.Classification_ReportResult, this.onUpResult);
         this.addModelListener(NetNotify.Classification_Word, this.onClassificationWord);
         this.addModelListener(NetNotify.Classification_CollectWord, this.onCollectWord);
@@ -201,7 +202,7 @@ export class BaseModeView extends BaseView {
     }
     async initMonster() {
         //单词大冒险关卡
-        if (this._levelData.hasOwnProperty('islandId')) {
+        if (this._levelData.hasOwnProperty('bigId')) {
             let lvData = this._levelData as AdvLevelConfig;
             this._monster = instantiate(this.monsterModel);
             this.monster.addChild(this._monster);
@@ -257,7 +258,7 @@ export class BaseModeView extends BaseView {
     //上报结果
     reportResult() {
         console.log("上报结果");
-        let isAdventure = this._levelData.hasOwnProperty('islandId'); //是否是大冒险关卡
+        let isAdventure = this._levelData.hasOwnProperty('bigId'); //是否是大冒险关卡
         if (isAdventure) { //大冒险关卡
             // let levelData = this._levelData as AdvLevelConfig;
             // let costTime = Date.now() - this._costTime;
@@ -288,7 +289,7 @@ export class BaseModeView extends BaseView {
     //单个单词学习情况上报
     onGameSubmit(word: string, isRight: boolean) {
         /**单词上报仅限教材单词 */
-        if (this._levelData.hasOwnProperty('islandId')) {
+        if (this._levelData.hasOwnProperty('bigId')) {
             let levelData = this._levelData as AdvLevelConfig;
             let costTime = Date.now() - this._costTime;
             let params: AdventureResultModel = {
@@ -321,7 +322,7 @@ export class BaseModeView extends BaseView {
     attackMonster() {
         return new Promise((resolve, reject) => {
             let targetMonster: Node;
-            let isAdventure = this._levelData.hasOwnProperty('islandId'); //是否是大冒险关卡
+            let isAdventure = this._levelData.hasOwnProperty('bigId'); //是否是大冒险关卡
             if (isAdventure) {
                 targetMonster = this._rightNum == this._wordsData.length ? this._monster : this._smallMonsters[this._rightNum - 1];
                 if (!targetMonster)
@@ -419,16 +420,16 @@ export class BaseModeView extends BaseView {
     }
 
     //获取单词详情
-    initWordDetail(word: string) {
-        if (this._levelData.hasOwnProperty('islandId')) { //大冒险关卡
+    initWordDetail(word: UnitWordModel) {
+        if (this._levelData.hasOwnProperty('bigId')) { //大冒险关卡
             let levelData: AdvLevelConfig = this._levelData as AdvLevelConfig;
-            ServiceMgr.studyService.getAdventureWord(word, levelData.mapLevelData.big_id, levelData.mapLevelData.small_id, levelData.mapLevelData.micro_id);
+            ServiceMgr.studyService.getAdventureWord(word.w_id);
         } else { //教材单词关卡
             let levelData: BookLevelConfig = this._levelData as BookLevelConfig;
             let data: ReqWordDetail = {
                 book_id: levelData.book_id,
                 unit_id: levelData.unit_id,
-                word: word,
+                word: word.word,
             }
             TBServer.reqWordDetail(data);
         }
@@ -458,6 +459,7 @@ export class BaseModeView extends BaseView {
     }
 
     protected initEvent(): void {
+        console.log("initEvent");
         CCUtil.onTouch(this.btn_close.node, this.closeView, this);
         this._getResultEveId = EventManager.on(InterfacePath.Adventure_Result, this.onUpResult.bind(this));
         EventManager.on(NetNotify.Classification_ReportResult, this.onUpResult.bind(this));
@@ -476,7 +478,7 @@ export class BaseModeView extends BaseView {
 
     protected closeView() {
         ViewsManager.instance.showConfirm("确定退出学习吗?", () => {
-            let isAdventure = this._levelData.hasOwnProperty('islandId'); //是否是大冒险关卡
+            let isAdventure = this._levelData.hasOwnProperty('bigId'); //是否是大冒险关卡
             if (!isAdventure) {
                 EventMgr.dispatch(EventType.Exit_Island_Level);
             }
@@ -498,7 +500,7 @@ export class BaseModeView extends BaseView {
     /**收藏单词 */
     onClickCollectEvent() {
         console.log("onClickCollectEvent.....");
-        let isAdventure = this._levelData.hasOwnProperty('islandId'); //是否是大冒险关卡
+        let isAdventure = this._levelData.hasOwnProperty('bigId'); //是否是大冒险关卡
         let wordData = this._wordsData[this._wordIndex];
         console.log('word', wordData);
         if (!isAdventure) { //教材关卡
@@ -512,11 +514,9 @@ export class BaseModeView extends BaseView {
             TBServer.reqCollectWord(reqParam);
         } else {
             //大冒险关卡
-            let levelData = this._levelData as AdvLevelConfig;
+            // let levelData = this._levelData as AdvLevelConfig;
             let reqParam: AdventureCollectWordModel = {
-                big_id: levelData.bigId,
-                small_id: levelData.smallId,
-                micro_id: levelData.mapLevelData.micro_id,
+                w_id:wordData.w_id,
                 action: this._detailData.collect_flag ? 0 : 1,
             }
             ServiceMgr.studyService.reqAdventureCollectWord(reqParam);

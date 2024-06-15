@@ -58,7 +58,6 @@ export class WordSpellView extends BaseModeView {
         this._spilitData = await DataMgr.instance.getWordSplitConfig();
         wordsdata = this.updateTextbookWords(wordsdata, levelData);
         this.initWords(wordsdata);
-        this.initEvent();
         this.initMonster(); //初始化怪物
     }
 
@@ -71,7 +70,7 @@ export class WordSpellView extends BaseModeView {
         }
         console.log("this.resultSprite_____", this.resultSprite);
         this._wordsData = data;
-        let isAdventure = this._levelData.hasOwnProperty('islandId'); //是否是大冒险关卡
+        let isAdventure = this._levelData.hasOwnProperty('bigId'); //是否是大冒险关卡
         if (isAdventure) { //单词大冒险获取组合模式选项
             let levelData = this._levelData as AdvLevelConfig;
             ServiceMgr.studyService.getWordGroup(levelData.bigId, levelData.smallId, levelData.mapLevelData.micro_id);
@@ -114,7 +113,7 @@ export class WordSpellView extends BaseModeView {
         this.resultSprite.active = false;
         this._rightWordData = this._wrongMode ? this._wrongWordList.shift() : this._wordsData[this._wordIndex];
         let word = this._rightWordData.word;
-        this.initWordDetail(word);
+        this.initWordDetail(this._rightWordData);
         this.initItemNode();
     }
 

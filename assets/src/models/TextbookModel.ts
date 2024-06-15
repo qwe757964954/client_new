@@ -188,6 +188,7 @@ export interface UnitWordModel{
     symbol:string;
     symbolus:string;
     word:string;
+    w_id:string;
 }
 
 export class c2sBookAwardList {

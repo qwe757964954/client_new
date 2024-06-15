@@ -102,13 +102,11 @@ export class WordGameWordsData extends BaseRepPacket {
 //获取单词详情
 export class c2sAdventureWord {
     command_id: string = InterfacePath.Adventure_Word;
-    word: string;
-    big_id: number;
-    small_id: number;
-    micro_id: number;
+    w_id: string;
 }
 
 export class WordsDetailData extends BaseRepPacket {
+    w_id:string; //单词id
     word: string;
     cn: string; //单词释义
     c_id?: string;
@@ -190,16 +188,12 @@ export class c2sTextbookWordGroup {
 }
 export class c2sAdventureCollectWord {
     command_id: string = InterfacePath.Classification_AdventureCollectWord;
-    big_id: number;
-    small_id: number;
-    micro_id: number;
+    w_id:string
     action: number;
 }
 
 export interface AdventureCollectWordModel {
-    big_id: number;
-    small_id: number;
-    micro_id: number;
+    w_id: string;
     action: number;
 }
 

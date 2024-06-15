@@ -44,7 +44,6 @@ export class WordPracticeView extends BaseModeView {
         this._spilitData = await DataMgr.instance.getWordSplitConfig();
         wordsdata = this.updateTextbookWords(wordsdata, levelData);
         this.initWords(wordsdata);
-        this.initEvent();
         this.initMonster(); //初始化怪物
     }
 
@@ -98,7 +97,7 @@ export class WordPracticeView extends BaseModeView {
         this.wordMeanLabel.string = this._currentWord.cn;
         this.letterList.numItems = this._letterList.length;
         this.selectList.numItems = this._selectLetterList.length;
-        this.initWordDetail(word);
+        this.initWordDetail(this._currentWord);
         this.playWordSound();
     }
 

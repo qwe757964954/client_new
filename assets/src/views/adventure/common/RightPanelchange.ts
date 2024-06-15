@@ -94,6 +94,7 @@ export class rightPanelchange extends Component {
 
     //点击跳转到闯关界面 TODO
     private levelClick() {
+        console.log("levelClick");
         EventManager.emit(EventType.Enter_Island_Level, this._data);
     }
 

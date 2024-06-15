@@ -59,7 +59,6 @@ export class StudyModeView extends BaseModeView {
 
     protected _nodePool: NodePool = new NodePool("wordSplitItem");
     onLoad(): void {
-        this.initEvent();
         this.gameMode = GameMode.Study;
     }
 
@@ -116,7 +115,7 @@ export class StudyModeView extends BaseModeView {
             phonics = word;
         }
         this.initSplitNode();
-        this.initWordDetail(word);
+        this.initWordDetail(wordData);
         this.playWordSound();
     }
 
