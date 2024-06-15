@@ -19,12 +19,9 @@ export default class StudyService extends BaseControll {
     }
 
     //获取单个单词详情
-    getAdventureWord(word: string, big_id: number, small_id: number, micro_id: number) {
+    getAdventureWord(w_id: string) {
         let para: c2sAdventureWord = new c2sAdventureWord();
-        para.word = word;
-        para.big_id = big_id;
-        para.small_id = small_id;
-        para.micro_id = micro_id;
+        para.w_id = w_id;
         NetMgr.sendMsg(para);
     }
 
@@ -42,12 +39,11 @@ export default class StudyService extends BaseControll {
     }
 
     //获取大冒险关卡单词
-    getWordGameWords(bigId: number, smallId: number, microId: number, gameMode: number) {
+    getWordGameWords(bigId: number, smallId: number, microId: number) {
         let para: c2sWordGameWords = new c2sWordGameWords();
         para.big_id = bigId;
         para.small_id = smallId;
         para.micro_id = microId;
-        para.game_mode = gameMode;
         NetMgr.sendMsg(para);
     }
     onWordGameWords(data: WordGameWordsData) {
@@ -106,9 +102,7 @@ export default class StudyService extends BaseControll {
     //大冒险收藏单词
     reqAdventureCollectWord(params: AdventureCollectWordModel) {
         let para: c2sAdventureCollectWord = new c2sAdventureCollectWord();
-        para.big_id = params.big_id;
-        para.small_id = params.small_id;
-        para.micro_id = params.micro_id;
+        para.w_id = params.w_id;
         para.action = params.action;
         NetMgr.sendMsg(para);
     }
@@ -129,11 +123,12 @@ export default class StudyService extends BaseControll {
     }
 
     //获取大冒险关卡进度
-    getAdvLevelProgress(big_id: number, small_id: number, micro_id: number) {
+    getAdvLevelProgress(big_id: number, small_id: number, micro_id: number, category: number) {
         let para: c2sAdvLevelProgress = new c2sAdvLevelProgress();
         para.big_id = big_id;
         para.small_id = small_id;
         para.micro_id = micro_id;
+        para.category = category;
         NetMgr.sendMsg(para);
     }
 

@@ -181,14 +181,18 @@ export interface UnitStatusData extends BaseRepPacket{
     word_num: number;           // Number of words
 }
 
-export interface UnitWordModel{
-    cn:string;
-    phonic:string;
-    syllable:string;
-    symbol:string;
-    symbolus:string;
-    word:string;
-}
+
+export interface UnitWordModel {
+    book_id: string;
+    cn: string;
+    phonic: string;
+    syllable: string;
+    symbol: string;
+    symbolus: string;
+    unit_id: string;
+    w_id: string;
+    word: string;
+  }
 
 export class c2sBookAwardList {
     command_id: string = InterfacePath.Classification_BookAwardList;
@@ -262,9 +266,7 @@ export class c2sReportResult {
 
 export class c2sWordDetail {
     command_id: string = InterfacePath.Classification_Word;
-    book_id:string;
-    unit_id:string;
-    word:string;
+    w_id:string;
 }
 
 export interface ReqWordDetail{
@@ -388,17 +390,13 @@ export interface VocabularyWordData extends BaseRepPacket{
 }
 
 export interface ReqCollectWord {
-    word?:string;
-    unit_id?:string;
-    book_id?:string;
+    w_id?:string;
     action:number;
 }
 
 export class c2sCollectWord {
     command_id: string = InterfacePath.Classification_CollectWord;
-    book_id?:string;
-    word?:string;
-    unit_id?:string;
+    w_id?:string;
     action:number;
 }
 

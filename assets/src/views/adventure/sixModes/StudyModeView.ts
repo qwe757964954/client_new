@@ -59,7 +59,6 @@ export class StudyModeView extends BaseModeView {
 
     protected _nodePool: NodePool = new NodePool("wordSplitItem");
     onLoad(): void {
-        this.initEvent();
         this.gameMode = GameMode.Study;
     }
 
@@ -95,6 +94,7 @@ export class StudyModeView extends BaseModeView {
 
     //显示当前单词
     showCurrentWord() {
+        super.updateConstTime();
         this._isCombine = false;
         let wordData = this._wordsData[this._wordIndex];
         console.log('word', wordData);
@@ -116,7 +116,7 @@ export class StudyModeView extends BaseModeView {
             phonics = word;
         }
         this.initSplitNode();
-        this.initWordDetail(word);
+        this.initWordDetail(wordData);
         this.playWordSound();
     }
 

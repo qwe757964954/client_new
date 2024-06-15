@@ -63,7 +63,6 @@ export class WordMeaningView extends BaseModeView {
         this.gameMode = GameMode.WordMeaning;
         wordsdata = this.updateTextbookWords(wordsdata, levelData);
         this.initWords(wordsdata);
-        this.initEvent();
         this.initMonster(); //初始化怪物
     }
 
@@ -80,13 +79,14 @@ export class WordMeaningView extends BaseModeView {
 
     //显示当前单词
     showCurrentWord() {
+        super.updateConstTime();
         this._selectLock = false;
         this._rightWordData = this._wrongMode ? this._wrongWordList.shift() : this._wordsData[this._wordIndex];
         console.log('word', this._rightWordData);
         let word = this._rightWordData.word;
         this.wordLabel.string = word;
         this.symbolLabel.string = this._rightWordData.symbol;
-        this.initWordDetail(word);
+        this.initWordDetail(this._rightWordData);
         this.randomOption(this._rightWordData);
         this.playWordSound();
     }
