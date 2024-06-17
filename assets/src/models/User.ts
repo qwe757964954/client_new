@@ -46,6 +46,7 @@ class UserModel {
     public roleID: number;    // 角色id
     public petID: number = null;     // 宠物id
     public petLevel: number = null;  // 宠物等级
+    public petHasReward: boolean = false; // 宠物是否有奖励
 
     public castleLevel: number = 1;    // 城堡等级
 
@@ -77,6 +78,7 @@ class UserModel {
         this.castleLevel = 1;
         this.petID = null;
         this.petLevel = null;
+        this.petHasReward = false;
     }
 
     set account(account: string) {

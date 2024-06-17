@@ -149,13 +149,14 @@ export class DataManager {
     public propConfig: { [key: number]: PropInfo } = {};//道具信息
     public petInteraction: PetInteractionInfo[] = [];//交互信息
     public petMoodConfig: PetMoodInfo[] = [];//心情信息
-    public petConfig: PetInfo[] = [];//宠物信息
+    public petConfig: { [key: number]: PetInfo[] } = {};//宠物信息
     public archConfig: { [key: number]: ArchConfig } = {}; //成就信息
     public medalConfig: MedalConfig[] = []; //勋章信息
     public helpConfig = {} //帮助配置
 
     private _isInit: boolean = false;
     public defaultLand: EditInfo = null;//默认地块
+    public petMaxLevel: number = 0;//宠物最大等级
 
     public static _instance: DataManager = null;
     public static get instance(): DataManager {
@@ -292,7 +293,16 @@ export class DataManager {
         let json = await LoadManager.loadJson(ConfigPath.PetConfig);
         let pet_upgrade = json.pet_upgrade;
         for (let k in pet_upgrade) {
-            this.petConfig.push(pet_upgrade[k]);
+            let obj = pet_upgrade[k];
+            let ary = this.petConfig[obj.id];
+            if (!ary) {
+                ary = [];
+                this.petConfig[obj.id] = ary;
+            }
+            ary.push(obj);
+        }
+        for (const key in this.petConfig) {
+            this.petMaxLevel = Math.max(this.petConfig[key].length, this.petMaxLevel);
         }
         let pet_interaction = json.pet_interaction;
         for (let k in pet_interaction) {
@@ -300,7 +310,9 @@ export class DataManager {
         }
         let pet_mood = json.pet_mood;
         for (let k in pet_mood) {
-            this.petMoodConfig.push(pet_mood[k]);
+            let obj = pet_mood[k];
+            obj.png = ToolUtil.replace(TextConfig.Mood_Path, obj.png);
+            this.petMoodConfig.push(obj);
         }
     }
 
@@ -382,6 +394,16 @@ export class DataManager {
     /**获取道具信息 */
     public getPropInfo(id: number): PropInfo {
         return this.propConfig[id];
+    }
+    /**心情配置 */
+    public getMoodConfig(moodScore: number): PetMoodInfo {
+        let config = null;
+        for (let i = 0; i < this.petMoodConfig.length; i++) {
+            const element = this.petMoodConfig[i];
+            config = element;
+            if (element.score > moodScore) break;
+        }
+        return config;
     }
 }
 

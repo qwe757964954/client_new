@@ -167,4 +167,9 @@ export default class CCUtil {
         let node = obj.node ? obj.node : obj;
         node.scale = new Vec3(scale, scale, 1);
     }
+    public static setNodeScaleEx(obj: any, scaleX: number, scaleY: number) {
+        if (!obj) return;
+        let node = obj.node ? obj.node : obj;
+        node.scale = new Vec3(scaleX, scaleY, 1);
+    }
 }

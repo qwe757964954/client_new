@@ -327,7 +327,8 @@ export class c2sPetGetReward {
 }
 /**领取探索奖励返回 */
 export class s2cPetGetReward extends BaseRepPacket {
-    explore_aware: s2cProductItem[];//奖励信息
+    explore_award: s2cProductItem[];//奖励信息
+    next_explore_second: number;//下次探索奖励更新时间
 }
 
 /**********************************以上是新接口*************************************/
