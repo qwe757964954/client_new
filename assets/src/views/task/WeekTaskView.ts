@@ -22,12 +22,11 @@ export class WeekTaskView extends BaseView {
     private _weekTask:TaskView = null;
     private _achievementView:TaskAchievementView = null;
     async initUI(){
-        await this.initWeekTaskView();
-        await this.initTaskAchievementView();
-        await this.initTaskTabView();
         this.initNavTitle();
         this.initAmout();
-
+        await this.initTaskAchievementView();
+        await this.initWeekTaskView();
+        await this.initTaskTabView();
     }
     initEvent(){
         
@@ -90,6 +89,7 @@ export class WeekTaskView extends BaseView {
                 }
                 let node = instantiate(prefab);
                 this._weekTask = node.getComponent(TaskView);
+                this._weekTask.node.active = false;
                 this.node.addChild(node);
                 resolve(null);
             });
@@ -106,6 +106,7 @@ export class WeekTaskView extends BaseView {
                 }
                 let node = instantiate(prefab);
                 this._achievementView = node.getComponent(TaskAchievementView);
+                this._achievementView.node.active = false;
                 this.node.addChild(node);
                 resolve(null);
             });

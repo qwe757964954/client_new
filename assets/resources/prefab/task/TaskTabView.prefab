@@ -649,7 +649,7 @@
     "selectedEvent": {
       "__id__": 31
     },
-    "repeatEventSingle": false,
+    "repeatEventSingle": true,
     "_id": ""
   },
   {
