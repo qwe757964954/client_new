@@ -1,8 +1,9 @@
-import { _decorator, Rect, sp, Sprite, Tween, tween, TweenSystem, UITransform, Vec2, Vec3 } from 'cc';
+import { _decorator, Node, Rect, sp, Sprite, Tween, tween, TweenSystem, UITransform, Vec2, Vec3 } from 'cc';
 import { EventType } from '../config/EventType';
 import { MapConfig, RoleInfo } from '../config/MapConfig';
 import { LoadManager } from '../manager/LoadManager';
 import { BaseComponent } from '../script/BaseComponent';
+import CCUtil from '../util/CCUtil';
 import EventManager from '../util/EventManager';
 import { TimerMgr } from '../util/TimerMgr';
 import { ToolUtil } from '../util/ToolUtil';
@@ -26,6 +27,8 @@ export enum RoleType {
 export class RoleBaseModel extends BaseComponent {
     @property(sp.Skeleton)
     public role: sp.Skeleton = null;
+    @property(Node)
+    public spNode: Node = null;//sp节点
 
     private _x: number;//x格子坐标
     private _y: number;//y格子坐标
@@ -105,7 +108,7 @@ export class RoleBaseModel extends BaseComponent {
     }
     // 初始化角色
     public initRole() {
-        this.node.scale = new Vec3(this._scale, this._scale, 1);
+        CCUtil.setNodeScale(this.spNode, this._scale);
     }
     // 初始化动作
     public initAction() {
@@ -134,10 +137,10 @@ export class RoleBaseModel extends BaseComponent {
     public updateFace() {
         if (!this._lastPos || !this._toPos) return;
         if (this._toPos.x > this._lastPos.x) {
-            this.node.scale = new Vec3(this._scale, this._scale, 1);
+            CCUtil.setNodeScale(this.spNode, this._scale);
             return;
         }
-        this.node.scale = new Vec3(-this._scale, this._scale, 1);
+        CCUtil.setNodeScaleEx(this.spNode, -this._scale, this._scale);
     }
     // 待机动作
     public idle() {

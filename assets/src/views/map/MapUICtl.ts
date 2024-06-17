@@ -2,6 +2,7 @@ import { Color, Graphics, Rect, Vec3, instantiate, screen } from "cc";
 import GlobalConfig from "../../GlobalConfig";
 import { EventType } from "../../config/EventType";
 import { MapConfig } from "../../config/MapConfig";
+import { PetMoodType } from "../../config/PetConfig";
 import { TextConfig } from "../../config/TextConfig";
 import { DataMgr, EditInfo } from "../../manager/DataMgr";
 import { ViewsMgr } from "../../manager/ViewsManager";
@@ -10,7 +11,8 @@ import { BuildingIDType, BuildingModel, RecycleData } from "../../models/Buildin
 import { CloudModel } from "../../models/CloudModel";
 import { GridModel } from "../../models/GridModel";
 import { LandModel } from "../../models/LandModel";
-import { s2cBuildingList, s2cBuildingListInfo, s2cBuildingProduceAdd, s2cBuildingProduceDelete, s2cBuildingProduceGet, s2cCloudUnlock, s2cCloudUnlockGet, s2cPetInfoRep } from "../../models/NetModel";
+import { s2cBuildingList, s2cBuildingListInfo, s2cBuildingProduceAdd, s2cBuildingProduceDelete, s2cBuildingProduceGet, s2cCloudUnlock, s2cCloudUnlockGet, s2cPetGetReward, s2cPetInfoRep } from "../../models/NetModel";
+import { PetModel } from "../../models/PetModel";
 import { RoleBaseModel } from "../../models/RoleBaseModel";
 import { RoleModel } from "../../models/RoleModel";
 import { User } from "../../models/User";
@@ -48,6 +50,8 @@ export class MapUICtl extends MainBaseCtl {
 
     private _callBack: Function = null;//加载完成回调
     private _loadCount: number = 0;//加载计数
+    private _checkPetTimer: number = null;//检查宠物定时器
+    private _selfPet: PetModel = null;//自己宠物
 
     constructor(mainScene: MainScene, callBack?: Function) {
         super(mainScene);
@@ -108,6 +112,7 @@ export class MapUICtl extends MainBaseCtl {
         this.addEvent(InterfacePath.c2sCloudUnlock, this.onCloudUnlock.bind(this));
         this.addEvent(InterfacePath.c2sCloudUnlockGet, this.onCloudUnlockGet.bind(this));
         this.addEvent(InterfacePath.c2sPetInfo, this.onRepPetInfo.bind(this));
+        this.addEvent(InterfacePath.c2sPetGetReward, this.onRepPetGetReward.bind(this));
     }
     // 移除事件
     removeEvent() {
@@ -285,6 +290,9 @@ export class MapUICtl extends MainBaseCtl {
             this.roleMove(roleModel);
             this._roleModelAry.push(roleModel);
             this.buildingRoleSort();
+
+            this._selfPet = role.getComponent(PetModel);
+            this.checkPetShow();
         }
     }
     /**初始化乌云 */
@@ -868,5 +876,52 @@ export class MapUICtl extends MainBaseCtl {
         User.moodScore = petInfo.mood;
         User.petID = User.roleID;
         User.petLevel = petInfo.level;
+        User.petHasReward = petInfo.explore_award;
+
+        this.checkPetShow();
+        this.setCheckPetTimer(petInfo.next_explore_second);
+    }
+    /**清理检测宠物定时器 */
+    clearCheckPetTimer() {
+        if (this._checkPetTimer) {
+            TimerMgr.stop(this._checkPetTimer);
+            this._checkPetTimer = null;
+        }
+    }
+    /**设置检测宠物定时器 */
+    setCheckPetTimer(time: number) {
+        this.clearCheckPetTimer();
+        if (User.petHasReward) return;//有精灵奖励了不需要定时去刷新
+        this._checkPetTimer = TimerMgr.once(() => {
+            ServiceMgr.buildingService.reqPetInfo();
+            this.clearCheckPetTimer();
+        }, time * 1000);
+    }
+    /**检测宠物显示 */
+    checkPetShow() {
+        if (!this._selfPet) return;
+        if (User.petHasReward) {
+            this._selfPet.showGift();
+        } else {
+            this._selfPet.hideGift();
+        }
+        let config = DataMgr.getMoodConfig(User.moodScore);
+        if (config && config.type <= PetMoodType.sad) {
+            this._selfPet.showMood();
+        } else {
+            this._selfPet.hideMood();
+        }
+    }
+    /**领取奖励返回 */
+    onRepPetGetReward(data: s2cPetGetReward) {
+        console.log("onRepPetGetReward", data);
+        if (200 != data.code) {
+            ViewsMgr.showAlert(data.msg);
+            return;
+        }
+        ViewsMgr.showRewards(ToolUtil.propMapToList(data.explore_award));
+        User.petHasReward = false;
+        this.checkPetShow();
+        this.setCheckPetTimer(data.next_explore_second);
     }
 }

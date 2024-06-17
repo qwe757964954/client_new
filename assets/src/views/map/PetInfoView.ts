@@ -2,6 +2,7 @@ import { _decorator, Label, Layers, Node, ProgressBar, Vec3 } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PropID } from '../../config/PropConfig';
 import { TextConfig } from '../../config/TextConfig';
+import { DataMgr } from '../../manager/DataMgr';
 import { ViewsMgr } from '../../manager/ViewsManager';
 import { s2cPetUpgrade } from '../../models/NetModel';
 import { PetModel } from '../../models/PetModel';
@@ -48,20 +49,12 @@ export class PetInfoView extends BaseComponent {
     init(id: number, level: number, removeCall?: Function) {
         this._removeCall = removeCall;
 
-        this.listView.numItems = 6;
-        this.labelLevel.string = ToolUtil.replace(TextConfig.Level_Text, level);
+        this.listView.numItems = DataMgr.petMaxLevel;
         this.pet.init(id, level);
         this.pet.show(true);
         NodeUtil.setLayerRecursively(this.pet.node, Layers.Enum.UI_2D);
         this.fixPetSize();
-
-        this.rewardItems[0].init({ id: PropID.amethyst, num: 10 });
-        this.rewardItems[1].init({ id: PropID.coin, num: 20 });
-        this.rewardItems[2].init({ id: PropID.diamond, num: 30 });
-        this.rewardItems[3].initByPng("map/img_token_gold/spriteFrame", 2);
-        this.rewardItems[4].init({ id: PropID.soul, num: 40 });
-        this.rewardItems[5].initByPng("map/pet/pet_img_mood_icon/spriteFrame", 60);
-
+        this.refreshLevel(level);
         this.onMoodScoreUpdate();
     }
     /**初始化事件 */
@@ -103,9 +96,7 @@ export class PetInfoView extends BaseComponent {
             return;
         }
         ViewsMgr.showTip(TextConfig.PetUpgrade_Tip);
-        let level = data.level;
-        this.labelLevel.string = ToolUtil.replace(TextConfig.Level_Text, level);
-        this.pet.updateLevel(level);
+        this.refreshLevel(data.level);
         this.fixPetSize();
     }
     /**调整宠物大小 */
@@ -115,6 +106,19 @@ export class PetInfoView extends BaseComponent {
         } else {
             this.pet.node.scale = new Vec3(1, 1, 1);
         }
+    }
+    /**刷新等级 */
+    refreshLevel(level: number) {
+        this.labelLevel.string = ToolUtil.replace(TextConfig.Level_Text, level);
+        this.btnUpgade.active = level <= DataMgr.petMaxLevel;
+        let petConfig = DataMgr.petConfig[this.pet.roleID][level];
+        this.rewardItems[0].init({ id: PropID.amethyst, num: petConfig.amethyst });
+        this.rewardItems[1].init({ id: PropID.coin, num: petConfig.coin });
+        this.rewardItems[2].init({ id: PropID.diamond, num: petConfig.diamond });
+        this.rewardItems[3].initByPng("map/img_token_gold/spriteFrame", petConfig.roleLevel);
+        this.rewardItems[4].init({ id: PropID.soul, num: 1 });
+        this.rewardItems[5].initByPng("map/pet/pet_img_mood_icon/spriteFrame", petConfig.intimacy);
+        this.pet.updateLevel(level);
     }
 }
 
