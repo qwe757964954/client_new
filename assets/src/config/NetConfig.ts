@@ -28,7 +28,7 @@ class NetCfg {
 
     public server = "39.108.215.220";//webscoket服务器
     public port = 9803;//webscoket端口
-
+    
     public checkNotice;//公告检测
     public tokenLogin;//token登录
     public mobileLogin;//moble登录
