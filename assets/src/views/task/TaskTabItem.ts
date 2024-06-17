@@ -32,7 +32,6 @@ export class TaskTabItem extends ListItem {
     private _tabSelectIdx:number = 0;
 
     start(): void {
-        // this.sub_scroll.numItems = 0;
         this.initEvent();
     }
 
@@ -62,12 +61,6 @@ export class TaskTabItem extends ListItem {
         this._tabSelectIdx = idx;
         this.name_lab.string = TaskTabInfos[idx].title;
         this._start_height = this.node.getChildByName("btn_ash").getComponent(UITransform).height;
-        // if (idx === 0) {
-        //     this.sub_scroll.numItems = AchevementRewardInfos.length;
-        // }else{
-            
-        // }
-        
     }
 
     clearTabContent(){

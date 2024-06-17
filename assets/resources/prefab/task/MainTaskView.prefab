@@ -1,7 +1,7 @@
 [
   {
     "__type__": "cc.Prefab",
-    "_name": "TaskView",
+    "_name": "MainTaskView",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_native": "",
@@ -13,7 +13,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "TaskView",
+    "_name": "MainTaskView",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": null,
@@ -537,7 +537,7 @@
       "__id__": 1
     },
     "component": "",
-    "_componentId": "f5956ILqUhOhJJO0qILdSnJ",
+    "_componentId": "1b0f89gzOtFU5ncIqzwNTy+",
     "handler": "onLoadTaskVertical",
     "customEventData": ""
   },
@@ -663,7 +663,7 @@
     "fileId": "7exFz+XShK7LuFb/56ZzCv"
   },
   {
-    "__type__": "9f4a4t/YEpIa4Wyqg0TpVln",
+    "__type__": "1b0f89gzOtFU5ncIqzwNTy+",
     "_name": "",
     "_objFlags": 0,
     "__editorExtras__": {},
@@ -681,7 +681,7 @@
   },
   {
     "__type__": "cc.CompPrefabInfo",
-    "fileId": "e03x/VAd5AZ7q3Oe32LheT"
+    "fileId": "60RfKpz+NB9oQ0YmEvlnVL"
   },
   {
     "__type__": "cc.PrefabInfo",

@@ -22,7 +22,7 @@ export class BaseView extends Component{
 	//实例化
 	constructor(name: string) {
         super();
-		this._className = name;
+		this._className = name ? name: this._className;
 		console.log(`${this._className}初始化...`)
 		/**重载onLoad */
 		this.extent_onLoad = this.onLoad;

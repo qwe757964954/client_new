@@ -1,6 +1,6 @@
 import { Label, Node, ProgressBar, _decorator } from 'cc';
 import ListItem from '../../util/list/ListItem';
-import { taskInfos } from './TaskInfo';
+import { Task, WeeklyTask } from './TaskInfo';
 const { ccclass, property } = _decorator;
 
 @ccclass('WeekTaskItem')
@@ -20,11 +20,9 @@ export class WeekTaskItem extends ListItem {
     public task_go_btn:Node = null
     @property(Node)
     public get_btn:Node = null
-
-
-    initPropsItem(idx: number): void {
-        this.task_name.string = taskInfos[idx].title;
-        this.desc_name.string = taskInfos[idx].description;
+    
+    initPropsItem(data: WeeklyTask | Task): void {
+        this.desc_name.string = data.name;
     }
 }
 

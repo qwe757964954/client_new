@@ -7,7 +7,7 @@ const { ccclass, property } = _decorator;
 
 @ccclass('TaskAwardView')
 export class TaskAwardView extends BaseView {
-
+    protected _className = "TaskAwardView";
     @property(Label)
     public progress_label:Label = null;
 

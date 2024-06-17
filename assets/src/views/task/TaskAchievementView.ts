@@ -10,7 +10,7 @@ const { ccclass, property } = _decorator;
 
 @ccclass('TaskAchievementView')
 export class TaskAchievementView extends BaseView {
-
+    protected _className = "TaskAchievementView";
     @property(List)
     public scroll_list: List = null;
 
