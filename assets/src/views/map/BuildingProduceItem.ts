@@ -1,6 +1,6 @@
 import { _decorator, Label, Node, Sprite } from 'cc';
 import { TextConfig } from '../../config/TextConfig';
-import { DataMgr, ProduceInfo, PropData } from '../../manager/DataMgr';
+import { DataMgr, ItemData, ProduceInfo } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
 import { ViewsMgr } from '../../manager/ViewsManager';
 import { User } from '../../models/User';
@@ -36,7 +36,7 @@ export class BuildingProduceItem extends ListItem {
     @property(Node)
     public lockNode: Node = null;//锁定节点
 
-    private _expend: PropData[] = null;
+    private _expend: ItemData[] = null;
     private _num: number = 0;
     private _buildingID: number = 0;
     private _level: number = 0;
@@ -85,7 +85,7 @@ export class BuildingProduceItem extends ListItem {
     /**list加载 */
     onLoadListItem(item: Node, idx: number) {
         let data = this._expend[idx];
-        let propInfo = DataMgr.getPropInfo(data.id);
+        let propInfo = DataMgr.getItemInfo(data.id);
         LoadManager.loadSprite(propInfo.png, item.getComponentInChildren(Sprite));
         item.getComponentInChildren(Label).string = ToolUtil.replace(TextConfig.Prop_Show, data.num);
     }

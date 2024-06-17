@@ -1,12 +1,12 @@
 import { _decorator, Component, EventTouch, instantiate, Node, Prefab, ScrollView, Sprite } from 'cc';
-import { NewbieGiftItem } from './NewbieGiftItem';
-import EventManager from '../../util/EventManager';
 import { EventType } from '../../config/EventType';
-import CCUtil from '../../util/CCUtil';
 import { PrefabType } from '../../config/PrefabType';
+import { ItemData } from '../../manager/DataMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
+import CCUtil from '../../util/CCUtil';
+import EventManager from '../../util/EventManager';
+import { NewbieGiftItem } from './NewbieGiftItem';
 import { RewardDialogView } from './RewardDialogView';
-import { PropData } from '../../manager/DataMgr';
 const { ccclass, property } = _decorator;
 
 //新人大礼结构体
@@ -158,11 +158,11 @@ export class NewbieGiftDialogView extends Component {
             }
 
             ViewsManager.instance.showView(PrefabType.NewbieRewardDialogView, (node: Node) => {
-                let awardInfo: PropData = {
+                let awardInfo: ItemData = {
                     "id": 1,
                     "num": 200,
                 }
-                let awardInfo2: PropData = {
+                let awardInfo2: ItemData = {
                     "id": 2,
                     "num": 300,
                 }

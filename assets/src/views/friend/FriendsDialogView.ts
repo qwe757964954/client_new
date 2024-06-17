@@ -1,24 +1,24 @@
 import { _decorator, Button, Component, EditBox, EventTouch, instantiate, Label, Layers, Node, Prefab, ScrollView, Sprite, SpriteFrame, tween, Tween, v3, Vec3 } from 'cc';
-import CCUtil from '../../util/CCUtil';
-import { PrefabType } from '../../config/PrefabType';
-import { ViewsManager } from '../../manager/ViewsManager';
-import { TextConfig } from '../../config/TextConfig';
-import { EmailDataInfo, EmailItemClickInfo, FriendItemClickInfo, FriendResponseData, FriendUnitInfo, NetSearchFriendInfo } from '../../models/FriendModel';
-import EventManager from '../../util/EventManager';
 import { EventType } from '../../config/EventType';
-import { FriendListItem } from './FriendlListItem';
-import { RoleBaseModel } from '../../models/RoleBaseModel';
-import { NodeUtil } from '../../util/NodeUtil';
-import { FriendSearchItem } from './FriendSearchItem';
+import { PrefabType } from '../../config/PrefabType';
+import { TextConfig } from '../../config/TextConfig';
+import { ItemData } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
-import { DataMgr, PropData } from '../../manager/DataMgr';
+import { ViewsManager } from '../../manager/ViewsManager';
+import { EmailDataInfo, EmailItemClickInfo, FriendItemClickInfo, FriendResponseData, FriendUnitInfo, NetSearchFriendInfo } from '../../models/FriendModel';
+import { RoleBaseModel } from '../../models/RoleBaseModel';
 import { User } from '../../models/User';
 import { ServiceMgr } from '../../net/ServiceManager';
-import { MsgListItem } from './MsgListItem';
-import { EmailListItem } from './EmailListItem';
-import { RewardItem } from '../common/RewardItem';
-import { FriendTalkDialogView } from './FriendTalkDialogView';
+import CCUtil from '../../util/CCUtil';
 import { EffectUtil } from '../../util/EffectUtil';
+import EventManager from '../../util/EventManager';
+import { NodeUtil } from '../../util/NodeUtil';
+import { RewardItem } from '../common/RewardItem';
+import { EmailListItem } from './EmailListItem';
+import { FriendListItem } from './FriendlListItem';
+import { FriendSearchItem } from './FriendSearchItem';
+import { FriendTalkDialogView } from './FriendTalkDialogView';
+import { MsgListItem } from './MsgListItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('FriendsDialogView')
@@ -805,10 +805,10 @@ export class FriendsDialogView extends Component {
         let awardsData = JSON.parse(dataEmail.Awards);
         if (awardsData && Array.isArray(awardsData)) {
             let awardInfo = null;
-            let propData: PropData = null;
+            let propData: ItemData = null;
             for (let i = 0; i < awardsData.length; i++) {
                 awardInfo = awardsData[i];
-                propData = new PropData();
+                propData = new ItemData();
                 propData.id = awardInfo.id;
                 propData.num = awardInfo.num;
                 let item = instantiate(this.preRewardItem);

@@ -1,16 +1,16 @@
 import { _decorator, Color, Component, EventTouch, instantiate, Layers, Node, Prefab, ScrollView, Sprite, SpriteFrame, v3 } from 'cc';
-import { ViewsManager } from '../../manager/ViewsManager';
-import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
-import { User } from '../../models/User';
-import CCUtil from '../../util/CCUtil';
-import { PrefabType } from '../../config/PrefabType';
-import { ServiceMgr } from '../../net/ServiceManager';
-import EventManager from '../../util/EventManager';
 import { EventType } from '../../config/EventType';
-import { PropData } from '../../manager/DataMgr';
-import { RewardItem } from '../common/RewardItem';
-import { NodeUtil } from '../../util/NodeUtil';
+import { PrefabType } from '../../config/PrefabType';
+import { ItemData } from '../../manager/DataMgr';
+import { ViewsManager } from '../../manager/ViewsManager';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
+import { User } from '../../models/User';
+import { ServiceMgr } from '../../net/ServiceManager';
+import CCUtil from '../../util/CCUtil';
+import EventManager from '../../util/EventManager';
+import { NodeUtil } from '../../util/NodeUtil';
+import { RewardItem } from '../common/RewardItem';
+import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 const { ccclass, property } = _decorator;
 
 @ccclass('BagDialogView')
@@ -136,16 +136,16 @@ export class BagDialogView extends Component {
         }
     }
 
-    onPropList(propDatas: PropData[]) {
+    onPropList(propDatas: ItemData[]) {
         this.propList.content.removeAllChildren();
         for (let i = 0; i < propDatas.length; i++) {
-            let propData: PropData = propDatas[i];
+            let propData: ItemData = propDatas[i];
             this.addPropItem(propData);
         }
         this.propList.scrollToTop();
     }
 
-    private addPropItem(propData: PropData) {
+    private addPropItem(propData: ItemData) {
         let propItem: Node = instantiate(this.propPrefab);
         this.propList.content.addChild(propItem);
         propItem.getComponent(RewardItem).init(propData);

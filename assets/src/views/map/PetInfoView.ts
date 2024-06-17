@@ -1,7 +1,7 @@
 import { _decorator, Label, Layers, Node, ProgressBar, Vec3 } from 'cc';
 import { EventType } from '../../config/EventType';
-import { PropID } from '../../config/PropConfig';
 import { TextConfig } from '../../config/TextConfig';
+import { ItemID } from '../../export/ItemConfig';
 import { DataMgr } from '../../manager/DataMgr';
 import { ViewsMgr } from '../../manager/ViewsManager';
 import { s2cPetUpgrade } from '../../models/NetModel';
@@ -112,11 +112,11 @@ export class PetInfoView extends BaseComponent {
         this.labelLevel.string = ToolUtil.replace(TextConfig.Level_Text, level);
         this.btnUpgade.active = level <= DataMgr.petMaxLevel;
         let petConfig = DataMgr.petConfig[this.pet.roleID][level];
-        this.rewardItems[0].init({ id: PropID.amethyst, num: petConfig.amethyst });
-        this.rewardItems[1].init({ id: PropID.coin, num: petConfig.coin });
-        this.rewardItems[2].init({ id: PropID.diamond, num: petConfig.diamond });
+        this.rewardItems[0].init({ id: ItemID.amethyst, num: petConfig.amethyst });
+        this.rewardItems[1].init({ id: ItemID.coin, num: petConfig.coin });
+        this.rewardItems[2].init({ id: ItemID.diamond, num: petConfig.diamond });
         this.rewardItems[3].initByPng("map/img_token_gold/spriteFrame", petConfig.roleLevel);
-        this.rewardItems[4].init({ id: PropID.soul, num: 1 });
+        this.rewardItems[4].init({ id: ItemID.soul, num: 1 });
         this.rewardItems[5].initByPng("map/pet/pet_img_mood_icon/spriteFrame", petConfig.intimacy);
         this.pet.updateLevel(level);
     }

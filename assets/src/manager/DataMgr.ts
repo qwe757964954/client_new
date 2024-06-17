@@ -1,6 +1,5 @@
 import { Vec3 } from "cc";
 import { PetInfo, PetInteractionInfo, PetMoodInfo } from "../config/PetConfig";
-import { PropInfo } from "../config/PropConfig";
 import { TextConfig } from "../config/TextConfig";
 import { LevelProgressData, MapLevelData } from "../models/AdventureModel";
 import { ToolUtil } from "../util/ToolUtil";
@@ -65,9 +64,16 @@ export class EditInfo {
     animpos: Vec3;//位置
 }
 /**道具数据 */
-export class PropData {
+export class ItemData {
     id: number;//id
     num: number;//数量
+}
+/**物品信息 */
+export class ItemInfo {
+    id: number;//id
+    name: string;//名字
+    png: string;//图片
+    frame: string;//框图片
 }
 /**生产信息 */
 export class ProduceInfo {
@@ -77,9 +83,9 @@ export class ProduceInfo {
     res_name: string;//资源名字
     res_png: string;//资源图片
     res_time: number;//资源产出时间（单位秒）
-    produce: PropData[];//产出
-    expend: PropData[];//消耗
-    upgrade_need: PropData[];//升级消耗
+    produce: ItemData[];//产出
+    expend: ItemData[];//消耗
+    upgrade_need: ItemData[];//升级消耗
     upgrade_time: number;//升级时间
 }
 /**建筑生产信息 */
@@ -146,7 +152,7 @@ export class DataManager {
     public buildProduceInfo: BuildProduceInfo[] = [];//建筑生产信息
     public wordSplitConfig: any = null;
     public adventureLevelConfig: AdvLevelConfig[] = null;
-    public propConfig: { [key: number]: PropInfo } = {};//道具信息
+    public itemConfig: { [key: number]: ItemInfo } = {};//道具信息
     public petInteraction: PetInteractionInfo[] = [];//交互信息
     public petMoodConfig: PetMoodInfo[] = [];//心情信息
     public petConfig: { [key: number]: PetInfo[] } = {};//宠物信息
@@ -237,12 +243,12 @@ export class DataManager {
             this.editInfo[obj.id] = obj;
         }
     }
-    public converAryToReward(ary: number[]): PropData[] {
-        let list: PropData[] = [];
+    public converAryToReward(ary: number[]): ItemData[] {
+        let list: ItemData[] = [];
         let i = 0;
         let max = ary.length - 1;
         while (i < max) {
-            let obj = new PropData();
+            let obj = new ItemData();
             obj.id = ary[i];
             obj.num = ary[i + 1];
             list.push(obj);
@@ -282,10 +288,10 @@ export class DataManager {
         let json = await LoadManager.loadJson(ConfigPath.ItemInfoConfig);
         let item_info = json.item_info;
         for (let k in item_info) {
-            let obj: PropInfo = item_info[k];
+            let obj: ItemInfo = item_info[k];
             obj.png = ToolUtil.replace(TextConfig.Prop_Path, obj.png);
             obj.frame = ToolUtil.replace(TextConfig.Prop_Path, obj.frame);
-            this.propConfig[obj.id] = obj;
+            this.itemConfig[obj.id] = obj;
         }
     }
     /**初始化宠物配置 */
@@ -392,8 +398,8 @@ export class DataManager {
         return editInfo.png;
     }
     /**获取道具信息 */
-    public getPropInfo(id: number): PropInfo {
-        return this.propConfig[id];
+    public getItemInfo(id: number): ItemInfo {
+        return this.itemConfig[id];
     }
     /**心情配置 */
     public getMoodConfig(moodScore: number): PetMoodInfo {

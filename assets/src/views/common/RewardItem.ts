@@ -1,7 +1,7 @@
 import { _decorator, CCInteger, Component, Enum, Label, Sprite } from 'cc';
 import { DEV } from 'cc/env';
-import { PropID } from '../../config/PropConfig';
-import { DataMgr, PropData } from '../../manager/DataMgr';
+import { ItemID } from '../../export/ItemConfig';
+import { DataMgr, ItemData } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
 const { ccclass, property, executeInEditMode } = _decorator;
 
@@ -31,12 +31,12 @@ export class RewardItem extends Component {
     public set type(val: RewardItemType) {
         this._type = val;
     }
-    public _propID: PropID = null;
-    @property({ type: Enum(PropID), tooltip: DEV && "道具ID" })
-    public get propID(): PropID {
+    public _propID: ItemID = null;
+    @property({ type: Enum(ItemID), tooltip: DEV && "道具ID" })
+    public get propID(): ItemID {
         return this._propID;
     }
-    public set propID(val: PropID) {
+    public set propID(val: ItemID) {
         this._propID = val;
     }
     public _count: number = 0;
@@ -55,15 +55,16 @@ export class RewardItem extends Component {
         this.loadShow(this.propID);
     }
 
-    init(data: PropData) {
-        // console.log("RewardItem init data = ", propInfo.id, propInfo.frame, propInfo.png);
+    init(data: ItemData) {
+        console.log("RewardItem init data = ", data.id);
         this.loadShow(data.id);
         this.num.string = data.num.toString();
     }
     /**加载显示 */
-    loadShow(propID: PropID) {
+    loadShow(propID: ItemID) {
         if (!propID) return;
-        let propInfo = DataMgr.getPropInfo(propID);
+        let propInfo = DataMgr.getItemInfo(propID);
+        console.log("loadShow", propInfo);
         if (!propInfo) return;
         LoadManager.loadSprite(propInfo.png, this.img);
         if (this._type == RewardItemType.Normal) {

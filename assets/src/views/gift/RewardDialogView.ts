@@ -1,15 +1,10 @@
-import { _decorator, Component, easing, instantiate, Node, Prefab, ScrollView, SpriteFrame, tween, Vec3 } from 'cc';
+import { _decorator, Component, easing, instantiate, Node, Prefab, ScrollView, tween, Vec3 } from 'cc';
+import { ItemData } from '../../manager/DataMgr';
 import AudioUtil from '../../util/AudioUtil';
-import { BieGiftBaseInfo } from './NewbieGiftDialogView';
-import List from '../../util/list/List';
-import { NewbieAwardItem } from './NewbieAwardItem';
 import CCUtil from '../../util/CCUtil';
-import { ViewsManager } from '../../manager/ViewsManager';
-import { PrefabType } from '../../config/PrefabType';
 import { EffectUtil } from '../../util/EffectUtil';
-import { PropInfo } from '../../config/PropConfig';
 import { RewardItem } from '../common/RewardItem';
-import { PropData } from '../../manager/DataMgr';
+import { NewbieAwardItem } from './NewbieAwardItem';
 const { ccclass, property } = _decorator;
 
 export interface RewordUIInfo {
@@ -35,12 +30,12 @@ export class RewardDialogView extends Component {
     @property({ type: Prefab, tooltip: "奖励预制体" })
     preAward: Prefab = null;
 
-    private _rewardData: PropData[] = null; //奖励
+    private _rewardData: ItemData[] = null; //奖励
     private _myAwardItems: RewordUIInfo[] = [];
 
     private _canClose: boolean = false;
 
-    initData(data: PropData[]) {
+    initData(data: ItemData[]) {
         this._rewardData = data;
 
         this._myAwardItems = [];

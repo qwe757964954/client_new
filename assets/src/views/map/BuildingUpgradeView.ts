@@ -1,6 +1,6 @@
 import { _decorator, Label, Node, Sprite } from 'cc';
 import { TextConfig } from '../../config/TextConfig';
-import { DataMgr, PropData } from '../../manager/DataMgr';
+import { DataMgr, ItemData } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
 import { ViewsMgr } from '../../manager/ViewsManager';
 import { BuildingModel } from '../../models/BuildingModel';
@@ -33,7 +33,7 @@ export class BuildingUpgradeView extends BaseComponent {
     @property(Sprite)
     public img: Sprite = null;//图片)
 
-    private _upgradeNeed: PropData[] = null;
+    private _upgradeNeed: ItemData[] = null;
     private _building: BuildingModel = null;
 
     start() {
