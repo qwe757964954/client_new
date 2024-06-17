@@ -906,7 +906,7 @@ export class MapUICtl extends MainBaseCtl {
             this._selfPet.hideGift();
         }
         let config = DataMgr.getMoodConfig(User.moodScore);
-        if (config && config.type <= PetMoodType.sad) {
+        if (config && config.id <= PetMoodType.sad) {
             this._selfPet.showMood();
         } else {
             this._selfPet.hideMood();
