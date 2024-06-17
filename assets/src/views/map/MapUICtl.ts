@@ -10,7 +10,7 @@ import { BuildingIDType, BuildingModel, RecycleData } from "../../models/Buildin
 import { CloudModel } from "../../models/CloudModel";
 import { GridModel } from "../../models/GridModel";
 import { LandModel } from "../../models/LandModel";
-import { s2cBuildingList, s2cBuildingListInfo, s2cBuildingProduceAdd, s2cBuildingProduceDelete, s2cBuildingProduceGet, s2cCloudUnlock, s2cCloudUnlockGet } from "../../models/NetModel";
+import { s2cBuildingList, s2cBuildingListInfo, s2cBuildingProduceAdd, s2cBuildingProduceDelete, s2cBuildingProduceGet, s2cCloudUnlock, s2cCloudUnlockGet, s2cPetInfoRep } from "../../models/NetModel";
 import { RoleBaseModel } from "../../models/RoleBaseModel";
 import { RoleModel } from "../../models/RoleModel";
 import { User } from "../../models/User";
@@ -84,6 +84,7 @@ export class MapUICtl extends MainBaseCtl {
             this.updateCameraVisible();
             return;
         }
+        ServiceMgr.buildingService.reqPetInfo();
         ServiceMgr.buildingService.reqBuildingList();
     }
     // 初始化数据
@@ -106,6 +107,7 @@ export class MapUICtl extends MainBaseCtl {
         this.addEvent(InterfacePath.c2sBuildingProduceGet, this.onBuildingProduceGet.bind(this));
         this.addEvent(InterfacePath.c2sCloudUnlock, this.onCloudUnlock.bind(this));
         this.addEvent(InterfacePath.c2sCloudUnlockGet, this.onCloudUnlockGet.bind(this));
+        this.addEvent(InterfacePath.c2sPetInfo, this.onRepPetInfo.bind(this));
     }
     // 移除事件
     removeEvent() {
@@ -271,11 +273,13 @@ export class MapUICtl extends MainBaseCtl {
             this.buildingRoleSort();
         }
         // 精灵
-        {
+        if (null != User.petLevel) {
+            let petID = User.petID;
+            if (petID < 100) petID += 100;
             let role = instantiate(this._mainScene.petModel);
             this._mainScene.buildingLayer.addChild(role);
             let roleModel = role.getComponent(RoleBaseModel);
-            roleModel.init(roleID, 1);
+            roleModel.init(petID, User.petLevel);
             let grid = this.getGridInfo(12, 0);
             roleModel.grid = grid;
             this.roleMove(roleModel);
@@ -853,5 +857,16 @@ export class MapUICtl extends MainBaseCtl {
         }
         let list = ToolUtil.propMapToList(data.award_items);
         ViewsMgr.showRewards(list);
+    }
+    /**宠物信息 */
+    onRepPetInfo(data: s2cPetInfoRep) {
+        if (200 != data.code) {
+            ViewsMgr.showAlert(data.msg);
+            return;
+        }
+        let petInfo = data.pet_info;
+        User.moodScore = petInfo.mood;
+        User.petID = User.roleID;
+        User.petLevel = petInfo.level;
     }
 }

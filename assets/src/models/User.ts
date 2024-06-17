@@ -44,6 +44,8 @@ class UserModel {
     public level: number;     // 等级
     public exp: number;       // 经验
     public roleID: number;    // 角色id
+    public petID: number = null;     // 宠物id
+    public petLevel: number = null;  // 宠物等级
 
     public castleLevel: number = 1;    // 城堡等级
 
@@ -73,6 +75,8 @@ class UserModel {
         this._memberToken = "";
         this._mobile = "";
         this.castleLevel = 1;
+        this.petID = null;
+        this.petLevel = null;
     }
 
     set account(account: string) {

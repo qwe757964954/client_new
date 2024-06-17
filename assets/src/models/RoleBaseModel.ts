@@ -104,8 +104,8 @@ export class RoleBaseModel extends BaseComponent {
         // this.drawRect();
     }
     // 初始化角色
-    public async initRole() {
-        this.role.node.scale = new Vec3(this._scale, this._scale, 1);
+    public initRole() {
+        this.node.scale = new Vec3(this._scale, this._scale, 1);
     }
     // 初始化动作
     public initAction() {
