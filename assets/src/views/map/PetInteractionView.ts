@@ -120,7 +120,9 @@ export class PetInteractionView extends BaseComponent {
         let propInfo = DataMgr.getPropInfo(data.id);
         if (label) label.string = ToolUtil.replace(TextConfig.Pet_Mood_Prop, data.score);
         if (img) LoadManager.loadSprite(propInfo.png, img);
+        CCUtil.offTouch(item);
         CCUtil.onTouch(item, () => {
+            console.log("onTouch", data.type, data.id);
             if (this._interactionTimes[data.type - 1] <= 0) {
                 ViewsMgr.showTip(TextConfig.PetInteraction_Tip);
                 return;
@@ -193,6 +195,7 @@ export class PetInteractionView extends BaseComponent {
         }
         let petInfo = data.pet_info;
         User.moodScore = petInfo.mood;
+        this._interactionTimes = petInfo.daily_counts;
 
         let propInfo = DataMgr.getPropInfo(this._interactionID);
         LoadManager.loadSprite(propInfo.png, this.img).then(() => {

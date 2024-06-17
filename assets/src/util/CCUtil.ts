@@ -42,7 +42,7 @@ export default class CCUtil {
         });
     }
     // 触摸事件解除
-    public static offTouch(obj: any, callback: Function, target?: any) {
+    public static offTouch(obj: any, callback?: Function, target?: any) {
         if (!obj) return;
         let node = obj.node ? obj.node : obj;
         if (node && node.off && isValid(node, true)) {
