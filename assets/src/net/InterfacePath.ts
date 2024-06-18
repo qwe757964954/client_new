@@ -83,5 +83,18 @@ export const InterfacePath = {
     c2sReviewPlan: "3200", //复习规划
     c2sReviewPlanList: "3201", //复习规划列表
     /***********************************************复习规划 end*********************************************/
+
+    /***********************************************主线任务进度信息start*********************************************/
+    Classification_UserMainTask: "5001", //获取用户主线任务进度信息
+    Classification_UserWeekTask: "5003", //获取用户每周任务进度信息
+    Classification_GetMainTaskReward: "5004", //领取主线任务奖励
+    Classification_GetWeekTaskReward: "5006", //领取周任务奖励
+    Classification_GetBoxTaskReward: "5008", //领取宝箱周任务奖励
+    Classification_UserWeekTaskChange: "251", //周任务进度发生变更
+    Classification_UserMainTaskChange: "252", //主线任务进度发生变更
+    Classification_CompleteWeekTask: "253", //完成每周任务
+    Classification_CompleteMainTask: "254", //完成主线任务
+    Classification_CompleteBoxWeekTask: "255", //达成每周任务宝箱
+    /***********************************************主线任务进度信息 end*********************************************/
     /************************************socket消息类型end*********************************************/
 }

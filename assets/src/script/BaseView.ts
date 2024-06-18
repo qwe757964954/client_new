@@ -71,6 +71,11 @@ export class BaseView extends Component{
 	protected onInitModuleEvent() {
 
 	}
+	protected addModelListeners(listeners: [string, (data: any) => void][]): void {
+        for (const [path, handler] of listeners) {
+            this.addModelListener(path, handler.bind(this));
+        }
+    }
 	/**
 	 * 添加事件绑定
 	 * @param name 事件名称

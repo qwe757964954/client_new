@@ -1,10 +1,10 @@
 import { _decorator } from 'cc';
-import { Task } from './TaskInfo';
+import { TaskWeekData } from '../../models/TaskModel';
 import { TaskView } from './TaskView';
 const { ccclass, property } = _decorator;
 
 @ccclass('DailyTaskView')
-export class DailyTaskView extends TaskView<Task> {
+export class DailyTaskView extends TaskView<TaskWeekData> {
     protected _className = "DailyTaskView";
     start() {
 

@@ -33,5 +33,19 @@ export const NetNotify = {
     NewWord_Add:"NewWord_Add", //添加到我的生词本
     NewWord_Del:"NewWord_Del", //移除生词本
     Classification_AdventureCollectWord: "Classification_AdventureCollectWord", //单词大冒险收藏
+
+    /***********************************************主线任务进度信息start*********************************************/
+    Classification_UserMainTask: "Classification_UserMainTask", //获取用户主线任务进度信息
+    Classification_UserWeekTask: "Classification_UserWeekTask", //获取用户每周任务进度信息
+    Classification_GetMainTaskReward: "Classification_GetMainTaskReward", //领取主线任务奖励
+    Classification_GetWeekTaskReward: "Classification_GetWeekTaskReward", //领取周任务奖励
+    Classification_GetBoxTaskReward: "Classification_GetBoxTaskReward", //领取宝箱奖励
+    Classification_UserWeekTaskChange: "Classification_UserWeekTaskChange", //修改用户每周任务进度
+    Classification_UserMainTaskChange: "Classification_UserWeekTaskChange", //修改用户主线任务进度
+    Classification_CompleteWeekTask: "Classification_CompleteWeekTask", //完成每周任务
+    Classification_CompleteMainTask: "Classification_CompleteMainTask", //完成主线任务
+    Classification_CompleteBoxWeekTask: "Classification_CompleteBoxWeekTask", //完成宝箱任务
+    /***********************************************主线任务进度信息 end*********************************************/
+
     /***********************************************选择词书 end*********************************************/
 }

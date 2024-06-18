@@ -1,16 +1,18 @@
-import { _decorator, JsonAsset, Node } from 'cc';
+import { _decorator, Node } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
-import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
+import { UserMainTaskData, UserWeekTaskData } from '../../models/TaskModel';
 import { User } from '../../models/User';
+import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
+import { TkServer } from '../../service/TaskService';
 import { NavTitleView } from '../common/NavTitleView';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { DailyTaskView } from './DailyTaskView';
 import { MainTaskView } from './MainTaskView';
 import { TaskAchievementView } from './TaskAchievementView';
 import { TaskAwardView } from './TaskAwardView';
-import { TaskData } from './TaskInfo';
+import { TKConfig } from './TaskConfig';
 import { TaskTabView } from './TaskTabView';
 import { WeeklyTaskView } from './WeeklyTaskView';
 const { ccclass, property } = _decorator;
@@ -37,12 +39,12 @@ export class WeekTaskView extends BaseView {
     private _dailyTask:DailyTaskView = null;
     private _achievementView:TaskAchievementView = null;
     private _taskAward:TaskAwardView = null;
-    private _taskConfigInfo:TaskData = null;
+    
     async initUI(){
         this.initNavTitle();
         this.initAmout();
         try {
-            await this.loadTaskConfigInfo();
+            await TKConfig.loadTaskConfigInfo();
             await Promise.all([
                 this.initRewardView(),
                 this.initTaskAchievementView(),
@@ -51,21 +53,30 @@ export class WeekTaskView extends BaseView {
                 this.initDailyTaskView(),
                 this.initTaskTabView(),
             ]);
-            console.log("Task configuration loaded:", this._taskConfigInfo);
+            console.log("Task configuration loaded:", TKConfig.taskConfigInfo);
         } catch (err) {
             console.error("Failed to initialize UI:", err);
         }
+        TkServer.reqUserMainTask();
+        TkServer.reqUserWeekTask();
     }
-    private async loadTaskConfigInfo(): Promise<void> {
-        try {
-            const jsonData = await ResLoader.instance.loadAsyncPromise<JsonAsset>('task/task', JsonAsset);
-            this._taskConfigInfo = jsonData.json as TaskData;
-        } catch (err) {
-            console.error("Failed to load task configuration:", err);
-            throw err;
-        }
+    /** 初始化模块事件 */
+    protected onInitModuleEvent() {
+        this.addModelListeners([
+            [NetNotify.Classification_UserMainTask, this.onUserMainTask],
+            [NetNotify.Classification_UserWeekTask, this.onUserWeekTask],
+        ]);
     }
-
+    
+    onUserMainTask(taskData: UserMainTaskData) {
+        console.log("onUserMainTask",taskData);
+        this._mainTask.updateData(taskData.data);
+    }
+    onUserWeekTask(taskData: UserWeekTaskData) {
+        console.log("onUserWeekTask",taskData);
+        this._weekTask.updateData(taskData.data);
+    }
+    
     initEvent(){
         
     }
@@ -129,14 +140,12 @@ export class WeekTaskView extends BaseView {
     private async initWeekTaskView() {
         let node = await this.loadAndInitPrefab(PrefabType.TaskView, this.node);
         this._weekTask = node.getComponent(WeeklyTaskView);
-        this._weekTask.updateData(this._taskConfigInfo.task_week);
         this._weekTask.node.active = false;
     }
 
     private async initMainTaskView() {
         let node = await this.loadAndInitPrefab(PrefabType.MainTaskView, this.node);
         this._mainTask = node.getComponent(MainTaskView);
-        this._mainTask.updateData(this._taskConfigInfo.task_main);
         this._mainTask.node.active = false;
     }
     private async initDailyTaskView() {

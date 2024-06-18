@@ -1,12 +1,12 @@
 import { Node, _decorator, isValid } from 'cc';
+import { TaskBaseData } from '../../models/TaskModel';
 import { BaseView } from '../../script/BaseView';
 import List from '../../util/list/List';
-import { Task } from './TaskInfo';
 import { WeekTaskItem } from './WeekTaskItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('TaskView')
-export class TaskView<T extends Task = Task> extends BaseView {
+export class TaskView<T extends TaskBaseData> extends BaseView {
     protected _className = "TaskView";
     @property(List)
     public taskList:List = null;
