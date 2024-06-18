@@ -156,21 +156,23 @@ export class WorldMapView extends Component {
     }
 
     //进入关卡测试
-    private enterTest(data: MapLevelData) {
+    enterTest(data: MapLevelData) {
         // ViewsMgr.showTip("测评模式暂未开放");
         // return;
         if (this._getingWords) {
-            console.log('正在获取单词中', data);
+            console.log('正在获取单词中');
             return;
         }
-        this._currentLevelData = data;
+        if (!this._currentLevelData) {
+            this._currentLevelData = data;
+        }
         this._currentLevelData.current_mode = GameMode.Exam;
         this._getingWords = true;
         if (this._levelProgressData) { //已有当前关数据
             this._levelProgressData.game_mode = GameMode.Exam;
             ServiceMgr.studyService.getWordGameWords(this._currentLevelData.big_id, this._currentLevelData.small_id, this._currentLevelData.micro_id);
         } else {
-            ServiceMgr.studyService.getAdvLevelProgress(data.big_id, data.small_id, data.micro_id, 2);
+            ServiceMgr.studyService.getAdvLevelProgress(this._currentLevelData.big_id, this._currentLevelData.small_id, this._currentLevelData.micro_id, 2);
         }
     }
 
@@ -259,9 +261,10 @@ export class WorldMapView extends Component {
         this._islandStatusId = EventManager.on(InterfacePath.Island_Status, this.onGetIslandStatus.bind(this));
         this._islandProgressId = EventManager.on(InterfacePath.Island_Progress, this.onGetIslandProgress.bind(this));
         this._getLevelProgressEveId = EventManager.on(InterfacePath.Adventure_LevelProgress, this.onGetLevelProgress.bind(this));
-        this._enterTestEveId = EventManager.on(EventType.Enter_Level_Test, this.enterTest.bind(this))
-        EventMgr.addListener(EventType.Goto_Textbook_Next_Level, this.goNextLevel.bind(this));
-        EventMgr.addListener(EventType.Goto_Exam_Mode, this.goExamMode.bind(this));
+        // this._enterTestEveId = EventManager.on(EventType.Enter_Level_Test, this.enterTest.bind(this));
+        EventMgr.addListener(EventType.Enter_Level_Test, this.enterTest, this);
+        EventMgr.addListener(EventType.Goto_Textbook_Next_Level, this.goNextLevel, this);
+        EventMgr.addListener(EventType.Goto_Exam_Mode, this.goExamMode, this);
         CCUtil.onTouch(this.btn_back.node, this.onBtnBackClick, this)
 
     }
@@ -276,7 +279,8 @@ export class WorldMapView extends Component {
         EventManager.off(InterfacePath.Island_Status, this._islandStatusId);
         EventManager.off(InterfacePath.Island_Progress, this._islandProgressId);
         EventManager.off(InterfacePath.Adventure_LevelProgress, this._getLevelProgressEveId);
-        EventManager.off(EventType.Enter_Level_Test, this._enterTestEveId)
+        // EventManager.off(EventType.Enter_Level_Test, this._enterTestEveId)
+        EventMgr.removeListener(EventType.Enter_Level_Test, this);
         EventMgr.removeListener(EventType.Goto_Textbook_Next_Level, this);
         EventMgr.removeListener(EventType.Goto_Exam_Mode, this);
         CCUtil.offTouch(this.btn_back.node, this.onBtnBackClick, this)

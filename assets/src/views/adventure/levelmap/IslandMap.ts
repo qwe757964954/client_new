@@ -20,10 +20,13 @@ export class IslandMap extends Component {
     @property({ type: [SpriteFrame], tooltip: "岛屿地图背景" })
     public islandBg: SpriteFrame[] = [];
 
+    private _pointDatas:MicroListItem[] = [];
     private _pointItems: Node[] = [];
 
     private _progressData: number;
     private _aniNode: Node = null;
+    private _bossNode: Node = null;
+    private _islandId: number;
 
     start() {
 
@@ -33,6 +36,8 @@ export class IslandMap extends Component {
     setData(islandId: number, mapPoints: MicroListItem[], progressData: number) {
         this.removePointEvent();
         this._progressData = progressData;
+        this._pointDatas = mapPoints;
+        this._islandId = islandId;
         for (let i = 0; i < this._pointItems.length; i++) {
             this._pointItems[i].active = false;
         }
@@ -58,7 +63,21 @@ export class IslandMap extends Component {
             }
             this._aniNode = null;
         }
+        if(this._bossNode){
+            this._bossNode.active = false;
+        }
+        this._bossNode = null;
         return posData;
+    }
+
+    setBossNode(bossNode:Node){
+        let points = WorldIsland.getMapPointsByBigId(this._islandId);
+        let lastIdx = this._pointDatas.length - 1;
+        let lastPoint = points[lastIdx];
+        bossNode.position = new Vec3(lastPoint[0] + 50, lastPoint[1] + 250, 0);
+        this.node.addChild(bossNode);
+        bossNode.active = true;
+        this._bossNode = bossNode;
     }
 
     setAniNode(aniNode: Node) {

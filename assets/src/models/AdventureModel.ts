@@ -8,7 +8,8 @@ export enum GameMode {
     Practice = 3, //练习
     Spelling = 1, //拼写
     Reading = 4,  //阅读
-    Exam = 2    //考试
+    Exam = 2,    //考试
+    WordBoss = 5, //BOSS关卡
 }
 
 export class SentenceData {
@@ -41,6 +42,13 @@ export class MapLevelData {
     small_type?: number;
     game_modes?: string;
     current_mode?: number;
+    flag_info?: any;
+}
+
+export class BossLevelData {
+    bigId: number;
+    bossAni: string;
+    bossName: string;
     flag_info?: any;
 }
 
@@ -106,7 +114,7 @@ export class c2sAdventureWord {
 }
 
 export class WordsDetailData extends BaseRepPacket {
-    w_id:string; //单词id
+    w_id: string; //单词id
     word: string;
     cn: string; //单词释义
     c_id?: string;
@@ -188,7 +196,7 @@ export class c2sTextbookWordGroup {
 }
 export class c2sAdventureCollectWord {
     command_id: string = InterfacePath.Classification_AdventureCollectWord;
-    w_id:string
+    w_id: string
     action: number;
 }
 
@@ -224,4 +232,48 @@ export class LevelProgressData extends BaseRepPacket {
     word_num: number;
     error_word: any;
     time_remaining: number;
+}
+
+export class c2sBossLevelTopic {
+    command_id: string = InterfacePath.BossLevel_Topic;
+    big_id: number;
+}
+
+export class TopicData {
+    be: string;
+    content: string;
+    answer: string;
+    opt1: string;
+    opt2: string;
+}
+
+export class ChallengeInfo {
+    bl_id: string;
+    user_id: number;
+    need_num: number;
+    word_num: number;
+    err_num: number;
+    challenge_num: number
+    cost_time: number;
+}
+
+export class BossLevelTopicData extends BaseRepPacket {
+    big_id: number;
+    exercises_list: TopicData[];
+    challenge_info: ChallengeInfo;
+}
+
+export class c2sBossLevelSubmit {
+    command_id: string = InterfacePath.BossLevel_Submit;
+    big_id: number;
+    bl_id: string; //挑战id
+    be_id: string; //题目id
+    status: number; //状态 1 成功 2 错误 3 超时
+    option: string; //选择的内容 如果3，则为空字符串
+    cost_time: number; //耗时
+}
+
+export class BossLevelSubmitData extends BaseRepPacket {
+    flag: number;
+    award: any;
 }

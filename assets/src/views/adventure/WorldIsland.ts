@@ -1,14 +1,18 @@
 import { _decorator, Button, Component, director, instantiate, Node, Prefab, UITransform, Vec3 } from 'cc';
 import { EventType } from '../../config/EventType';
-import { IslandProgressModel, MapLevelData, MicroListItem } from '../../models/AdventureModel';
+import { BossLevelData, BossLevelTopicData, IslandProgressModel, MapLevelData, MicroListItem } from '../../models/AdventureModel';
 import CCUtil from '../../util/CCUtil';
-import EventManager from '../../util/EventManager';
+import EventManager, { EventMgr } from '../../util/EventManager';
 import List from '../../util/list/List';
 import { rightPanelchange } from './common/RightPanelchange';
 import { IslandMap } from './levelmap/IslandMap';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
-import { ViewsMgr } from '../../manager/ViewsManager';
-import { SceneType } from '../../config/PrefabType';
+import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
+import { PrefabType, SceneType } from '../../config/PrefabType';
+import { ServiceMgr } from '../../net/ServiceManager';
+import { InterfacePath } from '../../net/InterfacePath';
+import { DataMgr } from '../../manager/DataMgr';
+import { WordBossView } from './sixModes/WordBossView';
 const { ccclass, property } = _decorator;
 
 /**魔法森林 何存发 2024年4月9日17:51:36 */
@@ -40,6 +44,8 @@ export class WorldIsland extends Component {
     public petModel: Prefab = null;
     @property({ type: Node, tooltip: "人物精灵动画容器" })
     public roleAniContainer: Node = null;
+    @property({ type: Node, tooltip: "岛屿boss容器" })
+    public bossContainer: Node = null;
 
     protected _pet: Node = null; //精灵
     protected _role: Node = null; //人物
@@ -54,6 +60,8 @@ export class WorldIsland extends Component {
 
     private _passNum: number;
     private _progressData: IslandProgressModel = null;
+
+    private _isRequest: boolean = false; //是否请求中
     start() {
         this.initUI();
         this.initEvent();
@@ -75,7 +83,7 @@ export class WorldIsland extends Component {
         for (let i = 0; i < this._mapLevelsData.length; i++) {
             if (this._mapLevelsData[i].length < this._mapBaseCount) {
                 let pos = WorldIsland.getMapPointsByBigId(this._bigId)[this._mapLevelsData[i].length - 1];
-                transform.width += pos[0] + 100;
+                transform.width += pos[0] + 250;
             } else {
                 transform.width += 2190;
             }
@@ -98,6 +106,10 @@ export class WorldIsland extends Component {
             let pos: Vec3 = posData.position;
             this.roleAniContainer.position = new Vec3(pos.x - 150, pos.y, 0);
             posData.map.setAniNode(this.roleAniContainer);
+        }
+        //最后一个地图添加岛屿boss
+        if (idx == this._mapLevelsData.length - 1) {
+            item.getComponent(IslandMap).setBossNode(this.bossContainer);
         }
     }
 
@@ -204,22 +216,52 @@ export class WorldIsland extends Component {
         roleModel.show(true);
     }
 
+    challangeBoss() {
+        console.log("challangeBoss");
+        this.levelPanel.node.active = true;
+        let nodesize = this.levelPanel.node.getComponent(UITransform).contentSize;
+        this.levelPanel.node.setPosition(nodesize.width, 100);
+        let levelData: BossLevelData = DataMgr.getIslandBossConfig(this._bigId);
+        this.levelPanel.openBossView(levelData);
+    }
+
+    onGetBossLevelTopic(data: BossLevelTopicData) {
+        this._isRequest = false;
+        console.log("onGetBossLevelTopic", data);
+        data.big_id = this._bigId;
+        ViewsManager.instance.showView(PrefabType.WordBossView, (node: Node) => {
+            node.getComponent(WordBossView).initData(data);
+        });
+    }
+
+    enterBossLevel() {
+        if (this._isRequest) return;
+        this._isRequest = true;
+        ServiceMgr.studyService.getBossLevelTopic(this._bigId);
+    }
+
     /**初始化监听事件 */
     private initEvent() {
-        CCUtil.onTouch(this.back, this.onBtnBackClick, this)
-        CCUtil.onTouch(this.btn_details, this.onBtnDetailsClick, this)
-        CCUtil.onTouch(this.btn_pos, this.openLevelView, this)
+        CCUtil.onTouch(this.back, this.onBtnBackClick, this);
+        CCUtil.onTouch(this.btn_details, this.onBtnDetailsClick, this);
+        CCUtil.onTouch(this.btn_pos, this.openLevelView, this);
+        CCUtil.onTouch(this.bossContainer, this.challangeBoss, this);
 
         this._mapPointClickEvId = EventManager.on(EventType.MapPoint_Click, this.mapPointClick.bind(this));
         this._mapPointUpdateEvId = EventManager.on(EventType.Update_MapPoint, this.onUpdatePoint.bind(this));
+        EventMgr.addListener(InterfacePath.BossLevel_Topic, this.onGetBossLevelTopic, this);
+        EventMgr.addListener(EventType.Enter_Boss_Level, this.enterBossLevel, this);
     }
     /**移除监听 */
     private removeEvent() {
-        CCUtil.offTouch(this.back, this.onBtnBackClick, this)
-        CCUtil.offTouch(this.btn_details, this.onBtnDetailsClick, this)
-        CCUtil.offTouch(this.btn_pos, this.openLevelView, this)
+        CCUtil.offTouch(this.back, this.onBtnBackClick, this);
+        CCUtil.offTouch(this.btn_details, this.onBtnDetailsClick, this);
+        CCUtil.offTouch(this.btn_pos, this.openLevelView, this);
+        CCUtil.offTouch(this.bossContainer, this.challangeBoss, this);
         EventManager.off(EventType.MapPoint_Click, this._mapPointClickEvId);
         EventManager.off(EventType.Update_MapPoint, this._mapPointUpdateEvId);
+        EventMgr.removeListener(InterfacePath.BossLevel_Topic, this);
+        EventMgr.removeListener(EventType.Enter_Boss_Level, this);
     }
 
     onBtnDetailsClick() {
