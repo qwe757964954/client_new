@@ -1,8 +1,7 @@
-import { _decorator, error, instantiate, isValid, Node, Prefab, Widget } from 'cc';
+import { _decorator, Node } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import GlobalConfig from '../../GlobalConfig';
-import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { BookListItemData, SchoolBookGradeItemData, SchoolBookListGradeItemData, SchoolBookListItemData, UnitListItemStatus } from '../../models/TextbookModel';
 import { NetNotify } from '../../net/NetNotify';
@@ -113,28 +112,16 @@ export class SelectWordView extends BaseView {
     }
  
     /**加载左侧导航 */
-    loadRightNav(){
-        ResLoader.instance.load(`prefab/${PrefabType.RightNavView.path}`, Prefab, (err: Error | null, prefab: Prefab) => {
-            if (err) {
-                error && console.error(err);
-                return;
-            }
-            let node = instantiate(prefab);
-            this.vocabularyLayout.addChild(node);
-            let widgetCom = node.getComponent(Widget);
-            if (!isValid(widgetCom)) {
-                widgetCom = node.addComponent(Widget);
-                widgetCom.isAlignLeft = true;
-                widgetCom.isAlignTop = true;
-                widgetCom.isAlignBottom = true;
-            }
-            widgetCom.left = 34.1095;
-            widgetCom.top = -26;
-            widgetCom.bottom = -26;
-            widgetCom.updateAlignment();
-            let navScript = node.getComponent(RightNavView);
-            this._rightNav = navScript;
-        });
+    async loadRightNav(){
+        let node = await this.loadAndInitPrefab(PrefabType.RightNavView, this.vocabularyLayout, {
+            isAlignTop: true,
+            isAlignLeft: true,
+            isAlignBottom: true,
+            top: -26,
+            left: 34.1095,
+            bottom: -26
+        })
+        this._rightNav = node.getComponent(RightNavView);
     }
 
 
@@ -148,27 +135,15 @@ export class SelectWordView extends BaseView {
         });
     }
     /**初始化tab选项 */
-    initTabContent(){
-        ResLoader.instance.load(`prefab/${PrefabType.TabTopView.path}`, Prefab, (err: Error | null, prefab: Prefab) => {
-            if (err) {
-                error && console.error(err);
-                return;
-            }
-            let node = instantiate(prefab);
-            this.node.addChild(node);
-            let widgetCom = node.getComponent(Widget);
-            if (!isValid(widgetCom)) {
-                widgetCom = node.addComponent(Widget);
-                widgetCom.isAlignTop = true;
-                widgetCom.isAlignHorizontalCenter = true;
-            }
-            widgetCom.top = 117.027;
-            widgetCom.horizontalCenter = 0;
-            widgetCom.updateAlignment();
-            let tabScript = node.getComponent(TabTopView);
-            this._tabTop = tabScript;
-            TBServer.reqBookList();
-        });
+    async initTabContent(){
+        let node = await this.loadAndInitPrefab(PrefabType.TaskAwardView, this.node, {
+            isAlignTop: true,
+            isAlignHorizontalCenter: true,
+            top: 117.027,
+            horizontalCenter: 0
+        })
+        this._tabTop= node.getComponent(TabTopView);
+        TBServer.reqBookList();
     }
     onLoadTextBookVerticalList(item:Node, idx:number){
         let tabContentItemScript:TabContentItem = item.getComponent(TabContentItem);

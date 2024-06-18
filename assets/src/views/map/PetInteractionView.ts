@@ -17,6 +17,7 @@ import List from '../../util/list/List';
 import { NodeUtil } from '../../util/NodeUtil';
 import { ToolUtil } from '../../util/ToolUtil';
 import { PetInfoView } from './PetInfoView';
+import { PetMoodView } from './PetMoodView';
 const { ccclass, property } = _decorator;
 /**宠物互动界面 */
 @ccclass('PetInteractionView')
@@ -41,6 +42,8 @@ export class PetInteractionView extends BaseComponent {
     public labelMood: Label = null;//心情分
     @property(Sprite)
     public img: Sprite = null;//互动img
+    @property(PetMoodView)
+    public moodView: PetMoodView = null;//心情view
 
     // private _petID: number = null;//宠物id
     // private _petLevel: number = null;//宠物等级
@@ -117,7 +120,7 @@ export class PetInteractionView extends BaseComponent {
         let data = this._data[idx];
         let img = item.getChildByName('img')?.getComponent(Sprite);
         let label = item.getChildByName('Label')?.getComponent(Label);
-        let propInfo = DataMgr.getPropInfo(data.id);
+        let propInfo = DataMgr.getItemInfo(data.id);
         if (label) label.string = ToolUtil.replace(TextConfig.Pet_Mood_Prop, data.score);
         if (img) LoadManager.loadSprite(propInfo.png, img);
         CCUtil.offTouch(item);
@@ -177,6 +180,7 @@ export class PetInteractionView extends BaseComponent {
     /**心情分更新 */
     onMoodScoreUpdate() {
         this.labelMood.string = User.moodScore.toString();
+        this.moodView.init(User.moodScore);
     }
     /**宠物升级 */
     onRepPetUpgrade(data: s2cPetUpgrade) {
@@ -197,7 +201,7 @@ export class PetInteractionView extends BaseComponent {
         User.moodScore = petInfo.mood;
         this._interactionTimes = petInfo.daily_counts;
 
-        let propInfo = DataMgr.getPropInfo(this._interactionID);
+        let propInfo = DataMgr.getItemInfo(this._interactionID);
         LoadManager.loadSprite(propInfo.png, this.img).then(() => {
             this.img.node.active = true;
         });

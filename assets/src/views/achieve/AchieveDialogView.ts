@@ -1,18 +1,17 @@
 import { _decorator, Component, EventTouch, instantiate, Label, Node, Prefab, ScrollView } from 'cc';
-import { TextConfig } from '../../config/TextConfig';
-import { ViewsManager } from '../../manager/ViewsManager';
-import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
-import { User } from '../../models/User';
-import { ArchConfig, DataMgr, MedalConfig, PropData } from '../../manager/DataMgr';
-import { AchieveTaskItem } from './AchieveTaskItem';
-import EventManager from '../../util/EventManager';
 import { EventType } from '../../config/EventType';
+import { PrefabType } from '../../config/PrefabType';
+import { TextConfig } from '../../config/TextConfig';
+import { ArchConfig, DataMgr, ItemData, MedalConfig } from '../../manager/DataMgr';
+import { ViewsManager } from '../../manager/ViewsManager';
+import { User } from '../../models/User';
 import CCUtil from '../../util/CCUtil';
-import { PrefabConfig, PrefabType } from '../../config/PrefabType';
-import { AcieveMedalItem } from './AcieveMedalItem';
+import EventManager from '../../util/EventManager';
 import { ToolUtil } from '../../util/ToolUtil';
-import { BieGiftBaseInfo } from '../gift/NewbieGiftDialogView';
+import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { RewardDialogView } from '../gift/RewardDialogView';
+import { AchieveTaskItem } from './AchieveTaskItem';
+import { AcieveMedalItem } from './AcieveMedalItem';
 const { ccclass, property } = _decorator;
 
 var typeName = {
@@ -443,15 +442,15 @@ export class AchieveDialogView extends Component {
         let numCoin: number = Number(awards[0]);
         let numDiamond: number = Number(awards[1]);
         ViewsManager.instance.showView(PrefabType.NewbieRewardDialogView, (node: Node) => {
-            let awardInfo: PropData = {
+            let awardInfo: ItemData = {
                 "id": 1,
                 "num": numDiamond,
             }
-            let awardInfo2: PropData = {
+            let awardInfo2: ItemData = {
                 "id": 2,
                 "num": 50,
             }
-            let awardInfos: PropData[] = [awardInfo, awardInfo2];
+            let awardInfos: ItemData[] = [awardInfo, awardInfo2];
             node.getComponent(RewardDialogView).initData(awardInfos);
         });
     }

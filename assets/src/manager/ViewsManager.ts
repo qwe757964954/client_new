@@ -9,7 +9,7 @@ import { PopView } from "../views/common/PopView";
 import { RewardView } from "../views/common/RewardView";
 import { TipView } from "../views/common/TipView";
 import { TopAmoutView } from "../views/common/TopAmoutView";
-import { PropData } from "./DataMgr";
+import { ItemData } from "./DataMgr";
 import { LoadManager } from "./LoadManager";
 import { ResLoader } from "./ResLoader";
 
@@ -193,9 +193,9 @@ export class ViewsManager {
     }
     /**
      * 显示奖励弹窗
-     * ViewMgr.showRewards([{id: PropID.coin., num: 2}]);
+     * ViewMgr.showRewards([{id: ItemID.coin., num: 2}]);
      */
-    public showRewards(data: PropData[], callBack?: Function) {
+    public showRewards(data: ItemData[], callBack?: Function) {
         this.showView(PrefabType.RewardView, (node: Node) => {
             node.getComponent(RewardView).init(data, callBack);
         });

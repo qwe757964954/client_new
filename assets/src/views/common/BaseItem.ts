@@ -1,8 +1,7 @@
-import { _decorator, Component, Label, Sprite, SpriteFrame, Node } from 'cc';
-import { DataMgr, PropData } from '../../manager/DataMgr';
-import { PropID } from '../../config/PropConfig';
+import { Component, Label, Node, Sprite, SpriteFrame, _decorator } from 'cc';
+import { ItemID } from '../../export/ItemConfig';
+import { DataMgr } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
-import { RewardItemType } from './RewardItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('BaseItem')
@@ -26,11 +25,11 @@ export class BaseItem extends Component {
     }
 
     /**加载显示 */
-    loadShow(propID: PropID) {
-        if (!propID) return;
-        let propInfo = DataMgr.getPropInfo(propID);
-        if (!propInfo) return;
-        LoadManager.loadSprite(propInfo.png, this.propIcon);
+    loadShow(itemID: ItemID) {
+        if (!itemID) return;
+        let itemInfo = DataMgr.getItemInfo(itemID);
+        if (!itemInfo) return;
+        LoadManager.loadSprite(itemInfo.png, this.propIcon);
     }
 
 }

@@ -10,7 +10,7 @@ const { ccclass, property } = _decorator;
 
 @ccclass('TaskAchievementView')
 export class TaskAchievementView extends BaseView {
-
+    protected _className = "TaskAchievementView";
     @property(List)
     public scroll_list: List = null;
 
@@ -20,7 +20,6 @@ export class TaskAchievementView extends BaseView {
     private _achievementListData:ArchConfig[] = [];
     protected async initUI(){
         await this.loadRankData();
-        console.log("this._AchievementDataInfo_______________",this._AchievementDataInfo);
         // this.scroll_list.numItems = this._AchievementDataInfo;
         this.loadAchievementConfig();
     }
@@ -111,5 +110,3 @@ export class TaskAchievementView extends BaseView {
     }
 
 }
-
-

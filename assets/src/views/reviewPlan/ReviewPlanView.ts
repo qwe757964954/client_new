@@ -1,7 +1,7 @@
 import { _decorator, Label, Node, ProgressBar, sp } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
-import { PropID } from '../../config/PropConfig';
 import { TextConfig } from '../../config/TextConfig';
+import { ItemID } from '../../export/ItemConfig';
 import GlobalConfig from '../../GlobalConfig';
 import { ViewsMgr } from '../../manager/ViewsManager';
 import { s2cReviewPlan } from '../../models/NetModel';
@@ -185,14 +185,14 @@ export class ReviewPlanView extends BaseComponent {
             this.egg.setAnimation(0, eggAnimNames[this._eggID * 2 + 1], false);
         } else if (name == spAnimNames[2]) {
             console.log("十连抽动画结束");
-            ViewsMgr.showRewards([{ id: PropID.coin, num: 10 }, { id: PropID.diamond, num: 20 }], () => {
+            ViewsMgr.showRewards([{ id: ItemID.coin, num: 10 }, { id: ItemID.diamond, num: 20 }], () => {
                 this.sp.setAnimation(0, spAnimNames[0], false);
                 this.setUIVisible(true);
                 this._canDraw = true;
             });
         } else if (name == eggAnimNames[this._eggID * 2 + 1]) {
             this._canDraw = true;
-            ViewsMgr.showRewards([{ id: PropID.stamina, num: 1 }]);
+            ViewsMgr.showRewards([{ id: ItemID.stamina, num: 1 }]);
         }
     }
     /**复习规划返回 */

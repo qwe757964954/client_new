@@ -13,5 +13,3 @@ export class TaskTabSubItem extends ListItem {
         this.sub_text.string = AchevementRewardInfos[idx].title;
     }
 }
-
-

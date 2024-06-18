@@ -1,33 +1,82 @@
-import { _decorator, error, instantiate, isValid, Node, Prefab, Widget } from 'cc';
+import { _decorator, Node } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
-import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
+import { UserMainTaskData, UserWeekTaskData } from '../../models/TaskModel';
 import { User } from '../../models/User';
+import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
+import { TkServer } from '../../service/TaskService';
 import { NavTitleView } from '../common/NavTitleView';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
+import { DailyTaskView } from './DailyTaskView';
+import { MainTaskView } from './MainTaskView';
 import { TaskAchievementView } from './TaskAchievementView';
+import { TaskAwardView } from './TaskAwardView';
+import { TKConfig } from './TaskConfig';
 import { TaskTabView } from './TaskTabView';
-import { TaskView } from './TaskView';
+import { WeeklyTaskView } from './WeeklyTaskView';
 const { ccclass, property } = _decorator;
+
+export enum TaskMenuType {
+    Achievement= 0,/**成就 */
+    Week= 1,/**每周 */
+    Main= 2,/**主线 */
+    Daily= 3/**每日 */
+}
+
 
 @ccclass('WeekTaskView')
 export class WeekTaskView extends BaseView {
+    protected _className = "WeekTaskView";
     @property(Node)
     public top_layout:Node = null;
     @property(Node)
     public content_layout:Node = null;
 
     private _tabView:TaskTabView = null;
-    private _weekTask:TaskView = null;
+    private _weekTask:WeeklyTaskView = null;
+    private _mainTask:MainTaskView = null;
+    private _dailyTask:DailyTaskView = null;
     private _achievementView:TaskAchievementView = null;
+    private _taskAward:TaskAwardView = null;
+    
     async initUI(){
         this.initNavTitle();
         this.initAmout();
-        await this.initTaskAchievementView();
-        await this.initWeekTaskView();
-        await this.initTaskTabView();
+        try {
+            await TKConfig.loadTaskConfigInfo();
+            await Promise.all([
+                this.initRewardView(),
+                this.initTaskAchievementView(),
+                this.initWeekTaskView(),
+                this.initMainTaskView(),
+                this.initDailyTaskView(),
+                this.initTaskTabView(),
+            ]);
+            console.log("Task configuration loaded:", TKConfig.taskConfigInfo);
+        } catch (err) {
+            console.error("Failed to initialize UI:", err);
+        }
+        TkServer.reqUserMainTask();
+        TkServer.reqUserWeekTask();
     }
+    /** 初始化模块事件 */
+    protected onInitModuleEvent() {
+        this.addModelListeners([
+            [NetNotify.Classification_UserMainTask, this.onUserMainTask],
+            [NetNotify.Classification_UserWeekTask, this.onUserWeekTask],
+        ]);
+    }
+    
+    onUserMainTask(taskData: UserMainTaskData) {
+        console.log("onUserMainTask",taskData);
+        this._mainTask.updateData(taskData.data);
+    }
+    onUserWeekTask(taskData: UserWeekTaskData) {
+        console.log("onUserWeekTask",taskData);
+        this._weekTask.updateData(taskData.data);
+    }
+    
     initEvent(){
         
     }
@@ -48,69 +97,76 @@ export class WeekTaskView extends BaseView {
             amoutScript.loadAmoutData(dataArr);
         });
     }
-    /**初始化tab */
-    initTaskTabView(){
-        return new Promise((resolve, reject) => {
-            ResLoader.instance.load(`prefab/${PrefabType.TaskTabView.path}`, Prefab, (err: Error | null, prefab: Prefab) => {
-                if (err) {
-                    error && console.error(err);
-                    reject(err);
-                    return;
-                }
-                let node = instantiate(prefab);
-                this.node.addChild(node);
-                this._tabView = node.getComponent(TaskTabView);
-                this._tabView.setTabSelectClick((selectId:number)=>{
-                    this._weekTask.node.active = selectId == 1;
-                    this._achievementView.node.active = selectId == 0;
-                })
-                let widgetCom = node.getComponent(Widget);
-                if (!isValid(widgetCom)) {
-                    widgetCom = node.addComponent(Widget);
-                    widgetCom.isAlignTop = true;
-                    widgetCom.isAlignLeft = true;
-                }
-                widgetCom.top = 129;
-                widgetCom.left = 50;
-                widgetCom.updateAlignment();
 
-                resolve(null);
-            });
-        })
+    private async initTaskTabView() {
+        let node = await this.loadAndInitPrefab(PrefabType.TaskTabView, this.node, {
+            isAlignTop: true,
+            isAlignLeft: true,
+            top: 129,
+            left: 50
+        });
+        this._tabView = node.getComponent(TaskTabView);
+        this._tabView.setTabSelectClick((selectId: number) => {
+            this.hideAllContent();
+            this.clickMenuSelect(selectId);
+        });
     }
 
-    initWeekTaskView(){
-        return new Promise((resolve, reject) => {
-            ResLoader.instance.load(`prefab/${PrefabType.TaskView.path}`, Prefab, (err: Error | null, prefab: Prefab) => {
-                if (err) {
-                    error && console.error(err);
-                    reject(err);
-                    return;
-                }
-                let node = instantiate(prefab);
-                this._weekTask = node.getComponent(TaskView);
-                this._weekTask.node.active = false;
-                this.node.addChild(node);
-                resolve(null);
-            });
-        })
+    clickMenuSelect(menuType:TaskMenuType){
+        switch (menuType) {
+            case TaskMenuType.Achievement:
+                this._achievementView.node.active = true;
+                break;
+            case TaskMenuType.Week:
+                this._weekTask.showTask();
+                break;
+            case TaskMenuType.Main:
+                this._mainTask.showTask();
+                break;
+            case TaskMenuType.Daily:
+                this._dailyTask.showTask();
+                break;
+            default:
+                break;
+        }
     }
 
-    initTaskAchievementView(){
-        return new Promise((resolve, reject) => {
-            ResLoader.instance.load(`prefab/${PrefabType.TaskAchievementView.path}`, Prefab, (err: Error | null, prefab: Prefab) => {
-                if (err) {
-                    error && console.error(err);
-                    reject(err);
-                    return;
-                }
-                let node = instantiate(prefab);
-                this._achievementView = node.getComponent(TaskAchievementView);
-                this._achievementView.node.active = false;
-                this.node.addChild(node);
-                resolve(null);
-            });
+    hideAllContent(){
+        this._weekTask.node.active = false;
+        this._achievementView.node.active = false;
+        this._mainTask.node.active = false;
+        this._dailyTask.node.active = false;
+    }
+    private async initWeekTaskView() {
+        let node = await this.loadAndInitPrefab(PrefabType.TaskView, this.node);
+        this._weekTask = node.getComponent(WeeklyTaskView);
+        this._weekTask.node.active = false;
+    }
+
+    private async initMainTaskView() {
+        let node = await this.loadAndInitPrefab(PrefabType.MainTaskView, this.node);
+        this._mainTask = node.getComponent(MainTaskView);
+        this._mainTask.node.active = false;
+    }
+    private async initDailyTaskView() {
+        let node = await this.loadAndInitPrefab(PrefabType.DailyTaskView, this.node);
+        this._dailyTask = node.getComponent(DailyTaskView);
+        this._dailyTask.updateData([]); // Assuming an empty array for initial data
+        this._dailyTask.node.active = false;
+    }
+    private async initTaskAchievementView(){
+        let node = await this.loadAndInitPrefab(PrefabType.TaskAchievementView, this.node)
+        this._achievementView = node.getComponent(TaskAchievementView);
+    }
+
+    private async initRewardView() {
+        let node = await this.loadAndInitPrefab(PrefabType.TaskAwardView, this.node, {
+            isAlignTop: true,
+            isAlignRight: true,
+            top: 123,
+            right: 78
         })
+        this._taskAward = node.getComponent(TaskAwardView);
     }
     removeEvent(){
         

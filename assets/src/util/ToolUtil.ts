@@ -1,7 +1,7 @@
 import { Node, UIOpacity, Vec2, Vec3, tween } from "cc";
 import CryptoES from 'crypto-es';
-import { PropID } from "../config/PropConfig";
-import { PropData } from "../manager/DataMgr";
+import { ItemID } from "../export/ItemConfig";
+import { ItemData } from "../manager/DataMgr";
 
 const Time_S = "{0}秒"
 const Time_M = "{0}分钟"
@@ -101,7 +101,7 @@ export class ToolUtil {
         return Array.isArray(value);
     }
     /**道具字典转换 */
-    static propMapToList(map: any): PropData[] {
+    static propMapToList(map: any): ItemData[] {
         let list = [];
         if (ToolUtil.isArray(map)) {
             map.forEach(element => {
@@ -112,7 +112,7 @@ export class ToolUtil {
         }
         return list;
     }
-    static propMapToListEx(map: any, list: PropData[]) {
+    static propMapToListEx(map: any, list: ItemData[]) {
         if (ToolUtil.isArray(map)) {
             list = list.concat(ToolUtil.propMapToList(map));
             return;
@@ -124,9 +124,9 @@ export class ToolUtil {
             if (Object.prototype.hasOwnProperty.call(map, key)) {
                 let value = map[key];
                 if ("coin" == key) {
-                    list.push({ id: PropID.coin, num: value });
+                    list.push({ id: ItemID.coin, num: value });
                 } else if ("diamond" == key) {
-                    list.push({ id: PropID.diamond, num: value });
+                    list.push({ id: ItemID.diamond, num: value });
                 }
             }
         }

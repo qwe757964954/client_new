@@ -1,11 +1,11 @@
-import { _decorator, Component, Label, Node, Sprite, SpriteFrame, UITransform, Vec3 } from 'cc';
-import { DataMgr, EditInfo } from '../../manager/DataMgr';
+import { _decorator, Component, Label, Node, Sprite, SpriteFrame } from 'cc';
+import { TextConfig } from '../../config/TextConfig';
+import { EditInfo } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
-import CCUtil from '../../util/CCUtil';
-import { ShopGoodsItem } from './ShopGoodsItem';
-import { GoodsItemData } from '../../models/GoodsModel';
-import { EffectUtil } from '../../util/EffectUtil';
 import { ServiceMgr } from '../../net/ServiceManager';
+import CCUtil from '../../util/CCUtil';
+import { EffectUtil } from '../../util/EffectUtil';
+import { ToolUtil } from '../../util/ToolUtil';
 const { ccclass, property } = _decorator;
 /** 建筑信息 */
 @ccclass('GoodsDetailView')
@@ -42,9 +42,9 @@ export class GoodsDetailView extends Component {
     @property({ type: [SpriteFrame], tooltip: "建筑类型图标 0功能 1地标 2装饰 3地板" })
     public spriteFrames: SpriteFrame[] = [];
 
-    _data: GoodsItemData = null;
+    private _data: EditInfo = null;
 
-    _canClose: boolean = true;
+    private _canClose: boolean = true;
 
 
     start() {
@@ -71,28 +71,18 @@ export class GoodsDetailView extends Component {
     }
 
     /** 初始化数据 */
-    public initData(editInfo: GoodsItemData) {
-        this._data = editInfo;
+    public initData(data: EditInfo) {
+        this._data = data;
 
-        this.labelName.string = editInfo.name;
-        this.labelDesc.string = editInfo.desc;
-        this.labelPrice.string = "" + editInfo.price;
+        this.labelName.string = data.name;
+        this.labelDesc.string = data.description;
+        this.labelPrice.string = data.buy.toString();
 
-        this.lblScore.string = "+" + editInfo.medal;
-        if (editInfo.land > 0) {
-            this.ndLand.active = true;
-            this.lblLand.string = "+" + editInfo.land;
-        }
-        else {
-            this.ndLand.active = false;
-            this.lblLand.string = "0";
-        }
-
-        this.imgIcon.spriteFrame = this.spriteFrames[editInfo.type - 1];
-
-        let iconPath: string = "shop/" + editInfo.icon + "/spriteFrame";
-        LoadManager.loadSprite(iconPath, this.img).then((spriteFrame: SpriteFrame) => {
-            this.resetImgSize();
+        // this.lblScore.string = "+" + data.medal;
+        this.lblLand.string = ToolUtil.replace(TextConfig.Pet_Mood_Prop, data.width);
+        this.imgIcon.spriteFrame = this.spriteFrames[data.type - 1];
+        LoadManager.loadSprite(data.png, this.img).then(() => {
+            CCUtil.fixNodeScale(this.img.node, 260, 400);
         });
 
         this.show();
@@ -118,14 +108,6 @@ export class GoodsDetailView extends Component {
 
     onClickBuy() {
         ServiceMgr.shopService.buyGood(this._data.id);
-    }
-    /** 重设图片大小 */
-    public resetImgSize() {
-        let size = this.imgNode.getComponent(UITransform).contentSize;
-        let scale = size.width / this.img.spriteFrame.originalSize.width;
-        console.log("resetImgSize", scale, size.width, this.img.spriteFrame.originalSize);
-        if (scale >= 1.0) return;
-        this.img.node.scale = new Vec3(scale, scale, 1.0);
     }
 }
 

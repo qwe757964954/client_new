@@ -1,5 +1,5 @@
 import { _decorator, Component, easing, instantiate, Node, Prefab, tween, Vec3 } from 'cc';
-import { PropData } from '../../manager/DataMgr';
+import { ItemData } from '../../manager/DataMgr';
 import CCUtil from '../../util/CCUtil';
 import { EffectUtil } from '../../util/EffectUtil';
 import { RewardItem } from './RewardItem';
@@ -48,7 +48,7 @@ export class RewardView extends Component {
         });
     }
     /**初始化 */
-    init(data: PropData[], callBack?: Function) {
+    init(data: ItemData[], callBack?: Function) {
         this._callBack = callBack;
 
         for (let i = 0; i < data.length; i++) {

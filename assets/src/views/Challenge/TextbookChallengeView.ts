@@ -1,4 +1,4 @@
-import { _decorator, error, instantiate, isValid, Node, Prefab, SpriteFrame, view, Widget } from 'cc';
+import { _decorator, error, Node, Prefab, SpriteFrame, view } from 'cc';
 import { EventType } from '../../config/EventType';
 import { KeyConfig } from '../../config/KeyConfig';
 import { PrefabType } from '../../config/PrefabType';
@@ -168,95 +168,53 @@ export class TextbookChallengeView extends BaseView {
         });
     }
 
-    initRightBookUnitInfo() {
-        return new Promise((resolve, reject) => {
-            ResLoader.instance.load(`prefab/${PrefabType.RightUnitView.path}`, Prefab, (err, prefab) => {
-                if (err) {
-                    console.error(err);
-                    reject(err);
-                    return;
-                }
-                let node = instantiate(prefab);
-                this.content_layout.addChild(node);
-                this._unitDetailView = node.getComponent(RightUnitView);
-                let widgetCom = node.getComponent(Widget);
-                if (!isValid(widgetCom)) {
-                    widgetCom = node.addComponent(Widget);
-                    widgetCom.isAlignRight = true;
-                    widgetCom.isAlignVerticalCenter = true;
-                }
-                widgetCom.verticalCenter = 62.308;
-                widgetCom.right = 62.308;
-                this._unitDetailView.setModifyCallback((isSave) => {
-                    // Your callback logic
-                });
-                this._unitDetailView.setBreakThroughCallback(() => {
-                    ViewsManager.instance.showView(PrefabType.BreakThroughView, (node) => {
-                        let itemScript = node.getComponent(BreakThroughView);
-                        itemScript.initData(this._bookData,this._unitListArr);
-                        ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);
-                    });
-                });
-                this._unitDetailView.setChangeBookCallback(() => {
-                    ViewsManager.instance.showView(PrefabType.TextbookListView, (node) => {
-                        let itemScript = node.getComponent(TextbookListView);
-                        itemScript.initData(this._bookData);
-                        ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);
-                    });
-                });
-                this._unitDetailView.setCheckWordCallback(() => {
-                    ViewsManager.instance.showView(PrefabType.WordCheckView, (node) => {
-                        let itemScript = node.getComponent(WordCheckView);
-                        itemScript.initData(this._bookData);
-                    });
-                });
-                resolve(true); // Resolve the promise once all asynchronous operations are completed
+    async initRightBookUnitInfo() {
+        let node = await this.loadAndInitPrefab(PrefabType.RightUnitView, this.content_layout,{
+            isAlignVerticalCenter: true,
+            isAlignRight: true,
+            verticalCenter: 62.308,
+            right: 62.308
+        })
+        this._unitDetailView = node.getComponent(RightUnitView);
+        this._unitDetailView.setModifyCallback((isSave) => {
+            // Your callback logic
+        });
+        this._unitDetailView.setBreakThroughCallback(() => {
+            ViewsManager.instance.showView(PrefabType.BreakThroughView, (node) => {
+                let itemScript = node.getComponent(BreakThroughView);
+                itemScript.initData(this._bookData,this._unitListArr);
+                ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);
+            });
+        });
+        this._unitDetailView.setChangeBookCallback(() => {
+            ViewsManager.instance.showView(PrefabType.TextbookListView, (node) => {
+                let itemScript = node.getComponent(TextbookListView);
+                itemScript.initData(this._bookData);
+                ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);
+            });
+        });
+        this._unitDetailView.setCheckWordCallback(() => {
+            ViewsManager.instance.showView(PrefabType.WordCheckView, (node) => {
+                let itemScript = node.getComponent(WordCheckView);
+                itemScript.initData(this._bookData);
             });
         });
     }
-    initChallengeBottom() {
-        return new Promise((resolve, reject) => {
-            ResLoader.instance.load(`prefab/${PrefabType.ChallengeBottomView.path}`, Prefab, (err: Error | null, prefab: Prefab) => {
-                if (err) {
-                    error && console.error(err);
-                    reject(err);
-                    return;
-                }
-                let node = instantiate(prefab);
-                this.node.addChild(node);
-                this._bottomView = node.getComponent(ChallengeBottomView);
-                resolve(true);
-            });
-        });
+    async initChallengeBottom() {
+        let node = await this.loadAndInitPrefab(PrefabType.ChallengeBottomView, this.node)
+        this._bottomView = node.getComponent(ChallengeBottomView);
     }
 
     /**初始化左侧怪物 */
-    initLeftMonster(){
-        return new Promise((resolve, reject) => {
-            ResLoader.instance.load(`prefab/${PrefabType.ChallengeLeftView.path}`, Prefab, (err: Error | null, prefab: Prefab) => {
-                if (err) {
-                    error && console.error(err);
-                    reject(err);
-                    return;
-                }
-                let node = instantiate(prefab);
-                this.content_layout.addChild(node);
-                let widgetCom = node.getComponent(Widget);
-                if(!isValid(widgetCom)){
-                    widgetCom = node.addComponent(Widget);
-                    widgetCom.isAlignLeft = true;
-                    widgetCom.isAlignVerticalCenter= true;
-                }
-                let viewSizeWidth = view.getVisibleSize().width;
-                let projectSizeWidth = view.getDesignResolutionSize().width;
-                console.log("viewSizeWidth = ", viewSizeWidth, " projectSizeWidth = ", projectSizeWidth);
-                widgetCom.verticalCenter = 78.489;
-                widgetCom.left = 108.736 * viewSizeWidth / projectSizeWidth;
-                widgetCom.updateAlignment();
-                resolve(true);
-            });
-        });
-        
+    async initLeftMonster(){
+        let viewSizeWidth = view.getVisibleSize().width;
+        let projectSizeWidth = view.getDesignResolutionSize().width;
+        let node = await this.loadAndInitPrefab(PrefabType.ChallengeLeftView, this.content_layout,{
+            isAlignLeft: true,
+            isAlignVerticalCenter: true,
+            verticalCenter: 78.489,
+            left: 108.736 * viewSizeWidth / projectSizeWidth
+        })
     }
 }
 

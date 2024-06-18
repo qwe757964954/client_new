@@ -1,10 +1,12 @@
 import { _decorator, Component, Label, Node, Sprite, SpriteFrame } from 'cc';
-import { GoodsItemData } from '../../models/GoodsModel';
-import { LoadManager } from '../../manager/LoadManager';
-import CCUtil from '../../util/CCUtil';
-import { ServiceMgr } from '../../net/ServiceManager';
-import { ViewsManager } from '../../manager/ViewsManager';
 import { PrefabType } from '../../config/PrefabType';
+import { TextConfig } from '../../config/TextConfig';
+import { EditInfo } from '../../manager/DataMgr';
+import { LoadManager } from '../../manager/LoadManager';
+import { ViewsManager } from '../../manager/ViewsManager';
+import { ServiceMgr } from '../../net/ServiceManager';
+import CCUtil from '../../util/CCUtil';
+import { ToolUtil } from '../../util/ToolUtil';
 import { GoodsDetailView } from './GoodsDetailView';
 const { ccclass, property } = _decorator;
 
@@ -40,40 +42,23 @@ export class ShopGoodsItem extends Component {
     @property({ type: [SpriteFrame], tooltip: "功能性图标" })
     public sprFuncAry: SpriteFrame[] = [];
 
-    _data: GoodsItemData = null;
+    private _data: EditInfo = null;
 
     protected onLoad(): void {
         this.initEvent();
     }
 
-    async initData(goodData: GoodsItemData) {
-        this._data = goodData;
+    initData(data: EditInfo) {
+        this._data = data;
 
-        this.lblName.string = goodData.name;
-        this.lblScore.string = "+" + goodData.medal;
-        this.lblPrice.string = "" + goodData.price;
-        if (goodData.land > 0) {
-            this.ndLand.active = true;
-            this.lblLand.string = "+" + goodData.land;
-        }
-        else {
-            this.ndLand.active = false;
-            this.lblLand.string = "0";
-        }
-
-        this.sprFunction.node.active = true;
-        if (goodData.funtype == 1) { //功能性图标
-            this.sprFunction.spriteFrame = this.sprFuncAry[0];
-        }
-        else if (goodData.funtype == 2) {
-            this.sprFunction.spriteFrame = this.sprFuncAry[1];
-        }
-        else {
-            this.sprFunction.node.active = false;
-        }
-        let iconPath: string = "shop/" + goodData.icon + "/spriteFrame";
-        await LoadManager.loadSprite(iconPath, this.sprIcon);
-
+        this.lblName.string = data.name;
+        // this.lblScore.string = "+" + goodData.medal;
+        this.lblPrice.string = data.buy.toString();
+        this.lblLand.string = ToolUtil.replace(TextConfig.Pet_Mood_Prop, data.width);
+        this.sprFunction.spriteFrame = this.sprFuncAry[data.type - 1];
+        LoadManager.loadSprite(data.png, this.sprIcon).then(() => {
+            CCUtil.fixNodeScale(this.sprIcon.node, 260, 260);
+        });
     }
 
     initEvent() {
@@ -98,14 +83,6 @@ export class ShopGoodsItem extends Component {
 
     protected onDestroy(): void {
         this.removeEvent();
-    }
-
-    start() {
-
-    }
-
-    update(deltaTime: number) {
-
     }
 }
 

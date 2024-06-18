@@ -70,3 +70,38 @@ export const taskInfos = [
       Path: string;
   }
   
+  // 定义奖励的类型
+export interface Reward {
+  type: number;
+  amount: number;
+}
+
+// 主任务结构
+export interface Task {
+  id: number;
+  name: string;
+  module_id: number;
+  cond: string;
+  reward: Reward[];
+}
+
+// 周任务结构
+export interface WeeklyTask extends Task {
+  require_num: number;
+  exp: number;
+  live_num: number;
+}
+
+// 周任务宝箱结构
+export interface WeeklyTaskBox {
+  id: number;
+  need_live_num: number;
+  reward: Reward[];
+}
+
+// 完整的数据结构
+export interface TaskData {
+  task_main: Task[];
+  task_week: WeeklyTask[];
+  task_week_box: WeeklyTaskBox[];
+}

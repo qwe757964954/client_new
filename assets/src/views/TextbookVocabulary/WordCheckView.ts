@@ -1,7 +1,6 @@
-import { _decorator, error, instantiate, isValid, Label, Node, Prefab, Widget } from 'cc';
+import { _decorator, Label, Node } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import GlobalConfig from '../../GlobalConfig';
-import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { BookItemData, CheckOrderType, CheckWordItem, CheckWordModel, CheckWordResponse, CheckWordType, CurrentBookStatus } from '../../models/TextbookModel';
 import { NetNotify } from '../../net/NetNotify';
@@ -55,14 +54,7 @@ export class WordCheckView extends BaseView {
 
     async initUI(){
         this.initNavTitle();
-        this._tabTop = await this.initTabContent();
-        this._tabTop.loadTabData(this._bookTabData,(selectId:number)=>{
-            this.wordCheckScrollView.scrollTo(0);
-            this._currentType = (selectId+1) as CheckWordType;
-            this.wordSortView.initData(this._currentType);
-            this.onRequestCheckWord();
-        });
-
+        this.initTabContent();
         this.wordSortView.setMenuSelectCallback((order_type:CheckOrderType)=>{
             this.onRequestCheckWord();
         });
@@ -85,10 +77,10 @@ export class WordCheckView extends BaseView {
     onCheckWord(response:CheckWordResponse) {
         this._wordUnits = {};
         response.data.forEach(word => {
-            if (!this._wordUnits[word.unit]) {
-                this._wordUnits[word.unit] = [];
+            if (!this._wordUnits[word.unit_name]) {
+                this._wordUnits[word.unit_name] = [];
             }
-            this._wordUnits[word.unit].push(word);
+            this._wordUnits[word.unit_name].push(word);
         });
         console.log(this._wordUnits);
         console.log(Object.keys(this._wordUnits).length);
@@ -97,30 +89,20 @@ export class WordCheckView extends BaseView {
         // this.wordCheckScrollView.update();
     }
     /**初始化tab选项 */
-    initTabContent(): Promise<TabTopView>{
-        return new Promise((resolve, reject) => {
-            ResLoader.instance.load(`prefab/${PrefabType.TabTopView.path}`, Prefab, (err: Error | null, prefab: Prefab) => {
-                if (err) {
-                    error && console.error(err);
-                    reject(err);
-                    return;
-                }
-                let node = instantiate(prefab);
-                this.node.addChild(node);
-                let widgetCom = node.getComponent(Widget);
-                if (!isValid(widgetCom)) {
-                    widgetCom = node.addComponent(Widget);
-                    widgetCom.isAlignTop = true;
-                    widgetCom.isAlignHorizontalCenter = true;
-                }
-                widgetCom.top = 117.027;
-                widgetCom.horizontalCenter = 0;
-                widgetCom.updateAlignment();
-                let tabScript = node.getComponent(TabTopView);
-                resolve(tabScript);
-            });
+    async initTabContent(){
+        let node = await this.loadAndInitPrefab(PrefabType.TabTopView, this.node, {
+            isAlignTop: true,
+            isAlignHorizontalCenter: true,
+            top: 117.027,
+            horizontalCenter: 0
         })
-        
+        this._tabTop = node.getComponent(TabTopView);
+        this._tabTop.loadTabData(this._bookTabData,(selectId:number)=>{
+            this.wordCheckScrollView.scrollTo(0);
+            this._currentType = (selectId+1) as CheckWordType;
+            this.wordSortView.initData(this._currentType);
+            this.onRequestCheckWord();
+        });
     }
 
     onRequestCheckWord(){

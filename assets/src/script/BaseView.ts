@@ -8,7 +8,9 @@
  *
  */
 
-import { Component } from "cc";
+import { Component, Node, Prefab, Widget, instantiate } from "cc";
+import { PrefabTypeEntry } from "../config/PrefabType";
+import { ResLoader } from "../manager/ResLoader";
 import { EventMgr } from "../util/EventManager";
 export class BaseView extends Component{
 	protected _className = "BaseView";
@@ -22,7 +24,7 @@ export class BaseView extends Component{
 	//实例化
 	constructor(name: string) {
         super();
-		this._className = name;
+		this._className = name ? name: this._className;
 		console.log(`${this._className}初始化...`)
 		/**重载onLoad */
 		this.extent_onLoad = this.onLoad;
@@ -69,6 +71,11 @@ export class BaseView extends Component{
 	protected onInitModuleEvent() {
 
 	}
+	protected addModelListeners(listeners: [string, (data: any) => void][]): void {
+        for (const [path, handler] of listeners) {
+            this.addModelListener(path, handler.bind(this));
+        }
+    }
 	/**
 	 * 添加事件绑定
 	 * @param name 事件名称
@@ -123,5 +130,24 @@ export class BaseView extends Component{
 		this.onDestroyBefore()
 		this.removeEvent();
 	};
+	/**从prefab加载预制体 */
+	protected async loadAndInitPrefab(prefabType: PrefabTypeEntry, parentNode: Node, widgetOptions?: Partial<Widget>): Promise<Node> {
+        try {
+            const prefab = await ResLoader.instance.loadAsyncPromise<Prefab>("resources", `prefab/${prefabType.path}`, Prefab) as Prefab;
+            const node = instantiate(prefab);
+            parentNode.addChild(node);
+
+            let widgetCom = node.getComponent(Widget);
+            if (widgetOptions) {
+                widgetCom = widgetCom || node.addComponent(Widget);
+                Object.assign(widgetCom, widgetOptions);
+                widgetCom.updateAlignment();
+            }
+            return node
+        } catch (err) {
+            console.error(`Failed to load component from ${prefabType.path}:`, err);
+            throw err;
+        }
+    }
 }
 

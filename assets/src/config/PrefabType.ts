@@ -26,8 +26,15 @@ export class PrefabConfig {
     public scpt_name?: string;
 }
 
+export type PrefabTypeEntry = {
+    path: string;
+    zindex: number;
+    tips: string;
+    componentName?: string;
+};
+
 // 预制体类型
-export const PrefabType = {
+export const PrefabType: Record<string, PrefabTypeEntry> = {
     //**学习模式相关 */
     StudyView: { path: "study/StudyViewchange", zindex: Hierarchy.POPUPLAYER, tips: "学习模块选择" },
     StudyModeView: { path: "studyModes/StudyModeView", zindex: Hierarchy.POPUPLAYER, tips: "关卡学模式" },
@@ -126,6 +133,8 @@ export const PrefabType = {
     /*********************************************宠物相关start*************************************************************/
     PetInteractionView: { path: "map/PetInteractionView", zindex: Hierarchy.POPUPLAYER, tips: "宠物交互界面" },
     PetInfoView: { path: "map/PetInfoView", zindex: Hierarchy.POPUPLAYER, tips: "宠物信息界面" },
+    PetGiftTipView: { path: "map/PetGiftTipView", zindex: Hierarchy.POPUPLAYER, tips: "宠物礼物提示界面" },
+    PetMoodView: { path: "map/PetMoodView", zindex: Hierarchy.POPUPLAYER, tips: "宠物心情界面" },
     /*********************************************宠物相关end*************************************************************/
     /*********************************************CardBook start***********************************************************/
     CardBookView: { path: "cardWar/CardBookView", zindex: Hierarchy.POPUPLAYER, tips: "卡牌书籍" },
@@ -163,6 +172,8 @@ export const PrefabType = {
     AchievementRewardView: { path: "task/AchievementRewardView", zindex: Hierarchy.POPUPLAYER, tips: "每周任务界面" },
     RightAchievementView: { path: "task/RightAchievementView", zindex: Hierarchy.POPUPLAYER, tips: "每周任务界面" },
     TaskView: { path: "task/TaskView", zindex: Hierarchy.POPUPLAYER, tips: "每周任务界面" },
+    MainTaskView: { path: "task/MainTaskView", zindex: Hierarchy.POPUPLAYER, tips: "主线任务界面" },
+    DailyTaskView: { path: "task/DailyTaskView", zindex: Hierarchy.POPUPLAYER, tips: "每日任务界面" },
     TaskAchievementView: { path: "task/TaskAchievementView", zindex: Hierarchy.POPUPLAYER, tips: "每周任务界面" },
     TaskTabView: { path: "task/TaskTabView", zindex: Hierarchy.POPUPLAYER, tips: "每周任务界面" },
     /*********************************************每周任务 End*************************************************************/

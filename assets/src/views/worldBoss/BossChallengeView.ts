@@ -1,7 +1,6 @@
-import { Label, Layers, Node, Prefab, UITransform, Vec3, Widget, _decorator, error, instantiate, isValid, tween } from 'cc';
+import { Label, Layers, Node, Prefab, UITransform, Vec3, _decorator, instantiate, tween } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
-import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { PetModel } from '../../models/PetModel';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
@@ -110,23 +109,13 @@ export class BossChallengeView extends BaseView {
         CCUtil.offTouch(this.btn_close, this.onCloseView, this);
     }
     
-    initChallengeFrame(){
-        ResLoader.instance.load(`prefab/${PrefabType.ChallengeFrameView.path}`, Prefab, (err: Error | null, prefab: Prefab) => {
-            if (err) {
-                error && console.error(err);
-                return;
-            }
-            let node = instantiate(prefab);
-            this.content_layout.addChild(node);
-            this._challengeFrame = node.getComponent(ChallengeFrameView);
-            this._challengeFrame.onLoadWordData(this._bossGame.Words);
-            let widgetCom = node.getComponent(Widget);
-            if (!isValid(widgetCom)) {
-                widgetCom = node.addComponent(Widget);
-                widgetCom.isAlignBottom = true;
-            }
-            widgetCom.bottom = -280;
-        });
+    async initChallengeFrame(){
+        let node = await this.loadAndInitPrefab(PrefabType.ChallengeFrameView, this.content_layout, {
+            isAlignBottom: true,
+            bottom: -280,
+        })
+        this._challengeFrame = node.getComponent(ChallengeFrameView);
+        this._challengeFrame.onLoadWordData(this._bossGame.Words);
     }
     onCloseView(){
         ViewsManager.instance.showView(PrefabType.WorldBossView, (node: Node) => {
