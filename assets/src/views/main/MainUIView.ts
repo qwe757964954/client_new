@@ -135,8 +135,7 @@ export class MainUIView extends Component {
     }
     //商店点击
     public onClickShop() {
-        ViewsManager.showTip(TextConfig.Function_Tip);
-        // ViewsManager.instance.showView(PrefabType.ShopUIView);
+        ViewsMgr.showView(PrefabType.ShopUIView);
     }
     //任务点击
     public onClickTask() {

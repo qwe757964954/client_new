@@ -1,4 +1,4 @@
-import { Button, EventKeyboard, EventTouch, Input, KeyCode, Node, NodeEventType, SpriteFrame, Vec3, Widget, director, gfx, input, isValid } from "cc";
+import { Button, EventKeyboard, EventTouch, Input, KeyCode, Node, NodeEventType, SpriteFrame, UITransform, Vec3, Widget, director, gfx, input, isValid } from "cc";
 import { SoundMgr } from "../manager/SoundMgr";
 
 export default class CCUtil {
@@ -171,5 +171,18 @@ export default class CCUtil {
         if (!obj) return;
         let node = obj.node ? obj.node : obj;
         node.scale = new Vec3(scaleX, scaleY, 1);
+    }
+    /**自适应图片大小 */
+    public static fixNodeScale(node: Node, maxWidth: number, maxHeight: number) {
+        let scale = node.scale.clone();
+        let transform = node.getComponent(UITransform);
+        let scaleX = maxWidth / (transform.width * scale.x);
+        let scaleY = maxHeight / (transform.height * scale.y);
+        if (scaleX < 1.0 || scaleY < 1.0) {
+            let minScale = Math.min(scaleX, scaleY);
+            scale.x *= minScale;
+            scale.y *= minScale;
+            node.scale = scale;
+        }
     }
 }
