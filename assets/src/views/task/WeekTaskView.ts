@@ -1,4 +1,4 @@
-import { _decorator, error, instantiate, isValid, JsonAsset, Node, Prefab, Widget } from 'cc';
+import { _decorator, JsonAsset, Node } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
@@ -41,28 +41,29 @@ export class WeekTaskView extends BaseView {
     async initUI(){
         this.initNavTitle();
         this.initAmout();
-        await this.loadTaskConfigInfo();
-        await this.initRewardView();
-        await this.initTaskAchievementView();
-        await this.initWeekTaskView();
-        await this.initMainTaskView();
-        await this.initDailyTaskView();
-        await this.initTaskTabView();
-        console.log("this._taskConfigInfo", this._taskConfigInfo);
+        try {
+            await this.loadTaskConfigInfo();
+            await Promise.all([
+                this.initRewardView(),
+                this.initTaskAchievementView(),
+                this.initWeekTaskView(),
+                this.initMainTaskView(),
+                this.initDailyTaskView(),
+                this.initTaskTabView(),
+            ]);
+            console.log("Task configuration loaded:", this._taskConfigInfo);
+        } catch (err) {
+            console.error("Failed to initialize UI:", err);
+        }
     }
-
-    async loadTaskConfigInfo(): Promise<void> {
-        return new Promise<void>((resolve, reject) => {
-            ResLoader.instance.load(`task/task`, JsonAsset, async (err: Error | null, jsonData: JsonAsset) => {
-                if (err) {
-                    console.error(err);
-                    reject(err);
-                } else {
-                    this._taskConfigInfo = jsonData.json as TaskData;
-                    resolve();
-                }
-            });
-        });
+    private async loadTaskConfigInfo(): Promise<void> {
+        try {
+            const jsonData = await ResLoader.instance.loadAsyncPromise<JsonAsset>('task/task', JsonAsset);
+            this._taskConfigInfo = jsonData.json as TaskData;
+        } catch (err) {
+            console.error("Failed to load task configuration:", err);
+            throw err;
+        }
     }
 
     initEvent(){
@@ -85,35 +86,19 @@ export class WeekTaskView extends BaseView {
             amoutScript.loadAmoutData(dataArr);
         });
     }
-    /**初始化tab */
-    initTaskTabView(){
-        return new Promise((resolve, reject) => {
-            ResLoader.instance.load(`prefab/${PrefabType.TaskTabView.path}`, Prefab, (err: Error | null, prefab: Prefab) => {
-                if (err) {
-                    error && console.error(err);
-                    reject(err);
-                    return;
-                }
-                let node = instantiate(prefab);
-                this.node.addChild(node);
-                this._tabView = node.getComponent(TaskTabView);
-                this._tabView.setTabSelectClick((selectId:number)=>{
-                    this.hidenAllContent();
-                    this.clickMenuSelect(selectId);
-                })
-                let widgetCom = node.getComponent(Widget);
-                if (!isValid(widgetCom)) {
-                    widgetCom = node.addComponent(Widget);
-                    widgetCom.isAlignTop = true;
-                    widgetCom.isAlignLeft = true;
-                }
-                widgetCom.top = 129;
-                widgetCom.left = 50;
-                widgetCom.updateAlignment();
 
-                resolve(null);
-            });
-        })
+    private async initTaskTabView() {
+        let node = await this.loadAndInitPrefab(PrefabType.TaskTabView, this.node, {
+            isAlignTop: true,
+            isAlignLeft: true,
+            top: 129,
+            left: 50
+        });
+        this._tabView = node.getComponent(TaskTabView);
+        this._tabView.setTabSelectClick((selectId: number) => {
+            this.hideAllContent();
+            this.clickMenuSelect(selectId);
+        });
     }
 
     clickMenuSelect(menuType:TaskMenuType){
@@ -135,108 +120,45 @@ export class WeekTaskView extends BaseView {
         }
     }
 
-    hidenAllContent(){
+    hideAllContent(){
         this._weekTask.node.active = false;
         this._achievementView.node.active = false;
         this._mainTask.node.active = false;
         this._dailyTask.node.active = false;
     }
-
-    initWeekTaskView(){
-        return new Promise((resolve, reject) => {
-            ResLoader.instance.load(`prefab/${PrefabType.TaskView.path}`, Prefab, (err: Error | null, prefab: Prefab) => {
-                if (err) {
-                    error && console.error(err);
-                    reject(err);
-                    return;
-                }
-                let node = instantiate(prefab);
-                this._weekTask = node.getComponent(WeeklyTaskView);
-                this._weekTask.updateData(this._taskConfigInfo.task_week);
-                this._weekTask.node.active = false;
-                this.node.addChild(node);
-                resolve(null);
-            });
-        })
+    private async initWeekTaskView() {
+        let node = await this.loadAndInitPrefab(PrefabType.TaskView, this.node);
+        this._weekTask = node.getComponent(WeeklyTaskView);
+        this._weekTask.updateData(this._taskConfigInfo.task_week);
+        this._weekTask.node.active = false;
     }
 
-    initMainTaskView(){
-        return new Promise((resolve, reject) => {
-            ResLoader.instance.load(`prefab/${PrefabType.MainTaskView.path}`, Prefab, (err: Error | null, prefab: Prefab) => {
-                if (err) {
-                    error && console.error(err);
-                    reject(err);
-                    return;
-                }
-                let node = instantiate(prefab);
-                this._mainTask = node.getComponent(MainTaskView);
-                this._mainTask.updateData(this._taskConfigInfo.task_main);
-                this._mainTask.node.active = false;
-                this.node.addChild(node);
-                resolve(null);
-            });
-        })
+    private async initMainTaskView() {
+        let node = await this.loadAndInitPrefab(PrefabType.MainTaskView, this.node);
+        this._mainTask = node.getComponent(MainTaskView);
+        this._mainTask.updateData(this._taskConfigInfo.task_main);
+        this._mainTask.node.active = false;
+    }
+    private async initDailyTaskView() {
+        let node = await this.loadAndInitPrefab(PrefabType.DailyTaskView, this.node);
+        this._dailyTask = node.getComponent(DailyTaskView);
+        this._dailyTask.updateData([]); // Assuming an empty array for initial data
+        this._dailyTask.node.active = false;
+    }
+    private async initTaskAchievementView(){
+        let node = await this.loadAndInitPrefab(PrefabType.TaskAchievementView, this.node)
+        this._achievementView = node.getComponent(TaskAchievementView);
     }
 
-    initDailyTaskView(){
-        return new Promise((resolve, reject) => {
-            ResLoader.instance.load(`prefab/${PrefabType.DailyTaskView.path}`, Prefab, (err: Error | null, prefab: Prefab) => {
-                if (err) {
-                    error && console.error(err);
-                    reject(err);
-                    return;
-                }
-                let node = instantiate(prefab);
-                this._dailyTask = node.getComponent(DailyTaskView);
-                this._dailyTask.updateData([]);
-                this._dailyTask.node.active = false;
-                this.node.addChild(node);
-                resolve(null);
-            });
+    private async initRewardView() {
+        let node = await this.loadAndInitPrefab(PrefabType.TaskAwardView, this.node, {
+            isAlignTop: true,
+            isAlignRight: true,
+            top: 123,
+            right: 78
         })
+        this._taskAward = node.getComponent(TaskAwardView);
     }
-
-    initTaskAchievementView(){
-        return new Promise((resolve, reject) => {
-            ResLoader.instance.load(`prefab/${PrefabType.TaskAchievementView.path}`, Prefab, (err: Error | null, prefab: Prefab) => {
-                if (err) {
-                    error && console.error(err);
-                    reject(err);
-                    return;
-                }
-                let node = instantiate(prefab);
-                this._achievementView = node.getComponent(TaskAchievementView);
-                this._achievementView.node.active = false;
-                this.node.addChild(node);
-                resolve(null);
-            });
-        })
-    }
-
-    initRewardView(){
-        return new Promise((resolve, reject) => {
-            ResLoader.instance.load(`prefab/${PrefabType.TaskAwardView.path}`, Prefab, (err: Error | null, prefab: Prefab) => {
-                if (err) {
-                    error && console.error(err);
-                    reject(err);
-                    return;
-                }
-                let node = instantiate(prefab);
-                this.node.addChild(node);
-                let widgetCom = node.getComponent(Widget);
-                this._taskAward = node.getComponent(TaskAwardView);
-                if (!isValid(widgetCom)) {
-                    widgetCom = node.addComponent(Widget);
-                    widgetCom.isAlignTop = true;
-                    widgetCom.isAlignRight = true;
-                }
-                widgetCom.top = 123;
-                widgetCom.right = 78;
-                resolve(null);
-            });
-        })
-    }
-
     removeEvent(){
         
     }

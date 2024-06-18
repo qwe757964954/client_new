@@ -70,8 +70,6 @@ export const taskInfos = [
       Path: string;
   }
   
-
-
   // 定义奖励的类型
 export interface Reward {
   type: number;

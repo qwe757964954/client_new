@@ -8,7 +8,9 @@
  *
  */
 
-import { Component } from "cc";
+import { Component, Node, Prefab, Widget, instantiate } from "cc";
+import { PrefabTypeEntry } from "../config/PrefabType";
+import { ResLoader } from "../manager/ResLoader";
 import { EventMgr } from "../util/EventManager";
 export class BaseView extends Component{
 	protected _className = "BaseView";
@@ -123,5 +125,24 @@ export class BaseView extends Component{
 		this.onDestroyBefore()
 		this.removeEvent();
 	};
+	/**从prefab加载预制体 */
+	protected async loadAndInitPrefab(prefabType: PrefabTypeEntry, parentNode: Node, widgetOptions?: Partial<Widget>): Promise<Node> {
+        try {
+            const prefab = await ResLoader.instance.loadAsyncPromise<Prefab>("resources", `prefab/${prefabType.path}`, Prefab) as Prefab;
+            const node = instantiate(prefab);
+            parentNode.addChild(node);
+
+            let widgetCom = node.getComponent(Widget);
+            if (widgetOptions) {
+                widgetCom = widgetCom || node.addComponent(Widget);
+                Object.assign(widgetCom, widgetOptions);
+                widgetCom.updateAlignment();
+            }
+            return node
+        } catch (err) {
+            console.error(`Failed to load component from ${prefabType.path}:`, err);
+            throw err;
+        }
+    }
 }
 

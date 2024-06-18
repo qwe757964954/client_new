@@ -21,38 +21,50 @@ export default class _TextbookService extends BaseControll {
     }
     /** 初始化模块事件 */
     protected onInitModuleEvent() {
-        this.addModelListener(InterfacePath.Classification_BookStatus, this.onBookStatus);
-        this.addModelListener(InterfacePath.Classification_BookDel, this.onBookDel);
-        this.addModelListener(InterfacePath.Classification_List, this.onBookList);
-        this.addModelListener(InterfacePath.Classification_SchoolBook, this.onSchoolBook);
-        this.addModelListener(InterfacePath.Classification_SchoolGrade, this.onSchoolBookGrade);
-        this.addModelListener(InterfacePath.Classification_UnitListStatus, this.onUnitListStatus);
-        this.addModelListener(InterfacePath.Classification_PlanModify, this.onModifyPlan);
-        this.addModelListener(InterfacePath.Classification_AddPlanBook, this.onAddPlanBook);
-        this.addModelListener(InterfacePath.Classification_BookPlanDetail, this.onBookPlanDetail);
-        this.addModelListener(InterfacePath.Classification_UnitStatus, this.onUnitStatus);
-        this.addModelListener(InterfacePath.Classification_BookAwardList, this.onBookAddAwardList);
-        this.addModelListener(InterfacePath.Classification_CurrentBook, this.onCurrentBook);
-        this.addModelListener(InterfacePath.Classification_ReportResult,this.onReportResult);
-        this.addModelListener(InterfacePath.Classification_Word,this.onWordDetail);
-        this.addModelListener(InterfacePath.Classification_ChangeTextbook,this.onChangeTextbook);
-        this.addModelListener(InterfacePath.Classification_GameSubmit,this.onGameSubmit);
-        this.addModelListener(InterfacePath.Classification_CheckWord,this.onCheckWord);
-        this.addModelListener(InterfacePath.Classification_VocabularyWord,this.onVocabularyWord);
-        this.addModelListener(InterfacePath.Classification_CollectWord,this.onCollectWord);
+        this.addModelListeners([
+            [InterfacePath.Classification_BookStatus, this.onBookStatus],
+            [InterfacePath.Classification_BookDel, this.onBookDel],
+            [InterfacePath.Classification_List, this.onBookList],
+            [InterfacePath.Classification_SchoolBook, this.onSchoolBook],
+            [InterfacePath.Classification_SchoolGrade, this.onSchoolBookGrade],
+            [InterfacePath.Classification_UnitListStatus, this.onUnitListStatus],
+            [InterfacePath.Classification_PlanModify, this.onModifyPlan],
+            [InterfacePath.Classification_AddPlanBook, this.onAddPlanBook],
+            [InterfacePath.Classification_BookPlanDetail, this.onBookPlanDetail],
+            [InterfacePath.Classification_UnitStatus, this.onUnitStatus],
+            [InterfacePath.Classification_BookAwardList, this.onBookAddAwardList],
+            [InterfacePath.Classification_CurrentBook, this.onCurrentBook],
+            [InterfacePath.Classification_ReportResult, this.onReportResult],
+            [InterfacePath.Classification_Word, this.onWordDetail],
+            [InterfacePath.Classification_ChangeTextbook, this.onChangeTextbook],
+            [InterfacePath.Classification_GameSubmit, this.onGameSubmit],
+            [InterfacePath.Classification_CheckWord, this.onCheckWord],
+            [InterfacePath.Classification_CollectWord, this.onCollectWord],
+            [InterfacePath.Classification_VocabularyWord, this.onVocabularyWord]
+        ]);
     }
+    private addModelListeners(listeners: [string, (data: any) => void][]): void {
+        for (const [path, handler] of listeners) {
+            this.addModelListener(path, handler.bind(this));
+        }
+    }
+
+    private handleResponse(data: any, successNotify: string): void {
+        console.log(successNotify, data);
+        if (data.code !== 200) {
+            console.log(data.msg);
+            ViewsManager.showTip(data.msg);
+            return;
+        }
+        EventMgr.dispatch(successNotify, data);
+    }
+
     reqBookStatus() {
         let para: c2sBookStatus = new c2sBookStatus();
         NetMgr.sendMsg(para);
     }
     onBookStatus(data: any) {
-        console.log(data);
-        if (data.code !== 200) {
-            console.log(data.msg);
-            ViewsManager.showTip(data.msg);
-            return
-        }
-        EventMgr.dispatch(NetNotify.Classification_BookStatus, data);
+        this.handleResponse(data, NetNotify.Classification_BookStatus);
     }
     reqBookDel(data: MyTextbookStatus) {
         let param: c2sDelBookStatus = new c2sDelBookStatus();
@@ -60,22 +72,10 @@ export default class _TextbookService extends BaseControll {
         NetMgr.sendMsg(param);
     }
     onBookDel(data: any) {
-        console.log(data);
-        if (data.code !== 200) {
-            console.log(data.msg);
-            ViewsManager.showTip(data.msg);
-            return
-        }
-        EventMgr.dispatch(NetNotify.Classification_BookDel, data);
+        this.handleResponse(data, NetNotify.Classification_BookDel);
     }
     onBookAdd(data: any) {
-        console.log("onBookAdd", data);
-        if (data.code !== 200) {
-            console.log(data.msg);
-            ViewsManager.showTip(data.msg);
-            return
-        }
-        EventMgr.dispatch(NetNotify.Classification_BookAdd, data);
+        this.handleResponse(data, NetNotify.Classification_BookAwardList);
     }
 
     reqModifyPlan(data: ModifyPlanData) {
@@ -86,13 +86,7 @@ export default class _TextbookService extends BaseControll {
     }
 
     onModifyPlan(data: any) {
-        console.log("onModifyPlan", data);
-        if (data.code !== 200) {
-            console.log(data.msg);
-            ViewsManager.showTip(data.msg);
-            return
-        }
-        EventMgr.dispatch(NetNotify.Classification_PlanModify, data);
+        this.handleResponse(data, NetNotify.Classification_PlanModify);
     }
 
     reqBookList() {
@@ -100,13 +94,7 @@ export default class _TextbookService extends BaseControll {
         NetMgr.sendMsg(param);
     }
     onBookList(data: any) {
-        console.log("onBookList", data);
-        if (data.code !== 200) {
-            console.log(data.msg);
-            ViewsManager.showTip(data.msg);
-            return
-        }
-        EventMgr.dispatch(NetNotify.Classification_List, data);
+        this.handleResponse(data, NetNotify.Classification_List);
     }
     reqSchoolBook(phase_id: number) {
         let param: c2sSchoolBook = new c2sSchoolBook();
@@ -114,13 +102,7 @@ export default class _TextbookService extends BaseControll {
         NetMgr.sendMsg(param);
     }
     onSchoolBook(data: any) {
-        console.log("onSchoolBook", data);
-        if (data.code !== 200) {
-            console.log(data.msg);
-            ViewsManager.showTip(data.msg);
-            return;
-        }
-        EventMgr.dispatch(NetNotify.Classification_SchoolBook, data);
+        this.handleResponse(data, NetNotify.Classification_SchoolBook);
     }
     reqSchoolBookGrade(phase_id: number, BookName: string) {
         let param: c2sSchoolBookGrade = new c2sSchoolBookGrade();
@@ -129,12 +111,7 @@ export default class _TextbookService extends BaseControll {
         NetMgr.sendMsg(param);
     }
     onSchoolBookGrade(data: any) {
-        if (data.code !== 200) {
-            console.log(data.msg);
-            ViewsManager.showTip(data.msg);
-            return;
-        }
-        EventMgr.dispatch(NetNotify.Classification_SchoolGrade, data);
+        this.handleResponse(data, NetNotify.Classification_SchoolGrade);
     }
     reqUnitListStatus(book_id: string) {
         console.log("reqUnitListStatus......",book_id);
@@ -143,13 +120,7 @@ export default class _TextbookService extends BaseControll {
         NetMgr.sendMsg(param);
     }
     onUnitListStatus(data: any) {
-        console.log("onUnitListStatus", data);
-        if (data.code !== 200) {
-            console.log(data.msg);
-            ViewsManager.showTip(data.msg);
-            return;
-        }
-        EventMgr.dispatch(NetNotify.Classification_UnitListStatus, data);
+        this.handleResponse(data, NetNotify.Classification_UnitListStatus);
     }
 
     reqAddPlanBook(data: ReqPlanData) {
@@ -160,13 +131,7 @@ export default class _TextbookService extends BaseControll {
     }
 
     onAddPlanBook(data: any) {
-        console.log("onAddPlanBook", data);
-        if (data.code !== 200) {
-            console.log(data.msg);
-            ViewsManager.showTip(data.msg);
-            return;
-        }
-        EventMgr.dispatch(NetNotify.Classification_AddPlanBook, data);
+        this.handleResponse(data, NetNotify.Classification_AddPlanBook);
     }
     reqBookPlanDetail(book_id: string) {
         let params: c2sBookPlanDetail = new c2sBookPlanDetail();
@@ -175,13 +140,7 @@ export default class _TextbookService extends BaseControll {
     }
 
     onBookPlanDetail(data: any) {
-        console.log("onBookPlanDetail", data);
-        if (data.code !== 200) {
-            console.log(data.msg);
-            ViewsManager.showTip(data.msg);
-            return;
-        }
-        EventMgr.dispatch(NetNotify.Classification_BookPlanDetail, data);
+        this.handleResponse(data, NetNotify.Classification_BookPlanDetail);
     }
     reqUnitStatus(data: ReqUnitStatusParam) {
         let params: c2sUnitStatus = new c2sUnitStatus();
@@ -195,13 +154,7 @@ export default class _TextbookService extends BaseControll {
         NetMgr.sendMsg(params);
     }
     onUnitStatus(data: any) {
-        console.log("onUnitStatus", data);
-        if (data.code !== 200) {
-            console.log(data.msg);
-            ViewsManager.showTip(data.msg);
-            return;
-        }
-        EventMgr.dispatch(NetNotify.Classification_UnitStatus, data);
+        this.handleResponse(data, NetNotify.Classification_UnitStatus);
     }
     reqBookAwardList(type_name: string, book_name: string) {
         let params: c2sBookAwardList = new c2sBookAwardList();
@@ -210,13 +163,7 @@ export default class _TextbookService extends BaseControll {
         NetMgr.sendMsg(params);
     }
     onBookAddAwardList(data: any) {
-        console.log("onBookAddAwardList", data);
-        if (data.code !== 200) {
-            console.log(data.msg);
-            ViewsManager.showTip(data.msg);
-            return;
-        }
-        EventMgr.dispatch(NetNotify.Classification_BookAwardList, data);
+        this.handleResponse(data, NetNotify.Classification_BookAwardList);
     }
 
     reqCurrentBook(){
@@ -225,13 +172,7 @@ export default class _TextbookService extends BaseControll {
     }
 
     onCurrentBook(data:any){
-        console.log("onCurrentBook.....",data);
-        if(data.code !== 200){
-            console.log(data.msg);
-            ViewsManager.showTip(data.msg);
-            return;
-        }
-        EventMgr.dispatch(NetNotify.Classification_CurrentBook, data);
+        this.handleResponse(data, NetNotify.Classification_CurrentBook);
     }
 
     reqReportResult(data:ReportResultModel){
@@ -245,13 +186,7 @@ export default class _TextbookService extends BaseControll {
     }
 
     onReportResult(data:any){
-        console.log("onReportResult.....",data);
-        if(data.code !== 200){
-            console.log(data.msg);
-            ViewsManager.showTip(data.msg);
-            return;
-        }
-        EventMgr.dispatch(NetNotify.Classification_ReportResult, data);
+        this.handleResponse(data, NetNotify.Classification_ReportResult);
     }
     /**
      * 单词详情
@@ -270,13 +205,7 @@ export default class _TextbookService extends BaseControll {
      * @returns 
      */
     onWordDetail(data:any){
-        console.log("onWordDetail....",data);
-        if(data.code !== 200) {
-            console.log(data.msg);
-            ViewsManager.showTip(data.msg);
-            return;
-        }
-        EventMgr.dispatch(NetNotify.Classification_Word, data);
+        this.handleResponse(data, NetNotify.Classification_Word);
     }
     /**
      * 切换教材
@@ -295,13 +224,7 @@ export default class _TextbookService extends BaseControll {
      * @returns 
      */
     onChangeTextbook(data: any) {
-        console.log("onChangeTextbook", data);
-        if (data.code !== 200) {
-            console.log(data.msg);
-            ViewsManager.showTip(data.msg);
-            return;
-        }
-        EventMgr.dispatch(NetNotify.Classification_ChangeTextbook, data);
+        this.handleResponse(data, NetNotify.Classification_ChangeTextbook);
     }
     /**
      * 单词提交
@@ -330,13 +253,7 @@ export default class _TextbookService extends BaseControll {
      * @returns 
      */
     onGameSubmit(data:any){
-        console.log("onGameSubmit.....",data);
-        if(data.code !== 200){
-            console.log(data.msg);
-            ViewsManager.showTip(data.msg);
-            return;
-        }
-        EventMgr.dispatch(NetNotify.Classification_GameSubmit, data);
+        this.handleResponse(data, NetNotify.Classification_GameSubmit);
     }
     /**
      * 词表单词列表
@@ -355,13 +272,7 @@ export default class _TextbookService extends BaseControll {
      * 响应
      */
     onCheckWord(data:any){
-        console.log("onGameSubmit.....",data);
-        if(data.code !== 200){
-            console.log(data.msg);
-            ViewsManager.showTip(data.msg);
-            return;
-        }
-        EventMgr.dispatch(NetNotify.Classification_CheckWord, data);
+        this.handleResponse(data, NetNotify.Classification_CheckWord);
     }
     /**教材单词分类词汇列表接口 
      * 请求
@@ -380,13 +291,7 @@ export default class _TextbookService extends BaseControll {
      * @returns 
      */
     onVocabularyWord(data: any) {
-        console.log("onVocabularyWord", data);
-        if (data.code !== 200) {
-            console.log(data.msg);
-            ViewsManager.showTip(data.msg);
-            return;
-        }
-        EventMgr.dispatch(NetNotify.Classification_VocabularyWord, data);
+        this.handleResponse(data, NetNotify.Classification_VocabularyWord);
     }
     /**
      * 请求收藏与移除
@@ -404,13 +309,7 @@ export default class _TextbookService extends BaseControll {
      * response
      */
     onCollectWord(data:any){
-        console.log("onCollectWord",data);
-        if(data.code !== 200){
-            console.log(data.msg);
-            ViewsManager.showTip(data.msg);
-            return;
-        }
-        EventMgr.dispatch(NetNotify.Classification_CollectWord, data);
+        this.handleResponse(data, NetNotify.Classification_CollectWord);
     }
 };
 

@@ -77,8 +77,10 @@ export class TaskTabItem extends ListItem {
             this.sub_scroll.scrollView.view.getComponent(UITransform).height = calculate_height;
             this.node.getComponent(UITransform).height = calculate_height + this._start_height;
             this.sub_scroll.selectedId = 0;
+            this.tab_focus.active = true;
         }else{
             this.sub_scroll.numItems = 0;
+            this.tab_focus.active = false;
         }
         tween(this.tab_focus).to(0.3, {eulerAngles: v3(0, 0, 0)}).start();
     }

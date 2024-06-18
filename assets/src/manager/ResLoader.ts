@@ -147,7 +147,40 @@ ResLoader.instance.load("spine_path", sp.SkeletonData, (err: Error | null, sd: s
             });
         });
     }
-
+    loadAsyncPromise<T extends Asset>(
+        bundleName: string,
+        paths?: string | string[] | AssetType<T> | ProgressCallback | CompleteCallback | null,
+        type?: AssetType<T> | ProgressCallback | CompleteCallback | null,
+    ): Promise<T> {
+        return new Promise((resolve, reject) => {
+            // Determine the arguments based on the type of `paths`
+            let onComplete: CompleteCallback<T> | null = null;
+            let args: ILoadResArgs<T> | null = null;
+    
+            if (typeof paths === 'string' || Array.isArray(paths)) {
+                onComplete = (error: Error | null, asset: T) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve(asset);
+                    }
+                };
+                args = this.parseLoadResArgs(paths, type, null, onComplete);
+            } else {
+                args = this.parseLoadResArgs(bundleName, paths, type, (error: Error | null, asset: T) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve(asset);
+                    }
+                });
+                args.bundle = this.defaultBundleName;
+            }
+    
+            this.loadByArgs(args);
+        });
+    }
+    
     /**
      * 加载文件夹中的资源
      * @param bundleName    远程包名

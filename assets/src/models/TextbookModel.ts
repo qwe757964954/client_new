@@ -374,7 +374,7 @@ export interface CheckWordItem {
     syllable:string;
     symbol:string;
     symbolus:string;
-    unit:string;
+    unit_name:string;
     word:string;
 }
 
