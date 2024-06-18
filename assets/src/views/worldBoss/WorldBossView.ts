@@ -1,4 +1,4 @@
-import { _decorator, error, instantiate, isValid, JsonAsset, Label, Node, Prefab, Sprite, SpriteFrame, Widget } from 'cc';
+import { _decorator, error, JsonAsset, Label, Node, Sprite, SpriteFrame } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
@@ -83,69 +83,38 @@ export class WorldBossView extends BaseView {
     }
 
     /**初始化右侧闯关 */
-    initLeftBossNav(){
-        ResLoader.instance.load(`prefab/${PrefabType.WorldLeftNavView.path}`, Prefab, (err: Error | null, prefab: Prefab) => {
-            if (err) {
-                error && console.error(err);
-                return;
-            }
-            let node = instantiate(prefab);
-            this._leftView = node.getComponent(WorldLeftNavView);
-            this._leftView.setSelectClick((idx:number) => {
-                this.selectBossUpdateStatus(idx);
-            });
-            this.content_layout.addChild(node);
-            let widgetCom = node.getComponent(Widget);
-            if (!isValid(widgetCom)) {
-                widgetCom = node.addComponent(Widget);
-                widgetCom.isAlignLeft = true;
-                widgetCom.isAlignTop = true;
-            }
-            widgetCom.left = 43.599;
-            widgetCom.top = 124.253;
+    async initLeftBossNav(){
+        let node = await this.loadAndInitPrefab(PrefabType.WorldLeftNavView, this.content_layout, {
+            isAlignLeft: true,
+            isAlignTop: true,
+            left: 43.599,
+            top: 124.253,
+        })
+        this._leftView = node.getComponent(WorldLeftNavView);
+        this._leftView.setSelectClick((idx:number) => {
+            this.selectBossUpdateStatus(idx);
         });
     }
-    initCenterView(){
-        ResLoader.instance.load(`prefab/${PrefabType.CenterBossView.path}`, Prefab, (err: Error | null, prefab: Prefab) => {
-            if (err) {
-                error && console.error(err);
-                return;
-            }
-            let node = instantiate(prefab);
-            this.content_layout.addChild(node);
-            this._centerView = node.getComponent(CenterBossView);
-            this._leftView.letNavScroll.selectedId = 0;
-            let widgetCom = node.getComponent(Widget);
-            
-            if (!isValid(widgetCom)) {
-                widgetCom = node.addComponent(Widget);
-                widgetCom.isAlignHorizontalCenter = true;
-                widgetCom.isAlignVerticalCenter = true;
-            }
-            widgetCom.verticalCenter = -20.238;
-            widgetCom.horizontalCenter = 51.949;
-        });
+    async initCenterView(){
+        let node = await this.loadAndInitPrefab(PrefabType.CenterBossView, this.content_layout, {
+            isAlignHorizontalCenter: true,
+            isAlignVerticalCenter: true,
+            verticalCenter: -20.238,
+            horizontalCenter: 51.949,
+        })
+        this._centerView = node.getComponent(CenterBossView);
+        this._leftView.letNavScroll.selectedId = 0;
     }
 
-    initRightRankView(){
-        ResLoader.instance.load(`prefab/${PrefabType.RightRankView.path}`, Prefab, (err: Error | null, prefab: Prefab) => {
-            if (err) {
-                error && console.error(err);
-                return;
-            }
-            let node = instantiate(prefab);
-            this.content_layout.addChild(node);
-            this._rightRankView = node.getComponent(RightRankView);
-            this._rightRankView.loadRankData(this._worldRankData);
-            let widgetCom = node.getComponent(Widget);
-            if (!isValid(widgetCom)) {
-                widgetCom = node.addComponent(Widget);
-                widgetCom.isAlignRight = true;
-                widgetCom.isAlignVerticalCenter = true;
-            }
-            widgetCom.verticalCenter = -51.391;
-            widgetCom.right = 0;
-        });
+    async initRightRankView(){
+        let node = await this.loadAndInitPrefab(PrefabType.RightRankView, this.content_layout, {
+            isAlignRight: true,
+            isAlignVerticalCenter: true,
+            verticalCenter: -51.391,
+            right: 0,
+        })
+        this._rightRankView = node.getComponent(RightRankView);
+        this._rightRankView.loadRankData(this._worldRankData);
     }
 
     selectBossUpdateStatus(select_id: number){

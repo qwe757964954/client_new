@@ -1,9 +1,8 @@
-import { _decorator, error, instantiate, isValid, Layers, Node, Prefab, UITransform } from 'cc';
+import { _decorator, isValid, Layers, Node, UITransform } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import GlobalConfig from '../../GlobalConfig';
 import { BookLevelConfig, DataMgr } from '../../manager/DataMgr';
-import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { MapLevelData } from '../../models/AdventureModel';
 import { CurrentBookStatus, GateListItem, ReqUnitStatusParam, ReqUnitType, UnitItemStatus, UnitListItemStatus, UnitStatusData, VocabularyWordData } from '../../models/TextbookModel';
@@ -299,21 +298,14 @@ export class BreakThroughView extends BaseView {
         });
     }
     /**初始化右侧闯关 */
-    initRightChange(){
-        ResLoader.instance.load(`prefab/${PrefabType.RightPanelchange.path}`, Prefab, (err: Error | null, prefab: Prefab) => {
-            if (err) {
-                error && console.error(err);
-                return;
-            }
-            let node = instantiate(prefab);
-            this.content_layout.addChild(node);
-            NodeUtil.setLayerRecursively(node,Layers.Enum.UI_2D);
-            let content_size = this.content_layout.getComponent(UITransform);
-            let node_size = node.getComponent(UITransform);
-            this._rightChallenge = node.getComponent(rightPanelchange);
-            let posx = content_size.width / 2 + node_size.width / 2;
-            node.setPosition(posx,0,0);
-        })
+    async initRightChange(){
+        let node = await this.loadAndInitPrefab(PrefabType.RightPanelchange, this.content_layout)
+        NodeUtil.setLayerRecursively(node,Layers.Enum.UI_2D);
+        let content_size = this.content_layout.getComponent(UITransform);
+        let node_size = node.getComponent(UITransform);
+        let posx = content_size.width / 2 + node_size.width / 2;
+        node.setPosition(posx,0,0);
+        this._rightChallenge = node.getComponent(rightPanelchange);
     }
 
 

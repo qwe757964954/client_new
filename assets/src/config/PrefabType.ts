@@ -26,8 +26,15 @@ export class PrefabConfig {
     public scpt_name?: string;
 }
 
+export type PrefabTypeEntry = {
+    path: string;
+    zindex: number;
+    tips: string;
+    componentName?: string;
+};
+
 // 预制体类型
-export const PrefabType = {
+export const PrefabType: Record<string, PrefabTypeEntry> = {
     //**学习模式相关 */
     StudyView: { path: "study/StudyViewchange", zindex: Hierarchy.POPUPLAYER, tips: "学习模块选择" },
     StudyModeView: { path: "studyModes/StudyModeView", zindex: Hierarchy.POPUPLAYER, tips: "关卡学模式" },
