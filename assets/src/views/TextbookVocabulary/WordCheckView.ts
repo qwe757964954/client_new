@@ -77,10 +77,10 @@ export class WordCheckView extends BaseView {
     onCheckWord(response:CheckWordResponse) {
         this._wordUnits = {};
         response.data.forEach(word => {
-            if (!this._wordUnits[word.unit]) {
-                this._wordUnits[word.unit] = [];
+            if (!this._wordUnits[word.unit_name]) {
+                this._wordUnits[word.unit_name] = [];
             }
-            this._wordUnits[word.unit].push(word);
+            this._wordUnits[word.unit_name].push(word);
         });
         console.log(this._wordUnits);
         console.log(Object.keys(this._wordUnits).length);
