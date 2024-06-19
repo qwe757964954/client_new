@@ -13,6 +13,7 @@ import { ServiceMgr } from '../../net/ServiceManager';
 import { InterfacePath } from '../../net/InterfacePath';
 import { DataMgr } from '../../manager/DataMgr';
 import { WordBossView } from './sixModes/WordBossView';
+import { MonsterModel } from './common/MonsterModel';
 const { ccclass, property } = _decorator;
 
 /**魔法森林 何存发 2024年4月9日17:51:36 */
@@ -46,9 +47,14 @@ export class WorldIsland extends Component {
     public roleAniContainer: Node = null;
     @property({ type: Node, tooltip: "岛屿boss容器" })
     public bossContainer: Node = null;
+    @property({ type: Node, tooltip: "关卡怪物容器" })
+    public monsterContainer: Node = null;
+    @property({ type: Prefab, tooltip: "怪物模型" })
+    public monsterModel: Prefab = null;
 
     protected _pet: Node = null; //精灵
     protected _role: Node = null; //人物
+    protected _monster: Node = null; //当前关卡怪物
 
     private _bigId: number = 1; //岛屿id
     private _mapBaseCount: number = 12; //地图点数量
@@ -106,6 +112,15 @@ export class WorldIsland extends Component {
             let pos: Vec3 = posData.position;
             this.roleAniContainer.position = new Vec3(pos.x - 150, pos.y, 0);
             posData.map.setAniNode(this.roleAniContainer);
+
+            let levelData = DataMgr.instance.getAdvLevelConfig(+posData.pointData.big_id, +posData.pointData.small_id);
+            if (!this._monster) {
+                this.initMonster();
+            }
+            let monsterModel = this._monster.getComponent(MonsterModel);
+            monsterModel.init("spine/monster/adventure/" + levelData.monsterAni);
+            this.monsterContainer.position = new Vec3(pos.x + 100, pos.y, 0);
+            posData.map.setMonsterNode(this.monsterContainer);
         }
         //最后一个地图添加岛屿boss
         if (idx == this._mapLevelsData.length - 1) {
@@ -146,6 +161,17 @@ export class WorldIsland extends Component {
                 }
             }
             this.mapPointList.numItems = this._mapLevelsData.length;
+            let transform = this.mapContent.getComponent(UITransform);
+            transform.width = 0;
+            for (let i = 0; i < this._mapLevelsData.length; i++) {
+                if (this._mapLevelsData[i].length < this._mapBaseCount) {
+                    let pos = WorldIsland.getMapPointsByBigId(this._bigId)[this._mapLevelsData[i].length - 1];
+                    transform.width += pos[0] + 250;
+                } else {
+                    transform.width += 2190;
+                }
+            }
+            console.log('地图宽度', transform.width);
         }
     }
 
@@ -199,6 +225,7 @@ export class WorldIsland extends Component {
 
         this.initPet();
         this.initRole();
+        // this.initMonster();
     }
 
     async initRole() {
@@ -214,6 +241,11 @@ export class WorldIsland extends Component {
         let roleModel = this._pet.getComponent(RoleBaseModel);
         roleModel.init(101, 1);
         roleModel.show(true);
+    }
+
+    initMonster() {
+        this._monster = instantiate(this.monsterModel);
+        this.monsterContainer.addChild(this._monster);
     }
 
     challangeBoss() {

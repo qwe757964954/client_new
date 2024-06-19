@@ -80,6 +80,7 @@ export class WordBossView extends BaseModeView {
         this._selectLock = false;
         this._currentTopic = this._topicsData[this._wordIndex];
         this.sentenceLabel.string = this._currentTopic.content;
+        this.cnLabel.string = this._currentTopic.cn;
         this.initItemNode();
     }
 
@@ -109,7 +110,7 @@ export class WordBossView extends BaseModeView {
         this._isRight = wordItem.word == this._currentTopic.answer;
         let status = this._isRight ? 1 : 2;
         let costTime = Date.now() - this._costTime;
-        ServiceMgr.studyService.submitBossLevelTopic(this._bossLevelData.big_id, this._bossLevelData.challenge_info.bl_id, this._currentTopic.be, status, wordItem.word, costTime);
+        ServiceMgr.studyService.submitBossLevelTopic(this._bossLevelData.big_id, this._bossLevelData.challenge_info.bl_id, this._currentTopic.be_id, status, wordItem.word, costTime);
         if (this._isRight) { //正确
             wordItem.showResult(true);
             this._rightNum++;
