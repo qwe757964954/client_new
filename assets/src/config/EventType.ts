@@ -17,6 +17,7 @@ export const EventType = {
     Role_Need_Sort: "RoleNeedSort",//角色需要排序
     GridRect_Need_Draw: "GridRectNeedDraw",//格子需要绘制
     EditUIView_Refresh: "EditUIViewRefresh",//编辑界面刷新
+    New_Building: "NewBuilding",//新建建筑
 
     Stamina_Update: "StaminaUpdate",//体力更新
     Coin_Update: "CoinUpdate",//金币更新
@@ -41,7 +42,7 @@ export const EventType = {
 
     Goto_Textbook_Level: "Goto_Textbook_Level",  //进入单词大冒险
     Goto_Textbook_Next_Level: "Goto_Textbook_Next_Level",  //进入单词大冒险下一关
-    Goto_Break_Through_Textbook_Next_Level:"Goto_Break_Through_Textbook_Next_Level",
+    Goto_Break_Through_Textbook_Next_Level: "Goto_Break_Through_Textbook_Next_Level",
     Goto_Exam_Mode: "Goto_Exam_Mode", //进入考试模式
     //大冒险学习模式相关
     WordGame_Words: "WordGame_Words",  // 获取单词数据

@@ -173,8 +173,8 @@ export default class CCUtil {
         node.scale = new Vec3(scaleX, scaleY, 1);
     }
     /**自适应图片大小 */
-    public static fixNodeScale(node: Node, maxWidth: number, maxHeight: number) {
-        let scale = node.scale.clone();
+    public static fixNodeScale(node: Node, maxWidth: number, maxHeight: number, mustSet: boolean = false) {
+        let scale = new Vec3(1, 1, 1);
         let transform = node.getComponent(UITransform);
         let scaleX = maxWidth / (transform.width * scale.x);
         let scaleY = maxHeight / (transform.height * scale.y);
@@ -182,6 +182,8 @@ export default class CCUtil {
             let minScale = Math.min(scaleX, scaleY);
             scale.x *= minScale;
             scale.y *= minScale;
+            node.scale = scale;
+        } else if (mustSet) {
             node.scale = scale;
         }
     }

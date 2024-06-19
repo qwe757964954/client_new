@@ -1,4 +1,4 @@
-import { _decorator, Camera, Canvas, Component, EventMouse, EventTouch, Layers, Node, Prefab, sp, UITransform, Vec3 } from 'cc';
+import { _decorator, Camera, Canvas, EventMouse, EventTouch, Layers, Node, Prefab, sp, UITransform, Vec3 } from 'cc';
 import { EventType } from '../../config/EventType';
 import { MapStatus } from '../../config/MapConfig';
 import { BuildingModel, RecycleData } from '../../models/BuildingModel';
@@ -17,6 +17,7 @@ import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { CloudModel } from '../../models/CloudModel';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
 import { RoleModel } from '../../models/RoleModel';
+import { BaseComponent } from '../../script/BaseComponent';
 import CCUtil from '../../util/CCUtil';
 import { TimerMgr } from '../../util/TimerMgr';
 import { BuildingProduceView } from '../map/BuildingProduceView';
@@ -31,7 +32,7 @@ const { ccclass, property } = _decorator;
 const loadingSpNames = ["start", "click", "end"];
 
 @ccclass('MainScene')
-export class MainScene extends Component {
+export class MainScene extends BaseComponent {
     @property(Prefab)
     public bgModel: Prefab = null;//格子地图
     @property(Prefab)
@@ -90,7 +91,6 @@ export class MainScene extends Component {
     private _loadCount: number = 0;//加载计数
     private _recycleBuildingAry: RecycleData[] = [];//回收建筑信息
     /**=========================事件handle============================ */
-    private _buildingBtnViewCloseHandle: string;//建筑按钮视图关闭事件
 
     start() {
         SoundMgr.mainBgm();
@@ -159,7 +159,8 @@ export class MainScene extends Component {
         this.touchCanvas.node.on(Node.EventType.TOUCH_END, this.onTouchEnd, this);
         this.touchCanvas.node.on(Node.EventType.TOUCH_CANCEL, this.onTouchCancel, this);
 
-        this._buildingBtnViewCloseHandle = EventManager.on(EventType.BuildingBtnView_Close, this.onBuildingBtnViewClose.bind(this));
+        this.addEvent(EventType.BuildingBtnView_Close, this.onBuildingBtnViewClose.bind(this));
+        this.addEvent(EventType.New_Building, this.onBuildLandClick.bind(this));
     }
     // 移除事件
     removeEvent() {
@@ -169,7 +170,7 @@ export class MainScene extends Component {
         this.touchCanvas.node?.off(Node.EventType.TOUCH_END);
         this.touchCanvas.node?.off(Node.EventType.TOUCH_CANCEL);
 
-        EventManager.off(EventType.BuildingBtnView_Close, this._buildingBtnViewCloseHandle);
+        this.clearEvent();
     }
     // 移除加载资源
     removeLoadAsset() {
@@ -576,6 +577,10 @@ export class MainScene extends Component {
             return data;
         }
         return data;
+    }
+    /**回收建筑是否包含指定建筑 */
+    isRecycleBuildingContain(bid: number) {
+        return undefined != this._recycleBuildingAry.find(element => element.bid == bid);
     }
 }
 
