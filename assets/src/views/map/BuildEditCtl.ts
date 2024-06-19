@@ -4,6 +4,7 @@ import { ViewsManager } from "../../manager/ViewsManager";
 import { BuildingModel } from "../../models/BuildingModel";
 import { GridModel } from "../../models/GridModel";
 import { s2cBuildingCreate, s2cBuildingEdit, s2cBuildingRecycle, s2cBuildingSell } from "../../models/NetModel";
+import { User } from "../../models/User";
 import { InterfacePath } from "../../net/InterfacePath";
 import { MainScene } from "../main/MainScene";
 import { MapBaseCtl } from "./MapBaseCtl";
@@ -66,6 +67,8 @@ export class BuildEditCtl extends MapBaseCtl {
         if (building) {
             building.buildingID = data.id;
             building.saveData();
+
+            User.addBuilding(building.editInfo.id);
         }
     }
     /**建筑回收返回 */

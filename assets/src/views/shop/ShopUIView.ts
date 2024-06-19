@@ -1,4 +1,4 @@
-import { _decorator, Component, instantiate, Label, Node, Prefab } from 'cc';
+import { _decorator, Component, instantiate, Label, Layout, Node, Prefab } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { DataMgr, EditInfo, EditType } from '../../manager/DataMgr';
@@ -7,7 +7,6 @@ import { BuildingIDType } from '../../models/BuildingModel';
 import { User } from '../../models/User';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
-import { TimerMgr } from '../../util/TimerMgr';
 import { NavTitleView } from '../common/NavTitleView';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { ShopClassItem } from './ShopClassItem';
@@ -82,11 +81,8 @@ export class ShopUIView extends Component {
             shopClassItem.init(element, this.onClassClick.bind(this), this.onSubClassClick.bind(this));
         }
 
-        // ServiceMgr.shopService.goodsList(11); //初始显示type11类型
-        /**下一帧调用，避免layout还未重新调整则调用 */
-        TimerMgr.once(() => {
-            this.onClassClick(this.plLeft.children[2]);
-        }, 10);
+        this.plLeft.getComponent(Layout).updateLayout(true);
+        this.onClassClick(this.plLeft.children[2]);
     }
     /**菜单点击 */
     onClassClick(node: Node) {
@@ -124,8 +120,9 @@ export class ShopUIView extends Component {
             }
             let shopClassItem = child.getComponent(ShopClassItem);
             shopClassItem.hideClassBtn();
-            if (needMove)
+            if (needMove) {
                 shopClassItem.classSlideDistance(-height);
+            }
         });
         this._showClassNode = node;
     }
@@ -201,8 +198,7 @@ export class ShopUIView extends Component {
             if (EditType.Decoration == info.type || EditType.Land == info.type) {
                 this._itemsData.push(info);
             } else {
-                let ary = null;//this._mainScene.findAllBuilding(info.id);
-                if (!ary || ary.length <= 0) {
+                if (undefined == User.buildingList.find(item => item == info.id)) {
                     this._itemsData.push(info);
                 }
             }

@@ -1,4 +1,4 @@
-import { _decorator, Component, EventTouch, instantiate, Label, Node, Sprite, SpriteFrame, tween, UITransform, Vec3 } from 'cc';
+import { _decorator, Component, EventTouch, instantiate, Label, Layout, Node, Sprite, SpriteFrame, tween, UITransform, Vec3 } from 'cc';
 import CCUtil from '../../util/CCUtil';
 const { ccclass, property } = _decorator;
 
@@ -62,6 +62,7 @@ export class ShopClassItem extends Component {
                 item.getChildByName("line").active = false;
             }
         }
+        this.nodeMenu.getComponent(Layout).updateLayout(true);
     }
     /**按钮点击 */
     onClassClick() {

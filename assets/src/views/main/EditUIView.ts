@@ -129,11 +129,10 @@ export class EditUIView extends BaseComponent {
         editConfig.forEach(info => {
             if (editType != EditType.Null && editType != info.type) return;
             if (BuildingIDType.mine == info.id) return;//矿山，需特殊处理
-            if (EditType.Decoration == info.type || EditType.Land == info.type) {
+            if (EditType.Land == info.type) {
                 this._itemsData.push(info);
             } else {
-                let ary = this._mainScene.findAllBuilding(info.id);
-                if (!ary || ary.length <= 0) {
+                if (this._mainScene.isRecycleBuildingContain(info.id)) {
                     this._itemsData.push(info);
                 }
             }
