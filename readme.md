@@ -7,6 +7,13 @@
 [Modify editbox to update dom coordinates after update](https://github.com/cocos/cocos-engine/pull/16768/files)
 ### 远程加载不存在的音效多次后没有错误回调
 [Fixed no error callback if loading a remote audio resource that doesn't exist on the server](https://github.com/cocos/cocos-engine/pull/16773/files)
+### 按钮事件中ts报错不抛出bug
+[CocosApplication::handleException could not be invoked if there is an error triggered in touch event callback](https://github.com/cocos/cocos-engine/pull/16830/files)
+[Error information is printed forever if there is an error is triggered in timer callback](https://github.com/cocos/cocos-engine/pull/16833/files)
+### 按钮事件中报错后，按钮事件失效bug
+[Button could not be clicked after an exception is thrown while dispatching mouse/touch event](https://github.com/cocos/cocos-engine/pull/17032/files)
+### websocket内存泄漏
+[Memory leak in WebSocket-okhttp.cpp](https://github.com/cocos/cocos-engine/pull/17164/files)
 
 ### <font color=FF0000> 注意： </font>第一次打开项目执行npm i，安装依赖的库
 

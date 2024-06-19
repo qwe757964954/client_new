@@ -1,17 +1,23 @@
-import { Game, Size, View, game, macro, profiler, screen, view } from "cc";
+import { Game, Size, View, game, macro, profiler, screen, sys, view } from "cc";
 import { APP_VERSION } from "./AppConfig";
 import DebugConfig from "./DebugConfig";
 import { TextConfig } from "./config/TextConfig";
 import { DataMgr } from "./manager/DataMgr";
 import { SpineAniManager } from "./manager/SpineAniManager";
+import { ErrorUtil } from "./util/ErrorUtil";
 import { ToolUtil } from "./util/ToolUtil";
 
-
+declare const jsb: any;
 export default class GlobalConfig {
     public static APP_VERSION: string = APP_VERSION;//游戏资源版本
     public static EXE_VERSION: number = 1;//程序版本（打包时写入底层代码中）
     public static EXE_RES_VERSION: string = "1.0";//程序资源版本（打包时写入底层代码中）
     public static CHANNEL_ID: number = 1;//渠道ID（打包时写入底层代码中）
+
+    public static APPVERSION_NAME: string = "";
+    public static DEVICE_MODEL: string = "";
+    public static OS_VERSION: string = "";
+    public static ANDROID_ID: string = "";
 
     public static TEST_SERVER: boolean = DebugConfig.TEST_SERVER;
     public static OLD_SERVER: boolean = DebugConfig.OLD_SERVER;
@@ -63,9 +69,25 @@ export default class GlobalConfig {
 
         // errorMessage, scriptURI, lineNumber,columnNumber,errorObj
         // 错误信息，出错文件，出错行号，出错列号，错误详情
-        if (DebugConfig.ERROR_LOG) {
-            window.onerror = function (...args) {
-                // FileUtil.instance().errorLog(...args);
+        if (DebugConfig.UPLOAD_ERROR) {
+            window.onerror = function (event: Event | string, source?: string, lineno?: number, colno?: number, error?: Error) {
+                // tmplog("error.stack：", error.stack);
+                ErrorUtil.log(error.stack);
+                // FileUtil.instance().errorLog(error.stack);
+            }
+            window.addEventListener(
+                'unhandledrejection',
+                (error: PromiseRejectionEvent) => {
+                    ErrorUtil.log(error.reason);
+                    // console.log("unhandledrejection", error.reason);
+                },
+                true,
+            );
+            if (sys.isNative) {
+                jsb.onError(function (location, message, stack) {
+                    ErrorUtil.log(stack);
+                    // console.log("jsb.onError:", stack);
+                });
             }
         }
         if (DebugConfig.SHOW_FPS) {
@@ -107,4 +129,4 @@ game.once(Game.EVENT_POST_PROJECT_INIT, () => {
 // 监听窗口大小变化
 screen.on("window-resize", () => {
     GlobalConfig.setSize();
-})
+});

@@ -25,6 +25,7 @@ class NetCfg {
     public gooleDown = "https://www.google.cn/chrome/"; // 谷歌下载
     public androidDown = "https://www.chuangciyingyu.com/chuangci_v20220720.apk"; // 安卓下载
     public assertUrl = "https://www.chuangciyingyu.com/assets"; // 资源url
+    public logUrl = "https://szxc.chuangciyingyu.com/act_record/"; // 日志url
 
     public server = "39.108.215.220";//webscoket服务器
     public port = 9803;//webscoket端口
