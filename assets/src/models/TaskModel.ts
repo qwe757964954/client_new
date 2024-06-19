@@ -72,15 +72,21 @@ export interface TaskBaseData {
     user_id: number;            // 用户ID
     task_id: number;            // 任务ID
     status: number;             // 状态 (0表示未完成，1表示完成等)
+    process: number;            // 任务进度
 }
 
 // 表示数据数组中的每个任务项的接口
 export interface TaskWeekData extends TaskBaseData {
     week_num: number;           // 周数
+    extra: {
+        login_days: string[];  // Array of strings representing login dates
+    };
+    
 }
 
 export interface UserWeekTaskData extends BaseRepPacket{
-    data: TaskWeekData[];           // 任务数据数组
+    weekly_task: TaskWeekData[];           // 任务数据数组
+    weekly_live: number;
 }
 
 export interface UserMainTaskData extends BaseRepPacket{

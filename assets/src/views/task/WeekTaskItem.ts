@@ -28,7 +28,7 @@ export class WeekTaskItem extends ListItem {
 
     @property(Node)
     has_challenge_btn: Node = null;
-    
+
     private _data:TaskBaseData = null
 
     protected start(): void {
@@ -46,6 +46,8 @@ export class WeekTaskItem extends ListItem {
         let weekTask:WeeklyTask = TKConfig.getTaskFromWeek(data.task_id);
         this.desc_name.string = weekTask.name;
         this.clearAllBtns();
+        this.task_progress_label.string = `${data.process}/${weekTask.require_num}`;
+        this.task_progress.progress = data.process / weekTask.require_num;
         switch (data.status) {
             case TaskStatusType.Uncompleted:
                 this.task_go_btn.active = true;
