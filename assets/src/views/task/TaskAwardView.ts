@@ -21,6 +21,12 @@ export class TaskAwardView extends BaseView {
         this.award_scroll.numItems = boxAniData.length;
     }
 
+    updateTaskAwardProgress(val: number) {
+        if(!isValid(this.award_progress))return;
+        this.award_progress.progress = val / 100;
+        this.progress_label.string = `${val}`;
+    }
+
     onLoadTaskHorizontal(item:Node, idx:number){
         let item_sript:TaskAwardItem = item.getComponent(TaskAwardItem);
         item_sript.initPropsItem(idx);

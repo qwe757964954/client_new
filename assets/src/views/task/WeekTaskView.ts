@@ -80,6 +80,7 @@ export class WeekTaskView extends BaseView {
     onUserWeekTask(taskData: UserWeekTaskData) {
         console.log("onUserWeekTask",taskData);
         this._weekTask.updateData(taskData.weekly_task);
+        this._taskAward.updateTaskAwardProgress(taskData.weekly_live);
     }
     onChallengeTaskRewardResponse(data:any){
         console.log("onChallengeTaskRewardResponse",data);
