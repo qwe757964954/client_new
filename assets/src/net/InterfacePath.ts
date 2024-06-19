@@ -43,6 +43,8 @@ export const InterfacePath = {
     Words_Group: "3106", //获取组合模式单词选项
     Adventure_LevelProgress: "3107", //大冒险当前关卡进度
     Classification_AdventureCollectWord: "3108", //单词大冒险收藏
+    BossLevel_Topic: "3110", //大冒险Boss关卡题目
+    BossLevel_Submit: "3111", //大冒险Boss关卡题目提交
     /***********************************************选择词书 begin*********************************************/
     Classification_BookStatus: "3011", //我的词书-列表
     Classification_PlanModify: "3017", //我的词书-修改计划

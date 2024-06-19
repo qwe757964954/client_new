@@ -80,7 +80,7 @@ export class BaseModeView extends BaseView {
         this.node.getChildByName("img_bg").addComponent(BlockInputEvents);
         this.initRole(); //初始化角色
         this.initPet(); //初始化精灵
-        
+
         let scaleNum = view.getVisibleSize().width / view.getDesignResolutionSize().width;
         this.topNode.setScale(scaleNum, scaleNum, 1);
     }
@@ -160,7 +160,7 @@ export class BaseModeView extends BaseView {
         return wordsdata;
     }
 
-    updateConstTime(){
+    updateConstTime() {
         this._costTime = Date.now();
     }
 
@@ -310,7 +310,7 @@ export class BaseModeView extends BaseView {
         }
         let levelData: BookLevelConfig = this._levelData as BookLevelConfig;
         let costTime = Date.now() - this._costTime;
-        console.log("costTime.....",costTime,this._costTime);
+        console.log("costTime.....", costTime, this._costTime);
         let data: GameSubmitModel = {
             book_id: levelData.book_id,
             unit_id: levelData.unit_id,
@@ -366,7 +366,7 @@ export class BaseModeView extends BaseView {
             let targetTranform = target.parent.getComponent(UITransform);
             let petTransform = this.petContainer.getComponent(UITransform);
             let targetpos = petTransform.convertToNodeSpaceAR(targetTranform.convertToWorldSpaceAR(new Vec3(0, 0, 0)));
-            let startPosx = targetpos.x - petPos.x > 650 ? (targetpos.x - 650) : petPos.x;
+            let startPosx = targetpos.x - petPos.x > 600 ? (targetpos.x - 600) : petPos.x;
             tween(this._pet).to(0.5, { position: new Vec3(startPosx, targetpos.y, targetpos.z) }).call(() => {
                 this._pet.getComponent(PetModel).hit().then(() => {
                     tween(this._pet).to(0.5, { position: petPos }).start();
@@ -390,7 +390,8 @@ export class BaseModeView extends BaseView {
             let targetpos = transform.convertToNodeSpaceAR(targetTranform.convertToWorldSpaceAR(new Vec3(0, 0, 0)));
             let startPosx = targetpos.x + 100;
             tween(this._monster).to(0.5, { position: new Vec3(startPosx, targetpos.y, targetpos.z) }).call(() => {
-                this._monster.getComponent(MonsterModel).hit("atk1").then(() => {
+                let action = this._isAdventure ? "attack" : "atk1";
+                this._monster.getComponent(MonsterModel).hit(action).then(() => {
                     tween(this._monster).to(0.5, { position: monsterPos }).start();
                     this._pet.getComponent(PetModel).inHit().then(() => {
                         resolve(true);
@@ -512,7 +513,7 @@ export class BaseModeView extends BaseView {
             //大冒险关卡
             // let levelData = this._levelData as AdvLevelConfig;
             let reqParam: AdventureCollectWordModel = {
-                w_id:wordData.w_id,
+                w_id: wordData.w_id,
                 action: this._detailData.collect_flag ? 0 : 1,
             }
             ServiceMgr.studyService.reqAdventureCollectWord(reqParam);

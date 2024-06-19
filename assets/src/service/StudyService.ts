@@ -1,7 +1,7 @@
 import { isValid } from "cc";
 import { EventType } from "../config/EventType";
 import { ViewsManager } from "../manager/ViewsManager";
-import { AdventureCollectWordModel, AdventureResultModel, c2sAdventureCollectWord, c2sAdventureResult, c2sAdventureWord, c2sAdventureWordSentence, c2sAdvLevelProgress, c2sIslandProgress, c2sIslandStatus, c2sTextbookWordGroup, c2sWordGameWords, c2sWordGroup, WordGameWordsData } from "../models/AdventureModel";
+import { AdventureCollectWordModel, AdventureResultModel, c2sAdventureCollectWord, c2sAdventureResult, c2sAdventureWord, c2sAdventureWordSentence, c2sAdvLevelProgress, c2sBossLevelSubmit, c2sBossLevelTopic, c2sIslandProgress, c2sIslandStatus, c2sTextbookWordGroup, c2sWordGameWords, c2sWordGroup, WordGameWordsData } from "../models/AdventureModel";
 import { c2sReviewPlan, c2sReviewPlanList } from "../models/NetModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
@@ -143,6 +143,25 @@ export default class StudyService extends BaseControll {
         let para: c2sReviewPlanList = new c2sReviewPlanList();
         para.source = source;
         para.review_type = review_type;
+        NetMgr.sendMsg(para);
+    }
+
+    //获取Boss关卡题目
+    getBossLevelTopic(big_id: number) {
+        let para: c2sBossLevelTopic = new c2sBossLevelTopic();
+        para.big_id = big_id;
+        NetMgr.sendMsg(para);
+    }
+
+    //boss关卡答案提交
+    submitBossLevelTopic(big_id: number, bl_id: string, be_id: string, status: number, option: string, cost_time: number) {
+        let para: c2sBossLevelSubmit = new c2sBossLevelSubmit();
+        para.big_id = big_id;
+        para.be_id = be_id;
+        para.bl_id = bl_id;
+        para.status = status;
+        para.option = option;
+        para.cost_time = cost_time;
         NetMgr.sendMsg(para);
     }
 }

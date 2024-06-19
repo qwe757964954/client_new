@@ -32,6 +32,7 @@ export const EventType = {
     Enter_Island_Level: "Enter_Island_Level",  //进入大冒险关卡
     Enter_Level_Test: "Enter_Level_Test",  //进入关卡测试
     Exit_World_Island: "Exit_World_Island",  //退出岛屿界面
+    Enter_Boss_Level: "Enter_Boss_Level",  //进入Boss关卡
 
     Exit_Island_Level: "Exit_Island_Level",  //退出大冒险关卡
 

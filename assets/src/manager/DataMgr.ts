@@ -1,7 +1,7 @@
 import { Vec3 } from "cc";
 import { PetInfo, PetInteractionInfo, PetMoodInfo } from "../config/PetConfig";
 import { TextConfig } from "../config/TextConfig";
-import { LevelProgressData, MapLevelData } from "../models/AdventureModel";
+import { BossLevelData, LevelProgressData, MapLevelData } from "../models/AdventureModel";
 import { ToolUtil } from "../util/ToolUtil";
 import { LoadManager } from "./LoadManager";
 
@@ -159,6 +159,7 @@ export class DataManager {
     public archConfig: { [key: number]: ArchConfig } = {}; //成就信息
     public medalConfig: MedalConfig[] = []; //勋章信息
     public helpConfig = {} //帮助配置
+    public adventureBossConfig:BossLevelData[] = []; //大冒险岛屿boss信息
 
     private _isInit: boolean = false;
     public defaultLand: EditInfo = null;//默认地块
@@ -377,6 +378,7 @@ export class DataManager {
         if (this.adventureLevelConfig != null) return this.adventureLevelConfig;
         let config = await LoadManager.loadJson(ConfigPath.AdventureLevel);
         this.adventureLevelConfig = config.adventure_level;
+        this.adventureBossConfig = config.island_boss;
         return this.adventureLevelConfig;
     }
 
@@ -385,6 +387,14 @@ export class DataManager {
         if (this.adventureLevelConfig == null) return null;
         let cfgData = this.adventureLevelConfig.find((cfg) => {
             return cfg.bigId == bigId && cfg.smallId == smallId;
+        });
+        return cfgData;
+    }
+    //获取指定岛屿Boss数据
+    public getIslandBossConfig(bigId: number): BossLevelData {
+        if (this.adventureBossConfig == null) return null;
+        let cfgData = this.adventureBossConfig.find((cfg) => {
+            return cfg.bigId == bigId;
         });
         return cfgData;
     }

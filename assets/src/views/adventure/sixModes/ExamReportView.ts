@@ -9,6 +9,8 @@ import CCUtil from '../../../util/CCUtil';
 import { ViewsManager } from '../../../manager/ViewsManager';
 import { PrefabType } from '../../../config/PrefabType';
 import { ReportItem } from './ReportItem';
+import { GameSubmitResponse } from '../../../models/TextbookModel';
+import { AdventureResult, BossLevelSubmitData } from '../../../models/AdventureModel';
 const { ccclass, property } = _decorator;
 
 @ccclass('ExamReportView')
@@ -41,24 +43,49 @@ export class ExamReportView extends BaseView {
     public rankLabel: Label = null;
 
 
-    private _data: any;
+    private _resultSubmitResponse: GameSubmitResponse | AdventureResult = null;
+    private _bossLevelResult: BossLevelSubmitData = null;
 
 
     initData(data: any) {
-        this._data = data;
-        this.result_spine.setAnimation(0, "vic", true);
+        this._resultSubmitResponse = data;
+        console.log("resultData", data);
+        this.next_level_btn.active = this._resultSubmitResponse.pass_flag == 1;
+        if (this._resultSubmitResponse.pass_flag == 1) {
+            this.result_spine.setAnimation(0, "vic", true);
+            this.reward_scroll.numItems = Object.keys(this._resultSubmitResponse.award).length;
+        } else {
+            this.result_spine.setAnimation(0, "def", false);
+            this.result_spine.addAnimation(0, "def_idle", true);
+        }
+    }
+
+    initBossLevel(data: BossLevelSubmitData) {
+        this._bossLevelResult = data;
+        this.next_level_btn.active = false;
+        if (this._bossLevelResult.flag == 1) {
+            this.result_spine.setAnimation(0, "vic", true);
+            this.reward_scroll.numItems = Object.keys(this._bossLevelResult.award).length;
+        } else {
+            this.result_spine.setAnimation(0, "def", false);
+            this.result_spine.addAnimation(0, "def_idle", true);
+        }
     }
 
     initEvent() {
-        CCUtil.onBtnClick(this.again_btn, this.gotoEvaluation);
-        CCUtil.onBtnClick(this.level_list_btn, this.gotoLevelList);
-        CCUtil.onBtnClick(this.next_level_btn, this.gotoNextLevel);
+        CCUtil.onBtnClick(this.again_btn, this.gotoEvaluation.bind(this));
+        CCUtil.onBtnClick(this.level_list_btn, this.gotoLevelList.bind(this));
+        CCUtil.onBtnClick(this.next_level_btn, this.gotoNextLevel.bind(this));
     }
 
     gotoEvaluation() {
         console.log("重新开始")
         this.node.destroy();
-        EventMgr.dispatch(EventType.Enter_Level_Test);
+        if (this._bossLevelResult) {
+            EventMgr.dispatch(EventType.Enter_Boss_Level);
+        } else {
+            EventMgr.dispatch(EventType.Enter_Level_Test);
+        }
     }
 
     gotoNextLevel() {
@@ -96,10 +123,11 @@ export class ExamReportView extends BaseView {
     }
 
     onLoadRewardHorizontal(item: Node, idx: number) {
-        let keys = Object.keys(this._data.award);
+        let award = this._resultSubmitResponse ? this._resultSubmitResponse.award : this._bossLevelResult.award;
+        let keys = Object.keys(award);
         let key: string = keys[idx];
         let item_script = item.getComponent(ReportItem);
-        item_script.updateItemProps(key, this._data.award[key]);
+        item_script.updateItemProps(key, award[key]);
     }
 }
 

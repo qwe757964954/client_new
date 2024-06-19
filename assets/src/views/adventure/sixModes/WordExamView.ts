@@ -7,6 +7,7 @@ import List from '../../../util/list/List';
 import { BaseModeView } from './BaseModeView';
 import { ExamItem } from './items/ExamItem';
 import { WordReportView } from './WordReportView';
+import { ExamReportView } from './ExamReportView';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordExamView')
@@ -133,6 +134,9 @@ export class WordExamView extends BaseModeView {
                 }
                 this.monsterAttack().then(() => {
                     this.showCurrentWord();
+                    if(this._isAdventure){
+                        this.checkResult();
+                    }
                 });
             }
             this.resultIcon.node.active = true;
@@ -160,9 +164,9 @@ export class WordExamView extends BaseModeView {
     protected modeOver(): void {
         console.log('评测完成，显示结算');
         if (this._currentSubmitResponse.pass_flag == 1 || this._currentSubmitResponse.pass_flag == 2) { //成功或失败
-            ViewsManager.instance.showView(PrefabType.WordReportView, (node: Node) => {
-                let nodeScript = node.getComponent(WordReportView);
-                nodeScript.initData(this._currentSubmitResponse, this.gameMode);
+            ViewsManager.instance.showView(PrefabType.ExamReportView, (node: Node) => {
+                let nodeScript = node.getComponent(ExamReportView);
+                nodeScript.initData(this._currentSubmitResponse);
                 ViewsManager.instance.closeView(PrefabType.WordExamView);
             });
         }

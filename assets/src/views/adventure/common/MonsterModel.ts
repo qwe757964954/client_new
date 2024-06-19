@@ -78,6 +78,23 @@ export class MonsterModel extends Component {
         this.monster.setAnimation(0, 'move', true);
     }
 
+    action(actionName: string, loop: boolean = false) {
+        return new Promise((resolve) => {
+            if (loop) {
+                this.monster.setAnimation(0, actionName, true);
+                resolve(true);
+            } else {
+                this.monster.setCompleteListener(() => {
+                    this.monster.setCompleteListener(null);
+                    this.monster.setAnimation(0, 'idle', true);
+                    resolve(true);
+                })
+                this.monster.setAnimation(0, actionName, false);
+            }
+
+        });
+    }
+
     protected onDestroy(): void {
 
     }

@@ -175,5 +175,37 @@
             "monsterAni": "25honge",
             "miniMonsterAni": "xg_blr"
         }
+    ],
+    "island_boss": [
+        {
+            "bigId": 1,
+            "bossName": "树王·西坝",
+            "bossAni": "Shuren"
+        },
+        {
+            "bigId": 2,
+            "bossName": "机械王·拉姆",
+            "bossAni": "Jiqiren"
+        },
+        {
+            "bigId": 3,
+            "bossName": "占领者·奥姆丁",
+            "bossAni": "Shouren"
+        },
+        {
+            "bigId": 4,
+            "bossName": "双头兄弟·金银",
+            "bossAni": "Shuangtouren"
+        },
+        {
+            "bigId": 5,
+            "bossName": "机龙王·萨特利",
+            "bossAni": "Bawanglong"
+        },
+        {
+            "bigId": 6,
+            "bossName": "海王·洛基",
+            "bossAni": "Zhangyu"
+        }
     ]
 }

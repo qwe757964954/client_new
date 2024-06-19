@@ -2,9 +2,9 @@ import { _decorator, Button, Component, instantiate, isValid, Label, Node, Prefa
 import { EventType } from '../../../config/EventType';
 import { DataMgr } from '../../../manager/DataMgr';
 import { ViewsMgr } from '../../../manager/ViewsManager';
-import { MapLevelData } from '../../../models/AdventureModel';
+import { BossLevelData, MapLevelData } from '../../../models/AdventureModel';
 import CCUtil from '../../../util/CCUtil';
-import EventManager from '../../../util/EventManager';
+import EventManager, { EventMgr } from '../../../util/EventManager';
 import List from '../../../util/list/List';
 import { BaseItem } from '../../common/BaseItem';
 import { MonsterModel } from './MonsterModel';
@@ -44,6 +44,8 @@ export class rightPanelchange extends Component {
     private _rewardData: any[] = []; //奖励数据
 
     private _isTweening: boolean = false;
+    private _isBossPanel: boolean = false; //是否是boss关
+    private _bossLevelData: BossLevelData = null;
 
     /** 更新 */
     update(deltaTime: number) {
@@ -95,7 +97,11 @@ export class rightPanelchange extends Component {
     //点击跳转到闯关界面 TODO
     private levelClick() {
         console.log("levelClick");
-        EventManager.emit(EventType.Enter_Island_Level, this._data);
+        if (this._isBossPanel) {
+            EventMgr.dispatch(EventType.Enter_Boss_Level);
+        } else {
+            EventManager.emit(EventType.Enter_Island_Level, this._data);
+        }
     }
 
     private startTest() {
@@ -109,7 +115,7 @@ export class rightPanelchange extends Component {
     initEvent() {
         CCUtil.onTouch(this.btn_close, this.hideView, this);
         CCUtil.onTouch(this.btn_start, this.levelClick, this);
-        CCUtil.onBtnClick(this.btn_test,()=>{
+        CCUtil.onBtnClick(this.btn_test, () => {
             this.startTest();
         });
         this._eveId = EventManager.on(EventType.Expand_the_level_page, this.openView.bind(this));
@@ -119,7 +125,7 @@ export class rightPanelchange extends Component {
     openView(param: MapLevelData = null) {
         console.log('接收到的参数=', param);
         this._data = param;
-
+        this._isBossPanel = false;
         this.updateView();
         this.node.active = true;
         if (this._isTweening) return;
@@ -134,11 +140,38 @@ export class rightPanelchange extends Component {
 
     }
 
+    openBossView(levelData: BossLevelData) {
+        this._bossLevelData = levelData;
+        this._isBossPanel = true;
+        if (!this._monsterAni) {
+            this._monsterAni = instantiate(this.monsterPrefab);
+            this.monsterNode.addChild(this._monsterAni);
+        }
+        let monsterModel = this._monsterAni.getComponent(MonsterModel);
+        monsterModel.init("spine/monster/adventure/" + levelData.bossAni);
+        this.monsterNameTxt.string = levelData.bossName;
+        this.levelTxt.node.active = false;
+        this.btn_test.active = false;
+        this.monsterNode.setScale(1, 1, 1);
+
+        this.node.active = true;
+        if (this._isTweening) return;
+        this._isTweening = true;
+        let node_size = this.node.getComponent(UITransform);
+        tween(this.node).by(0.3, { position: new Vec3(-node_size.width, 0, 0) }).call(() => {
+            this._isTweening = false;
+        }).start();
+        this.rewardList.numItems = this._rewardData.length;
+    }
+
     updateView() {
         if (!this._monsterAni) {
             this._monsterAni = instantiate(this.monsterPrefab);
             this.monsterNode.addChild(this._monsterAni);
         }
+        this.levelTxt.node.active = true;
+        this.btn_test.active = true;
+        this.monsterNode.setScale(2, 2, 2);
         let monsterModel = this._monsterAni.getComponent(MonsterModel);
         if (this._data.game_modes && this._data.game_modes === "word") {
             let big_id = this._data.big_id.replace("Unit ", "").trim();
