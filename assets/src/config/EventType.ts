@@ -113,4 +113,5 @@ export const EventType = {
     Shop_GoodsList: "Shop_GoodsList", //获取商店商品列表
 
     Sub_Tab_Item_Click: "Sub_Tab_Item_Click",  //成就挑战子item点击
+    Challenge_Task_Reward: "Challenge_Task_Reward",  //领取任务奖励
 }

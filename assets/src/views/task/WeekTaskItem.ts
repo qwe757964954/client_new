@@ -1,5 +1,8 @@
 import { Label, Node, ProgressBar, _decorator } from 'cc';
+import { EventType } from '../../config/EventType';
 import { TaskBaseData, TaskStatusType } from '../../models/TaskModel';
+import CCUtil from '../../util/CCUtil';
+import { EventMgr } from '../../util/EventManager';
 import ListItem from '../../util/list/ListItem';
 import { TKConfig } from './TaskConfig';
 import { WeeklyTask } from './TaskInfo';
@@ -25,13 +28,21 @@ export class WeekTaskItem extends ListItem {
 
     @property(Node)
     has_challenge_btn: Node = null;
-// // 定义一个枚举来表示任务状态
-// export enum TaskStatusType {
-//     Uncompleted = 0,  // 未完成
-//     Completed = 1,    // 已完成
-//     RewardClaimed = 2 // 已领取奖励
-// }
+    
+    private _data:TaskBaseData = null
+
+    protected start(): void {
+        this.initEvent();
+    }
+
+    initEvent(){
+        CCUtil.onBtnClick(this.challenge_btn,()=>{
+            EventMgr.dispatch(EventType.Challenge_Task_Reward,this._data);
+        })
+    }
+
     initPropsItem<T extends TaskBaseData>(data: T): void {
+        this._data = data;
         let weekTask:WeeklyTask = TKConfig.getTaskFromWeek(data.task_id);
         this.desc_name.string = weekTask.name;
         this.clearAllBtns();

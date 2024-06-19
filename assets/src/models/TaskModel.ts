@@ -20,7 +20,7 @@ export class c2sGetMainTaskReward{
 //领取主线任务奖励
 export class c2sGetWeekTaskReward{
     command_id: string = InterfacePath.Classification_GetWeekTaskReward;
-    task_id:string
+    task_id:number
 }
 
 //领取宝箱周任务奖励
