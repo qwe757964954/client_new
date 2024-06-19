@@ -63,6 +63,9 @@ class UserModel {
     // 修改昵称信息
     public editRealNameNum: number = 0;  // 修改昵称次数 作废
 
+    private _buildingList: number[] = [];// 建筑列表（已有）
+    private _landList: number[] = [];// 地块列表（已有）
+
     private constructor() {
 
     }
@@ -169,6 +172,21 @@ class UserModel {
     }
     get moodScore(): number {
         return this._moodScore;
+    }
+
+    public addBuilding(id: number) {
+        if (this._buildingList.find(item => item === id)) return;
+        this._buildingList.push(id);
+    }
+    public get buildingList(): readonly number[] {
+        return this._buildingList;
+    }
+    public addLand(id: number) {
+        if (this._landList.find(item => item === id)) return;
+        this._landList.push(id);
+    }
+    public get landList(): readonly number[] {
+        return this._landList;
     }
 }
 

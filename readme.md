@@ -5,6 +5,8 @@
 ##### error: [Scene] Cannot read property 'node' of null，TypeError: Cannot read property 'node' of null
 [Fix removing listener when editbox is closed](https://github.com/cocos/cocos-engine/pull/16648/files)
 [Modify editbox to update dom coordinates after update](https://github.com/cocos/cocos-engine/pull/16768/files)
+### 远程加载不存在的音效多次后没有错误回调
+[Fixed no error callback if loading a remote audio resource that doesn't exist on the server](https://github.com/cocos/cocos-engine/pull/16773/files)
 
 ### <font color=FF0000> 注意： </font>第一次打开项目执行npm i，安装依赖的库
 

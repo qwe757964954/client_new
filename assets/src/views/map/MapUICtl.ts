@@ -199,6 +199,7 @@ export class MapUICtl extends MainBaseCtl {
                         landInfo = DataMgr.instance.editInfo[map[key]];
                     }
                 }
+                User.addLand(landInfo.id);
                 laneModel.initData(i, j, landWidth, landInfo);
                 this.setLandGrid(laneModel, i, j);
                 this._landModelAry.push(laneModel);
@@ -234,6 +235,8 @@ export class MapUICtl extends MainBaseCtl {
         if (!list || list.length <= 0) return;
         // list.push({ id: 1, bid: 3, x: 0, y: 0, direction: 0 });
         list.forEach(element => {
+            User.addBuilding(element.bid);
+
             if (element.hide) {
                 let recycleData = new RecycleData();
                 recycleData.bid = element.bid;

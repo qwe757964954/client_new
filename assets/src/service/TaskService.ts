@@ -1,5 +1,5 @@
 import { ViewsManager } from "../manager/ViewsManager";
-import { c2sCompleteBoxWeekTask, c2sCompleteMainTask, c2sCompleteWeekTask, c2sGetBoxTaskReward, c2sGetMainTaskReward, c2sGetWeekTaskReward, c2sUserMainTask, c2sUserMainTaskChange, c2sUserWeekTask, c2sUserWeekTaskChange } from "../models/TaskModel";
+import { c2sGetBoxTaskReward, c2sGetMainTaskReward, c2sGetWeekTaskReward, c2sUserMainTask, c2sUserWeekTask } from "../models/TaskModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
 import { NetNotify } from "../net/NetNotify";
@@ -67,46 +67,17 @@ export default class _TaskService extends BaseControll {
         NetMgr.sendMsg(param);
     }
     
-    reqGetWeekTaskReward(task_id:string){
+    reqGetWeekTaskReward(task_id:number){
         let param: c2sGetWeekTaskReward = new c2sGetWeekTaskReward();
         param.task_id = task_id;
         NetMgr.sendMsg(param);
     }
 
-    reqGetBoxTaskReward(box_id:string){
+    reqGetBoxTaskReward(box_id:number){
         let param: c2sGetBoxTaskReward = new c2sGetBoxTaskReward();
         param.box_id = box_id;
         NetMgr.sendMsg(param);
     }
-
-    reqUserWeekTaskChange(user_id:number){
-        let param: c2sUserWeekTaskChange = new c2sUserWeekTaskChange();
-        param.user_id = user_id;
-        NetMgr.sendMsg(param);
-    }
-    reqUserMainTaskChange(user_id:number){
-        let param: c2sUserMainTaskChange = new c2sUserMainTaskChange();
-        param.user_id = user_id;
-        NetMgr.sendMsg(param);
-    }
-
-    reqCompleteWeekTask(user_id:number){
-        let param: c2sCompleteWeekTask = new c2sCompleteWeekTask();
-        param.user_id = user_id;
-        NetMgr.sendMsg(param);
-    }
-    reqCompleteMainTask(user_id:number){
-        let param: c2sCompleteMainTask = new c2sCompleteMainTask();
-        param.user_id = user_id;
-        NetMgr.sendMsg(param);
-    }
-
-    reqCompleteBoxWeekTask(user_id:number){
-        let param: c2sCompleteBoxWeekTask = new c2sCompleteBoxWeekTask();
-        param.user_id = user_id;
-        NetMgr.sendMsg(param);
-    }
-
 
     onUserMainTask(data: any) {
         this.handleResponse(data, NetNotify.Classification_UserMainTask);
