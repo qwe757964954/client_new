@@ -240,11 +240,12 @@ export class c2sBossLevelTopic {
 }
 
 export class TopicData {
-    be: string;
+    be_id: string;
     content: string;
     answer: string;
     opt1: string;
     opt2: string;
+    cn: string;
 }
 
 export class ChallengeInfo {

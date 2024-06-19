@@ -114,4 +114,6 @@ export const EventType = {
 
     Sub_Tab_Item_Click: "Sub_Tab_Item_Click",  //成就挑战子item点击
     Challenge_Task_Reward: "Challenge_Task_Reward",  //领取任务奖励
+    Box_Challenge_Reward: "Box_Challenge_Reward",  //领取宝箱奖励
+    
 }

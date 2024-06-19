@@ -1,8 +1,11 @@
 import { _decorator, isValid, Label, Node, ProgressBar } from 'cc';
+import { EventType } from '../../config/EventType';
 import { BaseView } from '../../script/BaseView';
+import { EventMgr } from '../../util/EventManager';
 import List from '../../util/list/List';
 import { TaskAwardItem } from './TaskAwardItem';
-import { boxAniData } from './TaskInfo';
+import { TKConfig } from './TaskConfig';
+import { boxAniData, WeeklyTaskBox } from './TaskInfo';
 const { ccclass, property } = _decorator;
 
 @ccclass('TaskAwardView')
@@ -17,7 +20,16 @@ export class TaskAwardView extends BaseView {
     @property(ProgressBar)
     public award_progress:ProgressBar = null;
 
+    private _taskProcess:number = 0;
+
     protected initUI(): void {
+        
+    }
+
+    updateTaskAwardProgress(val: number) {
+        this._taskProcess = val;
+        this.award_progress.progress = val / 100;
+        this.progress_label.string = `${val}`;
         this.award_scroll.numItems = boxAniData.length;
     }
 
@@ -28,7 +40,12 @@ export class TaskAwardView extends BaseView {
 
     onTaskListHorizontalSelected(item: any, selectedId: number, lastSelectedId: number, val: number) {
         if(!isValid(selectedId) || selectedId < 0 || !isValid(item)){return;}
-        console.log("onTaskListHorizontalSelected",selectedId);
+        let boxInfo:WeeklyTaskBox = TKConfig.taskConfigInfo.task_week_box[selectedId];
+        if(this._taskProcess < boxInfo.need_live_num){
+            return;
+        }
+        console.log("onTaskListHorizontalSelected",boxInfo);
+        EventMgr.dispatch(EventType.Box_Challenge_Reward,boxInfo);
     }
 }
 

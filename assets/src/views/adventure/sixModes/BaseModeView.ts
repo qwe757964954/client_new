@@ -75,6 +75,7 @@ export class BaseModeView extends BaseView {
     protected _isAdventure: boolean;
     protected _remainTime: number = 0; //剩余时间
     protected _errorWords: any = {}; //错误单词
+    protected _hpLevels = { 0: 0, 7: 1, 3: 2, 1: 3, 4: 4, 2: 0 }; //各模式对应的已扣除血量
     start() {
         super.start();
         this.node.getChildByName("img_bg").addComponent(BlockInputEvents);
@@ -211,7 +212,9 @@ export class BaseModeView extends BaseView {
             this._monster = instantiate(this.monsterModel);
             this.monster.addChild(this._monster);
             let monsterModel = this._monster.getComponent(MonsterModel);
-            monsterModel.init("spine/monster/adventure/" + lvData.monsterAni);
+            monsterModel.init("spine/monster/adventure/" + lvData.monsterAni, true);
+            let totalHp = this.gameMode == GameMode.Exam ? this._wordsData.length : this._wordsData.length * 5;
+            monsterModel.setHp(this._wordsData.length * this._hpLevels[this.gameMode] + this._rightNum, totalHp);
             if (this.gameMode == GameMode.Exam) {
                 this.monster.getComponent(UIOpacity).opacity = 125;
                 return;
@@ -239,10 +242,14 @@ export class BaseModeView extends BaseView {
             let scale = this._monster.getScale();
             this._monster.scale = new Vec3(-scale.x, scale.y, 1);
             let monsterModel = this._monster.getComponent(MonsterModel);
-            monsterModel.init("spine/TextbookVocabulary/" + "10018");
+            monsterModel.init("spine/TextbookVocabulary/" + "10018", true);
             if (this.gameMode == GameMode.Exam) {
                 this.monster.getComponent(UIOpacity).opacity = 125;
             }
+            let levelData = this._levelData as BookLevelConfig;
+            let pass = levelData.word_num - levelData.error_num;
+            let totalHp = this.gameMode == GameMode.Exam ? this._wordsData.length : this._wordsData.length * 5;
+            monsterModel.setHp(this._wordsData.length * this._hpLevels[this.gameMode] + pass, totalHp);
         }
     }
 
@@ -336,22 +343,28 @@ export class BaseModeView extends BaseView {
                 targetMonster = this._monster;
             }
             this.petAttackShow(targetMonster).then(() => {
+                let monsterModel = this._monster.getComponent(MonsterModel);
                 //大冒险关卡
                 if (isAdventure) {
                     if (this._rightNum == this._wordsData.length) { //最后一个单词攻击主怪
-                        this._monster.getComponent(MonsterModel).injury().then(() => {
+                        monsterModel.injury().then(() => {
                             resolve(true);
                         });
                     } else { //小怪受到攻击
                         if (this._smallMonsters[this._rightNum - 1]) {
                             this._smallMonsters[this._rightNum - 1].getComponent(SmallMonsterModel).hit();
                         } else {
-                            this._monster.getComponent(MonsterModel).injury();
+                            monsterModel.injury();
                         }
                         resolve(true);
                     }
+                    let totalHp = this.gameMode == GameMode.Exam ? this._wordsData.length : this._wordsData.length * 5;
+                    monsterModel.setHp(this._wordsData.length * this._hpLevels[this.gameMode] + this._rightNum, totalHp);
                 } else {
-                    this._monster.getComponent(MonsterModel).inHit().then(() => {
+                    let totalHp = this.gameMode == GameMode.Exam ? this._wordsData.length : this._wordsData.length * 5;
+                    let pass = this._wordIndex - this._errorNum;
+                    monsterModel.setHp(this._wordsData.length * this._hpLevels[this.gameMode] + pass, totalHp);
+                    monsterModel.inHit().then(() => {
                         resolve(true);
                     });
                 }

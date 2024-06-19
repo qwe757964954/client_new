@@ -14,6 +14,7 @@ import { MainTaskView } from './MainTaskView';
 import { TaskAchievementView } from './TaskAchievementView';
 import { TaskAwardView } from './TaskAwardView';
 import { TKConfig } from './TaskConfig';
+import { WeeklyTaskBox } from './TaskInfo';
 import { TaskTabView } from './TaskTabView';
 import { WeeklyTaskView } from './WeeklyTaskView';
 const { ccclass, property } = _decorator;
@@ -68,10 +69,20 @@ export class WeekTaskView extends BaseView {
             [NetNotify.Classification_UserWeekTask, this.onUserWeekTask],
             [EventType.Challenge_Task_Reward, this.onChallengeTaskReward],
             [NetNotify.Classification_GetWeekTaskReward, this.onChallengeTaskRewardResponse],
+            [EventType.Box_Challenge_Reward, this.onChallengeBoxReward],
+            [NetNotify.Classification_GetBoxTaskReward, this.onChallengeBoxRewardResponse],
+            [NetNotify.Classification_UserWeekTaskChange, this.onUserWeekTaskChangeResponse],
+            [NetNotify.Classification_UserMainTaskChange, this.onUserMainTaskChangeResponse],
+            [NetNotify.Classification_CompleteWeekTask, this.onCompleteWeekTaskResponse],
+            [NetNotify.Classification_CompleteMainTask, this.onCompleteMainTaskResponse],
+            [NetNotify.Classification_CompleteBoxWeekTask, this.onCompleteBoxWeekTaskResponse],
         ]);
     }
     onChallengeTaskReward(data:TaskBaseData) {
         TkServer.reqGetWeekTaskReward(data.task_id);
+    }
+    onChallengeBoxReward(data:WeeklyTaskBox) {
+        TkServer.reqGetBoxTaskReward(data.id);
     }
     onUserMainTask(taskData: UserMainTaskData) {
         console.log("onUserMainTask",taskData);
@@ -80,10 +91,30 @@ export class WeekTaskView extends BaseView {
     onUserWeekTask(taskData: UserWeekTaskData) {
         console.log("onUserWeekTask",taskData);
         this._weekTask.updateData(taskData.weekly_task);
+        this._taskAward.updateTaskAwardProgress(taskData.weekly_live);
     }
     onChallengeTaskRewardResponse(data:any){
         console.log("onChallengeTaskRewardResponse",data);
     }
+    onChallengeBoxRewardResponse(data:any){
+        console.log("onChallengeBoxRewardResponse",data);
+    }
+    onUserWeekTaskChangeResponse(data:any){
+        console.log("onUserWeekTaskChangeResponse",data);
+    }
+    onUserMainTaskChangeResponse(data:any){
+        console.log("onUserMainTaskChangeResponse",data);
+    }
+    onCompleteWeekTaskResponse(data:any){
+        console.log("onCompleteWeekTaskResponse",data);
+    }
+    onCompleteMainTaskResponse(data:any){
+        console.log("onCompleteMainTaskResponse",data);
+    }
+    onCompleteBoxWeekTaskResponse(data:any){
+        console.log("onCompleteBoxWeekTaskResponse",data);
+    }
+    
     initEvent(){
         
     }
