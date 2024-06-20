@@ -31,7 +31,7 @@ let cfgs = {
 }
 
 export class ChannelInfo {
-    public name: string;//渠道名字
+    public name: string = "";//渠道名字
 
     private constructor() { }
     private static _instance: ChannelInfo = null;
@@ -48,6 +48,7 @@ export class ChannelInfo {
     public refresh() {
         this.clearData();
         let cfg = cfgs[GlobalConfig.CHANNEL_ID];
+        if (!cfg) return;
         this.name = cfg.name;
     }
 }

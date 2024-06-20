@@ -122,8 +122,8 @@ export class WordExamView extends BaseModeView {
                 if (this._wrongWordList.indexOf(this._rightWordData) == -1 && !this._wrongMode && !this._errorWords[this._rightWordData.word]) {
                     this._errorNum++;
                     this._levelData.error_num = this._errorNum;
-                    this.errorNumLabel.string = "错误次数：" + this._errorNum;
-    
+                    this.timeLabel.string = "错误次数：" + this._errorNum;
+
                 }
                 this._wrongWordList.push(this._rightWordData);
                 if (!this._wrongMode) {
@@ -134,7 +134,7 @@ export class WordExamView extends BaseModeView {
                 }
                 this.monsterAttack().then(() => {
                     this.showCurrentWord();
-                    if(this._isAdventure){
+                    if (this._isAdventure) {
                         this.checkResult();
                     }
                 });

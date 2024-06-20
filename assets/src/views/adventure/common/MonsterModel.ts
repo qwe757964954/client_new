@@ -1,4 +1,4 @@
-import { _decorator, Component, sp } from 'cc';
+import { _decorator, Component, sp, Node, UITransform } from 'cc';
 import { LoadManager } from '../../../manager/LoadManager';
 const { ccclass, property } = _decorator;
 
@@ -6,12 +6,20 @@ const { ccclass, property } = _decorator;
 export class MonsterModel extends Component {
     @property(sp.Skeleton)
     public monster: sp.Skeleton = null;
+    @property(Node)
+    public hpMask: Node = null;
+    @property(Node)
+    public hpNode: Node = null;
+    private _showHp: boolean = false;
 
     protected start(): void {
 
     }
 
-    async init(path: string) {
+    async init(path: string, showHp: boolean = false) {
+        this._showHp = showHp;
+        this.hpNode.active = this._showHp
+
         await LoadManager.loadSpine(path, this.monster).then((skeletonData: sp.SkeletonData) => {
             this.idle();
         });
@@ -93,6 +101,11 @@ export class MonsterModel extends Component {
             }
 
         });
+    }
+
+    setHp(passNum: number, totalNum: number) {
+        let transform = this.hpMask.getComponent(UITransform);
+        transform.width = (totalNum - passNum) / totalNum * 275;
     }
 
     protected onDestroy(): void {

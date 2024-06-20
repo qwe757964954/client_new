@@ -20,13 +20,14 @@ export class IslandMap extends Component {
     @property({ type: [SpriteFrame], tooltip: "岛屿地图背景" })
     public islandBg: SpriteFrame[] = [];
 
-    private _pointDatas:MicroListItem[] = [];
+    private _pointDatas: MicroListItem[] = [];
     private _pointItems: Node[] = [];
 
     private _progressData: number;
     private _aniNode: Node = null;
     private _bossNode: Node = null;
     private _islandId: number;
+    private _monsterNode: Node = null;
 
     start() {
 
@@ -44,7 +45,7 @@ export class IslandMap extends Component {
         this._pointItems = [];
         this.bg.spriteFrame = this.islandBg[islandId - 1];
         let points = WorldIsland.getMapPointsByBigId(islandId);
-        let posData: { map: IslandMap, position: Vec3 } = null;
+        let posData: { map: IslandMap, position: Vec3, pointData: MicroListItem } = null;
         for (let i = 0; i < mapPoints.length; i++) {
             let mapPoint = instantiate(this.mapPointPrefab);
             mapPoint.position = new Vec3(points[i][0], points[i][1], 0);
@@ -54,7 +55,7 @@ export class IslandMap extends Component {
             this._pointItems.push(mapPoint);
             CCUtil.onTouch(mapPoint, this.onPointClick.bind(this, mapPoint), this);
             if (mapPoints[i].flag == 0 && mapPoints[i].can_play == 1) { //当前关卡
-                posData = { map: this, position: mapPoint.position };
+                posData = { map: this, position: mapPoint.position, pointData: mapPoints[i] };
             }
         }
         if (!posData) {
@@ -62,15 +63,20 @@ export class IslandMap extends Component {
                 this._aniNode.active = false;
             }
             this._aniNode = null;
+            if (this._monsterNode) {
+                this._monsterNode.active = false;
+            }
+            this._monsterNode = null;
         }
-        if(this._bossNode){
+        if (this._bossNode) {
             this._bossNode.active = false;
         }
         this._bossNode = null;
+
         return posData;
     }
 
-    setBossNode(bossNode:Node){
+    setBossNode(bossNode: Node) {
         let points = WorldIsland.getMapPointsByBigId(this._islandId);
         let lastIdx = this._pointDatas.length - 1;
         let lastPoint = points[lastIdx];
@@ -84,6 +90,12 @@ export class IslandMap extends Component {
         this.node.addChild(aniNode);
         aniNode.active = true;
         this._aniNode = aniNode;
+    }
+
+    setMonsterNode(monsterNode: Node) {
+        this.node.addChild(monsterNode);
+        monsterNode.active = true;
+        this._monsterNode = monsterNode;
     }
 
     onPointClick(point: Node) {

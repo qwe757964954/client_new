@@ -38,6 +38,10 @@ export class InterfaceUtil {
         GlobalConfig.CHANNEL_ID = obj.channelID;
         GlobalConfig.EXE_VERSION = obj.exeVer;
         GlobalConfig.EXE_RES_VERSION = obj.exeResVer;
+        GlobalConfig.APPVERSION_NAME = obj.appVerName;
+        GlobalConfig.DEVICE_MODEL = obj.deviceModel;
+        GlobalConfig.OS_VERSION = obj.osVersion;
+        GlobalConfig.ANDROID_ID = obj.androidId;
         ChannelCfg.refresh();
     }
     private static init() {

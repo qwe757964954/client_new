@@ -168,12 +168,12 @@ export class WorldMapView extends Component {
         }
         this._currentLevelData.current_mode = GameMode.Exam;
         this._getingWords = true;
-        if (this._levelProgressData) { //已有当前关数据
-            this._levelProgressData.game_mode = GameMode.Exam;
-            ServiceMgr.studyService.getWordGameWords(this._currentLevelData.big_id, this._currentLevelData.small_id, this._currentLevelData.micro_id);
-        } else {
-            ServiceMgr.studyService.getAdvLevelProgress(this._currentLevelData.big_id, this._currentLevelData.small_id, this._currentLevelData.micro_id, 2);
-        }
+        // if (this._levelProgressData) { //已有当前关数据
+        //     this._levelProgressData.game_mode = GameMode.Exam;
+        //     ServiceMgr.studyService.getWordGameWords(this._currentLevelData.big_id, this._currentLevelData.small_id, this._currentLevelData.micro_id);
+        // } else {
+        ServiceMgr.studyService.getAdvLevelProgress(this._currentLevelData.big_id, this._currentLevelData.small_id, this._currentLevelData.micro_id, 2);
+        // }
     }
 
     onGetLevelProgress(data: LevelProgressData) {
