@@ -174,6 +174,174 @@
             "monsterName": "红鳄",
             "monsterAni": "25honge",
             "miniMonsterAni": "xg_blr"
+        },
+        {
+            "bigId": 2,
+            "smallId": 1,
+            "monsterName": "环保鳄",
+            "monsterAni": "26huanbaoe",
+            "miniMonsterAni": "xg_blr"
+        },
+        {
+            "bigId": 2,
+            "smallId": 2,
+            "monsterName": "假圣洁兽",
+            "monsterAni": "27jiashengjieshou",
+            "miniMonsterAni": "xg_blr"
+        },
+        {
+            "bigId": 2,
+            "smallId": 3,
+            "monsterName": "倒刺圣洁兽",
+            "monsterAni": "28daocishengjieshou",
+            "miniMonsterAni": "xg_blr"
+        },
+        {
+            "bigId": 2,
+            "smallId": 4,
+            "monsterName": "催眠圣洁兽",
+            "monsterAni": "29cuimianshengjieshou",
+            "miniMonsterAni": "xg_blr"
+        },
+        {
+            "bigId": 2,
+            "smallId": 5,
+            "monsterName": "愤怒圣洁兽",
+            "monsterAni": "30fennvshengjieshou",
+            "miniMonsterAni": "xg_blr"
+        },
+        {
+            "bigId": 2,
+            "smallId": 6,
+            "monsterName": "普通人马",
+            "monsterAni": "31putongrenma",
+            "miniMonsterAni": "xg_blr"
+        },
+        {
+            "bigId": 2,
+            "smallId": 7,
+            "monsterName": "长发人马",
+            "monsterAni": "32changfarenma",
+            "miniMonsterAni": "xg_blr"
+        },
+        {
+            "bigId": 2,
+            "smallId": 8,
+            "monsterName": "斯巴达人马",
+            "monsterAni": "33sibadarenma",
+            "miniMonsterAni": "xg_blr"
+        },
+        {
+            "bigId": 2,
+            "smallId": 9,
+            "monsterName": "谎言人马",
+            "monsterAni": "34huangyanrenma",
+            "miniMonsterAni": "xg_blr"
+        },
+        {
+            "bigId": 2,
+            "smallId": 10,
+            "monsterName": "站立鲨",
+            "monsterAni": "35zhanlisha",
+            "miniMonsterAni": "xg_blr"
+        },
+        {
+            "bigId": 2,
+            "smallId": 11,
+            "monsterName": "黑道鲨",
+            "monsterAni": "36heidaosha",
+            "miniMonsterAni": "xg_blr"
+        },
+        {
+            "bigId": 2,
+            "smallId": 12,
+            "monsterName": "医疗鲨",
+            "monsterAni": "37yiliaosha",
+            "miniMonsterAni": "xg_blr"
+        },
+        {
+            "bigId": 2,
+            "smallId": 13,
+            "monsterName": "冲浪鲨",
+            "monsterAni": "38chonglangsha",
+            "miniMonsterAni": "xg_blr"
+        },
+        {
+            "bigId": 2,
+            "smallId": 14,
+            "monsterName": "闪电熊",
+            "monsterAni": "43shandianxiong",
+            "miniMonsterAni": "xg_blr"
+        },
+        {
+            "bigId": 2,
+            "smallId": 15,
+            "monsterName": "红毛熊",
+            "monsterAni": "44hongmaoxiong",
+            "miniMonsterAni": "xg_blr"
+        },
+        {
+            "bigId": 2,
+            "smallId": 16,
+            "monsterName": "黑熊",
+            "monsterAni": "45heixiong",
+            "miniMonsterAni": "xg_blr"
+        },
+        {
+            "bigId": 2,
+            "smallId": 17,
+            "monsterName": "猪熊",
+            "monsterAni": "46zhuxiong",
+            "miniMonsterAni": "xg_blr"
+        },
+        {
+            "bigId": 2,
+            "smallId": 18,
+            "monsterName": "冰晶熊",
+            "monsterAni": "47bingjingxiong",
+            "miniMonsterAni": "xg_blr"
+        },
+        {
+            "bigId": 2,
+            "smallId": 19,
+            "monsterName": "臭美鹿",
+            "monsterAni": "48choumeilu",
+            "miniMonsterAni": "xg_blr"
+        },
+        {
+            "bigId": 2,
+            "smallId": 20,
+            "monsterName": "冰鹿",
+            "monsterAni": "49binglu",
+            "miniMonsterAni": "xg_blr"
+        },
+        {
+            "bigId": 2,
+            "smallId": 21,
+            "monsterName": "魔法鹿",
+            "monsterAni": "50mofalu",
+            "miniMonsterAni": "xg_blr"
+        },
+        {
+            "bigId": 2,
+            "smallId": 22,
+            "monsterName": "水鹿",
+            "monsterAni": "51shuilu",
+            "miniMonsterAni": "xg_blr"
+        },
+        {
+            "bigId": 2,
+            "smallId": 23,
+            "monsterName": "草鹿",
+            "monsterAni": "52caolu",
+            "miniMonsterAni": "xg_blr"
+        },
+        {
+            "bigId": 2,
+            "smallId": 24,
+            "monsterName": "雪石兽",
+            "monsterAni": "53xueshishou",
+            "miniMonsterAni": "xg_blr"
         }
     ],
     "island_boss": [

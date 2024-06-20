@@ -1,0 +1,244 @@
+
+138xiaolongxiashou.png
+size: 1024,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+140BSLX_39
+  rotate: false
+  xy: 519, 6
+  size: 65, 98
+  orig: 98, 175
+  offset: 0, 8
+  index: -1
+140BSLX_40
+  rotate: false
+  xy: 921, 70
+  size: 44, 32
+  orig: 46, 34
+  offset: 1, 1
+  index: -1
+140BSLX_41
+  rotate: true
+  xy: 60, 5
+  size: 18, 63
+  orig: 34, 98
+  offset: 11, 3
+  index: -1
+140BSLX_42
+  rotate: true
+  xy: 915, 300
+  size: 119, 90
+  orig: 122, 92
+  offset: 1, 1
+  index: -1
+140BSLX_43
+  rotate: true
+  xy: 2, 2
+  size: 21, 56
+  orig: 46, 90
+  offset: 21, 2
+  index: -1
+140BSLX_44
+  rotate: false
+  xy: 586, 51
+  size: 18, 53
+  orig: 25, 67
+  offset: 1, 4
+  index: -1
+140BSLX_45
+  rotate: true
+  xy: 753, 19
+  size: 80, 127
+  orig: 80, 127
+  offset: 0, 0
+  index: -1
+140BSLX_46
+  rotate: true
+  xy: 125, 4
+  size: 19, 37
+  orig: 21, 39
+  offset: 1, 1
+  index: -1
+140BSLX_47
+  rotate: false
+  xy: 921, 34
+  size: 40, 34
+  orig: 42, 36
+  offset: 1, 1
+  index: -1
+140BSLX_48
+  rotate: false
+  xy: 953, 143
+  size: 68, 84
+  orig: 92, 138
+  offset: 6, 5
+  index: -1
+h/huo_00
+  rotate: false
+  xy: 885, 118
+  size: 66, 96
+  orig: 70, 105
+  offset: 2, 3
+  index: -1
+h/huo_01
+  rotate: true
+  xy: 907, 229
+  size: 69, 105
+  orig: 70, 105
+  offset: 1, 0
+  index: -1
+h/huo_02
+  rotate: false
+  xy: 947, 421
+  size: 70, 89
+  orig: 70, 105
+  offset: 0, 2
+  index: -1
+h/huo_03
+  rotate: false
+  xy: 455, 7
+  size: 62, 89
+  orig: 70, 105
+  offset: 4, 2
+  index: -1
+h/huo_04
+  rotate: true
+  xy: 363, 10
+  size: 70, 90
+  orig: 70, 105
+  offset: 0, 2
+  index: -1
+tx/266 ZCYXWY eff_mechanicalburst_00
+  rotate: true
+  xy: 762, 101
+  size: 113, 121
+  orig: 308, 312
+  offset: 97, 97
+  index: -1
+tx/266 ZCYXWY eff_mechanicalburst_02
+  rotate: false
+  xy: 444, 260
+  size: 178, 250
+  orig: 308, 312
+  offset: 74, 50
+  index: -1
+tx/266 ZCYXWY eff_mechanicalburst_04
+  rotate: false
+  xy: 226, 256
+  size: 216, 254
+  orig: 308, 312
+  offset: 52, 56
+  index: -1
+tx/266 ZCYXWY eff_mechanicalburst_06
+  rotate: false
+  xy: 2, 252
+  size: 222, 258
+  orig: 308, 312
+  offset: 52, 40
+  index: -1
+tx/266 ZCYXWY eff_mechanicalburst_08
+  rotate: false
+  xy: 2, 25
+  size: 222, 225
+  orig: 308, 312
+  offset: 52, 61
+  index: -1
+tx/266 ZCYXWY eff_mechanicalburst_10
+  rotate: false
+  xy: 226, 82
+  size: 194, 172
+  orig: 308, 312
+  offset: 55, 69
+  index: -1
+ty
+  rotate: false
+  xy: 953, 104
+  size: 68, 37
+  orig: 68, 37
+  offset: 0, 0
+  index: -1
+y/smoke0001
+  rotate: true
+  xy: 882, 17
+  size: 82, 37
+  orig: 200, 150
+  offset: 118, 0
+  index: -1
+y/smoke0002
+  rotate: false
+  xy: 226, 7
+  size: 135, 73
+  orig: 200, 150
+  offset: 64, 0
+  index: -1
+y/smoke0003
+  rotate: false
+  xy: 624, 230
+  size: 157, 88
+  orig: 200, 150
+  offset: 42, 0
+  index: -1
+y/smoke0004
+  rotate: false
+  xy: 785, 422
+  size: 160, 88
+  orig: 200, 150
+  offset: 39, 0
+  index: -1
+y/smoke0005
+  rotate: false
+  xy: 624, 419
+  size: 159, 91
+  orig: 200, 150
+  offset: 40, 0
+  index: -1
+y/smoke0006
+  rotate: true
+  xy: 422, 98
+  size: 156, 92
+  orig: 200, 150
+  offset: 43, 0
+  index: -1
+y/smoke0007
+  rotate: false
+  xy: 624, 320
+  size: 153, 97
+  orig: 200, 150
+  offset: 46, 0
+  index: -1
+y/smoke0008
+  rotate: true
+  xy: 516, 106
+  size: 152, 97
+  orig: 200, 150
+  offset: 47, 0
+  index: -1
+y/smoke0009
+  rotate: false
+  xy: 615, 127
+  size: 145, 101
+  orig: 200, 150
+  offset: 55, 0
+  index: -1
+y/smoke0010
+  rotate: false
+  xy: 615, 25
+  size: 136, 100
+  orig: 200, 150
+  offset: 63, 25
+  index: -1
+y/smoke0011
+  rotate: false
+  xy: 785, 319
+  size: 128, 101
+  orig: 200, 150
+  offset: 71, 0
+  index: -1
+y/smoke0012
+  rotate: false
+  xy: 783, 216
+  size: 122, 101
+  orig: 200, 150
+  offset: 77, 0
+  index: -1

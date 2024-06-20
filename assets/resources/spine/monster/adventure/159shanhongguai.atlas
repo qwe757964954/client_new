@@ -1,0 +1,258 @@
+
+159shanhongguai.png
+size: 2048,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+158SHG_33
+  rotate: true
+  xy: 1829, 98
+  size: 48, 53
+  orig: 50, 55
+  offset: 1, 1
+  index: -1
+158SHG_34
+  rotate: false
+  xy: 77, 6
+  size: 152, 131
+  orig: 152, 131
+  offset: 0, 0
+  index: -1
+158SHG_35
+  rotate: false
+  xy: 437, 16
+  size: 91, 121
+  orig: 91, 121
+  offset: 0, 0
+  index: -1
+158SHG_36
+  rotate: true
+  xy: 1938, 21
+  size: 57, 56
+  orig: 57, 56
+  offset: 0, 0
+  index: -1
+158SHG_37
+  rotate: false
+  xy: 1849, 328
+  size: 193, 182
+  orig: 195, 184
+  offset: 1, 1
+  index: -1
+158SHG_38
+  rotate: false
+  xy: 699, 33
+  size: 93, 104
+  orig: 93, 107
+  offset: 0, 3
+  index: -1
+158SHG_39
+  rotate: false
+  xy: 1884, 99
+  size: 58, 47
+  orig: 58, 47
+  offset: 0, 0
+  index: -1
+158SHG_40
+  rotate: false
+  xy: 530, 19
+  size: 96, 118
+  orig: 99, 118
+  offset: 3, 0
+  index: -1
+h/huo_00
+  rotate: true
+  xy: 1944, 80
+  size: 66, 96
+  orig: 70, 105
+  offset: 2, 3
+  index: -1
+h/huo_01
+  rotate: false
+  xy: 628, 32
+  size: 69, 105
+  orig: 70, 105
+  offset: 1, 0
+  index: -1
+h/huo_02
+  rotate: false
+  xy: 1802, 6
+  size: 70, 89
+  orig: 70, 105
+  offset: 0, 2
+  index: -1
+h/huo_03
+  rotate: false
+  xy: 1874, 7
+  size: 62, 89
+  orig: 70, 105
+  offset: 4, 2
+  index: -1
+h/huo_04
+  rotate: false
+  xy: 1730, 5
+  size: 70, 90
+  orig: 70, 105
+  offset: 0, 2
+  index: -1
+tx/eff_spriteskillh-in1_00
+  rotate: false
+  xy: 1567, 17
+  size: 161, 216
+  orig: 363, 361
+  offset: 85, 47
+  index: -1
+tx/eff_spriteskillh-in1_02
+  rotate: false
+  xy: 1643, 251
+  size: 204, 259
+  orig: 363, 361
+  offset: 75, 48
+  index: -1
+tx/eff_spriteskillh-in1_04
+  rotate: false
+  xy: 1406, 235
+  size: 235, 275
+  orig: 363, 361
+  offset: 56, 48
+  index: -1
+tx/eff_spriteskillh-in2_00
+  rotate: false
+  xy: 1079, 2
+  size: 173, 137
+  orig: 374, 273
+  offset: 101, 86
+  index: -1
+tx/eff_spriteskillh-in2_02
+  rotate: true
+  xy: 977, 141
+  size: 369, 241
+  orig: 374, 273
+  offset: 3, 16
+  index: -1
+tx/eff_spriteskillh-in2_04
+  rotate: true
+  xy: 2, 139
+  size: 371, 242
+  orig: 374, 273
+  offset: 2, 16
+  index: -1
+tx/eff_spriteskillh-in2_06
+  rotate: true
+  xy: 246, 139
+  size: 371, 242
+  orig: 374, 273
+  offset: 2, 16
+  index: -1
+tx/eff_spriteskillh-in2_08
+  rotate: true
+  xy: 734, 139
+  size: 371, 241
+  orig: 374, 273
+  offset: 2, 16
+  index: -1
+tx/eff_spriteskillh-in2_10
+  rotate: true
+  xy: 490, 139
+  size: 371, 242
+  orig: 374, 273
+  offset: 2, 16
+  index: -1
+tx/eff_spriteskillh-in2_22
+  rotate: true
+  xy: 1220, 142
+  size: 368, 184
+  orig: 374, 273
+  offset: 5, 52
+  index: -1
+ty
+  rotate: false
+  xy: 1338, 4
+  size: 68, 37
+  orig: 68, 37
+  offset: 0, 0
+  index: -1
+y/smoke0001
+  rotate: false
+  xy: 1254, 4
+  size: 82, 37
+  orig: 200, 150
+  offset: 118, 0
+  index: -1
+y/smoke0002
+  rotate: true
+  xy: 2, 2
+  size: 135, 73
+  orig: 200, 150
+  offset: 64, 0
+  index: -1
+y/smoke0003
+  rotate: false
+  xy: 1874, 148
+  size: 157, 88
+  orig: 200, 150
+  offset: 42, 0
+  index: -1
+y/smoke0004
+  rotate: false
+  xy: 1849, 238
+  size: 160, 88
+  orig: 200, 150
+  offset: 39, 0
+  index: -1
+y/smoke0005
+  rotate: false
+  xy: 1406, 142
+  size: 159, 91
+  orig: 200, 150
+  offset: 40, 0
+  index: -1
+y/smoke0006
+  rotate: false
+  xy: 1409, 48
+  size: 156, 92
+  orig: 200, 150
+  offset: 43, 0
+  index: -1
+y/smoke0007
+  rotate: false
+  xy: 1254, 43
+  size: 153, 97
+  orig: 200, 150
+  offset: 46, 0
+  index: -1
+y/smoke0008
+  rotate: true
+  xy: 1730, 97
+  size: 152, 97
+  orig: 200, 150
+  offset: 47, 0
+  index: -1
+y/smoke0009
+  rotate: false
+  xy: 794, 36
+  size: 145, 101
+  orig: 200, 150
+  offset: 55, 0
+  index: -1
+y/smoke0010
+  rotate: false
+  xy: 941, 37
+  size: 136, 100
+  orig: 200, 150
+  offset: 63, 25
+  index: -1
+y/smoke0011
+  rotate: true
+  xy: 231, 9
+  size: 128, 101
+  orig: 200, 150
+  offset: 71, 0
+  index: -1
+y/smoke0012
+  rotate: true
+  xy: 334, 15
+  size: 122, 101
+  orig: 200, 150
+  offset: 77, 0
+  index: -1

@@ -1,0 +1,244 @@
+
+141longxiabingshou.png
+size: 2048,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+140BSLX_10
+  rotate: false
+  xy: 1789, 16
+  size: 65, 100
+  orig: 67, 102
+  offset: 1, 1
+  index: -1
+140BSLX_12
+  rotate: false
+  xy: 2019, 116
+  size: 23, 57
+  orig: 25, 59
+  offset: 1, 1
+  index: -1
+140BSLX_14
+  rotate: false
+  xy: 2010, 69
+  size: 36, 45
+  orig: 38, 47
+  offset: 1, 1
+  index: -1
+140BSLX_16
+  rotate: true
+  xy: 2019, 175
+  size: 40, 25
+  orig: 42, 27
+  offset: 1, 1
+  index: -1
+140BSLX_17
+  rotate: true
+  xy: 147, 3
+  size: 70, 176
+  orig: 112, 238
+  offset: 1, 1
+  index: -1
+140BSLX_18
+  rotate: true
+  xy: 1940, 148
+  size: 67, 77
+  orig: 69, 79
+  offset: 1, 1
+  index: -1
+140BSLX_40
+  rotate: true
+  xy: 1924, 24
+  size: 43, 31
+  orig: 46, 34
+  offset: 1, 1
+  index: -1
+140BSLX_45
+  rotate: false
+  xy: 1858, 127
+  size: 80, 127
+  orig: 80, 127
+  offset: 0, 0
+  index: -1
+140BSLX_47
+  rotate: false
+  xy: 1924, 74
+  size: 39, 33
+  orig: 42, 36
+  offset: 1, 1
+  index: -1
+140BSLX_8
+  rotate: true
+  xy: 504, 78
+  size: 176, 93
+  orig: 178, 95
+  offset: 1, 1
+  index: -1
+140BSLX_9
+  rotate: false
+  xy: 1188, 12
+  size: 120, 84
+  orig: 122, 86
+  offset: 1, 1
+  index: -1
+h/huo_00
+  rotate: false
+  xy: 1856, 20
+  size: 66, 96
+  orig: 70, 105
+  offset: 2, 3
+  index: -1
+h/huo_01
+  rotate: false
+  xy: 1464, 2
+  size: 69, 105
+  orig: 70, 105
+  offset: 1, 0
+  index: -1
+h/huo_02
+  rotate: true
+  xy: 417, 3
+  size: 70, 89
+  orig: 70, 105
+  offset: 0, 2
+  index: -1
+h/huo_03
+  rotate: false
+  xy: 966, 4
+  size: 62, 89
+  orig: 70, 105
+  offset: 4, 2
+  index: -1
+h/huo_04
+  rotate: true
+  xy: 325, 3
+  size: 70, 90
+  orig: 70, 105
+  offset: 0, 2
+  index: -1
+tx/285 ZCYXWY eff_muramasaburst_0
+  rotate: false
+  xy: 2, 18
+  size: 143, 236
+  orig: 215, 400
+  offset: 39, 81
+  index: -1
+tx/285 ZCYXWY eff_muramasaburst_1
+  rotate: true
+  xy: 1500, 111
+  size: 143, 254
+  orig: 215, 400
+  offset: 39, 72
+  index: -1
+tx/285 ZCYXWY eff_muramasaburst_2
+  rotate: true
+  xy: 1016, 98
+  size: 156, 280
+  orig: 215, 400
+  offset: 35, 59
+  index: -1
+tx/285 ZCYXWY eff_muramasaburst_3
+  rotate: true
+  xy: 599, 92
+  size: 162, 322
+  orig: 215, 400
+  offset: 25, 38
+  index: -1
+tx/285 ZCYXWY eff_muramasaburst_4
+  rotate: true
+  xy: 147, 75
+  size: 179, 355
+  orig: 215, 400
+  offset: 16, 22
+  index: -1
+ty
+  rotate: false
+  xy: 1940, 109
+  size: 68, 37
+  orig: 68, 37
+  offset: 0, 0
+  index: -1
+y/smoke0001
+  rotate: false
+  xy: 1940, 217
+  size: 82, 37
+  orig: 200, 150
+  offset: 118, 0
+  index: -1
+y/smoke0002
+  rotate: false
+  xy: 508, 3
+  size: 135, 73
+  orig: 200, 150
+  offset: 64, 0
+  index: -1
+y/smoke0003
+  rotate: false
+  xy: 807, 2
+  size: 157, 88
+  orig: 200, 150
+  offset: 42, 0
+  index: -1
+y/smoke0004
+  rotate: false
+  xy: 645, 2
+  size: 160, 88
+  orig: 200, 150
+  offset: 39, 0
+  index: -1
+y/smoke0005
+  rotate: true
+  xy: 923, 95
+  size: 159, 91
+  orig: 200, 150
+  offset: 40, 0
+  index: -1
+y/smoke0006
+  rotate: false
+  xy: 1030, 4
+  size: 156, 92
+  orig: 200, 150
+  offset: 43, 0
+  index: -1
+y/smoke0007
+  rotate: true
+  xy: 1298, 101
+  size: 153, 97
+  orig: 200, 150
+  offset: 46, 0
+  index: -1
+y/smoke0008
+  rotate: false
+  xy: 1310, 2
+  size: 152, 97
+  orig: 200, 150
+  offset: 47, 0
+  index: -1
+y/smoke0009
+  rotate: true
+  xy: 1397, 109
+  size: 145, 101
+  orig: 200, 150
+  offset: 55, 0
+  index: -1
+y/smoke0010
+  rotate: true
+  xy: 1756, 118
+  size: 136, 100
+  orig: 200, 150
+  offset: 63, 25
+  index: -1
+y/smoke0011
+  rotate: false
+  xy: 1535, 8
+  size: 128, 101
+  orig: 200, 150
+  offset: 71, 0
+  index: -1
+y/smoke0012
+  rotate: false
+  xy: 1665, 8
+  size: 122, 101
+  orig: 200, 150
+  offset: 77, 0
+  index: -1

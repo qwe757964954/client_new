@@ -2,7 +2,7 @@
   "ver": "1.0.26",
   "importer": "image",
   "imported": true,
-  "uuid": "d92704bc-2967-4146-ae08-db803712396e",
+  "uuid": "cd60e53a-c8f2-481b-bfaa-60756fe33377",
   "files": [
     ".json",
     ".png"
@@ -10,14 +10,14 @@
   "subMetas": {
     "6c48a": {
       "importer": "texture",
-      "uuid": "d92704bc-2967-4146-ae08-db803712396e@6c48a",
+      "uuid": "cd60e53a-c8f2-481b-bfaa-60756fe33377@6c48a",
       "displayName": "18naidagui",
       "id": "6c48a",
       "name": "texture",
       "userData": {
         "wrapModeS": "clamp-to-edge",
         "wrapModeT": "clamp-to-edge",
-        "imageUuidOrDatabaseUri": "d92704bc-2967-4146-ae08-db803712396e",
+        "imageUuidOrDatabaseUri": "cd60e53a-c8f2-481b-bfaa-60756fe33377",
         "isUuid": true,
         "visible": false,
         "minfilter": "linear",
@@ -34,7 +34,7 @@
     },
     "f9941": {
       "importer": "sprite-frame",
-      "uuid": "d92704bc-2967-4146-ae08-db803712396e@f9941",
+      "uuid": "cd60e53a-c8f2-481b-bfaa-60756fe33377@f9941",
       "displayName": "18naidagui",
       "id": "f9941",
       "name": "spriteFrame",
@@ -114,7 +114,7 @@
           ]
         },
         "isUuid": true,
-        "imageUuidOrDatabaseUri": "d92704bc-2967-4146-ae08-db803712396e@6c48a",
+        "imageUuidOrDatabaseUri": "cd60e53a-c8f2-481b-bfaa-60756fe33377@6c48a",
         "atlasUuid": ""
       },
       "ver": "1.0.12",
@@ -129,6 +129,6 @@
     "type": "sprite-frame",
     "hasAlpha": true,
     "fixAlphaTransparencyArtifacts": false,
-    "redirect": "d92704bc-2967-4146-ae08-db803712396e@f9941"
+    "redirect": "cd60e53a-c8f2-481b-bfaa-60756fe33377@f9941"
   }
 }

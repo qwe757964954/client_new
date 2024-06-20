@@ -1,0 +1,258 @@
+
+145duanyichizhualong.png
+size: 2048,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+143LCZL_1
+  rotate: false
+  xy: 830, 194
+  size: 49, 85
+  orig: 49, 85
+  offset: 0, 0
+  index: -1
+143LCZL_28
+  rotate: false
+  xy: 313, 140
+  size: 158, 121
+  orig: 158, 121
+  offset: 0, 0
+  index: -1
+143LCZL_29
+  rotate: true
+  xy: 988, 150
+  size: 93, 95
+  orig: 93, 97
+  offset: 0, 2
+  index: -1
+143LCZL_31
+  rotate: false
+  xy: 1475, 239
+  size: 53, 96
+  orig: 53, 96
+  offset: 0, 0
+  index: -1
+143LCZL_32
+  rotate: true
+  xy: 211, 91
+  size: 160, 100
+  orig: 160, 100
+  offset: 0, 0
+  index: -1
+143LCZL_33
+  rotate: false
+  xy: 1205, 211
+  size: 113, 122
+  orig: 113, 122
+  offset: 0, 0
+  index: -1
+143LCZL_34
+  rotate: false
+  xy: 1594, 260
+  size: 33, 78
+  orig: 33, 78
+  offset: 0, 0
+  index: -1
+h/huo_00
+  rotate: true
+  xy: 211, 23
+  size: 66, 96
+  orig: 70, 105
+  offset: 2, 3
+  index: -1
+h/huo_01
+  rotate: true
+  xy: 881, 174
+  size: 69, 105
+  orig: 70, 105
+  offset: 1, 0
+  index: -1
+h/huo_02
+  rotate: false
+  xy: 1085, 154
+  size: 70, 89
+  orig: 70, 105
+  offset: 0, 2
+  index: -1
+h/huo_03
+  rotate: false
+  xy: 1530, 249
+  size: 62, 89
+  orig: 70, 105
+  offset: 4, 2
+  index: -1
+h/huo_04
+  rotate: false
+  xy: 634, 171
+  size: 70, 90
+  orig: 70, 105
+  offset: 0, 2
+  index: -1
+tx/191 MYNSZD E54062_14
+  rotate: false
+  xy: 1121, 335
+  size: 193, 175
+  orig: 480, 270
+  offset: 90, 20
+  index: -1
+tx/191 MYNSZD E54062_17
+  rotate: false
+  xy: 1689, 357
+  size: 169, 153
+  orig: 480, 270
+  offset: 114, 19
+  index: -1
+tx/191 MYNSZD E54062_20
+  rotate: false
+  xy: 2, 253
+  size: 296, 257
+  orig: 480, 270
+  offset: 77, 0
+  index: -1
+tx/191 MYNSZD E54062_23
+  rotate: false
+  xy: 2, 5
+  size: 207, 246
+  orig: 480, 270
+  offset: 121, 19
+  index: -1
+tx/191 MYNSZD E54062_26
+  rotate: true
+  xy: 884, 335
+  size: 175, 235
+  orig: 480, 270
+  offset: 132, 30
+  index: -1
+tx/191 MYNSZD E54062_29
+  rotate: false
+  xy: 498, 263
+  size: 191, 247
+  orig: 480, 270
+  offset: 128, 23
+  index: -1
+tx/191 MYNSZD E54062_32
+  rotate: false
+  xy: 300, 263
+  size: 196, 247
+  orig: 480, 270
+  offset: 127, 23
+  index: -1
+tx/191 MYNSZD E54062_35
+  rotate: false
+  xy: 691, 281
+  size: 191, 229
+  orig: 480, 270
+  offset: 134, 36
+  index: -1
+tx/191 MYNSZD E54062_38
+  rotate: true
+  xy: 1316, 337
+  size: 173, 185
+  orig: 480, 270
+  offset: 124, 36
+  index: -1
+tx/191 MYNSZD E54062_41
+  rotate: true
+  xy: 1503, 340
+  size: 170, 184
+  orig: 480, 270
+  offset: 154, 36
+  index: -1
+tx/191 MYNSZD E54062_43
+  rotate: true
+  xy: 1860, 387
+  size: 123, 161
+  orig: 480, 270
+  offset: 152, 59
+  index: -1
+ty
+  rotate: true
+  xy: 1629, 270
+  size: 68, 37
+  orig: 68, 37
+  offset: 0, 0
+  index: -1
+y/smoke0001
+  rotate: true
+  xy: 1157, 161
+  size: 82, 37
+  orig: 200, 150
+  offset: 118, 0
+  index: -1
+y/smoke0002
+  rotate: true
+  xy: 415, 3
+  size: 135, 73
+  orig: 200, 150
+  offset: 64, 0
+  index: -1
+y/smoke0003
+  rotate: false
+  xy: 1046, 245
+  size: 157, 88
+  orig: 200, 150
+  offset: 42, 0
+  index: -1
+y/smoke0004
+  rotate: false
+  xy: 884, 245
+  size: 160, 88
+  orig: 200, 150
+  offset: 39, 0
+  index: -1
+y/smoke0005
+  rotate: false
+  xy: 473, 170
+  size: 159, 91
+  orig: 200, 150
+  offset: 40, 0
+  index: -1
+y/smoke0006
+  rotate: true
+  xy: 589, 12
+  size: 156, 92
+  orig: 200, 150
+  offset: 43, 0
+  index: -1
+y/smoke0007
+  rotate: false
+  xy: 1320, 238
+  size: 153, 97
+  orig: 200, 150
+  offset: 46, 0
+  index: -1
+y/smoke0008
+  rotate: true
+  xy: 490, 16
+  size: 152, 97
+  orig: 200, 150
+  offset: 47, 0
+  index: -1
+y/smoke0009
+  rotate: false
+  xy: 1860, 284
+  size: 145, 101
+  orig: 200, 150
+  offset: 55, 0
+  index: -1
+y/smoke0010
+  rotate: true
+  xy: 313, 2
+  size: 136, 100
+  orig: 200, 150
+  offset: 63, 25
+  index: -1
+y/smoke0011
+  rotate: false
+  xy: 1320, 135
+  size: 128, 101
+  orig: 200, 150
+  offset: 71, 0
+  index: -1
+y/smoke0012
+  rotate: false
+  xy: 706, 178
+  size: 122, 101
+  orig: 200, 150
+  offset: 77, 0
+  index: -1

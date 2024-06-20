@@ -1,0 +1,300 @@
+
+31putongrenma.png
+size: 2048,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+31PTRM_49
+  rotate: false
+  xy: 163, 3
+  size: 29, 92
+  orig: 29, 92
+  offset: 0, 0
+  index: -1
+31PTRM_50
+  rotate: false
+  xy: 968, 101
+  size: 86, 116
+  orig: 88, 118
+  offset: 1, 1
+  index: -1
+31PTRM_51
+  rotate: false
+  xy: 330, 2
+  size: 39, 77
+  orig: 39, 77
+  offset: 0, 0
+  index: -1
+31PTRM_52
+  rotate: true
+  xy: 958, 14
+  size: 14, 27
+  orig: 16, 29
+  offset: 1, 1
+  index: -1
+31PTRM_53
+  rotate: false
+  xy: 2, 97
+  size: 189, 157
+  orig: 189, 157
+  offset: 0, 0
+  index: -1
+31PTRM_54
+  rotate: true
+  xy: 495, 14
+  size: 33, 68
+  orig: 33, 68
+  offset: 0, 0
+  index: -1
+31PTRM_55
+  rotate: false
+  xy: 1163, 51
+  size: 27, 65
+  orig: 27, 65
+  offset: 0, 0
+  index: -1
+31PTRM_56
+  rotate: false
+  xy: 579, 63
+  size: 37, 23
+  orig: 39, 25
+  offset: 1, 1
+  index: -1
+31PTRM_57
+  rotate: true
+  xy: 692, 150
+  size: 67, 136
+  orig: 69, 136
+  offset: 0, 0
+  index: -1
+31PTRM_58
+  rotate: false
+  xy: 1180, 194
+  size: 23, 25
+  orig: 25, 27
+  offset: 1, 1
+  index: -1
+31PTRM_59
+  rotate: false
+  xy: 348, 187
+  size: 36, 9
+  orig: 38, 11
+  offset: 1, 1
+  index: -1
+31PTRM_60
+  rotate: true
+  xy: 371, 14
+  size: 65, 83
+  orig: 67, 85
+  offset: 1, 1
+  index: -1
+31PTRM_61
+  rotate: true
+  xy: 692, 76
+  size: 72, 134
+  orig: 72, 134
+  offset: 0, 0
+  index: -1
+31PTRM_62
+  rotate: true
+  xy: 390, 177
+  size: 40, 149
+  orig: 40, 150
+  offset: 0, 1
+  index: -1
+31PTRM_63
+  rotate: true
+  xy: 541, 163
+  size: 54, 149
+  orig: 54, 149
+  offset: 0, 0
+  index: -1
+31PTRM_64
+  rotate: false
+  xy: 348, 81
+  size: 133, 94
+  orig: 133, 94
+  offset: 0, 0
+  index: -1
+31PTRM_65
+  rotate: false
+  xy: 1988, 129
+  size: 44, 40
+  orig: 44, 40
+  offset: 0, 0
+  index: -1
+31PTRM_66
+  rotate: true
+  xy: 193, 198
+  size: 56, 195
+  orig: 56, 195
+  offset: 0, 0
+  index: -1
+31PTRM_67
+  rotate: true
+  xy: 1065, 15
+  size: 33, 87
+  orig: 33, 87
+  offset: 0, 0
+  index: -1
+31PTRM_68
+  rotate: true
+  xy: 1988, 171
+  size: 83, 54
+  orig: 83, 54
+  offset: 0, 0
+  index: -1
+h/huo_00
+  rotate: true
+  xy: 1065, 50
+  size: 66, 96
+  orig: 70, 105
+  offset: 2, 3
+  index: -1
+h/huo_01
+  rotate: true
+  xy: 958, 30
+  size: 69, 105
+  orig: 70, 105
+  offset: 1, 0
+  index: -1
+h/huo_02
+  rotate: false
+  xy: 620, 72
+  size: 70, 89
+  orig: 70, 105
+  offset: 0, 2
+  index: -1
+h/huo_03
+  rotate: false
+  xy: 266, 8
+  size: 62, 89
+  orig: 70, 105
+  offset: 4, 2
+  index: -1
+h/huo_04
+  rotate: false
+  xy: 194, 7
+  size: 70, 90
+  orig: 70, 105
+  offset: 0, 2
+  index: -1
+tx/action-action1_0
+  rotate: false
+  xy: 601, 219
+  size: 206, 35
+  orig: 510, 256
+  offset: 139, 112
+  index: -1
+tx/action-action1_1
+  rotate: false
+  xy: 390, 219
+  size: 209, 35
+  orig: 510, 256
+  offset: 136, 112
+  index: -1
+tx/action-action1_2
+  rotate: false
+  xy: 1008, 221
+  size: 198, 33
+  orig: 510, 256
+  offset: 147, 113
+  index: -1
+tx/action-action1_3
+  rotate: false
+  xy: 809, 219
+  size: 197, 35
+  orig: 510, 256
+  offset: 148, 113
+  index: -1
+ty
+  rotate: true
+  xy: 456, 2
+  size: 68, 37
+  orig: 68, 37
+  offset: 0, 0
+  index: -1
+y/smoke0001
+  rotate: false
+  xy: 495, 49
+  size: 82, 37
+  orig: 200, 150
+  offset: 118, 0
+  index: -1
+y/smoke0002
+  rotate: false
+  xy: 483, 88
+  size: 135, 73
+  orig: 200, 150
+  offset: 64, 0
+  index: -1
+y/smoke0003
+  rotate: false
+  xy: 1370, 166
+  size: 157, 88
+  orig: 200, 150
+  offset: 42, 0
+  index: -1
+y/smoke0004
+  rotate: false
+  xy: 1208, 166
+  size: 160, 88
+  orig: 200, 150
+  offset: 39, 0
+  index: -1
+y/smoke0005
+  rotate: false
+  xy: 2, 4
+  size: 159, 91
+  orig: 200, 150
+  offset: 40, 0
+  index: -1
+y/smoke0006
+  rotate: false
+  xy: 1529, 162
+  size: 156, 92
+  orig: 200, 150
+  offset: 43, 0
+  index: -1
+y/smoke0007
+  rotate: false
+  xy: 193, 99
+  size: 153, 97
+  orig: 200, 150
+  offset: 46, 0
+  index: -1
+y/smoke0008
+  rotate: false
+  xy: 1687, 157
+  size: 152, 97
+  orig: 200, 150
+  offset: 47, 0
+  index: -1
+y/smoke0009
+  rotate: false
+  xy: 1841, 153
+  size: 145, 101
+  orig: 200, 150
+  offset: 55, 0
+  index: -1
+y/smoke0010
+  rotate: false
+  xy: 830, 117
+  size: 136, 100
+  orig: 200, 150
+  offset: 63, 25
+  index: -1
+y/smoke0011
+  rotate: false
+  xy: 828, 14
+  size: 128, 101
+  orig: 200, 150
+  offset: 71, 0
+  index: -1
+y/smoke0012
+  rotate: false
+  xy: 1056, 118
+  size: 122, 101
+  orig: 200, 150
+  offset: 77, 0
+  index: -1

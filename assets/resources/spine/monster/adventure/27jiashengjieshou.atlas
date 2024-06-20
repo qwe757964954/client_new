@@ -1,0 +1,258 @@
+
+27jiashengjieshou.png
+size: 2048,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+30FNSJS_27
+  rotate: false
+  xy: 1147, 178
+  size: 85, 49
+  orig: 85, 49
+  offset: 0, 0
+  index: -1
+30FNSJS_28
+  rotate: false
+  xy: 1818, 208
+  size: 92, 44
+  orig: 92, 44
+  offset: 0, 0
+  index: -1
+30FNSJS_29
+  rotate: true
+  xy: 1749, 219
+  size: 134, 67
+  orig: 134, 67
+  offset: 0, 0
+  index: -1
+30FNSJS_30
+  rotate: true
+  xy: 1672, 193
+  size: 57, 58
+  orig: 57, 58
+  offset: 0, 0
+  index: -1
+30FNSJS_31
+  rotate: false
+  xy: 1300, 165
+  size: 72, 49
+  orig: 72, 49
+  offset: 0, 0
+  index: -1
+30FNSJS_33
+  rotate: false
+  xy: 1458, 174
+  size: 44, 40
+  orig: 51, 60
+  offset: 7, 10
+  index: -1
+30FNSJS_34
+  rotate: true
+  xy: 1568, 218
+  size: 48, 32
+  orig: 48, 32
+  offset: 0, 0
+  index: -1
+30FNSJS_43
+  rotate: true
+  xy: 1234, 153
+  size: 74, 64
+  orig: 81, 68
+  offset: 6, 1
+  index: -1
+30FNSJS_47
+  rotate: false
+  xy: 1568, 268
+  size: 32, 49
+  orig: 34, 51
+  offset: 1, 1
+  index: -1
+h/huo_00
+  rotate: false
+  xy: 1500, 221
+  size: 66, 96
+  orig: 70, 105
+  offset: 2, 3
+  index: -1
+h/huo_01
+  rotate: false
+  xy: 1305, 216
+  size: 69, 105
+  orig: 70, 105
+  offset: 1, 0
+  index: -1
+h/huo_02
+  rotate: true
+  xy: 930, 138
+  size: 70, 89
+  orig: 70, 105
+  offset: 0, 2
+  index: -1
+h/huo_03
+  rotate: true
+  xy: 1021, 146
+  size: 62, 89
+  orig: 70, 105
+  offset: 4, 2
+  index: -1
+h/huo_04
+  rotate: true
+  xy: 838, 138
+  size: 70, 90
+  orig: 70, 105
+  offset: 0, 2
+  index: -1
+tx/action-action2_20
+  rotate: true
+  xy: 1104, 323
+  size: 154, 289
+  orig: 960, 540
+  offset: 421, 123
+  index: -1
+tx/action-action2_22
+  rotate: true
+  xy: 809, 309
+  size: 168, 293
+  orig: 960, 540
+  offset: 413, 119
+  index: -1
+tx/action-action2_24
+  rotate: true
+  xy: 218, 293
+  size: 184, 302
+  orig: 960, 540
+  offset: 405, 115
+  index: -1
+tx/action-action2_26
+  rotate: true
+  xy: 522, 277
+  size: 200, 285
+  orig: 960, 540
+  offset: 397, 110
+  index: -1
+tx/action-action2_28
+  rotate: false
+  xy: 2, 198
+  size: 214, 279
+  orig: 960, 540
+  offset: 390, 106
+  index: -1
+tx/action-action2_30
+  rotate: false
+  xy: 2, 2
+  size: 206, 194
+  orig: 960, 540
+  offset: 406, 132
+  index: -1
+tx/action-action2_32
+  rotate: false
+  xy: 1395, 319
+  size: 205, 158
+  orig: 960, 540
+  offset: 415, 143
+  index: -1
+tx/action-action2_33
+  rotate: false
+  xy: 1816, 357
+  size: 205, 120
+  orig: 960, 540
+  offset: 419, 147
+  index: -1
+tx/action-action2_35
+  rotate: false
+  xy: 1602, 355
+  size: 212, 122
+  orig: 960, 540
+  offset: 418, 149
+  index: -1
+ty
+  rotate: false
+  xy: 1602, 213
+  size: 68, 37
+  orig: 68, 37
+  offset: 0, 0
+  index: -1
+y/smoke0001
+  rotate: false
+  xy: 1374, 177
+  size: 82, 37
+  orig: 200, 150
+  offset: 118, 0
+  index: -1
+y/smoke0002
+  rotate: true
+  xy: 1948, 220
+  size: 135, 73
+  orig: 200, 150
+  offset: 64, 0
+  index: -1
+y/smoke0003
+  rotate: false
+  xy: 679, 187
+  size: 157, 88
+  orig: 200, 150
+  offset: 42, 0
+  index: -1
+y/smoke0004
+  rotate: false
+  xy: 517, 187
+  size: 160, 88
+  orig: 200, 150
+  offset: 39, 0
+  index: -1
+y/smoke0005
+  rotate: false
+  xy: 218, 200
+  size: 159, 91
+  orig: 200, 150
+  offset: 40, 0
+  index: -1
+y/smoke0006
+  rotate: false
+  xy: 1147, 229
+  size: 156, 92
+  orig: 200, 150
+  offset: 43, 0
+  index: -1
+y/smoke0007
+  rotate: false
+  xy: 838, 210
+  size: 153, 97
+  orig: 200, 150
+  offset: 46, 0
+  index: -1
+y/smoke0008
+  rotate: false
+  xy: 993, 210
+  size: 152, 97
+  orig: 200, 150
+  offset: 47, 0
+  index: -1
+y/smoke0009
+  rotate: false
+  xy: 1602, 252
+  size: 145, 101
+  orig: 200, 150
+  offset: 55, 0
+  index: -1
+y/smoke0010
+  rotate: false
+  xy: 379, 191
+  size: 136, 100
+  orig: 200, 150
+  offset: 63, 25
+  index: -1
+y/smoke0011
+  rotate: false
+  xy: 1818, 254
+  size: 128, 101
+  orig: 200, 150
+  offset: 71, 0
+  index: -1
+y/smoke0012
+  rotate: false
+  xy: 1376, 216
+  size: 122, 101
+  orig: 200, 150
+  offset: 77, 0
+  index: -1
