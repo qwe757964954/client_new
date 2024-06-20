@@ -54,11 +54,29 @@ export interface TaskWeekData extends TaskBaseData {
     
 }
 
+// 表示数据数组中宝箱状态
+export interface BoxWeekData {
+    box_id: number;            // 用户ID
+    status: number;            // 任务ID
+    user_id: number;             // 状态 (0表示未完成，1表示完成等)
+    week_num: number;            // 任务进度
+}
+
 export interface UserWeekTaskData extends BaseRepPacket{
     weekly_task: TaskWeekData[];           // 任务数据数组
     weekly_live: number;
+    weekly_box: BoxWeekData[];
 }
 
 export interface UserMainTaskData extends BaseRepPacket{
     data: TaskBaseData[];           // 任务数据数组
+}
+
+export interface UserMainTaskData extends BaseRepPacket{
+    data: TaskBaseData[];           // 任务数据数组
+}
+
+export interface ChallengeTaskReward extends BaseRepPacket{
+    exp:number; 
+    live_num:number;
 }

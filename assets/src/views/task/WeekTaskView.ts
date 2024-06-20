@@ -2,7 +2,7 @@ import { _decorator, Node } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { TaskBaseData, UserMainTaskData, UserWeekTaskData } from '../../models/TaskModel';
+import { ChallengeTaskReward, TaskBaseData, UserMainTaskData, UserWeekTaskData } from '../../models/TaskModel';
 import { User } from '../../models/User';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
@@ -91,10 +91,12 @@ export class WeekTaskView extends BaseView {
     onUserWeekTask(taskData: UserWeekTaskData) {
         console.log("onUserWeekTask",taskData);
         this._weekTask.updateData(taskData.weekly_task);
-        this._taskAward.updateTaskAwardProgress(taskData.weekly_live);
+        this._taskAward.updateTaskAwardProgress(taskData.weekly_live,taskData.weekly_box);
+
     }
-    onChallengeTaskRewardResponse(data:any){
+    onChallengeTaskRewardResponse(data:ChallengeTaskReward){
         console.log("onChallengeTaskRewardResponse",data);
+        TkServer.reqUserWeekTask();
     }
     onChallengeBoxRewardResponse(data:any){
         console.log("onChallengeBoxRewardResponse",data);
