@@ -79,4 +79,9 @@ export interface UserMainTaskData extends BaseRepPacket{
 export interface ChallengeTaskReward extends BaseRepPacket{
     exp:number; 
     live_num:number;
+    task_id:number;
+}
+
+export interface ChallengeBoxRewardData extends BaseRepPacket{
+    box_id:number;
 }

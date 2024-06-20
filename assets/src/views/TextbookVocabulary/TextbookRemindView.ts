@@ -29,14 +29,12 @@ export class TextbookRemindView extends BasePopup {
     public btn_green: Node = null;
 
     private _callFunc:(isSure:boolean)=>void = null;
-
-    start() {
+    public initUI(): void {
         this.enableClickBlankToClose([this.node.getChildByName("frame")]).then(() => {
             if(this._callFunc){
                 this._callFunc(false);
             }
         });
-        this.initEvent();
     }
 
     initEvent() {
@@ -69,10 +67,6 @@ export class TextbookRemindView extends BasePopup {
             this._callFunc(false);
         }
         this.closePop();
-    }
-    onDestroy(): void {
-        super.onDestroy();
-        this.removeEvent();
     }
 }
 

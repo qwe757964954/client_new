@@ -1,20 +1,22 @@
 import { _decorator, Node } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
+import { ItemData } from '../../manager/DataMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { ChallengeTaskReward, TaskBaseData, UserMainTaskData, UserWeekTaskData } from '../../models/TaskModel';
+import { ChallengeBoxRewardData, ChallengeTaskReward, TaskBaseData, UserMainTaskData, UserWeekTaskData } from '../../models/TaskModel';
 import { User } from '../../models/User';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TkServer } from '../../service/TaskService';
 import { NavTitleView } from '../common/NavTitleView';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
+import { CongratulationsView } from './CongratulationsView';
 import { DailyTaskView } from './DailyTaskView';
 import { MainTaskView } from './MainTaskView';
 import { TaskAchievementView } from './TaskAchievementView';
 import { TaskAwardView } from './TaskAwardView';
 import { TKConfig } from './TaskConfig';
-import { WeeklyTaskBox } from './TaskInfo';
+import { WeeklyTask, WeeklyTaskBox } from './TaskInfo';
 import { TaskTabView } from './TaskTabView';
 import { WeeklyTaskView } from './WeeklyTaskView';
 const { ccclass, property } = _decorator;
@@ -80,6 +82,10 @@ export class WeekTaskView extends BaseView {
     }
     onChallengeTaskReward(data:TaskBaseData) {
         TkServer.reqGetWeekTaskReward(data.task_id);
+
+        
+
+
     }
     onChallengeBoxReward(data:WeeklyTaskBox) {
         TkServer.reqGetBoxTaskReward(data.id);
@@ -94,12 +100,26 @@ export class WeekTaskView extends BaseView {
         this._taskAward.updateTaskAwardProgress(taskData.weekly_live,taskData.weekly_box);
 
     }
-    onChallengeTaskRewardResponse(data:ChallengeTaskReward){
-        console.log("onChallengeTaskRewardResponse",data);
+    onChallengeTaskRewardResponse(taskData:ChallengeTaskReward){
+        console.log("onChallengeTaskRewardResponse",taskData);
+        let task_info:WeeklyTask = TKConfig.taskConfigInfo.task_week.find(item => item.id === taskData.task_id);
+        let rewardArr:ItemData[] = TKConfig.convertRewardData(task_info.reward);
+        ViewsManager.instance.showPopup(PrefabType.CongratulationsView).then((node: Node)=>{
+            let nodeScript:CongratulationsView = node.getComponent(CongratulationsView);
+            nodeScript.updateRewardScroll(rewardArr);
+        })
         TkServer.reqUserWeekTask();
+
     }
-    onChallengeBoxRewardResponse(data:any){
-        console.log("onChallengeBoxRewardResponse",data);
+    onChallengeBoxRewardResponse(rewardData:ChallengeBoxRewardData){
+        console.log("onChallengeBoxRewardResponse",rewardData);
+        let box_info:WeeklyTaskBox = TKConfig.taskConfigInfo.task_week_box.find(item => item.id === rewardData.box_id);
+        let rewardArr:ItemData[] = TKConfig.convertRewardData(box_info.reward);
+        ViewsManager.instance.showPopup(PrefabType.CongratulationsView).then((node: Node)=>{
+            let nodeScript:CongratulationsView = node.getComponent(CongratulationsView);
+            nodeScript.updateRewardScroll(rewardArr);
+        })
+        
         TkServer.reqUserWeekTask();
     }
     onUserWeekTaskChangeResponse(data:any){

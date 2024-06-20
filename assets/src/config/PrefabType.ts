@@ -23,7 +23,7 @@ export class PrefabConfig {
     public path: string;
     public zindex: number = Hierarchy.SCENELAYER;
     public tips: string;
-    public scpt_name?: string;
+    public componentName?: string;
 }
 
 export type PrefabTypeEntry = {
@@ -89,11 +89,11 @@ export const PrefabType: Record<string, PrefabTypeEntry> = {
     ChallengeLeftView: { path: "textbook/ChallengeLeftView", zindex: Hierarchy.POPUPLAYER, tips: "左侧怪物模块" },
     RightUnitView: { path: "textbook/RightUnitView", zindex: Hierarchy.POPUPLAYER, tips: "右侧单元详情模块" },
     RightPanelchange: { path: "adventure/common/RightPanelchange", zindex: Hierarchy.POPUPLAYER, tips: "单词大冒险右侧挑战模块" },
-    SettingPlanView: { path: "textbook/SettingPlanView", scpt_name: "SettingPlanView", zindex: Hierarchy.POPUPLAYER, tips: "计划设置dialog模块" },
+    SettingPlanView: { path: "textbook/SettingPlanView", componentName: "SettingPlanView", zindex: Hierarchy.POPUPLAYER, tips: "计划设置dialog模块" },
     ScrollMapView: { path: "textbook/ScrollMapView", zindex: Hierarchy.POPUPLAYER, tips: "滑动地图模块" },
     BreakThroughView: { path: "textbook/BreakThroughView", zindex: Hierarchy.POPUPLAYER, tips: "单词大冒险挑战模块" },
-    TextbookRemindView: { path: "textbook/TextbookRemindView", scpt_name: "TextbookRemindView", zindex: Hierarchy.POPUPLAYER, tips: "二级确认弹窗" },
-    ChallengeRemindView: { path: "textbook/ChallengeRemindView", scpt_name: "ChallengeRemindView", zindex: Hierarchy.POPUPLAYER, tips: "首次故事背景引导" },
+    TextbookRemindView: { path: "textbook/TextbookRemindView", componentName: "TextbookRemindView", zindex: Hierarchy.POPUPLAYER, tips: "二级确认弹窗" },
+    ChallengeRemindView: { path: "textbook/ChallengeRemindView", componentName: "ChallengeRemindView", zindex: Hierarchy.POPUPLAYER, tips: "首次故事背景引导" },
     SearchWorldView: { path: "textbook/SearchWordView", zindex: Hierarchy.POPUPLAYER, tips: "查找单词弹窗" },
     WordSearchView: { path: "textbook/WordSearchView", zindex: Hierarchy.POPUPLAYER, tips: "查找单词详情弹窗" },
     WordCheckView: { path: "textbook/WordCheckView", zindex: Hierarchy.POPUPLAYER, tips: "单词列表" },
@@ -176,5 +176,6 @@ export const PrefabType: Record<string, PrefabTypeEntry> = {
     DailyTaskView: { path: "task/DailyTaskView", zindex: Hierarchy.POPUPLAYER, tips: "每日任务界面" },
     TaskAchievementView: { path: "task/TaskAchievementView", zindex: Hierarchy.POPUPLAYER, tips: "每周任务界面" },
     TaskTabView: { path: "task/TaskTabView", zindex: Hierarchy.POPUPLAYER, tips: "每周任务界面" },
+    CongratulationsView: { path: "task/CongratulationsView", componentName: "CongratulationsView", zindex: Hierarchy.POPUPLAYER, tips: "任务奖励界面" },
     /*********************************************每周任务 End*************************************************************/
 }

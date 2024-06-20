@@ -82,7 +82,7 @@ export interface Task {
   name: string;
   module_id: number;
   cond: string;
-  reward: Reward[];
+  reward: number[];
 }
 
 // 周任务结构
@@ -96,7 +96,7 @@ export interface WeeklyTask extends Task {
 export interface WeeklyTaskBox {
   id: number;
   need_live_num: number;
-  reward: Reward[];
+  reward: number[];
 }
 
 // 完整的数据结构
