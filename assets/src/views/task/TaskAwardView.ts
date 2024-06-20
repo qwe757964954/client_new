@@ -38,7 +38,9 @@ export class TaskAwardView extends BaseView {
                 const box_data:BoxWeekData = weekly_box[index];
                 let item:Node = this.award_scroll.getItemByListId(index);
                 let item_sript:TaskAwardItem = item.getComponent(TaskAwardItem);
-                item_sript.changeBoxAni("idle_empty",index,true);
+                if(isValid(box_data) && box_data.status === TaskStatusType.RewardClaimed){
+                    item_sript.changeBoxAni("idle_empty",index,true);
+                }
             }
         });
         

@@ -100,6 +100,7 @@ export class WeekTaskView extends BaseView {
     }
     onChallengeBoxRewardResponse(data:any){
         console.log("onChallengeBoxRewardResponse",data);
+        TkServer.reqUserWeekTask();
     }
     onUserWeekTaskChangeResponse(data:any){
         console.log("onUserWeekTaskChangeResponse",data);
