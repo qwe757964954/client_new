@@ -158,6 +158,61 @@ export class ViewsManager {
             }
         });
     }
+
+    public async showViewAsync(viewConfig: PrefabConfig): Promise<Node> {
+        if (this.isExistView(viewConfig)) {
+            console.log("显示界面 已存在", viewConfig.path);
+            return null; // 或者可以抛出异常
+        }
+    
+        console.log("显示界面 load", viewConfig.path);
+        let parent = this.getParentNode(viewConfig.zindex);
+    
+        // 更新加载状态
+        this._loadingPrefabMap[viewConfig.path] = (this._loadingPrefabMap[viewConfig.path] || 0) + 1;
+    
+        let tmpNode = new Node();
+        let tmpName = "tmp_" + viewConfig.path.replace("/", "_");
+        tmpNode.name = tmpName;
+        parent.addChild(tmpNode);
+    
+        try {
+            // 加载预制体
+            let node = await LoadManager.loadPrefab(viewConfig.path, parent);
+            console.log("显示界面", viewConfig.path);
+            node.name = viewConfig.path.replace("/", "_");
+    
+            // 更新加载状态
+            this._loadingPrefabMap[viewConfig.path]--;
+    
+            // 清理临时节点
+            let tmpNode = parent.getChildByName(tmpName);
+            if (tmpNode) {
+                tmpNode.destroy();
+            } else {
+                console.log("界面已经被移除", viewConfig.path);
+                node.destroy();
+                throw new Error(`界面已经被移除: ${viewConfig.path}`);
+            }
+    
+            return node;
+        } catch (error) {
+            console.log("显示界面 error", error);
+    
+            // 更新加载状态
+            this._loadingPrefabMap[viewConfig.path]--;
+    
+            // 清理临时节点
+            let tmpNode = parent.getChildByName(tmpName);
+            if (tmpNode) {
+                tmpNode.destroy();
+            }
+    
+            throw error;
+        }
+    }
+    
+
     // 关闭界面
     public closeView(viewConfig: PrefabConfig) {
         console.log("closeView", viewConfig.path);
