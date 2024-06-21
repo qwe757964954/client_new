@@ -1,0 +1,384 @@
+
+34huangyanrenma.png
+size: 2048,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+31PTRM_0
+  rotate: false
+  xy: 199, 2
+  size: 79, 75
+  orig: 81, 77
+  offset: 1, 1
+  index: -1
+31PTRM_1
+  rotate: true
+  xy: 1149, 431
+  size: 29, 14
+  orig: 31, 16
+  offset: 1, 1
+  index: -1
+31PTRM_12
+  rotate: false
+  xy: 870, 191
+  size: 86, 118
+  orig: 86, 118
+  offset: 0, 0
+  index: -1
+31PTRM_13
+  rotate: false
+  xy: 1514, 713
+  size: 41, 46
+  orig: 41, 46
+  offset: 0, 0
+  index: -1
+31PTRM_14
+  rotate: true
+  xy: 614, 418
+  size: 52, 60
+  orig: 54, 62
+  offset: 1, 1
+  index: -1
+31PTRM_49
+  rotate: false
+  xy: 1118, 368
+  size: 29, 92
+  orig: 29, 92
+  offset: 0, 0
+  index: -1
+31PTRM_50
+  rotate: false
+  xy: 616, 16
+  size: 86, 116
+  orig: 88, 118
+  offset: 1, 1
+  index: -1
+31PTRM_51
+  rotate: false
+  xy: 579, 510
+  size: 39, 77
+  orig: 39, 77
+  offset: 0, 0
+  index: -1
+31PTRM_52
+  rotate: false
+  xy: 1149, 402
+  size: 14, 27
+  orig: 16, 29
+  offset: 1, 1
+  index: -1
+31PTRM_53
+  rotate: true
+  xy: 1865, 597
+  size: 189, 157
+  orig: 189, 157
+  offset: 0, 0
+  index: -1
+31PTRM_56
+  rotate: true
+  xy: 431, 5
+  size: 37, 23
+  orig: 39, 25
+  offset: 1, 1
+  index: -1
+31PTRM_57
+  rotate: true
+  xy: 958, 188
+  size: 74, 135
+  orig: 83, 164
+  offset: 0, 15
+  index: -1
+31PTRM_59
+  rotate: true
+  xy: 456, 2
+  size: 36, 9
+  orig: 38, 11
+  offset: 1, 1
+  index: -1
+31PTRM_61
+  rotate: true
+  xy: 1717, 276
+  size: 72, 134
+  orig: 72, 134
+  offset: 0, 0
+  index: -1
+31PTRM_62
+  rotate: true
+  xy: 280, 2
+  size: 40, 149
+  orig: 40, 150
+  offset: 0, 1
+  index: -1
+31PTRM_63
+  rotate: true
+  xy: 1865, 541
+  size: 54, 149
+  orig: 54, 149
+  offset: 0, 0
+  index: -1
+31PTRM_64
+  rotate: false
+  xy: 1585, 358
+  size: 133, 94
+  orig: 133, 94
+  offset: 0, 0
+  index: -1
+31PTRM_66
+  rotate: true
+  xy: 2, 21
+  size: 56, 195
+  orig: 56, 195
+  offset: 0, 0
+  index: -1
+31PTRM_67
+  rotate: false
+  xy: 579, 421
+  size: 33, 87
+  orig: 33, 87
+  offset: 0, 0
+  index: -1
+31PTRM_8
+  rotate: true
+  xy: 704, 78
+  size: 58, 133
+  orig: 58, 133
+  offset: 0, 0
+  index: -1
+h/huo_00
+  rotate: true
+  xy: 1482, 291
+  size: 66, 96
+  orig: 70, 105
+  offset: 2, 3
+  index: -1
+h/huo_01
+  rotate: true
+  xy: 704, 7
+  size: 69, 105
+  orig: 70, 105
+  offset: 1, 0
+  index: -1
+h/huo_02
+  rotate: true
+  xy: 936, 116
+  size: 70, 89
+  orig: 70, 105
+  offset: 0, 2
+  index: -1
+h/huo_03
+  rotate: false
+  xy: 1027, 97
+  size: 62, 89
+  orig: 70, 105
+  offset: 4, 2
+  index: -1
+h/huo_04
+  rotate: true
+  xy: 844, 119
+  size: 70, 90
+  orig: 70, 105
+  offset: 0, 2
+  index: -1
+tx/075 MYNSZD E53225_27
+  rotate: true
+  xy: 1853, 466
+  size: 73, 143
+  orig: 960, 540
+  offset: 341, 397
+  index: -1
+tx/075 MYNSZD E53225_29
+  rotate: false
+  xy: 992, 462
+  size: 171, 294
+  orig: 960, 540
+  offset: 399, 122
+  index: -1
+tx/075 MYNSZD E53225_31
+  rotate: false
+  xy: 318, 589
+  size: 300, 433
+  orig: 960, 540
+  offset: 416, 107
+  index: -1
+tx/075 MYNSZD E53225_33
+  rotate: true
+  xy: 1165, 290
+  size: 214, 315
+  orig: 960, 540
+  offset: 430, 45
+  index: -1
+tx/075 MYNSZD E53225_35
+  rotate: false
+  xy: 2, 79
+  size: 295, 458
+  orig: 960, 540
+  offset: 333, 82
+  index: -1
+tx/075 MYNSZD E53225_37
+  rotate: true
+  xy: 620, 758
+  size: 264, 466
+  orig: 960, 540
+  offset: 370, 53
+  index: -1
+tx/075 MYNSZD E53225_39
+  rotate: true
+  xy: 1088, 761
+  size: 261, 467
+  orig: 960, 540
+  offset: 366, 41
+  index: -1
+tx/075 MYNSZD E53225_41
+  rotate: true
+  xy: 620, 472
+  size: 284, 370
+  orig: 960, 540
+  offset: 343, 36
+  index: -1
+tx/075 MYNSZD E53225_43
+  rotate: true
+  xy: 1557, 788
+  size: 234, 481
+  orig: 960, 540
+  offset: 387, 59
+  index: -1
+tx/075 MYNSZD E53225_45
+  rotate: false
+  xy: 2, 539
+  size: 314, 483
+  orig: 960, 540
+  offset: 390, 57
+  index: -1
+tx/075 MYNSZD E53225_47
+  rotate: true
+  xy: 1165, 506
+  size: 253, 347
+  orig: 960, 540
+  offset: 386, 58
+  index: -1
+tx/075 MYNSZD E53225_49
+  rotate: true
+  xy: 1557, 556
+  size: 230, 306
+  orig: 960, 540
+  offset: 388, 48
+  index: -1
+tx/075 MYNSZD E53225_51
+  rotate: true
+  xy: 318, 379
+  size: 208, 259
+  orig: 960, 540
+  offset: 396, 60
+  index: -1
+tx/075 MYNSZD E53225_53
+  rotate: false
+  xy: 299, 134
+  size: 190, 243
+  orig: 960, 540
+  offset: 415, 76
+  index: -1
+tx/075 MYNSZD E53225_55
+  rotate: false
+  xy: 491, 134
+  size: 189, 243
+  orig: 960, 540
+  offset: 413, 76
+  index: -1
+tx/075 MYNSZD E53225_57
+  rotate: false
+  xy: 682, 228
+  size: 186, 242
+  orig: 960, 540
+  offset: 416, 77
+  index: -1
+ty
+  rotate: true
+  xy: 1514, 559
+  size: 68, 37
+  orig: 68, 37
+  offset: 0, 0
+  index: -1
+y/smoke0001
+  rotate: true
+  xy: 1514, 629
+  size: 82, 37
+  orig: 200, 150
+  offset: 118, 0
+  index: -1
+y/smoke0002
+  rotate: false
+  xy: 1580, 283
+  size: 135, 73
+  orig: 200, 150
+  offset: 64, 0
+  index: -1
+y/smoke0003
+  rotate: false
+  xy: 299, 44
+  size: 157, 88
+  orig: 200, 150
+  offset: 42, 0
+  index: -1
+y/smoke0004
+  rotate: false
+  xy: 682, 138
+  size: 160, 88
+  orig: 200, 150
+  offset: 39, 0
+  index: -1
+y/smoke0005
+  rotate: true
+  xy: 870, 311
+  size: 159, 91
+  orig: 200, 150
+  offset: 40, 0
+  index: -1
+y/smoke0006
+  rotate: false
+  xy: 458, 40
+  size: 156, 92
+  orig: 200, 150
+  offset: 43, 0
+  index: -1
+y/smoke0007
+  rotate: false
+  xy: 963, 363
+  size: 153, 97
+  orig: 200, 150
+  offset: 46, 0
+  index: -1
+y/smoke0008
+  rotate: false
+  xy: 963, 264
+  size: 152, 97
+  orig: 200, 150
+  offset: 47, 0
+  index: -1
+y/smoke0009
+  rotate: true
+  xy: 1482, 359
+  size: 145, 101
+  orig: 200, 150
+  offset: 55, 0
+  index: -1
+y/smoke0010
+  rotate: false
+  xy: 1585, 454
+  size: 136, 100
+  orig: 200, 150
+  offset: 63, 25
+  index: -1
+y/smoke0011
+  rotate: false
+  xy: 1723, 453
+  size: 128, 101
+  orig: 200, 150
+  offset: 71, 0
+  index: -1
+y/smoke0012
+  rotate: false
+  xy: 1720, 350
+  size: 122, 101
+  orig: 200, 150
+  offset: 77, 0
+  index: -1

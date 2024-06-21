@@ -1,0 +1,258 @@
+
+45heixiong.png
+size: 2048,2048
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+47BJX_46
+  rotate: true
+  xy: 1347, 932
+  size: 68, 86
+  orig: 68, 86
+  offset: 0, 0
+  index: -1
+47BJX_47
+  rotate: false
+  xy: 2014, 2007
+  size: 32, 39
+  orig: 34, 41
+  offset: 1, 1
+  index: -1
+47BJX_48
+  rotate: false
+  xy: 600, 212
+  size: 110, 84
+  orig: 112, 87
+  offset: 1, 1
+  index: -1
+47BJX_49
+  rotate: true
+  xy: 1025, 877
+  size: 20, 39
+  orig: 22, 42
+  offset: 1, 1
+  index: -1
+47BJX_50
+  rotate: false
+  xy: 849, 246
+  size: 45, 50
+  orig: 49, 51
+  offset: 3, 0
+  index: -1
+47BJX_51
+  rotate: false
+  xy: 906, 663
+  size: 84, 76
+  orig: 84, 76
+  offset: 0, 0
+  index: -1
+47BJX_52
+  rotate: true
+  xy: 921, 1356
+  size: 49, 75
+  orig: 49, 75
+  offset: 0, 0
+  index: -1
+47BJX_53
+  rotate: false
+  xy: 906, 871
+  size: 117, 129
+  orig: 117, 129
+  offset: 0, 0
+  index: -1
+47BJX_54
+  rotate: false
+  xy: 804, 232
+  size: 43, 64
+  orig: 43, 64
+  offset: 0, 0
+  index: -1
+47BJX_55
+  rotate: false
+  xy: 70, 8
+  size: 71, 90
+  orig: 71, 90
+  offset: 0, 0
+  index: -1
+47BJX_56
+  rotate: false
+  xy: 1921, 1681
+  size: 66, 45
+  orig: 66, 45
+  offset: 0, 0
+  index: -1
+h/huo_00
+  rotate: false
+  xy: 2, 2
+  size: 66, 96
+  orig: 70, 105
+  offset: 2, 3
+  index: -1
+h/huo_01
+  rotate: true
+  xy: 1149, 931
+  size: 69, 105
+  orig: 70, 105
+  offset: 1, 0
+  index: -1
+h/huo_02
+  rotate: true
+  xy: 1256, 930
+  size: 70, 89
+  orig: 70, 105
+  offset: 0, 2
+  index: -1
+h/huo_03
+  rotate: true
+  xy: 1435, 938
+  size: 62, 89
+  orig: 70, 105
+  offset: 4, 2
+  index: -1
+h/huo_04
+  rotate: true
+  xy: 712, 226
+  size: 70, 90
+  orig: 70, 105
+  offset: 0, 2
+  index: -1
+tx/eff_monicaattack3-in2_67
+  rotate: false
+  xy: 2, 1011
+  size: 917, 394
+  orig: 960, 540
+  offset: 18, 79
+  index: -1
+tx/eff_monicaattack3-in2_69
+  rotate: false
+  xy: 1002, 1672
+  size: 917, 374
+  orig: 960, 540
+  offset: 2, 83
+  index: -1
+tx/eff_monicaattack3-in2_71
+  rotate: false
+  xy: 2, 638
+  size: 902, 371
+  orig: 960, 540
+  offset: 0, 85
+  index: -1
+tx/eff_monicaattack3-in2_73
+  rotate: false
+  xy: 2, 298
+  size: 887, 338
+  orig: 960, 540
+  offset: 0, 106
+  index: -1
+tx/eff_monicaattack3-in2_75
+  rotate: false
+  xy: 1002, 1333
+  size: 872, 337
+  orig: 960, 540
+  offset: 0, 102
+  index: -1
+tx/eff_monicaattack3-in2_77
+  rotate: false
+  xy: 921, 1002
+  size: 859, 329
+  orig: 960, 540
+  offset: 0, 101
+  index: -1
+tx/eff_monicaattack3-in2_79
+  rotate: false
+  xy: 2, 1407
+  size: 998, 639
+  orig: 1920, 1080
+  offset: 424, 212
+  index: -1
+ty
+  rotate: false
+  xy: 1526, 963
+  size: 68, 37
+  orig: 68, 37
+  offset: 0, 0
+  index: -1
+y/smoke0001
+  rotate: true
+  xy: 1876, 1588
+  size: 82, 37
+  orig: 200, 150
+  offset: 118, 0
+  index: -1
+y/smoke0002
+  rotate: true
+  xy: 1782, 1034
+  size: 135, 73
+  orig: 200, 150
+  offset: 64, 0
+  index: -1
+y/smoke0003
+  rotate: true
+  xy: 1921, 1728
+  size: 157, 88
+  orig: 200, 150
+  offset: 42, 0
+  index: -1
+y/smoke0004
+  rotate: true
+  xy: 1782, 1171
+  size: 160, 88
+  orig: 200, 150
+  offset: 39, 0
+  index: -1
+y/smoke0005
+  rotate: true
+  xy: 1921, 1887
+  size: 159, 91
+  orig: 200, 150
+  offset: 40, 0
+  index: -1
+y/smoke0006
+  rotate: false
+  xy: 157, 204
+  size: 156, 92
+  orig: 200, 150
+  offset: 43, 0
+  index: -1
+y/smoke0007
+  rotate: false
+  xy: 2, 199
+  size: 153, 97
+  orig: 200, 150
+  offset: 46, 0
+  index: -1
+y/smoke0008
+  rotate: false
+  xy: 2, 100
+  size: 152, 97
+  orig: 200, 150
+  offset: 47, 0
+  index: -1
+y/smoke0009
+  rotate: false
+  xy: 315, 195
+  size: 145, 101
+  orig: 200, 150
+  offset: 55, 0
+  index: -1
+y/smoke0010
+  rotate: false
+  xy: 462, 196
+  size: 136, 100
+  orig: 200, 150
+  offset: 63, 25
+  index: -1
+y/smoke0011
+  rotate: true
+  xy: 906, 741
+  size: 128, 101
+  orig: 200, 150
+  offset: 71, 0
+  index: -1
+y/smoke0012
+  rotate: false
+  xy: 1025, 899
+  size: 122, 101
+  orig: 200, 150
+  offset: 77, 0
+  index: -1

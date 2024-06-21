@@ -195,6 +195,10 @@ export class BaseModeView extends BaseView {
 
     onTimer() {
         this._remainTime--;
+        if (this._remainTime <= 0) {
+            this.unschedule(this.onTimer);
+            this._remainTime = 0;
+        }
         if (WordSourceType.word_game == this._sourceType) {
             let levelData = this._levelData as AdvLevelConfig;
             levelData.progressData.time_remaining = this._remainTime;
