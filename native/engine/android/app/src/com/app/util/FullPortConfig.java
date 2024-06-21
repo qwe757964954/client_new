@@ -11,7 +11,7 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import android.chuangci.game.cn.R;
+import com.chuangci.newai.R;
 import com.idsmanager.doraemonlibrary.DoraemonManager;
 import com.idsmanager.doraemonlibrary.config.BaseUIConfig;
 import com.mobile.auth.gatewayauth.AuthRegisterViewConfig;
