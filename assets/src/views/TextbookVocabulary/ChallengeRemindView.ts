@@ -23,14 +23,12 @@ export class ChallengeRemindView extends BasePopup {
     public btn_blue: Node = null;
 
     private _callFunc:(isSure:boolean)=>void = null;
-
-    start() {
+    public initUI(): void {
         this.enableClickBlankToClose([this.node.getChildByName("frame")]).then(()=>{
             if(this._callFunc){
                 this._callFunc(false);
             }
         });
-        this.initEvent();
     }
     initEvent() {
         CCUtil.onTouch(this.btn_blue, this.onClickSure, this);

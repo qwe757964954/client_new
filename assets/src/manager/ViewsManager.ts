@@ -97,7 +97,7 @@ export class ViewsManager {
                 let node = instantiate(prefab);
                 nd.addChild(node);
                 CCUtil.addWidget(nd, { left: 0, right: 0, top: 0, bottom: 0 });
-                let scpt: BasePopup = node.getComponent(viewConfig.scpt_name);
+                let scpt: BasePopup = node.getComponent(viewConfig.componentName);
                 scpt.showAnim();
                 resolve(node); // Resolve the promise once all asynchronous operations are completed
             });

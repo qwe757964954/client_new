@@ -35,8 +35,7 @@ export class SettingPlanView extends BasePopup {
     private _isModify:boolean = false;
 
     private _totoal_level:number = 20;
-
-    start() {
+    initUI() {
         this.enableClickBlankToClose([this.node.getChildByName("small_dialog_bg")]).then(()=>{
             let data:PlanSaveData = {
                 left:`${this._levelSelect}`,
@@ -45,7 +44,6 @@ export class SettingPlanView extends BasePopup {
             }
             EventMgr.dispatch(EventType.Select_Word_Plan,data);
         });
-        this.initEvent();
     }
     initEvent() {
         CCUtil.onTouch(this.saveBtn, this.onClickSave, this);
@@ -131,9 +129,6 @@ export class SettingPlanView extends BasePopup {
             isSave:true
         }
         EventMgr.dispatch(EventType.Select_Word_Plan,data);
-    }
-    onDestroy(): void {
-        this.removeEvent();
     }
 }
 

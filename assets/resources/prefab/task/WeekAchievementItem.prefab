@@ -2669,6 +2669,15 @@
     "award_list": {
       "__id__": 59
     },
+    "btn_task_go": {
+      "__id__": 14
+    },
+    "challenge_btn": {
+      "__id__": 28
+    },
+    "has_challenge_btn": {
+      "__id__": 95
+    },
     "_id": ""
   },
   {
