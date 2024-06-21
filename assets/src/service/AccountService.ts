@@ -23,6 +23,7 @@ export default class AccountService {
         EventManager.on(InterfacePath.c2sAccountLogin, this.onAccountLogin.bind(this));
         EventManager.on(InterfacePath.c2sTokenLogin, this.onAccountLogin.bind(this));
         EventManager.on(InterfacePath.s2cAccountLogout, this.onAccountLogout.bind(this));
+        EventManager.on(InterfacePath.s2cItemUpdate, this.onItemUpdate.bind(this));
     }
 
     //账号初始化
