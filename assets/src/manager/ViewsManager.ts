@@ -78,31 +78,44 @@ export class ViewsManager {
             nodeScript.updateTitleName(titleBookName);
         })
      */
-
-    async showPopup(viewConfig: PrefabConfig, data?: any) {
+    async showPopup(viewConfig: PrefabConfig, data?: any): Promise<Node> {
+        // Retrieve or create the parent node based on z-index
         let parent = this.getParentNode(viewConfig.zindex);
         let nd_name = viewConfig.path.replace("/", "_");
         let nd: Node = ImgUtil.create_2DNode(nd_name);
         parent.addChild(nd);
+    
+        // Add blocking input events and set widget settings
         nd.addComponent(BlockInputEvents);
         CCUtil.addWidget(nd, { left: 0, right: 0, top: 0, bottom: 0 });
+    
+        // Ensure that the node is properly initialized
         await ImgUtil.create_PureNode(nd);
+    
         return new Promise((resolve, reject) => {
+            // Load the prefab and instantiate it
             ResLoader.instance.load(`prefab/${viewConfig.path}`, Prefab, (err, prefab) => {
                 if (err) {
                     console.error(err);
                     reject(err);
                     return;
                 }
+    
+                // Instantiate and add the prefab as a child node
                 let node = instantiate(prefab);
                 nd.addChild(node);
                 CCUtil.addWidget(nd, { left: 0, right: 0, top: 0, bottom: 0 });
+    
+                // Retrieve the component and execute the show animation
                 let scpt: BasePopup = node.getComponent(viewConfig.componentName);
                 scpt.showAnim();
-                resolve(node); // Resolve the promise once all asynchronous operations are completed
+    
+                // Resolve the promise with the node
+                resolve(node as Node); // Typecast to Node
             });
         });
     }
+    
 
     // 显示界面
     public showView(viewConfig: PrefabConfig, callBack?: Function) {
@@ -145,6 +158,61 @@ export class ViewsManager {
             }
         });
     }
+
+    public async showViewAsync(viewConfig: PrefabConfig): Promise<Node> {
+        if (this.isExistView(viewConfig)) {
+            console.log("显示界面 已存在", viewConfig.path);
+            return null; // 或者可以抛出异常
+        }
+    
+        console.log("显示界面 load", viewConfig.path);
+        let parent = this.getParentNode(viewConfig.zindex);
+    
+        // 更新加载状态
+        this._loadingPrefabMap[viewConfig.path] = (this._loadingPrefabMap[viewConfig.path] || 0) + 1;
+    
+        let tmpNode = new Node();
+        let tmpName = "tmp_" + viewConfig.path.replace("/", "_");
+        tmpNode.name = tmpName;
+        parent.addChild(tmpNode);
+    
+        try {
+            // 加载预制体
+            let node = await LoadManager.loadPrefab(viewConfig.path, parent);
+            console.log("显示界面", viewConfig.path);
+            node.name = viewConfig.path.replace("/", "_");
+    
+            // 更新加载状态
+            this._loadingPrefabMap[viewConfig.path]--;
+    
+            // 清理临时节点
+            let tmpNode = parent.getChildByName(tmpName);
+            if (tmpNode) {
+                tmpNode.destroy();
+            } else {
+                console.log("界面已经被移除", viewConfig.path);
+                node.destroy();
+                throw new Error(`界面已经被移除: ${viewConfig.path}`);
+            }
+    
+            return node;
+        } catch (error) {
+            console.log("显示界面 error", error);
+    
+            // 更新加载状态
+            this._loadingPrefabMap[viewConfig.path]--;
+    
+            // 清理临时节点
+            let tmpNode = parent.getChildByName(tmpName);
+            if (tmpNode) {
+                tmpNode.destroy();
+            }
+    
+            throw error;
+        }
+    }
+    
+
     // 关闭界面
     public closeView(viewConfig: PrefabConfig) {
         console.log("closeView", viewConfig.path);

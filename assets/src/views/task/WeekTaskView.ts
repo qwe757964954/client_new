@@ -1,6 +1,6 @@
 import { _decorator, Node } from 'cc';
 import { EventType } from '../../config/EventType';
-import { PrefabType } from '../../config/PrefabType';
+import { PrefabType, PrefabTypeEntry } from '../../config/PrefabType';
 import { ItemData } from '../../manager/DataMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { ChallengeBoxRewardData, ChallengeTaskReward, TaskBaseData, UserMainTaskData, UserWeekTaskData } from '../../models/TaskModel';
@@ -16,164 +16,224 @@ import { MainTaskView } from './MainTaskView';
 import { TaskAchievementView } from './TaskAchievementView';
 import { TaskAwardView } from './TaskAwardView';
 import { TKConfig } from './TaskConfig';
-import { WeeklyTask, WeeklyTaskBox } from './TaskInfo';
+import { WeeklyTaskBox } from './TaskInfo';
 import { TaskTabView } from './TaskTabView';
 import { WeeklyTaskView } from './WeeklyTaskView';
+
 const { ccclass, property } = _decorator;
 
 export enum TaskMenuType {
-    Achievement= 0,/**成就 */
-    Week= 1,/**每周 */
-    Main= 2,/**主线 */
-    Daily= 3/**每日 */
+    Achievement = 0, // 成就
+    Week = 1, // 每周
+    Main = 2, // 主线
+    Daily = 3 // 每日
 }
-
 
 @ccclass('WeekTaskView')
 export class WeekTaskView extends BaseView {
     protected _className = "WeekTaskView";
-    @property(Node)
-    public top_layout:Node = null;
-    @property(Node)
-    public content_layout:Node = null;
 
-    private _tabView:TaskTabView = null;
-    private _weekTask:WeeklyTaskView = null;
-    private _mainTask:MainTaskView = null;
-    private _dailyTask:DailyTaskView = null;
-    private _achievementView:TaskAchievementView = null;
-    private _taskAward:TaskAwardView = null;
-    
-    async initUI(){
+    @property(Node)
+    public top_layout: Node = null;
+
+    @property(Node)
+    public content_layout: Node = null;
+
+    private _tabView: TaskTabView = null;
+    private _weekTask: WeeklyTaskView = null;
+    private _mainTask: MainTaskView = null;
+    private _dailyTask: DailyTaskView = null;
+    private _achievementView: TaskAchievementView = null;
+    private _taskAward: TaskAwardView = null;
+
+    async initUI() {
         this.initNavTitle();
         this.initAmout();
         try {
             await TKConfig.loadTaskConfigInfo();
-            await Promise.all([
-                this.initRewardView(),
-                this.initTaskAchievementView(),
-                this.initWeekTaskView(),
-                this.initMainTaskView(),
-                this.initDailyTaskView(),
-                this.initTaskTabView(),
-            ]);
+            await this.initViews();
             console.log("Task configuration loaded:", TKConfig.taskConfigInfo);
         } catch (err) {
             console.error("Failed to initialize UI:", err);
         }
+        this.fetchInitialData();
+    }
+
+    private async initViews() {
+        await Promise.all([
+            this.initViewComponent(PrefabType.TaskAwardView, (node) => this._taskAward = node.getComponent(TaskAwardView), {
+                isAlignTop: true,
+                isAlignRight: true,
+                top: 123,
+                right: 78
+            }),
+            this.initViewComponent(PrefabType.TaskAchievementView, (node) => this._achievementView = node.getComponent(TaskAchievementView)),
+            this.initViewComponent(PrefabType.TaskView, (node) => {
+                this._weekTask = node.getComponent(WeeklyTaskView);
+                this._weekTask.node.active = false;
+            }),
+            this.initViewComponent(PrefabType.MainTaskView, (node) => {
+                this._mainTask = node.getComponent(MainTaskView);
+                this._mainTask.node.active = false;
+            }),
+            this.initViewComponent(PrefabType.DailyTaskView, (node) => {
+                this._dailyTask = node.getComponent(DailyTaskView);
+                this._dailyTask.updateData([]);
+                this._dailyTask.node.active = false;
+            }),
+            this.initViewComponent(PrefabType.TaskTabView, (node) => {
+                this._tabView = node.getComponent(TaskTabView);
+                this._tabView.setTabSelectClick(this.onTabSelect.bind(this));
+            }, {
+                isAlignTop: true,
+                isAlignLeft: true,
+                top: 129,
+                left: 50
+            })
+        ]);
+    }
+
+    private async initViewComponent(prefabType: PrefabTypeEntry, onComponentInit: (node: Node) => void, alignOptions?: object) {
+        let node = await this.loadAndInitPrefab(prefabType, this.node, alignOptions);
+        onComponentInit(node);
+    }
+
+    private fetchInitialData() {
         TkServer.reqUserMainTask();
         TkServer.reqUserWeekTask();
     }
-    /** 初始化模块事件 */
+
     protected onInitModuleEvent() {
         this.addModelListeners([
-            [NetNotify.Classification_UserMainTask, this.onUserMainTask],
-            [NetNotify.Classification_UserWeekTask, this.onUserWeekTask],
-            [EventType.Challenge_Task_Reward, this.onChallengeTaskReward],
-            [NetNotify.Classification_GetWeekTaskReward, this.onChallengeTaskRewardResponse],
-            [EventType.Box_Challenge_Reward, this.onChallengeBoxReward],
-            [NetNotify.Classification_GetBoxTaskReward, this.onChallengeBoxRewardResponse],
-            [NetNotify.Classification_UserWeekTaskChange, this.onUserWeekTaskChangeResponse],
-            [NetNotify.Classification_UserMainTaskChange, this.onUserMainTaskChangeResponse],
-            [NetNotify.Classification_CompleteWeekTask, this.onCompleteWeekTaskResponse],
-            [NetNotify.Classification_CompleteMainTask, this.onCompleteMainTaskResponse],
-            [NetNotify.Classification_CompleteBoxWeekTask, this.onCompleteBoxWeekTaskResponse],
+            [NetNotify.Classification_UserMainTask, this.onUserMainTask.bind(this)],
+            [NetNotify.Classification_UserWeekTask, this.onUserWeekTask.bind(this)],
+            [EventType.Challenge_Week_Task_Reward, this.onChallengeWeekTaskReward.bind(this)],
+            [EventType.Challenge_Main_Task_Reward, this.onChallengeMainTaskReward.bind(this)],
+            [NetNotify.Classification_GetWeekTaskReward, this.onChallengeWeekTaskRewardResponse.bind(this)],
+            [NetNotify.Classification_GetMainTaskReward, this.onChallengeMainTaskRewardResponse.bind(this)],
+            [EventType.Box_Challenge_Reward, this.onChallengeBoxReward.bind(this)],
+            [NetNotify.Classification_GetBoxTaskReward, this.onChallengeBoxRewardResponse.bind(this)],
+            [NetNotify.Classification_UserWeekTaskChange, this.onUserWeekTaskChangeResponse.bind(this)],
+            [NetNotify.Classification_UserMainTaskChange, this.onUserMainTaskChangeResponse.bind(this)],
+            [NetNotify.Classification_CompleteWeekTask, this.onCompleteWeekTaskResponse.bind(this)],
+            [NetNotify.Classification_CompleteMainTask, this.onCompleteMainTaskResponse.bind(this)],
+            [NetNotify.Classification_CompleteBoxWeekTask, this.onCompleteBoxWeekTaskResponse.bind(this)],
         ]);
     }
-    onChallengeTaskReward(data:TaskBaseData) {
-        TkServer.reqGetWeekTaskReward(data.task_id);
 
-        
-
-
+    onChallengeMainTaskReward(data: TaskBaseData) {
+        TkServer.reqGetMainTaskReward(data.task_id);
     }
-    onChallengeBoxReward(data:WeeklyTaskBox) {
+
+    onChallengeWeekTaskReward(data: TaskBaseData) {
+        TkServer.reqGetWeekTaskReward(data.task_id);
+    }
+
+    onChallengeBoxReward(data: WeeklyTaskBox) {
         TkServer.reqGetBoxTaskReward(data.id);
     }
+
     onUserMainTask(taskData: UserMainTaskData) {
-        console.log("onUserMainTask",taskData);
+        console.log("onUserMainTask", taskData);
         this._mainTask.updateData(taskData.data);
     }
+
     onUserWeekTask(taskData: UserWeekTaskData) {
-        console.log("onUserWeekTask",taskData);
+        console.log("onUserWeekTask", taskData);
         this._weekTask.updateData(taskData.weekly_task);
-        this._taskAward.updateTaskAwardProgress(taskData.weekly_live,taskData.weekly_box);
-
+        this._taskAward.updateTaskAwardProgress(taskData.weekly_live, taskData.weekly_box);
     }
-    onChallengeTaskRewardResponse(taskData:ChallengeTaskReward){
-        console.log("onChallengeTaskRewardResponse",taskData);
-        let task_info:WeeklyTask = TKConfig.taskConfigInfo.task_week.find(item => item.id === taskData.task_id);
-        let rewardArr:ItemData[] = TKConfig.convertRewardData(task_info.reward);
-        ViewsManager.instance.showPopup(PrefabType.CongratulationsView).then((node: Node)=>{
-            let nodeScript:CongratulationsView = node.getComponent(CongratulationsView);
-            nodeScript.updateRewardScroll(rewardArr);
-        })
-        TkServer.reqUserWeekTask();
 
-    }
-    onChallengeBoxRewardResponse(rewardData:ChallengeBoxRewardData){
-        console.log("onChallengeBoxRewardResponse",rewardData);
-        let box_info:WeeklyTaskBox = TKConfig.taskConfigInfo.task_week_box.find(item => item.id === rewardData.box_id);
-        let rewardArr:ItemData[] = TKConfig.convertRewardData(box_info.reward);
-        ViewsManager.instance.showPopup(PrefabType.CongratulationsView).then((node: Node)=>{
-            let nodeScript:CongratulationsView = node.getComponent(CongratulationsView);
-            nodeScript.updateRewardScroll(rewardArr);
-        })
-        
+    onChallengeWeekTaskRewardResponse(taskData: ChallengeTaskReward) {
+        console.log("onChallengeWeekTaskRewardResponse", taskData);
+        this.showRewardPopup(
+            TKConfig.taskConfigInfo.task_week,
+            taskData.task_id,
+            PrefabType.CongratulationsView
+        );
         TkServer.reqUserWeekTask();
     }
-    onUserWeekTaskChangeResponse(data:any){
-        console.log("onUserWeekTaskChangeResponse",data);
+
+    onChallengeMainTaskRewardResponse(taskData: ChallengeTaskReward) {
+        console.log("onChallengeMainTaskRewardResponse", taskData);
+        this.showRewardPopup(
+            TKConfig.taskConfigInfo.task_main,
+            taskData.task_id,
+            PrefabType.CongratulationsView
+        );
+        TkServer.reqUserMainTask();
     }
-    onUserMainTaskChangeResponse(data:any){
-        console.log("onUserMainTaskChangeResponse",data);
+
+    onChallengeBoxRewardResponse(rewardData: ChallengeBoxRewardData) {
+        console.log("onChallengeBoxRewardResponse", rewardData);
+        this.showRewardPopup(
+            TKConfig.taskConfigInfo.task_week_box,
+            rewardData.box_id,
+            PrefabType.CongratulationsView
+        );
+        TkServer.reqUserWeekTask();
     }
-    onCompleteWeekTaskResponse(data:any){
-        console.log("onCompleteWeekTaskResponse",data);
+
+    private async showRewardPopup<T extends { id: number, reward: any }>(taskList: T[], id: number, popupType: PrefabTypeEntry) {
+        let taskInfo = taskList.find(item => item.id === id);
+        if (taskInfo) {
+            let rewardArr: ItemData[] = TKConfig.convertRewardData(taskInfo.reward);
+            let node:Node = await ViewsManager.instance.showPopup(popupType);
+            let nodeScript: CongratulationsView = node.getComponent(CongratulationsView);
+            nodeScript.updateRewardScroll(rewardArr);
+        }
     }
-    onCompleteMainTaskResponse(data:any){
-        console.log("onCompleteMainTaskResponse",data);
+
+    onUserWeekTaskChangeResponse(data: any) {
+        console.log("onUserWeekTaskChangeResponse", data);
     }
-    onCompleteBoxWeekTaskResponse(data:any){
-        console.log("onCompleteBoxWeekTaskResponse",data);
+
+    onUserMainTaskChangeResponse(data: any) {
+        console.log("onUserMainTaskChangeResponse", data);
     }
-    
-    initEvent(){
-        
+
+    onCompleteWeekTaskResponse(data: any) {
+        console.log("onCompleteWeekTaskResponse", data);
     }
-    /**初始化导航栏 */
-    initNavTitle(){
-        ViewsManager.addNavigation(this.top_layout,0,0).then((navScript: NavTitleView) => {
-            navScript.updateNavigationProps(`每周任务`,()=>{
-                ViewsManager.instance.closeView(PrefabType.WeekTaskView);
-            });
-        });
+
+    onCompleteMainTaskResponse(data: any) {
+        console.log("onCompleteMainTaskResponse", data);
     }
-    /**初始化游戏数值 */
-    initAmout(){
-        ViewsManager.addAmout(this.top_layout,6.501,71.254).then((amoutScript: TopAmoutView) => {
-            let dataArr:AmoutItemData[] = [{type:AmoutType.Diamond,num:User.diamond},
-                {type:AmoutType.Coin,num:User.coin},
-                {type:AmoutType.Energy,num:User.stamina}];
-            amoutScript.loadAmoutData(dataArr);
+
+    onCompleteBoxWeekTaskResponse(data: any) {
+        console.log("onCompleteBoxWeekTaskResponse", data);
+    }
+
+    private initNavTitle() {
+        this.createNavigation("每周任务", () => {
+            ViewsManager.instance.closeView(PrefabType.WeekTaskView);
         });
     }
 
-    private async initTaskTabView() {
-        let node = await this.loadAndInitPrefab(PrefabType.TaskTabView, this.node, {
-            isAlignTop: true,
-            isAlignLeft: true,
-            top: 129,
-            left: 50
-        });
-        this._tabView = node.getComponent(TaskTabView);
-        this._tabView.setTabSelectClick((selectId: number) => {
-            this.hideAllContent();
-            this.clickMenuSelect(selectId);
-        });
+    private initAmout() {
+        this.createTopAmout([
+            { type: AmoutType.Diamond, num: User.diamond },
+            { type: AmoutType.Coin, num: User.coin },
+            { type: AmoutType.Energy, num: User.stamina }
+        ]);
     }
 
-    clickMenuSelect(menuType:TaskMenuType){
+    private async createNavigation(title: string, onBack: () => void) {
+        let navScript: NavTitleView = await ViewsManager.addNavigation(this.top_layout, 0, 0);
+        navScript.updateNavigationProps(title, onBack);
+    }
+
+    private async createTopAmout(dataArr: AmoutItemData[]) {
+        let amoutScript: TopAmoutView = await ViewsManager.addAmout(this.top_layout, 6.501, 71.254);
+        amoutScript.loadAmoutData(dataArr);
+    }
+
+    private onTabSelect(selectId: number) {
+        this.hideAllContent();
+        this.selectMenuType(selectId);
+    }
+
+    private selectMenuType(menuType: TaskMenuType) {
         switch (menuType) {
             case TaskMenuType.Achievement:
                 this._achievementView.node.active = true;
@@ -192,46 +252,10 @@ export class WeekTaskView extends BaseView {
         }
     }
 
-    hideAllContent(){
+    private hideAllContent() {
         this._weekTask.node.active = false;
         this._achievementView.node.active = false;
         this._mainTask.node.active = false;
         this._dailyTask.node.active = false;
     }
-    private async initWeekTaskView() {
-        let node = await this.loadAndInitPrefab(PrefabType.TaskView, this.node);
-        this._weekTask = node.getComponent(WeeklyTaskView);
-        this._weekTask.node.active = false;
-    }
-
-    private async initMainTaskView() {
-        let node = await this.loadAndInitPrefab(PrefabType.MainTaskView, this.node);
-        this._mainTask = node.getComponent(MainTaskView);
-        this._mainTask.node.active = false;
-    }
-    private async initDailyTaskView() {
-        let node = await this.loadAndInitPrefab(PrefabType.DailyTaskView, this.node);
-        this._dailyTask = node.getComponent(DailyTaskView);
-        this._dailyTask.updateData([]); // Assuming an empty array for initial data
-        this._dailyTask.node.active = false;
-    }
-    private async initTaskAchievementView(){
-        let node = await this.loadAndInitPrefab(PrefabType.TaskAchievementView, this.node)
-        this._achievementView = node.getComponent(TaskAchievementView);
-    }
-
-    private async initRewardView() {
-        let node = await this.loadAndInitPrefab(PrefabType.TaskAwardView, this.node, {
-            isAlignTop: true,
-            isAlignRight: true,
-            top: 123,
-            right: 78
-        })
-        this._taskAward = node.getComponent(TaskAwardView);
-    }
-    removeEvent(){
-        
-    }
 }
-
-

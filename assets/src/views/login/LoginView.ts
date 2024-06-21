@@ -14,6 +14,7 @@ import { InterfacePath } from '../../net/InterfacePath';
 import { NetMgr } from '../../net/NetManager';
 import { ServiceMgr } from '../../net/ServiceManager';
 import { BaseView } from '../../script/BaseView';
+import GlobalService from '../../service/GlobalService';
 import CCUtil from '../../util/CCUtil';
 import StorageUtil from '../../util/StorageUtil';
 import { TimerMgr } from '../../util/TimerMgr';
@@ -78,6 +79,7 @@ export class LoginView extends BaseView {
 
     start() {
         super.start();
+        GlobalService.getInstance();
         this.connectServer();
         this.plQRCode.setBackCall(this.onPlQrCodeBack.bind(this));
         this.plActivationCode.setCallFunc(this.onPlActivationCodeBack.bind(this), this.onActivationCodeActive.bind(this));

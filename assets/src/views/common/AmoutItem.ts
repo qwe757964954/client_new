@@ -10,12 +10,14 @@ export class AmoutItem extends ListItem {
     @property({ type: Node, tooltip: "iocn节点" })
     public aliveIcon: Node = null;
     @property({ type: Node, tooltip: "add iocn节点" })
-    public addIcon: Node = null;        
+    public addIcon: Node = null;
+    public amount_info:AmoutItemData = null;        
     start() {
 
     }
 
     updateItemProps(idx: number,itemInfo:AmoutItemData){
+        this.amount_info = itemInfo;
         this.updateAmout(itemInfo.num);
         this.updateIcon(idx,itemInfo);
     }

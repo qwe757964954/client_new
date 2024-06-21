@@ -98,6 +98,11 @@ export class MainScene extends BaseComponent {
         this.initEvent();
     }
 
+    protected onLoad(): void {
+        // let a;
+        // a.b.m = 1;
+    }
+
     protected update(dt: number): void {
         this._mapUICtl?.update(dt);
     }
@@ -161,6 +166,13 @@ export class MainScene extends BaseComponent {
 
         this.addEvent(EventType.BuildingBtnView_Close, this.onBuildingBtnViewClose.bind(this));
         this.addEvent(EventType.New_Building, this.onBuildLandClick.bind(this));
+
+        // TimerMgr.loop(() => {
+        //     console.log("加载音效开始");
+        //     LoadManager.loadRemote("wav/1.wav?t=" + ToolUtil.now()).then(() => {
+        //         console.log("加载音效成功");
+        //     });
+        // }, 2000);
     }
     // 移除事件
     removeEvent() {
@@ -282,6 +294,7 @@ export class MainScene extends BaseComponent {
         if (!role) return;
         console.log("onRoleDragStart", role);
         role.onDragStart();
+        this._mapUICtl.buildingRoleSort();
     }
     /** 角色拖动 */
     onRoleDrag(role: RoleBaseModel, dtX: number, dtY: number) {
@@ -295,12 +308,13 @@ export class MainScene extends BaseComponent {
         console.log("onRoleDragEnd", role);
         let pos = role.pos;
         let grid = this._mapUICtl.getGridByPos(pos.x, pos.y);
-        if (grid) {
+        if (grid && !grid.cloud) {
             role.onDragEnd(pos.x, pos.y);
         } else {
             ViewsManager.showTip(TextConfig.Role_Text2);
             role.onDragEndEx();
         }
+        this._mapUICtl.buildingRoleSort();
     }
     /**乌云点击 */
     onCloudClick(cloud: CloudModel) {

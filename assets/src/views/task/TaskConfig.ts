@@ -1,7 +1,7 @@
 import { JsonAsset } from "cc";
 import { ItemData } from "../../manager/DataMgr";
 import { ResLoader } from "../../manager/ResLoader";
-import { TaskData, WeeklyTask } from "./TaskInfo";
+import { Task, TaskData, WeeklyTask } from "./TaskInfo";
 
 //用户信息服务
 export default class _TaskConfig {
@@ -27,6 +27,10 @@ export default class _TaskConfig {
     }
     public getTaskFromWeek(taskId: number): WeeklyTask | undefined {
         return this._taskConfigInfo.task_week.find(task => task.id === taskId);
+    }
+
+    public getTaskFromMain(taskId: number): Task | undefined {
+        return this._taskConfigInfo.task_main.find(task => task.id === taskId);
     }
 
     public convertRewardData(rewardArray:number[]){

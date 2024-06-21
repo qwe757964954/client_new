@@ -1,3 +1,6 @@
+import { ItemID } from "../export/ItemConfig";
+import { ToolUtil } from "../util/ToolUtil";
+
 //事件类型
 export const EventType = {
     Socket_Connect: "SocketConnect",//socket连接成功
@@ -25,6 +28,7 @@ export const EventType = {
     Amethyst_Update: "AmethystUpdate",//紫晶石更新
     Ticket_Update: "TicketUpdate",//奖券更新
     Mood_Score_Update: "MoodUpdate",//心情分更新
+    Item_Update: "ItemUpdate_{0}",//物品更新（注意：参数为物品类型）
 
     Study_Page_Switching: "Study_Page_Switching",//学习页面切换
 
@@ -113,7 +117,11 @@ export const EventType = {
     Shop_GoodsList: "Shop_GoodsList", //获取商店商品列表
 
     Sub_Tab_Item_Click: "Sub_Tab_Item_Click",  //成就挑战子item点击
-    Challenge_Task_Reward: "Challenge_Task_Reward",  //领取任务奖励
+    Challenge_Week_Task_Reward: "Challenge_Week_Task_Reward",  //领取周任务奖励
+    Challenge_Main_Task_Reward: "Challenge_Main_Task_Reward",  //领取主线任务奖励
     Box_Challenge_Reward: "Box_Challenge_Reward",  //领取宝箱奖励
-    
+}
+
+export function itemEventKey(id: ItemID) {
+    return ToolUtil.replace(EventType.Item_Update, id);
 }

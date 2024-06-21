@@ -1,4 +1,4 @@
-import { Button, EventKeyboard, EventTouch, Input, KeyCode, Node, NodeEventType, SpriteFrame, UITransform, Vec3, Widget, director, gfx, input, isValid } from "cc";
+import { Button, EventKeyboard, EventTouch, Input, KeyCode, Layers, Node, NodeEventType, SpriteFrame, UITransform, Vec3, Widget, director, gfx, input, isValid } from "cc";
 import { SoundMgr } from "../manager/SoundMgr";
 
 export default class CCUtil {
@@ -186,5 +186,32 @@ export default class CCUtil {
         } else if (mustSet) {
             node.scale = scale;
         }
+    }
+    /**自适应填充图片 */
+    public static fillNodeScale(node: Node, maxWidth: number, maxHeight: number, mustSet: boolean = false) {
+        let scale = new Vec3(1, 1, 1);
+        let transform = node.getComponent(UITransform);
+        let scaleX = maxWidth / (transform.width * scale.x);
+        let scaleY = maxHeight / (transform.height * scale.y);
+        if (scaleX > 1.0 || scaleY > 1.0) {
+            let maxScale = Math.max(scaleX, scaleY);
+            scale.x *= maxScale;
+            scale.y *= maxScale;
+            node.scale = scale;
+        } else if (mustSet) {
+            node.scale = scale;
+        }
+    }
+    /**设置节点相机 */
+    public static setNodeCamera(node: Node, layer: Layers.Enum) {
+        node.layer = layer;
+        for (let i = 0; i < node.children.length; i++) {
+            let child = node.children[i];
+            CCUtil.setNodeCamera(child, layer);
+        }
+    }
+    /**设置节点相机2D_UI */
+    public static setNodeCamera2DUI(node: Node) {
+        CCUtil.setNodeCamera(node, Layers.Enum.UI_2D);
     }
 }

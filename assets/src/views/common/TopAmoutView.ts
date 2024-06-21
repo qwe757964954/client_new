@@ -7,58 +7,65 @@ import { AmoutItem } from './AmoutItem';
 const { ccclass, property } = _decorator;
 
 export enum AmoutType {
-    Coin= 0,/**金币 */
-    Diamond= 1,/**钻石 */
-    Energy= 2/**体力 */
+    Coin = 0, /** 金币 */
+    Diamond = 1, /** 钻石 */
+    Energy = 2 /** 体力 */
 }
 
 export interface AmoutItemData {
-    type:AmoutType,
-    num:number
+    type: AmoutType,
+    num: number
 }
 
 @ccclass('TopAmoutView')
 export class TopAmoutView extends BaseView {
 
     @property(List)
-    public acmoutScroll:List = null;
+    public amountScroll: List = null; // 使用更准确的命名
 
-    private _dataArr:AmoutItemData[] = [];
-    
+    private _dataArr: AmoutItemData[] = [];
+
     protected onInitModuleEvent() {
-		this.addModelListener(EventType.Diamond_Update,this.onUpdateDiamond);
-        this.addModelListener(EventType.Coin_Update,this.onUpdateCoin);
-        this.addModelListener(EventType.Stamina_Update,this.onUpdateStamina);
-	}
+        this.addModelListener(EventType.Diamond_Update, this.onUpdateAmount.bind(this, AmoutType.Diamond, User.diamond));
+        this.addModelListener(EventType.Coin_Update, this.onUpdateAmount.bind(this, AmoutType.Coin, User.coin));
+        this.addModelListener(EventType.Stamina_Update, this.onUpdateAmount.bind(this, AmoutType.Energy, User.stamina));
+    }
 
-    /**初始化数据 */
-    loadAmoutData(dataArr:AmoutItemData[]){
+    /** 初始化数据 */
+    loadAmoutData(dataArr: AmoutItemData[]) {
         this._dataArr = dataArr;
-        this.acmoutScroll.numItems = dataArr.length;
-        this.acmoutScroll.update();
-    }
-    /**加载数值item */
-    onListHorizontal(item:Node, idx:number){
-        let amountItemScript:AmoutItem = item.getComponent(AmoutItem);
-        let itemInfo:AmoutItemData = this._dataArr[idx];
-        amountItemScript.updateItemProps(idx,itemInfo);
+        this.amountScroll.numItems = dataArr.length;
+        this.amountScroll.update();
     }
 
-    onUpdateDiamond(){
-        let coinItem:Node = this.acmoutScroll.getItemByListId(AmoutType.Diamond)
-        let coinScript:AmoutItem = coinItem.getComponent(AmoutItem);
-        coinScript.updateAmout(User.diamond);
+    /** 加载数值item */
+    onListHorizontal(item: Node, idx: number) {
+        let amountItemScript: AmoutItem = item.getComponent(AmoutItem);
+        let itemInfo: AmoutItemData = this._dataArr[idx];
+        amountItemScript.updateItemProps(idx, itemInfo);
     }
-    onUpdateCoin(){
-        let coinItem:Node = this.acmoutScroll.getItemByListId(AmoutType.Coin)
-        let coinScript:AmoutItem = coinItem.getComponent(AmoutItem);
-        coinScript.updateAmout(User.coin);
-    }
-    onUpdateStamina(){
-        let coinItem:Node = this.acmoutScroll.getItemByListId(AmoutType.Energy)
-        let coinScript:AmoutItem = coinItem.getComponent(AmoutItem);
-        coinScript.updateAmout(User.stamina);
+
+    /** 更新对应类型的金额 */
+    private onUpdateAmount(type: AmoutType, newValue: number) {
+        if(type == AmoutType.Diamond){
+            newValue = User.diamond;
+        }
+        if(type == AmoutType.Coin){
+            newValue = User.coin;
+        }
+        if(type == AmoutType.Energy){
+            newValue = User.stamina;
+        }
+        for (let index = 0; index < this.amountScroll.numItems; index++) {
+            let amountItem: Node = this.amountScroll.getItemByListId(index);
+            if (amountItem) {
+                let amountItemScript: AmoutItem = amountItem.getComponent(AmoutItem);
+                if (amountItemScript.amount_info.type === type) {
+                    amountItemScript.updateAmout(newValue);
+                }
+            } else {
+                console.warn(`No amount item found at index ${index}`);
+            }
+        }
     }
 }
-
-

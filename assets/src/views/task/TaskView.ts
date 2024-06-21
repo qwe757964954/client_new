@@ -18,12 +18,18 @@ export class TaskView<T extends TaskBaseData> extends BaseView {
     }
     updateData(taskDatas:T[]){
         this._weekTask = taskDatas;
+        this.showTaskList();
+    }
+
+    showTaskList(){
+        this.taskList.numItems = this._weekTask.length;
+        this.taskList.selectedId = 0;
+        this.taskList.update();
     }
 
     showTask(){
         this.node.active = true;
-        this.taskList.numItems = this._weekTask.length;
-        this.taskList.selectedId = 0;
+        this.showTaskList();
     }
 
     onLoadTaskVertical(item:Node, idx:number){

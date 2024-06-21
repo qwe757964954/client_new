@@ -3,14 +3,16 @@ import { NetConfig } from '../../../config/NetConfig';
 import { PrefabType } from '../../../config/PrefabType';
 import GlobalConfig from '../../../GlobalConfig';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
-import { ViewsManager } from '../../../manager/ViewsManager';
+import { ViewsManager, ViewsMgr } from '../../../manager/ViewsManager';
 import { GameMode, SentenceData, WordsDetailData } from '../../../models/AdventureModel';
+import { s2cReviewPlanSubmit } from '../../../models/NetModel';
 import { UnitWordModel } from '../../../models/TextbookModel';
 import CCUtil from '../../../util/CCUtil';
 import { ToolUtil } from '../../../util/ToolUtil';
 import { WordDetailView } from '../../common/WordDetailView';
+import { ReviewEndView } from '../../reviewPlan/ReviewEndView';
 import { TransitionView } from '../common/TransitionView';
-import { BaseModeView } from './BaseModeView';
+import { BaseModeView, WordSourceType } from './BaseModeView';
 import { WordPracticeView } from './WordPracticeView';
 const { ccclass, property } = _decorator;
 
@@ -89,6 +91,10 @@ export class WordMeaningView extends BaseModeView {
         this.initWordDetail(this._rightWordData);
         this.randomOption(this._rightWordData);
         this.playWordSound();
+
+        if (WordSourceType.review == this._sourceType) {
+            this.sentenceLabel.node.parent.active = false;
+        }
     }
 
     randomOption(rightWordData: any) {
@@ -178,7 +184,7 @@ export class WordMeaningView extends BaseModeView {
         resSymbol.active = true;
 
         let word = this._rightWordData.word;
-        this.onGameSubmit(word, isRight);
+        this.onGameSubmit(word, isRight, this._rightWordData, this._optionList[index].cn);
 
 
         if (isRight) {
@@ -232,6 +238,18 @@ export class WordMeaningView extends BaseModeView {
 
     protected modeOver(): void {
         console.log('词意模式完成');
+        if (WordSourceType.review == this._sourceType) {
+            let data = this._currentSubmitResponse as s2cReviewPlanSubmit;
+            if (0 == data.pass_flag) {
+                return;
+            }
+            ViewsMgr.showView(PrefabType.ReviewEndView, (node: Node) => {
+                let rewardList = ToolUtil.itemMapToList(data.award);
+                node.getComponent(ReviewEndView).init(this._levelData.souceType, rewardList);
+                this.node.destroy();
+            });
+            return;
+        }
         ViewsManager.instance.showView(PrefabType.TransitionView, (node: Node) => {
             let wordData = JSON.parse(JSON.stringify(this._wordsData));
             let levelData = JSON.parse(JSON.stringify(this._levelData));

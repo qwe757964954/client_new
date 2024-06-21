@@ -4,10 +4,9 @@ import { ViewsManager } from '../../../manager/ViewsManager';
 import { GameMode } from '../../../models/AdventureModel';
 import { UnitWordModel } from '../../../models/TextbookModel';
 import List from '../../../util/list/List';
-import { BaseModeView } from './BaseModeView';
-import { ExamItem } from './items/ExamItem';
-import { WordReportView } from './WordReportView';
+import { BaseModeView, WordSourceType } from './BaseModeView';
 import { ExamReportView } from './ExamReportView';
+import { ExamItem } from './items/ExamItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordExamView')
@@ -134,7 +133,7 @@ export class WordExamView extends BaseModeView {
                 }
                 this.monsterAttack().then(() => {
                     this.showCurrentWord();
-                    if (this._isAdventure) {
+                    if (WordSourceType.word_game == this._sourceType) {
                         this.checkResult();
                     }
                 });

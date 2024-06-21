@@ -56,7 +56,7 @@ export class RewardItem extends Component {
     }
 
     init(data: ItemData) {
-        console.log("RewardItem init data = ", data.id);
+        // console.log("RewardItem init data = ", data.id);
         this.loadShow(data.id);
         this.num.string = data.num.toString();
     }
@@ -64,7 +64,7 @@ export class RewardItem extends Component {
     loadShow(propID: ItemID) {
         if (!propID) return;
         let propInfo = DataMgr.getItemInfo(propID);
-        console.log("loadShow", propInfo);
+        // console.log("loadShow", propInfo);
         if (!propInfo) return;
         LoadManager.loadSprite(propInfo.png, this.img);
         if (this._type == RewardItemType.Normal) {

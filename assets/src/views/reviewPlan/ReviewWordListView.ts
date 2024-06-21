@@ -97,6 +97,7 @@ export class ReviewWordListView extends BaseComponent {
     }
     /**复习规划列表返回 */
     onRepReviewPlanList(data: s2cReviewPlanList): void {
+        console.log("复习规划列表返回", data);
         if (200 != data.code) {
             ViewsMgr.showAlert(data.msg);
             return;
@@ -110,6 +111,7 @@ export class ReviewWordListView extends BaseComponent {
                 this._data.push(info);
             }
             info.word = item.word;
+            info.mean = item.cn;
             info.next_review_time = item.next_review_time;
         });
         this.listView.numItems = this._data.length;

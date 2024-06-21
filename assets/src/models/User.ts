@@ -1,4 +1,5 @@
-import { EventType } from "../config/EventType";
+import { EventType, itemEventKey } from "../config/EventType";
+import { ItemID } from "../export/ItemConfig";
 import { EventMgr } from "../util/EventManager";
 /**登录类型 */
 export enum LoginType {
@@ -30,13 +31,14 @@ class UserModel {
     private _mobile: string;         // 手机号
     private _platType: number;       // 平台类型
     private _sysType: number;        // 系统类型
-
+    /**物品 */
     private _coin: number = 0;       // 金币
     private _diamond: number = 0;    // 钻石
     private _stamina: number = 0;     // 体力
     private _amethyst: number = 0;    // 紫晶石
     private _ticket: number = 0;      // 奖券
     private _moodScore: number = 0;   // 心情值
+    private _itemAry: { [key: number]: number } = {};// 物品列表
 
     public userID: number;   // 用户id
     public nick: string;     // 昵称
@@ -67,7 +69,6 @@ class UserModel {
     private _landList: number[] = [];// 地块列表（已有）
 
     private constructor() {
-
     }
 
     public resetData() {
@@ -82,6 +83,7 @@ class UserModel {
         this.petID = null;
         this.petLevel = null;
         this.petHasReward = false;
+        this._itemAry = [];
     }
 
     set account(account: string) {
@@ -187,6 +189,36 @@ class UserModel {
     }
     public get landList(): readonly number[] {
         return this._landList;
+    }
+
+    public getItem(id: ItemID): number {
+        if (this._itemAry.hasOwnProperty(id)) {
+            return this._itemAry[id];
+        }
+        return 0;
+    }
+    public setItem(id: ItemID, num: number) {
+        switch (id) {
+            case ItemID.coin:
+                User.coin = num;
+                break;
+            case ItemID.diamond:
+                User.diamond = num;
+                break;
+            case ItemID.stamina:
+                User.stamina = num;
+                break;
+            case ItemID.amethyst:
+                User.amethyst = num;
+                break;
+            case ItemID.ticket:
+                User.ticket = num;
+                break;
+            default:
+                break;
+        }
+        this._itemAry[id] = num;
+        EventMgr.emit(itemEventKey(id), num);
     }
 }
 
