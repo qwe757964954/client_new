@@ -43,9 +43,9 @@ export class SelectWordView extends BaseView {
         GlobalConfig.initResolutionRules();
         
     }
-    protected initUI(){
+    protected async initUI(){
         this.initNavTitle();
-        this.initTabContent();
+        await this.initTabContent();
         this.loadRightNav();
     }
     /** 初始化模块事件 */
@@ -136,7 +136,7 @@ export class SelectWordView extends BaseView {
     }
     /**初始化tab选项 */
     async initTabContent(){
-        let node = await this.loadAndInitPrefab(PrefabType.TaskAwardView, this.node, {
+        let node = await this.loadAndInitPrefab(PrefabType.TabTopView, this.node, {
             isAlignTop: true,
             isAlignHorizontalCenter: true,
             top: 117.027,
