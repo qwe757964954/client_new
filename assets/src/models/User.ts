@@ -30,7 +30,7 @@ class UserModel {
     private _mobile: string;         // 手机号
     private _platType: number;       // 平台类型
     private _sysType: number;        // 系统类型
-
+    /**物品 */
     private _coin: number = 0;       // 金币
     private _diamond: number = 0;    // 钻石
     private _stamina: number = 0;     // 体力
@@ -67,7 +67,6 @@ class UserModel {
     private _landList: number[] = [];// 地块列表（已有）
 
     private constructor() {
-
     }
 
     public resetData() {

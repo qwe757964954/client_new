@@ -99,6 +99,10 @@ export const TextConfig = {
 
     ReviewPlan_Study: "已学单词:{0}",
     ReviewPlan_Review: "已复习单词:{0}",
+    ReviewPlan_Null: "今日没有需要复习的单词",
+    ReviewPlan_End: "完成本组复习,当前还剩余{0}词未复习\n继续加油吧~",
+    ReviewPlan_End2: "恭喜完成今日所有教材单词的复习规划\n继续加油吧~",
+    ReviewPlan_End3: "恭喜完成今日所有单词大冒险的复习规划\n继续加油吧~",
 
     PetInteraction_Tip: "互动次数不足",
     PetUpgrade_Tip: "升级成功",

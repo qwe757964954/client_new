@@ -1,5 +1,6 @@
 /***************************************HTTP**********************************/
 
+import { ItemData } from "../manager/DataMgr";
 import { InterfacePath } from "../net/InterfacePath";
 
 //公告检测
@@ -104,6 +105,11 @@ export class s2cAccountLogin extends BaseRepPacket {
     user_id: number;//用户id
     token: string;//token
     detail: s2cAccountLoginDetail;
+}
+/**物品更新 */
+export class s2cItemUpdate {
+    user_id: number;//用户id
+    detail: { [key: number]: number };//物品列表
 }
 /**建筑生产信息 */
 export class s2cBuildingProduceInfo {
@@ -217,8 +223,8 @@ export class s2cBuildingProduceDelete extends BaseRepPacket {
     id: number;//建筑唯一索引id
     remaining_infos: s2cBuildingProduceInfo[];//生产信息
 }
-/**建筑生产物品 */
-export class s2cProductItem {
+/**奖励物品 */
+export class s2cRewardItem {
     coin: number;//金币
     diamond: number;//钻石
 }
@@ -231,7 +237,7 @@ export class c2sBuildingProduceGet {
 /**建筑生产领取返回 */
 export class s2cBuildingProduceGet extends BaseRepPacket {
     id: number;//建筑唯一索引id
-    product_items: s2cProductItem[];//生产物品
+    product_items: s2cRewardItem[];//生产物品
     remaining_infos: s2cBuildingProduceInfo[];//生产信息
 }
 /**乌云解锁 */
@@ -251,7 +257,7 @@ export class c2sCloudUnlockGet {
 /**乌云解锁获取返回 */
 export class s2cCloudUnlockGet extends BaseRepPacket {
     cloud_dict: { [key: string]: number };//乌云字典
-    award_items: s2cProductItem[];//奖励物品
+    award_items: s2cRewardItem[];//奖励物品
 }
 
 /**复习规划 */
@@ -285,6 +291,59 @@ export class s2cReviewPlanList extends BaseRepPacket {
     today_timestamp: number;//今日时间戳
     need_review_list: s2cReviewPlanListInfo[];//复习规划列表
 }
+/**复习规划抽奖 */
+export class c2sReviewPlanDraw {
+    command_id: string = InterfacePath.c2sReviewPlanDraw;
+    kind: number;//抽奖类型 1表示单抽 2表示十连抽
+}
+/**复习规划抽奖返回 */
+export class s2cReviewPlanDraw extends BaseRepPacket {
+    data: { [key: number]: number }[];//奖励
+}
+/**复习规划状态与单词列表 */
+export class c2sReviewPlanStatus {
+    command_id: string = InterfacePath.c2sReviewPlanStatus;
+    source: number;//来源 2表示单词大冒险 1表示教材单词
+}
+/**复习规划单词信息 */
+export class s2cReviewPlanWordInfo {
+    wp_id: string;//复习计划id
+    w_id: string;//单词id
+    word: string;//单词
+    cn: string;//中文解释
+    symbol: string;//音标 英标
+    symbolus: string;//音标 美标
+}
+/**复习规划状态与单词列表返回 */
+export class s2cReviewPlanStatus extends BaseRepPacket {
+    ws_id: string;//单词复习的状态数据id
+    pass_num: number;//已通过单词数
+    word_num: number;//复习过单词数
+    need_review_num: number;//今日还需要复习单词数
+    review_wp_list: s2cReviewPlanWordInfo[];//复习单词列表
+    error_wp_info: { [key: string]: number };//错题单词列表
+    review_wp_ids: string[];//已复习过单词列表
+}
+/**复习规划单词提交与结算 */
+export class c2sReviewPlanSubmit {
+    command_id: string = InterfacePath.c2sReviewPlanSubmit;
+    ws_id: string;//单词复习的状态数据id
+    wp_id: string;//复习计划id
+    word: string;//单词
+    answer: string;//答案
+    status: number;//1表示正确 2表示错误
+    cost_time: number;//耗时毫秒
+}
+/**复习规划单词提交与结算返回 */
+export class s2cReviewPlanSubmit extends BaseRepPacket {
+    pass_flag: number;//是否通过 1表示通过 0表示未通过
+    pass_num: number;//已通过单词数
+    award: s2cRewardItem[];//奖励
+}
+/**复习规划更新 */
+export class c2sReviewPlanUpdate {
+    command_id: string = InterfacePath.c2sReviewPlanUpdate;
+}
 /**宠物信息 */
 export class c2sPetInfo {
     command_id: string = InterfacePath.c2sPetInfo;
@@ -296,7 +355,7 @@ export class s2cPetInfo {
     mood: number;//心情分
     intimacy: number;//亲密度
     daily_counts: number[];//每日互动次数
-    explore_award: boolean;//是否有探索奖励
+    has_reward: boolean;//是否有探索奖励
     next_update_second: number;//下次心情状态和亲密度更新时间
     next_explore_second: number;//下次探索奖励更新时间
 }
@@ -327,7 +386,7 @@ export class c2sPetGetReward {
 }
 /**领取探索奖励返回 */
 export class s2cPetGetReward extends BaseRepPacket {
-    explore_award: s2cProductItem[];//奖励信息
+    explore_award: ItemData[];//奖励信息
     next_explore_second: number;//下次探索奖励更新时间
 }
 

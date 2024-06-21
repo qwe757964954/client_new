@@ -4,6 +4,7 @@ import { AdvLevelConfig, BookLevelConfig } from '../../../manager/DataMgr';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { ViewsManager } from '../../../manager/ViewsManager';
 import { AdventureCollectWordModel, AdventureResult, AdventureResultModel, GameMode, WordsDetailData } from '../../../models/AdventureModel';
+import { s2cReviewPlanSubmit } from '../../../models/NetModel';
 import { PetModel } from '../../../models/PetModel';
 import { RoleBaseModel } from '../../../models/RoleBaseModel';
 import { GameSubmitModel, GameSubmitResponse, ReqCollectWord, UnitWordModel } from '../../../models/TextbookModel';
@@ -18,6 +19,12 @@ import { ToolUtil } from '../../../util/ToolUtil';
 import { SmallMonsterModel } from '../../common/SmallMonsterModel';
 import { MonsterModel } from '../common/MonsterModel';
 const { ccclass, property } = _decorator;
+
+export enum WordSourceType {
+    classification = 1,//教材单词
+    word_game = 2,//单词大冒险
+    review = 3,//复习规划
+}
 
 /**学习模式公共部分 */
 @ccclass('BaseModeView')
@@ -59,7 +66,8 @@ export class BaseModeView extends BaseView {
     protected _wordsData: UnitWordModel[] = null;
     protected _wordIndex: number = 0; //当前单词序号
     protected _detailData: WordsDetailData = null; //当前单词详情数据
-    protected _levelData: AdvLevelConfig | BookLevelConfig = null; //当前关卡配置
+    // protected _levelData: AdvLevelConfig | BookLevelConfig = null; //当前关卡配置
+    protected _levelData: any = null; //当前关卡配置
     protected _monster: Node = null; //主怪动画节点
     protected _errorNum: number = 0; //错误数量
     protected _rightNum: number = 0; //正确数量
@@ -67,12 +75,14 @@ export class BaseModeView extends BaseView {
 
     protected _getResultEveId: string; //获取结果
     protected _wordDetailEveId: string; //获取单词详情
+    protected _getReviewResultEveId: string; //获取复习规划结果
 
     private _upResultSucce: boolean = false; //上报结果成功
-    protected _currentSubmitResponse: GameSubmitResponse | AdventureResult = null;
+    // protected _currentSubmitResponse: GameSubmitResponse | AdventureResult = null;
+    protected _currentSubmitResponse: any = null;
 
     protected gameMode: number = 0; //游戏模式
-    protected _isAdventure: boolean;
+    protected _sourceType: WordSourceType = null;//单词来源类型
     protected _remainTime: number = 0; //剩余时间
     protected _errorWords: any = {}; //错误单词
     protected _hpLevels = { 0: 0, 7: 1, 3: 2, 1: 3, 4: 4, 2: 0 }; //各模式对应的已扣除血量
@@ -87,10 +97,15 @@ export class BaseModeView extends BaseView {
     }
     updateTextbookWords(wordsdata: UnitWordModel[], levelData: any) {
         this._levelData = levelData;
-        let isAdventure = this._levelData.hasOwnProperty('bigId'); //是否是大冒险关卡
-        this._isAdventure = isAdventure;
+        if (null != this._levelData.source_type) {
+            this._sourceType = this._levelData.source_type;
+        } else {
+            let isAdventure = this._levelData.hasOwnProperty('bigId'); //是否是大冒险关卡
+            this._sourceType = isAdventure ? WordSourceType.word_game : WordSourceType.classification;
+        }
+
         /** 从关卡数据中获取单词学习到哪个单词*/
-        if (!isAdventure) {
+        if (WordSourceType.classification == this._sourceType) {
             let levelData = this._levelData as BookLevelConfig;
             this._wordIndex = levelData.word_num - 1;
             this._remainTime = Math.round(levelData.time_remaining);
@@ -117,7 +132,7 @@ export class BaseModeView extends BaseView {
                     wordsdata = uniqueWordList;
                 }
             }
-        } else {
+        } else if (WordSourceType.word_game == this._sourceType) {
             let levelData = this._levelData as AdvLevelConfig;
             let progressData = levelData.progressData;
             this._remainTime = Math.round(progressData.time_remaining);
@@ -151,6 +166,12 @@ export class BaseModeView extends BaseView {
                 wordsdata = uniqueWordList;
             }
             console.log("progressData", progressData);
+        } else if (WordSourceType.review == this._sourceType) {
+            this._wordIndex = this._levelData.word_num;
+            this._rightNum = this._levelData.pass_num;
+            this._errorNum = this._levelData.error_num;
+            this.topNode.active = false;
+            console.log("updateTextbookWords", this._levelData.ws_id, this._levelData);
         }
         this.timeLabel.string = "剩余时间:" + ToolUtil.secondsToTimeFormat(this._remainTime);
         if (this._remainTime > 0 && this.gameMode != GameMode.Exam) {
@@ -167,10 +188,10 @@ export class BaseModeView extends BaseView {
 
     onTimer() {
         this._remainTime--;
-        if (this._isAdventure) {
+        if (WordSourceType.word_game == this._sourceType) {
             let levelData = this._levelData as AdvLevelConfig;
             levelData.progressData.time_remaining = this._remainTime;
-        } else {
+        } else if (WordSourceType.classification == this._sourceType) {
             let levelData = this._levelData as BookLevelConfig;
             levelData.time_remaining = this._remainTime;
         }
@@ -192,6 +213,7 @@ export class BaseModeView extends BaseView {
     }
 
     async initRole() {
+        if (WordSourceType.review == this._sourceType) return;
         this._role = instantiate(this.roleModel);
         this.roleContainer.addChild(this._role);
         let roleModel = this._role.getComponent(RoleBaseModel);
@@ -207,7 +229,7 @@ export class BaseModeView extends BaseView {
     }
     async initMonster() {
         //单词大冒险关卡
-        if (this._levelData.hasOwnProperty('bigId')) {
+        if (WordSourceType.word_game == this._sourceType) {
             let lvData = this._levelData as AdvLevelConfig;
             this._monster = instantiate(this.monsterModel);
             this.monster.addChild(this._monster);
@@ -236,7 +258,7 @@ export class BaseModeView extends BaseView {
                 })
                 this._smallMonsters.push(monster);
             }
-        } else { //教材单词关卡
+        } else if (WordSourceType.classification == this._sourceType) { //教材单词关卡
             this._monster = instantiate(this.monsterModel);
             this.monster.addChild(this._monster);
             let scale = this._monster.getScale();
@@ -250,6 +272,14 @@ export class BaseModeView extends BaseView {
             let pass = levelData.word_num - levelData.error_num;
             let totalHp = this.gameMode == GameMode.Exam ? this._wordsData.length : this._wordsData.length * 5;
             monsterModel.setHp(this._wordsData.length * this._hpLevels[this.gameMode] + pass, totalHp);
+        } else if (WordSourceType.review == this._sourceType) { //复习规划
+            this._monster = instantiate(this.monsterModel);
+            this.monster.addChild(this._monster);
+            let scale = this._monster.getScale();
+            this._monster.scale = new Vec3(-scale.x, scale.y, 1);
+            let monsterModel = this._monster.getComponent(MonsterModel);
+            monsterModel.init("spine/TextbookVocabulary/" + "10018", true);
+            monsterModel.setHp(this._rightNum, this._wordsData.length - this._levelData.error_num);
         }
     }
 
@@ -269,26 +299,7 @@ export class BaseModeView extends BaseView {
     //上报结果
     reportResult() {
         console.log("上报结果");
-        let isAdventure = this._levelData.hasOwnProperty('bigId'); //是否是大冒险关卡
-        if (isAdventure) { //大冒险关卡
-            // let levelData = this._levelData as AdvLevelConfig;
-            // let costTime = Date.now() - this._costTime;
-            // ServiceMgr.studyService.submitAdventureResult(levelData.islandId, levelData.levelId, levelData.mapLevelData.micro_id, levelData.mapLevelData.current_mode, costTime);
-        } else {
-            //教材关卡
-            // let levelData: BookLevelConfig = this._levelData as BookLevelConfig;
-            // let data: ReportResultModel = {
-            //     type_name: levelData.type_name,
-            //     book_name: levelData.book_name,
-            //     grade: levelData.grade,
-            //     unit: levelData.unit,
-            //     game_mode: this.gameMode,
-            // }
-            // let data = { code: 200 };
-            // let levelData = this._levelData as BookLevelConfig;
-            // levelData.word_num = 1;
-            // EventMgr.dispatch(NetNotify.Classification_ReportResult, data);
-            // TBServer.reqReportResult(data);
+        if (WordSourceType.classification == this._sourceType) {
             this._upResultSucce = true;
         }
     }
@@ -298,9 +309,9 @@ export class BaseModeView extends BaseView {
     }
 
     //单个单词学习情况上报
-    onGameSubmit(word: string, isRight: boolean) {
+    onGameSubmit(word: string, isRight: boolean, wordData?: any, answer?: string) {
         /**单词上报仅限教材单词 */
-        if (this._levelData.hasOwnProperty('bigId')) {
+        if (WordSourceType.word_game == this._sourceType) {
             let levelData = this._levelData as AdvLevelConfig;
             let costTime = Date.now() - this._costTime;
             let params: AdventureResultModel = {
@@ -315,27 +326,34 @@ export class BaseModeView extends BaseView {
             ServiceMgr.studyService.submitAdventureResult(params);
             return;
         }
-        let levelData: BookLevelConfig = this._levelData as BookLevelConfig;
-        let costTime = Date.now() - this._costTime;
-        console.log("costTime.....", costTime, this._costTime);
-        let data: GameSubmitModel = {
-            book_id: levelData.book_id,
-            unit_id: levelData.unit_id,
-            game_mode: this.gameMode,
-            cost_time: costTime,
-            word: word,
-            small_id: levelData.small_id,
-            status: isRight ? 1 : 0
+        if (WordSourceType.classification == this._sourceType) {
+            let levelData: BookLevelConfig = this._levelData as BookLevelConfig;
+            let costTime = Date.now() - this._costTime;
+            console.log("costTime.....", costTime, this._costTime);
+            let data: GameSubmitModel = {
+                book_id: levelData.book_id,
+                unit_id: levelData.unit_id,
+                game_mode: this.gameMode,
+                cost_time: costTime,
+                word: word,
+                small_id: levelData.small_id,
+                status: isRight ? 1 : 0
+            }
+            TBServer.reqGameSubmit(data);
+            return;
         }
-        TBServer.reqGameSubmit(data);
+        if (WordSourceType.review == this._sourceType) {
+            let costTime = Date.now() - this._costTime;
+            ServiceMgr.studyService.reqReviewPlanSubmit(this._levelData.ws_id, wordData["wp_id"], word, answer, isRight ? 1 : 0, costTime);
+            return;
+        }
     }
 
     //精灵攻击
     attackMonster() {
         return new Promise((resolve, reject) => {
             let targetMonster: Node;
-            let isAdventure = this._levelData.hasOwnProperty('bigId'); //是否是大冒险关卡
-            if (isAdventure) {
+            if (WordSourceType.word_game == this._sourceType) {
                 targetMonster = this._rightNum == this._wordsData.length ? this._monster : this._smallMonsters[this._rightNum - 1];
                 if (!targetMonster)
                     targetMonster = this._monster;
@@ -345,7 +363,7 @@ export class BaseModeView extends BaseView {
             this.petAttackShow(targetMonster).then(() => {
                 let monsterModel = this._monster.getComponent(MonsterModel);
                 //大冒险关卡
-                if (isAdventure) {
+                if (WordSourceType.word_game == this._sourceType) {
                     if (this._rightNum == this._wordsData.length) { //最后一个单词攻击主怪
                         monsterModel.injury().then(() => {
                             resolve(true);
@@ -360,10 +378,15 @@ export class BaseModeView extends BaseView {
                     }
                     let totalHp = this.gameMode == GameMode.Exam ? this._wordsData.length : this._wordsData.length * 5;
                     monsterModel.setHp(this._wordsData.length * this._hpLevels[this.gameMode] + this._rightNum, totalHp);
-                } else {
+                } else if (WordSourceType.classification == this._sourceType) {
                     let totalHp = this.gameMode == GameMode.Exam ? this._wordsData.length : this._wordsData.length * 5;
                     let pass = this._wordIndex - this._errorNum;
                     monsterModel.setHp(this._wordsData.length * this._hpLevels[this.gameMode] + pass, totalHp);
+                    monsterModel.inHit().then(() => {
+                        resolve(true);
+                    });
+                } else if (WordSourceType.review == this._sourceType) {
+                    monsterModel.setHp(this._rightNum, this._wordsData.length - this._levelData.error_num);
                     monsterModel.inHit().then(() => {
                         resolve(true);
                     });
@@ -403,7 +426,7 @@ export class BaseModeView extends BaseView {
             let targetpos = transform.convertToNodeSpaceAR(targetTranform.convertToWorldSpaceAR(new Vec3(0, 0, 0)));
             let startPosx = targetpos.x + 100;
             tween(this._monster).to(0.5, { position: new Vec3(startPosx, targetpos.y, targetpos.z) }).call(() => {
-                let action = this._isAdventure ? "attack" : "atk1";
+                let action = (WordSourceType.word_game == this._sourceType) ? "attack" : "atk1";
                 this._monster.getComponent(MonsterModel).hit(action).then(() => {
                     tween(this._monster).to(0.5, { position: monsterPos }).start();
                     this._pet.getComponent(PetModel).inHit().then(() => {
@@ -420,7 +443,7 @@ export class BaseModeView extends BaseView {
         if (data.code == 200) {
             this._currentSubmitResponse = data;
             this._upResultSucce = true;
-            if (data.pass_flag == 1 && this._isAdventure) { //大冒险关卡
+            if (data.pass_flag == 1 && WordSourceType.word_game == this._sourceType) { //大冒险关卡
                 let levelData = this._levelData as AdvLevelConfig;
                 let pointData: any = {};
                 pointData.big_id = levelData.mapLevelData.big_id;
@@ -432,6 +455,12 @@ export class BaseModeView extends BaseView {
             // this.checkResult();
         }
     }
+    /**获取复习规划上报结果 */
+    onRepReviewSubmit(data: s2cReviewPlanSubmit) {
+        console.log("onRepReviewSubmit", data);
+        this._currentSubmitResponse = data;
+        this._upResultSucce = true;
+    }
 
     //检测上报结果是否失败
     checkResult() {
@@ -440,12 +469,12 @@ export class BaseModeView extends BaseView {
 
     //获取单词详情
     initWordDetail(word: UnitWordModel) {
-        if (this._levelData.hasOwnProperty('bigId')) { //大冒险关卡
-            let levelData: AdvLevelConfig = this._levelData as AdvLevelConfig;
+        if (WordSourceType.word_game == this._sourceType) { //大冒险关卡
             ServiceMgr.studyService.getAdventureWord(word.w_id);
-        } else { //教材单词关卡
-            let levelData: BookLevelConfig = this._levelData as BookLevelConfig;
+        } else if (WordSourceType.classification == this._sourceType) { //教材单词关卡
             TBServer.reqWordDetail(word.w_id);
+        } else if (WordSourceType.review == this._sourceType) {
+            // TBServer.reqWordDetail(word.w_id);
         }
     }
 
@@ -477,6 +506,7 @@ export class BaseModeView extends BaseView {
         CCUtil.onTouch(this.btn_close.node, this.closeView, this);
         this._getResultEveId = EventManager.on(InterfacePath.Adventure_Result, this.onUpResult.bind(this));
         this._wordDetailEveId = EventManager.on(InterfacePath.Adventure_Word, this.onClassificationWord.bind(this));
+        this._getReviewResultEveId = EventMgr.on(InterfacePath.c2sReviewPlanSubmit, this.onRepReviewSubmit.bind(this));
         CCUtil.onBtnClick(this.btn_collect, () => {
             this.onClickCollectEvent();
         });
@@ -485,13 +515,13 @@ export class BaseModeView extends BaseView {
         CCUtil.offTouch(this.btn_close.node, this.closeView, this);
         EventManager.off(InterfacePath.Adventure_Result, this._getResultEveId);
         EventManager.off(InterfacePath.Adventure_Word, this._wordDetailEveId);
+        EventMgr.off(InterfacePath.c2sReviewPlanSubmit, this._getReviewResultEveId);
         this.unschedule(this.onTimer);
     }
 
     protected closeView() {
         ViewsManager.instance.showConfirm("确定退出学习吗?", () => {
-            let isAdventure = this._levelData.hasOwnProperty('bigId'); //是否是大冒险关卡
-            if (!isAdventure) {
+            if (WordSourceType.classification == this._sourceType) {
                 EventMgr.dispatch(EventType.Exit_Island_Level);
             }
             this.node.destroy();
@@ -512,17 +542,16 @@ export class BaseModeView extends BaseView {
     /**收藏单词 */
     onClickCollectEvent() {
         console.log("onClickCollectEvent.....");
-        let isAdventure = this._levelData.hasOwnProperty('bigId'); //是否是大冒险关卡
         let wordData = this._wordsData[this._wordIndex];
         console.log('word', wordData);
-        if (!isAdventure) { //教材关卡
+        if (WordSourceType.classification == this._sourceType) { //教材关卡
             let levelData = this._levelData as BookLevelConfig;
             let reqParam: ReqCollectWord = {
                 w_id: wordData.w_id,
                 action: this._detailData.collect_flag ? 0 : 1,
             }
             TBServer.reqCollectWord(reqParam);
-        } else {
+        } else if (WordSourceType.word_game == this._sourceType) {
             //大冒险关卡
             // let levelData = this._levelData as AdvLevelConfig;
             let reqParam: AdventureCollectWordModel = {

@@ -3,8 +3,9 @@ import { EventType } from "../config/EventType";
 import { KeyConfig } from "../config/KeyConfig";
 import { SceneType } from "../config/PrefabType";
 import { TextConfig } from "../config/TextConfig";
+import { ItemID } from "../export/ItemConfig";
 import { ViewsManager } from "../manager/ViewsManager";
-import { c2sAccountInit, c2sAccountLogin, c2sTokenLogin, s2cAccountLogin } from "../models/NetModel";
+import { c2sAccountInit, c2sAccountLogin, c2sTokenLogin, s2cAccountLogin, s2cItemUpdate } from "../models/NetModel";
 import { LoginType, User } from "../models/User";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
@@ -108,5 +109,27 @@ export default class AccountService {
             User.resetData();
             director.loadScene(SceneType.LoginScene);
         });
+    }
+    /**物品更新 */
+    onItemUpdate(data: s2cItemUpdate) {
+        console.log("AccountService onItemUpdate", data, User.userID);
+        if (data.user_id != User.userID) return;
+        let detail = data.detail;
+        if (!detail) return;
+        if (Object.prototype.hasOwnProperty.call(detail, ItemID.coin)) {
+            User.coin = detail[ItemID.coin];
+        }
+        if (Object.prototype.hasOwnProperty.call(detail, ItemID.diamond)) {
+            User.diamond = detail[ItemID.diamond];
+        }
+        if (Object.prototype.hasOwnProperty.call(detail, ItemID.stamina)) {
+            User.stamina = detail[ItemID.stamina];
+        }
+        if (Object.prototype.hasOwnProperty.call(detail, ItemID.amethyst)) {
+            User.amethyst = detail[ItemID.amethyst];
+        }
+        if (Object.prototype.hasOwnProperty.call(detail, ItemID.ticket)) {
+            User.ticket = detail[ItemID.ticket];
+        }
     }
 }

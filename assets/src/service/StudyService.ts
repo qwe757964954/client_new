@@ -2,7 +2,7 @@ import { isValid } from "cc";
 import { EventType } from "../config/EventType";
 import { ViewsManager } from "../manager/ViewsManager";
 import { AdventureCollectWordModel, AdventureResultModel, c2sAdventureCollectWord, c2sAdventureResult, c2sAdventureWord, c2sAdventureWordSentence, c2sAdvLevelProgress, c2sBossLevelSubmit, c2sBossLevelTopic, c2sIslandProgress, c2sIslandStatus, c2sTextbookWordGroup, c2sWordGameWords, c2sWordGroup, WordGameWordsData } from "../models/AdventureModel";
-import { c2sReviewPlan, c2sReviewPlanList } from "../models/NetModel";
+import { c2sReviewPlan, c2sReviewPlanDraw, c2sReviewPlanList, c2sReviewPlanStatus, c2sReviewPlanSubmit, c2sReviewPlanUpdate } from "../models/NetModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
 import { BaseControll } from "../script/BaseControll";
@@ -137,12 +137,41 @@ export default class StudyService extends BaseControll {
         let para: c2sReviewPlan = new c2sReviewPlan();
         NetMgr.sendMsg(para);
     }
+    /**复习规划更新 */
+    reqReviewPlanUpdate() {
+        let para: c2sReviewPlanUpdate = new c2sReviewPlanUpdate();
+        NetMgr.sendMsg(para);
+    }
     /**复习规划列表 */
     reqReviewPlanList(source: number, review_type: string) {
         console.log("reqReviewPlanList", source, review_type);
         let para: c2sReviewPlanList = new c2sReviewPlanList();
         para.source = source;
         para.review_type = review_type;
+        NetMgr.sendMsg(para);
+    }
+    /**复习规划抽奖 */
+    reqReviewPlanDraw(kind: number) {
+        let para: c2sReviewPlanDraw = new c2sReviewPlanDraw();
+        para.kind = kind;
+        NetMgr.sendMsg(para);
+    }
+    /**复习规划状态与单词列表 */
+    reqReviewPlanStatus(source: number) {
+        let para: c2sReviewPlanStatus = new c2sReviewPlanStatus();
+        para.source = source;
+        NetMgr.sendMsg(para);
+    }
+    /**复习规划单词提交与结算 */
+    reqReviewPlanSubmit(ws_id: string, wp_id: string, word: string, answer: string, status: number, cost_time: number) {
+        console.log("reqReviewPlanSubmit", ws_id, wp_id, word, answer, status, cost_time);
+        let para: c2sReviewPlanSubmit = new c2sReviewPlanSubmit();
+        para.ws_id = ws_id;
+        para.wp_id = wp_id;
+        para.word = word;
+        para.answer = answer;
+        para.status = status;
+        para.cost_time = cost_time;
         NetMgr.sendMsg(para);
     }
 

@@ -23,6 +23,11 @@ export class PetModel extends RoleBaseModel {
     public async init(roleID: number, level: number = 1, slots: number[] = []) {
         await super.init(roleID, level, slots, RoleType.sprite);
     }
+    public initSelf() {
+        let petID = User.petID;
+        if (petID < 100) petID += 100;
+        this.init(petID, User.petLevel);
+    }
 
     public hit() {
         return new Promise((resolve) => {
@@ -52,7 +57,7 @@ export class PetModel extends RoleBaseModel {
         this._giftTipViewLoad = true;
         LoadManager.loadPrefab(PrefabType.PetGiftTipView.path, this.giftNode).then((node: Node) => {
             CCUtil.onTouch(node, () => {
-               ServiceMgr.buildingService.reqPetGetReward(); 
+                ServiceMgr.buildingService.reqPetGetReward();
             });
         });
     }

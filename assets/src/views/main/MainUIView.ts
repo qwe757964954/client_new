@@ -10,6 +10,7 @@ import { NetMgr } from '../../net/NetManager';
 import CCUtil from '../../util/CCUtil';
 import EventManager from '../../util/EventManager';
 import { NoticeContentData } from '../notice/Brocast';
+import { ReviewPlanView } from '../reviewPlan/ReviewPlanView';
 import { MainScene } from './MainScene';
 const { ccclass, property } = _decorator;
 
@@ -117,7 +118,14 @@ export class MainUIView extends Component {
     }
     //复习计划点击
     public onClickReview() {
-        ViewsManager.instance.showView(PrefabType.ReviewPlanView);
+        ViewsManager.instance.showView(PrefabType.ReviewPlanView, (node: Node) => {
+            // this._mainScene.mapCamera.node.active = false;
+            // this._mainScene.mapUICamera.node.active = false;
+            node.getComponent(ReviewPlanView).init(() => {
+                // this._mainScene.mapCamera.node.active = true;
+                // this._mainScene.mapUICamera.node.active = true;
+            });
+        });
     }
     //翻译查词点击
     public onClickTranslate() {
@@ -146,6 +154,8 @@ export class MainUIView extends Component {
     //任务前往点击
     public onClickTaskGo() {
         console.log("onClickTaskGo");
+        // let a;
+        // a.b.m = 1;
         ViewsMgr.showTip(TextConfig.Function_Tip);
     }
     //学习点击

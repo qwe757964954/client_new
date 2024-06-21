@@ -214,7 +214,7 @@ export class BuildingProduceView extends BaseComponent {
         this._building.setProducts(data.remaining_infos);
         this.onUpdateQueue();
 
-        let list = ToolUtil.propMapToList(data.product_items);
+        let list = ToolUtil.itemMapToList(data.product_items);
         ViewsMgr.showRewards(list);
     }
     /**更新队列 */

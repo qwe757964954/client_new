@@ -828,7 +828,7 @@ export class MapUICtl extends MainBaseCtl {
         if (!building) return;
         building.setProducts(data.remaining_infos);
 
-        let list = ToolUtil.propMapToList(data.product_items);
+        let list = ToolUtil.itemMapToList(data.product_items);
         ViewsMgr.showRewards(list);
     }
     /**乌云解锁结果 */
@@ -866,7 +866,7 @@ export class MapUICtl extends MainBaseCtl {
                 this._cloudModelAry = this._cloudModelAry.filter(element => element != cloud);
             });
         }
-        let list = ToolUtil.propMapToList(data.award_items);
+        let list = ToolUtil.itemMapToList(data.award_items);
         ViewsMgr.showRewards(list);
     }
     /**宠物信息 */
@@ -879,7 +879,7 @@ export class MapUICtl extends MainBaseCtl {
         User.moodScore = petInfo.mood;
         User.petID = User.roleID;
         User.petLevel = petInfo.level;
-        User.petHasReward = petInfo.explore_award;
+        User.petHasReward = petInfo.has_reward;
 
         this.checkPetShow();
         this.setCheckPetTimer(petInfo.next_explore_second);
@@ -922,7 +922,7 @@ export class MapUICtl extends MainBaseCtl {
             ViewsMgr.showAlert(data.msg);
             return;
         }
-        ViewsMgr.showRewards(ToolUtil.propMapToList(data.explore_award));
+        ViewsMgr.showRewards(data.explore_award);
         User.petHasReward = false;
         this.checkPetShow();
         this.setCheckPetTimer(data.next_explore_second);
