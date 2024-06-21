@@ -96,6 +96,7 @@ export class ReviewPlanView extends BaseComponent {
     private _closeCall: Function = null;//关闭回调
 
     onLoad() {
+        this.init();
         this.initEvent();
     }
     protected onEnable(): void {
@@ -139,8 +140,7 @@ export class ReviewPlanView extends BaseComponent {
         this.clearEvent();
     }
     /**初始化 */
-    init(closeCall: Function) {
-        this._closeCall = closeCall;
+    init() {
         // this.labelTip1.node.active = false;
         // this.labelTip2.node.active = false;
         let scale = ToolUtil.getValue(GlobalConfig.WIN_DESIGN_RATE, 0.78, 1.5);
@@ -155,6 +155,10 @@ export class ReviewPlanView extends BaseComponent {
 
         this.sp.setCompleteListener(this.onAnimationComplete.bind(this));
         this.egg.setCompleteListener(this.onAnimationComplete.bind(this));
+    }
+    /**设置关闭回调 */
+    setCloseCall(closeCall: Function) {
+        this._closeCall = closeCall;
     }
     /**设置UI层显示 */
     setUIVisible(isShow: boolean) {
@@ -315,14 +319,19 @@ export class ReviewPlanView extends BaseComponent {
         }
         let wordNum = Math.min(data.review_wp_list.length, data.word_num);
         console.log("wordsdata", errorNum, wordsdata);
-        director.loadScene(SceneType.WorldMapScene, () => {
+        let showView = () => {
             ViewsMgr.showView(PrefabType.WordMeaningView, (node: Node) => {
                 node.getComponent(WordMeaningView).initData(wordsdata, {
                     source_type: WordSourceType.review,
                     ws_id: data.ws_id, pass_num: data.pass_num, word_num: wordNum, error_num: errorNum, souceType: this._souceType
                 });
             });
-        });
+        };
+        if (SceneType.WorldMapScene == director.getScene().name) {
+            showView();
+        } else {
+            director.loadScene(SceneType.WorldMapScene, showView);
+        }
     }
 }
 
