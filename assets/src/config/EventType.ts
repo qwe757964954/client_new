@@ -113,7 +113,8 @@ export const EventType = {
     Shop_GoodsList: "Shop_GoodsList", //获取商店商品列表
 
     Sub_Tab_Item_Click: "Sub_Tab_Item_Click",  //成就挑战子item点击
-    Challenge_Task_Reward: "Challenge_Task_Reward",  //领取任务奖励
+    Challenge_Week_Task_Reward: "Challenge_Week_Task_Reward",  //领取周任务奖励
+    Challenge_Main_Task_Reward: "Challenge_Main_Task_Reward",  //领取主线任务奖励
     Box_Challenge_Reward: "Box_Challenge_Reward",  //领取宝箱奖励
     
 }

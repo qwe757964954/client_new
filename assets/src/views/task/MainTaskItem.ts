@@ -1,25 +1,19 @@
-import { Label, Node, ProgressBar, _decorator } from 'cc';
+import { Label, Node, _decorator } from 'cc';
 import { EventType } from '../../config/EventType';
 import { TaskBaseData, TaskStatusType } from '../../models/TaskModel';
 import CCUtil from '../../util/CCUtil';
 import { EventMgr } from '../../util/EventManager';
 import ListItem from '../../util/list/ListItem';
 import { TKConfig } from './TaskConfig';
-import { WeeklyTask } from './TaskInfo';
+import { Task } from './TaskInfo';
 const { ccclass, property } = _decorator;
 
-@ccclass('WeekTaskItem')
-export class WeekTaskItem extends ListItem {
+@ccclass('MainTaskItem')
+export class MainTaskItem extends ListItem {
     @property(Label)
     public task_name:Label = null
     @property(Label)
     public desc_name:Label = null
-
-    @property(ProgressBar)
-    public task_progress:ProgressBar = null
-
-    @property(Label)
-    public task_progress_label:Label = null
 
     @property(Node)
     public task_go_btn:Node = null
@@ -37,17 +31,15 @@ export class WeekTaskItem extends ListItem {
 
     initEvent(){
         CCUtil.onBtnClick(this.challenge_btn,()=>{
-            EventMgr.dispatch(EventType.Challenge_Week_Task_Reward,this._data);
+            EventMgr.dispatch(EventType.Challenge_Main_Task_Reward,this._data);
         })
     }
 
     initPropsItem<T extends TaskBaseData>(data: T): void {
         this._data = data;
-        let weekTask:WeeklyTask = TKConfig.getTaskFromWeek(data.task_id);
+        let weekTask:Task = TKConfig.getTaskFromMain(data.task_id);
         this.desc_name.string = weekTask.name;
         this.clearAllBtns();
-        this.task_progress_label.string = `${data.process}/${weekTask.require_num}`;
-        this.task_progress.progress = data.process / weekTask.require_num;
         switch (data.status) {
             case TaskStatusType.Uncompleted:
                 this.task_go_btn.active = true;

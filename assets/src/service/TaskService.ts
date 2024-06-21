@@ -61,7 +61,7 @@ export default class _TaskService extends BaseControll {
         NetMgr.sendMsg(param);
     }
 
-    reqGetMainTaskReward(task_id:string){
+    reqGetMainTaskReward(task_id:number){
         let param: c2sGetMainTaskReward = new c2sGetMainTaskReward();
         param.task_id = task_id;
         NetMgr.sendMsg(param);
@@ -95,22 +95,27 @@ export default class _TaskService extends BaseControll {
         this.handleResponse(data, NetNotify.Classification_GetBoxTaskReward);
     }
     onUserWeekTaskChange(data: any) {
-        this.handleResponse(data, NetNotify.Classification_UserWeekTaskChange);
+        // this.handleResponse(data, NetNotify.Classification_UserWeekTaskChange);
+        EventMgr.dispatch(NetNotify.Classification_UserWeekTaskChange, data);
     }
     onUserMainTaskChange(data: any) {
-        this.handleResponse(data, NetNotify.Classification_UserMainTaskChange);
+        // this.handleResponse(data, NetNotify.Classification_UserMainTaskChange);
+        EventMgr.dispatch(NetNotify.Classification_UserMainTaskChange, data);
     }
 
     onCompleteWeekTask(data: any) {
-        this.handleResponse(data, NetNotify.Classification_CompleteWeekTask);
+        // this.handleResponse(data, NetNotify.Classification_CompleteWeekTask);
+        EventMgr.dispatch(NetNotify.Classification_CompleteWeekTask, data);
     }
 
     onCompleteMainTask(data: any) {
-        this.handleResponse(data, NetNotify.Classification_CompleteMainTask);
+        // this.handleResponse(data, NetNotify.Classification_CompleteMainTask);
+        EventMgr.dispatch(NetNotify.Classification_CompleteMainTask, data);
     }
 
     onCompleteBoxWeekTask(data: any) {
-        this.handleResponse(data, NetNotify.Classification_CompleteBoxWeekTask);
+        // this.handleResponse(data, NetNotify.Classification_CompleteBoxWeekTask);
+        EventMgr.dispatch(NetNotify.Classification_CompleteBoxWeekTask, data);
     }
 }
 

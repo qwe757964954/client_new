@@ -36,7 +36,6 @@ export class WeekAchievementItem extends ListItem {
     }
 
     updateAchievementProps(data: ArchConfig) {
-        console.log('updateAchievementProps...............', data);
         this.title_text.string = data.Info;
         this._propsData = [];
         for (let index = 0; index < data.Awards.length; index++) {

@@ -83,10 +83,6 @@ export class SelectWordView extends BaseView {
         });
     }
 
-    onAddPlan(){
-        
-    }
-
     onSchoolGradeList(data:SchoolBookListGradeItemData){
         this._schoolGradeListData = data;
         this.textBookScrollView.numItems = this._schoolGradeListData.data.length;
