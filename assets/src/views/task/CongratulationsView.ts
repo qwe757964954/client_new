@@ -38,7 +38,7 @@ export class CongratulationsView extends BasePopup {
         scrollView.getComponent(Widget).updateAlignment();
     }
 
-    loadRewardDataHorizontal(item: any, idx: number): void {
+    loadRewardDataHorizontal(item: Node, idx: number): void {
         let itemScript: RewardItem = item.getComponent(RewardItem);
         let node_trans = item.getComponent(UITransform);
         let scale = 92.4 / node_trans.height;

@@ -2898,8 +2898,8 @@
     "cyclic": false,
     "lackCenter": false,
     "lackSlide": false,
-    "_updateRate": 0,
-    "frameByFrameRenderNum": 0,
+    "_updateRate": 1,
+    "frameByFrameRenderNum": 1,
     "renderEvent": {
       "__id__": 122
     },
