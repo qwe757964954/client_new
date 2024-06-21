@@ -294,6 +294,7 @@ export class MainScene extends BaseComponent {
         if (!role) return;
         console.log("onRoleDragStart", role);
         role.onDragStart();
+        this._mapUICtl.buildingRoleSort();
     }
     /** 角色拖动 */
     onRoleDrag(role: RoleBaseModel, dtX: number, dtY: number) {
@@ -307,12 +308,13 @@ export class MainScene extends BaseComponent {
         console.log("onRoleDragEnd", role);
         let pos = role.pos;
         let grid = this._mapUICtl.getGridByPos(pos.x, pos.y);
-        if (grid) {
+        if (grid && !grid.cloud) {
             role.onDragEnd(pos.x, pos.y);
         } else {
             ViewsManager.showTip(TextConfig.Role_Text2);
             role.onDragEndEx();
         }
+        this._mapUICtl.buildingRoleSort();
     }
     /**乌云点击 */
     onCloudClick(cloud: CloudModel) {

@@ -317,13 +317,14 @@ export class ReviewPlanView extends BaseComponent {
             if (!word) continue;
             wordsdata.push(word);
         }
-        let wordNum = Math.min(data.review_wp_list.length, data.word_num);
+        let wordCount = data.review_wp_list.length;
+        let wordNum = Math.min(wordCount, data.word_num);
         console.log("wordsdata", errorNum, wordsdata);
         let showView = () => {
             ViewsMgr.showView(PrefabType.WordMeaningView, (node: Node) => {
                 node.getComponent(WordMeaningView).initData(wordsdata, {
                     source_type: WordSourceType.review,
-                    ws_id: data.ws_id, pass_num: data.pass_num, word_num: wordNum, error_num: errorNum, souceType: this._souceType
+                    ws_id: data.ws_id, pass_num: data.pass_num, word_num: wordNum, error_num: errorNum, souceType: this._souceType, wordCount: wordCount
                 });
             });
         };

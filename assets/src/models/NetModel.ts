@@ -110,7 +110,7 @@ export class s2cAccountLogin extends BaseRepPacket {
 /**物品更新 */
 export class s2cItemUpdate {
     user_id: number;//用户id
-    detail: { [key: number]: number };//物品列表
+    item_list: ItemData[];//物品列表
 }
 /**建筑生产信息 */
 export class s2cBuildingProduceInfo {
@@ -287,6 +287,7 @@ export class s2cReviewPlanListInfo {
     w_id: string;//单词id
     word: string;//单词
     next_review_time: number;//下次复习时间
+    cn: string;//中文释义
 }
 export class s2cReviewPlanList extends BaseRepPacket {
     today_timestamp: number;//今日时间戳

@@ -41,6 +41,7 @@ export class ReviewWordItem extends Component {
         RemoteSoundMgr.playWord(this._data.word);
         if (this._data.meanShow) return;
         this._data.meanShow = true;
+        this.labelMean.string = this._data.mean ? this._data.mean : "";
         this.labelDay.node.active = false;
         this.labelMean.node.active = true;
     }
@@ -50,7 +51,7 @@ export class ReviewWordItem extends Component {
         if (data.meanShow) {
             this.labelDay.node.active = false;
             this.labelMean.node.active = true;
-            // this.labelMean.string = data.mean ? data.mean : "";
+            this.labelMean.string = data.mean ? data.mean : "";
         } else {
             this.labelDay.node.active = true;
             this.labelMean.node.active = false;

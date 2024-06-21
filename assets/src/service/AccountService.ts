@@ -115,11 +115,12 @@ export default class AccountService {
     onItemUpdate(data: s2cItemUpdate) {
         console.log("AccountService onItemUpdate", data, User.userID);
         if (data.user_id != User.userID) return;
-        let detail = data.detail;
-        if (!detail) return;
-        for (const key in detail) {
-            User.setItem(Number(key), detail[key]);
-        }
+        this.itemUpdate(data.item_list);
+        // let detail = data.item_list;
+        // if (!detail) return;
+        // for (const key in detail) {
+        //     User.setItem(Number(key), detail[key]);
+        // }
     }
     /**物品更新 */
     itemUpdate(data: ItemData[]) {

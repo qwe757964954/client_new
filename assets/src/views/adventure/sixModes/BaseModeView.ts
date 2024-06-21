@@ -171,6 +171,7 @@ export class BaseModeView extends BaseView {
             this._rightNum = this._levelData.pass_num;
             this._errorNum = this._levelData.error_num;
             this.topNode.active = false;
+            this.btn_collect.active = false;
             console.log("updateTextbookWords", this._levelData.ws_id, this._levelData);
         }
         this.timeLabel.string = "剩余时间:" + ToolUtil.secondsToTimeFormat(this._remainTime);
@@ -279,7 +280,7 @@ export class BaseModeView extends BaseView {
             this._monster.scale = new Vec3(-scale.x, scale.y, 1);
             let monsterModel = this._monster.getComponent(MonsterModel);
             monsterModel.init("spine/TextbookVocabulary/" + "10018", true);
-            monsterModel.setHp(this._rightNum, this._wordsData.length - this._levelData.error_num);
+            monsterModel.setHp(this._rightNum, this._levelData.wordCount);
         }
     }
 
@@ -386,7 +387,8 @@ export class BaseModeView extends BaseView {
                         resolve(true);
                     });
                 } else if (WordSourceType.review == this._sourceType) {
-                    monsterModel.setHp(this._rightNum, this._wordsData.length - this._levelData.error_num);
+                    console.log("精灵攻击后血量", this._rightNum, this._wordsData.length, this._levelData.error_num);
+                    monsterModel.setHp(this._rightNum, this._levelData.wordCount);
                     monsterModel.inHit().then(() => {
                         resolve(true);
                     });
