@@ -31,7 +31,7 @@ export class MainTaskItem extends ListItem {
 
     initEvent(){
         CCUtil.onBtnClick(this.challenge_btn,()=>{
-            EventMgr.dispatch(EventType.Challenge_Task_Reward,this._data);
+            EventMgr.dispatch(EventType.Challenge_Main_Task_Reward,this._data);
         })
     }
 

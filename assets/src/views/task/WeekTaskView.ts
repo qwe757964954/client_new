@@ -16,7 +16,7 @@ import { MainTaskView } from './MainTaskView';
 import { TaskAchievementView } from './TaskAchievementView';
 import { TaskAwardView } from './TaskAwardView';
 import { TKConfig } from './TaskConfig';
-import { WeeklyTask, WeeklyTaskBox } from './TaskInfo';
+import { Task, WeeklyTask, WeeklyTaskBox } from './TaskInfo';
 import { TaskTabView } from './TaskTabView';
 import { WeeklyTaskView } from './WeeklyTaskView';
 const { ccclass, property } = _decorator;
@@ -69,8 +69,10 @@ export class WeekTaskView extends BaseView {
         this.addModelListeners([
             [NetNotify.Classification_UserMainTask, this.onUserMainTask],
             [NetNotify.Classification_UserWeekTask, this.onUserWeekTask],
-            [EventType.Challenge_Task_Reward, this.onChallengeTaskReward],
-            [NetNotify.Classification_GetWeekTaskReward, this.onChallengeTaskRewardResponse],
+            [EventType.Challenge_Week_Task_Reward, this.onChallengeWeekTaskReward],
+            [EventType.Challenge_Main_Task_Reward, this.onChallengeMainTaskReward],
+            [NetNotify.Classification_GetWeekTaskReward, this.onChallengeWeekTaskRewardResponse],
+            [NetNotify.Classification_GetMainTaskReward, this.onChallengeMainTaskRewardResponse],
             [EventType.Box_Challenge_Reward, this.onChallengeBoxReward],
             [NetNotify.Classification_GetBoxTaskReward, this.onChallengeBoxRewardResponse],
             [NetNotify.Classification_UserWeekTaskChange, this.onUserWeekTaskChangeResponse],
@@ -80,7 +82,10 @@ export class WeekTaskView extends BaseView {
             [NetNotify.Classification_CompleteBoxWeekTask, this.onCompleteBoxWeekTaskResponse],
         ]);
     }
-    onChallengeTaskReward(data:TaskBaseData) {
+    onChallengeMainTaskReward(data:TaskBaseData) {
+        TkServer.reqGetMainTaskReward(data.task_id);
+    }
+    onChallengeWeekTaskReward(data:TaskBaseData) {
         TkServer.reqGetWeekTaskReward(data.task_id);
     }
     onChallengeBoxReward(data:WeeklyTaskBox) {
@@ -96,8 +101,8 @@ export class WeekTaskView extends BaseView {
         this._taskAward.updateTaskAwardProgress(taskData.weekly_live,taskData.weekly_box);
 
     }
-    onChallengeTaskRewardResponse(taskData:ChallengeTaskReward){
-        console.log("onChallengeTaskRewardResponse",taskData);
+    onChallengeWeekTaskRewardResponse(taskData:ChallengeTaskReward){
+        console.log("onChallengeWeekTaskRewardResponse",taskData);
         let task_info:WeeklyTask = TKConfig.taskConfigInfo.task_week.find(item => item.id === taskData.task_id);
         let rewardArr:ItemData[] = TKConfig.convertRewardData(task_info.reward);
         ViewsManager.instance.showPopup(PrefabType.CongratulationsView).then((node: Node)=>{
@@ -107,6 +112,19 @@ export class WeekTaskView extends BaseView {
         TkServer.reqUserWeekTask();
 
     }
+
+    onChallengeMainTaskRewardResponse(taskData:ChallengeTaskReward){
+        console.log("onChallengeMainTaskRewardResponse",taskData);
+        let task_info:Task = TKConfig.taskConfigInfo.task_main.find(item => item.id === taskData.task_id);
+        let rewardArr:ItemData[] = TKConfig.convertRewardData(task_info.reward);
+        ViewsManager.instance.showPopup(PrefabType.CongratulationsView).then((node: Node)=>{
+            let nodeScript:CongratulationsView = node.getComponent(CongratulationsView);
+            nodeScript.updateRewardScroll(rewardArr);
+        })
+        TkServer.reqUserMainTask();
+
+    }
+
     onChallengeBoxRewardResponse(rewardData:ChallengeBoxRewardData){
         console.log("onChallengeBoxRewardResponse",rewardData);
         let box_info:WeeklyTaskBox = TKConfig.taskConfigInfo.task_week_box.find(item => item.id === rewardData.box_id);

@@ -37,7 +37,7 @@ export class WeekTaskItem extends ListItem {
 
     initEvent(){
         CCUtil.onBtnClick(this.challenge_btn,()=>{
-            EventMgr.dispatch(EventType.Challenge_Task_Reward,this._data);
+            EventMgr.dispatch(EventType.Challenge_Week_Task_Reward,this._data);
         })
     }
 

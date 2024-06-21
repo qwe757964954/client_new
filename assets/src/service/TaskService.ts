@@ -61,7 +61,7 @@ export default class _TaskService extends BaseControll {
         NetMgr.sendMsg(param);
     }
 
-    reqGetMainTaskReward(task_id:string){
+    reqGetMainTaskReward(task_id:number){
         let param: c2sGetMainTaskReward = new c2sGetMainTaskReward();
         param.task_id = task_id;
         NetMgr.sendMsg(param);
