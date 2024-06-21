@@ -16,9 +16,10 @@ export class BossWordItem extends Component {
     public word: string = "";
 
 
-    init(str: string) {
+    init(str: string, idx: number) {
         this.word = str;
-        this.lb_word.string = str;
+        let Opts = ["A", "B", "C"];
+        this.lb_word.string = Opts[idx] + ". " + str;
         this.sp_bg.spriteFrame = this.normalBg;
 
         this.scheduleOnce(() => {

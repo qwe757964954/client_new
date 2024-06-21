@@ -94,7 +94,7 @@ export class WordBossView extends BaseModeView {
 
         for (let i = 0; i < opts.length; i++) {
             let item = this.getSplitItem();
-            item.getComponent(BossWordItem).init(opts[i]);
+            item.getComponent(BossWordItem).init(opts[i], i);
             item.parent = this.itemNode;
             CCUtil.onTouch(item, this.onItemClick, this);
             this._items.push(item);

@@ -1,4 +1,4 @@
-import { _decorator, Component, instantiate, Node, Prefab, Sprite, SpriteFrame, Vec3 } from 'cc';
+import { _decorator, Component, instantiate, Node, Prefab, Sprite, SpriteFrame, UITransform, Vec3 } from 'cc';
 import { EventType } from '../../../config/EventType';
 import { MapLevelData, MicroListItem } from '../../../models/AdventureModel';
 import CCUtil from '../../../util/CCUtil';
@@ -72,6 +72,10 @@ export class IslandMap extends Component {
             this._bossNode.active = false;
         }
         this._bossNode = null;
+        let widths = [2190, 2145, 2145];
+        this.schedule(() => {
+            this.node.getComponent(UITransform).width = widths[this._islandId - 1];
+        }, 0.05);
 
         return posData;
     }
@@ -80,7 +84,7 @@ export class IslandMap extends Component {
         let points = WorldIsland.getMapPointsByBigId(this._islandId);
         let lastIdx = this._pointDatas.length - 1;
         let lastPoint = points[lastIdx];
-        bossNode.position = new Vec3(lastPoint[0] + 50, lastPoint[1] + 250, 0);
+        bossNode.position = new Vec3(lastPoint[0] + 100, lastPoint[1] + 150, 0);
         this.node.addChild(bossNode);
         bossNode.active = true;
         this._bossNode = bossNode;
