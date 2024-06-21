@@ -100,21 +100,21 @@ export class ToolUtil {
     static isArray(value: any): boolean {
         return Array.isArray(value);
     }
-    /**道具字典转换 */
-    static propMapToList(map: any): ItemData[] {
-        let list = [];
+    /**物品字典转换 */
+    static itemMapToList(map: any, list?: ItemData[]): ItemData[] {
+        if (!list) list = [];
         if (ToolUtil.isArray(map)) {
             map.forEach(element => {
-                ToolUtil.propMapToListEx(element, list);
+                ToolUtil.itemMapToListEx(element, list);
             });
         } else if (ToolUtil.isMap(map)) {
-            ToolUtil.propMapToListEx(map, list);
+            ToolUtil.itemMapToListEx(map, list);
         }
         return list;
     }
-    static propMapToListEx(map: any, list: ItemData[]) {
+    private static itemMapToListEx(map: any, list: ItemData[]) {
         if (ToolUtil.isArray(map)) {
-            list = list.concat(ToolUtil.propMapToList(map));
+            ToolUtil.itemMapToList(map, list);
             return;
         }
         if (!ToolUtil.isMap(map)) {
@@ -127,6 +127,11 @@ export class ToolUtil {
                     list.push({ id: ItemID.coin, num: value });
                 } else if ("diamond" == key) {
                     list.push({ id: ItemID.diamond, num: value });
+                } else {
+                    let id = Number(key);
+                    if (id > 0) {
+                        list.push({ id: id, num: value });
+                    }
                 }
             }
         }

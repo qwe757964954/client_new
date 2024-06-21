@@ -3,8 +3,9 @@ import { EventType } from "../config/EventType";
 import { KeyConfig } from "../config/KeyConfig";
 import { SceneType } from "../config/PrefabType";
 import { TextConfig } from "../config/TextConfig";
+import { ItemData } from "../manager/DataMgr";
 import { ViewsManager } from "../manager/ViewsManager";
-import { c2sAccountInit, c2sAccountLogin, c2sTokenLogin, s2cAccountLogin } from "../models/NetModel";
+import { c2sAccountInit, c2sAccountLogin, c2sTokenLogin, s2cAccountLogin, s2cItemUpdate } from "../models/NetModel";
 import { LoginType, User } from "../models/User";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
@@ -78,6 +79,7 @@ export default class AccountService {
                 User.exp = extra.exp;
                 User.nick = extra.nick_name;
             }
+            this.itemUpdate(data.detail?.item_list);
             if (LoginType.account == User.loginType) {
                 StorageUtil.saveData(KeyConfig.Last_Login_Account, User.account);
                 StorageUtil.saveData(KeyConfig.Last_Login_Pwd, User.password);
@@ -107,6 +109,23 @@ export default class AccountService {
             User.isAutoLogin = false;
             User.resetData();
             director.loadScene(SceneType.LoginScene);
+        });
+    }
+    /**物品更新 */
+    onItemUpdate(data: s2cItemUpdate) {
+        console.log("AccountService onItemUpdate", data, User.userID);
+        if (data.user_id != User.userID) return;
+        let detail = data.detail;
+        if (!detail) return;
+        for (const key in detail) {
+            User.setItem(Number(key), detail[key]);
+        }
+    }
+    /**物品更新 */
+    itemUpdate(data: ItemData[]) {
+        if (!data || data.length == 0) return;
+        data.forEach(item => {
+            User.setItem(item.id, item.num);
         });
     }
 }

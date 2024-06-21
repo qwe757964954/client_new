@@ -1,20 +1,41 @@
-import { _decorator, Label, Node, ProgressBar, sp } from 'cc';
-import { PrefabType } from '../../config/PrefabType';
+import { _decorator, director, Label, Node, ProgressBar, sp } from 'cc';
+import { PrefabType, SceneType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
-import { ItemID } from '../../export/ItemConfig';
 import GlobalConfig from '../../GlobalConfig';
+import { ItemData } from '../../manager/DataMgr';
 import { ViewsMgr } from '../../manager/ViewsManager';
-import { s2cReviewPlan } from '../../models/NetModel';
+import { s2cReviewPlan, s2cReviewPlanDraw, s2cReviewPlanStatus } from '../../models/NetModel';
+import { UnitWordModel } from '../../models/TextbookModel';
 import { InterfacePath } from '../../net/InterfacePath';
 import { ServiceMgr } from '../../net/ServiceManager';
 import { BaseComponent } from '../../script/BaseComponent';
 import CCUtil from '../../util/CCUtil';
 import { ToolUtil } from '../../util/ToolUtil';
+import { WordSourceType } from '../adventure/sixModes/BaseModeView';
+import { WordMeaningView } from '../adventure/sixModes/WordMeaningView';
 import { ReviewSourceType, ReviewWordListView } from './ReviewWordListView';
 const { ccclass, property } = _decorator;
 
 const spAnimNames = ["jingtai", "danchou", "shilian"];
 const eggAnimNames = ["idle1", "crush1", "idle2", "crush2", "idle3", "crush3", "idle4", "crush4", "idle5", "crush5"];
+
+enum ReviewPlanDrawType {
+    One = 1,//单抽
+    Ten = 2,//十连抽
+}
+
+export class ReviewWordModel implements UnitWordModel {
+    book_id: string = "";
+    cn: string = "";
+    phonic: string = "";
+    syllable: string = "";
+    symbol: string = "";
+    symbolus: string = "";
+    unit_id: string = "";
+    w_id: string = "";
+    word: string = "";
+    wp_id: string = "";
+}
 
 @ccclass('ReviewPlanView')
 export class ReviewPlanView extends BaseComponent {
@@ -68,17 +89,25 @@ export class ReviewPlanView extends BaseComponent {
     public progressBar2: ProgressBar = null;//复习进度
 
     private _canDraw: boolean = true;//是否可以抽奖
+    private _drawType: ReviewPlanDrawType = null;//抽奖类型
     private _eggID: number = 0;//蛋ID
+    private _drawRewards: ItemData[] = null;//抽奖奖励
+    private _souceType: ReviewSourceType = null;//来源类型
+    private _closeCall: Function = null;//关闭回调
 
-    start() {
+    onLoad() {
         this.init();
         this.initEvent();
     }
     protected onEnable(): void {
+        ServiceMgr.studyService.reqReviewPlanUpdate();
         ServiceMgr.studyService.reqReviewPlan();
     }
     protected onDestroy(): void {
         this.removeEvent();
+        // if (this._closeCall) {
+        //     this._closeCall();
+        // }
     }
     /**初始化事件 */
     initEvent() {
@@ -93,6 +122,8 @@ export class ReviewPlanView extends BaseComponent {
         CCUtil.onTouch(this.labelTip2, this.onLabelTip2Click, this);
 
         this.addEvent(InterfacePath.c2sReviewPlan, this.onRepReviewPlan.bind(this));
+        this.addEvent(InterfacePath.c2sReviewPlanDraw, this.onRepReviewPlanDraw.bind(this));
+        this.addEvent(InterfacePath.c2sReviewPlanStatus, this.onRepReviewPlanStatus.bind(this));
     }
     /**移除事件 */
     removeEvent() {
@@ -117,9 +148,17 @@ export class ReviewPlanView extends BaseComponent {
         if (scale < 1.0) CCUtil.setNodeScale(this.plRight, scale);
 
         this.egg.node.active = false;
+        this.btnReview1.active = false;
+        this.btnReview2.active = false;
+        this.progressBar1.progress = 0;
+        this.progressBar2.progress = 0;
 
         this.sp.setCompleteListener(this.onAnimationComplete.bind(this));
         this.egg.setCompleteListener(this.onAnimationComplete.bind(this));
+    }
+    /**设置关闭回调 */
+    setCloseCall(closeCall: Function) {
+        this._closeCall = closeCall;
     }
     /**设置UI层显示 */
     setUIVisible(isShow: boolean) {
@@ -136,16 +175,15 @@ export class ReviewPlanView extends BaseComponent {
     onBtnDrawClick() {
         if (!this._canDraw) return;
         this._canDraw = false;
-        this.sp.setAnimation(0, spAnimNames[1], false);
-        this.egg.node.active = false;
+        this._drawType = ReviewPlanDrawType.One;
+        ServiceMgr.studyService.reqReviewPlanDraw(this._drawType);
     }
     /**抽奖10次按钮 */
     onBtnDrawTimesClick() {
         if (!this._canDraw) return;
         this._canDraw = false;
-        this.sp.setAnimation(0, spAnimNames[2], false);
-        this.setUIVisible(false);
-        this.egg.node.active = false;
+        this._drawType = ReviewPlanDrawType.Ten;
+        ServiceMgr.studyService.reqReviewPlanDraw(this._drawType);
     }
     /**单词大冒险 今日复习按钮 */
     onBtnTodayReview1Click() {
@@ -155,7 +193,8 @@ export class ReviewPlanView extends BaseComponent {
     }
     /**单词大冒险 复习按钮 */
     onBtnReview1Click() {
-        ViewsMgr.showTip(TextConfig.Function_Tip);
+        this._souceType = ReviewSourceType.word_game;
+        ServiceMgr.studyService.reqReviewPlanStatus(ReviewSourceType.word_game);
     }
     /**单词大冒险  复习规划提示*/
     onLabelTip1Click() {
@@ -169,7 +208,13 @@ export class ReviewPlanView extends BaseComponent {
     }
     /**教材单词 复习按钮 */
     onBtnReview2Click() {
-        ViewsMgr.showTip(TextConfig.Function_Tip);
+        this._souceType = ReviewSourceType.classification;
+        ServiceMgr.studyService.reqReviewPlanStatus(ReviewSourceType.classification);
+        // ViewsMgr.showView(PrefabType.ReviewEndView, (node: Node) => {
+        //     let rewardList = [{ id: ItemID.coin, num: 10 }, { id: ItemID.diamond, num: 20 }];
+        //     node.getComponent(ReviewEndView).init(ReviewSourceType.classification, rewardList);
+        //     this.node.destroy();
+        // });
     }
     /**教材单词  复习规划提示*/
     onLabelTip2Click() {
@@ -185,14 +230,16 @@ export class ReviewPlanView extends BaseComponent {
             this.egg.setAnimation(0, eggAnimNames[this._eggID * 2 + 1], false);
         } else if (name == spAnimNames[2]) {
             console.log("十连抽动画结束");
-            ViewsMgr.showRewards([{ id: ItemID.coin, num: 10 }, { id: ItemID.diamond, num: 20 }], () => {
+            ViewsMgr.showRewards(this._drawRewards, () => {
                 this.sp.setAnimation(0, spAnimNames[0], false);
                 this.setUIVisible(true);
                 this._canDraw = true;
+                this._drawType = null;
             });
         } else if (name == eggAnimNames[this._eggID * 2 + 1]) {
             this._canDraw = true;
-            ViewsMgr.showRewards([{ id: ItemID.stamina, num: 1 }]);
+            this._drawType = null;
+            ViewsMgr.showRewards(this._drawRewards);
         }
     }
     /**复习规划返回 */
@@ -205,11 +252,85 @@ export class ReviewPlanView extends BaseComponent {
         if (info) {
             this.labelStudy1.string = ToolUtil.replace(TextConfig.ReviewPlan_Study, info.study_num);
             this.labelReview1.string = ToolUtil.replace(TextConfig.ReviewPlan_Review, info.review_num);
+            this.btnReview1.active = info.today_review_num < info.today_need_review_num;
+            if (info.study_num > 0) {
+                this.progressBar1.progress = info.review_num / info.study_num * 100;
+            }
         }
         info = data.classification;
         if (info) {
             this.labelStudy2.string = ToolUtil.replace(TextConfig.ReviewPlan_Study, info.study_num);
             this.labelReview2.string = ToolUtil.replace(TextConfig.ReviewPlan_Review, info.review_num);
+            this.btnReview2.active = info.today_review_num < info.today_need_review_num;
+            if (info.study_num > 0) {
+                this.progressBar1.progress = info.review_num / info.study_num * 100;
+            }
+        }
+    }
+    /**复习规划抽奖返回 */
+    onRepReviewPlanDraw(data: s2cReviewPlanDraw) {
+        if (200 != data.code) {
+            this._canDraw = true;
+            this._drawType = null;
+            ViewsMgr.showAlert(data.msg);
+            return;
+        }
+
+        this._drawRewards = ToolUtil.itemMapToList(data.data);
+        if (ReviewPlanDrawType.One == this._drawType) {
+            this.sp.setAnimation(0, spAnimNames[1], false);
+            this.egg.node.active = false;
+        } else if (ReviewPlanDrawType.Ten == this._drawType) {
+            this.sp.setAnimation(0, spAnimNames[2], false);
+            this.setUIVisible(false);
+            this.egg.node.active = false;
+        }
+    }
+    /**复习规划状态与单词列表 */
+    onRepReviewPlanStatus(data: s2cReviewPlanStatus) {
+        console.log("onRepReviewPlanStatus", data);
+        if (200 != data.code) {
+            ViewsMgr.showAlert(data.msg);
+            return;
+        }
+        if (!data.review_wp_list || data.review_wp_list.length == 0) {
+            ViewsMgr.showTip(TextConfig.ReviewPlan_Null);
+            return;
+        }
+
+        let wordsdata: ReviewWordModel[] = [];
+        data.review_wp_list.forEach((value) => {
+            let word: ReviewWordModel = new ReviewWordModel();
+            word.cn = value.cn;
+            word.w_id = value.w_id;
+            word.word = value.word;
+            word.wp_id = value.wp_id;
+            word.symbol = value.symbol;
+            word.symbolus = value.symbolus;
+            wordsdata.push(word);
+        });
+        let errorNum = 0;
+        for (const key in data.error_wp_info) {
+            const value = data.error_wp_info[key];
+            errorNum++;
+            let word = wordsdata.find(val => val.wp_id == key);
+            if (!word) continue;
+            wordsdata.push(word);
+        }
+        let wordNum = Math.min(data.review_wp_list.length, data.word_num);
+        console.log("wordsdata", errorNum, wordsdata);
+        let showView = () => {
+            ViewsMgr.showView(PrefabType.WordMeaningView, (node: Node) => {
+                node.getComponent(WordMeaningView).initData(wordsdata, {
+                    source_type: WordSourceType.review,
+                    ws_id: data.ws_id, pass_num: data.pass_num, word_num: wordNum, error_num: errorNum, souceType: this._souceType
+                });
+            });
+        };
+        if (SceneType.WorldMapScene == director.getScene().name) {
+            showView();
+        } else {
+            director.loadScene(SceneType.WorldMapScene, showView);
         }
     }
 }

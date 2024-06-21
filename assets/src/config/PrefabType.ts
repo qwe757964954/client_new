@@ -5,7 +5,6 @@ export const SceneType = {
     LoginScene: "LoginScene",
     MainScene: "MainScene",
     WorldMapScene: "WorldMapViewManager",
-    TextbookScene: "TextbookScene",
 }
 /**窗口层级 */
 export enum Hierarchy {
@@ -156,6 +155,7 @@ export const PrefabType: Record<string, PrefabTypeEntry> = {
     ReviewPlanView: { path: "reviewPlan/ReviewPlanView", zindex: Hierarchy.POPUPLAYER, tips: "复习规划" },
     ReviewAdjustPlanView: { path: "reviewPlan/ReviewAdjustPlanView", zindex: Hierarchy.POPUPLAYER, tips: "复习规划调整框" },
     ReviewWordListView: { path: "reviewPlan/ReviewWordListView", zindex: Hierarchy.POPUPLAYER, tips: "复习单词列表" },
+    ReviewEndView: { path: "reviewPlan/ReviewEndView", zindex: Hierarchy.POPUPLAYER, tips: "复习结束" },
     /*********************************************复习规划end***********************************************************/
     /*********************************************社交 start***********************************************************/
     FriendsDialogView: { path: "social/FriendsDialogView", zindex: Hierarchy.POPUPLAYER, tips: "好友界面" },

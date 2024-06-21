@@ -51,7 +51,8 @@ export class RewardView extends Component {
     init(data: ItemData[], callBack?: Function) {
         this._callBack = callBack;
 
-        for (let i = 0; i < data.length; i++) {
+        let length = Math.min(data.length, 20);
+        for (let i = 0; i < length; i++) {
             let item = instantiate(this.rewardItem);
             this.layout.addChild(item);
             item.getComponent(RewardItem).init(data[i]);
@@ -61,7 +62,7 @@ export class RewardView extends Component {
             item.pauseSystemEvents(true);
             tween(item).hide().delay(i * 0.1).show().to(0.4, { scale: new Vec3(1.0, 1.0, 1.0) }, { easing: easing.backOut }).call(() => {
                 item.resumeSystemEvents(true);
-                if (index == data.length - 1) {
+                if (index == length - 1) {
                     this._canClose = true;
                 }
             }).start();
