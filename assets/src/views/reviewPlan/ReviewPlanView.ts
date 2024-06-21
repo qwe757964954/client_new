@@ -141,8 +141,8 @@ export class ReviewPlanView extends BaseComponent {
     }
     /**初始化 */
     init() {
-        // this.labelTip1.node.active = false;
-        // this.labelTip2.node.active = false;
+        this.labelTip1.node.active = false;
+        this.labelTip2.node.active = false;
         let scale = ToolUtil.getValue(GlobalConfig.WIN_DESIGN_RATE, 0.78, 1.5);
         CCUtil.setNodeScale(this.plAnim, scale);
         if (scale < 1.0) CCUtil.setNodeScale(this.plRight, scale);
