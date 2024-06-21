@@ -8,7 +8,7 @@
             "res_png": "img_wood",
             "res_time": 60,
             "produce": [
-                4,
+                20001,
                 5
             ],
             "expend": [],
@@ -23,14 +23,14 @@
             "res_png": "img_wood2",
             "res_time": 300,
             "produce": [
-                4,
+                20001,
                 10
             ],
             "expend": [],
             "upgrade_need": [
-                7,
+                20004,
                 50,
-                10,
+                10003,
                 50
             ],
             "upgrade_time": 0
@@ -43,14 +43,14 @@
             "res_png": "img_wood3",
             "res_time": 600,
             "produce": [
-                4,
+                20001,
                 15
             ],
             "expend": [],
             "upgrade_need": [
-                8,
+                20005,
                 80,
-                10,
+                10003,
                 80
             ],
             "upgrade_time": 0
@@ -63,11 +63,11 @@
             "res_png": "img_gloves",
             "res_time": 60,
             "produce": [
-                5,
+                20002,
                 5
             ],
             "expend": [
-                4,
+                20001,
                 2
             ],
             "upgrade_need": [],
@@ -81,19 +81,19 @@
             "res_png": "img_hammer",
             "res_time": 180,
             "produce": [
-                7,
+                20004,
                 5
             ],
             "expend": [
-                4,
+                20001,
                 3,
-                6,
+                20003,
                 3
             ],
             "upgrade_need": [
-                7,
+                20004,
                 50,
-                10,
+                10003,
                 50
             ],
             "upgrade_time": 0
@@ -106,19 +106,19 @@
             "res_png": "img_hoe",
             "res_time": 300,
             "produce": [
-                8,
+                20005,
                 5
             ],
             "expend": [
-                4,
+                20001,
                 5,
-                6,
+                20003,
                 5
             ],
             "upgrade_need": [
-                8,
+                20005,
                 80,
-                10,
+                10003,
                 80
             ],
             "upgrade_time": 0
@@ -131,13 +131,13 @@
             "res_png": "img_crystal",
             "res_time": 180,
             "produce": [
-                10,
+                10003,
                 3
             ],
             "expend": [
-                5,
+                20002,
                 10,
-                9,
+                20006,
                 6
             ],
             "upgrade_need": [],
@@ -151,19 +151,19 @@
             "res_png": "img_crystal2",
             "res_time": 360,
             "produce": [
-                10,
+                10003,
                 5
             ],
             "expend": [
-                7,
+                20004,
                 10,
-                9,
+                20006,
                 10
             ],
             "upgrade_need": [
-                7,
+                20004,
                 50,
-                10,
+                10003,
                 50
             ],
             "upgrade_time": 0
@@ -176,19 +176,19 @@
             "res_png": "img_crystal3",
             "res_time": 600,
             "produce": [
-                10,
+                10003,
                 15
             ],
             "expend": [
-                8,
+                20005,
                 10,
-                9,
+                20006,
                 20
             ],
             "upgrade_need": [
-                8,
+                20005,
                 80,
-                10,
+                10003,
                 80
             ],
             "upgrade_time": 0
@@ -201,7 +201,7 @@
             "res_png": "img_scroll",
             "res_time": 100,
             "produce": [
-                6,
+                20003,
                 3
             ],
             "expend": [],
@@ -216,14 +216,14 @@
             "res_png": "img_scroll2",
             "res_time": 300,
             "produce": [
-                6,
+                20003,
                 5
             ],
             "expend": [],
             "upgrade_need": [
-                7,
+                20004,
                 50,
-                10,
+                10003,
                 50
             ],
             "upgrade_time": 0
@@ -236,14 +236,14 @@
             "res_png": "img_scroll3",
             "res_time": 600,
             "produce": [
-                6,
+                20003,
                 10
             ],
             "expend": [],
             "upgrade_need": [
-                8,
+                20005,
                 80,
-                10,
+                10003,
                 80
             ],
             "upgrade_time": 0
@@ -256,7 +256,7 @@
             "res_png": "img_juice",
             "res_time": 100,
             "produce": [
-                9,
+                20006,
                 3
             ],
             "expend": [],
@@ -271,14 +271,14 @@
             "res_png": "img_juice2",
             "res_time": 300,
             "produce": [
-                9,
+                20006,
                 5
             ],
             "expend": [],
             "upgrade_need": [
-                7,
+                20004,
                 50,
-                10,
+                10003,
                 50
             ],
             "upgrade_time": 0
@@ -291,14 +291,14 @@
             "res_png": "img_juice3",
             "res_time": 600,
             "produce": [
-                9,
+                20006,
                 10
             ],
             "expend": [],
             "upgrade_need": [
-                8,
+                20005,
                 80,
-                10,
+                10003,
                 80
             ],
             "upgrade_time": 0
