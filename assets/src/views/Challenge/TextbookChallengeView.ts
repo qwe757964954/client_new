@@ -18,19 +18,14 @@ import { TextbookListView } from '../TextbookVocabulary/TextbookListView';
 import { WordCheckView } from '../TextbookVocabulary/WordCheckView';
 import { BreakThroughView } from './BreakThroughView';
 import { ChallengeBottomView } from './ChallengeBottomView';
-import { RightUnitView } from './RightUnitView';
+import { RightUnitCallbackType, RightUnitView } from './RightUnitView';
 const { ccclass, property } = _decorator;
-
-
 export interface BookUnitModel {
     type_name?:string,
     book_name?:string,
     grade?:string
 
 }
-
-
-
 @ccclass('TextbookChallengeView')
 export class TextbookChallengeView extends BaseView {
     @property(Node)
@@ -169,37 +164,54 @@ export class TextbookChallengeView extends BaseView {
     }
 
     async initRightBookUnitInfo() {
-        let node = await this.loadAndInitPrefab(PrefabType.RightUnitView, this.content_layout,{
+        // 加载并初始化 Prefab
+        const node = await this.loadAndInitPrefab(PrefabType.RightUnitView, this.content_layout, {
             isAlignVerticalCenter: true,
             isAlignRight: true,
             verticalCenter: 62.308,
             right: 62.308
-        })
+        });
+        // 获取并配置 RightUnitView 组件
         this._unitDetailView = node.getComponent(RightUnitView);
-        this._unitDetailView.setModifyCallback((isSave) => {
+        // 设置各类回调
+        this._unitDetailView.setCallback(RightUnitCallbackType.MODIFY, (isSave) => {
             // Your callback logic
         });
-        this._unitDetailView.setBreakThroughCallback(() => {
-            ViewsManager.instance.showView(PrefabType.BreakThroughView, (node) => {
-                let itemScript = node.getComponent(BreakThroughView);
-                itemScript.initData(this._bookData,this._unitListArr);
-                ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);
-            });
-        });
-        this._unitDetailView.setChangeBookCallback(() => {
-            ViewsManager.instance.showView(PrefabType.TextbookListView, (node) => {
-                let itemScript = node.getComponent(TextbookListView);
-                itemScript.initData(this._bookData);
-                ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);
-            });
-        });
-        this._unitDetailView.setCheckWordCallback(() => {
-            ViewsManager.instance.showView(PrefabType.WordCheckView, (node) => {
-                let itemScript = node.getComponent(WordCheckView);
-                itemScript.initData(this._bookData);
-            });
-        });
+        this._unitDetailView.setCallback(RightUnitCallbackType.BREAK_THROUGH, this.showBreakThroughView.bind(this));
+        this._unitDetailView.setCallback(RightUnitCallbackType.CHANGE_BOOK, this.showChangeBookView.bind(this));
+        this._unitDetailView.setCallback(RightUnitCallbackType.CHECK_WORD, this.showCheckWordView.bind(this));
+        this._unitDetailView.setCallback(RightUnitCallbackType.REVIEW, this.showReviewView.bind(this));
     }
+    
+    // 显示 BreakThroughView
+    private async showBreakThroughView() {
+        const node = await ViewsManager.instance.showViewAsync(PrefabType.BreakThroughView);
+        const itemScript = node.getComponent(BreakThroughView);
+        itemScript.initData(this._bookData, this._unitListArr);
+        ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);
+    }
+    
+    // 显示 ChangeBookView
+    private async showChangeBookView() {
+        const node = await ViewsManager.instance.showViewAsync(PrefabType.TextbookListView);
+        const itemScript = node.getComponent(TextbookListView);
+        itemScript.initData(this._bookData);
+        ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);
+    }
+    
+    // 显示 CheckWordView
+    private async showCheckWordView() {
+        const node = await ViewsManager.instance.showViewAsync(PrefabType.WordCheckView);
+        const itemScript = node.getComponent(WordCheckView);
+        itemScript.initData(this._bookData);
+    }
+    
+    // 显示 ReviewPlanView
+    private async showReviewView() {
+        await ViewsManager.instance.showViewAsync(PrefabType.ReviewPlanView);
+    }
+    
+    
     async initChallengeBottom() {
         let node = await this.loadAndInitPrefab(PrefabType.ChallengeBottomView, this.node)
         this._bottomView = node.getComponent(ChallengeBottomView);

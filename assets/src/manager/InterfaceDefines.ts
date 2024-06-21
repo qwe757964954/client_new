@@ -6,7 +6,7 @@
  * Gui模块常用接口类型定义
  */
 
-import { Node, Vec3 } from "cc";
+import { Node, Vec3, sp } from "cc";
 
 // /** UI出现的类型 */
 // export enum inf_LayerType {
@@ -55,13 +55,13 @@ export interface inf_SpineAniCreate {
     /** skin:皮肤 */
     skin?: any,
     /** 动画开始的监听 */
-    callStartFunc?: Function,
+    callStartFunc?: (trackEntry: sp.spine.TrackEntry, skeleton: sp.Skeleton) => void,
     /** 动画结束的监听 */
-    callEndFunc?: Function,
+    callEndFunc?: (trackEntry: sp.spine.TrackEntry, skeleton: sp.Skeleton) => void,
     /** 一次循环结束的监听 */
-    oneLoopEndcallFunc?: Function,
+    oneLoopEndcallFunc?: (trackEntry: sp.spine.TrackEntry, skeleton: sp.Skeleton) => void,
     /** 执行过程中的动作监听 */
-    processCallFunc?: Function,
+    processCallFunc?: (trackEntry: sp.spine.TrackEntry, event: sp.spine.Event | number, skeleton: sp.Skeleton) => void,
     /** 帧刷数量 值越大 刷新越快 不能超过当前最大帧率 */
     frameNum?: number,
 }
