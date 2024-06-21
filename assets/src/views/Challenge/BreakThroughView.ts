@@ -12,186 +12,177 @@ import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
 import CCUtil from '../../util/CCUtil';
 import { NodeUtil } from '../../util/NodeUtil';
-import { LevelConfig, rightPanelchange } from '../adventure/common/RightPanelchange';
+import { rightPanelchange } from '../adventure/common/RightPanelchange';
 import { StudyModeView } from '../adventure/sixModes/StudyModeView';
 import { WordExamView } from '../adventure/sixModes/WordExamView';
 import { WordMeaningView } from '../adventure/sixModes/WordMeaningView';
 import { WordPracticeView } from '../adventure/sixModes/WordPracticeView';
 import { WordReadingView } from '../adventure/sixModes/WordReadingView';
 import { WordSpellView } from '../adventure/sixModes/WordSpellView';
-import { NavTitleView } from '../common/NavTitleView';
-import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
+import { AmoutItemData, AmoutType } from '../common/TopAmoutView';
 import { ScrollMapView } from './ScrollMapView';
+
 const { ccclass, property } = _decorator;
 
-// export enum ChangeHeadTypeEnum {
-//     Type_HeadBox= 1,
-//     Type_Head= 2,
-// }
-
-//学习模式(0导学 3词意 7全拼）
+// 学习模式
 export enum LearnGameModel {
-    Tutoring=0, /**导学模式 */
-    Spell = 1, /**拼模式 */
-    AllSpelledOut = 2,  /**测评模式 */
-    Practice=3, /**练习模式 */
-    Reed = 4, /**读 */
-    WordMeaning=7, /**词意模式 */
+    Tutoring = 0,
+    Spell = 1,
+    AllSpelledOut = 2,
+    Practice = 3,
+    Reed = 4,
+    WordMeaning = 7,
 }
 
 export interface GotoUnitLevel {
-    itemStatus:UnitItemStatus,
-    gate:GateListItem,
+    itemStatus: UnitItemStatus,
+    gate: GateListItem,
     isNext: boolean
 }
+
 @ccclass('BreakThroughView')
 export class BreakThroughView extends BaseView {
     @property(Node)
     public top_layout: Node = null;
     @property(Node)
     public content_layout: Node = null;
-
-    private _rightChallenge:rightPanelchange = null;
-
     @property(Node)
     public scrollMapNode: Node = null;
-
     @property(Node)
     public bg: Node = null;
-
     @property(Node)
     public mask_node: Node = null;
 
-    public _scrollMap:ScrollMapView = null;
-
-    private _bookData:CurrentBookStatus = null;
-
-    private _curUnitList:UnitListItemStatus = null;
-
-    private _curUnitStatus:UnitStatusData = null;
-
-    private _selectitemStatus:UnitItemStatus = null;
-    private _selectGate:GateListItem = null;
+    private _rightChallenge: rightPanelchange = null;
+    private _scrollMap: ScrollMapView = null;
+    private _bookData: CurrentBookStatus = null;
+    private _curUnitList: UnitListItemStatus = null;
+    private _curUnitStatus: UnitStatusData = null;
+    private _selectitemStatus: UnitItemStatus = null;
+    private _selectGate: GateListItem = null;
 
     start() {
         super.start();
         GlobalConfig.initRessolutionHeight();
+        this.initEvent();
     }
+
     initEvent() {
-        CCUtil.onBtnClick(this.mask_node, () => {
-            this.hideRightPanelchangeView();
-            this.mask_node.active = false;
-        });
+        CCUtil.onBtnClick(this.mask_node, this.hideRightPanelchangeView.bind(this));
     }
+
     removeEvent() {
+        // Unregister events here if needed
     }
-    initUI(){
-        
+
+    initUI() {
         this.initNavTitle();
         this.initAmout();
         this.initRightChange();
         DataMgr.instance.getAdventureLevelConfig();
     }
 
-    initData(data:CurrentBookStatus,unitData:UnitListItemStatus){
+    initData(data: CurrentBookStatus, unitData: UnitListItemStatus) {
         this._bookData = data;
         this._curUnitList = unitData;
         this.initScrollMap();
         this._scrollMap.initUnit(unitData);
     }
-    onInitModuleEvent(){
-        this.addModelListener(NetNotify.Classification_UnitListStatus,this.onUnitListStatus);
-        this.addModelListener(NetNotify.Classification_VocabularyWord,this.onVocabularyWord);
-        this.addModelListener(NetNotify.Classification_UnitStatus,this.onUnitStatus);
-        this.addModelListener(EventType.Enter_Island_Level,this.onEnterIsland);
-        this.addModelListener(EventType.Exit_Island_Level,this.onExitIsland);
-        this.addModelListener(EventType.Goto_Textbook_Level,this.gotoTextbookLevel);
-        this.addModelListener(EventType.Enter_Level_Test,this.gotoLevelTest);
-        this.addModelListener(EventType.Goto_Break_Through_Textbook_Next_Level,this.gotoNextLevelTest);
+
+    onInitModuleEvent() {
+        this.addModelListener(NetNotify.Classification_UnitListStatus, this.onUnitListStatus.bind(this));
+        this.addModelListener(NetNotify.Classification_VocabularyWord, this.onVocabularyWord.bind(this));
+        this.addModelListener(NetNotify.Classification_UnitStatus, this.onUnitStatus.bind(this));
+        this.addModelListener(EventType.Enter_Island_Level, this.onEnterIsland.bind(this));
+        this.addModelListener(EventType.Exit_Island_Level, this.onExitIsland.bind(this));
+        this.addModelListener(EventType.Goto_Textbook_Level, this.gotoTextbookLevel.bind(this));
+        this.addModelListener(EventType.Enter_Level_Test, this.gotoLevelTest.bind(this));
+        this.addModelListener(EventType.Goto_Break_Through_Textbook_Next_Level, this.gotoNextLevelTest.bind(this));
     }
-    gotoTextbookLevel(data:GotoUnitLevel){
+
+    gotoTextbookLevel(data: GotoUnitLevel) {
         this._selectitemStatus = data.itemStatus;
         this._selectGate = data.gate;
         this.showRightChallengeView();
     }
-    getUnitListStatus(){
+
+    getUnitListStatus() {
         TBServer.reqUnitListStatus(this._bookData.book_id);
     }
-    /**下一关卡 */
-    gotoNextLevelTest(data:GotoUnitLevel){
+
+    gotoNextLevelTest(data: GotoUnitLevel) {
         this._selectitemStatus = data.itemStatus;
         this._selectGate = data.gate;
         this.hideRightPanelchangeView();
-        let reqParam:ReqUnitStatusParam = {
-            book_id:this._bookData.book_id,
-            unit_id:this._selectitemStatus.unit_id,
-            small_id:this._selectGate.small_id
-        }
+        const reqParam: ReqUnitStatusParam = {
+            book_id: this._bookData.book_id,
+            unit_id: this._selectitemStatus.unit_id,
+            small_id: this._selectGate.small_id
+        };
         TBServer.reqUnitStatus(reqParam);
     }
 
-    gotoLevelTest(){
-        let reqParam:ReqUnitStatusParam = {
-            book_id:this._bookData.book_id,
-            unit_id:this._selectitemStatus.unit_id,
-            small_id:this._selectGate.small_id,
-            category:ReqUnitType.Test
-        }
+    gotoLevelTest() {
+        const reqParam: ReqUnitStatusParam = {
+            book_id: this._bookData.book_id,
+            unit_id: this._selectitemStatus.unit_id,
+            small_id: this._selectGate.small_id,
+            category: ReqUnitType.Test
+        };
         TBServer.reqUnitStatus(reqParam);
     }
 
-    reqVocabularyWord(){
-        let reqParam:ReqUnitStatusParam = {
-            book_id:this._bookData.book_id,
-            unit_id:this._selectitemStatus.unit_id,
-            small_id:this._selectGate.small_id
-        }
+    reqVocabularyWord() {
+        const reqParam: ReqUnitStatusParam = {
+            book_id: this._bookData.book_id,
+            unit_id: this._selectitemStatus.unit_id,
+            small_id: this._selectGate.small_id
+        };
         TBServer.reqVocabularyWord(reqParam);
     }
 
-    onVocabularyWord(response:VocabularyWordData){
-        console.log("onVocabularyWord", response);
-        let game_model:LearnGameModel = this._curUnitStatus.game_mode as LearnGameModel;
-        let bookLevelData:BookLevelConfig = {
-            book_id:this._bookData.book_id,
-            unit:this._selectitemStatus.unit_name,
-            unit_id:this._selectitemStatus.unit_id,
-            cur_game_mode:game_model,
-            game_mode:LearnGameModel.Tutoring,
-            small_id:this._selectGate.small_id,
-            word_num:this._curUnitStatus.word_num,
-            time_remaining:this._curUnitStatus.time_remaining,
-        }
-        if(isValid(this._curUnitStatus.error_word)){
+    async onVocabularyWord(response: VocabularyWordData) {
+        const gameModel: LearnGameModel = this._curUnitStatus.game_mode as LearnGameModel;
+        const bookLevelData: BookLevelConfig = {
+            book_id: this._bookData.book_id,
+            unit: this._selectitemStatus.unit_name,
+            unit_id: this._selectitemStatus.unit_id,
+            cur_game_mode: gameModel,
+            game_mode: LearnGameModel.Tutoring,
+            small_id: this._selectGate.small_id,
+            word_num: this._curUnitStatus.word_num,
+            time_remaining: this._curUnitStatus.time_remaining,
+        };
+
+        if (isValid(this._curUnitStatus.error_word)) {
             bookLevelData.error_word = this._curUnitStatus.error_word;
             bookLevelData.error_num = this._curUnitStatus.error_word.length;
         }
-        console.log("this._curUnitStatus+++++++++++++++++", this._curUnitStatus);
-        console.log("game_model+++++++++++++++++", game_model);
-        switch (game_model) {
+
+        switch (gameModel) {
             case LearnGameModel.Tutoring:
                 bookLevelData.game_mode = LearnGameModel.Tutoring;
-                this.gotoTutoring(response,bookLevelData);
+                await this.gotoTutoring(response, bookLevelData);
                 break;
             case LearnGameModel.AllSpelledOut:
                 bookLevelData.game_mode = LearnGameModel.AllSpelledOut;
-                this.gotoAllSpelledOut(response,bookLevelData);
+                await this.gotoAllSpelledOut(response, bookLevelData);
                 break;
             case LearnGameModel.WordMeaning:
                 bookLevelData.game_mode = LearnGameModel.WordMeaning;
-                this.gotoMeaning(response,bookLevelData);
+                await this.gotoMeaning(response, bookLevelData);
                 break;
             case LearnGameModel.Practice:
                 bookLevelData.game_mode = LearnGameModel.Practice;
-                this.gotoPractice(response,bookLevelData);
+                await this.gotoPractice(response, bookLevelData);
                 break;
             case LearnGameModel.Reed:
                 bookLevelData.game_mode = LearnGameModel.Reed;
-                this.gotoReed(response,bookLevelData);
+                await this.gotoReed(response, bookLevelData);
                 break;
             case LearnGameModel.Spell:
                 bookLevelData.game_mode = LearnGameModel.Spell;
-                this.gotoSpell(response,bookLevelData);
+                await this.gotoSpell(response, bookLevelData);
                 break;
             default:
                 break;
@@ -199,125 +190,115 @@ export class BreakThroughView extends BaseView {
         this._scrollMap.removePointEvent();
     }
 
-    onExitIsland(){
-        this.hideRightPanelchangeView()
+    onExitIsland() {
+        this.hideRightPanelchangeView();
         this.getUnitListStatus();
     }
 
-    onEnterIsland(data:LevelConfig){
-        console.log("onEnterIsland", data);
-        let reqParam:ReqUnitStatusParam = {
-            book_id:this._bookData.book_id,
-            unit_id:this._selectitemStatus.unit_id,
-            small_id:this._selectGate.small_id
-        }
+    onEnterIsland(data: MapLevelData) {
+        const reqParam: ReqUnitStatusParam = {
+            book_id: this._bookData.book_id,
+            unit_id: this._selectitemStatus.unit_id,
+            small_id: this._selectGate.small_id
+        };
         TBServer.reqUnitStatus(reqParam);
     }
-    /**进入拼 */
-    gotoSpell(wordData:VocabularyWordData,bookLevelData:BookLevelConfig){
-        ViewsManager.instance.showView(PrefabType.WordSpellView, (node: Node) => {
-            node.getComponent(WordSpellView).initData(wordData.data, bookLevelData);
-        });
+
+    async gotoSpell(wordData: VocabularyWordData, bookLevelData: BookLevelConfig) {
+        const node = await ViewsManager.instance.showViewAsync(PrefabType.WordSpellView);
+        node.getComponent(WordSpellView).initData(wordData.data, bookLevelData);
     }
 
-    /**进入读模式 */
-    gotoReed(wordData:VocabularyWordData,bookLevelData:BookLevelConfig){
-        ViewsManager.instance.showView(PrefabType.WordReadingView, (node: Node) => {
-            node.getComponent(WordReadingView).initData(wordData.data, bookLevelData);
-        });
-    }
-    /**进入练模式 */
-    gotoPractice(wordData:VocabularyWordData,bookLevelData:BookLevelConfig){
-        ViewsManager.instance.showView(PrefabType.WordPracticeView, (node: Node) => {
-            node.getComponent(WordPracticeView).initData(wordData.data, bookLevelData);
-        });
-    }
-    /**进入译模式 */
-    gotoMeaning(wordData:VocabularyWordData,bookLevelData:BookLevelConfig){
-        ViewsManager.instance.showView(PrefabType.WordMeaningView, (node: Node) => {
-            node.getComponent(WordMeaningView).initData(wordData.data, bookLevelData);
-        });
-    }
-    /**进入测评模式 */
-    gotoAllSpelledOut(wordData:VocabularyWordData,bookLevelData:BookLevelConfig){
-        ViewsManager.instance.showView(PrefabType.WordExamView, (node: Node) => {
-            node.getComponent(WordExamView).initData(wordData.data, bookLevelData);
-        });
+    async gotoReed(wordData: VocabularyWordData, bookLevelData: BookLevelConfig) {
+        const node = await ViewsManager.instance.showViewAsync(PrefabType.WordReadingView);
+        node.getComponent(WordReadingView).initData(wordData.data, bookLevelData);
     }
 
-    /**进入学 */
-    gotoTutoring(wordData:VocabularyWordData,bookLevelData:BookLevelConfig){
-        ViewsManager.instance.showView(PrefabType.StudyModeView, (node: Node) => {
-            node.getComponent(StudyModeView).initData(wordData.data, bookLevelData);
-        });
+    async gotoPractice(wordData: VocabularyWordData, bookLevelData: BookLevelConfig) {
+        const node = await ViewsManager.instance.showViewAsync(PrefabType.WordPracticeView);
+        node.getComponent(WordPracticeView).initData(wordData.data, bookLevelData);
     }
 
-    showRightChallengeView(){
-        let content_size = this.content_layout.getComponent(UITransform);
-        let node_size = this._rightChallenge.node.getComponent(UITransform);
-        let posx = content_size.width / 2 + node_size.width / 2;
-        this._rightChallenge.node.setPosition(posx,0,0);
+    async gotoMeaning(wordData: VocabularyWordData, bookLevelData: BookLevelConfig) {
+        const node = await ViewsManager.instance.showViewAsync(PrefabType.WordMeaningView);
+        node.getComponent(WordMeaningView).initData(wordData.data, bookLevelData);
+    }
+
+    async gotoAllSpelledOut(wordData: VocabularyWordData, bookLevelData: BookLevelConfig) {
+        const node = await ViewsManager.instance.showViewAsync(PrefabType.WordExamView);
+        node.getComponent(WordExamView).initData(wordData.data, bookLevelData);
+    }
+
+    async gotoTutoring(wordData: VocabularyWordData, bookLevelData: BookLevelConfig) {
+        const node = await ViewsManager.instance.showViewAsync(PrefabType.StudyModeView);
+        node.getComponent(StudyModeView).initData(wordData.data, bookLevelData);
+    }
+
+    showRightChallengeView() {
+        const contentSize = this.content_layout.getComponent(UITransform);
+        const nodeSize = this._rightChallenge.node.getComponent(UITransform);
+        const posX = contentSize.width / 2 + nodeSize.width / 2;
+        this._rightChallenge.node.setPosition(posX, 0, 0);
         this._rightChallenge.node.active = true;
-        // const removedString = this._curUnitStatus.unit.replace("Unit ", "").trim();
-        let param:MapLevelData = {small_id:this._selectGate.small_id,
-            big_id:this._selectitemStatus.unit_name,
-            micro_id:this._selectGate.small_id,
-            game_modes:"word",
-            flag_info:this._selectGate.flag_info}
+        const param: MapLevelData = {
+            small_id: this._selectGate.small_id,
+            big_id: this._selectitemStatus.unit_name,
+            micro_id: this._selectGate.small_id,
+            game_modes: "word",
+            flag_info: this._selectGate.flag_info
+        };
         this._rightChallenge.openView(param);
         this.mask_node.active = true;
     }
 
-    onUnitStatus(data:UnitStatusData){
+    onUnitStatus(data: UnitStatusData) {
         this._curUnitStatus = data;
         this.reqVocabularyWord();
     }
 
-    onUnitListStatus(data:UnitListItemStatus){
+    onUnitListStatus(data: UnitListItemStatus) {
         this._curUnitList = data;
         this._scrollMap.initUnit(data);
-        // this._rightChallenge.initData(data);
     }
-    /**初始化导航栏 */
-    initNavTitle(){
-        ViewsManager.addNavigation(this.top_layout,0,0).then((navScript: NavTitleView) => {
-            navScript.updateNavigationProps(`${this._bookData.book_name}${this._bookData.grade}`,()=>{
-                ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
+
+    async initNavTitle() {
+        const navScript = await ViewsManager.addNavigation(this.top_layout, 0, 0);
+        navScript.updateNavigationProps(
+            `${this._bookData.book_name} ${this._bookData.grade}`,
+            () => {
+                ViewsManager.instance.showView(PrefabType.TextbookChallengeView, () => {
                     ViewsManager.instance.closeView(PrefabType.BreakThroughView);
                 });
-            });
-        });
+            }
+        );
     }
-    /**初始化游戏数值 */
-    initAmout(){
-        ViewsManager.addAmout(this.top_layout,5.471,42.399).then((amoutScript: TopAmoutView) => {
-            let dataArr:AmoutItemData[] = [{type:AmoutType.Diamond,num:User.diamond},
-                {type:AmoutType.Coin,num:User.coin},
-                {type:AmoutType.Energy,num:User.stamina}];
-            amoutScript.loadAmoutData(dataArr);
-        });
+
+    async initAmout() {
+        const amoutScript = await ViewsManager.addAmout(this.top_layout, 5.471, 42.399);
+        const dataArr: AmoutItemData[] = [
+            { type: AmoutType.Diamond, num: User.diamond },
+            { type: AmoutType.Coin, num: User.coin },
+            { type: AmoutType.Energy, num: User.stamina }
+        ];
+        amoutScript.loadAmoutData(dataArr);
     }
-    /**初始化右侧闯关 */
-    async initRightChange(){
-        let node = await this.loadAndInitPrefab(PrefabType.RightPanelchange, this.content_layout)
-        NodeUtil.setLayerRecursively(node,Layers.Enum.UI_2D);
-        let content_size = this.content_layout.getComponent(UITransform);
-        let node_size = node.getComponent(UITransform);
-        let posx = content_size.width / 2 + node_size.width / 2;
-        node.setPosition(posx,0,0);
+
+    async initRightChange() {
+        const node = await this.loadAndInitPrefab(PrefabType.RightPanelchange, this.content_layout);
+        NodeUtil.setLayerRecursively(node, Layers.Enum.UI_2D);
+        const contentSize = this.content_layout.getComponent(UITransform);
+        const nodeSize = node.getComponent(UITransform);
+        const posX = contentSize.width / 2 + nodeSize.width / 2;
+        node.setPosition(posX, 0, 0);
         this._rightChallenge = node.getComponent(rightPanelchange);
     }
 
-
-    /**初始化地图模块 */
-    initScrollMap(){
+    initScrollMap() {
         this._scrollMap = this.scrollMapNode.getComponent(ScrollMapView);
     }
 
-    hideRightPanelchangeView(){
-        console.log("hideRightPanelchangeView");
+    hideRightPanelchangeView() {
         this.mask_node.active = false;
         this._rightChallenge.hideView();
     }
 }
-
