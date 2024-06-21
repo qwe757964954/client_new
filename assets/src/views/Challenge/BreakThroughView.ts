@@ -64,7 +64,6 @@ export class BreakThroughView extends BaseView {
     start() {
         super.start();
         GlobalConfig.initRessolutionHeight();
-        this.initEvent();
     }
 
     initEvent() {
