@@ -82,10 +82,6 @@ export class WeekTaskView extends BaseView {
     }
     onChallengeTaskReward(data:TaskBaseData) {
         TkServer.reqGetWeekTaskReward(data.task_id);
-
-        
-
-
     }
     onChallengeBoxReward(data:WeeklyTaskBox) {
         TkServer.reqGetBoxTaskReward(data.id);

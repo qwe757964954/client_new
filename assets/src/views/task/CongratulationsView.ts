@@ -1,4 +1,4 @@
-import { _decorator, Node, UITransform } from 'cc';
+import { _decorator, Node, UITransform, Widget } from 'cc';
 import { ItemData } from '../../manager/DataMgr';
 import { BasePopup } from '../../script/BasePopup';
 import CCUtil from '../../util/CCUtil';
@@ -35,6 +35,7 @@ export class CongratulationsView extends BasePopup {
         let scrollView = this.reward_scroll.scrollView;
         scrollView.getComponent(UITransform).width = scrollView.content.getComponent(UITransform).width;
         scrollView.view.getComponent(UITransform).width = scrollView.content.getComponent(UITransform).width;
+        scrollView.getComponent(Widget).updateAlignment();
     }
 
     loadRewardDataHorizontal(item: any, idx: number): void {
