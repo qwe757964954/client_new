@@ -187,6 +187,21 @@ export default class CCUtil {
             node.scale = scale;
         }
     }
+    /**自适应填充图片 */
+    public static fillNodeScale(node: Node, maxWidth: number, maxHeight: number, mustSet: boolean = false) {
+        let scale = new Vec3(1, 1, 1);
+        let transform = node.getComponent(UITransform);
+        let scaleX = maxWidth / (transform.width * scale.x);
+        let scaleY = maxHeight / (transform.height * scale.y);
+        if (scaleX > 1.0 || scaleY > 1.0) {
+            let maxScale = Math.max(scaleX, scaleY);
+            scale.x *= maxScale;
+            scale.y *= maxScale;
+            node.scale = scale;
+        } else if (mustSet) {
+            node.scale = scale;
+        }
+    }
     /**设置节点相机 */
     public static setNodeCamera(node: Node, layer: Layers.Enum) {
         node.layer = layer;

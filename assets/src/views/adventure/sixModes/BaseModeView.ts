@@ -176,7 +176,7 @@ export class BaseModeView extends BaseView {
             this.btn_collect.active = false;
             let bg = this.node.getChildByName("img_bg");
             LoadManager.loadSprite("adventure/sixModes/study/img_bg2/spriteFrame", bg.getComponent(Sprite)).then(() => {
-                CCUtil.fixNodeScale(bg, GlobalConfig.WIN_SIZE.width, GlobalConfig.WIN_SIZE.height);
+                CCUtil.fillNodeScale(bg, GlobalConfig.WIN_SIZE.width, GlobalConfig.WIN_SIZE.height);
             });
             console.log("updateTextbookWords", this._levelData.ws_id, this._levelData);
         }
@@ -393,7 +393,6 @@ export class BaseModeView extends BaseView {
                         resolve(true);
                     });
                 } else if (WordSourceType.review == this._sourceType) {
-                    console.log("精灵攻击后血量", this._rightNum, this._wordsData.length, this._levelData.error_num);
                     monsterModel.setHp(this._rightNum, this._levelData.wordCount);
                     monsterModel.inHit().then(() => {
                         resolve(true);
