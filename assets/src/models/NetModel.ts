@@ -100,6 +100,7 @@ export class s2cAccountLoginDetailExtra {
 }
 export class s2cAccountLoginDetail {
     extra: s2cAccountLoginDetailExtra;//额外信息
+    item_list: ItemData[];//物品列表
 }
 export class s2cAccountLogin extends BaseRepPacket {
     user_id: number;//用户id

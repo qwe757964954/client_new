@@ -22,12 +22,12 @@ export class TicketItem extends Component {
     //初始化事件
     public initEvent() {
         CCUtil.onTouch(this, this.onClick, this);
-        this._tikcetUpdateHandle = EventMgr.on(EventType.Coin_Update, this.onTicketUpdate.bind(this));
+        this._tikcetUpdateHandle = EventMgr.on(EventType.Ticket_Update, this.onTicketUpdate.bind(this));
     }
     //销毁事件
     public destoryEvent() {
         CCUtil.offTouch(this, this.onClick, this);
-        EventMgr.off(EventType.Coin_Update, this._tikcetUpdateHandle);
+        EventMgr.off(EventType.Ticket_Update, this._tikcetUpdateHandle);
     }
     //界面点击 TODO
     public onClick() {
@@ -35,7 +35,7 @@ export class TicketItem extends Component {
     }
     //金币更新 TODO
     public onTicketUpdate() {
-        this.label.string = User.coin.toString();
+        this.label.string = User.ticket.toString();
     }
 }
 

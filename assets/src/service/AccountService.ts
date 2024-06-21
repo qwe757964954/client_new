@@ -3,7 +3,7 @@ import { EventType } from "../config/EventType";
 import { KeyConfig } from "../config/KeyConfig";
 import { SceneType } from "../config/PrefabType";
 import { TextConfig } from "../config/TextConfig";
-import { ItemID } from "../export/ItemConfig";
+import { ItemData } from "../manager/DataMgr";
 import { ViewsManager } from "../manager/ViewsManager";
 import { c2sAccountInit, c2sAccountLogin, c2sTokenLogin, s2cAccountLogin, s2cItemUpdate } from "../models/NetModel";
 import { LoginType, User } from "../models/User";
@@ -79,6 +79,7 @@ export default class AccountService {
                 User.exp = extra.exp;
                 User.nick = extra.nick_name;
             }
+            this.itemUpdate(data.detail?.item_list);
             if (LoginType.account == User.loginType) {
                 StorageUtil.saveData(KeyConfig.Last_Login_Account, User.account);
                 StorageUtil.saveData(KeyConfig.Last_Login_Pwd, User.password);
@@ -116,20 +117,15 @@ export default class AccountService {
         if (data.user_id != User.userID) return;
         let detail = data.detail;
         if (!detail) return;
-        if (Object.prototype.hasOwnProperty.call(detail, ItemID.coin)) {
-            User.coin = detail[ItemID.coin];
+        for (const key in detail) {
+            User.setItem(Number(key), detail[key]);
         }
-        if (Object.prototype.hasOwnProperty.call(detail, ItemID.diamond)) {
-            User.diamond = detail[ItemID.diamond];
-        }
-        if (Object.prototype.hasOwnProperty.call(detail, ItemID.stamina)) {
-            User.stamina = detail[ItemID.stamina];
-        }
-        if (Object.prototype.hasOwnProperty.call(detail, ItemID.amethyst)) {
-            User.amethyst = detail[ItemID.amethyst];
-        }
-        if (Object.prototype.hasOwnProperty.call(detail, ItemID.ticket)) {
-            User.ticket = detail[ItemID.ticket];
-        }
+    }
+    /**物品更新 */
+    itemUpdate(data: ItemData[]) {
+        if (!data || data.length == 0) return;
+        data.forEach(item => {
+            User.setItem(item.id, item.num);
+        });
     }
 }
