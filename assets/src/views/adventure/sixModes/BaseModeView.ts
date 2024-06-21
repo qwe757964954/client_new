@@ -1,8 +1,10 @@
 import { _decorator, BlockInputEvents, Button, instantiate, isValid, Label, Node, Prefab, Sprite, tween, UIOpacity, UITransform, Vec3, view } from 'cc';
 import { EventType } from '../../../config/EventType';
+import GlobalConfig from '../../../GlobalConfig';
 import { AdvLevelConfig, BookLevelConfig } from '../../../manager/DataMgr';
+import { LoadManager } from '../../../manager/LoadManager';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
-import { ViewsManager } from '../../../manager/ViewsManager';
+import { ViewsMgr } from '../../../manager/ViewsManager';
 import { AdventureCollectWordModel, AdventureResult, AdventureResultModel, GameMode, WordsDetailData } from '../../../models/AdventureModel';
 import { s2cReviewPlanSubmit } from '../../../models/NetModel';
 import { PetModel } from '../../../models/PetModel';
@@ -172,6 +174,10 @@ export class BaseModeView extends BaseView {
             this._errorNum = this._levelData.error_num;
             this.topNode.active = false;
             this.btn_collect.active = false;
+            let bg = this.node.getChildByName("img_bg");
+            LoadManager.loadSprite("adventure/sixModes/study/img_bg2/spriteFrame", bg.getComponent(Sprite)).then(() => {
+                CCUtil.fixNodeScale(bg, GlobalConfig.WIN_SIZE.width, GlobalConfig.WIN_SIZE.height);
+            });
             console.log("updateTextbookWords", this._levelData.ws_id, this._levelData);
         }
         this.timeLabel.string = "剩余时间:" + ToolUtil.secondsToTimeFormat(this._remainTime);
@@ -522,7 +528,11 @@ export class BaseModeView extends BaseView {
     }
 
     protected closeView() {
-        ViewsManager.instance.showConfirm("确定退出学习吗?", () => {
+        let str = "确定退出学习吗?";
+        if (WordSourceType.review == this._sourceType) {
+            str = "确定结束复习吗?\n完成复习可参与扭蛋机抽奖哦";
+        }
+        ViewsMgr.showConfirm(str, () => {
             if (WordSourceType.classification == this._sourceType) {
                 EventMgr.dispatch(EventType.Exit_Island_Level);
             }

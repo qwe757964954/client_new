@@ -1359,8 +1359,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 120,
-      "height": 176.4
+      "width": 106.6845703125,
+      "height": 50.4
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1395,13 +1395,13 @@
       "b": 0,
       "a": 255
     },
-    "_string": "提示提示",
+    "_string": "确定吗?",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 30,
     "_fontSize": 30,
     "_fontFamily": "Arial",
-    "_lineHeight": 140,
+    "_lineHeight": 40,
     "_overflow": 0,
     "_enableWrapText": true,
     "_font": null,
