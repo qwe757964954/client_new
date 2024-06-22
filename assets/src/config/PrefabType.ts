@@ -33,7 +33,7 @@ export type PrefabTypeEntry = {
 };
 
 // 预制体类型
-export const PrefabType: Record<string, PrefabTypeEntry> = {
+export const PrefabType = {
     //**学习模式相关 */
     StudyView: { path: "study/StudyViewchange", zindex: Hierarchy.POPUPLAYER, tips: "学习模块选择" },
     StudyModeView: { path: "studyModes/StudyModeView", zindex: Hierarchy.POPUPLAYER, tips: "关卡学模式" },

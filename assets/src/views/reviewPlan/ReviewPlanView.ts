@@ -237,9 +237,10 @@ export class ReviewPlanView extends BaseComponent {
                 this._drawType = null;
             });
         } else if (name == eggAnimNames[this._eggID * 2 + 1]) {
-            this._canDraw = true;
-            this._drawType = null;
-            ViewsMgr.showRewards(this._drawRewards);
+            ViewsMgr.showRewards(this._drawRewards, () => {
+                this._canDraw = true;
+                this._drawType = null;
+            });
         }
     }
     /**复习规划返回 */
