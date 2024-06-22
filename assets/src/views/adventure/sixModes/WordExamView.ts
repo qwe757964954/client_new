@@ -82,12 +82,14 @@ export class WordExamView extends BaseModeView {
     }
 
     onExamItemClick(e: Event) {
+        if (this._selectLock) return;
         let item: any = e.currentTarget;
         let selectLetter = item.getComponent(ExamItem).letter;
         console.log("selectLetter", selectLetter);
         this._fillLetters[this._currentLetterIdx] = selectLetter;
         this._currentLetterIdx++;
         if (this._currentLetterIdx == this._fillLetters.length) { //判断是否正确
+            this._selectLock = true;
             if (this._fillLetters.join("") == this._rightWordData.word) { //正确
                 console.log("选择正确");
                 this.resultIcon.spriteFrame = this.rightIcon;
@@ -173,6 +175,7 @@ export class WordExamView extends BaseModeView {
 
     //回退键处理
     onBackKeyClick() {
+        if (this._selectLock) return;
         let lastLetterIdx = -1;
         for (let i = this._fillLetters.length - 1; i >= 0; i--) {
             if (this._fillLetters[i] != "_" && this._fillLetters[i] != " ") {

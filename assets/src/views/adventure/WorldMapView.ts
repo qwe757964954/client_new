@@ -209,6 +209,9 @@ export class WorldMapView extends Component {
     onWordGameWords(data: UnitWordModel[]) {
         if (!this._getingWords) return;
         console.log('获取单词', data);
+        if (this._currentIsland) {
+            this._currentIsland.getComponent(WorldIsland).hideRightPanel();
+        }
         this._getingWords = false;
         let gameMode = this._currentLevelData.current_mode;
         let levelData = DataMgr.instance.getAdvLevelConfig(this._currentIslandID, this._currentLevelData.small_id);

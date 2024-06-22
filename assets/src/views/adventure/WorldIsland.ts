@@ -1,4 +1,4 @@
-import { _decorator, Button, Component, director, instantiate, Node, Prefab, UITransform, Vec3 } from 'cc';
+import { _decorator, Button, Component, director, instantiate, Node, Prefab, UITransform, Vec2, Vec3 } from 'cc';
 import { EventType } from '../../config/EventType';
 import { BossLevelData, BossLevelTopicData, IslandProgressModel, MapLevelData, MicroListItem } from '../../models/AdventureModel';
 import CCUtil from '../../util/CCUtil';
@@ -69,6 +69,7 @@ export class WorldIsland extends Component {
     private _progressData: IslandProgressModel = null;
 
     private _isRequest: boolean = false; //是否请求中
+    private _currentPos: MicroListItem;
     start() {
         this.initUI();
         this.initEvent();
@@ -98,6 +99,11 @@ export class WorldIsland extends Component {
             }
         }
         console.log('地图宽度', transform.width);
+
+        if (this._currentPos) {
+            this.skipToMapPoint(this._bigId, this._currentPos.small_id, this._currentPos.micro_id);
+        }
+
     }
 
     mapPointClick(data: MapLevelData) {
@@ -124,12 +130,28 @@ export class WorldIsland extends Component {
             monsterModel.init("spine/monster/adventure/" + levelData.monsterAni);
             this.monsterContainer.position = new Vec3(pos.x + 100, pos.y, 0);
             posData.map.setMonsterNode(this.monsterContainer);
+
+            this._currentPos = posData.pointData;
         }
         //最后一个地图添加岛屿boss
         if (idx == this._mapLevelsData.length - 1) {
             item.getComponent(IslandMap).setBossNode(this.bossContainer);
             let monsterModel = this._boss.getComponent(MonsterModel);
             monsterModel.idle();
+        }
+    }
+
+    skipToMapPoint(big_id: number, small_id: number, micro_id: number) {
+        let skipPosX = 0;
+        let points = WorldIsland.getMapPointsByBigId(big_id);
+        for (let i = 0; i < this._mapLevelsData.length; i++) {
+            for (let j = 0; j < this._mapLevelsData[i].length; j++) {
+                if (this._mapLevelsData[i][j].big_id == big_id && this._mapLevelsData[i][j].small_id == small_id && this._mapLevelsData[i][j].micro_id == micro_id) {
+                    skipPosX = i * 2145 + points[j][0] - 250;
+                    this.mapPointList.scrollView.scrollToOffset(new Vec2(skipPosX, 0));
+                    return;
+                }
+            }
         }
     }
 
@@ -283,6 +305,10 @@ export class WorldIsland extends Component {
         if (this._isRequest) return;
         this._isRequest = true;
         ServiceMgr.studyService.getBossLevelTopic(this._bigId);
+    }
+
+    hideRightPanel() {
+        // this.levelPanel.node.active = false;
     }
 
     /**初始化监听事件 */
