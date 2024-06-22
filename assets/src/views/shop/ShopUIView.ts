@@ -1,12 +1,14 @@
 import { _decorator, Component, instantiate, Label, Layout, Node, Prefab } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
+import GlobalConfig from '../../GlobalConfig';
 import { DataMgr, EditInfo, EditType } from '../../manager/DataMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { BuildingIDType } from '../../models/BuildingModel';
 import { User } from '../../models/User';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
+import { ToolUtil } from '../../util/ToolUtil';
 import { NavTitleView } from '../common/NavTitleView';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { ShopClassItem } from './ShopClassItem';
@@ -34,7 +36,8 @@ const shopClass = [
 
 @ccclass('ShopUIView')
 export class ShopUIView extends Component {
-
+    @property(Node)
+    public bg: Node = null;
     @property(Node)
     public top_layout: Node = null;          // 商城
 
@@ -68,6 +71,8 @@ export class ShopUIView extends Component {
     }
 
     initUI() {
+        let scale = ToolUtil.getValue(GlobalConfig.WIN_DESIGN_RATE, 0.1, 1.0);
+        CCUtil.setNodeScale(this.bg, scale);
         //this.initNavTitle();
         this.initAmout();
 
