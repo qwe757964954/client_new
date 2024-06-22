@@ -238,7 +238,7 @@ export class c2sBuildingProduceGet {
 /**建筑生产领取返回 */
 export class s2cBuildingProduceGet extends BaseRepPacket {
     id: number;//建筑唯一索引id
-    product_items: s2cRewardItem[];//生产物品
+    product_items: ItemData[];//生产物品
     remaining_infos: s2cBuildingProduceInfo[];//生产信息
 }
 /**乌云解锁 */
