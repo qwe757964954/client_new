@@ -90,6 +90,9 @@ export class MapUICtl extends MainBaseCtl {
         }
         ServiceMgr.buildingService.reqPetInfo();
         ServiceMgr.buildingService.reqBuildingList();
+
+        TimerMgr.once(this.getLoadOverCall(), 10);//注意一定要加延时
+        this.updateCameraVisible(true, true);
     }
     // 初始化数据
     initData(): void {
@@ -593,7 +596,7 @@ export class MapUICtl extends MainBaseCtl {
         this.updateCameraVisible(true);
     }
     // 更新摄像头可见范围内元素
-    updateCameraVisible(immediately: boolean = false) {
+    updateCameraVisible(immediately: boolean = false, needCallBack = false) {
         if (!immediately) {
             this._isNeedUpdateVisible = true;
             return;
@@ -614,17 +617,17 @@ export class MapUICtl extends MainBaseCtl {
         // let g = this._mainScene.lineLayer.getComponent(Graphics);
         // g.clear();
         this._bgModelAry.forEach(element => {
-            element.show(visibleRect.intersects(element.getRect()), this.getLoadOverCall());
+            element.show(visibleRect.intersects(element.getRect()), needCallBack ? this.getLoadOverCall() : null);
         });
         //地块动态加载
         this._landModelAry.forEach(element => {
-            element.show(visibleRect.intersects(element.getRect()), this.getLoadOverCall());
+            element.show(visibleRect.intersects(element.getRect()), needCallBack ? this.getLoadOverCall() : null);
         });
         //建筑角色乌云动态加载
         this._mainScene.buildingLayer.children.forEach(element => {
             let base = element.getComponent(BaseComponent);
             if (!base) return;
-            base.show(visibleRect.intersects(base.getRect()), this.getLoadOverCall());
+            base.show(visibleRect.intersects(base.getRect()), needCallBack ? this.getLoadOverCall() : null);
             // let building = element.getComponent(BuildingModel);
             // if (!building) {
             //     let role = element.getComponent(RoleBaseModel);
@@ -775,7 +778,6 @@ export class MapUICtl extends MainBaseCtl {
         this.initRole();
         this.initCloud(data.cloud_dict);
 
-        TimerMgr.once(this.getLoadOverCall(), 500);//注意一定要加延时
         this.updateCameraVisible();
     }
     /**查找建筑 */
@@ -828,8 +830,8 @@ export class MapUICtl extends MainBaseCtl {
         if (!building) return;
         building.setProducts(data.remaining_infos);
 
-        let list = ToolUtil.itemMapToList(data.product_items);
-        ViewsMgr.showRewards(list);
+        // let list = ToolUtil.itemMapToList(data.product_items);
+        ViewsMgr.showRewards(data.product_items);
     }
     /**乌云解锁结果 */
     onCloudUnlock(data: s2cCloudUnlock) {

@@ -1,6 +1,93 @@
 {
     "produce": [
         {
+            "id": 0,
+            "level": 1,
+            "unlock": 1,
+            "res_name": "无",
+            "res_png": "无",
+            "res_time": 60,
+            "produce": [
+                10002,
+                4
+            ],
+            "expend": [],
+            "upgrade_need": [],
+            "upgrade_time": 0
+        },
+        {
+            "id": 0,
+            "level": 2,
+            "unlock": 2,
+            "res_name": "无",
+            "res_png": "无",
+            "res_time": 300,
+            "produce": [
+                10002,
+                4
+            ],
+            "expend": [],
+            "upgrade_need": [
+                10001,
+                500
+            ],
+            "upgrade_time": 0
+        },
+        {
+            "id": 0,
+            "level": 3,
+            "unlock": 1,
+            "res_name": "无",
+            "res_png": "无",
+            "res_time": 60,
+            "produce": [
+                10002,
+                4
+            ],
+            "expend": [],
+            "upgrade_need": [
+                10001,
+                500
+            ],
+            "upgrade_time": 0
+        },
+        {
+            "id": 0,
+            "level": 4,
+            "unlock": 2,
+            "res_name": "无",
+            "res_png": "无",
+            "res_time": 300,
+            "produce": [
+                10002,
+                4
+            ],
+            "expend": [],
+            "upgrade_need": [
+                10001,
+                500
+            ],
+            "upgrade_time": 0
+        },
+        {
+            "id": 0,
+            "level": 5,
+            "unlock": 3,
+            "res_name": "无",
+            "res_png": "无",
+            "res_time": 600,
+            "produce": [
+                10002,
+                4
+            ],
+            "expend": [],
+            "upgrade_need": [
+                10001,
+                500
+            ],
+            "upgrade_time": 0
+        },
+        {
             "id": 1,
             "level": 1,
             "unlock": 1,
@@ -8,8 +95,8 @@
             "res_png": "img_wood",
             "res_time": 60,
             "produce": [
-                20001,
-                5
+                10002,
+                4
             ],
             "expend": [],
             "upgrade_need": [],
@@ -23,15 +110,13 @@
             "res_png": "img_wood2",
             "res_time": 300,
             "produce": [
-                20001,
-                10
+                10002,
+                4
             ],
             "expend": [],
             "upgrade_need": [
-                20004,
-                50,
-                10003,
-                50
+                10001,
+                500
             ],
             "upgrade_time": 0
         },
@@ -43,15 +128,13 @@
             "res_png": "img_wood3",
             "res_time": 600,
             "produce": [
-                20001,
-                15
+                10002,
+                4
             ],
             "expend": [],
             "upgrade_need": [
-                20005,
-                80,
-                10003,
-                80
+                10001,
+                500
             ],
             "upgrade_time": 0
         },
@@ -63,8 +146,8 @@
             "res_png": "img_gloves",
             "res_time": 60,
             "produce": [
-                20002,
-                5
+                10002,
+                4
             ],
             "expend": [
                 20001,
@@ -81,8 +164,8 @@
             "res_png": "img_hammer",
             "res_time": 180,
             "produce": [
-                20004,
-                5
+                10002,
+                4
             ],
             "expend": [
                 20001,
@@ -91,10 +174,8 @@
                 3
             ],
             "upgrade_need": [
-                20004,
-                50,
-                10003,
-                50
+                10001,
+                500
             ],
             "upgrade_time": 0
         },
@@ -106,8 +187,8 @@
             "res_png": "img_hoe",
             "res_time": 300,
             "produce": [
-                20005,
-                5
+                10002,
+                4
             ],
             "expend": [
                 20001,
@@ -116,10 +197,8 @@
                 5
             ],
             "upgrade_need": [
-                20005,
-                80,
-                10003,
-                80
+                10001,
+                500
             ],
             "upgrade_time": 0
         },
@@ -131,8 +210,8 @@
             "res_png": "img_crystal",
             "res_time": 180,
             "produce": [
-                10003,
-                3
+                10002,
+                4
             ],
             "expend": [
                 20002,
@@ -151,8 +230,8 @@
             "res_png": "img_crystal2",
             "res_time": 360,
             "produce": [
-                10003,
-                5
+                10002,
+                4
             ],
             "expend": [
                 20004,
@@ -161,10 +240,8 @@
                 10
             ],
             "upgrade_need": [
-                20004,
-                50,
-                10003,
-                50
+                10001,
+                500
             ],
             "upgrade_time": 0
         },
@@ -176,8 +253,8 @@
             "res_png": "img_crystal3",
             "res_time": 600,
             "produce": [
-                10003,
-                15
+                10002,
+                4
             ],
             "expend": [
                 20005,
@@ -186,10 +263,8 @@
                 20
             ],
             "upgrade_need": [
-                20005,
-                80,
-                10003,
-                80
+                10001,
+                500
             ],
             "upgrade_time": 0
         },
@@ -201,8 +276,8 @@
             "res_png": "img_scroll",
             "res_time": 100,
             "produce": [
-                20003,
-                3
+                10002,
+                4
             ],
             "expend": [],
             "upgrade_need": [],
@@ -216,15 +291,13 @@
             "res_png": "img_scroll2",
             "res_time": 300,
             "produce": [
-                20003,
-                5
+                10002,
+                4
             ],
             "expend": [],
             "upgrade_need": [
-                20004,
-                50,
-                10003,
-                50
+                10001,
+                500
             ],
             "upgrade_time": 0
         },
@@ -236,15 +309,13 @@
             "res_png": "img_scroll3",
             "res_time": 600,
             "produce": [
-                20003,
-                10
+                10002,
+                4
             ],
             "expend": [],
             "upgrade_need": [
-                20005,
-                80,
-                10003,
-                80
+                10001,
+                500
             ],
             "upgrade_time": 0
         },
@@ -256,8 +327,8 @@
             "res_png": "img_juice",
             "res_time": 100,
             "produce": [
-                20006,
-                3
+                10002,
+                4
             ],
             "expend": [],
             "upgrade_need": [],
@@ -271,15 +342,13 @@
             "res_png": "img_juice2",
             "res_time": 300,
             "produce": [
-                20006,
-                5
+                10002,
+                4
             ],
             "expend": [],
             "upgrade_need": [
-                20004,
-                50,
-                10003,
-                50
+                10001,
+                500
             ],
             "upgrade_time": 0
         },
@@ -291,15 +360,13 @@
             "res_png": "img_juice3",
             "res_time": 600,
             "produce": [
-                20006,
-                10
+                10002,
+                4
             ],
             "expend": [],
             "upgrade_need": [
-                20005,
-                80,
-                10003,
-                80
+                10001,
+                500
             ],
             "upgrade_time": 0
         }

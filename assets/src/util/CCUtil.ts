@@ -1,18 +1,34 @@
-import { Button, EventKeyboard, EventTouch, Input, KeyCode, Layers, Node, NodeEventType, SpriteFrame, UITransform, Vec3, Widget, director, gfx, input, isValid } from "cc";
+import { Button, EventKeyboard, Input, KeyCode, Layers, Node, NodeEventType, SpriteFrame, UITransform, Vec3, Widget, director, gfx, input, isValid } from "cc";
 import { SoundMgr } from "../manager/SoundMgr";
 
 export default class CCUtil {
-    public static clickCall(event: EventTouch) {
-        console.log("clickCall", event.currentTarget._name);
+    // public static clickCall(event: EventTouch) {
+    // console.log("clickCall", event.currentTarget._name);
+    public static clickCall(node: Node) {
+        console.log("clickCall", node.name);
         SoundMgr.click();
     }
+    private static lastClickTime = 0;
     // 触摸事件监听
     public static onTouch(obj: any, callback: Function, target?: any) {
         if (!obj) return;
         let node = obj.node ? obj.node : obj;
         if (node && node.on && isValid(node, true)) {
-            node.on(NodeEventType.TOUCH_END, callback, target);
-            node.on(NodeEventType.TOUCH_END, CCUtil.clickCall, node);
+            let touchFun = () => {
+                let now = new Date().getTime();
+                let dt = now - this.clickLastTime;
+                if (dt < 150) {
+                    console.log("点击间隔过于频繁,过滤", dt);
+                    return;
+                }
+                this.clickLastTime = now;
+                CCUtil.clickCall(node);
+                if (callback) { callback.call(target); }
+            }
+            node.on(NodeEventType.TOUCH_END, touchFun);
+            node["touchFun"] = touchFun;
+            // node.on(NodeEventType.TOUCH_END, CCUtil.clickCall, node);
+            // node.on(NodeEventType.TOUCH_END, callback, target);
         }
     }
     private static clickLastTime = 0;
@@ -46,8 +62,15 @@ export default class CCUtil {
         if (!obj) return;
         let node = obj.node ? obj.node : obj;
         if (node && node.off && isValid(node, true)) {
-            node.off(NodeEventType.TOUCH_END, callback, target);
-            node.off(NodeEventType.TOUCH_END, CCUtil.clickCall, node);
+            if (node["touchFun"]) {
+                node.off(NodeEventType.TOUCH_END, node["touchFun"]);
+                node["touchFun"] = null;
+            } else {
+                node.off(NodeEventType.TOUCH_END, CCUtil.clickCall, node);
+                node.off(NodeEventType.TOUCH_END, callback, target);
+            }
+            // node.off(NodeEventType.TOUCH_END, CCUtil.clickCall, node);
+            // node.off(NodeEventType.TOUCH_END, callback, target);
         }
     }
     // 按键事件监听
