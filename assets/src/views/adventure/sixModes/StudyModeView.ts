@@ -106,7 +106,9 @@ export class StudyModeView extends BaseModeView {
         this.wholeWordNode.active = false;
 
         let imgUrl = NetConfig.assertUrl + "/imgs/words/" + word + ".jpg";
-        RemoteImageManager.i.loadImage(imgUrl, this.wordImg);
+        RemoteImageManager.i.loadImage(imgUrl, this.wordImg).then(() => {
+            // CCUtil.fixNodeScale(this.wordImg.node, 416, 246);
+        })
 
         let phonics = "";
         let splitData = this._spilitData[word];
