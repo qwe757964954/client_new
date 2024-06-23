@@ -4,6 +4,7 @@ import { MapStatus } from '../../config/MapConfig';
 import { PrefabType, SceneType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import GlobalConfig from '../../GlobalConfig';
+import { SpMgr } from '../../manager/SpineAniManager';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { User } from '../../models/User';
 import { NetMgr } from '../../net/NetManager';
@@ -70,7 +71,8 @@ export class MainUIView extends Component {
             this.btnReview.node.position = this.btnReviewFix.position;
             this.btnTranslate.node.position = this.btnTranslateFix.position;
         }
-
+        /**骨骼资源批量预加载 */
+        SpMgr.preLoadSkinAniDir("resources", "spine", null, null)
         this.labelNick.string = User.nick;
     }
     //设置主场景
