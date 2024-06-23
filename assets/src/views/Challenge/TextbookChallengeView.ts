@@ -14,6 +14,7 @@ import StorageUtil from '../../util/StorageUtil';
 import { NavTitleView } from '../common/NavTitleView';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { ChallengeRemindView, IChallengeRemindData } from '../TextbookVocabulary/ChallengeRemindView';
+import { SettingPlanView } from '../TextbookVocabulary/SettingPlanView';
 import { TextbookListView } from '../TextbookVocabulary/TextbookListView';
 import { WordCheckView } from '../TextbookVocabulary/WordCheckView';
 import { BreakThroughView } from './BreakThroughView';
@@ -176,6 +177,11 @@ export class TextbookChallengeView extends BaseView {
         // 设置各类回调
         this._unitDetailView.setCallback(RightUnitCallbackType.MODIFY, (isSave) => {
             // Your callback logic
+            ViewsManager.instance.showPopup(PrefabType.SettingPlanView).then((node: Node)=>{
+                let nodeScript:SettingPlanView = node.getComponent(SettingPlanView);
+                let titleBookName = `${this._bookData.book_name}${this._bookData.grade}`;
+                nodeScript.updateTitleName(titleBookName,this._unitListArr.gate_total);
+            })
         });
         this._unitDetailView.setCallback(RightUnitCallbackType.BREAK_THROUGH, this.showBreakThroughView.bind(this));
         this._unitDetailView.setCallback(RightUnitCallbackType.CHANGE_BOOK, this.showChangeBookView.bind(this));
