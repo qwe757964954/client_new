@@ -112,8 +112,12 @@ export class MainScene extends BaseComponent {
         // 等动画完成后再移除加载层
         if (this._loadCount <= 0) {
             this._loadCount = 0;
+            console.timeEnd("MainScene");
             // this.loadingSp.clearAnimations();
             // this.loadingNode.active = false;
+            console.log("加载完成，播放消失动画");
+            console.time("loadingSp");
+            this.loadingSp.timeScale = 4.0;
             this.loadingSp.setAnimation(0, loadingSpNames[2], false);
         }
     }
@@ -132,12 +136,14 @@ export class MainScene extends BaseComponent {
     /**loading动画完成 */
     onLoadingAnimationComplete(trackEntry: sp.spine.TrackEntry) {
         if (this._loadCount <= 0 && trackEntry.animation.name == loadingSpNames[2]) {
+            console.timeEnd("loadingSp");
             this.loadingSp.clearAnimations();
             this.loadingNode.active = false;
         }
     }
     // 初始化数据
     initData() {
+        console.time("MainScene");
         ViewsMgr.initLayer(this.sceneLayer, this.popupLayer, this.tipLayer, this.loadingLayer);
 
         let call = this.getLoadOverCall();
@@ -154,7 +160,12 @@ export class MainScene extends BaseComponent {
         this._buildingEditCtl = new BuildEditCtl(this, this.getLoadOverCall());
         this._landEditCtl = new LandEditCtl(this, this.getLoadOverCall());
         this._recycleCtl = new RecycleCtl(this, this.getLoadOverCall());
-        this._mapUICtl = new MapUICtl(this, this.getLoadOverCall());
+        console.time("MapUICtl");
+        call = this.getLoadOverCall();
+        this._mapUICtl = new MapUICtl(this, () => {
+            console.timeEnd("MapUICtl");
+            if (call) call();
+        });
     }
     // 初始化事件
     initEvent() {
