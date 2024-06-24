@@ -74,7 +74,7 @@ export class CloudModel extends BaseComponent {
     }
     public set unlockTime(leftTime: number) {
         if (null != leftTime) {
-            console.log("set unlockTime", leftTime);
+            // console.log("set unlockTime", leftTime);
             this._unlockTime = ToolUtil.now() + leftTime;
             this.label.node.active = true;
             if (leftTime > 0) {
