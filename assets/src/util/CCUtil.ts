@@ -16,12 +16,12 @@ export default class CCUtil {
         if (node && node.on && isValid(node, true)) {
             let touchFun = () => {
                 let now = new Date().getTime();
-                let dt = now - this.clickLastTime;
+                let dt = now - this.lastClickTime;
                 if (dt < 150) {
-                    console.log("点击间隔过于频繁,过滤", dt);
+                    console.log("点击间隔过于频繁,过滤", now, this.lastClickTime, dt);
                     return;
                 }
-                this.clickLastTime = now;
+                this.lastClickTime = now;
                 CCUtil.clickCall(node);
                 if (callback) { callback.call(target); }
             }
