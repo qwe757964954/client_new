@@ -8,7 +8,6 @@ import { User } from '../../models/User';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TkServer } from '../../service/TaskService';
-import { NavTitleView } from '../common/NavTitleView';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { CongratulationsView } from './CongratulationsView';
 import { DailyTaskView } from './DailyTaskView';
@@ -205,7 +204,7 @@ export class WeekTaskView extends BaseView {
     }
 
     private initNavTitle() {
-        this.createNavigation("每周任务", () => {
+        this.createNavigation("每周任务",this.top_layout, () => {
             ViewsManager.instance.closeView(PrefabType.WeekTaskView);
         });
     }
@@ -216,11 +215,6 @@ export class WeekTaskView extends BaseView {
             { type: AmoutType.Coin, num: User.coin },
             { type: AmoutType.Energy, num: User.stamina }
         ]);
-    }
-
-    private async createNavigation(title: string, onBack: () => void) {
-        let navScript: NavTitleView = await ViewsManager.addNavigation(this.top_layout, 0, 0);
-        navScript.updateNavigationProps(title, onBack);
     }
 
     private async createTopAmout(dataArr: AmoutItemData[]) {

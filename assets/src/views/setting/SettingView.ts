@@ -3,7 +3,6 @@ import { PrefabType } from '../../config/PrefabType';
 import GlobalConfig from '../../GlobalConfig';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { BaseView } from '../../script/BaseView';
-import { NavTitleView } from '../common/NavTitleView';
 const { ccclass, property } = _decorator;
 
 @ccclass('SettingView')
@@ -27,15 +26,12 @@ export class SettingView extends BaseView {
     public aboutUsTab:Button = null;    // 关于我们TAB
     // private _mainScene:MainScene = null;//主场景
     private initNavTitle() {
-        this.createNavigation("设置", () => {
-            ViewsManager.instance.closeView(PrefabType.WeekTaskView);
+        this.createNavigation("设置",this.top_layout, () => {
+            ViewsManager.instance.closeView(PrefabType.SettingView);
         });
     }
 
-    private async createNavigation(title: string, onBack: () => void) {
-        let navScript: NavTitleView = await ViewsManager.addNavigation(this.top_layout, 0, 0);
-        navScript.updateNavigationProps(title, onBack);
-    }
+    
     //初始化
     public initUI():void {
         GlobalConfig.initResolutionRules();

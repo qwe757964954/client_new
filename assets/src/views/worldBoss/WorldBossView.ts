@@ -5,7 +5,6 @@ import { ViewsManager } from '../../manager/ViewsManager';
 import { User } from '../../models/User';
 import { BaseView } from '../../script/BaseView';
 import CCUtil from '../../util/CCUtil';
-import { NavTitleView } from '../common/NavTitleView';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { BossChallengeView } from './BossChallengeView';
 import WordBossArray, { BossGameInfo, BossInfo, WordBossInfoData, WorldBossResponse } from './BossInfo';
@@ -66,10 +65,8 @@ export class WorldBossView extends BaseView {
 
     /**初始化导航栏 */
     initNavTitle(){
-        ViewsManager.addNavigation(this.top_layout,0,0).then((navScript: NavTitleView) => {
-            navScript.updateNavigationProps(`挑战BOSS`,()=>{
-                ViewsManager.instance.closeView(PrefabType.WorldBossView);
-            });
+        this.createNavigation("挑战BOSS",this.top_layout, () => {
+            ViewsManager.instance.closeView(PrefabType.WorldBossView);
         });
     }
     /**初始化游戏数值 */

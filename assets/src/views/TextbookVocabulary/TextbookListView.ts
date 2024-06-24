@@ -7,7 +7,6 @@ import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
-import { NavTitleView } from '../common/NavTitleView';
 import { MyContentItem } from './MyContentItem';
 import { ITextbookRemindData, TextbookRemindView } from './TextbookRemindView';
 const { ccclass, property } = _decorator;
@@ -87,11 +86,9 @@ export class TextbookListView extends BaseView {
     }
     /**初始化导航栏 */
     initNavTitle() {
-        ViewsManager.addNavigation(this.top_layout, 0, 0).then((navScript: NavTitleView) => {
-            navScript.updateNavigationProps("词书列表", () => {
-                ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
-                    ViewsManager.instance.closeView(PrefabType.TextbookListView);
-                });
+        this.createNavigation("词书列表",this.top_layout, () => {
+            ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
+                ViewsManager.instance.closeView(PrefabType.TextbookListView);
             });
         });
     }

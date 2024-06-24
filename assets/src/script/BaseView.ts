@@ -11,7 +11,9 @@
 import { Component, Node, Prefab, Widget, instantiate } from "cc";
 import { PrefabTypeEntry } from "../config/PrefabType";
 import { ResLoader } from "../manager/ResLoader";
+import { ViewsManager } from "../manager/ViewsManager";
 import { EventMgr } from "../util/EventManager";
+import { NavTitleView } from "../views/common/NavTitleView";
 export class BaseView extends Component{
 	protected _className = "BaseView";
     /**子类继承的onload函数 */
@@ -130,6 +132,12 @@ export class BaseView extends Component{
 		this.onDestroyBefore()
 		this.removeEvent();
 	};
+	protected async createNavigation(title: string, top_layout: Node,onBack: () => void) {
+        let navScript: NavTitleView = await ViewsManager.addNavigation(top_layout, 0, 0);
+        navScript.updateNavigationProps(title, onBack);
+    }
+
+
 	/**从prefab加载预制体 */
 	protected async loadAndInitPrefab(prefabType: PrefabTypeEntry, parentNode: Node, widgetOptions?: Partial<Widget>): Promise<Node> {
         try {

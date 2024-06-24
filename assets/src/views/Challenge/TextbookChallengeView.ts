@@ -11,7 +11,6 @@ import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
 import StorageUtil from '../../util/StorageUtil';
-import { NavTitleView } from '../common/NavTitleView';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { ChallengeRemindView, IChallengeRemindData } from '../TextbookVocabulary/ChallengeRemindView';
 import { SettingPlanView } from '../TextbookVocabulary/SettingPlanView';
@@ -147,11 +146,9 @@ export class TextbookChallengeView extends BaseView {
     }
     /**初始化导航栏 */
     initNavTitle(){
-        ViewsManager.addNavigation(this.top_layout,0,0).then((navScript: NavTitleView) => {
-            navScript.updateNavigationProps("我的词书",()=>{
-                ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);
-                GlobalConfig.initRessolutionHeight();
-            });
+        this.createNavigation("我的词书",this.top_layout, () => {
+            ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);
+            GlobalConfig.initRessolutionHeight();
         });
     }
     /**初始化游戏数值 */

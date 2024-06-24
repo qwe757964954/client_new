@@ -261,15 +261,11 @@ export class BreakThroughView extends BaseView {
     }
 
     async initNavTitle() {
-        const navScript = await ViewsManager.addNavigation(this.top_layout, 0, 0);
-        navScript.updateNavigationProps(
-            `${this._bookData.book_name} ${this._bookData.grade}`,
-            () => {
-                ViewsManager.instance.showView(PrefabType.TextbookChallengeView, () => {
-                    ViewsManager.instance.closeView(PrefabType.BreakThroughView);
-                });
-            }
-        );
+        this.createNavigation(`${this._bookData.book_name} ${this._bookData.grade}`,this.top_layout, () => {
+            ViewsManager.instance.showView(PrefabType.TextbookChallengeView, () => {
+                ViewsManager.instance.closeView(PrefabType.BreakThroughView);
+            });
+        });
     }
 
     async initAmout() {

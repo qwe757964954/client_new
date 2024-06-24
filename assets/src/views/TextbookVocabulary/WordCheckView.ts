@@ -7,7 +7,6 @@ import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
 import List from '../../util/list/List';
-import { NavTitleView } from '../common/NavTitleView';
 import { TabTopView } from './TabTopView';
 import { WordCheckItem } from './WordCheckItem';
 import { WordSortView } from './WordSortView';
@@ -63,11 +62,9 @@ export class WordCheckView extends BaseView {
 
     /**初始化导航栏 */
     initNavTitle(){
-        ViewsManager.addNavigation(this.top_layout,0,0).then((navScript: NavTitleView) => {
-            navScript.updateNavigationProps("单词列表",()=>{
-                ViewsManager.instance.closeView(PrefabType.WordCheckView);
+        this.createNavigation("单词列表",this.top_layout, () => {
+            ViewsManager.instance.closeView(PrefabType.WordCheckView);
                 GlobalConfig.initRessolutionHeight();
-            });
         });
     }
     /** 初始化模块事件 */

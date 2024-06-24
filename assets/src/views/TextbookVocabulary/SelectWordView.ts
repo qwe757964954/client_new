@@ -8,7 +8,6 @@ import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
 import List from '../../util/list/List';
-import { NavTitleView } from '../common/NavTitleView';
 import { RightNavView } from './RightNavView';
 import { PlanSaveData, SettingPlanView } from './SettingPlanView';
 import { TabContentItem } from './TabContentItem';
@@ -123,11 +122,9 @@ export class SelectWordView extends BaseView {
 
     /**初始化导航栏 */
     initNavTitle(){
-        ViewsManager.addNavigation(this.top_layout,0,0).then((navScript: NavTitleView) => {
-            navScript.updateNavigationProps("添加词书",()=>{
-                ViewsManager.instance.closeView(PrefabType.SelectWordView);
+        this.createNavigation("添加词书",this.top_layout, () => {
+            ViewsManager.instance.closeView(PrefabType.SelectWordView);
                 GlobalConfig.initRessolutionHeight();
-            });
         });
     }
     /**初始化tab选项 */

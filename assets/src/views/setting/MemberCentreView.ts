@@ -1,9 +1,9 @@
-import { _decorator, Component, Node } from 'cc';
+import { _decorator, Node } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { User } from '../../models/User';
+import { BaseView } from '../../script/BaseView';
 import List from '../../util/list/List';
-import { NavTitleView } from '../common/NavTitleView';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { BottomItem, BottomItemData, ButtomSelectType } from './BottomItem';
 import { MemberItem, MemberPriceData } from './MemberItem';
@@ -13,7 +13,7 @@ const { ccclass, property } = _decorator;
 
 
 @ccclass('MemberCentreView')
-export class MemberCentreView extends Component {
+export class MemberCentreView extends BaseView {
     @property(Node)
     public top_layout:Node = null;          // 个人中心
 
@@ -25,12 +25,6 @@ export class MemberCentreView extends Component {
 
     private _bottomDataArr:BottomItemData[] = [];
     private _memberPriceArr:MemberPriceData[] = [];
-    protected onLoad(): void {
-        
-    }
-    start() {
-        this.initUI();
-    }
     protected initUI(){
         this.initNavTitle();
         this.initAmout();
@@ -39,10 +33,8 @@ export class MemberCentreView extends Component {
     }
     /**初始化导航栏 */
     initNavTitle(){
-        ViewsManager.addNavigation(this.top_layout,0,0).then((navScript: NavTitleView) => {
-            navScript.updateNavigationProps("会员中心",()=>{
-                ViewsManager.instance.closeView(PrefabType.MemberCentreView);
-            });
+        this.createNavigation("会员中心",this.top_layout, () => {
+            ViewsManager.instance.closeView(PrefabType.GrammarVocabularyView);
         });
     }
     /**初始化游戏数值 */
