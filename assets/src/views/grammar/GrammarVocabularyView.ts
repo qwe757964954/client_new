@@ -4,7 +4,6 @@ import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { BaseView } from '../../script/BaseView';
 import List from '../../util/list/List';
-import { NavTitleView } from '../common/NavTitleView';
 import { ResponseData, VocabularyParentNode } from './GrammarInfo';
 import { VocabularyItem } from './VocabularyItem';
 const { ccclass, property } = _decorator;
@@ -48,10 +47,8 @@ export class GrammarVocabularyView extends BaseView {
 
     /**初始化导航栏 */
     initNavTitle(){
-        ViewsManager.addNavigation(this.top_layout,0,0).then((navScript: NavTitleView) => {
-            navScript.updateNavigationProps(`语法训练`,()=>{
-                ViewsManager.instance.closeView(PrefabType.GrammarVocabularyView);
-            });
+        this.createNavigation(`语法训练`,this.top_layout, () => {
+            ViewsManager.instance.closeView(PrefabType.GrammarVocabularyView);
         });
     }
     onLoadVocabularyGrid(item:Node, idx:number){

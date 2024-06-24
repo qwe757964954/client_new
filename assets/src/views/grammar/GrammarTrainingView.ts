@@ -4,7 +4,6 @@ import { ViewsManager } from '../../manager/ViewsManager';
 import { User } from '../../models/User';
 import { BaseView } from '../../script/BaseView';
 import List from '../../util/list/List';
-import { NavTitleView } from '../common/NavTitleView';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { GrammarTipItem } from './GrammarTipItem';
 import { GrammarTrainingItem } from './GrammarTrainingItem';
@@ -66,10 +65,8 @@ export class GrammarTrainingView extends BaseView {
 
     /**初始化导航栏 */
     initNavTitle(){
-        ViewsManager.addNavigation(this.top_layout,0,0).then((navScript: NavTitleView) => {
-            navScript.updateNavigationProps(`语法训练`,()=>{
-                ViewsManager.instance.closeView(PrefabType.GrammarTrainingView);
-            });
+        this.createNavigation(`语法训练`,this.top_layout, () => {
+            ViewsManager.instance.closeView(PrefabType.GrammarTrainingView);
         });
     }
     /**初始化游戏数值 */

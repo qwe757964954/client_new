@@ -1,13 +1,16 @@
-import { _decorator, Button, Color, Component, Label, Node } from 'cc';
+import { _decorator, Button, Color, Label, Node } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import GlobalConfig from '../../GlobalConfig';
 import { ViewsManager } from '../../manager/ViewsManager';
+import { BaseView } from '../../script/BaseView';
 const { ccclass, property } = _decorator;
 
 @ccclass('SettingView')
-export class SettingView extends Component {
+export class SettingView extends BaseView {
     @property(Node)
     public center:Node = null;          // 个人中心
+    @property(Node)
+    public top_layout:Node = null;          // 个人中心
     @property(Node)
     public sound:Node = null;           // 声音设置
     @property(Node)
@@ -21,25 +24,18 @@ export class SettingView extends Component {
     public accountTab:Button = null;    // 账户设置TAB
     @property(Button)
     public aboutUsTab:Button = null;    // 关于我们TAB
-
-
     // private _mainScene:MainScene = null;//主场景
-
-    start() {
-        GlobalConfig.initResolutionRules();
-        this.init();
+    private initNavTitle() {
+        this.createNavigation("设置",this.top_layout, () => {
+            ViewsManager.instance.closeView(PrefabType.SettingView);
+        });
     }
 
-    update(deltaTime: number) {
-        
-    }
-    //销毁
-    protected onDestroy(): void {
-        this.destoryEvent();
-    }
+    
     //初始化
-    public init():void {
-        // this.initEvent();
+    public initUI():void {
+        GlobalConfig.initResolutionRules();
+        this.initNavTitle();
         this.btnChangeTabFunc(null, "Center");
     }
     // //设置主场景

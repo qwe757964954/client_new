@@ -64,4 +64,6 @@ export interface inf_SpineAniCreate {
     processCallFunc?: (trackEntry: sp.spine.TrackEntry, event: sp.spine.Event | number, skeleton: sp.Skeleton) => void,
     /** 帧刷数量 值越大 刷新越快 不能超过当前最大帧率 */
     frameNum?: number,
+    /** 单个资源加载 */
+    simpleLoad?: boolean,
 }

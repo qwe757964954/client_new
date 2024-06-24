@@ -1,10 +1,12 @@
 import { _decorator, Button, Component, instantiate, isValid, Label, Node, Prefab, Sprite, tween, UITransform, Vec3 } from 'cc';
 import { EventType } from '../../../config/EventType';
+import { GameRes } from '../../../GameRes';
 import { DataMgr } from '../../../manager/DataMgr';
 import { ViewsMgr } from '../../../manager/ViewsManager';
 import { BossLevelData, MapLevelData } from '../../../models/AdventureModel';
 import CCUtil from '../../../util/CCUtil';
 import EventManager, { EventMgr } from '../../../util/EventManager';
+import FileUtil from '../../../util/FileUtil';
 import List from '../../../util/list/List';
 import { BaseItem } from '../../common/BaseItem';
 import { MonsterModel } from './MonsterModel';
@@ -176,7 +178,7 @@ export class rightPanelchange extends Component {
         if (this._data.game_modes && this._data.game_modes === "word") {
             let big_id = this._data.big_id.replace("Unit ", "").trim();
             this.levelTxt.string = big_id + '-' + this._data.small_id;
-            monsterModel.init("spine/TextbookVocabulary/" + "10018");
+            monsterModel.init(FileUtil.removeFileExtension(GameRes.Spine_Stitches.path));
             this.monsterNameTxt.string = "缝合怪";
         } else {
             let levelData = DataMgr.instance.getAdvLevelConfig(+this._data.big_id, +this._data.small_id);

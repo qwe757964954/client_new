@@ -1,5 +1,6 @@
 import { _decorator, BlockInputEvents, Button, instantiate, isValid, Label, Node, Prefab, Sprite, tween, UIOpacity, UITransform, Vec3, view } from 'cc';
 import { EventType } from '../../../config/EventType';
+import { GameRes } from '../../../GameRes';
 import GlobalConfig from '../../../GlobalConfig';
 import { AdvLevelConfig, BookLevelConfig } from '../../../manager/DataMgr';
 import { LoadManager } from '../../../manager/LoadManager';
@@ -17,6 +18,7 @@ import { BaseView } from '../../../script/BaseView';
 import { TBServer } from '../../../service/TextbookService';
 import CCUtil from '../../../util/CCUtil';
 import EventManager, { EventMgr } from '../../../util/EventManager';
+import FileUtil from '../../../util/FileUtil';
 import { ToolUtil } from '../../../util/ToolUtil';
 import { SmallMonsterModel } from '../../common/SmallMonsterModel';
 import { MonsterModel } from '../common/MonsterModel';
@@ -275,7 +277,7 @@ export class BaseModeView extends BaseView {
             let scale = this._monster.getScale();
             this._monster.scale = new Vec3(-scale.x, scale.y, 1);
             let monsterModel = this._monster.getComponent(MonsterModel);
-            monsterModel.init("spine/TextbookVocabulary/" + "10018", true);
+            monsterModel.init(FileUtil.removeFileExtension(GameRes.Spine_Stitches.path), true);
             if (this.gameMode == GameMode.Exam) {
                 this.monster.getComponent(UIOpacity).opacity = 125;
             }
@@ -289,7 +291,7 @@ export class BaseModeView extends BaseView {
             let scale = this._monster.getScale();
             this._monster.scale = new Vec3(-scale.x, scale.y, 1);
             let monsterModel = this._monster.getComponent(MonsterModel);
-            monsterModel.init("spine/TextbookVocabulary/" + "10018", true);
+            monsterModel.init(FileUtil.removeFileExtension(GameRes.Spine_Stitches.path), true);
             monsterModel.setHp(this._rightNum, this._levelData.wordCount);
         }
     }

@@ -140,7 +140,14 @@ export class ScrollViewExtra extends Component {
                 this._selectCallFunc(parseInt(jsItem.labNum.string));
             }
         // }
-        
+        let numberString = jsItem.labNum.string
+        if(parseInt(numberString) === this.totalCount){
+            let max_count = this.totalCount - 1;
+            const max_target_offset = max_count * this.listViewExtra.itemHeight;
+            this.updateListSelectChildren();
+            const scrollOffset = this.scrollView.getScrollOffset();
+            this.scrollView.scrollToOffset(new math.Vec2(scrollOffset.x, max_target_offset),0);
+        }
         
     }
 
@@ -179,6 +186,7 @@ export class ScrollViewExtra extends Component {
     /** Scroll to the item with the given number */
     scrollToNumber(numberString: string) {
         // Find the index of the item with the given number in the list data
+        console.log("scrollToNumber.....",numberString);
         const index = this.listData.findIndex((item: string) => item === numberString);
         if (index !== -1) {
             this.updateListSelectChildren();

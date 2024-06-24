@@ -1,4 +1,4 @@
-import { _decorator, Component, instantiate, Label, Layout, Node, Prefab } from 'cc';
+import { _decorator, instantiate, Label, Layout, Node, Prefab } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import GlobalConfig from '../../GlobalConfig';
@@ -6,10 +6,10 @@ import { DataMgr, EditInfo, EditType } from '../../manager/DataMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { BuildingIDType } from '../../models/BuildingModel';
 import { User } from '../../models/User';
+import { BaseView } from '../../script/BaseView';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
 import { ToolUtil } from '../../util/ToolUtil';
-import { NavTitleView } from '../common/NavTitleView';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { ShopClassItem } from './ShopClassItem';
 import { ShopGoodsItem } from './ShopGoodsItem';
@@ -35,7 +35,7 @@ const shopClass = [
 ]
 
 @ccclass('ShopUIView')
-export class ShopUIView extends Component {
+export class ShopUIView extends BaseView {
     @property(Node)
     public bg: Node = null;
     @property(Node)
@@ -60,16 +60,6 @@ export class ShopUIView extends Component {
 
     private _editType: EditType = null;//编辑类型
     private _itemsData: EditInfo[] = null;//编辑数据
-
-    protected onLoad(): void {
-        this.initEvent();
-        this.init();
-    }
-
-    init() {
-        this.initUI();
-    }
-
     initUI() {
         let scale = ToolUtil.getValue(GlobalConfig.WIN_DESIGN_RATE, 0.1, 1.0);
         CCUtil.setNodeScale(this.bg, scale);
@@ -166,10 +156,8 @@ export class ShopUIView extends Component {
 
     /**初始化导航栏 */
     initNavTitle() {
-        ViewsManager.addNavigation(this.top_layout, 0, 0).then((navScript: NavTitleView) => {
-            navScript.updateNavigationProps(this._titleAry[0], () => {
-                ViewsManager.instance.closeView(PrefabType.ShopUIView);
-            });
+        this.createNavigation("会员中心",this.top_layout, () => {
+            ViewsManager.instance.closeView(PrefabType.ShopUIView);
         });
     }
     /**初始化游戏数值 */
