@@ -1,11 +1,11 @@
-import { Button, EventKeyboard, Input, KeyCode, Layers, Node, NodeEventType, SpriteFrame, UITransform, Vec3, Widget, director, gfx, input, isValid } from "cc";
+import { Button, EventKeyboard, EventTouch, Input, KeyCode, Layers, Node, NodeEventType, SpriteFrame, UITransform, Vec3, Widget, director, gfx, input, isValid } from "cc";
 import { SoundMgr } from "../manager/SoundMgr";
 
 export default class CCUtil {
-    // public static clickCall(event: EventTouch) {
-    // console.log("clickCall", event.currentTarget._name);
-    public static clickCall(node: Node) {
-        console.log("clickCall", node.name);
+    public static clickCall(event: EventTouch) {
+        console.log("clickCall", event.currentTarget._name);
+        // public static clickCall(node: Node) {
+        // console.log("clickCall", node.name);
         SoundMgr.click();
     }
     private static lastClickTime = 0;
@@ -14,7 +14,7 @@ export default class CCUtil {
         if (!obj) return;
         let node = obj.node ? obj.node : obj;
         if (node && node.on && isValid(node, true)) {
-            let touchFun = () => {
+            let touchFun = (e: EventTouch) => {
                 let now = new Date().getTime();
                 let dt = now - this.lastClickTime;
                 if (dt < 150) {
@@ -22,8 +22,8 @@ export default class CCUtil {
                     return;
                 }
                 this.lastClickTime = now;
-                CCUtil.clickCall(node);
-                if (callback) { callback.call(target); }
+                CCUtil.clickCall(e);
+                if (callback) { callback.call(target, e); }
             }
             node.on(NodeEventType.TOUCH_END, touchFun);
             node["touchFun"] = touchFun;
