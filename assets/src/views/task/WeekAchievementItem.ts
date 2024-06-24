@@ -1,6 +1,9 @@
 import { Label, Node, UITransform, _decorator } from 'cc';
+import { TextConfig } from '../../config/TextConfig';
 import { ItemID } from '../../export/ItemConfig';
 import { ArchConfig, ItemData } from '../../manager/DataMgr';
+import { ViewsManager } from '../../manager/ViewsManager';
+import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
 import ListItem from '../../util/list/ListItem';
 import { RewardItem } from '../common/RewardItem';
@@ -33,6 +36,18 @@ export class WeekAchievementItem extends ListItem {
     private _propsData: ItemData[] = [];
 
     protected start(): void {
+        this.initEvent();
+    }
+
+    initEvent(){
+        CCUtil.onBtnClick(this.challenge_btn,()=>{
+            ViewsManager.showTip(TextConfig.Function_Tip);
+            // EventMgr.dispatch(EventType.Challenge_Week_Task_Reward,this._data);
+        })
+        CCUtil.onBtnClick(this.btn_task_go,()=>{
+            ViewsManager.showTip(TextConfig.Function_Tip);
+            // EventMgr.dispatch(EventType.Challenge_Week_Task_Reward,this._data);
+        })
     }
 
     updateAchievementProps(data: ArchConfig) {

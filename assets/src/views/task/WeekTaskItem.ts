@@ -1,5 +1,7 @@
 import { Label, Node, ProgressBar, _decorator } from 'cc';
 import { EventType } from '../../config/EventType';
+import { TextConfig } from '../../config/TextConfig';
+import { ViewsManager } from '../../manager/ViewsManager';
 import { TaskBaseData, TaskStatusType } from '../../models/TaskModel';
 import CCUtil from '../../util/CCUtil';
 import { EventMgr } from '../../util/EventManager';
@@ -38,6 +40,10 @@ export class WeekTaskItem extends ListItem {
     initEvent(){
         CCUtil.onBtnClick(this.challenge_btn,()=>{
             EventMgr.dispatch(EventType.Challenge_Week_Task_Reward,this._data);
+        })
+        CCUtil.onBtnClick(this.task_go_btn,()=>{
+            ViewsManager.showTip(TextConfig.Function_Tip);
+            // EventMgr.dispatch(EventType.Challenge_Week_Task_Reward,this._data);
         })
     }
 

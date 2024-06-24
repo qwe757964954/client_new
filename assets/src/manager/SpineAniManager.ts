@@ -1,6 +1,7 @@
 import { Node, Vec3, _decorator, assetManager, error, sp } from 'cc';
 import { EventType } from '../config/EventType';
 import { BaseControll } from '../script/BaseControll';
+import FileUtil from '../util/FileUtil';
 import ImgUtil from '../util/ImgUtil';
 import { ObjectUtil } from '../util/ObjectUtil';
 import { inf_SpineAniCreate, inf_UIConfig } from './InterfaceDefines';
@@ -63,8 +64,9 @@ export class SpineAniManager extends BaseControll {
 
         const filePathList = dirPath.split("/");
         const preKey = `${bundle}|${filePathList.length > 1 ? filePathList[0] : ""}`;
+        /**使用父类作为map预加载资源路径 ，减少资源消耗 */
 		if(filePathList.length > 1){
-			dirPath = filePathList[0];
+			dirPath = FileUtil.getParentDirectory(dirPath);
 		}
         assetManager.loadBundle(bundle, (err, bundle) => {
             if (err) {

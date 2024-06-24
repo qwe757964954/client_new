@@ -60,4 +60,27 @@ export default class FileUtil{
         // if(!this._logConsole) return;
         // this._logConsole.log(ComUtil.nowMsTimeStr(),...args);
     }
+
+    /**
+     * 兼容不同平台路径分隔符，获取路径的父目录
+     * @param filePath - 输入的文件路径
+     * @returns 父目录路径
+     */
+    public static getParentDirectory(filePath: string): string {
+        // 标准化路径为 Unix 风格的分隔符
+        const normalizedPath = filePath.replace(/\\/g, '/');
+
+        // 去除尾部的斜杠
+        const cleanedPath = normalizedPath.endsWith('/') ? normalizedPath.slice(0, -1) : normalizedPath;
+
+        // 提取父目录
+        const lastSlashIndex = cleanedPath.lastIndexOf('/');
+        if (lastSlashIndex === -1) {
+            return '';
+        }
+
+        return cleanedPath.substring(0, lastSlashIndex);
+    }
 }
+
+// export const FileMgr = FileUtil.instance();

@@ -30,6 +30,7 @@ export class TaskAwardView extends BaseView {
     updateTaskAwardProgress(val: number,weekly_box:BoxWeekData[]) {
         this._weekly_box = weekly_box;
         this._taskProcess = val;
+        val = val ? val:0;
         this.award_progress.progress = val / 100;
         this.progress_label.string = `${val}`;
         this.award_scroll.numItems = boxAniData.length;

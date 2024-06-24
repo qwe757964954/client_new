@@ -71,9 +71,12 @@ export class MainUIView extends Component {
             this.btnReview.node.position = this.btnReviewFix.position;
             this.btnTranslate.node.position = this.btnTranslateFix.position;
         }
-        /**骨骼资源批量预加载 */
-        SpMgr.preLoadSkinAniDir("resources", "spine", null, null)
         this.labelNick.string = User.nick;
+        this.scheduleOnce(()=>{
+            /**骨骼资源批量预加载 */
+            SpMgr.preLoadSkinAniDir("resources", "spine/chest/chest_common", null, null)
+            SpMgr.preLoadSkinAniDir("resources", "spine/monster/adventure", null, null)
+        })
     }
     //设置主场景
     public set mainScene(mainScene: MainScene) {
@@ -108,8 +111,8 @@ export class MainUIView extends Component {
     }
     //头像点击
     public onClickHead() {
-        // ViewsManager.instance.showView(PrefabType.SettingView);
-        ViewsManager.showTip(TextConfig.Function_Tip);
+        ViewsManager.instance.showView(PrefabType.SettingView);
+        // ViewsManager.showTip(TextConfig.Function_Tip);
     }
     //菜单点击
     public onClickMenu() {
