@@ -179,6 +179,7 @@ export class ScrollViewExtra extends Component {
     /** Scroll to the item with the given number */
     scrollToNumber(numberString: string) {
         // Find the index of the item with the given number in the list data
+        console.log("scrollToNumber.....",numberString);
         const index = this.listData.findIndex((item: string) => item === numberString);
         if (index !== -1) {
             this.updateListSelectChildren();

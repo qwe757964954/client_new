@@ -5,6 +5,7 @@ import FileUtil from '../util/FileUtil';
 import ImgUtil from '../util/ImgUtil';
 import { ObjectUtil } from '../util/ObjectUtil';
 import { inf_SpineAniCreate, inf_UIConfig } from './InterfaceDefines';
+import { ResLoader } from './ResLoader';
 
 const { ccclass } = _decorator;
 
@@ -76,6 +77,7 @@ export class SpineAniManager extends BaseControll {
             }
             bundle.loadDir(dirPath, sp.SkeletonData,
                 (finished: number, total: number, item) => upFunc?.(finished, total, item),
+
                 (err, data: any) => {
                     if (err) {
                         error("加载目录时出错:", err);
@@ -121,13 +123,13 @@ export class SpineAniManager extends BaseControll {
         param.isPremult = param.isPremult ?? false;
         param.toPos = param.toPos ?? new Vec3(0, 0, 0);
         param.trackIndex = param.trackIndex ?? 0;
-
+        param.simpleLoad = param.simpleLoad ?? false;
         if (!param.parentNode) {
             error("父节点不存在。");
             return;
         }
 
-        this.setSpineAni(param.parentNode, param.resConf, param.trackIndex, param.aniName, param.isLoop, param.isPremult, param.skin, param.toPos, param.callStartFunc, param.callEndFunc, param.oneLoopEndcallFunc, param.processCallFunc, param.frameNum, param.aniKey);
+        this.setSpineAni(param.parentNode, param.resConf, param.trackIndex, param.aniName, param.isLoop, param.isPremult, param.skin, param.toPos, param.callStartFunc, param.callEndFunc, param.oneLoopEndcallFunc, param.processCallFunc, param.frameNum, param.aniKey,param.simpleLoad);
     }
 
     /**
@@ -206,7 +208,8 @@ export class SpineAniManager extends BaseControll {
         oneLoopEndCallFunc?: (trackEntry: sp.spine.TrackEntry, skeleton: sp.Skeleton) => void,
         processCallFunc?: (trackEntry: sp.spine.TrackEntry, event: sp.spine.Event | number, skeleton: sp.Skeleton) => void,
         frameNum?: number,
-        aniKey: string = ""
+        aniKey: string = "",
+        simpleLoad: boolean = true
     ): Node | undefined {
         const key = `${resData.bundle}|${resData.path}|${name}|${aniKey}`;
         if (!parentNode || !parentNode.isValid) {
@@ -219,8 +222,11 @@ export class SpineAniManager extends BaseControll {
 
         const node = ImgUtil.create_2DNode(key);
         node.addComponent(sp.Skeleton);
-
-        this.setAnimationData(node, resData, trackIndex, name, loop, premultipliedAlpha, skin, startCallFunc, endCallFunc, oneLoopEndCallFunc, processCallFunc, frameNum);
+        if (simpleLoad) {
+            this.setAnimationDataSimple(node, resData, trackIndex, name, loop, premultipliedAlpha, skin, startCallFunc, endCallFunc, oneLoopEndCallFunc, processCallFunc, frameNum);
+        }else{
+            this.setAnimationData(node, resData, trackIndex, name, loop, premultipliedAlpha, skin, startCallFunc, endCallFunc, oneLoopEndCallFunc, processCallFunc, frameNum);
+        }
 
         if (pos) {
             node.position = pos;
@@ -230,6 +236,43 @@ export class SpineAniManager extends BaseControll {
         node["Anikey"] = key;
         this.AniNodeMap.set(key, node);
         return node;
+    }
+
+    /**
+     * 加载配置节点的单个动画数据
+     * @param node - 节点
+     * @param resData - 资源数据
+     * @param trackIndex - 轨道索引
+     * @param name - 动画名称
+     * @param loop - 是否循环
+     * @param premultipliedAlpha - 是否使用预乘 Alpha
+     * @param skin - 皮肤
+     * @param startCallFunc - 开始回调
+     * @param endCallFunc - 结束回调
+     * @param oneLoopEndCallFunc - 单次循环结束回调
+     * @param processCallFunc - 进程回调
+     * @param frameNum - 帧数
+     */
+    private setAnimationDataSimple(
+        node: Node,
+        resData: { bundle: string, path: string },
+        trackIndex: number,
+        name: string,
+        loop: boolean,
+        premultipliedAlpha: boolean,
+        skin: string | null = null,
+        startCallFunc?: (trackEntry: sp.spine.TrackEntry, skeleton: sp.Skeleton) => void,
+        endCallFunc?: (trackEntry: sp.spine.TrackEntry, skeleton: sp.Skeleton) => void,
+        oneLoopEndCallFunc?: (trackEntry: sp.spine.TrackEntry, skeleton: sp.Skeleton) => void,
+        processCallFunc?: (trackEntry: sp.spine.TrackEntry, event: sp.spine.Event | number, skeleton: sp.Skeleton) => void,
+        frameNum?: number
+    ): void {
+        if (!node || !node.isValid) return;
+        this.loadSkeletonData(node, resData, (skinData) => {
+            const skeleton = node.getComponent(sp.Skeleton)!;
+            skeleton.skeletonData = skinData;
+            this.configureSkeleton(node, skeleton, trackIndex, name, loop, premultipliedAlpha, skin, startCallFunc, endCallFunc, oneLoopEndCallFunc, processCallFunc, frameNum);
+        });
     }
 
     /**
@@ -267,14 +310,49 @@ export class SpineAniManager extends BaseControll {
 
         let skinData = this._skinAniMapping[key];
         if (!skinData) {
-            this.preLoadSkinAniDir(resData.bundle, resData.path, null, () => this.setAnimationData(node, resData, trackIndex, name, loop, premultipliedAlpha, skin, startCallFunc, endCallFunc, oneLoopEndCallFunc, processCallFunc, frameNum));
+            this.preLoadSkinAniDir(resData.bundle, resData.path, null, () => {
+                this.setAnimationData(node, resData, trackIndex, name, loop, premultipliedAlpha, skin, startCallFunc, endCallFunc, oneLoopEndCallFunc, processCallFunc, frameNum);
+            });
             return;
         }
-
         if (!node || !node.isValid) return;
-
         const skeleton = node.getComponent(sp.Skeleton)!;
         skeleton.skeletonData = skinData;
+        this.configureSkeleton(node, skeleton, trackIndex, name, loop, premultipliedAlpha, skin, startCallFunc, endCallFunc, oneLoopEndCallFunc, processCallFunc, frameNum);
+    }
+
+    
+
+
+    /**
+     * 配置 Skeleton 的动画和事件监听
+     * @param node - 节点
+     * @param skeleton - 骨骼组件
+     * @param trackIndex - 轨道索引
+     * @param name - 动画名称
+     * @param loop - 是否循环
+     * @param premultipliedAlpha - 是否使用预乘 Alpha
+     * @param skin - 皮肤
+     * @param startCallFunc - 开始回调
+     * @param endCallFunc - 结束回调
+     * @param oneLoopEndCallFunc - 单次循环结束回调
+     * @param processCallFunc - 进程回调
+     * @param frameNum - 帧数
+     */
+    private configureSkeleton(
+        node: Node,
+        skeleton: sp.Skeleton,
+        trackIndex: number,
+        name: string,
+        loop: boolean,
+        premultipliedAlpha: boolean,
+        skin: string | null,
+        startCallFunc?: (trackEntry: sp.spine.TrackEntry, skeleton: sp.Skeleton) => void,
+        endCallFunc?: (trackEntry: sp.spine.TrackEntry, skeleton: sp.Skeleton) => void,
+        oneLoopEndCallFunc?: (trackEntry: sp.spine.TrackEntry, skeleton: sp.Skeleton) => void,
+        processCallFunc?: (trackEntry: sp.spine.TrackEntry, event: sp.spine.Event | number, skeleton: sp.Skeleton) => void,
+        frameNum?: number
+    ): void {
         if (skin) skeleton.setSkin(skin);
         let isEndCallback = false;
 
@@ -301,22 +379,51 @@ export class SpineAniManager extends BaseControll {
         skeleton.setEventListener((trackEntry: sp.spine.TrackEntry, event: sp.spine.Event | number) => processCallFunc?.(trackEntry, event, skeleton));
 
         if (frameNum != null && frameNum > 0) {
-            if (!skeleton["realUpdateAnimation"]) {
-                skeleton["realUpdateAnimation"] = skeleton.updateAnimation;
-            }
-            let interval = 0;
-            skeleton.updateAnimation = (dt) => {
-                if ((interval + dt) < (1 / frameNum)) {
-                    interval += dt;
-                    return;
-                }
-                interval = 0;
-                skeleton["realUpdateAnimation"](dt);
-            };
+            this.setupFrameRateControl(skeleton, frameNum);
         }
 
         skeleton.premultipliedAlpha = premultipliedAlpha;
         skeleton.setAnimation(trackIndex, name, loop);
+    }
+
+    /**
+     * 设置帧率控制
+     * @param skeleton - 骨骼组件
+     * @param frameNum - 帧数
+     */
+    private setupFrameRateControl(skeleton: sp.Skeleton, frameNum: number): void {
+        if (!skeleton["realUpdateAnimation"]) {
+            skeleton["realUpdateAnimation"] = skeleton.updateAnimation;
+        }
+        let interval = 0;
+        skeleton.updateAnimation = (dt) => {
+            if ((interval + dt) < (1 / frameNum)) {
+                interval += dt;
+                return;
+            }
+            interval = 0;
+            skeleton["realUpdateAnimation"](dt);
+        };
+    }
+
+    /**
+     * 加载 SkeletonData 并设置 Skeleton
+     * @param node - 节点
+     * @param resData - 资源数据
+     * @param callback - 回调函数
+     */
+    private loadSkeletonData(
+        node: Node,
+        resData: { bundle: string, path: string },
+        callback: (skeletonData: sp.SkeletonData) => void
+    ): void {
+        ResLoader.instance.load(resData.bundle, resData.path, (err: Error | null, skinData: sp.SkeletonData) => {
+            if (err) {
+                console.error(err);
+                return;
+            }
+            callback(skinData);
+        });
     }
 
     /**

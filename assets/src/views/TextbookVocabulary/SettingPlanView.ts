@@ -58,6 +58,9 @@ export class SettingPlanView extends BasePopup {
     setLeftRightDatePick() {
         this.levelScroll.initSelectCallFunc((select_num:number)=>{
             if(this._levelSelect === select_num){
+                // if(this._levelSelect === this)
+                let days = TextbookUtil.calculateDays(this._totoal_level,select_num);
+                this.dayScroll.scrollToNumber(`${days}`)
                 return;
             }
             this._levelSelect = select_num;

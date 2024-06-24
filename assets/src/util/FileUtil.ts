@@ -81,6 +81,16 @@ export default class FileUtil{
 
         return cleanedPath.substring(0, lastSlashIndex);
     }
+    /**
+     * 去掉文件名后缀
+     * @param filePath - The full path of the file.
+     * @returns The file path without the file extension.
+     */
+    public static removeFileExtension(filePath: string): string {
+        // Use a regular expression to match the file extension
+        return filePath.replace(/\.[^/.]+$/, "");
+    }
+
 }
 
 // export const FileMgr = FileUtil.instance();
