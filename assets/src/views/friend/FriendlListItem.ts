@@ -1,13 +1,13 @@
 import { _decorator, Component, instantiate, Label, Node, Prefab, ScrollView, Sprite, SpriteFrame } from 'cc';
-import { FriendItemClickInfo, FriendUnitInfo } from '../../models/FriendModel';
-import { LoadManager } from '../../manager/LoadManager';
-import { ToolUtil } from '../../util/ToolUtil';
+import { EventType } from '../../config/EventType';
 import { TextConfig } from '../../config/TextConfig';
-import { MedalSimpleInfo } from '../achieve/AchieveDialogView';
-import { MedalIconItem } from './MedalIconItem';
+import { LoadManager } from '../../manager/LoadManager';
+import { FriendItemClickInfo, FriendUnitInfo } from '../../models/FriendModel';
 import CCUtil from '../../util/CCUtil';
 import EventManager from '../../util/EventManager';
-import { EventType } from '../../config/EventType';
+import { ToolUtil } from '../../util/ToolUtil';
+import { MedalSimpleInfo } from '../achieve/AchieveDialogView';
+import { MedalIconItem } from './MedalIconItem';
 const { ccclass, property } = _decorator;
 
 var islandName = { "1": "魔法森林", "2": "水下管道城", "3": "冰雪岛", "4": "宝藏岛", "5": "瀑布岛", "6": "迷之水底城", "7": "海底深渊", "8": "海底深渊", "9": "海底深渊", "10": "海底深渊" };
@@ -72,7 +72,7 @@ export class FriendListItem extends Component {
         this.removeEvent();
     }
 
-    async initData(data: FriendUnitInfo, selectFriend: FriendUnitInfo) {
+    async initData(data: FriendUnitInfo) {
         //console.log("FriendListItem initData: ", data);
         this._data = data;
         let headIdMap = { "101": 101, "1101": 101, "102": 102, "1102": 102, "103": 103, "1103": 103 }
@@ -88,22 +88,22 @@ export class FriendListItem extends Component {
         this.lblIsland.string = islandName[data.BigId] + "/" + strLevel; //"第" + data.SmallId + "关";
         this.lblCe.string = "" + data.Ce;
         //设置背景
-        let bSelect: boolean = false; //本单位是否选中
-        if (!selectFriend) {
-            bSelect = false;
-        }
-        else if (data.FriendId == selectFriend.FriendId) {
-            bSelect = true;
-        }
-        this.imgBg.spriteFrame = bSelect ? this.sprBgAry[0] : this.sprBgAry[1];
+        // let bSelect: boolean = false; //本单位是否选中
+        // if (!selectFriend) {
+        //     bSelect = false;
+        // }
+        // else if (data.FriendId == selectFriend.FriendId) {
+        //     bSelect = true;
+        // }
+        // this.imgBg.spriteFrame = bSelect ? this.sprBgAry[0] : this.sprBgAry[1];
         //设置未读信息
         let newMsgBox: Node = this.node.getChildByName("newMsgBox");
-        if (data.UnReadNum > 0 && (!selectFriend || (data.FriendId != selectFriend.FriendId))) {
-            newMsgBox.active = true;
-        }
-        else {
-            newMsgBox.active = false;
-        }
+        // if (data.UnReadNum > 0 && (!selectFriend || (data.FriendId != selectFriend.FriendId))) {
+        //     newMsgBox.active = true;
+        // }
+        // else {
+        //     newMsgBox.active = false;
+        // }
         if (data.UnReadNum > 0) {
             newMsgBox.getChildByName("newMsgTxt").getComponent(Label).string = "" + data.UnReadNum;
         }

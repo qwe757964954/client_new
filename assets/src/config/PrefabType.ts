@@ -158,8 +158,14 @@ export const PrefabType = {
     ReviewEndView: { path: "reviewPlan/ReviewEndView", zindex: Hierarchy.POPUPLAYER, tips: "复习结束" },
     /*********************************************复习规划end***********************************************************/
     /*********************************************社交 start***********************************************************/
-    FriendsDialogView: { path: "social/FriendsDialogView", zindex: Hierarchy.POPUPLAYER, tips: "好友界面" },
+    FriendsDialogView: { path: "social/FriendsDialogView",  componentName: "FriendsDialogView",zindex: Hierarchy.POPUPLAYER, tips: "好友界面" },
     FriendTalkDialogView: { path: "social/FriendTalkDialogView", zindex: Hierarchy.POPUPLAYER, tips: "好友聊天界面" },
+    FriendLeftTabView: { path: "social/FriendLeftTabView", zindex: Hierarchy.POPUPLAYER, tips: "好友tab界面" },
+    FriendPlayerInfoView: { path: "social/FriendPlayerInfoView", zindex: Hierarchy.POPUPLAYER, tips: "好友玩家信息界面" },
+    FriendListView: { path: "social/FriendListView", zindex: Hierarchy.POPUPLAYER, tips: "好友列表界面" },
+    FriendAddView: { path: "social/FriendAddView", zindex: Hierarchy.POPUPLAYER, tips: "好友添加界面" },
+    FriendMessageView: { path: "social/FriendMessageView", zindex: Hierarchy.POPUPLAYER, tips: "好友消息界面" },
+    FriendEmailView: { path: "social/FriendEmailView", zindex: Hierarchy.POPUPLAYER, tips: "好友邮件界面" },
     /*********************************************社交 End*************************************************************/
     /*********************************************背包 start***********************************************************/
     BagView: { path: "bag/BagView", zindex: Hierarchy.POPUPLAYER, tips: "背包界面" },

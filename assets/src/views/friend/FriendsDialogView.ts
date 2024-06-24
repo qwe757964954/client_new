@@ -1,6 +1,6 @@
-import { _decorator, Button, Component, EditBox, EventTouch, instantiate, Label, Layers, Node, Prefab, ScrollView, Sprite, SpriteFrame, tween, Tween, v3, Vec3 } from 'cc';
+import { _decorator, Button, EditBox, instantiate, Label, Layers, Node, Prefab, ScrollView, Sprite, SpriteFrame, tween, Tween, v3, Vec3 } from 'cc';
 import { EventType } from '../../config/EventType';
-import { PrefabType } from '../../config/PrefabType';
+import { PrefabType, PrefabTypeEntry } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { ItemData } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
@@ -9,34 +9,31 @@ import { EmailDataInfo, EmailItemClickInfo, FriendItemClickInfo, FriendResponseD
 import { RoleBaseModel } from '../../models/RoleBaseModel';
 import { User } from '../../models/User';
 import { ServiceMgr } from '../../net/ServiceManager';
+import { BasePopup } from '../../script/BasePopup';
 import CCUtil from '../../util/CCUtil';
-import { EffectUtil } from '../../util/EffectUtil';
 import EventManager from '../../util/EventManager';
 import { NodeUtil } from '../../util/NodeUtil';
 import { RewardItem } from '../common/RewardItem';
 import { EmailListItem } from './EmailListItem';
+import { FriendAddView } from './FriendAddView';
+import { FriendEmailView } from './FriendEmailView';
+import { FriendTabType } from './FriendInfo';
+import { FriendLeftTabView } from './FriendLeftTabView';
+import { FriendListView } from './FriendListView';
 import { FriendListItem } from './FriendlListItem';
-import { FriendSearchItem } from './FriendSearchItem';
+import { FriendMessageView } from './FriendMessageView';
+import { FriendPlayerInfoView } from './FriendPlayerInfoView';
 import { FriendTalkDialogView } from './FriendTalkDialogView';
 import { MsgListItem } from './MsgListItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('FriendsDialogView')
-export class FriendsDialogView extends Component {
+export class FriendsDialogView extends BasePopup {
     @property({ type: Node, tooltip: "关闭按钮" })
     public closeBtn: Node = null;
 
     @property({ type: Node, tooltip: "所有内容根结点" })
     public contentNd: Node = null;
-
-    @property({ type: Node, tooltip: "tab1切换按钮" })
-    public tab1: Node = null;
-    @property({ type: Node, tooltip: "tab2切换按钮" })
-    public tab2: Node = null;
-    @property({ type: Node, tooltip: "tab3切换按钮" }) // 
-    public tab3: Node = null;
-    @property({ type: Node, tooltip: "tab4切换按钮" })
-    public tab4: Node = null;
 
     @property({ type: Label, tooltip: "标题" }) // 
     public titleTxt: Label = null;
@@ -49,9 +46,6 @@ export class FriendsDialogView extends Component {
 
     @property({ type: Node, tooltip: "添加好友结点" })
     public addBox: Node = null;
-
-    @property({ type: Node, tooltip: "查找好友结果结点" }) //imgHead
-    public resultBox: Node = null;
 
     @property({ type: Sprite, tooltip: "查找好友结果头像" }) //
     public imgResultHead: Sprite = null;
@@ -92,17 +86,11 @@ export class FriendsDialogView extends Component {
     @property({ type: ScrollView, tooltip: "邮件奖励列表" })
     public awardList: ScrollView = null;
 
-    @property({ type: ScrollView, tooltip: "好友滚动列表" })
-    public friendList: ScrollView = null;
-
     @property({ type: ScrollView, tooltip: "加好友消息滚动列表" })
     public msgList: ScrollView = null;
 
     @property({ type: ScrollView, tooltip: "邮件滚动列表" })
     public emailList: ScrollView = null;
-
-    @property({ type: ScrollView, tooltip: "推荐好友滚动列表" })
-    public recommendList: ScrollView = null;
 
     @property({ type: Prefab, tooltip: "好友列表中的一项预制体" })
     public preFriendListUnit: Prefab = null;//
@@ -164,6 +152,9 @@ export class FriendsDialogView extends Component {
     @property({ type: [SpriteFrame], tooltip: "朋友列表里一项背景页的图片数组" }) // 0:选中 1: 未选中
     public sprfriendItemBgAry: SpriteFrame[] = [];
 
+    @property(Node)
+    public innerNode: Node = null;
+
     static INFOBOX_X_SHOW: number = 673; //infoBox伸展出来的X位置
     static INFOBOX_X_HIDE: number = 358; //infoBox隐藏时的X位置
 
@@ -174,7 +165,6 @@ export class FriendsDialogView extends Component {
     private _allIngoreBtnList: Node[] = []; //emailItemList
     private _friendItemList: Node[] = [];
     private _emailItemList: Node[] = [];
-    private _currentTab: string = "1"; //当前tab页
     private _selectFriend: FriendUnitInfo = null;
     private _selectItem: Node = null; //朋友列表中选中的那一项
     private _talkDialog = null;
@@ -185,7 +175,6 @@ export class FriendsDialogView extends Component {
     private _addBtnList: Node[] = null;
     private _role: Node = null; //朋友角色的骨骼动画结点
 
-    private _friendDataList: FriendUnitInfo[] = []; //我的好友列表
     private _recommendFriendDataList: FriendUnitInfo[] = []; //我的推荐好友列表
     private _applyFriendDataList: FriendUnitInfo[] = []; //我的申请好友列表
     private _emailDataList: EmailDataInfo[] = [];  //邮件列表数据
@@ -204,7 +193,17 @@ export class FriendsDialogView extends Component {
 
     private _canClose: boolean = false;
 
-    protected onLoad(): void {
+    private _leftTab:FriendLeftTabView = null;
+    private _rightPlayerInfo:FriendPlayerInfoView = null;
+    private _fListView:FriendListView = null;
+    private _fAddView:FriendAddView = null;
+    private _fMsgView:FriendMessageView = null;
+    private _fEmailView:FriendEmailView = null;
+    async initUI() {
+        this.enableClickBlankToClose([this.node.getChildByName("content")]).then(()=>{
+        });
+
+        /*
         this._isClose = false;
         this._isShowInfo = false;
         this._canClose = false;
@@ -213,7 +212,6 @@ export class FriendsDialogView extends Component {
         this._allIngoreBtnList = [];
         this._friendItemList = [];
         this._emailItemList = [];
-        this._currentTab = "1";
         this._selectFriend = null;
         this._talkDialog = null;
         this._selectMsg = null;
@@ -227,42 +225,87 @@ export class FriendsDialogView extends Component {
         this._recommendFriendDataList = [];
         this._applyFriendDataList = [];
         this._emailDataList = [];
+        
 
-        this.init();
-    }
-
-    init() {
-        this.initUI();
-        this.addEvent();
-        this.initData();
-
-        this.show();
-    }
-
-    /**弹出窗口 */
-    private show() {
-        EffectUtil.centerPopup(this.contentNd);
-        setTimeout(() => {
-            this._canClose = true;
-        })
-    }
-
-    initUI() {
         let posInfoBox: Vec3 = this.infoBox.getPosition();
         this.infoBox.setPosition(v3(FriendsDialogView.INFOBOX_X_HIDE, posInfoBox.y, 0));
-        this.newMsg.active = false;
-        this.newSysMsg.active = false;
-
+        */
         //this.listBox.active = true;
-
-        this.onClickTab();
+        this.initData();
+        this.scheduleOnce(async ()=>{
+            await this.initViews();
+            this.node.getChildByName("content").setSiblingIndex(99);
+            this.setLeftTab();
+        },0.2)
+        
     }
 
-    onTabClick(e: EventTouch) {
-        let tabName = e.target.name;
-        if (tabName == this._currentTab) return;
-        this._currentTab = tabName;
-        this.onClickTab();
+    private async initViews() {
+        await Promise.all([
+            this.initViewComponent(PrefabType.FriendLeftTabView, (node) => this._leftTab = node.getComponent(FriendLeftTabView), {
+                isAlignTop: true,
+                isAlignLeft: true,
+                top: 229,
+                left: 37
+            }),
+            this.initViewComponent(PrefabType.FriendPlayerInfoView, (node) => this._rightPlayerInfo = node.getComponent(FriendPlayerInfoView), {
+                isAlignVerticalCenter: true,
+                isAlignRight: true,
+                verticalCenter: 0,
+                right: 0
+            }),
+            this.initViewComponent(PrefabType.FriendListView, (node) => this._fListView = node.getComponent(FriendListView), {
+                isAlignLeft: true,
+                isAlignRight: true,
+                isAlignBottom: true,
+                isAlignTop: true,
+                left: 43.8995,
+                right: 43.8995,
+                bottom: 20.0795,
+                top: 20.0795
+            },this.innerNode),
+            this.initViewComponent(PrefabType.FriendAddView, (node) => this._fAddView = node.getComponent(FriendAddView), {
+                isAlignLeft: true,
+                isAlignRight: true,
+                isAlignBottom: true,
+                isAlignTop: true,
+                left: 43.8995,
+                right: 43.8995,
+                bottom: 20.0795,
+                top: 20.0795
+            },this.innerNode),
+            this.initViewComponent(PrefabType.FriendMessageView, (node) => this._fMsgView = node.getComponent(FriendMessageView), {
+                isAlignLeft: true,
+                isAlignRight: true,
+                isAlignBottom: true,
+                isAlignTop: true,
+                left: 43.8995,
+                right: 43.8995,
+                bottom: 20.0795,
+                top: 20.0795
+            },this.innerNode),
+            this.initViewComponent(PrefabType.FriendEmailView, (node) => this._fEmailView = node.getComponent(FriendEmailView), {
+                isAlignLeft: true,
+                isAlignRight: true,
+                isAlignBottom: true,
+                isAlignTop: true,
+                left: 43.8995,
+                right: 43.8995,
+                bottom: 20.0795,
+                top: 20.0795
+            },this.innerNode),
+        ]);
+        // this.node.getComponent(Widget).top
+    }
+
+    private setLeftTab(){
+        this._leftTab.setTabClickListener(this.onClickTab.bind(this));
+        this._leftTab.updateTabList();
+    }
+
+    private async initViewComponent(prefabType: PrefabTypeEntry, onComponentInit: (node: Node) => void, alignOptions?: object,defaultParent:Node = this.node) {
+        let node = await this.loadAndInitPrefab(prefabType, defaultParent, alignOptions);
+        onComponentInit(node);
     }
 
     //模拟网络向服务器请求好友列表
@@ -344,40 +387,37 @@ export class FriendsDialogView extends Component {
         EventManager.emit(EventType.Friend_RecommendList, friendDatas);
     }
 
-    onClickTab() {
-        let curTabIndex: number = +this._currentTab;
-        for (let i = 1; i < 5; i++) {
-            if (curTabIndex == i) { //选中
-                this["tab" + i].getChildByName("bg").getComponent(Sprite).spriteFrame = this.sprTabAry[0];
-            }
-            else { //未选中
-                this["tab" + i].getChildByName("bg").getComponent(Sprite).spriteFrame = this.sprTabAry[1];
-            }
-        }
+    hidenAllFriendView(){
+        this._fListView.node.active = false;
+        this._fAddView.node.active = false;
+        this._fMsgView.node.active = false;
+        this._fEmailView.node.active = false;
+    }
 
-        switch (curTabIndex) {
-            case 1:// 好友列表
+    onClickTab(click:FriendTabType) {
+        this.hidenAllFriendView();
+        switch (click) {
+            case FriendTabType.List:// 好友列表
                 this.titleTxt.string = TextConfig.Friend_List; //"好友列表";
-                this.infoBox.setPosition(v3(FriendsDialogView.INFOBOX_X_HIDE, this.infoBox.position.y, 0)); //490
-                this.listBox.active = true;
-                this.addBox.active = false;
-                this.msgBox.active = false;
-                this.infoBox.active = true;
-                this.roleInfoBox.active = true;
-                this.msgInfoBox.active = false;
-                this.emailBox.active = false;
+                this._fListView.node.active = true;
+                this._rightPlayerInfo.node.active = true;
+                // this.infoBox.setPosition(v3(FriendsDialogView.INFOBOX_X_HIDE, this.infoBox.position.y, 0)); //490
+                // this.listBox.active = true;
+                // this.addBox.active = false;
+                // this.msgBox.active = false;
+                // this.infoBox.active = true;
+                // this.roleInfoBox.active = true;
+                // this.msgInfoBox.active = false;
+                // this.emailBox.active = false;
                 //PbServiceManager.friendService.friendList(); //请求朋友列表
                 //this.reqFriendList();
                 ServiceMgr.friendService.friendList();
                 break;
-            case 2: //添加好友
+            case FriendTabType.Add: //添加好友
                 this.titleTxt.string = TextConfig.Friend_Add; //"添加好友";
-                this.listBox.active = false;
-                this.addBox.active = true;
-                this.msgBox.active = false;
-                this.resultBox.active = false;
-                this.infoBox.active = false;
-                this.emailBox.active = false;
+                this._fAddView.node.active = true;
+                this._rightPlayerInfo.node.active = false;
+                // this.resultBox.active = false;
                 /* 
                 //请求推荐好友列表
                 PbServiceManager.friendService.RecommendList((data) => {
@@ -388,36 +428,28 @@ export class FriendsDialogView extends Component {
                 //this.reqRecommendList();
                 ServiceMgr.friendService.recommendList();
                 break;
-            case 3: //好友申请列表
+            case FriendTabType.Apply: //好友申请列表
                 this.titleTxt.string = TextConfig.Friend_Apply; //"好友申请";
-                this.listBox.active = false;
-                this.addBox.active = false;
-                this.msgBox.active = true;
-                this.infoBox.active = false;
-                this.emailBox.active = false;
+                this._fMsgView.node.active = true;
+                this._rightPlayerInfo.node.active = false;
                 break;
-            case 4: // 好友消息通知
+            case FriendTabType.Message: // 好友消息通知
                 this.titleTxt.string = TextConfig.Friend_Notify; // "好友通知";
-                this.listBox.active = false;
-                this.addBox.active = false;
-                this.msgBox.active = false;
-                this.emailBox.active = true;
-                let posInfoBox: Vec3 = this.infoBox.getPosition();
-                this.infoBox.setPosition(v3(FriendsDialogView.INFOBOX_X_HIDE, posInfoBox.y, 0)); //490
-                this.infoBox.active = true;
-                this.roleInfoBox.active = false;
-                this.msgInfoBox.active = true;
+                this._fEmailView.node.active = true;
+                this._rightPlayerInfo.node.active = false;
+                // let posInfoBox: Vec3 = this.infoBox.getPosition();
+                // this.infoBox.setPosition(v3(FriendsDialogView.INFOBOX_X_HIDE, posInfoBox.y, 0)); //490
+                // this.infoBox.active = true;
+                // this.roleInfoBox.active = false;
+                // this.msgInfoBox.active = true;
                 //this.emailList.node.active = false;
                 ServiceMgr.friendService.sysMsgList(); //请求好友消息列表
                 break;
         }
     }
 
-    addEvent() {
+    initEvent() {
         CCUtil.onTouch(this.closeBtn, this.onCloseView, this);
-        for (let i = 1; i <= 4; i++) {
-            CCUtil.onTouch(this["tab" + i], this.onTabClick, this);
-        }
         CCUtil.onTouch(this.backBtn, this.onHideFriendInfo, this); //addBtn
         CCUtil.onTouch(this.searchBtn, this.onSearch, this);  //
         CCUtil.onTouch(this.addBtn, this.onAddFriend, this); //添加好友  
@@ -441,9 +473,6 @@ export class FriendsDialogView extends Component {
 
     removeEvent() {
         CCUtil.offTouch(this.closeBtn, this.onCloseView, this);
-        for (let i = 1; i <= 4; i++) {
-            CCUtil.offTouch(this["tab" + i], this.onTabClick, this);
-        }
         CCUtil.offTouch(this.backBtn, this.onHideFriendInfo, this);
         CCUtil.offTouch(this.searchBtn, this.onSearch, this);
         CCUtil.offTouch(this.addBtn, this.onAddFriend, this); //添加好友
@@ -469,47 +498,14 @@ export class FriendsDialogView extends Component {
         ServiceMgr.friendService.friendApplyList();
         ServiceMgr.friendService.sysMsgList();
     }
-
-    start() {
-
-    }
-
-    protected onDestroy(): void {
-        this.removeEvent();
-    }
-
     /**更新朋友列表 */
     onUpdateFriendList(friendDatas: FriendUnitInfo[]) {
-        this._friendDataList = friendDatas;
-        this.friendList.content.removeAllChildren();
-        for (let i = 0; i < friendDatas.length; i++) {
-            let friendData: FriendUnitInfo = friendDatas[i];
-            this.addFriendListItem(friendData);
-        }
-        this.friendList.scrollToTop();
-    }
-
-    addFriendListItem(friendData: FriendUnitInfo) {
-        let friendUnit: Node = instantiate(this.preFriendListUnit);
-        friendUnit.getComponent(FriendListItem).initData(friendData, this._selectFriend);
-        this.friendList.content.addChild(friendUnit);
+        this._fListView.updateData(friendDatas);
     }
 
     /**更新推荐朋友列表 */
     onShowRecommendList(friendDatas: FriendUnitInfo[]) {
-        this._recommendFriendDataList = friendDatas;
-        this.recommendList.content.removeAllChildren();
-        for (let i = 0; i < friendDatas.length; i++) {
-            let friendData: FriendUnitInfo = friendDatas[i];
-            this.addRecommendFriendListItem(friendData);
-        }
-        this.recommendList.scrollToTop();
-    }
-
-    addRecommendFriendListItem(friendData: FriendUnitInfo) {
-        let friendUnit: Node = instantiate(this.preSearchFriendUnit);
-        friendUnit.getComponent(FriendSearchItem).initData(friendData);
-        this.recommendList.content.addChild(friendUnit);
+        this._fAddView.updateData(friendDatas);
     }
 
     /**更新申请好友列表 */
@@ -536,10 +532,10 @@ export class FriendsDialogView extends Component {
     setAllFriendListUnSelect() {
         let ndFriendItem: Node = null;
         let scriptFriendItem: FriendListItem = null;
-        for (let i = 0; i < this.friendList.content.children.length; i++) {
-            ndFriendItem = this.friendList.content.children[i];
-            ndFriendItem.getChildByName("bgImg").getComponent(Sprite).spriteFrame = this.sprfriendItemBgAry[1];
-        }
+        // for (let i = 0; i < this.friendList.content.children.length; i++) {
+        //     ndFriendItem = this.friendList.content.children[i];
+        //     ndFriendItem.getChildByName("bgImg").getComponent(Sprite).spriteFrame = this.sprfriendItemBgAry[1];
+        // }
     }
 
     /**点击朋友列表中的一项 */
@@ -606,16 +602,7 @@ export class FriendsDialogView extends Component {
         //ViewsManager.instance.closeView(PrefabType.FriendsDialogView);
         if (!this._canClose) return;
         this._canClose = false;
-        EffectUtil.centerClose(this.contentNd, () => {
-            //if (this._callBack) this._callBack();
-            this.dispose();
-        });
-    }
-
-    //销毁
-    dispose() {
-        //this.removeEvent();
-        this.node.destroy();
+        this.closePop();
     }
 
     /**隐藏个人信息栏 */
@@ -722,15 +709,15 @@ export class FriendsDialogView extends Component {
         let ndFriendItem: Node = null;
         let scriptFriendItem: FriendListItem = null;
         let dataFriend: FriendUnitInfo = null;
-        for (let i = 0; i < this.friendList.content.children.length; i++) {
-            ndFriendItem = this.friendList.content.children[i];
-            scriptFriendItem = ndFriendItem.getComponent(FriendListItem);
-            dataFriend = scriptFriendItem._data;
-            if (dataFriend.FriendId == this._selectFriend.FriendId) {
-                ndFriendItem.getChildByName("newMsgBox").active = false;
-                break;
-            }
-        }
+        // for (let i = 0; i < this.friendList.content.children.length; i++) {
+        //     ndFriendItem = this.friendList.content.children[i];
+        //     scriptFriendItem = ndFriendItem.getComponent(FriendListItem);
+        //     dataFriend = scriptFriendItem._data;
+        //     if (dataFriend.FriendId == this._selectFriend.FriendId) {
+        //         ndFriendItem.getChildByName("newMsgBox").active = false;
+        //         break;
+        //     }
+        // }
         ViewsManager.instance.showView(PrefabType.FriendTalkDialogView, (node: Node) => {
             node.getComponent(FriendTalkDialogView).init(this._selectFriend);
         });

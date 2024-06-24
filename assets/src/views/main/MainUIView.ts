@@ -18,6 +18,8 @@ const { ccclass, property } = _decorator;
 export class MainUIView extends Component {
     @property(Node)
     public btnHead: Node = null;//头像
+    @property(Node)
+    public btn_friend: Node = null;//头像
     @property(Sprite)
     public btnMenu: Sprite = null;//菜单
     @property(Sprite)
@@ -89,6 +91,7 @@ export class MainUIView extends Component {
         CCUtil.onTouch(this.btnTaskGo, this.onClickTaskGo, this);
         CCUtil.onTouch(this.btnStudy, this.onClickStudy, this);
         CCUtil.onTouch(this.btnBrocast, this.onClickNotice, this);
+        CCUtil.onBtnClick(this.btn_friend, this.onClickFriend.bind(this));
     }
     //移除事件
     public removeEvent() {
@@ -103,6 +106,11 @@ export class MainUIView extends Component {
         CCUtil.offTouch(this.btnTaskGo, this.onClickTaskGo, this);
         CCUtil.offTouch(this.btnBrocast, this.onClickNotice, this);
     }
+    /**好友点击 */
+    async onClickFriend(){
+        await ViewsManager.instance.showPopup(PrefabType.FriendsDialogView);
+    }
+
     //头像点击
     public onClickHead() {
         ViewsManager.instance.showView(PrefabType.SettingView);

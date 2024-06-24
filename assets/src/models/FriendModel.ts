@@ -1,5 +1,4 @@
 import { Node } from "cc";
-import { InterfacePath } from "../net/InterfacePath";
 
 /**模拟查找好友返回数据 */
 export interface FriendResponseData {
