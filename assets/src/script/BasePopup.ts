@@ -13,9 +13,14 @@ export class BasePopup extends BaseView  {
         this.closeAnim();
     }
     showAnim() {
-        this.node.scale = new Vec3(0.2, 0.2, 1.0);
-        tween(this.node).to(0.2, { scale: new Vec3(1.0, 1.0, 1.0) }, { easing: easing.backOut }).call(() => {
-        }).start();
+        this.node.active = false;
+        this.scheduleOnce(()=>{
+            this.node.active = true;
+            this.node.scale = new Vec3(0.2, 0.2, 1.0);
+            tween(this.node).to(0.2, { scale: new Vec3(1.0, 1.0, 1.0) }, { easing: easing.backOut }).call(() => {
+            }).start();
+        });
+        
     }
 
     closeAnim() {

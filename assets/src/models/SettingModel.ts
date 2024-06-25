@@ -19,3 +19,14 @@ export interface UserPlayerDetail extends BaseRepPacket {
     role_id: number;
     user_name: string;
 }
+
+export interface UserPlayerModifyModel {
+    role_id?: number;
+    nick_name?: string;
+}
+
+export class s2cUserPlayerModify {
+    command_id: string = InterfacePath.Classification_UserPlayerModify;
+    role_id?:number;
+    nick_name?:string;
+}

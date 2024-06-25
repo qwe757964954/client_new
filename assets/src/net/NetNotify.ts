@@ -49,6 +49,8 @@ export const NetNotify = {
 
     /***********************************************设置相关信息start*********************************************/
     Classification_UserPlayerDetail: "Classification_UserPlayerDetail", //用户信息详情消息
+    Classification_UserPlayerModify: "Classification_UserPlayerModify", //用户信息修改
+    
     /***********************************************设置相关信息 end*********************************************/
 
 

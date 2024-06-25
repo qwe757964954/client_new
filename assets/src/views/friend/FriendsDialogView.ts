@@ -226,12 +226,9 @@ export class FriendsDialogView extends BasePopup {
         */
         //this.listBox.active = true;
         this.initData();
-        this.scheduleOnce(async ()=>{
-            await this.initViews();
-            this.node.getChildByName("content").setSiblingIndex(99);
-            this.setLeftTab();
-        },0.2)
-        
+        await this.initViews();
+        this.node.getChildByName("content").setSiblingIndex(99);
+        this.setLeftTab();
     }
 
     private async initViews() {

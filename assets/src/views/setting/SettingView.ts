@@ -1,5 +1,5 @@
-import { _decorator, Button, Color, Label, Node } from 'cc';
-import { PrefabType } from '../../config/PrefabType';
+import { _decorator, Node } from 'cc';
+import { PrefabType, PrefabTypeEntry } from '../../config/PrefabType';
 import GlobalConfig from '../../GlobalConfig';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { UserPlayerDetail } from '../../models/SettingModel';
@@ -7,6 +7,8 @@ import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { STServer } from '../../service/SettingService';
 import { CenterView } from './CenterView';
+import { SettingTabType } from './SettingInfo';
+import { SettingTabView } from './SettingTabView';
 const { ccclass, property } = _decorator;
 
 @ccclass('SettingView')
@@ -19,43 +21,62 @@ export class SettingView extends BaseView {
     public sound:Node = null;           // 声音设置
     @property(Node)
     public account:Node = null;         // 账户设置
-
-    @property(Button)
-    public centerTab:Button = null;     // 个人中心TAB
-    @property(Button)
-    public soundTab:Button = null;      // 声音设置TAB
-    @property(Button)
-    public accountTab:Button = null;    // 账户设置TAB
-    @property(Button)
-    public aboutUsTab:Button = null;    // 关于我们TAB
     // private _mainScene:MainScene = null;//主场景
-    private initNavTitle() {
-        this.createNavigation("设置",this.top_layout, () => {
-            ViewsManager.instance.closeView(PrefabType.SettingView);
-        });
-    }
-
+    
+    private _tabView:SettingTabView = null;
     protected onInitModuleEvent() {
         this.addModelListeners([
             [NetNotify.Classification_UserPlayerDetail, this.onUserPlayerDetail.bind(this)],
+            [NetNotify.Classification_UserPlayerModify, this.onUserPlayerModify.bind(this)],
         ]);
     }
     
+    onUserPlayerModify(data:any){
+        console.log("onUserPlayerModify data = ", data);
+        STServer.reqUserPlayerDetail();
+    }
+
     onUserPlayerDetail(data:UserPlayerDetail){
         console.log("onUserPlayerDetail data = ", data);
         this.center.getComponent(CenterView).updateUserInfo(data);
     }
 
     //初始化
-    public initUI():void {
+    public async initUI() {
         GlobalConfig.initResolutionRules();
         this.initNavTitle();
+        await this.initViews();
+        this.initTabLisen();
         this.fetchInitialData();
-        this.btnChangeTabFunc(null, "Center");
     }
-
+    private initTabLisen() {
+        this._tabView.setTabClickListener(this.onClickTab.bind(this));
+        this._tabView.updateTabDatas();
+    }
+    private initNavTitle() {
+        this.createNavigation("设置",this.top_layout, () => {
+            ViewsManager.instance.closeView(PrefabType.SettingView);
+        });
+    }
     private fetchInitialData() {
         STServer.reqUserPlayerDetail();
+    }
+
+    private async initViews() {
+        await Promise.all([
+            this.initViewComponent(PrefabType.SettingTabView, (node) => this._tabView = node.getComponent(SettingTabView), {
+                isAlignHorizontalCenter: true,
+                isAlignTop: true,
+                top: 153.493,
+                horizontalCenter: 0
+            }),
+        ]);
+    }
+
+
+    private async initViewComponent(prefabType: PrefabTypeEntry, onComponentInit: (node: Node) => void, alignOptions?: object,defaultParent:Node = this.node) {
+        let node = await this.loadAndInitPrefab(prefabType, defaultParent, alignOptions);
+        onComponentInit(node);
     }
 
     // //设置主场景
@@ -67,46 +88,39 @@ export class SettingView extends BaseView {
         // CCUtil.onTouch(this.centerTab, this.onClickCenter, this);
         // CCUtil.onTouch(this.btnMenu, this.onClickMenu, this);
     }
-    //销毁事件
-    public destoryEvent(){
-        // CCUtil.offTouch(this.btnHead, this.onClickHead, this);
-        // CCUtil.offTouch(this.btnMenu, this.onClickMenu, this);
+
+    hidenAllFriendView(){
+        this.center.active = false;
+        this.sound.active = false;
+        this.account.active = false;
+        // this._fEmailView.node.active = false;
     }
 
-    // 切换tab
-    btnChangeTabFunc(data: Event, customEventData: string) {
-        console.log("btnChangeTabFunc customEventData = ", customEventData);
-        this.changeTabStaus(this.center, this.centerTab.node, false);
-        this.changeTabStaus(this.sound, this.soundTab.node, false);
-        this.changeTabStaus(this.account, this.accountTab.node, false);
-        switch (customEventData) {
-            case "Center":
-                this.changeTabStaus(this.center, this.centerTab.node, true);
+    onClickTab(click:SettingTabType) {
+        this.hidenAllFriendView();
+        switch (click) {
+            case SettingTabType.Center:
+                this.center.active = true;
                 break;
-            case "Sound":
-                this.changeTabStaus(this.sound, this.soundTab.node, true);
+            case SettingTabType.Sound:
+                this.sound.active = true;
                 break;
-            case "Account":
-                this.changeTabStaus(this.account, this.accountTab.node, true);
+            case SettingTabType.Account:
+                this.account.active = true;
+                break;
+            case SettingTabType.About:
+                this.btnAboutUsFunc();
                 break;
             default:
-                this.changeTabStaus(this.center, this.centerTab.node, true);
+                this.center.active = true;
                 break;
         }
     }
+
     // 关于我们
     btnAboutUsFunc() {
         console.log("btnAboutUsFunc");
         ViewsManager.instance.showView(PrefabType.VideoView);
-    }
-
-    changeTabStaus(view: Node, tab: Node, visible: boolean) {
-        view.active = visible;
-        // 文字和底部图
-        let lb = tab.getChildByName("Label");
-        let sp = tab.getChildByName("Sprite");
-        lb && (lb.getComponent(Label).color = visible ? new Color(255, 255, 255, 255) : new Color(83, 191, 34, 255));
-        sp && (sp.active = visible);
     }
 
     // 返回主界面
