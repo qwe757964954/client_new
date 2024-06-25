@@ -1130,24 +1130,6 @@
     "titleTxt": {
       "__id__": 26
     },
-    "infoBox": null,
-    "listBox": null,
-    "addBox": null,
-    "imgResultHead": null,
-    "lblRealNameResult": null,
-    "lblIDResult": null,
-    "msgBox": null,
-    "emailBox": null,
-    "roleInfoBox": null,
-    "msgInfoBox": null,
-    "fname": null,
-    "fstate": null,
-    "fromTxt": null,
-    "msgTxt": null,
-    "timeTxt": null,
-    "awardList": null,
-    "msgList": null,
-    "emailList": null,
     "preFriendListUnit": {
       "__uuid__": "14c3616f-6908-4286-af83-b4a879e8d3d2",
       "__expectedType__": "cc.Prefab"
@@ -1168,42 +1150,11 @@
       "__uuid__": "8e50e603-cf0f-42a6-ab3b-c861a8a3c740",
       "__expectedType__": "cc.Prefab"
     },
-    "searchBtn": null,
-    "addBtn": null,
-    "searchEdt": null,
-    "backBtn": null,
-    "talkBtn": null,
-    "deleteBtn": null,
-    "houseBtn": null,
-    "reciveBtn": null,
-    "reciveTxt": null,
-    "newMsg": null,
-    "newSysMsg": null,
     "roleModel": {
       "__uuid__": "80fd3ca8-20bc-4718-91da-cbb70251a5e8",
       "__expectedType__": "cc.Prefab"
     },
     "roleContainer": null,
-    "sprTabAry": [
-      {
-        "__uuid__": "8618e4b8-f48e-40a6-902d-82cde4bccbd1@f9941",
-        "__expectedType__": "cc.SpriteFrame"
-      },
-      {
-        "__uuid__": "0083cce6-f413-4a89-85ff-a0b6695eb3fd@f9941",
-        "__expectedType__": "cc.SpriteFrame"
-      }
-    ],
-    "sprfriendItemBgAry": [
-      {
-        "__uuid__": "7889ee67-5202-4c46-8b63-2f0d7e9f532d@f9941",
-        "__expectedType__": "cc.SpriteFrame"
-      },
-      {
-        "__uuid__": "005f2f2e-8adb-485d-8ebf-4f1dbadf1ea7@f9941",
-        "__expectedType__": "cc.SpriteFrame"
-      }
-    ],
     "innerNode": {
       "__id__": 17
     },

@@ -84,37 +84,42 @@ export class ViewsManager {
         let nd_name = viewConfig.path.replace("/", "_");
         let nd: Node = ImgUtil.create_2DNode(nd_name);
         parent.addChild(nd);
-
+    
         // Add blocking input events and set widget settings
         nd.addComponent(BlockInputEvents);
         CCUtil.addWidget(nd, { left: 0, right: 0, top: 0, bottom: 0 });
-
+    
         // Ensure that the node is properly initialized
         await ImgUtil.create_PureNode(nd);
-
+    
         return new Promise((resolve, reject) => {
             // Load the prefab and instantiate it
-            ResLoader.instance.load(`prefab/${viewConfig.path}`, Prefab, (err, prefab) => {
+            ResLoader.instance.load(`prefab/${viewConfig.path}`, Prefab, async (err, prefab) => {
                 if (err) {
                     console.error(err);
                     reject(err);
                     return;
                 }
-
+    
                 // Instantiate and add the prefab as a child node
                 let node = instantiate(prefab);
                 nd.addChild(node);
                 CCUtil.addWidget(nd, { left: 0, right: 0, top: 0, bottom: 0 });
-
+    
                 // Retrieve the component and execute the show animation
                 let scpt: BasePopup = node.getComponent(viewConfig.componentName);
-                scpt.showAnim();
-
-                // Resolve the promise with the node
-                resolve(node as Node); // Typecast to Node
+    
+                try {
+                    await scpt.showAnim();
+                    resolve(node as Node); // Resolve after the animation completes
+                } catch (animationError) {
+                    console.error(animationError);
+                    reject(animationError);
+                }
             });
         });
     }
+        
 
 
     // 显示界面

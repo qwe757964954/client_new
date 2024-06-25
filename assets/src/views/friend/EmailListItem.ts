@@ -1,13 +1,14 @@
-import { _decorator, Component, Label, Node, Sprite, SpriteFrame } from 'cc';
-import { EmailDataInfo, EmailItemClickInfo } from '../../models/FriendModel';
+import { _decorator, Label, Node, Sprite, SpriteFrame } from 'cc';
+import { EventType } from '../../config/EventType';
 import { TextConfig } from '../../config/TextConfig';
+import { EmailDataInfo, EmailItemClickInfo } from '../../models/FriendModel';
 import CCUtil from '../../util/CCUtil';
 import EventManager from '../../util/EventManager';
-import { EventType } from '../../config/EventType';
+import ListItem from '../../util/list/ListItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('EmailListItem')
-export class EmailListItem extends Component {
+export class EmailListItem extends ListItem {
     @property({ type: Sprite, tooltip: "底层背景" })
     imgBg: Sprite = null;
 
@@ -37,7 +38,7 @@ export class EmailListItem extends Component {
 
     _data: EmailDataInfo = null;
 
-    protected onLoad(): void {
+    onLoad(): void {
         //console.log("FriendListItem onLoad");
         this.addEvent();
     }
@@ -50,11 +51,7 @@ export class EmailListItem extends Component {
         CCUtil.offTouch(this.btnItem, this.onItemClick, this);
     }
 
-    protected onDestroy(): void {
-        this.removeEvent();
-    }
-
-    initData(data: EmailDataInfo, selectEmail: EmailDataInfo) {
+    initData(data: EmailDataInfo) {
         this._data = data;
 
         this.lblRealName.string = data.FromName;
@@ -62,12 +59,12 @@ export class EmailListItem extends Component {
         this.lblIsLand.string = TextConfig.Friend_EmailSys;
 
         let bSelect: boolean = false; //本单位是否选中
-        if (!selectEmail) {
-            bSelect = false;
-        }
-        else if (data == selectEmail) {
-            bSelect = true;
-        }
+        // if (!selectEmail) {
+        //     bSelect = false;
+        // }
+        // else if (data == selectEmail) {
+        //     bSelect = true;
+        // }
         this.imgBg.spriteFrame = bSelect ? this.sprBgAry[0] : this.sprBgAry[1];
         this.node.getChildByName("canRecIcon").active = data.RecFlag == 0;
     }

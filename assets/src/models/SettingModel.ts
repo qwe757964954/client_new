@@ -30,3 +30,13 @@ export class s2cUserPlayerModify {
     role_id?:number;
     nick_name?:string;
 }
+export interface UserPasswordModifyModel {
+    confirm_passwd: string;
+    new_passwd: string;
+}
+
+export class s2cUserPasswordModify {
+    command_id: string = InterfacePath.Classification_UserPasswordModify;
+    confirm_passwd:string;
+    new_passwd:string;
+}

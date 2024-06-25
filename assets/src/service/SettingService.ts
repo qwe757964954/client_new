@@ -1,5 +1,5 @@
 import { isValid } from "cc";
-import { UserPlayerModifyModel, c2sUserPlayerDetail, s2cUserPlayerModify } from "../models/SettingModel";
+import { UserPasswordModifyModel, UserPlayerModifyModel, c2sUserPlayerDetail, s2cUserPasswordModify, s2cUserPlayerModify } from "../models/SettingModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
 import { NetNotify } from "../net/NetNotify";
@@ -22,6 +22,7 @@ export default class _SettingService extends BaseControll {
         this.addModelListeners([
             [InterfacePath.Classification_UserPlayerDetail, this.onUserPlayerDetail],
             [InterfacePath.Classification_UserPlayerModify, this.onUserPlayerModify],
+            [InterfacePath.Classification_UserPasswordModify, this.onUserPasswordModify],
         ]);
     }
 
@@ -42,12 +43,24 @@ export default class _SettingService extends BaseControll {
         NetMgr.sendMsg(param);
     }
 
+    reqUserPasswordModify(data:UserPasswordModifyModel){
+        let param:s2cUserPasswordModify = new s2cUserPasswordModify();
+        param.confirm_passwd = data.confirm_passwd;
+        param.new_passwd = data.new_passwd;
+        NetMgr.sendMsg(param);
+    }
+
+    
+
     onUserPlayerDetail(data: any) {
         this.handleResponse(data, NetNotify.Classification_UserPlayerDetail);
     }
 
     onUserPlayerModify(data: any) {
         this.handleResponse(data, NetNotify.Classification_UserPlayerModify);
+    }
+    onUserPasswordModify(data: any) {
+        this.handleResponse(data, NetNotify.Classification_UserPasswordModify);
     }
 }
 

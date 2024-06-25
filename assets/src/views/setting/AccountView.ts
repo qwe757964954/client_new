@@ -33,10 +33,10 @@ export class AccountView extends Component {
         console.log("btnJiHuoFunc");
         ViewsManager.instance.showView(PrefabType.AccountActivationView);
     }
-    // 充值
-    btnChongZhiFunc() {
+    // 重置
+    async btnChongZhiFunc() {
         console.log("btnChongZhiFunc");
-        ViewsManager.instance.showView(PrefabType.ResetPasswordView);
+        let node:Node = await ViewsManager.instance.showPopup(PrefabType.ResetPasswordView);
     }
     // 剧情回顾
     btnJuQingHuiGuFunc() {

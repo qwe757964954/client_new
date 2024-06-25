@@ -1,20 +1,15 @@
-import { _decorator, Button, EditBox, instantiate, Label, Layers, Node, Prefab, ScrollView, Sprite, SpriteFrame, tween, Tween, v3, Vec3 } from 'cc';
+import { _decorator, instantiate, Label, Layers, Node, Prefab, v3 } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType, PrefabTypeEntry } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
-import { ItemData } from '../../manager/DataMgr';
-import { LoadManager } from '../../manager/LoadManager';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { EmailDataInfo, EmailItemClickInfo, FriendItemClickInfo, FriendResponseData, FriendUnitInfo, NetSearchFriendInfo } from '../../models/FriendModel';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
-import { User } from '../../models/User';
 import { ServiceMgr } from '../../net/ServiceManager';
 import { BasePopup } from '../../script/BasePopup';
 import CCUtil from '../../util/CCUtil';
 import EventManager from '../../util/EventManager';
 import { NodeUtil } from '../../util/NodeUtil';
-import { RewardItem } from '../common/RewardItem';
-import { EmailListItem } from './EmailListItem';
 import { FriendAddView } from './FriendAddView';
 import { FriendEmailView } from './FriendEmailView';
 import { FriendTabType } from './FriendInfo';
@@ -24,7 +19,6 @@ import { FriendListItem } from './FriendlListItem';
 import { FriendMessageView } from './FriendMessageView';
 import { FriendPlayerInfoView } from './FriendPlayerInfoView';
 import { FriendTalkDialogView } from './FriendTalkDialogView';
-import { MsgListItem } from './MsgListItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('FriendsDialogView')
@@ -37,10 +31,10 @@ export class FriendsDialogView extends BasePopup {
 
     @property({ type: Label, tooltip: "标题" }) // 
     public titleTxt: Label = null;
-
+    /*
     @property({ type: Node, tooltip: "好友详情结点" })
     public infoBox: Node = null;
-
+    
     @property({ type: Node, tooltip: "好友列表结点" })
     public listBox: Node = null;
 
@@ -91,22 +85,11 @@ export class FriendsDialogView extends BasePopup {
 
     @property({ type: ScrollView, tooltip: "邮件滚动列表" })
     public emailList: ScrollView = null;
-
-    @property({ type: Prefab, tooltip: "好友列表中的一项预制体" })
-    public preFriendListUnit: Prefab = null;//
-
-    @property({ type: Prefab, tooltip: "查找推荐好友列表中的一项预制体" })
-    public preSearchFriendUnit: Prefab = null;//
-
-    @property({ type: Prefab, tooltip: "申请好友列表中的一项预制体" }) //
-    public preApplyFriendUnit: Prefab = null;//
-
-    @property({ type: Prefab, tooltip: "邮件列表中的一项预制体" })
-    public preEmailListUnit: Prefab = null;//
+    */
 
     @property({ type: Prefab, tooltip: "邮件列表中的奖励预制体" })
     public preRewardItem: Prefab = null;//
-
+    /*
     @property({ type: Node, tooltip: "查找好友按钮" })
     public searchBtn: Node = null;
 
@@ -139,18 +122,12 @@ export class FriendsDialogView extends BasePopup {
 
     @property({ type: Node, tooltip: "是否有新邮件" }) //
     public newSysMsg: Node = null;
-
+    */
     @property({ type: Prefab, tooltip: "角色动画预制体" })
     public roleModel: Prefab = null;//角色动画
 
     @property({ type: Node, tooltip: "角色容器" })
     public roleContainer: Node = null;
-
-    @property({ type: [SpriteFrame], tooltip: "tab页的图片数组" }) // 0:选中 1: 未选中
-    public sprTabAry: SpriteFrame[] = [];
-
-    @property({ type: [SpriteFrame], tooltip: "朋友列表里一项背景页的图片数组" }) // 0:选中 1: 未选中
-    public sprfriendItemBgAry: SpriteFrame[] = [];
 
     @property(Node)
     public innerNode: Node = null;
@@ -174,23 +151,6 @@ export class FriendsDialogView extends BasePopup {
 
     private _addBtnList: Node[] = null;
     private _role: Node = null; //朋友角色的骨骼动画结点
-
-    private _recommendFriendDataList: FriendUnitInfo[] = []; //我的推荐好友列表
-    private _applyFriendDataList: FriendUnitInfo[] = []; //我的申请好友列表
-    private _emailDataList: EmailDataInfo[] = [];  //邮件列表数据
-
-    private _getMyFriendListEveId: string = ""; //获取我的好友列表  Friend_SearchFriend
-    private _getRecommendFriendListEveId: string = ""; //获取我的好友列表
-    private _getApplyFriendListEveId: string = ""; //获取申请好友列表
-    private _clickMyFriendListEveId: string = ""; //点击我的好友列表中的一项
-    private _searchFriendEveId: string = ""; //查找好友
-    private _addFriendEveId: string = "";    //添加好友
-    private _applyFriendStatusEveId: string = "";  //同意/拒绝好友申请事件
-    private _getEmailListEveId: string = "";  //收到邮件列表事件
-    private _clickEmailListEveId: string = ""; //点击我的邮件列表中的一项
-    private _recvEmailAwardEveId: string = ""; //获取我的邮件奖励事件  
-    private _delFriendEveId: string = ""; //点击我的邮件列表中的一项 Friend_DelFriend
-
     private _canClose: boolean = false;
 
     private _leftTab:FriendLeftTabView = null;
@@ -225,8 +185,8 @@ export class FriendsDialogView extends BasePopup {
         this.infoBox.setPosition(v3(FriendsDialogView.INFOBOX_X_HIDE, posInfoBox.y, 0));
         */
         //this.listBox.active = true;
-        this.initData();
         await this.initViews();
+        this.initData();
         this.node.getChildByName("content").setSiblingIndex(99);
         this.setLeftTab();
     }
@@ -439,49 +399,34 @@ export class FriendsDialogView extends BasePopup {
         }
     }
 
-    initEvent() {
-        CCUtil.onTouch(this.closeBtn, this.onCloseView, this);
-        CCUtil.onTouch(this.backBtn, this.onHideFriendInfo, this); //addBtn
-        CCUtil.onTouch(this.searchBtn, this.onSearch, this);  //
-        CCUtil.onTouch(this.addBtn, this.onAddFriend, this); //添加好友  
-        CCUtil.onTouch(this.deleteBtn, this.onDeleteFriendClick, this); //删除好友  talkBtn
-        CCUtil.onTouch(this.houseBtn, this.onHouseClick, this); //点击别人主页
-        CCUtil.onTouch(this.talkBtn, this.onTalkClick, this); //和别人聊天
-        CCUtil.onTouch(this.reciveBtn, this.onReciveAwardClick, this); //收取奖励
+    protected onInitModuleEvent(): void {
+        this.addModelListener(EventType.Friend_MyList, this.onUpdateFriendList);
+        this.addModelListener(EventType.Friend_RecommendList, this.onShowRecommendList);
+        this.addModelListener(EventType.Friend_ApplyList, this.onUpdateApplyFriendList);
+        this.addModelListener(EventType.Friend_ClickFriendList, this.onFriendItemClck);
+        this.addModelListener(EventType.Friend_SearchFriend, this.onSearchFriendResult);
+        this.addModelListener(EventType.Friend_AddFriend, this.onApplyFriendTo);
+        this.addModelListener(EventType.Friend_ApplyStatus, this.onApplyFriendStatus);
+        this.addModelListener(EventType.Friend_SysMsg_List, this.onSysMsgList);
+        this.addModelListener(EventType.Friend_ClickEmailList, this.onEmailClck);
+        this.addModelListener(EventType.Friend_RecvAward, this.onReciveAward);
+        this.addModelListener(EventType.Friend_DelFriend, this.onDeleteFriend);
+    }
 
-        this._getMyFriendListEveId = EventManager.on(EventType.Friend_MyList, this.onUpdateFriendList.bind(this));
-        this._getRecommendFriendListEveId = EventManager.on(EventType.Friend_RecommendList, this.onShowRecommendList.bind(this));
-        this._getApplyFriendListEveId = EventManager.on(EventType.Friend_ApplyList, this.onUpdateApplyFriendList.bind(this));
-        this._clickMyFriendListEveId = EventManager.on(EventType.Friend_ClickFriendList, this.onFriendItemClck.bind(this));
-        this._searchFriendEveId = EventManager.on(EventType.Friend_SearchFriend, this.onSearchFriendResult.bind(this));
-        this._addFriendEveId = EventManager.on(EventType.Friend_AddFriend, this.onApplyFriendTo.bind(this));
-        this._applyFriendStatusEveId = EventManager.on(EventType.Friend_ApplyStatus, this.onApplyFriendStatus.bind(this));
-        this._getEmailListEveId = EventManager.on(EventType.Friend_SysMsg_List, this.onSysMsgList.bind(this));
-        this._clickEmailListEveId = EventManager.on(EventType.Friend_ClickEmailList, this.onEmailClck.bind(this));
-        this._recvEmailAwardEveId = EventManager.on(EventType.Friend_RecvAward, this.onReciveAward.bind(this));
-        this._delFriendEveId = EventManager.on(EventType.Friend_DelFriend, this.onDeleteFriend.bind(this));
+    initEvent() {
+        CCUtil.onBtnClick(this.closeBtn, this.onCloseView.bind(this));
+        // CCUtil.onBtnClick(this.backBtn, this.onHideFriendInfo.bind(this));
+        // CCUtil.onBtnClick(this.searchBtn, this.onSearch.bind(this));
+        // CCUtil.onBtnClick(this.addBtn, this.onAddFriend.bind(this));
+        // CCUtil.onBtnClick(this.deleteBtn, this.onDeleteFriendClick.bind(this));
+        // CCUtil.onBtnClick(this.houseBtn, this.onHouseClick.bind(this));
+        // CCUtil.onBtnClick(this.talkBtn, this.onTalkClick.bind(this));
+        // CCUtil.onBtnClick(this.reciveBtn, this.onReciveAwardClick.bind(this));
+
     }
 
     removeEvent() {
-        CCUtil.offTouch(this.closeBtn, this.onCloseView, this);
-        CCUtil.offTouch(this.backBtn, this.onHideFriendInfo, this);
-        CCUtil.offTouch(this.searchBtn, this.onSearch, this);
-        CCUtil.offTouch(this.addBtn, this.onAddFriend, this); //添加好友
-        CCUtil.offTouch(this.houseBtn, this.onHouseClick, this);
-        CCUtil.offTouch(this.deleteBtn, this.onDeleteFriendClick, this); //删除好友
-        CCUtil.offTouch(this.reciveBtn, this.onReciveAwardClick, this); //收取奖励
-        CCUtil.offTouch(this.talkBtn, this.onTalkClick, this); //和别人聊天
-        EventManager.off(EventType.Friend_MyList, this._getMyFriendListEveId);
-        EventManager.off(EventType.Friend_RecommendList, this._getRecommendFriendListEveId);
-        EventManager.off(EventType.Friend_ApplyList, this._getApplyFriendListEveId);
-        EventManager.off(EventType.Friend_ClickFriendList, this._clickMyFriendListEveId);
-        EventManager.off(EventType.Friend_SearchFriend, this._searchFriendEveId);
-        EventManager.off(EventType.Friend_AddFriend, this._addFriendEveId);
-        EventManager.off(EventType.Friend_ApplyStatus, this._applyFriendStatusEveId);
-        EventManager.off(EventType.Friend_SysMsg_List, this._getEmailListEveId);
-        EventManager.off(EventType.Friend_ClickEmailList, this._clickEmailListEveId);
-        EventManager.off(EventType.Friend_RecvAward, this._recvEmailAwardEveId);
-        EventManager.off(EventType.Friend_DelFriend, this._delFriendEveId);
+
     }
 
     initData() {
@@ -501,22 +446,7 @@ export class FriendsDialogView extends BasePopup {
 
     /**更新申请好友列表 */
     onUpdateApplyFriendList(friendDatas: FriendUnitInfo[]) {
-        this._applyFriendDataList = friendDatas;
-        this.msgList.content.removeAllChildren();
-        if (friendDatas.length > 0) {
-            this.newMsg.active = true;
-        }
-        for (let i = 0; i < friendDatas.length; i++) {
-            let friendData: FriendUnitInfo = friendDatas[i];
-            this.addApplyFriendListItem(friendData);
-        }
-        this.msgList.scrollToTop();
-    }
-
-    addApplyFriendListItem(friendData: FriendUnitInfo) {
-        let friendUnit: Node = instantiate(this.preApplyFriendUnit);
-        friendUnit.getComponent(MsgListItem).initData(friendData);
-        this.msgList.content.addChild(friendUnit);
+        this._fMsgView.updateData(friendDatas);
     }
 
     /** 设置所有的好友列表背景为未选中  */
@@ -531,46 +461,46 @@ export class FriendsDialogView extends BasePopup {
 
     /**点击朋友列表中的一项 */
     onFriendItemClck(data: FriendItemClickInfo) {
-        if (!data) {
-            return;
-        }
-        if (!data.info || !data.node) {
-            return;
-        }
-        if (this._selectItem == data.node) {
-            return;
-        }
-        this.roleInfoBox.active = true;
-        this.msgInfoBox.active = false;
+        // if (!data) {
+        //     return;
+        // }
+        // if (!data.info || !data.node) {
+        //     return;
+        // }
+        // if (this._selectItem == data.node) {
+        //     return;
+        // }
+        // this.roleInfoBox.active = true;
+        // this.msgInfoBox.active = false;
 
-        /*if (this._selectItem) { //原来的选中项设为非选中状态
-            this._selectItem.getChildByName("bgImg").getComponent(Sprite).spriteFrame = this.sprfriendItemBgAry[1];
-        }*/
-        this.setAllFriendListUnSelect();
-        let dataFriend: FriendUnitInfo = data.info;
-        let dataNode: Node = data.node;
-        this.fname.string = dataFriend.RealName;
-        this.fstate.string = dataFriend.Ltmsg;
-        this._selectFriend = dataFriend;
-        this._selectItem = dataNode;
-        //选中项背景设为高亮
-        this._selectItem.getChildByName("bgImg").getComponent(Sprite).spriteFrame = this.sprfriendItemBgAry[0];
+        // /*if (this._selectItem) { //原来的选中项设为非选中状态
+        //     this._selectItem.getChildByName("bgImg").getComponent(Sprite).spriteFrame = this.sprfriendItemBgAry[1];
+        // }*/
+        // this.setAllFriendListUnSelect();
+        // let dataFriend: FriendUnitInfo = data.info;
+        // let dataNode: Node = data.node;
+        // this.fname.string = dataFriend.RealName;
+        // this.fstate.string = dataFriend.Ltmsg;
+        // this._selectFriend = dataFriend;
+        // this._selectItem = dataNode;
+        // //选中项背景设为高亮
+        // this._selectItem.getChildByName("bgImg").getComponent(Sprite).spriteFrame = this.sprfriendItemBgAry[0];
 
-        //显示角色动画
-        this.showRoleDress(this._selectFriend);
+        // //显示角色动画
+        // this.showRoleDress(this._selectFriend);
 
-        //角色的详细信息面板伸出来
-        Tween.stopAllByTarget(this.infoBox);
-        this.roleInfoBox.active = true;
-        this.msgInfoBox.active = false;
-        let posInfoBox: Vec3 = this.infoBox.getPosition();
-        this.infoBox.setPosition(v3(FriendsDialogView.INFOBOX_X_HIDE, posInfoBox.y, 0));
-        tween(this.infoBox)
-            .to(0.4, { position: v3(FriendsDialogView.INFOBOX_X_SHOW, posInfoBox.y, 0) })
-            .call(() => {
-                this._isShowInfo = true;
-            })
-            .start();
+        // //角色的详细信息面板伸出来
+        // Tween.stopAllByTarget(this.infoBox);
+        // this.roleInfoBox.active = true;
+        // this.msgInfoBox.active = false;
+        // let posInfoBox: Vec3 = this.infoBox.getPosition();
+        // this.infoBox.setPosition(v3(FriendsDialogView.INFOBOX_X_HIDE, posInfoBox.y, 0));
+        // tween(this.infoBox)
+        //     .to(0.4, { position: v3(FriendsDialogView.INFOBOX_X_SHOW, posInfoBox.y, 0) })
+        //     .call(() => {
+        //         this._isShowInfo = true;
+        //     })
+        //     .start();
     }
 
 
@@ -598,21 +528,21 @@ export class FriendsDialogView extends BasePopup {
 
     /**隐藏个人信息栏 */
     onHideFriendInfo() {
-        if (this._isShowInfo === false) {
-            return;
-        }
-        //角色的详细信息面板伸出来
-        Tween.stopAllByTarget(this.infoBox);
-        this.roleInfoBox.active = true;
-        this.msgInfoBox.active = false;
-        let posInfoBox: Vec3 = this.infoBox.getPosition();
-        //this.infoBox.setPosition(v3(FriendsDialogView.INFOBOX_X_HIDE, posInfoBox.y, 0));
-        tween(this.infoBox)
-            .to(0.4, { position: v3(FriendsDialogView.INFOBOX_X_HIDE, posInfoBox.y, 0) })
-            .call(() => {
-                this._isShowInfo = false;
-            })
-            .start();
+        // if (this._isShowInfo === false) {
+        //     return;
+        // }
+        // //角色的详细信息面板伸出来
+        // Tween.stopAllByTarget(this.infoBox);
+        // this.roleInfoBox.active = true;
+        // this.msgInfoBox.active = false;
+        // let posInfoBox: Vec3 = this.infoBox.getPosition();
+        // //this.infoBox.setPosition(v3(FriendsDialogView.INFOBOX_X_HIDE, posInfoBox.y, 0));
+        // tween(this.infoBox)
+        //     .to(0.4, { position: v3(FriendsDialogView.INFOBOX_X_HIDE, posInfoBox.y, 0) })
+        //     .call(() => {
+        //         this._isShowInfo = false;
+        //     })
+        //     .start();
     }
 
     // 请求查找好友
@@ -637,52 +567,52 @@ export class FriendsDialogView extends BasePopup {
 
     /**查找好友 */
     onSearch() {
-        this.resultBox.active = false;
-        let userId: string = this.searchEdt.string.trim();
-        if (!userId || userId == "") {
-            ViewsManager.instance.showTip(TextConfig.Friend_InputEmptyTip);
-            return;
-        }
+        // this.resultBox.active = false;
+        // let userId: string = this.searchEdt.string.trim();
+        // if (!userId || userId == "") {
+        //     ViewsManager.instance.showTip(TextConfig.Friend_InputEmptyTip);
+        //     return;
+        // }
 
-        this.reqSearchFriend(userId);
+        // this.reqSearchFriend(userId);
     }
 
     /**添加好友 */
     onAddFriend() {
-        let userId: number = Number(this.searchEdt.string);
-        if (userId == User.roleID) {
-            //Tool.tip("不能添加自己");
-            ViewsManager.instance.showTip(TextConfig.Friend_CannotAddSelfTip);
-            return;
-        }
+        // let userId: number = Number(this.searchEdt.string);
+        // if (userId == User.roleID) {
+        //     //Tool.tip("不能添加自己");
+        //     ViewsManager.instance.showTip(TextConfig.Friend_CannotAddSelfTip);
+        //     return;
+        // }
 
-        //this.reqAddFriend(userId);
-        ServiceMgr.friendService.applyFriendTo(userId);
+        // //this.reqAddFriend(userId);
+        // ServiceMgr.friendService.applyFriendTo(userId);
     }
 
     async onSearchFriendResult(res: NetSearchFriendInfo) {
-        if (!res.UserInfo || res.Code != 200) {
-            ViewsManager.instance.showTip(TextConfig.Friend_NoFindUser);
-            return;
-        }
-        else {
-            let data: FriendUnitInfo = res.UserInfo;
-            let headIdMap = { "101": 101, "1101": 101, "102": 102, "1102": 102, "103": 103, "1103": 103 }
-            let avatar: number = headIdMap[data.ModelId];
-            let avatarPath: string = "friend/head_" + avatar + "/spriteFrame";
-            await LoadManager.loadSprite(avatarPath, this.imgResultHead.getComponent(Sprite)).then(() => { },
-                (error) => {
-                    // console.log("loadShowSprite->resource load failed:" + this._data.icon.skin + "," + error.message);
-                });
-            this.lblRealNameResult.string = data.RealName;
-            //this.lblState.string = data.Ltmsg;
-            this.lblIDResult.string = "" + data.FriendId;
-            this.resultBox.active = true;
-        }
+        // if (!res.UserInfo || res.Code != 200) {
+        //     ViewsManager.instance.showTip(TextConfig.Friend_NoFindUser);
+        //     return;
+        // }
+        // else {
+        //     let data: FriendUnitInfo = res.UserInfo;
+        //     let headIdMap = { "101": 101, "1101": 101, "102": 102, "1102": 102, "103": 103, "1103": 103 }
+        //     let avatar: number = headIdMap[data.ModelId];
+        //     let avatarPath: string = "friend/head_" + avatar + "/spriteFrame";
+        //     await LoadManager.loadSprite(avatarPath, this.imgResultHead.getComponent(Sprite)).then(() => { },
+        //         (error) => {
+        //             // console.log("loadShowSprite->resource load failed:" + this._data.icon.skin + "," + error.message);
+        //         });
+        //     this.lblRealNameResult.string = data.RealName;
+        //     //this.lblState.string = data.Ltmsg;
+        //     this.lblIDResult.string = "" + data.FriendId;
+        //     // this.resultBox.active = true;
+        // }
     }
 
     onApplyFriendTo(res: FriendResponseData) {
-        ViewsManager.instance.showTip(res.Msg);
+        // ViewsManager.instance.showTip(res.Msg);
     }
 
     onHouseClick() {
@@ -740,94 +670,75 @@ export class FriendsDialogView extends BasePopup {
 
     //收到邮件列表事件
     onSysMsgList(emailDatas: EmailDataInfo[]) {
-        this._emailDataList = emailDatas;
-        this.emailList.content.removeAllChildren();
-        for (let i = 0; i < emailDatas.length; i++) {
-            let emailData: EmailDataInfo = emailDatas[i];
-            if (emailData.RecFlag == 0) {
-                this.newSysMsg.active = true;
-            }
-            this.addEmailListItem(emailData);
-        }
-        this.emailList.scrollToTop();
-    }
-
-    addEmailListItem(emailData: EmailDataInfo) {
-        let emailUnit: Node = instantiate(this.preEmailListUnit);
-        emailUnit.getComponent(EmailListItem).initData(emailData, this._selectMsg);
-        this.emailList.content.addChild(emailUnit);
+        this._fEmailView.updateData(emailDatas);
     }
 
     /**点击邮件列表项 */
     onEmailClck(data: EmailItemClickInfo) {
-        if (!data) {
-            return;
-        }
-        if (!data.info || !data.node) {
-            return;
-        }
-        if (this._selectMsgItem == data.node) {
-            return;
-        }
+        // if (!data) {
+        //     return;
+        // }
+        // if (!data.info || !data.node) {
+        //     return;
+        // }
+        // if (this._selectMsgItem == data.node) {
+        //     return;
+        // }
 
-        if (this._selectMsgItem) { //原来的选中项设为非选中状态
-            this._selectMsgItem.getChildByName("bgImg").getComponent(Sprite).spriteFrame = this.sprfriendItemBgAry[1];
-        }
-        let dataEmail: EmailDataInfo = data.info;
-        let dataNode: Node = data.node;
-        this.fromTxt.string = dataEmail.FromName;
-        this.msgTxt.string = dataEmail.Content;
-        this.timeTxt.string = dataEmail.createtime;
-        //处理奖品
-        this.awardList.content.removeAllChildren();
-        let awardsData = JSON.parse(dataEmail.Awards);
-        if (awardsData && Array.isArray(awardsData)) {
-            let awardInfo = null;
-            let propData: ItemData = null;
-            for (let i = 0; i < awardsData.length; i++) {
-                awardInfo = awardsData[i];
-                propData = new ItemData();
-                propData.id = awardInfo.id;
-                propData.num = awardInfo.num;
-                let item = instantiate(this.preRewardItem);
-                item.scale = v3(0.7, 0.7, 1);
-                this.awardList.content.addChild(item);
-                item.getComponent(RewardItem).init(propData);
-            }
-        }
-        this.reciveBtn.getComponent(Sprite).grayscale = (dataEmail.RecFlag != 1);
-        if (dataEmail.RecFlag == 1) { //已经领取过了
-            this.reciveBtn.getComponent(Sprite).grayscale = true;
-            this.reciveTxt.string = "已领取";
-            this.reciveBtn.getComponent(Button).enabled = false;
-            //CCUtil.offTouch(this.reciveBtn, this.onReceiveAward, this);
-        } else {
-            this.reciveBtn.getComponent(Sprite).grayscale = false;
-            this.reciveTxt.string = "领取";
-            this.reciveBtn.getComponent(Button).enabled = true;
-        }
+        // if (this._selectMsgItem) { //原来的选中项设为非选中状态
+        //     this._selectMsgItem.getChildByName("bgImg").getComponent(Sprite).spriteFrame = this.sprfriendItemBgAry[1];
+        // }
+        // let dataEmail: EmailDataInfo = data.info;
+        // let dataNode: Node = data.node;
+        // this.fromTxt.string = dataEmail.FromName;
+        // this.msgTxt.string = dataEmail.Content;
+        // this.timeTxt.string = dataEmail.createtime;
+        // //处理奖品
+        // this.awardList.content.removeAllChildren();
+        // let awardsData = JSON.parse(dataEmail.Awards);
+        // if (awardsData && Array.isArray(awardsData)) {
+        //     let awardInfo = null;
+        //     let propData: ItemData = null;
+        //     for (let i = 0; i < awardsData.length; i++) {
+        //         awardInfo = awardsData[i];
+        //         propData = new ItemData();
+        //         propData.id = awardInfo.id;
+        //         propData.num = awardInfo.num;
+        //         let item = instantiate(this.preRewardItem);
+        //         item.scale = v3(0.7, 0.7, 1);
+        //         this.awardList.content.addChild(item);
+        //         item.getComponent(RewardItem).init(propData);
+        //     }
+        // }
+        // this.reciveBtn.getComponent(Sprite).grayscale = (dataEmail.RecFlag != 1);
+        // if (dataEmail.RecFlag == 1) { //已经领取过了
+        //     this.reciveBtn.getComponent(Sprite).grayscale = true;
+        //     this.reciveTxt.string = "已领取";
+        //     this.reciveBtn.getComponent(Button).enabled = false;
+        //     //CCUtil.offTouch(this.reciveBtn, this.onReceiveAward, this);
+        // } else {
+        //     this.reciveBtn.getComponent(Sprite).grayscale = false;
+        //     this.reciveTxt.string = "领取";
+        //     this.reciveBtn.getComponent(Button).enabled = true;
+        // }
 
-        this._selectMsg = dataEmail;
-        this._selectMsgItem = dataNode;
-        //选中项背景设为高亮
-        this._selectMsgItem.getChildByName("bgImg").getComponent(Sprite).spriteFrame = this.sprfriendItemBgAry[0];
+        // this._selectMsg = dataEmail;
+        // this._selectMsgItem = dataNode;
+        // //选中项背景设为高亮
+        // this._selectMsgItem.getChildByName("bgImg").getComponent(Sprite).spriteFrame = this.sprfriendItemBgAry[0];
 
-        //角色的详细信息面板伸出来
-        Tween.stopAllByTarget(this.infoBox);
-        this.roleInfoBox.active = false;
-        this.msgInfoBox.active = true;
-        let posInfoBox: Vec3 = this.infoBox.getPosition();
-        this.infoBox.setPosition(v3(FriendsDialogView.INFOBOX_X_HIDE, posInfoBox.y, 0));
-        tween(this.infoBox)
-            .to(0.4, { position: v3(FriendsDialogView.INFOBOX_X_SHOW, posInfoBox.y, 0) })
-            .call(() => {
-                this._isShowInfo = true;
-            })
-            .start();
-
-    }
-
-    update(deltaTime: number) {
+        // //角色的详细信息面板伸出来
+        // Tween.stopAllByTarget(this.infoBox);
+        // this.roleInfoBox.active = false;
+        // this.msgInfoBox.active = true;
+        // let posInfoBox: Vec3 = this.infoBox.getPosition();
+        // this.infoBox.setPosition(v3(FriendsDialogView.INFOBOX_X_HIDE, posInfoBox.y, 0));
+        // tween(this.infoBox)
+        //     .to(0.4, { position: v3(FriendsDialogView.INFOBOX_X_SHOW, posInfoBox.y, 0) })
+        //     .call(() => {
+        //         this._isShowInfo = true;
+        //     })
+        //     .start();
 
     }
 }

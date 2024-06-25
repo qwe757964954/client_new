@@ -1,6 +1,6 @@
 import { Label, _decorator } from 'cc';
 import ListItem from '../../util/list/ListItem';
-import { FriendTabInfos } from '../friend/FriendInfo';
+import { SettingTabInfos } from './SettingInfo';
 const { ccclass, property } = _decorator;
 
 @ccclass('SettingTabItem')
@@ -12,7 +12,7 @@ export class SettingTabItem extends ListItem {
     }
 
     updatePropsItem(idx: number) {
-        this.tab_name.string = FriendTabInfos[idx].title;
+        this.tab_name.string = SettingTabInfos[idx].title;
     }
 }
 
