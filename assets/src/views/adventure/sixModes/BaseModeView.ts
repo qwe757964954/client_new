@@ -318,7 +318,7 @@ export class BaseModeView extends BaseView {
     }
     //当前模式结束,跳转下一模式或结算
     protected modeOver() {
-
+        ViewsMgr.closeConfirmView();
     }
 
     //单个单词学习情况上报
@@ -538,6 +538,7 @@ export class BaseModeView extends BaseView {
             str = "确定结束复习吗?\n完成复习可参与扭蛋机抽奖哦";
         }
         ViewsMgr.showConfirm(str, () => {
+            if (!this.node) return;
             if (WordSourceType.classification == this._sourceType) {
                 EventMgr.dispatch(EventType.Exit_Island_Level);
             }
