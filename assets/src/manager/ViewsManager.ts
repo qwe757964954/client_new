@@ -167,57 +167,52 @@ export class ViewsManager {
     }
 
     public async showViewAsync(viewConfig: PrefabConfig): Promise<Node> {
+        // Check if the view already exists
         if (this.isExistView(viewConfig)) {
-            console.log("显示界面 已存在", viewConfig.path);
-            return null; // 或者可以抛出异常
+            console.log("View already exists", viewConfig.path);
+            return Promise.reject(new Error(`View already exists: ${viewConfig.path}`));
         }
-
-        console.log("显示界面 load", viewConfig.path);
-        let parent = this.getParentNode(viewConfig.zindex);
-
-        // 更新加载状态
+    
+        console.log("Loading view", viewConfig.path);
+        const parent = this.getParentNode(viewConfig.zindex);
+    
+        // Increment loading state
         this._loadingPrefabMap[viewConfig.path] = (this._loadingPrefabMap[viewConfig.path] || 0) + 1;
-
-        let tmpNode = new Node();
-        let tmpName = "tmp_" + viewConfig.path.replace("/", "_");
-        tmpNode.name = tmpName;
+    
+        // Create a temporary node to hold the loading state
+        const tmpNode = new Node();
+        tmpNode.name = `tmp_${viewConfig.path.replace("/", "_")}`;
         parent.addChild(tmpNode);
-
+    
         try {
-            // 加载预制体
-            let node = await LoadManager.loadPrefab(viewConfig.path, parent);
-            console.log("显示界面", viewConfig.path);
+            // Load the prefab
+            const node = await LoadManager.loadPrefab(viewConfig.path, parent);
+            console.log("Loaded view", viewConfig.path);
             node.name = viewConfig.path.replace("/", "_");
-
-            // 更新加载状态
-            this._loadingPrefabMap[viewConfig.path]--;
-
-            // 清理临时节点
-            let tmpNode = parent.getChildByName(tmpName);
-            if (tmpNode) {
+    
+            // Remove temporary node if it still exists
+            if (tmpNode && tmpNode.parent) {
                 tmpNode.destroy();
-            } else {
-                console.log("界面已经被移除", viewConfig.path);
-                node.destroy();
-                throw new Error(`界面已经被移除: ${viewConfig.path}`);
             }
-
+    
             return node;
         } catch (error) {
-            console.log("显示界面 error", error);
-
-            // 更新加载状态
-            this._loadingPrefabMap[viewConfig.path]--;
-
-            // 清理临时节点
-            let tmpNode = parent.getChildByName(tmpName);
-            if (tmpNode) {
+            console.error("Failed to load view", viewConfig.path, error);
+    
+            // Ensure temporary node is removed
+            if (tmpNode && tmpNode.parent) {
                 tmpNode.destroy();
             }
-
+    
             throw error;
+        } finally {
+            // Decrement loading state
+            if (--this._loadingPrefabMap[viewConfig.path] <= 0) {
+                delete this._loadingPrefabMap[viewConfig.path];
+            }
         }
     }
+    
 
 
     // 关闭界面

@@ -1130,22 +1130,6 @@
     "titleTxt": {
       "__id__": 26
     },
-    "preFriendListUnit": {
-      "__uuid__": "14c3616f-6908-4286-af83-b4a879e8d3d2",
-      "__expectedType__": "cc.Prefab"
-    },
-    "preSearchFriendUnit": {
-      "__uuid__": "a98b6bc5-bd0c-4e79-88b5-5e2015dba9a2",
-      "__expectedType__": "cc.Prefab"
-    },
-    "preApplyFriendUnit": {
-      "__uuid__": "2e3ecbce-5cdf-4251-b800-8cae16714cef",
-      "__expectedType__": "cc.Prefab"
-    },
-    "preEmailListUnit": {
-      "__uuid__": "72f06ed4-66d3-4c5e-9959-710b1e1d73bd",
-      "__expectedType__": "cc.Prefab"
-    },
     "preRewardItem": {
       "__uuid__": "8e50e603-cf0f-42a6-ab3b-c861a8a3c740",
       "__expectedType__": "cc.Prefab"

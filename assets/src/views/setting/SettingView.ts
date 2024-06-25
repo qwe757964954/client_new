@@ -6,6 +6,7 @@ import { UserPlayerDetail } from '../../models/SettingModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { STServer } from '../../service/SettingService';
+import { AccountView } from './AccountView';
 import { CenterView } from './CenterView';
 import { SettingTabType } from './SettingInfo';
 import { SettingTabView } from './SettingTabView';
@@ -39,6 +40,7 @@ export class SettingView extends BaseView {
     onUserPlayerDetail(data:UserPlayerDetail){
         console.log("onUserPlayerDetail data = ", data);
         this.center.getComponent(CenterView).updateUserInfo(data);
+        this.account.getComponent(AccountView).updateUserInfo(data);
     }
 
     //初始化
