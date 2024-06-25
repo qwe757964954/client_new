@@ -122,38 +122,39 @@ export class ScrollMapView extends BaseView {
     async initUnit(unitStatus:UnitListItemStatus){
         this._unitStatus = unitStatus.unit_list;
         this._total_grade = unitStatus.gate_total;
-
+        
         this._unitStatus.sort((a, b) => {
-            const unitA = a.unit_name;
-            const unitB = b.unit_name;
-
+            const unitA = a.unit_name.replace(/\s+/g, '');;
+            const unitB = b.unit_name.replace(/\s+/g, '');;
+        
             // Check if both units are numbers
             const isANumber = !isNaN(Number(unitA));
             const isBNumber = !isNaN(Number(unitB));
-
+        
             // If both are numbers, compare them numerically
             if (isANumber && isBNumber) {
                 return Number(unitA) - Number(unitB);
             }
-
+        
             // If one is a number and the other is not, prioritize the non-number unit
             if (isANumber !== isBNumber) {
                 return isANumber ? 1 : -1;
             }
-
-            // If both are not numbers, compare them as strings
-            // Split the strings into parts and compare each part numerically if possible
+        
+            // If both are not numbers, compare them as strings with natural sorting
             const partsA = unitA.split(/(\d+)/).filter(Boolean);
             const partsB = unitB.split(/(\d+)/).filter(Boolean);
+            
+            
 
             for (let i = 0; i < Math.min(partsA.length, partsB.length); i++) {
                 const partA = partsA[i];
                 const partB = partsB[i];
                 const numA = parseInt(partA, 10);
                 const numB = parseInt(partB, 10);
-
+        
+                // If both parts are numbers, compare them numerically
                 if (!isNaN(numA) && !isNaN(numB)) {
-                    // If both parts are numbers, compare them numerically
                     if (numA !== numB) {
                         return numA - numB;
                     }
@@ -165,10 +166,11 @@ export class ScrollMapView extends BaseView {
                     }
                 }
             }
-
+        
             // If all parts are equal, compare based on length (shorter comes first)
             return partsA.length - partsB.length;
         });
+        
 
         this.MapLaout.removeAllChildren();
         this.addMapBg().then(()=>{
