@@ -2,7 +2,11 @@ import { _decorator, Button, Color, Label, Node } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import GlobalConfig from '../../GlobalConfig';
 import { ViewsManager } from '../../manager/ViewsManager';
+import { UserPlayerDetail } from '../../models/SettingModel';
+import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
+import { STServer } from '../../service/SettingService';
+import { CenterView } from './CenterView';
 const { ccclass, property } = _decorator;
 
 @ccclass('SettingView')
@@ -31,13 +35,29 @@ export class SettingView extends BaseView {
         });
     }
 
+    protected onInitModuleEvent() {
+        this.addModelListeners([
+            [NetNotify.Classification_UserPlayerDetail, this.onUserPlayerDetail.bind(this)],
+        ]);
+    }
     
+    onUserPlayerDetail(data:UserPlayerDetail){
+        console.log("onUserPlayerDetail data = ", data);
+        this.center.getComponent(CenterView).updateUserInfo(data);
+    }
+
     //初始化
     public initUI():void {
         GlobalConfig.initResolutionRules();
         this.initNavTitle();
+        this.fetchInitialData();
         this.btnChangeTabFunc(null, "Center");
     }
+
+    private fetchInitialData() {
+        STServer.reqUserPlayerDetail();
+    }
+
     // //设置主场景
     // public set mainScene(mainScene:MainScene){
     //     this._mainScene = mainScene;

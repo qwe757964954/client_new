@@ -1,11 +1,9 @@
 import { isValid } from "cc";
-import { ViewsManager } from "../manager/ViewsManager";
 import { CheckWordModel, GameSubmitModel, ModifyPlanData, MyTextbookStatus, ReportResultModel, ReqCollectWord, ReqPlanData, ReqUnitStatusParam, ReqUnitType, c2sAddPlanBookStatus, c2sBookAwardList, c2sBookPlanDetail, c2sBookStatus, c2sChangeTextbook, c2sCheckWord, c2sCollectWord, c2sCurrentBook, c2sDelBookStatus, c2sGameSubmit, c2sModifyPlanStatus, c2sReportResult, c2sSchoolBook, c2sSchoolBookGrade, c2sSearchBookList, c2sUnitListStatus, c2sUnitStatus, c2sVocabularyWord, c2sWordDetail } from "../models/TextbookModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
 import { NetNotify } from "../net/NetNotify";
 import { BaseControll } from "../script/BaseControll";
-import { EventMgr } from "../util/EventManager";
 
 //用户信息服务
 export default class _TextbookService extends BaseControll {
@@ -43,22 +41,6 @@ export default class _TextbookService extends BaseControll {
             [InterfacePath.Classification_VocabularyWord, this.onVocabularyWord]
         ]);
     }
-    private addModelListeners(listeners: [string, (data: any) => void][]): void {
-        for (const [path, handler] of listeners) {
-            this.addModelListener(path, handler.bind(this));
-        }
-    }
-
-    private handleResponse(data: any, successNotify: string): void {
-        console.log(successNotify, data);
-        if (data.code !== 200) {
-            console.log(data.msg);
-            ViewsManager.showTip(data.msg);
-            return;
-        }
-        EventMgr.dispatch(successNotify, data);
-    }
-
     reqBookStatus() {
         let para: c2sBookStatus = new c2sBookStatus();
         NetMgr.sendMsg(para);

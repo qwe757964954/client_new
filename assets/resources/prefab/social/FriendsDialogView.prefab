@@ -1133,7 +1133,6 @@
     "infoBox": null,
     "listBox": null,
     "addBox": null,
-    "resultBox": null,
     "imgResultHead": null,
     "lblRealNameResult": null,
     "lblIDResult": null,
@@ -1147,10 +1146,8 @@
     "msgTxt": null,
     "timeTxt": null,
     "awardList": null,
-    "friendList": null,
     "msgList": null,
     "emailList": null,
-    "recommendList": null,
     "preFriendListUnit": {
       "__uuid__": "14c3616f-6908-4286-af83-b4a879e8d3d2",
       "__expectedType__": "cc.Prefab"

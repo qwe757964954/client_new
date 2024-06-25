@@ -2,6 +2,7 @@ import { _decorator, Component, Label, ProgressBar, Sprite } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { LoadManager } from '../../manager/LoadManager';
 import { ViewsManager } from '../../manager/ViewsManager';
+import { UserPlayerDetail } from '../../models/SettingModel';
 import { User } from '../../models/User';
 import ImgUtil from '../../util/ImgUtil';
 const { ccclass, property } = _decorator;
@@ -39,7 +40,6 @@ export class CenterView extends Component {
     //初始化
     public init(): void {
         this.initHead();
-        this.initUserInfo();
         // this.initEvent();
     }
     // 初始化头像/框
@@ -50,14 +50,13 @@ export class CenterView extends Component {
         LoadManager.loadSprite(headUrl, this.head);
     }
     // 初始化用户id、昵称、称号等信息
-    public initUserInfo() {
-        let user = User;
-        this.idTxt.string = user.userID.toString();
-        this.nameTxt.string = user.userName;
-        this.roletitleTxt.string = user.roletitle;
+    public updateUserInfo(data:UserPlayerDetail) {
+        this.idTxt.string = data.user_id.toString();
+        this.nameTxt.string = data.nick_name;
+        // this.roletitleTxt.string = data.roletitle;
         // this.levelTxt.string = user.level.toString();
-        this.currentExpTxt.string = user.currentExp.toString() + "/100";
-        this.roleTitleProgress.progress = user.currentExp / 100;
+        this.currentExpTxt.string = data.exp.toString() + "/100";
+        this.roleTitleProgress.progress = data.exp / 100;
     }
 
     //初始化事件

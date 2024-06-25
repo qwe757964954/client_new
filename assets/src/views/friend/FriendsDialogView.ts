@@ -221,12 +221,6 @@ export class FriendsDialogView extends BasePopup {
         this._selectItem = null;
         this._addBtnList = [];
 
-        this._friendDataList = [];
-        this._recommendFriendDataList = [];
-        this._applyFriendDataList = [];
-        this._emailDataList = [];
-        
-
         let posInfoBox: Vec3 = this.infoBox.getPosition();
         this.infoBox.setPosition(v3(FriendsDialogView.INFOBOX_X_HIDE, posInfoBox.y, 0));
         */
@@ -600,7 +594,7 @@ export class FriendsDialogView extends BasePopup {
 
     onCloseView() {
         //ViewsManager.instance.closeView(PrefabType.FriendsDialogView);
-        if (!this._canClose) return;
+        // if (!this._canClose) return;
         this._canClose = false;
         this.closePop();
     }
