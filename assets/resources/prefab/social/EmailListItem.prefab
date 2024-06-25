@@ -2105,6 +2105,11 @@
     "__prefab": {
       "__id__": 89
     },
+    "selectedMode": 0,
+    "selectedFlag": null,
+    "selectedFlag2": null,
+    "selectedSpriteFrame": null,
+    "adaptiveSize": false,
     "imgBg": {
       "__id__": 5
     },

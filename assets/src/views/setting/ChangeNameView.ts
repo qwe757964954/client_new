@@ -1,59 +1,63 @@
-import { _decorator, Component, EditBox, Label, Node } from 'cc';
-import { PrefabType } from '../../config/PrefabType';
+import { _decorator, EditBox, Label } from 'cc';
 import { ViewsManager } from '../../manager/ViewsManager';
+import { UserPlayerDetail, UserPlayerModifyModel } from '../../models/SettingModel';
 import { User } from '../../models/User';
-import { PopView } from '../common/PopView';
+import { BasePopup } from '../../script/BasePopup';
+import { STServer } from '../../service/SettingService';
 const { ccclass, property } = _decorator;
 
 @ccclass('ChangeNameView')
-export class ChangeNameView extends Component {
+export class ChangeNameView extends BasePopup {
 
     @property(Label)
     public msgTxt: Label = null;     // 修改限制提示
     @property(EditBox)
     public editBox: EditBox = null;  // 预览的头像框
 
-    start() {
-        this.init();
+    private _playerDetail:UserPlayerDetail = null;
+    public initUI(): void {
+        this.enableClickBlankToClose([this.node.getChildByName("BG")]).then(()=>{
+        });
+        this.editBox.update();
+    }
+    updataData(data:UserPlayerDetail){
+        this._playerDetail = data;
+        this.updateUI();
+        // this.updateUI();
     }
 
-    //初始化
-    public init(): void {
-        this.initUI();
-    }
     // 初始化UI
-    initUI() {
+    updateUI() {
         this.msgTxt.string = "本月剩余修改次数：" + (2 - User.editRealNameNum);
-        this.editBox.string = User.userName;
+        this.editBox.string = this._playerDetail.nick_name;
     }
 
     // 关闭
     btnCloseFunc() {
         console.log("btnCloseFunc");
-        ViewsManager.instance.closeView(PrefabType.ChangeNameView);
+        this.closePop();
     }
     // 头像框tab
     btnChangeNameFunc() {
         if (User.editRealNameNum >= 2) {
-            ViewsManager.instance.showView(PrefabType.PopView, (node: Node) => {
-                node.getComponent(PopView).init("本月改名次数已用完");
-            });
+            ViewsManager.showTip("本月改名次数已用完");
             return;
         }
         let txt = this.editBox.string;
-        if (txt == "") {
-            ViewsManager.instance.showView(PrefabType.PopView, (node: Node) => {
-                node.getComponent(PopView).init("名称不能为空哦");
-            });
+        if (txt.length <= 2 || txt.length >= 20) {
+            ViewsManager.showTip("昵称长度为2-20个字符");
             return;
         }
         console.log("userName = ", User.userName, " txt = ", txt);
         if (User.userName == txt) {
-            ViewsManager.instance.showView(PrefabType.PopView, (node: Node) => {
-                node.getComponent(PopView).init("修改后的名称不能和之前相同哦");
-            });
+            ViewsManager.showTip("修改后的名称不能和之前相同哦");
             return;
         }
+        let param:UserPlayerModifyModel ={
+            nick_name:txt
+        }
+        STServer.reqUserPlayerModify(param);
+        this.closePop();
         // 请求数据
         // NetMgr.reqChangeRealNameData(txt);
         // PbServiceManager.accountService.accountEidt(this.accountNameTxt.text, (datas) => {

@@ -84,37 +84,42 @@ export class ViewsManager {
         let nd_name = viewConfig.path.replace("/", "_");
         let nd: Node = ImgUtil.create_2DNode(nd_name);
         parent.addChild(nd);
-
+    
         // Add blocking input events and set widget settings
         nd.addComponent(BlockInputEvents);
         CCUtil.addWidget(nd, { left: 0, right: 0, top: 0, bottom: 0 });
-
+    
         // Ensure that the node is properly initialized
         await ImgUtil.create_PureNode(nd);
-
+    
         return new Promise((resolve, reject) => {
             // Load the prefab and instantiate it
-            ResLoader.instance.load(`prefab/${viewConfig.path}`, Prefab, (err, prefab) => {
+            ResLoader.instance.load(`prefab/${viewConfig.path}`, Prefab, async (err, prefab) => {
                 if (err) {
                     console.error(err);
                     reject(err);
                     return;
                 }
-
+    
                 // Instantiate and add the prefab as a child node
                 let node = instantiate(prefab);
                 nd.addChild(node);
                 CCUtil.addWidget(nd, { left: 0, right: 0, top: 0, bottom: 0 });
-
+    
                 // Retrieve the component and execute the show animation
                 let scpt: BasePopup = node.getComponent(viewConfig.componentName);
-                scpt.showAnim();
-
-                // Resolve the promise with the node
-                resolve(node as Node); // Typecast to Node
+    
+                try {
+                    await scpt.showAnim();
+                    resolve(node as Node); // Resolve after the animation completes
+                } catch (animationError) {
+                    console.error(animationError);
+                    reject(animationError);
+                }
             });
         });
     }
+        
 
 
     // 显示界面
@@ -162,57 +167,52 @@ export class ViewsManager {
     }
 
     public async showViewAsync(viewConfig: PrefabConfig): Promise<Node> {
+        // Check if the view already exists
         if (this.isExistView(viewConfig)) {
-            console.log("显示界面 已存在", viewConfig.path);
-            return null; // 或者可以抛出异常
+            console.log("View already exists", viewConfig.path);
+            return Promise.reject(new Error(`View already exists: ${viewConfig.path}`));
         }
-
-        console.log("显示界面 load", viewConfig.path);
-        let parent = this.getParentNode(viewConfig.zindex);
-
-        // 更新加载状态
+    
+        console.log("Loading view", viewConfig.path);
+        const parent = this.getParentNode(viewConfig.zindex);
+    
+        // Increment loading state
         this._loadingPrefabMap[viewConfig.path] = (this._loadingPrefabMap[viewConfig.path] || 0) + 1;
-
-        let tmpNode = new Node();
-        let tmpName = "tmp_" + viewConfig.path.replace("/", "_");
-        tmpNode.name = tmpName;
+    
+        // Create a temporary node to hold the loading state
+        const tmpNode = new Node();
+        tmpNode.name = `tmp_${viewConfig.path.replace("/", "_")}`;
         parent.addChild(tmpNode);
-
+    
         try {
-            // 加载预制体
-            let node = await LoadManager.loadPrefab(viewConfig.path, parent);
-            console.log("显示界面", viewConfig.path);
+            // Load the prefab
+            const node = await LoadManager.loadPrefab(viewConfig.path, parent);
+            console.log("Loaded view", viewConfig.path);
             node.name = viewConfig.path.replace("/", "_");
-
-            // 更新加载状态
-            this._loadingPrefabMap[viewConfig.path]--;
-
-            // 清理临时节点
-            let tmpNode = parent.getChildByName(tmpName);
-            if (tmpNode) {
+    
+            // Remove temporary node if it still exists
+            if (tmpNode && tmpNode.parent) {
                 tmpNode.destroy();
-            } else {
-                console.log("界面已经被移除", viewConfig.path);
-                node.destroy();
-                throw new Error(`界面已经被移除: ${viewConfig.path}`);
             }
-
+    
             return node;
         } catch (error) {
-            console.log("显示界面 error", error);
-
-            // 更新加载状态
-            this._loadingPrefabMap[viewConfig.path]--;
-
-            // 清理临时节点
-            let tmpNode = parent.getChildByName(tmpName);
-            if (tmpNode) {
+            console.error("Failed to load view", viewConfig.path, error);
+    
+            // Ensure temporary node is removed
+            if (tmpNode && tmpNode.parent) {
                 tmpNode.destroy();
             }
-
+    
             throw error;
+        } finally {
+            // Decrement loading state
+            if (--this._loadingPrefabMap[viewConfig.path] <= 0) {
+                delete this._loadingPrefabMap[viewConfig.path];
+            }
         }
     }
+    
 
 
     // 关闭界面

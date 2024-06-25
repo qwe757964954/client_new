@@ -1,9 +1,11 @@
-import { _decorator, Component, Label, ProgressBar, Sprite } from 'cc';
+import { Component, Label, Node, ProgressBar, Sprite, _decorator } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { LoadManager } from '../../manager/LoadManager';
 import { ViewsManager } from '../../manager/ViewsManager';
+import { UserPlayerDetail } from '../../models/SettingModel';
 import { User } from '../../models/User';
 import ImgUtil from '../../util/ImgUtil';
+import { ChangeNameView } from './ChangeNameView';
 const { ccclass, property } = _decorator;
 
 @ccclass('CenterView')
@@ -27,6 +29,8 @@ export class CenterView extends Component {
     @property(ProgressBar)
     public roleTitleProgress: ProgressBar = null;  // 称号进度条
 
+    private _playerDetail: UserPlayerDetail = null;
+
     start() {
         this.init();
     }
@@ -39,7 +43,6 @@ export class CenterView extends Component {
     //初始化
     public init(): void {
         this.initHead();
-        this.initUserInfo();
         // this.initEvent();
     }
     // 初始化头像/框
@@ -50,14 +53,14 @@ export class CenterView extends Component {
         LoadManager.loadSprite(headUrl, this.head);
     }
     // 初始化用户id、昵称、称号等信息
-    public initUserInfo() {
-        let user = User;
-        this.idTxt.string = user.userID.toString();
-        this.nameTxt.string = user.userName;
-        this.roletitleTxt.string = user.roletitle;
+    public updateUserInfo(data:UserPlayerDetail) {
+        this._playerDetail = data;
+        this.idTxt.string = data.user_id.toString();
+        this.nameTxt.string = data.nick_name;
+        // this.roletitleTxt.string = data.roletitle;
         // this.levelTxt.string = user.level.toString();
-        this.currentExpTxt.string = user.currentExp.toString() + "/100";
-        this.roleTitleProgress.progress = user.currentExp / 100;
+        this.currentExpTxt.string = data.exp.toString() + "/100";
+        this.roleTitleProgress.progress = data.exp / 100;
     }
 
     //初始化事件
@@ -75,9 +78,11 @@ export class CenterView extends Component {
         ViewsManager.instance.showView(PrefabType.ChangeHeadView);
     }
     // 修改名称
-    btnChangeNameFunc() {
+    async btnChangeNameFunc() {
         console.log("btnChangeNameFunc");
-        ViewsManager.instance.showView(PrefabType.ChangeNameView);
+        let node:Node = await ViewsManager.instance.showPopup(PrefabType.ChangeNameView);
+        let nodeScript: ChangeNameView = node.getComponent(ChangeNameView);
+        nodeScript.updataData(this._playerDetail);
     }
     // 称号信息
     btnLookTitleInfoFunc() {

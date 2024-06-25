@@ -50,7 +50,7 @@ export class BaseView extends Component{
         this.onInitModuleEvent();
     }
     onLoad() {
-		this.onLoadBefore()
+		// this.onLoadBefore()
 	}
 	start() {
 		this.initUI();

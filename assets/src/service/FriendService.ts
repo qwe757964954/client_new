@@ -1,10 +1,9 @@
-import { _decorator, Component, Node } from 'cc';
-import { BaseControll } from '../script/BaseControll';
-import { c2sApplyFriendStatus, c2sApplyFriendTo, c2sEmailList, c2sFriendApplyList, c2sFriendDel, c2sFriendList, c2sFriendMsgList, c2sMsgRecAwards, c2sRecommendList, c2sSendFriendMsg, EmailDataInfo, FriendChatInfo, FriendChatNetResponse, FriendResponseData, FriendUnitInfo } from '../models/FriendModel';
-import { NetMgr } from '../net/NetManager';
-import { TextConfig } from '../config/TextConfig';
-import EventManager from '../util/EventManager';
+import { _decorator } from 'cc';
 import { EventType } from '../config/EventType';
+import { TextConfig } from '../config/TextConfig';
+import { c2sApplyFriendStatus, c2sApplyFriendTo, c2sEmailList, c2sFriendApplyList, c2sFriendDel, c2sFriendList, c2sFriendMsgList, c2sMsgRecAwards, c2sRecommendList, c2sSendFriendMsg, EmailDataInfo, FriendChatInfo, FriendChatNetResponse, FriendResponseData, FriendUnitInfo } from '../models/FriendModel';
+import { BaseControll } from '../script/BaseControll';
+import EventManager from '../util/EventManager';
 const { ccclass, property } = _decorator;
 
 export class FriendService extends BaseControll {

@@ -1,7 +1,7 @@
 import { _decorator, Component, Label, Node, Sprite } from 'cc';
+import { LoadManager } from '../../manager/LoadManager';
 import { FriendUnitInfo } from '../../models/FriendModel';
 import CCUtil from '../../util/CCUtil';
-import { LoadManager } from '../../manager/LoadManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('FriendSearchItem')
@@ -46,7 +46,6 @@ export class FriendSearchItem extends Component {
 
     async initData(data: FriendUnitInfo) {
         this._data = data;
-
         let headIdMap = { "101": 101, "1101": 101, "102": 102, "1102": 102, "103": 103, "1103": 103 }
         let avatar: number = headIdMap[data.ModelId];
         let avatarPath: string = "friend/head_" + avatar + "/spriteFrame";
@@ -57,14 +56,6 @@ export class FriendSearchItem extends Component {
         this.lblRealName.string = data.RealName;
         this.lblState.string = data.Ltmsg;
         this.lblID.string = "" + data.FriendId;
-    }
-
-    start() {
-
-    }
-
-    update(deltaTime: number) {
-
     }
 }
 
