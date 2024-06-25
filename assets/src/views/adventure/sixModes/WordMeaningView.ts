@@ -237,6 +237,7 @@ export class WordMeaningView extends BaseModeView {
     }
 
     protected modeOver(): void {
+        super.modeOver();
         console.log('词意模式完成');
         if (WordSourceType.review == this._sourceType) {
             let data = this._currentSubmitResponse as s2cReviewPlanSubmit;

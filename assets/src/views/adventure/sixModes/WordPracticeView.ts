@@ -141,6 +141,7 @@ export class WordPracticeView extends BaseModeView {
     }
 
     protected modeOver(): void {
+        super.modeOver();
         console.log('练习模式完成');
         ViewsManager.instance.showView(PrefabType.TransitionView, (node: Node) => {
             let wordData = JSON.parse(JSON.stringify(this._wordsData));
