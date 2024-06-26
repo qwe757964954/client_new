@@ -1,7 +1,9 @@
-import { _decorator, Component, Node } from 'cc';
-import { PrefabType } from '../../config/PrefabType';
+import { _decorator, Component, director, Node } from 'cc';
+import { PrefabType, SceneType } from '../../config/PrefabType';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { UserPlayerDetail } from '../../models/SettingModel';
+import { User } from '../../models/User';
+import { NetMgr } from '../../net/NetManager';
 import { ApplyLogoutView } from './ApplyLogoutView';
 import { ChangeRoleView } from './ChangeRoleView';
 const { ccclass, property } = _decorator;
@@ -89,6 +91,10 @@ export class AccountView extends Component {
     // 退出登录
     btnLoginOutFunc() {
         console.log("btnLoginOutFunc");
+        User.isAutoLogin = false;
+        User.resetData();
+        NetMgr.closeNet();
+        director.loadScene(SceneType.LoginScene);
     }
 }
 
