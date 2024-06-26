@@ -1,4 +1,5 @@
 import { _decorator, Component, Node } from 'cc';
+import AudioUtil from '../../util/AudioUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('SoundView')
@@ -35,10 +36,10 @@ export class SoundView extends Component {
     // 初始化UI
     initUI() {
         // 默认开
-        this.musicOn.active = true;
-        this.musicOff.active = false;
-        this.effectOn.active = true;
-        this.effectOff.active = false;
+        this.musicOn.active = AudioUtil.instance.musicSwich;
+        this.musicOff.active = !AudioUtil.instance.musicSwich;
+        this.effectOn.active = AudioUtil.instance.effectSwich;
+        this.effectOff.active = !AudioUtil.instance.effectSwich;
         // 默认英
         this.MeiOn.active = false;
         this.YingOn.active = true;
@@ -59,11 +60,15 @@ export class SoundView extends Component {
             // 关
             this.musicOff.active = true;
             this.musicOn.active = false;
+            AudioUtil.instance.musicSwich = false;
+            AudioUtil.instance.pauseMusic();
         }
         else if (customEventData == "Off") {
             // 开
             this.musicOff.active = false;
             this.musicOn.active = true;
+            AudioUtil.instance.musicSwich = true;
+            AudioUtil.instance.resumeMusic();
         }
     }
     // 动作音效开关
@@ -73,11 +78,13 @@ export class SoundView extends Component {
             // 关
             this.effectOff.active = true;
             this.effectOn.active = false;
+            AudioUtil.instance.effectSwich = false;
         }
         else if (customEventData == "Off") {
             // 开
             this.effectOff.active = false;
             this.effectOn.active = true;
+            AudioUtil.instance.effectSwich = true;
         }
     }
     // 切换英美音

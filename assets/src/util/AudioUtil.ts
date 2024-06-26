@@ -1,4 +1,6 @@
 import { AudioClip, AudioSource, director, Node, resources } from "cc";
+import { KeyConfig } from "../config/KeyConfig";
+import StorageUtil from "./StorageUtil";
 
 //声音工具类
 export default class AudioUtil {
@@ -7,6 +9,9 @@ export default class AudioUtil {
     private _effectSource: AudioSource = null;//音效音频
     public musicVolume: number = 1.0;//背景音乐音量
     public effectVolume: number = 1.0;//音效音量
+
+    private _musicSwich:boolean = true;
+    private _effectSwich:boolean = true;
 
     private static _AudioUtl: AudioUtil = null;
     public static get instance(): AudioUtil {
@@ -37,6 +42,8 @@ export default class AudioUtil {
     }
     public playEffect(sound: AudioClip | string, volumeScale: number = 1.0) {
         if (!sound) return;
+        /**如果音效开关关掉了，停止播放 */
+        if (!this.effectSwich) return;
         if (sound instanceof AudioClip) {
             this._effectSource.playOneShot(sound, volumeScale);
         } else {
@@ -56,6 +63,8 @@ export default class AudioUtil {
     }
     public playMusic(sound: AudioClip | string, volumeScale: number = 1.0) {
         if (!sound) return;
+        /**如果音乐开关关掉了，停止播放 */
+        if (!this.musicSwich) return;
         if (sound instanceof AudioClip) {
             this.playMusicEx(sound, volumeScale);
         } else {
@@ -125,5 +134,27 @@ export default class AudioUtil {
     }
     public setEffectVolume(volume: number) {
         this._effectSource.volume = volume;
+    }
+    /**音乐开关 */
+    public get musicSwich(): boolean {
+        let swich = StorageUtil.getData(KeyConfig.Background_Music_Switch, "1");
+        this._musicSwich = swich == "1" ? true : false;
+        return this._musicSwich;
+    }
+
+    public set musicSwich(swich: boolean) {
+        this._musicSwich = swich;
+        StorageUtil.saveData(KeyConfig.Background_Music_Switch, this._musicSwich ? "1" : "0");
+    }
+
+    public get effectSwich(): boolean {
+        let swich = StorageUtil.getData(KeyConfig.Effect_Music_Switch, "1");
+        this._effectSwich = swich == "1" ? true : false;
+        return this._effectSwich;
+    }
+
+    public set effectSwich(swich: boolean) {
+        this._effectSwich = swich;
+        StorageUtil.saveData(KeyConfig.Effect_Music_Switch, this._effectSwich ? "1" : "0");
     }
 }
