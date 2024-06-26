@@ -30,11 +30,6 @@ export default class GlobalService extends BaseControll {
         // this.handleResponse(data, NetNotify.Classification_UserWeekTaskChange);
         EventMgr.dispatch(NetNotify.Classification_UserWeekTaskChange, data);
     }
-    private addModelListeners(listeners: [string, (data: any) => void][]): void {
-        for (const [path, handler] of listeners) {
-            this.addModelListener(path, handler.bind(this));
-        }
-    }
     onUserMainTaskChange(data: any) {
         // this.handleResponse(data, NetNotify.Classification_UserMainTaskChange);
         EventMgr.dispatch(NetNotify.Classification_UserMainTaskChange, data);

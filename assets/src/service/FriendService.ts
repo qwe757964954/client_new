@@ -1,142 +1,150 @@
 import { _decorator } from 'cc';
 import { EventType } from '../config/EventType';
 import { TextConfig } from '../config/TextConfig';
-import { c2sApplyFriendStatus, c2sApplyFriendTo, c2sEmailList, c2sFriendApplyList, c2sFriendDel, c2sFriendList, c2sFriendMsgList, c2sMsgRecAwards, c2sRecommendList, c2sSendFriendMsg, EmailDataInfo, FriendChatInfo, FriendChatNetResponse, FriendResponseData, FriendUnitInfo } from '../models/FriendModel';
+import { c2sApplyFriendStatus, c2sApplyFriendTo, c2sEmailList, c2sFriendDel, c2sFriendMsgList, c2sMsgRecAwards, c2sSendFriendMsg, c2sUserFriendAdd, c2sUserFriendApplyList, c2sUserFriendList, c2sUserFriendSearch, EmailDataInfo, FriendChatInfo, FriendChatNetResponse, FriendResponseData } from '../models/FriendModel';
+import { InterfacePath } from '../net/InterfacePath';
+import { NetMgr } from '../net/NetManager';
+import { NetNotify } from '../net/NetNotify';
 import { BaseControll } from '../script/BaseControll';
 import EventManager from '../util/EventManager';
 const { ccclass, property } = _decorator;
 
-export class FriendService extends BaseControll {
-
-    constructor() {
-        super("FriendService");
+export class _FriendService extends BaseControll {
+    private static _instance: _FriendService = null;
+    public static get instance(): _FriendService {
+        if (this._instance == null) {
+            this._instance = new _FriendService("_FriendService");
+        }
+        return this._instance;
+    }
+    constructor(name: string) {
+        super(name);
     }
 
     onInitModuleEvent() {
-        //this.addModelListener(InterfacePath.WordGame_Words, this.onWordGameWords);
+        this.addModelListeners([
+            [InterfacePath.Classification_UserFriendList, this.onUserFriendList],
+            [InterfacePath.Classification_UserFriendAdd, this.onUserFriendAdd],
+            [InterfacePath.Classification_UserFriendSearch, this.onUserFriendSearch],
+            [InterfacePath.Classification_UserFriendApplyList, this.onUserFriendApplyList],
+        ]);
     }
 
-    //请求好友列表
-    friendList() {
-        let para: c2sFriendList = new c2sFriendList();
-        //NetMgr.sendMsg(para);
-        let data: FriendUnitInfo = {
-            FriendId: 101, //朋友ID
-            ModelId: "101", //角色ID
-            RealName: "小明", //角色名
-            Ltmsg: "在线一分钟", //当前在线状态
-            BigId: "1", //当前大地图ID
-            SmallId: "1", // 当前小地图ID
-            Ce: 60000, //角色战力
-            UnReadNum: 2, //未读消息数量
-            MedalSet: "10101,10104,10302,10502", //奖章列表
-        };
-        let data2: FriendUnitInfo = {
-            FriendId: 102, //朋友ID
-            ModelId: "102", //角色ID
-            RealName: "小红", //角色名
-            Ltmsg: "离线2小时", //当前在线状态
-            BigId: "1", //当前大地图ID
-            SmallId: "2", // 当前小地图ID
-            Ce: 45000, //角色战力
-            UnReadNum: 3, //未读消息数量
-            MedalSet: "10407,10802,10902,10502", //奖章列表
-        };
-        let data3: FriendUnitInfo = {
-            FriendId: 103, //朋友ID
-            ModelId: "103", //角色ID
-            RealName: "呆呆", //角色名
-            Ltmsg: "在线5小时", //当前在线状态
-            BigId: "1", //当前大地图ID
-            SmallId: "3", // 当前小地图ID
-            Ce: 90000, //角色战力
-            UnReadNum: 5, //未读消息数量
-            MedalSet: "10102,10202,10303,10406", //奖章列表
-        }
-        let friendDatas: FriendUnitInfo[] = [data, data2, data3];
-        EventManager.emit(EventType.Friend_MyList, friendDatas);
+    reqUserFriendList(){
+        let param: c2sUserFriendList = new c2sUserFriendList();
+        NetMgr.sendMsg(param);
     }
 
+    reqUserFriendApplyList(){
+        let param: c2sUserFriendApplyList = new c2sUserFriendApplyList();
+        NetMgr.sendMsg(param);
+    }
+
+    reqUserFriendAdd(friend_id:number){
+        let param: c2sUserFriendAdd = new c2sUserFriendAdd();
+        param.friend_id = friend_id;
+        NetMgr.sendMsg(param);
+    }
+    reqUserFriendSearch(search_id:string){
+        let param: c2sUserFriendSearch = new c2sUserFriendSearch();
+        param.search_id = search_id;
+        NetMgr.sendMsg(param);
+    }
+
+    onUserFriendList(data: any){
+        this.handleResponse(data, NetNotify.Classification_UserFriendList);
+    }
+    
+    onUserFriendAdd(data: any){
+        this.handleResponse(data, NetNotify.Classification_UserFriendAdd);
+    }
+    
+    onUserFriendSearch(data: any){
+        this.handleResponse(data, NetNotify.Classification_UserFriendSearch);
+    }
+    onUserFriendApplyList(data: any){
+        this.handleResponse(data, NetNotify.Classification_UserFriendApplyList);
+    }
     /**请求推荐好友列表 */
     recommendList() {
-        let para: c2sRecommendList = new c2sRecommendList();
-        //NetMgr.sendMsg(para);
-        let data: FriendUnitInfo = {
-            FriendId: 1003, //朋友ID
-            ModelId: "101", //角色ID
-            RealName: "小白", //角色名
-            Ltmsg: "在线三分钟", //当前在线状态
-            BigId: "2", //当前大地图ID
-            SmallId: "1", // 当前小地图ID
-            Ce: 30000, //角色战力
-            UnReadNum: 1, //未读消息数量
-            MedalSet: "10102,10104,10303,10501", //奖章列表
-        };
-        let data2: FriendUnitInfo = {
-            FriendId: 1002, //朋友ID
-            ModelId: "102", //角色ID
-            RealName: "小珊", //角色名
-            Ltmsg: "离线一小时", //当前在线状态
-            BigId: "1", //当前大地图ID
-            SmallId: "2", // 当前小地图ID
-            Ce: 45000, //角色战力
-            UnReadNum: 3, //未读消息数量
-            MedalSet: "10407,10802,10902,10502", //奖章列表
-        };
-        let data3: FriendUnitInfo = {
-            FriendId: 103, //朋友ID
-            ModelId: "103", //角色ID
-            RealName: "郭亮", //角色名
-            Ltmsg: "在线2小时", //当前在线状态
-            BigId: "2", //当前大地图ID
-            SmallId: "3", // 当前小地图ID
-            Ce: 10000, //角色战力
-            UnReadNum: 3, //未读消息数量
-            MedalSet: "10102,10201,10302,10406", //奖章列表
-        }
-        let friendDatas: FriendUnitInfo[] = [data, data2, data3];
-        EventManager.emit(EventType.Friend_RecommendList, friendDatas);
+        // let para: c2sRecommendList = new c2sRecommendList();
+        // //NetMgr.sendMsg(para);
+        // let data: FriendUnitInfo = {
+        //     FriendId: 1003, //朋友ID
+        //     ModelId: "101", //角色ID
+        //     RealName: "小白", //角色名
+        //     Ltmsg: "在线三分钟", //当前在线状态
+        //     BigId: "2", //当前大地图ID
+        //     SmallId: "1", // 当前小地图ID
+        //     Ce: 30000, //角色战力
+        //     UnReadNum: 1, //未读消息数量
+        //     MedalSet: "10102,10104,10303,10501", //奖章列表
+        // };
+        // let data2: FriendUnitInfo = {
+        //     FriendId: 1002, //朋友ID
+        //     ModelId: "102", //角色ID
+        //     RealName: "小珊", //角色名
+        //     Ltmsg: "离线一小时", //当前在线状态
+        //     BigId: "1", //当前大地图ID
+        //     SmallId: "2", // 当前小地图ID
+        //     Ce: 45000, //角色战力
+        //     UnReadNum: 3, //未读消息数量
+        //     MedalSet: "10407,10802,10902,10502", //奖章列表
+        // };
+        // let data3: FriendUnitInfo = {
+        //     FriendId: 103, //朋友ID
+        //     ModelId: "103", //角色ID
+        //     RealName: "郭亮", //角色名
+        //     Ltmsg: "在线2小时", //当前在线状态
+        //     BigId: "2", //当前大地图ID
+        //     SmallId: "3", // 当前小地图ID
+        //     Ce: 10000, //角色战力
+        //     UnReadNum: 3, //未读消息数量
+        //     MedalSet: "10102,10201,10302,10406", //奖章列表
+        // }
+        // let friendDatas: FriendUnitInfo[] = [data, data2, data3];
+        // EventManager.emit(EventType.Friend_RecommendList, friendDatas);
     }
 
     /**请求好友申请列表 */
     friendApplyList() {
-        let para: c2sFriendApplyList = new c2sFriendApplyList();
-        //NetMgr.sendMsg(para);
-        let data: FriendUnitInfo = {
-            FriendId: 1006, //朋友ID
-            ModelId: "101", //角色ID
-            RealName: "李小亮", //角色名
-            Ltmsg: "在线6分钟", //当前在线状态
-            BigId: "2", //当前大地图ID
-            SmallId: "1", // 当前小地图ID
-            Ce: 30000, //角色战力
-            UnReadNum: 1, //未读消息数量
-            MedalSet: "10102,10104,10303,10501", //奖章列表
-        };
-        let data2: FriendUnitInfo = {
-            FriendId: 1007, //朋友ID
-            ModelId: "102", //角色ID
-            RealName: "小芳", //角色名
-            Ltmsg: "离线2小时", //当前在线状态
-            BigId: "3", //当前大地图ID
-            SmallId: "2", // 当前小地图ID
-            Ce: 15000, //角色战力
-            UnReadNum: 3, //未读消息数量
-            MedalSet: "10407,10802,10902,10502", //奖章列表
-        };
-        let data3: FriendUnitInfo = {
-            FriendId: 1008, //朋友ID
-            ModelId: "103", //角色ID
-            RealName: "小雪", //角色名
-            Ltmsg: "在线3小时", //当前在线状态
-            BigId: "2", //当前大地图ID
-            SmallId: "1", // 当前小地图ID
-            Ce: 10005, //角色战力
-            UnReadNum: 0, //未读消息数量
-            MedalSet: "10102,10202,10303,10406", //奖章列表
-        }
-        let friendDatas: FriendUnitInfo[] = [data, data2, data3];
-        EventManager.emit(EventType.Friend_ApplyList, friendDatas);
+        // let para: c2sFriendApplyList = new c2sFriendApplyList();
+        // //NetMgr.sendMsg(para);
+        // let data: FriendUnitInfo = {
+        //     FriendId: 1006, //朋友ID
+        //     ModelId: "101", //角色ID
+        //     RealName: "李小亮", //角色名
+        //     Ltmsg: "在线6分钟", //当前在线状态
+        //     BigId: "2", //当前大地图ID
+        //     SmallId: "1", // 当前小地图ID
+        //     Ce: 30000, //角色战力
+        //     UnReadNum: 1, //未读消息数量
+        //     MedalSet: "10102,10104,10303,10501", //奖章列表
+        // };
+        // let data2: FriendUnitInfo = {
+        //     FriendId: 1007, //朋友ID
+        //     ModelId: "102", //角色ID
+        //     RealName: "小芳", //角色名
+        //     Ltmsg: "离线2小时", //当前在线状态
+        //     BigId: "3", //当前大地图ID
+        //     SmallId: "2", // 当前小地图ID
+        //     Ce: 15000, //角色战力
+        //     UnReadNum: 3, //未读消息数量
+        //     MedalSet: "10407,10802,10902,10502", //奖章列表
+        // };
+        // let data3: FriendUnitInfo = {
+        //     FriendId: 1008, //朋友ID
+        //     ModelId: "103", //角色ID
+        //     RealName: "小雪", //角色名
+        //     Ltmsg: "在线3小时", //当前在线状态
+        //     BigId: "2", //当前大地图ID
+        //     SmallId: "1", // 当前小地图ID
+        //     Ce: 10005, //角色战力
+        //     UnReadNum: 0, //未读消息数量
+        //     MedalSet: "10102,10202,10303,10406", //奖章列表
+        // }
+        // let friendDatas: FriendUnitInfo[] = [data, data2, data3];
+        // EventManager.emit(EventType.Friend_ApplyList, friendDatas);
     }
 
     //请求邮件列表
@@ -283,4 +291,4 @@ export class FriendService extends BaseControll {
 
 }
 
-
+export const FdServer = _FriendService.instance;

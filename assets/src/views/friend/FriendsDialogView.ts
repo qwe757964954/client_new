@@ -3,10 +3,11 @@ import { EventType } from '../../config/EventType';
 import { PrefabType, PrefabTypeEntry } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { EmailDataInfo, EmailItemClickInfo, FriendItemClickInfo, FriendResponseData, FriendUnitInfo, NetSearchFriendInfo } from '../../models/FriendModel';
+import { DataFriendApplyListResponse, DataFriendListResponse, EmailDataInfo, EmailItemClickInfo, FriendItemClickInfo, FriendResponseData, FriendUnitInfo, NetSearchFriendInfo, UserFriendData } from '../../models/FriendModel';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
-import { ServiceMgr } from '../../net/ServiceManager';
+import { NetNotify } from '../../net/NetNotify';
 import { BasePopup } from '../../script/BasePopup';
+import { FdServer } from '../../service/FriendService';
 import CCUtil from '../../util/CCUtil';
 import EventManager from '../../util/EventManager';
 import { NodeUtil } from '../../util/NodeUtil';
@@ -295,7 +296,7 @@ export class FriendsDialogView extends BasePopup {
             MedalSet: "10102,10202,10303,10406", //奖章列表
         }
         let friendDatas: FriendUnitInfo[] = [data, data2, data3];
-        EventManager.emit(EventType.Friend_MyList, friendDatas);
+        // EventManager.emit(EventType.Friend_MyList, friendDatas);
 
     }
 
@@ -362,7 +363,8 @@ export class FriendsDialogView extends BasePopup {
                 // this.emailBox.active = false;
                 //PbServiceManager.friendService.friendList(); //请求朋友列表
                 //this.reqFriendList();
-                ServiceMgr.friendService.friendList();
+                // ServiceMgr.friendService.friendList();
+                FdServer.reqUserFriendList();
                 break;
             case FriendTabType.Add: //添加好友
                 this.titleTxt.string = TextConfig.Friend_Add; //"添加好友";
@@ -377,7 +379,7 @@ export class FriendsDialogView extends BasePopup {
                 })
                 */
                 //this.reqRecommendList();
-                ServiceMgr.friendService.recommendList();
+                // ServiceMgr.friendService.recommendList();
                 break;
             case FriendTabType.Apply: //好友申请列表
                 this.titleTxt.string = TextConfig.Friend_Apply; //"好友申请";
@@ -394,23 +396,28 @@ export class FriendsDialogView extends BasePopup {
                 // this.roleInfoBox.active = false;
                 // this.msgInfoBox.active = true;
                 //this.emailList.node.active = false;
-                ServiceMgr.friendService.sysMsgList(); //请求好友消息列表
+                // ServiceMgr.friendService.sysMsgList(); //请求好友消息列表
                 break;
         }
     }
 
     protected onInitModuleEvent(): void {
-        this.addModelListener(EventType.Friend_MyList, this.onUpdateFriendList);
-        this.addModelListener(EventType.Friend_RecommendList, this.onShowRecommendList);
-        this.addModelListener(EventType.Friend_ApplyList, this.onUpdateApplyFriendList);
-        this.addModelListener(EventType.Friend_ClickFriendList, this.onFriendItemClck);
-        this.addModelListener(EventType.Friend_SearchFriend, this.onSearchFriendResult);
-        this.addModelListener(EventType.Friend_AddFriend, this.onApplyFriendTo);
-        this.addModelListener(EventType.Friend_ApplyStatus, this.onApplyFriendStatus);
-        this.addModelListener(EventType.Friend_SysMsg_List, this.onSysMsgList);
-        this.addModelListener(EventType.Friend_ClickEmailList, this.onEmailClck);
-        this.addModelListener(EventType.Friend_RecvAward, this.onReciveAward);
-        this.addModelListener(EventType.Friend_DelFriend, this.onDeleteFriend);
+        this.addModelListeners([
+            [NetNotify.Classification_UserFriendList, this.onUpdateFriendList],
+            [NetNotify.Classification_UserFriendApplyList, this.onUpdateApplyFriendList],
+            [NetNotify.Classification_UserFriendSearch, this.onSearchFriendResult],
+        ]);
+        // this.addModelListener(NetNotify.Classification_UserFriendList, this.onUpdateFriendList);
+        // this.addModelListener(EventType.Friend_RecommendList, this.onShowRecommendList);
+        // this.addModelListener(EventType.Friend_ApplyList, this.onUpdateApplyFriendList);
+        // this.addModelListener(EventType.Friend_ClickFriendList, this.onFriendItemClck);
+        // this.addModelListener(EventType.Friend_SearchFriend, this.onSearchFriendResult);
+        // this.addModelListener(EventType.Friend_AddFriend, this.onApplyFriendTo);
+        // this.addModelListener(EventType.Friend_ApplyStatus, this.onApplyFriendStatus);
+        // this.addModelListener(EventType.Friend_SysMsg_List, this.onSysMsgList);
+        // this.addModelListener(EventType.Friend_ClickEmailList, this.onEmailClck);
+        // this.addModelListener(EventType.Friend_RecvAward, this.onReciveAward);
+        // this.addModelListener(EventType.Friend_DelFriend, this.onDeleteFriend);
     }
 
     initEvent() {
@@ -430,13 +437,16 @@ export class FriendsDialogView extends BasePopup {
     }
 
     initData() {
-        ServiceMgr.friendService.friendList();
-        ServiceMgr.friendService.friendApplyList();
-        ServiceMgr.friendService.sysMsgList();
+        FdServer.reqUserFriendList();
+        FdServer.reqUserFriendApplyList();
+        // ServiceMgr.friendService.friendList();
+        // ServiceMgr.friendService.friendApplyList();
+        // ServiceMgr.friendService.sysMsgList();
     }
     /**更新朋友列表 */
-    onUpdateFriendList(friendDatas: FriendUnitInfo[]) {
-        this._fListView.updateData(friendDatas);
+    onUpdateFriendList(friendDatas: DataFriendListResponse) {
+        console.log("onUpdateFriendList");
+        this._fListView.updateData(friendDatas.data);
     }
 
     /**更新推荐朋友列表 */
@@ -445,8 +455,9 @@ export class FriendsDialogView extends BasePopup {
     }
 
     /**更新申请好友列表 */
-    onUpdateApplyFriendList(friendDatas: FriendUnitInfo[]) {
-        this._fMsgView.updateData(friendDatas);
+    onUpdateApplyFriendList(response: DataFriendApplyListResponse) {
+        console.log("onUpdateApplyFriendList",response);
+        this._fMsgView.updateData(response.data);
     }
 
     /** 设置所有的好友列表背景为未选中  */
@@ -590,11 +601,8 @@ export class FriendsDialogView extends BasePopup {
         // ServiceMgr.friendService.applyFriendTo(userId);
     }
 
-    async onSearchFriendResult(res: NetSearchFriendInfo) {
-        // if (!res.UserInfo || res.Code != 200) {
-        //     ViewsManager.instance.showTip(TextConfig.Friend_NoFindUser);
-        //     return;
-        // }
+    async onSearchFriendResult(response: UserFriendData) {
+        this._fAddView.updateSearchData(response);
         // else {
         //     let data: FriendUnitInfo = res.UserInfo;
         //     let headIdMap = { "101": 101, "1101": 101, "102": 102, "1102": 102, "103": 103, "1103": 103 }
@@ -621,7 +629,7 @@ export class FriendsDialogView extends BasePopup {
 
     onDeleteFriendClick() {
         if (this._selectFriend != null) {
-            ServiceMgr.friendService.friendDel(this._selectFriend.FriendId);
+            // ServiceMgr.friendService.friendDel(this._selectFriend.FriendId);
         }
     }
 
@@ -648,7 +656,7 @@ export class FriendsDialogView extends BasePopup {
     onReciveAwardClick() {
         if (!this._selectMsg) return;
         if (this._selectMsg.RecFlag != 0) return; //未领过的才能领取
-        ServiceMgr.friendService.sysMsgRecAwards(this._selectMsg.Id);
+        // ServiceMgr.friendService.sysMsgRecAwards(this._selectMsg.Id);
     }
 
     onReciveAward(res: FriendResponseData) {
@@ -663,8 +671,8 @@ export class FriendsDialogView extends BasePopup {
     onApplyFriendStatus(res: FriendResponseData) {
         ViewsManager.instance.showTip(res.Msg);
         this.scheduleOnce(() => {
-            ServiceMgr.friendService.friendList();
-            ServiceMgr.friendService.friendApplyList();
+            // ServiceMgr.friendService.friendList();
+            // ServiceMgr.friendService.friendApplyList();
         }, 1);
     }
 

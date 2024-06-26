@@ -1,13 +1,7 @@
-import { _decorator, Component, instantiate, Label, Node, Prefab, ScrollView, Sprite, SpriteFrame } from 'cc';
-import { EventType } from '../../config/EventType';
-import { TextConfig } from '../../config/TextConfig';
+import { _decorator, Component, Label, Node, Prefab, ScrollView, Sprite, SpriteFrame } from 'cc';
 import { LoadManager } from '../../manager/LoadManager';
-import { FriendItemClickInfo, FriendUnitInfo } from '../../models/FriendModel';
+import { FriendListItemModel } from '../../models/FriendModel';
 import CCUtil from '../../util/CCUtil';
-import EventManager from '../../util/EventManager';
-import { ToolUtil } from '../../util/ToolUtil';
-import { MedalSimpleInfo } from '../achieve/AchieveDialogView';
-import { MedalIconItem } from './MedalIconItem';
 const { ccclass, property } = _decorator;
 
 var islandName = { "1": "魔法森林", "2": "水下管道城", "3": "冰雪岛", "4": "宝藏岛", "5": "瀑布岛", "6": "迷之水底城", "7": "海底深渊", "8": "海底深渊", "9": "海底深渊", "10": "海底深渊" };
@@ -53,7 +47,7 @@ export class FriendListItem extends Component {
     @property({ type: [SpriteFrame], tooltip: "背景页的图片数组" }) // 0:选中 1: 未选中
     public sprBgAry: SpriteFrame[] = [];
 
-    _data: FriendUnitInfo = null;
+    _data: FriendListItemModel = null;
 
     protected onLoad(): void {
         //console.log("FriendListItem onLoad");
@@ -72,21 +66,22 @@ export class FriendListItem extends Component {
         this.removeEvent();
     }
 
-    async initData(data: FriendUnitInfo) {
+    async initData(data: FriendListItemModel) {
+        
         //console.log("FriendListItem initData: ", data);
         this._data = data;
         let headIdMap = { "101": 101, "1101": 101, "102": 102, "1102": 102, "103": 103, "1103": 103 }
-        let avatar: number = headIdMap[data.ModelId];
+        let avatar: number = headIdMap[data.avatar];
         let avatarPath: string = "friend/head_" + avatar + "/spriteFrame";
         await LoadManager.loadSprite(avatarPath, this.imgHead.getComponent(Sprite)).then(() => { },
             (error) => {
                 // console.log("loadShowSprite->resource load failed:" + this._data.icon.skin + "," + error.message);
             });
-        this.lblRealName.string = data.RealName;
-        this.lblState.string = data.Ltmsg;
-        var strLevel: string = ToolUtil.replace(TextConfig.Level_Index, data.SmallId)
-        this.lblIsland.string = islandName[data.BigId] + "/" + strLevel; //"第" + data.SmallId + "关";
-        this.lblCe.string = "" + data.Ce;
+        this.lblRealName.string = data.user_name;
+        // this.lblState.string = data.Ltmsg;
+        // var strLevel: string = ToolUtil.replace(TextConfig.Level_Index, data.SmallId)
+        // this.lblIsland.string = islandName[data.BigId] + "/" + strLevel; //"第" + data.SmallId + "关";
+        // this.lblCe.string = "" + data.Ce;
         //设置背景
         // let bSelect: boolean = false; //本单位是否选中
         // if (!selectFriend) {
@@ -104,34 +99,35 @@ export class FriendListItem extends Component {
         // else {
         //     newMsgBox.active = false;
         // }
-        if (data.UnReadNum > 0) {
-            newMsgBox.getChildByName("newMsgTxt").getComponent(Label).string = "" + data.UnReadNum;
-        }
-        //设置勋章列表
-        this.medalList.content.removeAllChildren();
-        let medalData: MedalSimpleInfo[] = [];
-        if (data.MedalSet) {
-            let medalArr = data.MedalSet.split(",");
-            for (let i = 0; i < medalArr.length; i++) {
-                let medalId: string = medalArr[i];
-                let iconPath: string = "achieve/" + medalId + "/spriteFrame";
-                medalData.push({ id: medalId, icon: iconPath })
-            }
-        }
-        for (let i = 0; i < medalData.length; i++) {
-            let medalIcon: Node = instantiate(this.preMedalIcon);
-            this.medalList.content.addChild(medalIcon);
-            await medalIcon.getComponent(MedalIconItem).initData(medalData[i])
-        }
-        this.medalList.scrollToLeft();
+        // if (data.UnReadNum > 0) {
+        //     newMsgBox.getChildByName("newMsgTxt").getComponent(Label).string = "" + data.UnReadNum;
+        // }
+        // //设置勋章列表
+        // this.medalList.content.removeAllChildren();
+        // let medalData: MedalSimpleInfo[] = [];
+        // if (data.MedalSet) {
+        //     let medalArr = data.MedalSet.split(",");
+        //     for (let i = 0; i < medalArr.length; i++) {
+        //         let medalId: string = medalArr[i];
+        //         let iconPath: string = "achieve/" + medalId + "/spriteFrame";
+        //         medalData.push({ id: medalId, icon: iconPath })
+        //     }
+        // }
+        // for (let i = 0; i < medalData.length; i++) {
+        //     let medalIcon: Node = instantiate(this.preMedalIcon);
+        //     this.medalList.content.addChild(medalIcon);
+        //     await medalIcon.getComponent(MedalIconItem).initData(medalData[i])
+        // }
+        // this.medalList.scrollToLeft();
+        
     }
 
     onItemClick() {
-        let data: FriendItemClickInfo = {
-            info: this._data,
-            node: this.node,
-        }
-        EventManager.emit(EventType.Friend_ClickFriendList, data);
+        // let data: FriendItemClickInfo = {
+        //     info: this._data,
+        //     node: this.node,
+        // }
+        // EventManager.emit(EventType.Friend_ClickFriendList, data);
     }
 
     start() {

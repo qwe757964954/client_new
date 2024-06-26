@@ -109,6 +109,16 @@ export const InterfacePath = {
     Classification_UserPlayerModify: "1012", //用户信息修改
     Classification_UserPasswordModify: "1013", //用户密码修改
     /***********************************************设置相关 end*********************************************/
+
+
+    /***********************************************好友相关start*********************************************/
+    Classification_UserFriendList: "1101", //用户好友列表消息
+    Classification_UserFriendAdd: "1102", //用户好友申请添加消息
+    Classification_UserFriendSearch: "1103", //用户id搜索接口
+    Classification_UserFriendApplyList: "1104", //用户好友申请列表消息
+    /***********************************************好友相关 end*********************************************/
+
+
     
     /************************************socket消息类型end*********************************************/
 }

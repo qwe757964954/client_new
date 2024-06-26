@@ -1,34 +1,14 @@
 import { Node } from "cc";
+import { InterfacePath } from "../net/InterfacePath";
+import { BaseRepPacket } from "./NetModel";
 
 /**模拟查找好友返回数据 */
 export interface FriendResponseData {
     Code: number,
     Msg: string
 }
-/**我的好友数据 */
-export interface FriendUnitInfo {
-    FriendId: number, //朋友ID
-    ModelId: string,  //角色模型ID
-    RealName: string, //角色真名
-    Ltmsg: string,    //角色当前在线离线状态
-    BigId: string,    //当前所在的大地图
-    SmallId: string,  //当前小地图
-    Ce: number,  //角色战力
-    UnReadNum: number, ////未读消息数量
-    MedalSet: string, //奖章列表
-}
 
-/**模拟查找好友返回数据 */
-export interface NetSearchFriendInfo {
-    Code: number, //状态码
-    UserInfo: FriendUnitInfo, //用户信息
-}
 
-/**我的好友列表点击时传过去的数据 */
-export interface FriendItemClickInfo {
-    info: FriendUnitInfo; //朋友数据
-    node: Node;  //角色所在的结点
-}
 
 /**我的好友列表点击时传过去的数据 */
 export interface EmailItemClickInfo {
@@ -75,11 +55,6 @@ export class c2sEmailList {
     command_id: string = "-1";//InterfacePath.Island_Status;
 }
 
-//申请好友申请列表
-export class c2sFriendApplyList {
-    command_id: string = "-1";//InterfacePath.Island_Status;
-}
-
 //申请添加好友
 export class c2sApplyFriendTo {
     command_id: string = "-1";//InterfacePath.Island_Status;
@@ -118,4 +93,58 @@ export class c2sSendFriendMsg {
     Message: number; //表情消息ID
 }
 
+export interface FriendListItemModel {
+    friend_id: number;
+    user_name: string;
+    level: number;
+    avatar: string;
+}
 
+// Interface for the response data
+export interface DataFriendListResponse extends BaseRepPacket {
+    data: FriendListItemModel[];
+}
+
+export class c2sUserFriendList {
+    command_id: string = InterfacePath.Classification_UserFriendList;//InterfacePath.Island_Status;
+}
+
+
+export class c2sUserFriendAdd {
+    command_id: string = InterfacePath.Classification_UserFriendAdd;//InterfacePath.Island_Status;
+    friend_id: number;
+}
+
+// Interface for the inner data object
+export interface UserFriendData {
+    user_id: number;
+    user_name: string;
+    code: number;
+    msg: string;
+}
+
+export interface DataFriendSearchResponse extends BaseRepPacket {
+    data: UserFriendData;
+}
+
+
+export class c2sUserFriendSearch {
+    command_id: string = InterfacePath.Classification_UserFriendSearch;//InterfacePath.Island_Status;
+    search_id: string;
+}
+
+export class c2sUserFriendApplyList {
+    command_id: string = InterfacePath.Classification_UserFriendApplyList;//InterfacePath.Island_Status;
+}
+
+export interface UserApplyModel {
+    user_name: string;
+    nick_name: string;
+    user_id: number;
+    level: number;
+    avatar: string;
+}
+
+export interface DataFriendApplyListResponse extends BaseRepPacket {
+    data: UserApplyModel[];
+}

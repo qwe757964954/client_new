@@ -93,7 +93,6 @@ export const EventType = {
     Achieve_GetAward: "Achieve_GetAward", //领取奖励
 
     /**好友社交相关 */
-    Friend_MyList: "Friend_MyList", //获取我的好友列表
     Friend_RecommendList: "Friend_RecommendList", //获取推荐好友列表
     Friend_ApplyList: "Friend_ApplyList", //获取好友申请列表
     Friend_SearchFriend: "Friend_SearchFriend",   //查找好友
