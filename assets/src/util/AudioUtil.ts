@@ -63,8 +63,6 @@ export default class AudioUtil {
     }
     public playMusic(sound: AudioClip | string, volumeScale: number = 1.0) {
         if (!sound) return;
-        /**如果音乐开关关掉了，停止播放 */
-        if (!this.musicSwich) return;
         if (sound instanceof AudioClip) {
             this.playMusicEx(sound, volumeScale);
         } else {
@@ -83,6 +81,8 @@ export default class AudioUtil {
         this._musicSource.clip = sound;
         this._musicSource.volume = this.musicVolume * volumeScale;
         this._musicSource.play();
+        /**如果音乐开关关掉了，暂停播放 */
+        if (!this.musicSwich) this._musicSource.pause();
     }
     //停止背景音乐
     public static stopMusic() {
