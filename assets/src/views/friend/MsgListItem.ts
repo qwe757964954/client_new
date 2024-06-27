@@ -1,12 +1,13 @@
-import { _decorator, Component, Label, Node, Sprite } from 'cc';
+import { _decorator, Label, Node, Sprite } from 'cc';
 import { LoadManager } from '../../manager/LoadManager';
-import { UserApplyModel } from '../../models/FriendModel';
-import { ServiceMgr } from '../../net/ServiceManager';
+import { ApplicationStatus, ApplyModifyModel, UserApplyModel } from '../../models/FriendModel';
+import { FdServer } from '../../service/FriendService';
 import CCUtil from '../../util/CCUtil';
+import ListItem from '../../util/list/ListItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('MsgListItem')
-export class MsgListItem extends Component {
+export class MsgListItem extends ListItem {
     @property({ type: Sprite, tooltip: "头像图片精灵" })
     imgHead: Sprite = null;
 
@@ -24,7 +25,7 @@ export class MsgListItem extends Component {
 
     _data: UserApplyModel = null;
 
-    protected onLoad(): void {
+    onLoad(): void {
         //console.log("FriendListItem onLoad");
         this.addEvent();
     }
@@ -39,7 +40,7 @@ export class MsgListItem extends Component {
         CCUtil.offTouch(this.btnIgnore, this.onIngoreClick, this);
     }
 
-    protected onDestroy(): void {
+    onDestroy(): void {
         this.removeEvent();
     }
 
@@ -57,11 +58,19 @@ export class MsgListItem extends Component {
     }
 
     private onIngoreClick() {
-        ServiceMgr.friendService.friendApplyStatus(this._data.FriendId, 2);
+        let param:ApplyModifyModel = {
+            friend_id:this._data.user_id,
+            status:ApplicationStatus.Rejected
+        }
+        FdServer.reqUserFriendApplyModify(param);
     }
 
     private onAcceptClick() {
-        ServiceMgr.friendService.friendApplyStatus(this._data.FriendId, 1);
+        let param:ApplyModifyModel = {
+            friend_id:this._data.user_id,
+            status:ApplicationStatus.Rejected
+        }
+        FdServer.reqUserFriendApplyModify(param);
     }
 
     start() {

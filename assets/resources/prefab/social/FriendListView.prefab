@@ -545,7 +545,7 @@
     "renderEvent": {
       "__id__": 26
     },
-    "selectedMode": 0,
+    "selectedMode": 1,
     "selectedEvent": {
       "__id__": 27
     },
@@ -571,15 +571,17 @@
     },
     "component": "",
     "_componentId": "a8129vjOu9LJJNn13gwnYQc",
-    "handler": "onLoadLeftTabVertical",
+    "handler": "onLoadFriendVertical",
     "customEventData": ""
   },
   {
     "__type__": "cc.ClickEvent",
-    "target": null,
+    "target": {
+      "__id__": 1
+    },
     "component": "",
-    "_componentId": "",
-    "handler": "",
+    "_componentId": "a8129vjOu9LJJNn13gwnYQc",
+    "handler": "onFriendVerticalSelected",
     "customEventData": ""
   },
   {

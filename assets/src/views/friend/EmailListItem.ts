@@ -1,9 +1,6 @@
-import { _decorator, Label, Node, Sprite, SpriteFrame } from 'cc';
-import { EventType } from '../../config/EventType';
+import { _decorator, Label, Node, Sprite } from 'cc';
 import { TextConfig } from '../../config/TextConfig';
-import { EmailDataInfo, EmailItemClickInfo } from '../../models/FriendModel';
-import CCUtil from '../../util/CCUtil';
-import EventManager from '../../util/EventManager';
+import { SystemMailItem } from '../../models/FriendModel';
 import ListItem from '../../util/list/ListItem';
 const { ccclass, property } = _decorator;
 
@@ -33,57 +30,13 @@ export class EmailListItem extends ListItem {
     @property({ type: Node, tooltip: "红点按钮" })
     ndRedPoint: Node = null;
 
-    @property({ type: [SpriteFrame], tooltip: "背景页的图片数组" }) // 0:选中 1: 未选中
-    public sprBgAry: SpriteFrame[] = [];
+    _data: SystemMailItem = null;
 
-    _data: EmailDataInfo = null;
-
-    onLoad(): void {
-        //console.log("FriendListItem onLoad");
-        this.addEvent();
-    }
-
-    addEvent() {
-        CCUtil.onTouch(this.btnItem, this.onItemClick, this);
-    }
-
-    removeEvent() {
-        CCUtil.offTouch(this.btnItem, this.onItemClick, this);
-    }
-
-    initData(data: EmailDataInfo) {
+    initData(data: SystemMailItem) {
         this._data = data;
-
-        this.lblRealName.string = data.FromName;
-        this.lblState.string = data.createtime;
+        this.lblRealName.string = data.title;
+        this.lblState.string = data.create_time;
         this.lblIsLand.string = TextConfig.Friend_EmailSys;
-
-        let bSelect: boolean = false; //本单位是否选中
-        // if (!selectEmail) {
-        //     bSelect = false;
-        // }
-        // else if (data == selectEmail) {
-        //     bSelect = true;
-        // }
-        this.imgBg.spriteFrame = bSelect ? this.sprBgAry[0] : this.sprBgAry[1];
-        this.node.getChildByName("canRecIcon").active = data.RecFlag == 0;
-    }
-
-    /**点击邮件列表中的一项 */
-    onItemClick() {
-        let data: EmailItemClickInfo = {
-            info: this._data,
-            node: this.node,
-        }
-        EventManager.emit(EventType.Friend_ClickEmailList, data);
-    }
-
-    start() {
-
-    }
-
-    update(deltaTime: number) {
-
     }
 }
 
