@@ -126,11 +126,31 @@ export class LandModel extends BaseModel {
         this._isShow = isShow;
         if (isShow && !this._isLoad) {
             this._isLoad = true;
+            if (this._node) {
+                this.showLand(callBack);
+            } else {
+                this.loadNode(callBack);
+            }
+        } else {
+            if (callBack) callBack();
+        }
+    }
+    /**加载node */
+    public loadNode(callBack?: Function) {
+        if (!this._isLoadNode) {
+            this._isLoadNode = true;
+
             LoadManager.loadPrefab(PrefabType.LandModel.path, this._parent).then((node: Node) => {
                 this._node = node;
                 this._node.active = this._isShow;
                 this._node.position = this._pos;
                 this._sprite = this._node.getComponent(Sprite);
+
+                if (this._isLoad) {
+                    this.showLand(callBack);
+                } else {
+                    if (callBack) callBack();
+                }
                 this.showLand(callBack);
             });
         } else {
