@@ -711,7 +711,8 @@ export class MapUICtl extends MainBaseCtl {
             element.show(visibleRect.intersects(element.getRect()), this.getLoadOverCall());
         });
 
-        this.buildingRoleSort();
+        this.buildingRoleSortEx();
+        this._isNeedSort = false;
     }
     // 角色移动
     roleMove(roleModel: RoleDataModel) {

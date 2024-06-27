@@ -88,13 +88,19 @@ export class MapBaseCtl extends MainBaseCtl {
         let delta2 = touch2.getUIDelta();
         let dt1 = touchPos1.subtract(touchPos2);
         let dt2 = delta1.subtract(delta2);
-        let dis = 1.0;
+        // let dis = 1.0;
+        let scale = 1.0;
         if (Math.abs(dt1.x) > Math.abs(dt1.y)) {
-            dis = (dt1.x + dt2.x) / dt1.x;
+            // dis = (dt1.x + dt2.x) / dt1.x;
+            scale = dt1.x / (dt1.x + dt2.x);
         }
         else {
-            dis = (dt1.y + dt2.y) / dt1.y;
+            // dis = (dt1.y + dt2.y) / dt1.y;
+            scale = dt1.y / (dt1.y + dt2.y);
         }
-        this._mainScene.mapZoom(1 / dis);
+        if (scale > 1.0) scale = Math.min(scale, 1.2);
+        if (scale < 1.0) scale = Math.max(scale, 0.8);
+        // this._mainScene.mapZoom(1 / dis);
+        this._mainScene.mapZoom(scale);
     }
 }
