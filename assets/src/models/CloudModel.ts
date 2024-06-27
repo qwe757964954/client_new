@@ -148,7 +148,13 @@ export class CloudModel extends BaseModel {
                 this._node.position = this._pos;
                 this._img = this._node.getComponentInChildren(Sprite);
                 this._label = this._node.getComponentInChildren(Label);
-                this._label.node.active = null != this._unlockTime;
+                if (null != this._unlockTime) {
+                    this._label.node.active = true;
+                    this.refreshTimeEx();
+                } else {
+                    this._label.node.active = false;
+                }
+
                 this.showImg(callBack);
             });
         } else {
