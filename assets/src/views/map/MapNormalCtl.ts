@@ -1,7 +1,7 @@
 import { EventMouse, EventTouch } from "cc";
 import { BuildingModel } from "../../models/BuildingModel";
 import { CloudModel } from "../../models/CloudModel";
-import { RoleBaseModel } from "../../models/RoleBaseModel";
+import { RoleDataModel } from "../../models/RoleDataModel";
 import { TimerMgr } from "../../util/TimerMgr";
 import { MapBaseCtl } from "../map/MapBaseCtl";
 
@@ -12,7 +12,7 @@ export class MapNormalCtl extends MapBaseCtl {
     private _timer: number = null;//计时器
     private _isLongClick: boolean = false;//是否长按点击
 
-    private _touchRole: RoleBaseModel = null;//触摸角色
+    private _touchRole: RoleDataModel = null;//触摸角色
     private _touchCloud: CloudModel = null;//触摸乌云
 
 

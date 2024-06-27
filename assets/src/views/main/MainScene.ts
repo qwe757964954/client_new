@@ -1,7 +1,7 @@
 import { _decorator, Camera, Canvas, EventMouse, EventTouch, Layers, Node, Prefab, sp, UITransform, Vec3 } from 'cc';
 import { EventType } from '../../config/EventType';
 import { MapStatus } from '../../config/MapConfig';
-import { BuildingModel, RecycleData } from '../../models/BuildingModel';
+import { BuildingIDType, BuildingModel } from '../../models/BuildingModel';
 import EventManager from '../../util/EventManager';
 import { BuildEditCtl } from '../map/BuildEditCtl';
 import { LandEditCtl } from '../map/LandEditCtl';
@@ -15,8 +15,8 @@ import { DataMgr, EditInfo, EditType } from '../../manager/DataMgr';
 import { SoundMgr } from '../../manager/SoundMgr';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { CloudModel } from '../../models/CloudModel';
-import { RoleBaseModel } from '../../models/RoleBaseModel';
-import { RoleModel } from '../../models/RoleModel';
+import { RoleType } from '../../models/RoleBaseModel';
+import { RoleDataModel } from '../../models/RoleDataModel';
 import { BaseComponent } from '../../script/BaseComponent';
 import CCUtil from '../../util/CCUtil';
 import { TimerMgr } from '../../util/TimerMgr';
@@ -89,7 +89,6 @@ export class MainScene extends BaseComponent {
     private _mapUICtl: MapUICtl = null;//地图界面控制器
 
     private _loadCount: number = 0;//加载计数
-    private _recycleBuildingAry: RecycleData[] = [];//回收建筑信息
     /**=========================事件handle============================ */
 
     start() {
@@ -279,10 +278,10 @@ export class MainScene extends BaseComponent {
         }
     }
     /** 角色点击 */
-    onRoleClick(role: RoleBaseModel) {
+    onRoleClick(role: RoleDataModel) {
         if (!role) return;
         console.log("onRoleClick", role);
-        if (role instanceof RoleModel) {
+        if (RoleType.role == role.roleType) {
             role.onClickShow();
             return;
         }
@@ -301,20 +300,20 @@ export class MainScene extends BaseComponent {
         });
     }
     /** 角色拖动开始 */
-    onRoleDragStart(role: RoleBaseModel) {
+    onRoleDragStart(role: RoleDataModel) {
         if (!role) return;
         console.log("onRoleDragStart", role);
         role.onDragStart();
         this._mapUICtl.buildingRoleSort();
     }
     /** 角色拖动 */
-    onRoleDrag(role: RoleBaseModel, dtX: number, dtY: number) {
+    onRoleDrag(role: RoleDataModel, dtX: number, dtY: number) {
         if (!role) return;
         // console.log("onRoleDrag", role, x, y);
         role.onDrag(dtX * this.cameraRate, dtY * this.cameraRate);
     }
     /** 角色拖动结束 */
-    onRoleDragEnd(role: RoleBaseModel) {
+    onRoleDragEnd(role: RoleDataModel) {
         if (!role) return;
         console.log("onRoleDragEnd", role);
         let pos = role.pos;
@@ -498,15 +497,14 @@ export class MainScene extends BaseComponent {
     /**展示建筑建造界面 */
     showBuildingProduceView(selectBuilding: BuildingModel) {
         ViewsManager.instance.showView(PrefabType.BuildingProduceView, (node: Node) => {
-            let children = this.buildingLayer.children;
+            let children = this._mapUICtl.getBuildingModelAry();
             let buildAry = [];
             let idx = 0;
             for (let i = 0; i < children.length; i++) {
-                const element = children[i];
-                let building = element.getComponent(BuildingModel);
-                if (!building) continue;
+                const building = children[i];
                 let editInfo = building.editInfo;
                 if (!DataMgr.instance.buildProduceInfo[editInfo.id]) continue;
+                if (BuildingIDType.castle == editInfo.id) continue;
                 buildAry.push(building);
                 if (building == selectBuilding) {
                     idx = buildAry.length - 1;
@@ -579,33 +577,9 @@ export class MainScene extends BaseComponent {
     showMainUIView() {
         this._mainUIView.node.active = true;
     }
-    /**回收建筑 */
-    addRecycleBuilding(data: RecycleData) {
-        // console.log("addRecycleBuilding", data);
-        this._recycleBuildingAry.push(data);
-    }
-    /**获取回收建筑 */
-    getRecycleBuilding(bid: number) {
-        // console.log("getRecycleBuilding", bid, this._recycleBuildingAry);
-        let index = -1;
-        let data = null;
-        for (let i = 0; i < this._recycleBuildingAry.length; i++) {
-            let element = this._recycleBuildingAry[i];
-            if (element.bid == bid) {
-                index = i;
-                data = element;
-                break;
-            }
-        }
-        if (index > -1) {
-            this._recycleBuildingAry.splice(index, 1);
-            return data;
-        }
-        return data;
-    }
     /**回收建筑是否包含指定建筑 */
     isRecycleBuildingContain(bid: number) {
-        return undefined != this._recycleBuildingAry.find(element => element.bid == bid);
+        return this._mapUICtl.isRecycleBuildingContain(bid);
     }
 }
 

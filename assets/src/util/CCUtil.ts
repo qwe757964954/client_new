@@ -135,20 +135,30 @@ export default class CCUtil {
         const px = x - offset.x + (rect.width - size.width) / 2;
         const py = y - offset.y + (rect.height - size.height) / 2;
         // console.log("readPixels 1:", px, py);
+        const buffer = new Uint8Array(4);
+        let offsetX = 0;
+        let offsetY = 0;
+        let width = 1;
+        let height = 1;
+        if (spriteFrame.rotated) {
+            offsetX = rect.x + py;
+            offsetY = rect.y + px;
+        } else {
+            offsetX = rect.x + px;
+            offsetY = rect.y + rect.height - py;
+        }
+        // console.log("readPixels 2:", offsetX, offsetY, texture);
+        // 以下获取像素方式在android上压缩纹理会崩溃
+        /** RenderTexture.readPixels强制类型转换了，只能在web上使用，android上会崩溃 */
+        // let texture = spriteFrame.texture;
+        // RenderTexture.prototype.readPixels.call(texture, offsetX, offsetY, width, height, buffer);
         const gfxTexture = spriteFrame.getGFXTexture();
         const bufferViews = [];
         const region = new gfx.BufferTextureCopy;
-        const buffer = new Uint8Array(4);
-        if (spriteFrame.rotated) {
-            region.texOffset.x = rect.x + py;
-            region.texOffset.y = rect.y + px;
-        } else {
-            region.texOffset.x = rect.x + px;
-            region.texOffset.y = rect.y + rect.height - py;
-        }
-        // console.log("readPixels 2:", region.texOffset.x, region.texOffset.y);
-        region.texExtent.width = 1;
-        region.texExtent.height = 1;
+        region.texOffset.x = offsetX;
+        region.texOffset.y = offsetY;
+        region.texExtent.width = width;
+        region.texExtent.height = height;
         bufferViews.push(buffer);
         director.root.device.copyTextureToBuffers(gfxTexture, bufferViews, [region]);
         // console.log("readPixels return", buffer[0], buffer[1], buffer[2], buffer[3]);

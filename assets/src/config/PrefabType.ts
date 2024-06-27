@@ -116,6 +116,12 @@ export const PrefabType = {
     ChallengeFrameView: { path: "worldBoss/ChallengeFrameView", zindex: Hierarchy.POPUPLAYER, tips: "世界boss挑战操作页面" },
     /*********************************************挑战BOSS相关end*************************************************************/
     /*********************************************地图相关start***********************************************************/
+    LandModel: { path: "map/model/LandModel", zindex: Hierarchy.SCENELAYER, tips: "地块模型" },
+    CloudModel: { path: "map/model/CloudModel", zindex: Hierarchy.SCENELAYER, tips: "乌云模型" },
+    BuildingModel: { path: "map/model/BuildingModel", zindex: Hierarchy.SCENELAYER, tips: "建筑模型" },
+    // RoleModel: { path: "map/model/RoleModel", zindex: Hierarchy.SCENELAYER, tips: "角色模型" },
+    // PetMode: { path: "map/model/PetMode", zindex: Hierarchy.SCENELAYER, tips: "宠物模型" },
+    RoleBaseModel: { path: "map/model/RoleBaseModel", zindex: Hierarchy.SCENELAYER, tips: "角色模型" },
     MainUIView: { path: "map/MainUIView", zindex: Hierarchy.SCENELAYER, tips: "地图UI界面" },
     EditUIView: { path: "map/EditUIView", zindex: Hierarchy.SCENELAYER, tips: "地图编辑UI界面" },
     LandEditUIView: { path: "map/LandEditUIView", zindex: Hierarchy.SCENELAYER, tips: "地块编辑UI界面" },

@@ -1,4 +1,4 @@
-import { Color, Graphics, Label, Node, Rect, Sprite, UITransform, Vec2, Vec3, _decorator, sp } from "cc";
+import { Color, Graphics, Node, Rect, Sprite, UITransform, Vec2, Vec3, _decorator, sp } from "cc";
 import { EventType } from "../config/EventType";
 import { MapConfig } from "../config/MapConfig";
 import { PrefabType } from "../config/PrefabType";
@@ -7,7 +7,6 @@ import { DataMgr, EditInfo, EditType } from "../manager/DataMgr";
 import { LoadManager } from "../manager/LoadManager";
 import { ViewsManager } from "../manager/ViewsManager";
 import { ServiceMgr } from "../net/ServiceManager";
-import { BaseComponent } from "../script/BaseComponent";
 import CCUtil from "../util/CCUtil";
 import EventManager from "../util/EventManager";
 import { NodeUtil } from "../util/NodeUtil";
@@ -18,6 +17,7 @@ import { BuildingInfoView } from "../views/map/BuildingInfoView";
 import { CountdownFrame } from "../views/map/CountdownFrame";
 import { EditAnimView } from "../views/map/EditAnimView";
 import { ProduceItemView } from "../views/map/ProduceItemView";
+import { BaseModel } from "./BaseModel";
 import { GridModel } from "./GridModel";
 import { s2cBuildingListInfo } from "./NetModel";
 const { ccclass, property } = _decorator;
@@ -50,16 +50,10 @@ export class BuildingData {
 const defaultSpAnim = ["animation", "idle"];
 
 //建筑模型
-@ccclass('BuildingModel')
-export class BuildingModel extends BaseComponent {
-    @property(Sprite)
-    public building: Sprite = null;//建筑
-    @property(Label)
-    public label: Label = null;//文本
-    @property(Graphics)
-    public graphics: Graphics = null;//格子图层
-    @property(sp.Skeleton)
-    public sp: sp.Skeleton = null;//动画
+export class BuildingModel extends BaseModel {
+    public _building: Sprite = null;//建筑
+    public _graphics: Graphics = null;//格子图层
+    public _sp: sp.Skeleton = null;//动画
 
     private _editInfo: EditInfo;//编辑信息
     private _buildingID: number = undefined;//建筑唯一索引id
@@ -71,7 +65,7 @@ export class BuildingModel extends BaseComponent {
     private _width: number;//宽
     private _grids: GridModel[];//格子
     private _isFlip: boolean = false;//是否翻转
-    private _isShow: boolean = false;//是否显示
+    private _isShowEx: boolean = false;//是否显示
     private _isNew: boolean = false;//是否是新建
     private _isRecycle: boolean = false;//是否是回收
     public isSell: boolean = false;//是否卖出
@@ -82,7 +76,7 @@ export class BuildingModel extends BaseComponent {
     private _dataIsFlip: boolean = false;//数据是否翻转
     private _dataIsShow: boolean = false;//数据是否显示
     private _btnView: Node = null;//建筑按钮界面
-    // private _btnViewShow: boolean = false;//建筑按钮界面是否显示
+    private _btnViewShowScale: number = null;//建筑按钮界面显示scale
     private _longView: EditAnimView = null;//长按界面
     private _longViewShow: boolean = false;//长按界面是否显示
     private _countdownFrame: CountdownFrame = null;//倒计时界面
@@ -90,9 +84,7 @@ export class BuildingModel extends BaseComponent {
     private _produceItemView: ProduceItemView = null;//生产物品界面
     private _produceItemViewShow: boolean = false;//生产物品界面是否显示
 
-    private _pos: Vec3 = new Vec3(0, 0, 0);//位置
     private _isFixImgPos: boolean = false;//是否固定图片位置
-    private _isLoad: boolean = false;//是否加载图片
     private _isLoadOver: boolean = false;//图片是否加载完成
     public isCanEdit: boolean = true;//是否可以编辑
     private _timer: number = null;//每秒定时器
@@ -114,12 +106,9 @@ export class BuildingModel extends BaseComponent {
         this._width = editInfo.width;
         this.isFlip = isFlip;
         this._dataIsFlip = isFlip;
-        this._isShow = true;
+        this._isShowEx = true;
         this._dataIsShow = true;
         this._isNew = isNew;
-
-        this.label.node.active = false;
-        this.graphics.node.active = false;
 
         this.initEvent();
         if (isNew) {
@@ -150,7 +139,7 @@ export class BuildingModel extends BaseComponent {
         return this._editInfo;
     }
     // 销毁
-    protected onDestroy(): void {
+    dispose(): void {
         this.destoryEvent();
         this.clearTimer();
         EventManager.emit(EventType.EditUIView_Refresh);
@@ -183,19 +172,22 @@ export class BuildingModel extends BaseComponent {
         let gridPos = gridInfo.pos;
         let pos = new Vec3(gridPos.x, gridPos.y - 0.5 * this._width * gridInfo.height, 0);
         this.pos = pos;
-        if (!this._isFixImgPos) {
-            this.building.node.position = new Vec3(0, -0.5 * this._width * gridInfo.height, 0);
-            this._isFixImgPos = true;
-        }
+        this.fixImgPos();
         if (!this.isNew && !this._dataGrids) {//初始化已有建筑
             this._dataGrids = this._grids;
             // console.log("set grids this._dataGrids");
         }
         let index = -pos.y;//(this._x + this._width*0.5) * (this._y + this._width*0.5);
         this._zIndex = index;
-        this.label.string = index.toString();
         this.refreshBtnView();
         this.drawGridRect();
+    }
+    public fixImgPos() {
+        if (!this._isFixImgPos && this._building && this._grids) {
+            let gridInfo = this._grids[0];
+            this._building.node.position = new Vec3(0, -0.5 * this._width * gridInfo.height, 0);
+            this._isFixImgPos = true;
+        }
     }
     public get grids(): GridModel[] {
         return this._grids;
@@ -205,14 +197,16 @@ export class BuildingModel extends BaseComponent {
     }
     set isFlip(isFlip: boolean) {
         this._isFlip = isFlip;
-        this.building.node.scale = new Vec3(isFlip ? -1 : 1, 1, 1);
+        if (this._building)
+            this._building.node.scale = new Vec3(isFlip ? -1 : 1, 1, 1);
     }
     get isFlip(): boolean {
         return this._isFlip;
     }
-    set isShow(isShow: boolean) {
-        this._isShow = isShow;
-        this.node.active = isShow;
+    set isShowEx(isShow: boolean) {
+        this._isShowEx = isShow;
+        if (this._node)
+            this._node.active = isShow;
     }
     set isNew(isNew: boolean) {
         this._isNew = isNew;
@@ -225,7 +219,8 @@ export class BuildingModel extends BaseComponent {
     }
     public set pos(pos: Vec3) {
         this._pos = pos;
-        this.node.position = pos;
+        if (this._node)
+            this._node.position = pos;
     }
     // 格子数据还原
     public recoverGrids() {
@@ -260,16 +255,20 @@ export class BuildingModel extends BaseComponent {
     }
     // 显示按钮界面
     public showBtnView(scale: number): void {
+        if (!this._node) {
+            this._btnViewShowScale = scale;
+            return;
+        }
         this.topZIndex = true;
-        this.node.setSiblingIndex(-1);//放到最高层
-        this.graphics.node.active = true;//画图层显示
-        this.building.color = new Color(255, 255, 255, 180);//半透明
+        this._node.setSiblingIndex(-1);//放到最高层
+        this._graphics.node.active = true;//画图层显示
+        this._building.color = new Color(255, 255, 255, 180);//半透明
         if (this._btnView) {
             this._btnView.active = true;
             this.onCameraScale(scale);
             return;
         }
-        LoadManager.loadPrefab(PrefabType.BuildingBtnView.path, this.node).then((node: Node) => {
+        LoadManager.loadPrefab(PrefabType.BuildingBtnView.path, this._node).then((node: Node) => {
             this._btnView = node;
             this._btnView.position = new Vec3(0, 0.5 * this._width * this._grids[0].height, 0);
             let buildingBtnView = this._btnView.getComponent(BuildingBtnView);
@@ -291,13 +290,13 @@ export class BuildingModel extends BaseComponent {
     // 关闭按钮界面
     public closeBtnView(): void {
         if (this._btnView && this._btnView.active) {
-            this.building.color = Color.WHITE;
+            this._building.color = Color.WHITE;
             this._btnView.active = false;
             this.topZIndex = false;
             EventManager.emit(EventType.BuildingBtnView_Close);
             EventManager.emit(EventType.Building_Need_Sort);
         }
-        this.graphics.node.active = false;
+        this._graphics.node.active = false;
     }
     // 刷新按钮界面
     public refreshBtnView(): void {
@@ -316,7 +315,7 @@ export class BuildingModel extends BaseComponent {
     public resetData(): void {
         this.grids = this._dataGrids;
         this.isFlip = this._dataIsFlip;
-        this.isShow = this._dataIsShow;
+        this.isShowEx = this._dataIsShow;
     }
     /** 信息按钮 */
     public showInfo(): void {
@@ -335,7 +334,7 @@ export class BuildingModel extends BaseComponent {
         this.saveGrids();//先还原原来格子数据，再保存现在格子数据
         this._dataGrids = this._grids;
         this._dataIsFlip = this._isFlip;
-        this._dataIsShow = this._isShow;
+        this._dataIsShow = this._isShowEx;
         this._isNew = false;
         this._isRecycle = false;
         this.closeBtnView();
@@ -389,7 +388,7 @@ export class BuildingModel extends BaseComponent {
     // 回收
     public recycle() {
         this.resetGrids();
-        this.isShow = false;
+        this.isShowEx = false;
         this.saveData();
 
         this.removeFromScene(true);
@@ -407,11 +406,11 @@ export class BuildingModel extends BaseComponent {
     public recoverData(): void {
         this.resetData();
         if (this._btnView && this._btnView.active) {
-            this.building.color = Color.WHITE;
+            this._building.color = Color.WHITE;
             this._btnView.active = false;
             this.topZIndex = false;
         }
-        this.graphics.node.active = false;
+        this._graphics.node.active = false;
         if (this._isNew) {
             this.removeFromScene(true);
         }
@@ -424,23 +423,26 @@ export class BuildingModel extends BaseComponent {
     }
     // 画面中移除
     public removeFromScene(isDestory: boolean = false): void {
-        this.isShow = false;
+        this.isShowEx = false;
         EventManager.emit(EventType.BuidingModel_Remove, this);
-        if (isDestory) {
-            this.node.destroy();
-        }
+        this._node.destroy();
+        this.dispose();
     }
     // 从父节点移除(对象、资源暂未删除)
     public removeFromParent(): void {
-        this.node.parent = null;
+        this._parent = null;
+        if (this._node)
+            this._node.parent = null;
     }
     // 添加到父节点
     public addToParent(parent: Node): void {
-        this.node.parent = parent;
+        this._parent = parent;
+        if (this._node)
+            this._node.parent = parent;
     }
     // 设置摄像头类型
     public setCameraType(type: number): void {
-        NodeUtil.setLayerRecursively(this.node, type);
+        NodeUtil.setLayerRecursively(this._node, type);
     }
     /**是否点击到自己 像素点击，可能会出现性能问题*/
     public isTouchSelf(worldPos: Vec3): boolean {
@@ -455,7 +457,7 @@ export class BuildingModel extends BaseComponent {
             }
         }
         // if (this._editInfo.id != 30) return false;//争对某类建筑测试
-        let transform = this.building.getComponent(UITransform);
+        let transform = this._building.getComponent(UITransform);
         let rect: Rect = new Rect(0, 0, transform.width, transform.height);
         rect.x = -transform.anchorX * transform.width;
         rect.y = -transform.anchorY * transform.height;
@@ -470,21 +472,23 @@ export class BuildingModel extends BaseComponent {
         let x = Math.floor(pos.x + transform.anchorX * transform.width);
         let y = Math.floor(pos.y + transform.anchorY * transform.height);
         // console.log("isTouchSelf 2:", x, y);
-        if (Sprite.SizeMode.TRIMMED == this.building.sizeMode) {
-            let spriteFrame = this.building.spriteFrame;
+        if (Sprite.SizeMode.TRIMMED == this._building.sizeMode) {
+            let spriteFrame = this._building.spriteFrame;
             const size = spriteFrame.originalSize;
             const offset = spriteFrame.offset;
             x = x + offset.x + (size.width - rect.width) / 2;
             y = y + offset.y + (size.height - rect.height) / 2;
             // console.log("isTouchSelf 5:", x, y);
         }
-        let colors = CCUtil.readPixels(this.building.spriteFrame, x, y);
+        // let spriteFrame = CaptureUtils.capture(this._building.node);
+        // let colors = CCUtil.readPixels(spriteFrame, pos.x, pos.y);
+        let colors = CCUtil.readPixels(this._building.spriteFrame, x, y);
         return colors[3] >= 50;
     }
     /** 画格子区域 */
     public drawGridRect() {
-        if (!this.graphics.node.active) return;
-        let g = this.graphics;
+        if (!this._graphics || !this._graphics.node.active) return;
+        let g = this._graphics;
         g.clear();
         let grids = this._grids;
         if (!grids || grids.length < 1) return;
@@ -505,40 +509,61 @@ export class BuildingModel extends BaseComponent {
     }
     /**显示与否 */
     public show(isShow: boolean, callBack?: Function) {
-        this.node.active = isShow;
+        if (this._node) {
+            this._node.active = isShow;
+        }
+        this._isShow = isShow;
         if (isShow && !this._isLoad) {
             this._isLoad = true;
-            LoadManager.loadSprite(DataMgr.getEditPng(this._editInfo), this.building).then(() => {
-                this._isLoadOver = true;
-                if (callBack) callBack();
-            });
-            let animation = this._editInfo.animation;
-            if (animation && animation.length > 0) {
-                LoadManager.loadSpine(animation, this.sp).then(() => {
-                    if (this.sp.findAnimation(defaultSpAnim[0])) {
-                        this.sp.setAnimation(0, defaultSpAnim[0], true);
-                    } else {
-                        this.sp.setAnimation(0, defaultSpAnim[1], true);
-                    }
-
-                    if (this._editInfo.animpos) {
-                        this.sp.node.position = this._editInfo.animpos;
-                    } else {
-                        let pos = this.building.node.position.clone();
-                        pos.x = -16;
-                        pos.y = - pos.y;
-                        this.sp.node.position = pos;
-                        console.log("pos", pos.x, pos.y);
-                    }
+            LoadManager.loadPrefab(PrefabType.BuildingModel.path, this._parent).then((node: Node) => {
+                this._node = node;
+                this._node.active = this._isShow;
+                this._node.position = this._pos;
+                this._building = this._node.getComponentInChildren(Sprite);
+                this.isFlip = this._isFlip;
+                this.fixImgPos();
+                this._sp = this._node.getComponentInChildren(sp.Skeleton);
+                this._graphics = this._node.getComponentInChildren(Graphics);
+                this._graphics.node.active = false;
+                LoadManager.loadSprite(DataMgr.getEditPng(this._editInfo), this._building).then(() => {
+                    this._isLoadOver = true;
+                    if (callBack) callBack();
                 });
-            }
+                let animation = this._editInfo.animation;
+                if (animation && animation.length > 0) {
+                    LoadManager.loadSpine(animation, this._sp).then(() => {
+                        if (this._sp.findAnimation(defaultSpAnim[0])) {
+                            this._sp.setAnimation(0, defaultSpAnim[0], true);
+                        } else {
+                            this._sp.setAnimation(0, defaultSpAnim[1], true);
+                        }
+
+                        if (this._editInfo.animpos) {
+                            this._sp.node.position = this._editInfo.animpos;
+                        } else {
+                            let pos = this._building.node.position.clone();
+                            pos.x = -16;
+                            pos.y = - pos.y;
+                            this._sp.node.position = pos;
+                            console.log("pos", pos.x, pos.y);
+                        }
+                    });
+                }
+                if (null != this._btnViewShowScale) {
+                    this.showBtnView(this._btnViewShowScale);
+                    this._btnViewShowScale = null;
+                }
+            });
         } else {
             if (callBack) callBack();
         }
     }
     /**获取显示范围 */
     public getRect() {
-        let rect = this.building.getComponent(UITransform).getBoundingBox().clone();
+        let rect = new Rect(-350, 0, 700, 800);
+        if (this._building) {
+            rect = this._building.getComponent(UITransform).getBoundingBox().clone();
+        }
         rect.x = this.pos.x + rect.x;
         rect.y = this.pos.y + rect.y;
         return rect;
@@ -552,9 +577,9 @@ export class BuildingModel extends BaseComponent {
             this._longView.showAnim();
             return;
         }
-        LoadManager.loadPrefab(PrefabType.EditAnimView.path, this.node).then((node: Node) => {
-            let pos = new Vec3(this.building.node.position);
-            pos.y += this.building.getComponent(UITransform).height;
+        LoadManager.loadPrefab(PrefabType.EditAnimView.path, this._node).then((node: Node) => {
+            let pos = new Vec3(this._building.node.position);
+            pos.y += this._building.getComponent(UITransform).height;
             this._longView = node.getComponent(EditAnimView);
             this._longView.showAnim();
             node.position = pos;
@@ -580,7 +605,7 @@ export class BuildingModel extends BaseComponent {
             this._countdownFrame.node.active = true;
             return;
         }
-        LoadManager.loadPrefab(PrefabType.CountdownFrame.path, this.node).then((node: Node) => {
+        LoadManager.loadPrefab(PrefabType.CountdownFrame.path, this._node).then((node: Node) => {
             let height = this._grids ? this._grids[0]?.height : 0;
             node.position = new Vec3(0, -0.5 * this._width * height, 0);
             node.active = this._countdownFrameShow;
@@ -676,9 +701,9 @@ export class BuildingModel extends BaseComponent {
             this._produceItemView.init(this.getProduceImg());
             return;
         }
-        LoadManager.loadPrefab(PrefabType.ProduceItemView.path, this.node).then((node: Node) => {
-            let pos = new Vec3(this.building.node.position);
-            pos.y += this.building.getComponent(UITransform).height;
+        LoadManager.loadPrefab(PrefabType.ProduceItemView.path, this._node).then((node: Node) => {
+            let pos = new Vec3(this._building.node.position);
+            pos.y += this._building.getComponent(UITransform).height;
             node.position = pos;
             this._produceItemView = node.getComponent(ProduceItemView);
             this._produceItemView.node.active = this._produceItemViewShow;

@@ -47,6 +47,7 @@ export const TextConfig = {
     Code_Null_Tip: "验证码不能为空",
     Get_Code: "获取验证码",
     Get_Code_Time: "({0}s)",
+    Get_Code_Success: "获取验证码成功",
     ActivationCode_Null_Tip: "激活码不能为空",
 
     US: "美",
