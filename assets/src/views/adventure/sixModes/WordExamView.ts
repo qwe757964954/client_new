@@ -163,6 +163,7 @@ export class WordExamView extends BaseModeView {
     }
 
     protected modeOver(): void {
+        super.modeOver();
         console.log('评测完成，显示结算');
         if (this._currentSubmitResponse.pass_flag == 1 || this._currentSubmitResponse.pass_flag == 2) { //成功或失败
             ViewsManager.instance.showView(PrefabType.ExamReportView, (node: Node) => {

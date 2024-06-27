@@ -8,16 +8,26 @@ export class BasePopup extends BaseView  {
         super.onDestroy();
         this.node.parent.destroy();
     }
-
     closePop(){
         this.closeAnim();
     }
-    showAnim() {
-        this.node.scale = new Vec3(0.2, 0.2, 1.0);
-        tween(this.node).to(0.2, { scale: new Vec3(1.0, 1.0, 1.0) }, { easing: easing.backOut }).call(() => {
-        }).start();
-    }
 
+    start() {
+        this.initEvent();
+	}
+
+    showAnim(): Promise<void> {
+        return new Promise<void>((resolve) => {
+            this.node.scale = new Vec3(0.2, 0.2, 1.0);
+            tween(this.node)
+                .to(0.2, { scale: new Vec3(1.0, 1.0, 1.0) }, { easing: easing.backOut })
+                .call(() => {
+                    this.initUI();
+                    resolve();
+                })
+                .start();
+        });
+    }
     closeAnim() {
         tween(this.node).to(0.2, { scale: new Vec3(0.0, 0.0, 0.0) }, { easing: easing.backIn }).call(() => {
             this.node.parent.destroy();

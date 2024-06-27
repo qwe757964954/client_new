@@ -1,8 +1,8 @@
 import { _decorator, Component, Label, Node, Sprite } from 'cc';
-import { FriendUnitInfo } from '../../models/FriendModel';
 import { LoadManager } from '../../manager/LoadManager';
-import CCUtil from '../../util/CCUtil';
+import { UserApplyModel } from '../../models/FriendModel';
 import { ServiceMgr } from '../../net/ServiceManager';
+import CCUtil from '../../util/CCUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('MsgListItem')
@@ -22,7 +22,7 @@ export class MsgListItem extends Component {
     @property({ type: Node, tooltip: "同意按钮" })
     btnAccept: Node = null;
 
-    _data: FriendUnitInfo = null;
+    _data: UserApplyModel = null;
 
     protected onLoad(): void {
         //console.log("FriendListItem onLoad");
@@ -43,17 +43,17 @@ export class MsgListItem extends Component {
         this.removeEvent();
     }
 
-    async initData(data: FriendUnitInfo) {
+    async initData(data: UserApplyModel) {
         this._data = data;
         let headIdMap = { "101": 101, "1101": 101, "102": 102, "1102": 102, "103": 103, "1103": 103 }
-        let avatar: number = headIdMap[data.ModelId];
+        let avatar: number = headIdMap[data.avatar];
         let avatarPath: string = "friend/head_" + avatar + "/spriteFrame";
         await LoadManager.loadSprite(avatarPath, this.imgHead.getComponent(Sprite)).then(() => { },
             (error) => {
                 // console.log("loadShowSprite->resource load failed:" + this._data.icon.skin + "," + error.message);
             });
-        this.lblRealName.string = data.RealName;
-        this.lblID.string = "" + data.FriendId;
+        this.lblRealName.string = data.nick_name;
+        this.lblID.string = "" + data.user_id;
     }
 
     private onIngoreClick() {

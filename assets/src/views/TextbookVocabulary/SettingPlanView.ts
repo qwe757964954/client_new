@@ -37,12 +37,7 @@ export class SettingPlanView extends BasePopup {
     private _totoal_level:number = 20;
     initUI() {
         this.enableClickBlankToClose([this.node.getChildByName("small_dialog_bg")]).then(()=>{
-            let data:PlanSaveData = {
-                left:`${this._levelSelect}`,
-                right:`${this._daySelect}`,
-                isSave:false
-            }
-            EventMgr.dispatch(EventType.Select_Word_Plan,data);
+            this.sendPlan();
         });
     }
     initEvent() {
@@ -115,17 +110,14 @@ export class SettingPlanView extends BasePopup {
     onClickCancel(){
         console.log("onClickCancel");
         this.closePop();
-        let data:PlanSaveData = {
-            left:`${this._levelSelect}`,
-            right:`${this._daySelect}`,
-            isSave:false
-        }
-        EventMgr.dispatch(EventType.Select_Word_Plan,data);
     }
 
     onClickSave(){
         console.log("onClickSave");
         this.closePop();
+        this.sendPlan();
+    }
+    sendPlan(){
         let data:PlanSaveData = {
             left:`${this._levelSelect}`,
             right:`${this._daySelect}`,

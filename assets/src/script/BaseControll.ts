@@ -8,6 +8,7 @@
  *
  */
 
+import { ViewsManager } from "../manager/ViewsManager";
 import { EventMgr } from "../util/EventManager";
 export class BaseControll {
 	protected _className = "BaseControll";
@@ -30,6 +31,11 @@ export class BaseControll {
 	protected onInitModuleEvent() {
 
 	}
+	protected addModelListeners(listeners: [string, (data: any) => void][]): void {
+        for (const [path, handler] of listeners) {
+            this.addModelListener(path, handler.bind(this));
+        }
+    }
 	/**
 	 * 添加事件绑定
 	 * @param name 事件名称
@@ -41,6 +47,16 @@ export class BaseControll {
 		EventMgr.addListener(name, callback, this)
 	}
 
+
+	protected handleResponse(data: any, successNotify: string): void {
+        console.log(successNotify, data);
+        if (data.code !== 200) {
+            console.log(data.msg);
+            ViewsManager.showTip(data.msg);
+            return;
+        }
+        EventMgr.dispatch(successNotify, data);
+    }
 	/**
 	 * 移除事件
 	 * @param name 

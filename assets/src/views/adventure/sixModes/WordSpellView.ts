@@ -222,6 +222,7 @@ export class WordSpellView extends BaseModeView {
     }
 
     protected modeOver(): void {
+        super.modeOver();
         console.log('拼模式完成');
         ViewsManager.instance.showView(PrefabType.TransitionView, (node: Node) => {
             let wordData = JSON.parse(JSON.stringify(this._wordsData));

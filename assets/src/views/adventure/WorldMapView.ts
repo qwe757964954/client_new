@@ -19,6 +19,7 @@ import { WordReadingView } from './sixModes/WordReadingView';
 import { WordSpellView } from './sixModes/WordSpellView';
 import { WorldIsland } from './WorldIsland';
 import { WorldMapItem } from './WorldMapItem';
+import { LevelUpView } from '../common/LevelUpView';
 const { ccclass, property } = _decorator;
 /**大冒险 世界地图 何存发 2024年4月8日14:45:44 */
 @ccclass('WorldMapView')

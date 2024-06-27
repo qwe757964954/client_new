@@ -1,10 +1,8 @@
-import { ViewsManager } from "../manager/ViewsManager";
 import { c2sGetBoxTaskReward, c2sGetMainTaskReward, c2sGetWeekTaskReward, c2sUserMainTask, c2sUserWeekTask } from "../models/TaskModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
 import { NetNotify } from "../net/NetNotify";
 import { BaseControll } from "../script/BaseControll";
-import { EventMgr } from "../util/EventManager";
 
 
 export default class _TaskService extends BaseControll {
@@ -28,22 +26,6 @@ export default class _TaskService extends BaseControll {
             [InterfacePath.Classification_GetWeekTaskReward, this.onGetWeekTaskReward],
             [InterfacePath.Classification_GetBoxTaskReward, this.onGetBoxTaskReward],
         ]);
-    }
-    
-    private addModelListeners(listeners: [string, (data: any) => void][]): void {
-        for (const [path, handler] of listeners) {
-            this.addModelListener(path, handler.bind(this));
-        }
-    }
-
-    private handleResponse(data: any, successNotify: string): void {
-        console.log(successNotify, data);
-        if (data.code !== 200) {
-            console.log(data.msg);
-            ViewsManager.showTip(data.msg);
-            return;
-        }
-        EventMgr.dispatch(successNotify, data);
     }
 
     reqUserMainTask(){

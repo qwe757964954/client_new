@@ -1,17 +1,13 @@
-import { _decorator, Button, Component, instantiate, Node, Prefab, ScrollView, Sprite, SpriteFrame } from 'cc';
-import { FriendChatInfo, FriendChatNetResponse, FriendItemClickInfo, FriendUnitInfo } from '../../models/FriendModel';
-import { ServiceMgr } from '../../net/ServiceManager';
-import { LoadManager } from '../../manager/LoadManager';
-import { ViewsManager } from '../../manager/ViewsManager';
-import { PrefabConfig, PrefabType } from '../../config/PrefabType';
-import CCUtil from '../../util/CCUtil';
-import EventManager from '../../util/EventManager';
+import { _decorator, Component, instantiate, Node, Prefab, ScrollView, Sprite, SpriteFrame } from 'cc';
 import { EventType } from '../../config/EventType';
-import { ChatListItem } from './ChatListItem';
+import { FriendChatInfo, FriendChatNetResponse, FriendItemClickInfo, FriendUnitInfo } from '../../models/FriendModel';
 import { User } from '../../models/User';
+import CCUtil from '../../util/CCUtil';
+import { EffectUtil } from '../../util/EffectUtil';
+import EventManager from '../../util/EventManager';
 import { ChatContentItem } from './ChatContentItem';
 import { ChatEmoteItem } from './ChatEmoteItem';
-import { EffectUtil } from '../../util/EffectUtil';
+import { ChatListItem } from './ChatListItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('FriendTalkDialogView')
@@ -104,7 +100,7 @@ export class FriendTalkDialogView extends Component {
     async initData() {
         let userId: number = User.userID;
         //console.log("account:", userId);
-        ServiceMgr.friendService.friendList();
+        // ServiceMgr.friendService.friendList();
         this._bqList = [];
         for (let i = 1; i <= 40; i++) {
             if (i == 2 || i == 3 || i == 9 || i == 12 || i == 14) continue;
@@ -140,7 +136,7 @@ export class FriendTalkDialogView extends Component {
         CCUtil.onTouch(this.sendBtn, this.onSendBtnClick, this);
         CCUtil.onTouch(this.hotAreaBox, this.onHideSelect, this);
 
-        this._getMyFriendListEveId = EventManager.on(EventType.Friend_MyList, this.onMsgNumList.bind(this)); //
+        // this._getMyFriendListEveId = EventManager.on(EventType.Friend_MyList, this.onMsgNumList.bind(this)); //
         this._clickMyFriendListEveId = EventManager.on(EventType.Friend_ClickChatFriendList, this.onFriendItemClck.bind(this));
         this._getFriendMsgListEveId = EventManager.on(EventType.Friend_MsgList, this.onMsgList.bind(this));
         this._clickEmotionEveId = EventManager.on(EventType.Friend_SelectEmotion, this.onBqItemSelect.bind(this));
@@ -153,7 +149,7 @@ export class FriendTalkDialogView extends Component {
         CCUtil.offTouch(this.bqBtn, this.onBqBtnClick, this);
         CCUtil.offTouch(this.sendBtn, this.onSendBtnClick, this);
         CCUtil.offTouch(this.hotAreaBox, this.onHideSelect, this);
-        EventManager.off(EventType.Friend_MyList, this._getMyFriendListEveId);
+        // EventManager.off(EventType.Friend_MyList, this._getMyFriendListEveId);
         EventManager.off(EventType.Friend_ClickChatFriendList, this._clickMyFriendListEveId);
         EventManager.off(EventType.Friend_MsgList, this._getFriendMsgListEveId);
         EventManager.off(EventType.Friend_SelectEmotion, this._clickEmotionEveId);
@@ -185,11 +181,11 @@ export class FriendTalkDialogView extends Component {
     onMsgNumList(friendDatas: FriendUnitInfo[]) {
         this._friendDataList = friendDatas;
         if (this._selectFriend) {
-            ServiceMgr.friendService.friendMsgList(this._selectFriend.FriendId);
+            // ServiceMgr.friendService.friendMsgList(this._selectFriend.FriendId);
         } else {
             if (friendDatas.length > 0) {
                 this._selectFriend = friendDatas[0];
-                ServiceMgr.friendService.friendMsgList(this._selectFriend.FriendId);
+                // ServiceMgr.friendService.friendMsgList(this._selectFriend.FriendId);
             }
         }
 
@@ -228,7 +224,7 @@ export class FriendTalkDialogView extends Component {
         this._selectFriend = data.info;
         data.node.getChildByName("bgImg").getComponent(Sprite).spriteFrame = this.sprfriendItemBgAry[0];
         this._canClick = false;
-        ServiceMgr.friendService.friendMsgList(this._selectFriend.FriendId);
+        // ServiceMgr.friendService.friendMsgList(this._selectFriend.FriendId);
     }
 
     /**收到好友发来的消息 */
@@ -270,20 +266,20 @@ export class FriendTalkDialogView extends Component {
     }
 
     onBqItemSelect(bqId: number) {
-        ServiceMgr.friendService.friendMsgSend(this._selectFriend.FriendId, bqId);
+        // ServiceMgr.friendService.friendMsgSend(this._selectFriend.FriendId, bqId);
     }
 
     /**发送给好友消息 */
     onMsgSend(data) {
-        ServiceMgr.friendService.friendMsgList(this._selectFriend.FriendId);
+        // ServiceMgr.friendService.friendMsgList(this._selectFriend.FriendId);
         this.bqSelectBox.active = false;
     }
 
     /**收到好友一个消息 */
     onRecMsg(data) {
         if (!this._selectFriend) return;
-        ServiceMgr.friendService.friendMsgList(this._selectFriend.FriendId);
-        ServiceMgr.friendService.friendList();
+        // ServiceMgr.friendService.friendMsgList(this._selectFriend.FriendId);
+        // ServiceMgr.friendService.friendList();
     }
 
     async onSendBtnClick() {

@@ -151,6 +151,7 @@ export class StudyModeView extends BaseModeView {
 
     clearSplitItems() {
         for (let i = 0; i < this._spliteItems.length; i++) {
+            CCUtil.offTouch(this._spliteItems[i], this.onSplitItemClick, this);
             this._spliteItems[i].parent = null;
             this._nodePool.put(this._spliteItems[i]);
         }
@@ -228,6 +229,7 @@ export class StudyModeView extends BaseModeView {
     }
 
     protected modeOver(): void {
+        super.modeOver();
         console.log('学习完成,跳转词意模式');
         ViewsManager.instance.showView(PrefabType.TransitionView, (node: Node) => {
             let wordData = JSON.parse(JSON.stringify(this._wordsData));

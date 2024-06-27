@@ -1,14 +1,22 @@
-import { _decorator, Component, Node } from 'cc';
-import { PrefabType } from '../../config/PrefabType';
+import { _decorator, Component, director, Node } from 'cc';
+import { PrefabType, SceneType } from '../../config/PrefabType';
 import { ViewsManager } from '../../manager/ViewsManager';
+import { UserPlayerDetail } from '../../models/SettingModel';
+import { User } from '../../models/User';
+import { NetMgr } from '../../net/NetManager';
 import { ApplyLogoutView } from './ApplyLogoutView';
+import { ChangeRoleView } from './ChangeRoleView';
 const { ccclass, property } = _decorator;
 
 @ccclass('AccountView')
 export class AccountView extends Component {
-
+    private _playerDetail:UserPlayerDetail = null;
     start() {
         this.init();
+    }
+
+    public updateUserInfo(data:UserPlayerDetail) {
+        this._playerDetail = data;
     }
 
     //销毁
@@ -33,19 +41,27 @@ export class AccountView extends Component {
         console.log("btnJiHuoFunc");
         ViewsManager.instance.showView(PrefabType.AccountActivationView);
     }
-    // 充值
-    btnChongZhiFunc() {
+    // 重置
+    async btnChongZhiFunc() {
         console.log("btnChongZhiFunc");
-        ViewsManager.instance.showView(PrefabType.ResetPasswordView);
+        let node:Node = await ViewsManager.instance.showPopup(PrefabType.ResetPasswordView);
     }
     // 剧情回顾
     btnJuQingHuiGuFunc() {
         console.log("btnJuQingHuiGuFunc");
     }
     // 切换角色
-    btnChangeRoleFunc() {
+    async btnChangeRoleFunc() {
         console.log("btnChangeRoleFunc");
-        ViewsManager.instance.showView(PrefabType.ChangeRoleView);
+        try {
+            let node = await ViewsManager.instance.showViewAsync(PrefabType.ChangeRoleView);
+            let changeRoleView = node.getComponent(ChangeRoleView);
+            changeRoleView.updateData(this._playerDetail);
+        } catch (error) {
+            console.error("Failed to show ChangeRoleView", error);
+        }
+        // let node = await ViewsManager.instance.showViewAsync(PrefabType.ChangeRoleView);
+        // node.getComponent(ChangeRoleView).updateData(this._playerDetail);
     }
     // 会员中心
     btnVipCenterFunc() {
@@ -75,6 +91,10 @@ export class AccountView extends Component {
     // 退出登录
     btnLoginOutFunc() {
         console.log("btnLoginOutFunc");
+        User.isAutoLogin = false;
+        User.resetData();
+        NetMgr.closeNet();
+        director.loadScene(SceneType.LoginScene);
     }
 }
 

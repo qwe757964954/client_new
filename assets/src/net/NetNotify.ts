@@ -47,5 +47,19 @@ export const NetNotify = {
     Classification_CompleteBoxWeekTask: "Classification_CompleteBoxWeekTask", //完成宝箱任务
     /***********************************************主线任务进度信息 end*********************************************/
 
+    /***********************************************设置相关信息start*********************************************/
+    Classification_UserPlayerDetail: "Classification_UserPlayerDetail", //用户信息详情消息
+    Classification_UserPlayerModify: "Classification_UserPlayerModify", //用户信息修改
+    Classification_UserPasswordModify: "Classification_UserPasswordModify", //用户密码修改
+    /***********************************************设置相关信息 end*********************************************/
+
+    /***********************************************好友相关信息start*********************************************/
+    Classification_UserFriendList: "Classification_UserFriendList", //用户好友列表消息
+    Classification_UserFriendAdd: "Classification_UserFriendAdd", //用户好友申请添加消息
+    Classification_UserFriendSearch: "Classification_UserFriendSearch", //用户id搜索接口
+    Classification_UserFriendApplyList: "Classification_UserFriendApplyList", //用户好友申请列表消息
+    /***********************************************好友相关信息 end*********************************************/
+    
+
     /***********************************************选择词书 end*********************************************/
 }

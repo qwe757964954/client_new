@@ -50,4 +50,12 @@ export namespace ObjectUtil{
 		}
 		return pathName;
 	};
+
+
+	export function extractId(input: string): string {
+		return input.replace(/\bUnit\s*/g, "").trim();
+	}
+	export function isNumericString(value: string): boolean {
+		return /^\d+$/.test(value);
+	}
 }

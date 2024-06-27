@@ -1,5 +1,5 @@
 import { _decorator, Component, isValid, Node } from 'cc';
-import { FriendUnitInfo } from '../../models/FriendModel';
+import { FriendListItemModel } from '../../models/FriendModel';
 import List from '../../util/list/List';
 import { FriendListItem } from './FriendlListItem';
 const { ccclass, property } = _decorator;
@@ -8,15 +8,15 @@ const { ccclass, property } = _decorator;
 export class FriendListView extends Component {
     @property({ type: List, tooltip: "好友滚动列表" })
     public friendList: List = null;
-    private _friendDataList: FriendUnitInfo[] = []; //我的好友列表
-    updateData(friendDatas: FriendUnitInfo[]){
+    private _friendDataList: FriendListItemModel[] = []; //我的好友列表
+    updateData(friendDatas: FriendListItemModel[]){
         this._friendDataList = friendDatas;
         this.friendList.numItems = friendDatas.length;
     }
 
     onLoadLeftTabVertical(item:Node, idx:number){
         let item_script = item.getComponent(FriendListItem);
-        let friendData: FriendUnitInfo = this._friendDataList[idx];
+        let friendData: FriendListItemModel = this._friendDataList[idx];
         item_script.initData(friendData);
     }
 

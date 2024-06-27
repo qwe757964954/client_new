@@ -1,5 +1,6 @@
 import { _decorator, Component, isValid, Label, Node, Sprite } from 'cc';
 import { MapLevelData, MicroListItem } from '../../../models/AdventureModel';
+import { ObjectUtil } from '../../../util/ObjectUtil';
 const { ccclass, property } = _decorator;
 
 export enum StarType {
@@ -62,7 +63,8 @@ export class MapPointItem extends Component {
     //教材单词关卡点初始化
     initSmallData(data: MapLevelData) {
         this.data = data;
-        let big_id = data.big_id.replace("Unit ", "").trim();
+        
+        let big_id = ObjectUtil.extractId(data.big_id);
         this.levelLabel.string = big_id + "-" + data.small_id;
         this.clearPointStars();
         if (isValid(data.flag_info) && isValid(data.flag_info.star_one)) {

@@ -8,6 +8,7 @@ import CCUtil from '../../../util/CCUtil';
 import EventManager, { EventMgr } from '../../../util/EventManager';
 import FileUtil from '../../../util/FileUtil';
 import List from '../../../util/list/List';
+import { ObjectUtil } from '../../../util/ObjectUtil';
 import { BaseItem } from '../../common/BaseItem';
 import { MonsterModel } from './MonsterModel';
 const { ccclass, property } = _decorator;
@@ -176,7 +177,7 @@ export class rightPanelchange extends Component {
         this.monsterNode.setScale(2, 2, 2);
         let monsterModel = this._monsterAni.getComponent(MonsterModel);
         if (this._data.game_modes && this._data.game_modes === "word") {
-            let big_id = this._data.big_id.replace("Unit ", "").trim();
+            let big_id = ObjectUtil.extractId(this._data.big_id);
             this.levelTxt.string = big_id + '-' + this._data.small_id;
             monsterModel.init(FileUtil.removeFileExtension(GameRes.Spine_Stitches.path));
             this.monsterNameTxt.string = "缝合怪";
