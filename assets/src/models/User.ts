@@ -84,6 +84,8 @@ class UserModel {
         this.petLevel = null;
         this.petHasReward = false;
         this._itemAry = [];
+        this._buildingList = [];
+        this._landList = [];
     }
 
     set account(account: string) {

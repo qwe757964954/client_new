@@ -1,34 +1,27 @@
-import { _decorator, Component, Label, Sprite, UITransform, Vec3 } from "cc";
+import { _decorator, Node, Rect, Sprite, Vec3 } from "cc";
 import { MapConfig } from "../config/MapConfig";
+import { PrefabType } from "../config/PrefabType";
 import { DataMgr, EditInfo } from "../manager/DataMgr";
 import { LoadManager } from "../manager/LoadManager";
 import { ToolUtil } from "../util/ToolUtil";
+import { BaseModel } from "./BaseModel";
 import { GridModel } from "./GridModel";
 const { ccclass, property } = _decorator;
 
 //地块模型 sprite大小必须设置为2*2的格子大小
-@ccclass('LandModel')
-export class LandModel extends Component {
+export class LandModel extends BaseModel {
     // y从上往下，x从右往左
     private _x: number;//x格子坐标
     private _y: number;//y格子坐标
     private _width: number;//宽
     private _grids: GridModel[];//格子
 
-    // private _landID:number;//地块id
     private _landInfo: EditInfo;//地块信息
 
     private _dataLandInfo: EditInfo;//数据地块信息
-    private _isLoad: boolean = false;//是否加载图片
+    private _sprite: Sprite = null;//图片
     private _flowerSprite: Sprite = null;//花朵
 
-    // 销毁
-    protected onDestroy(): void {
-        this.releaseAsset();
-    }
-    // 释放资源
-    public releaseAsset() {
-    }
     get x(): number {
         return this._x;
     }
@@ -43,16 +36,13 @@ export class LandModel extends Component {
     }
 
     // 初始化数据
-    public initData(x: number, y: number, width: number, landInfo: EditInfo) {
+    public initData(x: number, y: number, width: number, landInfo: EditInfo, parent: Node) {
         this._x = x;
         this._y = y;
         this._width = width;
-        // this._landID = landID;
         this._landInfo = landInfo;
         this._dataLandInfo = landInfo;
-
-        // this.getComponentInChildren(Label).string = x.toString() + "," + y.toString();
-        this.getComponentInChildren(Label).node.active = false;
+        this._parent = parent;
     }
 
     public set grids(grids: GridModel[]) {
@@ -71,15 +61,16 @@ export class LandModel extends Component {
         this._y = gridInfo.y;
         let gridPos = gridInfo.pos;
         let pos = new Vec3(gridPos.x, gridPos.y - this._width * gridInfo.height, 0);
-        this.node.position = pos;
+        this._pos = pos;
+        if (this._node)
+            this._node.position = pos;
     }
     public get grids(): GridModel[] {
         return this._grids;
     }
     //显示地块
     public showLand(callBack?: Function) {
-        this.releaseAsset();
-        LoadManager.loadSprite(DataMgr.getEditPng(this._landInfo), this.getComponent(Sprite)).then(() => {
+        LoadManager.loadSprite(DataMgr.getEditPng(this._landInfo), this._sprite).then(() => {
             if (callBack) callBack();
         });
         if (this.isDefault()) {
@@ -88,7 +79,7 @@ export class LandModel extends Component {
             } else if (ToolUtil.getRandomInt(0, 19) < 1) {
                 let flowers = MapConfig.landFlowers;
                 let path = flowers[ToolUtil.getRandomInt(0, flowers.length - 1)];
-                this._flowerSprite = this.getComponentInChildren(Sprite);
+                this._flowerSprite = this._node.getComponentInChildren(Sprite);
                 this._flowerSprite.node.active = true;
                 this._flowerSprite.node.scale = new Vec3(0.5, 0.5, 1);
                 LoadManager.loadSprite(path, this._flowerSprite);
@@ -129,17 +120,30 @@ export class LandModel extends Component {
     }
     /**显示与否 */
     public show(isShow: boolean, callBack?: Function) {
-        this.node.active = isShow;
+        if (this._node) {
+            this._node.active = isShow;
+        }
+        this._isShow = isShow;
         if (isShow && !this._isLoad) {
             this._isLoad = true;
-            this.showLand(callBack);
+            LoadManager.loadPrefab(PrefabType.LandModel.path, this._parent).then((node: Node) => {
+                this._node = node;
+                this._node.active = this._isShow;
+                this._node.position = this._pos;
+                this._sprite = this._node.getComponent(Sprite);
+                this.showLand(callBack);
+            });
         } else {
             if (callBack) callBack();
         }
     }
     /**获取显示范围 */
     public getRect() {
-        return this.node.getComponent(UITransform).getBoundingBox();
+        let rect = new Rect(-72, 0, 144, 72);
+        // return this._node.getComponent(UITransform).getBoundingBox();
+        rect.x += this._pos.x;
+        rect.y += this._pos.y;
+        return rect;
     }
     /**是否是默认地块 */
     public isDefault() {

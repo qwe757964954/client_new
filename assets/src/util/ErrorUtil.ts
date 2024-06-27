@@ -34,6 +34,6 @@ export class ErrorUtil {
         let data = ErrorUtil.getData(msg);
         let str = JSON.stringify(data);
         // HttpUtil.post(NetConfig.logUrl, str);
-        console.log("ErrorUtil log", msg);
+        // console.log("ErrorUtil log", msg);
     }
 }
