@@ -1,3 +1,4 @@
+import { ItemData } from "../manager/DataMgr";
 
 
 export namespace ObjectUtil{
@@ -57,5 +58,34 @@ export namespace ObjectUtil{
 	}
 	export function isNumericString(value: string): boolean {
 		return /^\d+$/.test(value);
+	}
+	export function formatDateTime(dateTimeString: string): string {
+		// 将日期字符串转换为 Date 对象
+		const date = new Date(dateTimeString.replace(" ", "T"));
+		
+		// 获取月份（0-11，需要加1），以及日期
+		const month = date.getMonth() + 1; // 月份从0开始，因此需要+1
+		const day = date.getDate();
+		
+		// 获取小时和分钟
+		const hours = date.getHours();
+		const minutes = date.getMinutes();
+		
+		// 格式化小时和分钟，确保是两位数
+		const formattedHours = hours.toString().padStart(2, '0');
+		const formattedMinutes = minutes.toString().padStart(2, '0');
+		
+		// 拼接成需要的格式
+		return `${month}月${day}日 ${formattedHours}:${formattedMinutes}`;
+	}
+
+	/** 
+	 * 将 awards 对象转换为 ItemData 数组
+	 */
+	export function convertAwardsToItemData(awards: { [key: string]: number }): ItemData[] {
+		return Object.entries(awards).map(([key, value]) => ({
+			id: parseInt(key),
+			num: value
+		}));
 	}
 }

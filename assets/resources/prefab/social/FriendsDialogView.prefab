@@ -1134,11 +1134,6 @@
       "__uuid__": "8e50e603-cf0f-42a6-ab3b-c861a8a3c740",
       "__expectedType__": "cc.Prefab"
     },
-    "roleModel": {
-      "__uuid__": "80fd3ca8-20bc-4718-91da-cbb70251a5e8",
-      "__expectedType__": "cc.Prefab"
-    },
-    "roleContainer": null,
     "innerNode": {
       "__id__": 17
     },

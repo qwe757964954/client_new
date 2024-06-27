@@ -84,6 +84,8 @@ export class RewardItem extends Component {
             }
         }
     }
+
+    
 }
 
 
