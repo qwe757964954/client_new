@@ -54,6 +54,7 @@ export class MapUICtl extends MainBaseCtl {
     private _needLoadCallBack: boolean = false;//是否需要加载回调
     private _checkPetTimer: number = null;//检查宠物定时器
     private _selfPet: RoleDataModel = null;//自己宠物
+    private _lastSortChildren: BaseModel[] = null;//上一次排序的节点
 
     constructor(mainScene: MainScene, callBack?: Function) {
         super(mainScene);
@@ -765,21 +766,46 @@ export class MapUICtl extends MainBaseCtl {
     buildingRoleSort() {
         this._isNeedSort = true;//统一排序
     }
+    compareBaseModelAry(ary1: BaseModel[], ary2: BaseModel[]) {
+        if (!ary1 || !ary2) return false;
+        if (ary1.length != ary2.length) return false;
+        for (let i = 0; i < ary1.length; i++) {
+            if (ary1[i] != ary2[i]) return false;
+        }
+        return true;
+    }
     buildingRoleSortEx() {
+        console.time("buildingRoleSortEx use");
         let children: BaseModel[] = [];
         let tmpAry: BaseModel[] = [].concat(this._buidingModelAry, this._roleModelAry, this._cloudModelAry);
         tmpAry.forEach(element => {
             if (element.isShow && element.node) children.push(element);
         });
         children.sort((a, b) => {
-            if (a.topZIndex) return 1;
-            if (b.topZIndex) return -1;
-            return a.ZIndex - b.ZIndex;
+            if (a.topZIndex) return -1;
+            if (b.topZIndex) return 1;
+            return b.ZIndex - a.ZIndex;
         });
-        let maxLen = this._mainScene.buildingLayer.children.length;
-        for (const element of children) {
-            element.node.setSiblingIndex(maxLen);
+        if (this.compareBaseModelAry(this._lastSortChildren, children)) {
+            console.timeEnd("buildingRoleSortEx use");
+            return;
         }
+        this._lastSortChildren = children;
+        let maxindex = this._mainScene.buildingLayer.children.length - 1;
+        for (const element of children) {
+            element.node.setSiblingIndex(maxindex);
+            maxindex--;
+        }
+        // children.sort((a, b) => {
+        //     if (a.topZIndex) return 1;
+        //     if (b.topZIndex) return -1;
+        //     return a.ZIndex - b.ZIndex;
+        // });
+        // let maxindex = this._mainScene.buildingLayer.children.length;
+        // for (const element of children) {
+        //     element.node.setSiblingIndex(maxindex);
+        // }
+        console.timeEnd("buildingRoleSortEx use");
     }
     /** 是否显示所有角色 */
     public set roleIsShow(isShow: boolean) {
