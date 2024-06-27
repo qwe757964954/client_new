@@ -1,4 +1,4 @@
-import { _decorator, BlockInputEvents, Button, instantiate, isValid, Label, Node, Prefab, Sprite, tween, UIOpacity, UITransform, Vec3, view } from 'cc';
+import { _decorator, assetManager, BlockInputEvents, Button, instantiate, isValid, Label, Node, Prefab, resources, Sprite, tween, UIOpacity, UITransform, Vec3, view } from 'cc';
 import { EventType } from '../../../config/EventType';
 import { GameRes } from '../../../GameRes';
 import GlobalConfig from '../../../GlobalConfig';
@@ -22,6 +22,8 @@ import FileUtil from '../../../util/FileUtil';
 import { ToolUtil } from '../../../util/ToolUtil';
 import { SmallMonsterModel } from '../../common/SmallMonsterModel';
 import { MonsterModel } from '../common/MonsterModel';
+import { inf_SpineAniCreate } from '../../../manager/InterfaceDefines';
+import { SoundMgr } from '../../../manager/SoundMgr';
 const { ccclass, property } = _decorator;
 
 export enum WordSourceType {
@@ -63,6 +65,8 @@ export class BaseModeView extends BaseView {
     @property({ type: Label, tooltip: "剩余时间" })
     public timeLabel: Label = null;
 
+    private _rightAniNode: Node = null;
+
     protected _pet: Node = null; //精灵
     protected _role: Node = null; //人物
     protected _smallMonsters: Node[] = []; //小怪物
@@ -90,6 +94,8 @@ export class BaseModeView extends BaseView {
     protected _remainTime: number = 0; //剩余时间
     protected _errorWords: any = {}; //错误单词
     protected _hpLevels = { 0: 0, 7: 1, 3: 2, 1: 3, 4: 4, 2: 0 }; //各模式对应的已扣除血量
+
+    protected _comboNum: number = 0; //连击次数
     start() {
         super.start();
         this.node.getChildByName("img_bg").addComponent(BlockInputEvents);
@@ -98,6 +104,10 @@ export class BaseModeView extends BaseView {
 
         let scaleNum = view.getVisibleSize().width / view.getDesignResolutionSize().width;
         this.topNode.setScale(scaleNum, scaleNum, 1);
+
+        this._rightAniNode = new Node();
+        this._rightAniNode.parent = this.node;
+        this._rightAniNode.active = false;
     }
     updateTextbookWords(wordsdata: UnitWordModel[], levelData: any) {
         this._levelData = levelData;
@@ -478,6 +488,31 @@ export class BaseModeView extends BaseView {
     //检测上报结果是否失败
     checkResult() {
 
+    }
+
+    showRightSpAni() {
+        SoundMgr.correct();
+        this._rightAniNode.active = true;
+        let aniName = "";
+        if (this._comboNum == 1) {
+            aniName = "animation_2"
+        } else if (this._comboNum == 2) {
+            aniName = "animation_1"
+        } else if (this._comboNum > 2) {
+            aniName = Math.random() > 0.5 ? "animation_3" : "animation_4";
+        }
+        let spinePrams: inf_SpineAniCreate = {
+            resConf: GameRes.Spine_Correct,
+            aniName: aniName,
+            trackIndex: 0,
+            parentNode: this._rightAniNode,
+            isLoop: false,
+            callEndFunc: () => {
+                this._rightAniNode.active = false;
+            }
+        }
+        this._rightAniNode.removeAllChildren();
+        EventMgr.dispatch(EventType.Sys_Ani_Play, spinePrams);
     }
 
     //获取单词详情

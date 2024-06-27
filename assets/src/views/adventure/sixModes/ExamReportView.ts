@@ -11,6 +11,7 @@ import { PrefabType } from '../../../config/PrefabType';
 import { ReportItem } from './ReportItem';
 import { GameSubmitResponse } from '../../../models/TextbookModel';
 import { AdventureResult, BossLevelSubmitData } from '../../../models/AdventureModel';
+import { SoundMgr } from '../../../manager/SoundMgr';
 const { ccclass, property } = _decorator;
 
 @ccclass('ExamReportView')
@@ -54,9 +55,11 @@ export class ExamReportView extends BaseView {
         if (this._resultSubmitResponse.pass_flag == 1) {
             this.result_spine.setAnimation(0, "vic", true);
             this.reward_scroll.numItems = Object.keys(this._resultSubmitResponse.award).length;
+            SoundMgr.victory();
         } else {
             this.result_spine.setAnimation(0, "def", false);
             this.result_spine.addAnimation(0, "def_idle", true);
+            SoundMgr.fail();
         }
     }
 
@@ -65,10 +68,12 @@ export class ExamReportView extends BaseView {
         this.next_level_btn.active = false;
         if (this._bossLevelResult.flag == 1) {
             this.result_spine.setAnimation(0, "vic", true);
-            this.reward_scroll.numItems = Object.keys(this._bossLevelResult.award).length;
+            // this.reward_scroll.numItems = Object.keys(this._bossLevelResult.award).length;
+            SoundMgr.victory();
         } else {
             this.result_spine.setAnimation(0, "def", false);
             this.result_spine.addAnimation(0, "def_idle", true);
+            SoundMgr.fail();
         }
     }
 

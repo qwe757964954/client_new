@@ -13,6 +13,7 @@ import { PrefabType } from '../../../config/PrefabType';
 import { ExamReportView } from './ExamReportView';
 import { PetModel } from '../../../models/PetModel';
 import { EventType } from '../../../config/EventType';
+import { SoundMgr } from '../../../manager/SoundMgr';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordBossView')
@@ -114,9 +115,13 @@ export class WordBossView extends BaseModeView {
         if (this._isRight) { //正确
             wordItem.showResult(true);
             this._rightNum++;
+            this._comboNum++;
+            this.showRightSpAni();
         } else {
             wordItem.showResult(false);
             this._errorNum++;
+            this._comboNum = 0;
+            SoundMgr.wrong();
         }
         this.timeLabel.string = "当前进度:" + this._wordIndex + "/" + this._bossLevelData.challenge_info.need_num;
         this.errorNumLabel.string = "错误次数:" + this._errorNum;

@@ -14,6 +14,7 @@ import List from '../../../util/list/List';
 import { NodeUtil } from '../../../util/NodeUtil';
 import { ConditionItem } from './ConditionItem';
 import { ReportItem } from './ReportItem';
+import { SoundMgr } from '../../../manager/SoundMgr';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordReportView')
@@ -55,7 +56,7 @@ export class WordReportView extends BaseView {
         this.initRolePlayer();
     }
 
-    initData(data: GameSubmitResponse,gameModel:number) {
+    initData(data: GameSubmitResponse, gameModel: number) {
         this.evaluation_btn.active = gameModel !== 2;
         this._resultSubmitResponse = data;
         if (this._resultSubmitResponse.pass_flag == 1) {
@@ -66,8 +67,10 @@ export class WordReportView extends BaseView {
             this.reward_scroll.numItems = Object.keys(this._resultSubmitResponse.award).length;
             this.condition_scroll.numItems = this._resultSubmitResponse.flag_star_num;
             this.showRewardSpAni();
+            SoundMgr.victory();
         } else {
             this.showResultSpAni("def", "def_idle");
+            SoundMgr.fail();
         }
 
     }

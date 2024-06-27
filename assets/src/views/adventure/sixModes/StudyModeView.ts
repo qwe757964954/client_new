@@ -1,4 +1,4 @@
-import { _decorator, instantiate, Label, Node, NodePool, Prefab, Sprite, tween, UIOpacity, UITransform, Vec3 } from 'cc';
+import { _decorator, instantiate, Label, math, Node, NodePool, Prefab, Sprite, tween, UIOpacity, UITransform, Vec3 } from 'cc';
 import { NetConfig } from '../../../config/NetConfig';
 import { PrefabType } from '../../../config/PrefabType';
 import { DataMgr } from '../../../manager/DataMgr';
@@ -58,6 +58,7 @@ export class StudyModeView extends BaseModeView {
     protected _monster: Node = null; //主怪动画节点
 
     protected _nodePool: NodePool = new NodePool("wordSplitItem");
+    private _isTweening: boolean = false;
     onLoad(): void {
         this.gameMode = GameMode.Study;
     }
@@ -215,6 +216,8 @@ export class StudyModeView extends BaseModeView {
             this.playWordSound().then(() => {
                 this._wordIndex++;
                 this._rightNum++;
+                this._comboNum++;
+                this.showRightSpAni();
                 this.attackMonster().then(() => {
                     if (this._wordIndex == this._wordsData.length) {
                         this.monsterEscape();
@@ -245,7 +248,7 @@ export class StudyModeView extends BaseModeView {
     }
 
     showWordDetail() {
-        if (this._isCombine || this._isSplitPlaying) return;
+        if (this._isCombine || this._isSplitPlaying || this._isTweening) return;
         if (!this._detailData) {
             ViewsManager.showTip("未获取到单词详情数据");
             return;
@@ -254,32 +257,50 @@ export class StudyModeView extends BaseModeView {
         if (pos.y == -100) return;
         this.splitNode.active = false;
         this.wordDetailNode.active = true;
-        this.btn_hideDetail.active = true;
-        this.btn_more.active = false;
+        // this.btn_hideDetail.active = true;
+        // this.btn_more.active = false;
 
         this.wordDetailNode.getComponent(WordDetailView).init(this._wordsData[this._wordIndex].word, this._detailData);
         this.mainNode.setPosition(pos.x, -360, 0);
-        tween(this.mainNode).to(0.2, { position: new Vec3(pos.x, -100, 0) }).start();
+        this._isTweening = true;
+        tween(this.mainNode).to(0.2, { position: new Vec3(pos.x, -100, 0) }).call(() => {
+            this._isTweening = false;
+            this.btn_hideDetail.angle = 0;
+        }).start();
     }
 
     hideWordDetail() {
+        if (this._isTweening) return;
         this.splitNode.active = true;
         this.wordDetailNode.active = false;
-        this.btn_hideDetail.active = false;
-        this.btn_more.active = true;
+        // this.btn_hideDetail.active = false;
+        // this.btn_more.active = true;
         let pos = this.mainNode.position;
-        tween(this.mainNode).to(0.2, { position: new Vec3(pos.x, -360, 0) }).start();
+        this._isTweening = true;
+        tween(this.mainNode).to(0.2, { position: new Vec3(pos.x, -360, 0) }).call(() => {
+            this._isTweening = false;
+            this.btn_hideDetail.angle = 180;
+        }).start();
+    }
+
+    onWordDetailClick() {
+        if (this._isTweening) return;
+        if (this.mainNode.position.y == -360) {
+            this.showWordDetail();
+        } else {
+            this.hideWordDetail();
+        }
     }
 
     protected initEvent(): void {
         super.initEvent();
-        CCUtil.onTouch(this.btn_more, this.showWordDetail, this);
-        CCUtil.onTouch(this.btn_hideDetail, this.hideWordDetail, this);
+        // CCUtil.onTouch(this.btn_more, this.showWordDetail, this);
+        CCUtil.onTouch(this.btn_hideDetail, this.onWordDetailClick, this);
     }
     protected removeEvent(): void {
         super.removeEvent();
-        CCUtil.offTouch(this.btn_more, this.showWordDetail, this);
-        CCUtil.offTouch(this.btn_hideDetail, this.hideWordDetail, this);
+        // CCUtil.offTouch(this.btn_more, this.showWordDetail, this);
+        CCUtil.offTouch(this.btn_hideDetail, this.onWordDetailClick, this);
         for (let i = 0; i < this._spliteItems.length; i++) {
             CCUtil.offTouch(this._spliteItems[i], this.onSplitItemClick.bind(this, this._spliteItems[i], i), this);
         }

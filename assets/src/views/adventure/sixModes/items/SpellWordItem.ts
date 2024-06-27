@@ -1,4 +1,5 @@
-import { _decorator, Component, Label, Node, Sprite, UITransform } from 'cc';
+import { _decorator, Component, Label, Node, Sprite, SpriteFrame, UITransform } from 'cc';
+import { Shake } from '../../../../util/Shake';
 const { ccclass, property } = _decorator;
 
 @ccclass('SpellWordItem')
@@ -13,6 +14,10 @@ export class SpellWordItem extends Component {
     idxLabel: Label = null;
     @property(Node)
     idxNode: Node = null;
+    @property(SpriteFrame)
+    greenBg: SpriteFrame = null;
+    @property(SpriteFrame)
+    redBg: SpriteFrame = null;
     public word: string = "";
     public isSelect: boolean = false;
     public selectIdx: number = -1;
@@ -33,6 +38,7 @@ export class SpellWordItem extends Component {
         this.isSelect = !this.isSelect;
         if (this.isSelect) {
             this.select_bg.active = true;
+            this.select_bg.getComponent(Sprite).spriteFrame = this.greenBg;
             this.idxLabel.string = idx.toString();
             this.idxNode.active = true;
             this.selectIdx = idx;
@@ -41,6 +47,12 @@ export class SpellWordItem extends Component {
             this.idxNode.active = false;
             this.selectIdx = -1;
         }
+    }
+
+    selectWrong() {
+        this.select_bg.active = true;
+        this.select_bg.getComponent(Sprite).spriteFrame = this.redBg;
+        this.getComponent(Shake).shakeNode();
     }
 
     dispose() {
