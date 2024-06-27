@@ -38,6 +38,7 @@ export class RoleDataModel extends BaseModel {
     private _role: sp.Skeleton = null;//角色
     private _spNode: Node = null;//sp节点
 
+    private _isSelf: boolean = false;//是否是自己
     private _x: number;//x格子坐标
     private _y: number;//y格子坐标
     private _lastPos: Vec3;//上一次停留位置
@@ -119,7 +120,9 @@ export class RoleDataModel extends BaseModel {
         if (!this._moodNode) return;
         this._moodNode.active = false;
     }
-
+    public get isSelf(): boolean {
+        return this._isSelf;
+    }
     public get roleType(): RoleType {
         return this._roleType;
     }
@@ -139,11 +142,13 @@ export class RoleDataModel extends BaseModel {
         }
     }
     public initSelfRole() {
+        this._isSelf = true;
         let roleID = User.roleID;
         if (roleID < 100) roleID += 100;
         this.init(roleID, 1, RoleType.role);
     }
     public initSelfPet() {
+        this._isSelf = true;
         let petID = User.petID;
         if (petID < 100) petID += 100;
         this.init(petID, User.petLevel, RoleType.sprite);

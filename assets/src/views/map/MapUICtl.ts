@@ -12,7 +12,8 @@ import { BuildingModel, RecycleData } from "../../models/BuildingModel";
 import { CloudModel } from "../../models/CloudModel";
 import { GridModel } from "../../models/GridModel";
 import { LandModel } from "../../models/LandModel";
-import { s2cBuildingList, s2cBuildingListInfo, s2cBuildingProduceAdd, s2cBuildingProduceDelete, s2cBuildingProduceGet, s2cCloudUnlock, s2cCloudUnlockGet, s2cPetGetReward, s2cPetInfoRep } from "../../models/NetModel";
+import { s2cBuildingList, s2cBuildingListInfo, s2cBuildingProduceAdd, s2cBuildingProduceDelete, s2cBuildingProduceGet, s2cCloudUnlock, s2cCloudUnlockGet, s2cPetGetReward, s2cPetInfoRep, s2cPetUpgrade } from "../../models/NetModel";
+import { RoleType } from "../../models/RoleBaseModel";
 import { RoleDataModel } from "../../models/RoleDataModel";
 import { User } from "../../models/User";
 import { InterfacePath } from "../../net/InterfacePath";
@@ -123,6 +124,8 @@ export class MapUICtl extends MainBaseCtl {
         this.addEvent(InterfacePath.c2sCloudUnlockGet, this.onCloudUnlockGet.bind(this));
         this.addEvent(InterfacePath.c2sPetInfo, this.onRepPetInfo.bind(this));
         this.addEvent(InterfacePath.c2sPetGetReward, this.onRepPetGetReward.bind(this));
+        this.addEvent(InterfacePath.c2sPetUpgrade, this.onRepPetUpgrade.bind(this));
+        this.addEvent(EventType.Mood_Score_Update, this.onMoodUpdate.bind(this));
         this.addEvent(EventType.BuidingModel_Remove, this.onBuildingRemove.bind(this));
     }
     // 移除事件
@@ -979,6 +982,19 @@ export class MapUICtl extends MainBaseCtl {
         this.checkPetShow();
         this.setCheckPetTimer(data.next_explore_second);
     }
+    /**宠物升级 */
+    onRepPetUpgrade(data: s2cPetUpgrade) {
+        if (200 != data.code) {
+            return;
+        }
+        for (let i = 0; i < this._roleModelAry.length; i++) {
+            const element = this._roleModelAry[i];
+            if (RoleType.sprite == element.roleType && element.isSelf) {
+                element.updateLevel(data.level);
+                break;
+            }
+        }
+    }
     /**获取建筑数组 */
     getBuildingModelAry() {
         return this._buidingModelAry;
@@ -991,5 +1007,9 @@ export class MapUICtl extends MainBaseCtl {
         if (building.parent == this._mainScene.buildingLayer) {
             this.removeBuilding(building);
         }
+    }
+    /**心情分变化 */
+    onMoodUpdate() {
+        this.checkPetShow();
     }
 }
