@@ -316,7 +316,7 @@ export class WorldIsland extends Component {
         CCUtil.onTouch(this.back, this.onBtnBackClick, this);
         CCUtil.onTouch(this.btn_details, this.onBtnDetailsClick, this);
         CCUtil.onTouch(this.btn_pos, this.openLevelView, this);
-        CCUtil.onTouch(this.bossContainer, this.challangeBoss, this);
+        CCUtil.onTouch(this._boss, this.challangeBoss, this);
 
         this._mapPointClickEvId = EventManager.on(EventType.MapPoint_Click, this.mapPointClick.bind(this));
         this._mapPointUpdateEvId = EventManager.on(EventType.Update_MapPoint, this.onUpdatePoint.bind(this));
@@ -328,7 +328,7 @@ export class WorldIsland extends Component {
         CCUtil.offTouch(this.back, this.onBtnBackClick, this);
         CCUtil.offTouch(this.btn_details, this.onBtnDetailsClick, this);
         CCUtil.offTouch(this.btn_pos, this.openLevelView, this);
-        CCUtil.offTouch(this.bossContainer, this.challangeBoss, this);
+        CCUtil.offTouch(this._boss, this.challangeBoss, this);
         EventManager.off(EventType.MapPoint_Click, this._mapPointClickEvId);
         EventManager.off(EventType.Update_MapPoint, this._mapPointUpdateEvId);
         EventMgr.removeListener(InterfacePath.BossLevel_Topic, this);
