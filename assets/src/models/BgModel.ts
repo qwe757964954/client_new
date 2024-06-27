@@ -1,4 +1,4 @@
-import { _decorator, Component, Label, Sprite, UITransform, Vec3 } from 'cc';
+import { _decorator, Component, Sprite, UITransform, Vec3 } from 'cc';
 import { MapConfig } from '../config/MapConfig';
 import { LoadManager } from '../manager/LoadManager';
 import { ToolUtil } from '../util/ToolUtil';
@@ -22,8 +22,6 @@ export class BgModel extends Component {
         this._x = x;
         this._y = y;
         this._isLoad = false;
-        // this.getComponentInChildren(Label).string = x.toString() + "," + y.toString();
-        this.getComponentInChildren(Label).node.active = false;
 
         this.initPos();
     }

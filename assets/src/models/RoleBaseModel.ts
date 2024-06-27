@@ -1,16 +1,14 @@
 import { _decorator, Node, Rect, sp, Sprite, Tween, tween, TweenSystem, UITransform, Vec2, Vec3 } from 'cc';
-import { EventType } from '../config/EventType';
 import { MapConfig, RoleInfo } from '../config/MapConfig';
 import { LoadManager } from '../manager/LoadManager';
 import { BaseComponent } from '../script/BaseComponent';
 import CCUtil from '../util/CCUtil';
-import EventManager from '../util/EventManager';
 import { TimerMgr } from '../util/TimerMgr';
 import { ToolUtil } from '../util/ToolUtil';
 import { GridModel } from './GridModel';
 const { ccclass, property } = _decorator;
 /** 角色状态 */
-enum RoleState {
+export enum RoleState {
     none = 0,//无
     idle = 1,//待机
     walk = 2,//行走
@@ -202,7 +200,7 @@ export class RoleBaseModel extends BaseComponent {
                 TimerMgr.stopLoop(this._timer);
                 this._timer = null;
             }
-            EventManager.emit(EventType.Role_Need_Move, this);
+            // EventManager.emit(EventType.Role_Need_Move, this);
         }).start();
         this.updateFace();
     }
@@ -213,7 +211,7 @@ export class RoleBaseModel extends BaseComponent {
         this._isMoving = false;
         this._lastPos = this.pos;
         tween(this.node).delay(0.5).call(() => {
-            EventManager.emit(EventType.Role_Need_Move, this);
+            // EventManager.emit(EventType.Role_Need_Move, this);
         }).start();
     }
     /** 原地拖拽 */
@@ -226,7 +224,7 @@ export class RoleBaseModel extends BaseComponent {
     // 通知层级更新
     public notifyZOrderUpdate() {
         if (!this._isMoving) return;//没有移动暂时不用通知
-        EventManager.emit(EventType.Role_Need_Sort, this);
+        // EventManager.emit(EventType.Role_Need_Sort, this);
     }
     // 是否点击到自己
     public isTouchSelf(x: number, y: number): boolean {

@@ -7,7 +7,7 @@ import { TextConfig } from '../../config/TextConfig';
 import GlobalConfig from '../../GlobalConfig';
 import { DataMgr } from '../../manager/DataMgr';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
-import { s2cAccountLogin } from '../../models/NetModel';
+import { s2cAccountLogin, s2cGetPhoneCode } from '../../models/NetModel';
 import { LoginType, User } from '../../models/User';
 import { HttpManager } from '../../net/HttpManager';
 import { InterfacePath } from '../../net/InterfacePath';
@@ -83,15 +83,19 @@ export class LoginView extends BaseView {
         this.connectServer();
         this.plQRCode.setBackCall(this.onPlQrCodeBack.bind(this));
         this.plActivationCode.setCallFunc(this.onPlActivationCodeBack.bind(this), this.onActivationCodeActive.bind(this));
-        
+
 
         this.checkToken();
         DataMgr.instance.initData();
+    }
+    onDestroy(): void {
+        this.clearTimer();
     }
     //初始化事件
     onInitModuleEvent() {
         this.addModelListener(InterfacePath.c2sAccountLogin, this.onAccountLogin.bind(this));
         this.addModelListener(InterfacePath.c2sTokenLogin, this.onAccountLogin.bind(this));
+        this.addModelListener(InterfacePath.c2sPhoneCodeLogin, this.onAccountLogin.bind(this));
         this.addModelListener(EventType.Socket_ReconnectFail, this.onSocketDis.bind(this));
 
         this.addModelListener(InterfacePath.Account_Init, this.userInitSuc.bind(this));//老接口
@@ -210,6 +214,13 @@ export class LoginView extends BaseView {
         this.loginBox.active = true;
         this.inputPhoneBox.active = false;
     }
+    /**清理定时器 */
+    clearTimer() {
+        if (this._loopID) {
+            TimerMgr.stopLoop(this._loopID);
+            this._loopID = null;
+        }
+    }
     /**验证码 */
     btnPhoneCodeClick() {
         let phone = this.phoneEdit.string;
@@ -220,30 +231,22 @@ export class LoginView extends BaseView {
         if (this._codeTime > 0) {
             return;
         }
-        if (true) {
-            ViewsMgr.showTip(TextConfig.Function_Tip);
-            return;
-        }
-
-        // TODO请求验证码
         this._codeTime = 60;
         this.codeTime.string = "(60s)";
         this.btnCode.interactable = false;
-        if (null != this._loopID) {
-            TimerMgr.stopLoop(this._loopID);
-            this._loopID = null;
-        }
+        this.clearTimer();
         this._loopID = TimerMgr.loop(() => {
             this._codeTime--;
             this.codeTime.string = ToolUtil.replace(TextConfig.Get_Code_Time, this._codeTime);
             if (this._codeTime < 0) {
-                TimerMgr.stopLoop(this._loopID);
-                this._loopID = null;
+                this.clearTimer();
 
                 this.codeTime.string = TextConfig.Get_Code;
                 this.btnCode.interactable = true;
             }
         }, 1000);
+
+        ServiceMgr.accountService.reqGetPhoneCode(phone);
     }
     /**手机验证码登录 */
     btnPhoneCodeLoginClick() {
@@ -301,7 +304,14 @@ export class LoginView extends BaseView {
         this.plQRCode.node.active = false;
         this.plActivationCode.node.active = true;
     }
-
+    /**验证码结果 */
+    onRepGetPhoneCode(data: s2cGetPhoneCode) {
+        if (200 != data.code) {
+            ViewsMgr.showTip(data.msg);
+            return;
+        }
+        ViewsMgr.showTip(TextConfig.Get_Code_Success);
+    }
     /**登录结果 */
     onAccountLogin(data: s2cAccountLogin) {
         if (200 != data.code) {
@@ -342,7 +352,7 @@ export class LoginView extends BaseView {
     /**手机号验证码登录 */
     mobileLogin(mobile: string, code: string) {
         console.log("mobileLogin mobile = ", mobile, " code = ", code);
-        ViewsMgr.showTip(TextConfig.Function_Tip);
+        ServiceMgr.accountService.reqPhoneCodeLogin(mobile, code);
     }
     /**手机号一键登录 */
     mobileQuickLogin(mobile: string) {

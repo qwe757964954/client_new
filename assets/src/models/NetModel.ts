@@ -107,6 +107,26 @@ export class s2cAccountLogin extends BaseRepPacket {
     token: string;//token
     detail: s2cAccountLoginDetail;
 }
+/**获取手机验证码 */
+export class c2sGetPhoneCode {
+    command_id: string = InterfacePath.c2sGetPhoneCode;
+    phone: string;//手机号
+}
+/**获取手机验证码结果 */
+export class s2cGetPhoneCode extends BaseRepPacket {
+}
+/**手机验证码登录 */
+export class c2sPhoneCodeLogin {
+    command_id: string = InterfacePath.c2sPhoneCodeLogin;
+    phone: string;//手机号
+    check_code: string;//验证码
+}
+/**手机验证码登录结果 */
+export class s2cPhoneCodeLogin extends BaseRepPacket {
+    user_id: number;//用户id
+    token: string;//token
+    detail: s2cAccountLoginDetail;
+}
 /**物品更新 */
 export class s2cItemUpdate {
     user_id: number;//用户id

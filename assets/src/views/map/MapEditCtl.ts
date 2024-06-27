@@ -88,8 +88,5 @@ export class MapEditCtl extends MapBaseCtl {
         //     return;
         // }
         // this._cacheDataAry.push(building);
-        if (building.buildingID && !building.isSell) {
-            this._mainScene.addRecycleBuilding(building.getRecycleData());
-        }
     }
 }

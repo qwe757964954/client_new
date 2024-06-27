@@ -1,21 +1,19 @@
-import { _decorator, Label, Sprite, UITransform, Vec3 } from 'cc';
+import { _decorator, Label, Node, Rect, Sprite, Vec3 } from 'cc';
 import { MapConfig } from '../config/MapConfig';
+import { PrefabType } from '../config/PrefabType';
 import { TextConfig } from '../config/TextConfig';
 import { LoadManager } from '../manager/LoadManager';
 import { ViewsMgr } from '../manager/ViewsManager';
 import { ServiceMgr } from '../net/ServiceManager';
-import { BaseComponent } from '../script/BaseComponent';
 import { TimerMgr } from '../util/TimerMgr';
 import { ToolUtil } from '../util/ToolUtil';
+import { BaseModel } from './BaseModel';
 import { GridModel } from './GridModel';
 const { ccclass, property } = _decorator;
 /**云 */
-@ccclass('CloudModel')
-export class CloudModel extends BaseComponent {
-    @property(Sprite)
-    public img: Sprite = null;//图片
-    @property(Label)
-    public label: Label = null;//文字
+export class CloudModel extends BaseModel {
+    private _img: Sprite = null;//图片
+    private _label: Label = null;//文字
 
     // y从上往下，x从右往左
     private _x: number;//x格子坐标
@@ -26,20 +24,24 @@ export class CloudModel extends BaseComponent {
     private _isUnlock: boolean = false;//是否解锁
 
     private _showID: number = 0;//显示id
-    private _isLoad: boolean = false;//是否加载图片
     private _isLoadOver: boolean = false;//图片是否加载完成
     private _timer: number = null;//定时器
 
-    protected onDestroy(): void {
+    public dispose(): void {
         this.clearTimer();
+        if (this._node && this._node.isValid) {
+            this._node.destroy();
+            this._node = null;
+        }
     }
 
     // 初始化数据
-    public initData(x: number, y: number, width: number, leftTime?: number) {
+    public initData(x: number, y: number, width: number, leftTime?: number, parent?: Node) {
         this._x = x;
         this._y = y;
         this._width = width;
         this.unlockTime = leftTime;
+        this._parent = parent;
     }
     public get x(): number {
         return this._x;
@@ -66,7 +68,9 @@ export class CloudModel extends BaseComponent {
         this._y = gridInfo.y;
         let gridPos = gridInfo.pos;
         let pos = new Vec3(gridPos.x, gridPos.y - this._width * gridInfo.height, 1);
-        this.node.position = pos;
+        this._pos = pos;
+        if (this._node)
+            this._node.position = pos;
         this._zIndex = -pos.y;
     }
     public set showID(showID: number) {
@@ -76,14 +80,16 @@ export class CloudModel extends BaseComponent {
         if (null != leftTime) {
             // console.log("set unlockTime", leftTime);
             this._unlockTime = ToolUtil.now() + leftTime;
-            this.label.node.active = true;
+            if (this._label)
+                this._label.node.active = true;
             if (leftTime > 0) {
                 this.clearTimer();
                 this._timer = TimerMgr.loop(this.updateBySec.bind(this), 1000);
             }
             this.refreshTimeEx();
         } else {
-            this.label.node.active = false;
+            if (this._label)
+                this._label.node.active = false;
         }
     }
     /**清理格子 */
@@ -112,15 +118,17 @@ export class CloudModel extends BaseComponent {
     public refreshTimeEx() {
         let leftTime = this._unlockTime - ToolUtil.now();
         if (leftTime > 0) {
-            this.label.string = ToolUtil.getSecFormatStr(leftTime);
+            if (this._label)
+                this._label.string = ToolUtil.getSecFormatStr(leftTime);
         } else {
-            this.label.string = "已解锁";
+            if (this._label)
+                this._label.string = "已解锁";
             this._isUnlock = true;
         }
     }
     //显示图片
     public showImg(callBack?: Function) {
-        LoadManager.loadSprite(MapConfig.cloud[this._showID], this.img).then(() => {
+        LoadManager.loadSprite(MapConfig.cloud[this._showID], this._img).then(() => {
             this._isLoadOver = true;
             this.refreshTime();
             if (callBack) callBack();
@@ -128,17 +136,31 @@ export class CloudModel extends BaseComponent {
     }
     /**显示与否 */
     public show(isShow: boolean, callBack?: Function) {
-        this.node.active = isShow;
+        if (this._node) {
+            this._node.active = isShow;
+        }
+        this._isShow = isShow;
         if (isShow && !this._isLoad) {
             this._isLoad = true;
-            this.showImg(callBack);
+            LoadManager.loadPrefab(PrefabType.CloudModel.path, this._parent).then((node: Node) => {
+                this._node = node;
+                this._node.active = this._isShow;
+                this._node.position = this._pos;
+                this._img = this._node.getComponentInChildren(Sprite);
+                this._label = this._node.getComponentInChildren(Label);
+                this._label.node.active = null != this._unlockTime;
+                this.showImg(callBack);
+            });
         } else {
             if (callBack) callBack();
         }
     }
     /**获取显示范围 */
     public getRect() {
-        return this.node.getComponent(UITransform).getBoundingBox();
+        let rect = new Rect(-72, 0, 144, 72);
+        rect.x += this._pos.x;
+        rect.y += this._pos.y;
+        return rect;
     }
     /**点击乌云 */
     onCloudClick() {
@@ -156,7 +178,7 @@ export class CloudModel extends BaseComponent {
     showCloudDispose(callBack?: Function) {
         this.clearGrids();
         if (callBack) callBack(this);
-        this.node.destroy();
+        this.dispose();
     }
 }
 
