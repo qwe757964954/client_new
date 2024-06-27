@@ -148,6 +148,15 @@ export class ToolUtil {
         }
         return false;
     }
+    /**判断数组是否相等 */
+    static compareArray<T>(arr1: T[], arr2: T[]): boolean {
+        if (!arr1 || !arr2) return false;
+        if (arr1.length != arr2.length) return false;
+        for (let i = 0; i < arr1.length; i++) {
+            if (arr1[i] != arr2[i]) return false;
+        }
+        return true;
+    }
     /**md5 */
     static md5(str: string): string {
         return CryptoES.MD5(str).toString();

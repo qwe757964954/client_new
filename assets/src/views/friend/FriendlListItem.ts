@@ -1,13 +1,13 @@
-import { _decorator, Component, Label, Node, Prefab, ScrollView, Sprite, SpriteFrame } from 'cc';
+import { _decorator, Label, Node, Prefab, ScrollView, Sprite, SpriteFrame } from 'cc';
 import { LoadManager } from '../../manager/LoadManager';
 import { FriendListItemModel } from '../../models/FriendModel';
-import CCUtil from '../../util/CCUtil';
+import ListItem from '../../util/list/ListItem';
 const { ccclass, property } = _decorator;
 
 var islandName = { "1": "魔法森林", "2": "水下管道城", "3": "冰雪岛", "4": "宝藏岛", "5": "瀑布岛", "6": "迷之水底城", "7": "海底深渊", "8": "海底深渊", "9": "海底深渊", "10": "海底深渊" };
 
 @ccclass('FriendListItem')
-export class FriendListItem extends Component {
+export class FriendListItem extends ListItem {
     @property({ type: Sprite, tooltip: "底层背景" })
     imgBg: Sprite = null;
 
@@ -48,24 +48,6 @@ export class FriendListItem extends Component {
     public sprBgAry: SpriteFrame[] = [];
 
     _data: FriendListItemModel = null;
-
-    protected onLoad(): void {
-        //console.log("FriendListItem onLoad");
-        this.addEvent();
-    }
-
-    addEvent() {
-        CCUtil.onTouch(this.btnItem, this.onItemClick, this);
-    }
-
-    removeEvent() {
-        CCUtil.offTouch(this.btnItem, this.onItemClick, this);
-    }
-
-    protected onDestroy(): void {
-        this.removeEvent();
-    }
-
     async initData(data: FriendListItemModel) {
         
         //console.log("FriendListItem initData: ", data);
@@ -78,64 +60,8 @@ export class FriendListItem extends Component {
                 // console.log("loadShowSprite->resource load failed:" + this._data.icon.skin + "," + error.message);
             });
         this.lblRealName.string = data.user_name;
-        // this.lblState.string = data.Ltmsg;
-        // var strLevel: string = ToolUtil.replace(TextConfig.Level_Index, data.SmallId)
-        // this.lblIsland.string = islandName[data.BigId] + "/" + strLevel; //"第" + data.SmallId + "关";
-        // this.lblCe.string = "" + data.Ce;
-        //设置背景
-        // let bSelect: boolean = false; //本单位是否选中
-        // if (!selectFriend) {
-        //     bSelect = false;
-        // }
-        // else if (data.FriendId == selectFriend.FriendId) {
-        //     bSelect = true;
-        // }
-        // this.imgBg.spriteFrame = bSelect ? this.sprBgAry[0] : this.sprBgAry[1];
-        //设置未读信息
-        let newMsgBox: Node = this.node.getChildByName("newMsgBox");
-        // if (data.UnReadNum > 0 && (!selectFriend || (data.FriendId != selectFriend.FriendId))) {
-        //     newMsgBox.active = true;
-        // }
-        // else {
-        //     newMsgBox.active = false;
-        // }
-        // if (data.UnReadNum > 0) {
-        //     newMsgBox.getChildByName("newMsgTxt").getComponent(Label).string = "" + data.UnReadNum;
-        // }
-        // //设置勋章列表
-        // this.medalList.content.removeAllChildren();
-        // let medalData: MedalSimpleInfo[] = [];
-        // if (data.MedalSet) {
-        //     let medalArr = data.MedalSet.split(",");
-        //     for (let i = 0; i < medalArr.length; i++) {
-        //         let medalId: string = medalArr[i];
-        //         let iconPath: string = "achieve/" + medalId + "/spriteFrame";
-        //         medalData.push({ id: medalId, icon: iconPath })
-        //     }
-        // }
-        // for (let i = 0; i < medalData.length; i++) {
-        //     let medalIcon: Node = instantiate(this.preMedalIcon);
-        //     this.medalList.content.addChild(medalIcon);
-        //     await medalIcon.getComponent(MedalIconItem).initData(medalData[i])
-        // }
-        // this.medalList.scrollToLeft();
-        
-    }
-
-    onItemClick() {
-        // let data: FriendItemClickInfo = {
-        //     info: this._data,
-        //     node: this.node,
-        // }
-        // EventManager.emit(EventType.Friend_ClickFriendList, data);
-    }
-
-    start() {
-
-    }
-
-    update(deltaTime: number) {
-
+        this.ndRedPoint.active = data.unread_count > 0;
+        this.lblRedTip.string = data.unread_count + "";
     }
 }
 

@@ -142,14 +142,37 @@ export class CloudModel extends BaseModel {
         this._isShow = isShow;
         if (isShow && !this._isLoad) {
             this._isLoad = true;
+            if (this._node) {
+                this.showImg(callBack);
+            } else {
+                this.loadNode(callBack);
+            }
+        } else {
+            if (callBack) callBack();
+        }
+    }
+    /**加载node */
+    public loadNode(callBack?: Function) {
+        if (!this._isLoadNode) {
+            this._isLoadNode = true;
             LoadManager.loadPrefab(PrefabType.CloudModel.path, this._parent).then((node: Node) => {
                 this._node = node;
                 this._node.active = this._isShow;
                 this._node.position = this._pos;
                 this._img = this._node.getComponentInChildren(Sprite);
                 this._label = this._node.getComponentInChildren(Label);
-                this._label.node.active = null != this._unlockTime;
-                this.showImg(callBack);
+                if (null != this._unlockTime) {
+                    this._label.node.active = true;
+                    this.refreshTimeEx();
+                } else {
+                    this._label.node.active = false;
+                }
+
+                if (this._isLoad) {
+                    this.showImg(callBack);
+                } else {
+                    if (callBack) callBack();
+                }
             });
         } else {
             if (callBack) callBack();

@@ -1,4 +1,4 @@
-import { Button, EventKeyboard, EventTouch, Input, KeyCode, Layers, Node, NodeEventType, RenderTexture, SpriteFrame, UITransform, Vec3, Widget, director, gfx, input, isValid } from "cc";
+import { Button, EventKeyboard, EventTouch, Input, KeyCode, Layers, Node, NodeEventType, SpriteFrame, UITransform, Vec3, Widget, director, gfx, input, isValid } from "cc";
 import { SoundMgr } from "../manager/SoundMgr";
 
 export default class CCUtil {
@@ -147,20 +147,20 @@ export default class CCUtil {
             offsetX = rect.x + px;
             offsetY = rect.y + rect.height - py;
         }
-        let texture = spriteFrame.texture;
         // console.log("readPixels 2:", offsetX, offsetY, texture);
-        RenderTexture.prototype.readPixels.call(texture, offsetX, offsetY, width, height, buffer);
-        // console.log("readPixels return", buffer);
         // 以下获取像素方式在android上压缩纹理会崩溃
-        // const gfxTexture = spriteFrame.getGFXTexture();
-        // const bufferViews = [];
-        // const region = new gfx.BufferTextureCopy;
-        // region.texOffset.x = offsetX;
-        // region.texOffset.y = offsetY;
-        // region.texExtent.width = width;
-        // region.texExtent.height = height;
-        // bufferViews.push(buffer);
-        // director.root.device.copyTextureToBuffers(gfxTexture, bufferViews, [region]);
+        /** RenderTexture.readPixels强制类型转换了，只能在web上使用，android上会崩溃 */
+        // let texture = spriteFrame.texture;
+        // RenderTexture.prototype.readPixels.call(texture, offsetX, offsetY, width, height, buffer);
+        const gfxTexture = spriteFrame.getGFXTexture();
+        const bufferViews = [];
+        const region = new gfx.BufferTextureCopy;
+        region.texOffset.x = offsetX;
+        region.texOffset.y = offsetY;
+        region.texExtent.width = width;
+        region.texExtent.height = height;
+        bufferViews.push(buffer);
+        director.root.device.copyTextureToBuffers(gfxTexture, bufferViews, [region]);
         // console.log("readPixels return", buffer[0], buffer[1], buffer[2], buffer[3]);
         return buffer;
     }

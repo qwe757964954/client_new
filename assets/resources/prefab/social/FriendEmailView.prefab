@@ -545,7 +545,7 @@
     "renderEvent": {
       "__id__": 26
     },
-    "selectedMode": 0,
+    "selectedMode": 1,
     "selectedEvent": {
       "__id__": 27
     },
@@ -576,10 +576,12 @@
   },
   {
     "__type__": "cc.ClickEvent",
-    "target": null,
+    "target": {
+      "__id__": 1
+    },
     "component": "",
-    "_componentId": "",
-    "handler": "",
+    "_componentId": "111cbwZe8pGI45ZlL4Wsaxi",
+    "handler": "onEmailVerticalSelected",
     "customEventData": ""
   },
   {

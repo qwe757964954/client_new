@@ -1,17 +1,14 @@
-import { _decorator, Component, Node, Sprite } from 'cc';
+import { _decorator, Sprite } from 'cc';
 import { LoadManager } from '../../manager/LoadManager';
-import CCUtil from '../../util/CCUtil';
-import EventManager from '../../util/EventManager';
-import { EventType } from '../../config/EventType';
+import ListItem from '../../util/list/ListItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('ChatEmoteItem')
-export class ChatEmoteItem extends Component {
+export class ChatEmoteItem extends ListItem {
     @property({ type: Sprite, tooltip: "头像图片精灵" })
     bgIcon: Sprite = null;
 
     _bqId: number = 100;
-
     async initData(bqId: number) {
         this._bqId = bqId;
         let emotePath: string = "friend/" + bqId + "/spriteFrame";
@@ -19,32 +16,6 @@ export class ChatEmoteItem extends Component {
             (error) => {
                 // console.log("loadShowSprite->resource load failed:" + this._data.icon.skin + "," + error.message);
             });
-
-        this.addEvent();
-    }
-
-    addEvent() {
-        CCUtil.onTouch(this.node, this.onBqItemSelect, this);
-    }
-
-    removeEvent() {
-        CCUtil.offTouch(this.node, this.onBqItemSelect, this);
-    }
-
-    onBqItemSelect() {
-        EventManager.emit(EventType.Friend_SelectEmotion, this._bqId);
-    }
-
-    protected onDestroy(): void {
-        this.removeEvent();
-    }
-
-    start() {
-
-    }
-
-    update(deltaTime: number) {
-
     }
 }
 

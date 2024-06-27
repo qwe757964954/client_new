@@ -119,6 +119,13 @@ export const InterfacePath = {
     Classification_UserFriendAdd: "1102", //用户好友申请添加消息
     Classification_UserFriendSearch: "1103", //用户id搜索接口
     Classification_UserFriendApplyList: "1104", //用户好友申请列表消息
+    Classification_UserFriendApplyModify: "1105", //用户好友申请修改拒绝或同意
+    Classification_UserDelFriendMessage: "1106", //用户好友删除好友消息
+    Classification_UserFriendMessageList: "1107", //获取用户好友消息列表
+    Classification_UserSendMessageFriend: "1108", //用户给好友发送消息
+    Classification_UserMessageStatusUpdate: "1109", //用户与朋友消息更新为已读
+    Classification_UserSystemMailList: "1201", //用户系统邮件列表
+    Classification_UserSystemMailDetail: "1202", //用户系统邮件详情消息
     /***********************************************好友相关 end*********************************************/
 
 

@@ -58,6 +58,13 @@ export const NetNotify = {
     Classification_UserFriendAdd: "Classification_UserFriendAdd", //用户好友申请添加消息
     Classification_UserFriendSearch: "Classification_UserFriendSearch", //用户id搜索接口
     Classification_UserFriendApplyList: "Classification_UserFriendApplyList", //用户好友申请列表消息
+    Classification_UserFriendApplyModify: "Classification_UserFriendApplyModify", //用户好友申请修改拒绝或同意
+    Classification_UserDelFriendMessage: "Classification_UserDelFriendMessage", //用户好友删除好友消息
+    Classification_UserFriendMessageList: "Classification_UserFriendMessageList", //获取用户好友消息列表
+    Classification_UserSendMessageFriend: "Classification_UserSendMessageFriend", //用户给好友发送消息
+    Classification_UserMessageStatusUpdate: "Classification_UserMessageStatusUpdate", //用户与朋友消息更新为已读
+    Classification_UserSystemMailList: "Classification_UserSystemMailList", //用户系统邮件列表
+    Classification_UserSystemMailDetail: "Classification_UserSystemMailDetail", //用户系统邮件详情消息
     /***********************************************好友相关信息 end*********************************************/
     
 
