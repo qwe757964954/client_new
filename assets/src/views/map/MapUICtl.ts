@@ -766,16 +766,8 @@ export class MapUICtl extends MainBaseCtl {
     buildingRoleSort() {
         this._isNeedSort = true;//统一排序
     }
-    compareBaseModelAry(ary1: BaseModel[], ary2: BaseModel[]) {
-        if (!ary1 || !ary2) return false;
-        if (ary1.length != ary2.length) return false;
-        for (let i = 0; i < ary1.length; i++) {
-            if (ary1[i] != ary2[i]) return false;
-        }
-        return true;
-    }
     buildingRoleSortEx() {
-        console.time("buildingRoleSortEx use");
+        // console.time("buildingRoleSortEx use");
         let children: BaseModel[] = [];
         let tmpAry: BaseModel[] = [].concat(this._buidingModelAry, this._roleModelAry, this._cloudModelAry);
         tmpAry.forEach(element => {
@@ -786,8 +778,8 @@ export class MapUICtl extends MainBaseCtl {
             if (b.topZIndex) return 1;
             return b.ZIndex - a.ZIndex;
         });
-        if (this.compareBaseModelAry(this._lastSortChildren, children)) {
-            console.timeEnd("buildingRoleSortEx use");
+        if (ToolUtil.compareArray(this._lastSortChildren, children)) {
+            // console.timeEnd("buildingRoleSortEx use");
             return;
         }
         this._lastSortChildren = children;
@@ -805,7 +797,7 @@ export class MapUICtl extends MainBaseCtl {
         // for (const element of children) {
         //     element.node.setSiblingIndex(maxindex);
         // }
-        console.timeEnd("buildingRoleSortEx use");
+        // console.timeEnd("buildingRoleSortEx use");
     }
     /** 是否显示所有角色 */
     public set roleIsShow(isShow: boolean) {
