@@ -1,4 +1,5 @@
 import { _decorator, Component, Label, Node, Sprite, SpriteFrame, UITransform } from 'cc';
+import { Shake } from '../../../../util/Shake';
 const { ccclass, property } = _decorator;
 
 @ccclass('BossWordItem')
@@ -34,6 +35,7 @@ export class BossWordItem extends Component {
             this.sp_bg.spriteFrame = this.greenBg;
         } else {
             this.sp_bg.spriteFrame = this.redBg;
+            this.getComponent(Shake).shakeNode();
         }
     }
 }

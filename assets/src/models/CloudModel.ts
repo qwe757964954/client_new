@@ -142,6 +142,19 @@ export class CloudModel extends BaseModel {
         this._isShow = isShow;
         if (isShow && !this._isLoad) {
             this._isLoad = true;
+            if (this._node) {
+                this.showImg(callBack);
+            } else {
+                this.loadNode(callBack);
+            }
+        } else {
+            if (callBack) callBack();
+        }
+    }
+    /**加载node */
+    public loadNode(callBack?: Function) {
+        if (!this._isLoadNode) {
+            this._isLoadNode = true;
             LoadManager.loadPrefab(PrefabType.CloudModel.path, this._parent).then((node: Node) => {
                 this._node = node;
                 this._node.active = this._isShow;
@@ -155,7 +168,11 @@ export class CloudModel extends BaseModel {
                     this._label.node.active = false;
                 }
 
-                this.showImg(callBack);
+                if (this._isLoad) {
+                    this.showImg(callBack);
+                } else {
+                    if (callBack) callBack();
+                }
             });
         } else {
             if (callBack) callBack();

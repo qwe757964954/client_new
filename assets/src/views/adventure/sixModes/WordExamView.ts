@@ -7,6 +7,7 @@ import List from '../../../util/list/List';
 import { BaseModeView, WordSourceType } from './BaseModeView';
 import { ExamReportView } from './ExamReportView';
 import { ExamItem } from './items/ExamItem';
+import { SoundMgr } from '../../../manager/SoundMgr';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordExamView')
@@ -95,6 +96,8 @@ export class WordExamView extends BaseModeView {
                 this.resultIcon.spriteFrame = this.rightIcon;
                 this.onGameSubmit(this._rightWordData.word, true);
                 this._rightNum++;
+                this._comboNum++;
+                this.showRightSpAni();
                 if (this._wrongMode) {
                     if (this._wrongWordList.length == 0) {
                         this._wrongMode = false;
@@ -120,6 +123,8 @@ export class WordExamView extends BaseModeView {
                 console.log("选择错误");
                 this.resultIcon.spriteFrame = this.wrongIcon;
                 this.onGameSubmit(this._rightWordData.word, false);
+                this._comboNum = 0;
+                SoundMgr.wrong();
                 if (this._wrongWordList.indexOf(this._rightWordData) == -1 && !this._wrongMode && !this._errorWords[this._rightWordData.word]) {
                     this._errorNum++;
                     this._levelData.error_num = this._errorNum;

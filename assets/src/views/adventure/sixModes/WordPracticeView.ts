@@ -129,6 +129,8 @@ export class WordPracticeView extends BaseModeView {
             this.onGameSubmit(word, true);
             this._wordIndex++;
             this._rightNum++;
+            this._comboNum++;
+            this.showRightSpAni();
 
             this.attackMonster().then(() => {
                 if (this._wordIndex >= this._wordsData.length) {

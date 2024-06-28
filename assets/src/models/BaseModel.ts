@@ -8,6 +8,7 @@ export class BaseModel {
     protected _isShow: boolean = false;//是否显示
     protected _zIndex: number = 0;//层级
     protected _isTopZIndex: boolean = false;//是否置顶
+    protected _isLoadNode: boolean = false;//是否加载node
     public get ZIndex(): number {
         return this._zIndex;
     }
@@ -22,6 +23,9 @@ export class BaseModel {
     }
     public get isShow(): boolean {
         return this._isShow;
+    }
+    public get isLoadNode(): boolean {
+        return this._isLoadNode;
     }
     public set pos(pos: Vec3) {
         this._pos = pos;
@@ -40,6 +44,10 @@ export class BaseModel {
     }
     /**显示与否 */
     public show(isShow: boolean, callBack?: Function) {
+        if (callBack) callBack();
+    }
+    /**加载node */
+    public loadNode(callBack?: Function) {
         if (callBack) callBack();
     }
     /**销毁 */

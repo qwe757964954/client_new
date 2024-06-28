@@ -5,6 +5,10 @@ export const SoundConfig = {
     mainBgm: "sound/bgm/mainbgm",
 
     clik: "sound/click",
+    correct: "sound/correct",
+    wrong: "sound/wrong",
+    victory: "sound/succ",
+    fail: "sound/fail"
 }
 
 /**声音播放管理 */
@@ -24,5 +28,22 @@ export class SoundMgr {
     /**停止背景音乐 */
     static stopBgm() {
         AudioUtil.stopMusic();
+    }
+    /**选择正确 */
+    static correct() {
+        AudioUtil.playEffect(SoundConfig.correct);
+    }
+    /**选择错误 */
+    static wrong() {
+        AudioUtil.playEffect(SoundConfig.wrong);
+    }
+
+    /**胜利 */
+    static victory() {
+        AudioUtil.playEffect(SoundConfig.victory);
+    }
+    /**失败 */
+    static fail() {
+        AudioUtil.playEffect(SoundConfig.fail);
     }
 }

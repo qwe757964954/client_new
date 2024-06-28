@@ -15,6 +15,8 @@ import { TransitionView } from '../common/TransitionView';
 import { BaseModeView } from './BaseModeView';
 import { SpellWordItem } from './items/SpellWordItem';
 import { WordReadingView } from './WordReadingView';
+import { Shake } from '../../../util/Shake';
+import { SoundMgr } from '../../../manager/SoundMgr';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordSpellView')
@@ -176,6 +178,8 @@ export class WordSpellView extends BaseModeView {
             this.onGameSubmit(word, isRight);
             if (isRight) { //回答正确
                 this._rightNum++;
+                this._comboNum++;
+                this.showRightSpAni();
                 if (this._wrongMode) {
                     if (this._wrongWordList.length == 0) {
                         this._wrongMode = false;
@@ -202,6 +206,9 @@ export class WordSpellView extends BaseModeView {
                 });
             } else { //回答错误
                 this.resultSprite.getComponent(Sprite).spriteFrame = this.wrongSprite;
+                wordItem.selectWrong();
+                this._comboNum = 0;
+                SoundMgr.wrong();
                 if (this._wrongWordList.indexOf(this._rightWordData) == -1 && !this._wrongMode && !this._errorWords[this._rightWordData.word]) {
                     this._errorNum++;
                     this._levelData.error_num = this._errorNum;

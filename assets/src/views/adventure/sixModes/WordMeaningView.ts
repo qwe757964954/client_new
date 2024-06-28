@@ -14,6 +14,8 @@ import { ReviewEndView } from '../../reviewPlan/ReviewEndView';
 import { TransitionView } from '../common/TransitionView';
 import { BaseModeView, WordSourceType } from './BaseModeView';
 import { WordPracticeView } from './WordPracticeView';
+import { Shake } from '../../../util/Shake';
+import { SoundMgr } from '../../../manager/SoundMgr';
 const { ccclass, property } = _decorator;
 
 /**词意模式页面*/
@@ -186,8 +188,9 @@ export class WordMeaningView extends BaseModeView {
         let word = this._rightWordData.word;
         this.onGameSubmit(word, isRight, this._rightWordData, this._optionList[index].cn);
 
-
         if (isRight) {
+            this._comboNum++;
+            this.showRightSpAni();
             answerNode.getComponent(Sprite).spriteFrame = this.rightBg;
             resSymbol.getComponent(Sprite).spriteFrame = this.rightSymbol;
             this._rightNum++;
@@ -214,8 +217,11 @@ export class WordMeaningView extends BaseModeView {
             });
 
         } else {
+            SoundMgr.wrong();
             answerNode.getComponent(Sprite).spriteFrame = this.errorBg;
+            answerNode.getComponent(Shake).shakeNode(0.5, 6);
             resSymbol.getComponent(Sprite).spriteFrame = this.errorSymbol;
+            this._comboNum = 0;
             if (this._wrongWordList.indexOf(this._rightWordData) == -1 && !this._wrongMode && !this._errorWords[this._rightWordData.word]) {
                 this._errorNum++;
                 this._levelData.error_num = this._errorNum;

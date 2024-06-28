@@ -59,8 +59,10 @@ export class WordReadingView extends BaseModeView {
         let isRight: boolean = response.result.overall > 60 ? true : false;
         this.gameSubmit(response, isRight);
         if (isRight) {
-            ViewsManager.showTip(TextConfig.Reading_Success_Tip);
+            // ViewsManager.showTip(TextConfig.Reading_Success_Tip);
             this._rightNum++;
+            this._comboNum++;
+            this.showRightSpAni();
             if (this._wrongMode) {
                 if (this._wrongWordList.length == 0) {
                     this._wrongMode = false;
@@ -86,6 +88,7 @@ export class WordReadingView extends BaseModeView {
 
         } else {
             ViewsManager.showTip(TextConfig.Reading_Error_Tip);
+            this._comboNum = 0;
             if (this._wrongWordList.indexOf(this._rightWordData) == -1 && !this._wrongMode && !this._errorWords[this._rightWordData.word]) {
                 this._errorNum++;
                 this._levelData.error_num = this._errorNum;
@@ -175,7 +178,7 @@ export class WordReadingView extends BaseModeView {
         this.wordLabel.string = word;
         this.symbolLabel.string = this._rightWordData.symbol;
         this.cnLabel.string = this._rightWordData.cn;
-        this.initWordDetail(this._rightWordData );
+        this.initWordDetail(this._rightWordData);
         // this.playWordSound();
     }
 
@@ -246,7 +249,7 @@ export class WordReadingView extends BaseModeView {
         ViewsManager.instance.showView(PrefabType.WordReportView, (node: Node) => {
             let nodeScript = node.getComponent(WordReportView);
             console.log('朗读模式完成', this._currentSubmitResponse);
-            nodeScript.initData(this._currentSubmitResponse,this.gameMode);
+            nodeScript.initData(this._currentSubmitResponse, this.gameMode);
             ViewsManager.instance.closeView(PrefabType.WordReadingView);
             //跳转到下一场景
             /*

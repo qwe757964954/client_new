@@ -828,6 +828,7 @@ export class MapUICtl extends MainBaseCtl {
         if (this._isNeedUpdateVisible) {
             this.updateCameraVisible(true);
         }
+        this.updateLoadModelNode(dt);
     }
     /**加载回调 */
     loadOverCall() {
@@ -1030,5 +1031,42 @@ export class MapUICtl extends MainBaseCtl {
     /**心情分变化 */
     onMoodUpdate() {
         this.checkPetShow();
+    }
+    private _loadCloudNodeIdx = 0;
+    private _loadLandNodeIdx = 0;
+    private _updateLoadMaxCount = 30;
+    private _isupdateLoadModelNodeOver = false;
+    /**每帧加载node */
+    updateLoadModelNode(dt: number): void {
+        if (this._isupdateLoadModelNodeOver) return;
+        if (dt > 1 / 60) {
+            if (this._updateLoadMaxCount > 10)
+                this._updateLoadMaxCount -= 5;
+        } else {
+            this._updateLoadMaxCount += 5;
+        }
+        let count = 0;
+        if (this._loadCloudNodeIdx < this._cloudModelAry.length) {
+            let count = 0;
+            while (this._loadCloudNodeIdx < this._cloudModelAry.length) {
+                let model = this._cloudModelAry[this._loadCloudNodeIdx];
+                model.loadNode();
+                count++;
+                this._loadCloudNodeIdx++;
+                if (count >= this._updateLoadMaxCount) break;
+            }
+        }
+        if (this._loadLandNodeIdx < this._landModelAry.length) {
+            while (this._loadLandNodeIdx < this._landModelAry.length) {
+                let model = this._landModelAry[this._loadLandNodeIdx];
+                model.loadNode();
+                count++;
+                this._loadLandNodeIdx++;
+                if (count >= this._updateLoadMaxCount) break;
+            }
+        }
+        if (0 == count && this._loadCloudNodeIdx > 0 && this._loadLandNodeIdx > 0) {
+            this._isupdateLoadModelNodeOver = true;
+        }
     }
 }

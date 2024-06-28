@@ -59,7 +59,7 @@ export class RecycleCtl extends MapBaseCtl {
     onBuildingRecycleSave() {
         for (let i = 0; i < this._recycleBuildingAry.length; i++) {
             let building = this._recycleBuildingAry[i];
-            building.destroy();
+            building.dispose();
         }
         this._recycleBuildingAry = [];
     }
