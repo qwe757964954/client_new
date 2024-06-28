@@ -1512,7 +1512,7 @@
         "__id__": 85
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 140
@@ -3741,6 +3741,9 @@
     },
     "awardList": {
       "__id__": 125
+    },
+    "reciveBtn": {
+      "__id__": 92
     },
     "_id": ""
   },

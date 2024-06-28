@@ -51,14 +51,15 @@ export class FriendsDialogView extends BasePopup {
     private _friend_list:FriendListItemModel[] = [];
     
     async initUI() {
-        this.enableClickBlankToClose([this.node.getChildByName("content")]).then(()=>{
-        });
+        
         await this.initViews();
         this.initData();
         this.node.getChildByName("content").setSiblingIndex(99);
         this.setLeftTab();
         this.setFriendListSelect();
         this.setEmailListSelect();
+        this.enableClickBlankToClose([this.node.getChildByName("content"),this._rightPlayerInfo.node,this._leftTab.node]).then(()=>{
+        });
     }
     protected onInitModuleEvent(): void {
         this.addModelListeners([
@@ -69,6 +70,8 @@ export class FriendsDialogView extends BasePopup {
             [NetNotify.Classification_UserDelFriendMessage, this.onUserDelFriendMessage],
             [NetNotify.Classification_UserSystemMailList, this.onUserSystemMailList],
             [NetNotify.Classification_UserSystemMailDetail, this.onUserSystemMailDetail],
+            [NetNotify.Classification_UserSystemAwardGet, this.onUserSystemAwardGet],
+            
             [EventType.Friend_Talk_Event, this.onFriendTalk],
         ]);
     }
@@ -147,7 +150,10 @@ export class FriendsDialogView extends BasePopup {
     private onSelectEmail(data:SystemMailItem){
         FdServer.reqUserSystemMailDetail(data.sm_id);
     }
-    
+    private onUserSystemAwardGet(data:any){
+        console.log("onUserSystemAwardGet...",data);
+        FdServer.reqUserSystemMailLis();
+    }
     private onUserSystemMailDetail(data:SystemMailItem){
         console.log("onUserSystemMailDetail...",data);
         this._rightPlayerInfo.updateMessageData(data);
@@ -187,6 +193,7 @@ export class FriendsDialogView extends BasePopup {
                 this.titleTxt.string = TextConfig.Friend_Notify; // "好友通知";
                 this._fEmailView.node.active = true;
                 this._rightPlayerInfo.node.active = true;
+                this._fEmailView.setEmailListSelected(0);
                 break;
         }
     }
@@ -219,7 +226,8 @@ export class FriendsDialogView extends BasePopup {
     /**更新朋友列表 */
     onUpdateFriendList(friendDatas: DataFriendListResponse) {
         this._friend_list = friendDatas.data;
-        this._fListView.updateData(friendDatas.data);
+        this._fListView.updateData(this._friend_list);
+        this._fListView.setFriendListSelected(0);
     }
 
     /**更新推荐朋友列表 */
@@ -254,97 +262,6 @@ export class FriendsDialogView extends BasePopup {
         // if (this._selectMsg.RecFlag != 0) return; //未领过的才能领取
         // ServiceMgr.friendService.sysMsgRecAwards(this._selectMsg.Id);
     }
-
-    // onReciveAward(res: FriendResponseData) {
-    //     ViewsManager.instance.showTip(res.Msg);
-
-    // }
-
-    // onDeleteFriend(res: FriendResponseData) {
-    //     ViewsManager.instance.showTip(res.Msg);
-    // }
-
-    // onApplyFriendStatus(res: FriendResponseData) {
-    //     ViewsManager.instance.showTip(res.Msg);
-    //     this.scheduleOnce(() => {
-    //         // ServiceMgr.friendService.friendList();
-    //         // ServiceMgr.friendService.friendApplyList();
-    //     }, 1);
-    // }
-
-    // //收到邮件列表事件
-    // onSysMsgList(emailDatas: EmailDataInfo[]) {
-    //     this._fEmailView.updateData(emailDatas);
-    // }
-
-    /**点击邮件列表项 */
-    // onEmailClck(data: EmailItemClickInfo) {
-        // if (!data) {
-        //     return;
-        // }
-        // if (!data.info || !data.node) {
-        //     return;
-        // }
-        // if (this._selectMsgItem == data.node) {
-        //     return;
-        // }
-
-        // if (this._selectMsgItem) { //原来的选中项设为非选中状态
-        //     this._selectMsgItem.getChildByName("bgImg").getComponent(Sprite).spriteFrame = this.sprfriendItemBgAry[1];
-        // }
-        // let dataEmail: EmailDataInfo = data.info;
-        // let dataNode: Node = data.node;
-        // this.fromTxt.string = dataEmail.FromName;
-        // this.msgTxt.string = dataEmail.Content;
-        // this.timeTxt.string = dataEmail.createtime;
-        // //处理奖品
-        // this.awardList.content.removeAllChildren();
-        // let awardsData = JSON.parse(dataEmail.Awards);
-        // if (awardsData && Array.isArray(awardsData)) {
-        //     let awardInfo = null;
-        //     let propData: ItemData = null;
-        //     for (let i = 0; i < awardsData.length; i++) {
-        //         awardInfo = awardsData[i];
-        //         propData = new ItemData();
-        //         propData.id = awardInfo.id;
-        //         propData.num = awardInfo.num;
-        //         let item = instantiate(this.preRewardItem);
-        //         item.scale = v3(0.7, 0.7, 1);
-        //         this.awardList.content.addChild(item);
-        //         item.getComponent(RewardItem).init(propData);
-        //     }
-        // }
-        // this.reciveBtn.getComponent(Sprite).grayscale = (dataEmail.RecFlag != 1);
-        // if (dataEmail.RecFlag == 1) { //已经领取过了
-        //     this.reciveBtn.getComponent(Sprite).grayscale = true;
-        //     this.reciveTxt.string = "已领取";
-        //     this.reciveBtn.getComponent(Button).enabled = false;
-        //     //CCUtil.offTouch(this.reciveBtn, this.onReceiveAward, this);
-        // } else {
-        //     this.reciveBtn.getComponent(Sprite).grayscale = false;
-        //     this.reciveTxt.string = "领取";
-        //     this.reciveBtn.getComponent(Button).enabled = true;
-        // }
-
-        // this._selectMsg = dataEmail;
-        // this._selectMsgItem = dataNode;
-        // //选中项背景设为高亮
-        // this._selectMsgItem.getChildByName("bgImg").getComponent(Sprite).spriteFrame = this.sprfriendItemBgAry[0];
-
-        // //角色的详细信息面板伸出来
-        // Tween.stopAllByTarget(this.infoBox);
-        // this.roleInfoBox.active = false;
-        // this.msgInfoBox.active = true;
-        // let posInfoBox: Vec3 = this.infoBox.getPosition();
-        // this.infoBox.setPosition(v3(FriendsDialogView.INFOBOX_X_HIDE, posInfoBox.y, 0));
-        // tween(this.infoBox)
-        //     .to(0.4, { position: v3(FriendsDialogView.INFOBOX_X_SHOW, posInfoBox.y, 0) })
-        //     .call(() => {
-        //         this._isShowInfo = true;
-        //     })
-        //     .start();
-
-    // }
 }
 
 

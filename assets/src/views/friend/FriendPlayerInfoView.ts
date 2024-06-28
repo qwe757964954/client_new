@@ -1,4 +1,4 @@
-import { _decorator, instantiate, Label, Layers, Node, Prefab, UITransform, v3 } from 'cc';
+import { _decorator, Button, instantiate, Label, Layers, Node, Prefab, Sprite, UITransform, v3 } from 'cc';
 import { EventType } from '../../config/EventType';
 import { ItemData } from '../../manager/DataMgr';
 import { FriendListItemModel, SystemMailItem } from '../../models/FriendModel';
@@ -47,6 +47,9 @@ export class FriendPlayerInfoView extends BaseView {
     @property(List)
     public awardList:List = null;
 
+    @property(Node)
+    public reciveBtn: Node = null;// 返回按钮
+
     private _data: FriendListItemModel = null;
 
     private _msgData: SystemMailItem = null;
@@ -69,6 +72,8 @@ export class FriendPlayerInfoView extends BaseView {
         msgTxt.string = data.content;
         this._propsDta = ObjectUtil.convertAwardsToItemData(data.awards);
         this.awardList.numItems = this._propsDta.length;
+        this.reciveBtn.getComponent(Sprite).grayscale = this._msgData.status === 1;
+        this.reciveBtn.getComponent(Button).interactable = this._msgData.status !== 1;
     }
 
     /**显示角色的骨骼动画 */
@@ -88,6 +93,7 @@ export class FriendPlayerInfoView extends BaseView {
         CCUtil.onBtnClick(this.btnTalk, this.onTalkClick.bind(this));
         CCUtil.onBtnClick(this.btnHouse, this.onHouseClick.bind(this));
         CCUtil.onBtnClick(this.btnDelete, this.onDeleteClick.bind(this));
+        CCUtil.onBtnClick(this.reciveBtn, this.onReciveClick.bind(this));
     }
     async onTalkClick() {
         console.log("onTalkClick");
@@ -96,7 +102,10 @@ export class FriendPlayerInfoView extends BaseView {
     onHouseClick() {
         console.log("onHouseClick");
     }
-
+    onReciveClick() {
+        console.log("onReciveClick");
+        FdServer.reqUserSystemAwardGet(this._msgData.sm_id);
+    }
     onDeleteClick() {
         console.log("onDeleteClick");
         FdServer.reqUserDelFriendMessage(this._data.friend_id);

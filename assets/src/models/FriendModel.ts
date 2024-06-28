@@ -145,3 +145,9 @@ export class c2sUserSystemMailDetail {
     command_id: string = InterfacePath.Classification_UserSystemMailDetail;//用户给好友发送消息
     sm_id:string;
 }
+
+export class c2sUserSystemAwardGet{
+    command_id: string = InterfacePath.Classification_UserSystemAwardGet;//用户给好友发送消息
+    sm_id:string;
+}
+

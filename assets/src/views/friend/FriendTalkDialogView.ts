@@ -1,5 +1,5 @@
-import { _decorator, isValid, Node, Prefab, SpriteFrame } from 'cc';
-import { ChatDataItem, ChatMessageResponse, FriendListItemModel, SendMessageModel } from '../../models/FriendModel';
+import { _decorator, EventTouch, isValid, Node, NodeEventType, Prefab, UITransform } from 'cc';
+import { ChatDataItem, ChatMessageResponse, DataFriendListResponse, FriendListItemModel, SendMessageModel } from '../../models/FriendModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BasePopup } from '../../script/BasePopup';
 import { FdServer } from '../../service/FriendService';
@@ -48,8 +48,8 @@ export class FriendTalkDialogView extends BasePopup {
     @property({ type: Prefab, tooltip: "聊天的一项预制体" })
     preTalkItem: Prefab = null;
 
-    @property({ type: [SpriteFrame], tooltip: "朋友列表里一项背景页的图片数组" }) // 0:选中 1: 未选中
-    public sprfriendItemBgAry: SpriteFrame[] = [];
+    @property({ type: Node, tooltip: "表情区域" })
+    bq_content: Node = null;
 
     private _bqList: number[] = [];
     private _magicList: number[] = [];
@@ -64,12 +64,16 @@ export class FriendTalkDialogView extends BasePopup {
 
     protected initUI(): void {
         this.setMagicData();
+        this.enableClickBlankToClose([this.node.getChildByName("content")]).then(()=>{
+        });
+        
     }
 
     protected onInitModuleEvent(){
         this.addModelListeners([
             [NetNotify.Classification_UserFriendMessageList, this.onUserFriendMessageList],
             [NetNotify.Classification_UserSendMessageFriend, this.onUserSendMessageFriend],
+            [NetNotify.Classification_UserFriendList, this.onUpdateFriendList],
         ]);
     }
     protected initEvent(): void {
@@ -81,6 +85,7 @@ export class FriendTalkDialogView extends BasePopup {
     onUserFriendMessageList(response:ChatMessageResponse){
         this._chatDatas = response.data;
         this.talkList.numItems = this._chatDatas.length;
+        FdServer.reqUserMessageStatusUpdate(this._selectFriend.friend_id);
     }
 
     async setMagicData() {
@@ -94,7 +99,9 @@ export class FriendTalkDialogView extends BasePopup {
         }
     }
 
-
+    onUpdateFriendList(friendDatas: DataFriendListResponse){
+        this.init(friendDatas.data);
+    }
 
     onloadFriendListVertical(item:Node,idx:number) {
         let item_script = item.getComponent(ChatListItem);
@@ -131,18 +138,40 @@ export class FriendTalkDialogView extends BasePopup {
     }
     //点击发送表情
     async onBqBtnClick() {
-        this.bqSelectBox.active = true;
+        this.bq_content.active = true;
+        this.magicClickBlankToClose();
         this._magicList= this._bqList.filter(num => num < 100);
         this.selectList.numItems = this._magicList.length;
     }
 
     onUserSendMessageFriend(data:any){
-        this.bqSelectBox.active = false;
+        this.bq_content.active = false;
+        FdServer.reqUserFriendList();
     }
     async onSendBtnClick() {
-        this.bqSelectBox.active = true;
+        this.bq_content.active = true;
+        this.magicClickBlankToClose();
         this._magicList= this._bqList.filter(num => num >= 100);
         this.selectList.numItems = this._magicList.length;
+    }
+    magicClickBlankToClose() {
+        const touchEndHandler = (evt: EventTouch) => {
+            const startPos = evt.getUIStartLocation();
+            const endPos = evt.getUILocation();
+            const subPos = endPos.subtract(startPos);
+            if (Math.abs(subPos.x) < 15 && Math.abs(subPos.y) < 15) {
+                let needClose = true;
+                const uiTransform = this.bqSelectBox.getComponent(UITransform);
+                if (uiTransform && uiTransform.getBoundingBoxToWorld().contains(startPos)) {
+                    needClose = false;
+                }
+                if (needClose) {
+                    this.bq_content.off(NodeEventType.TOUCH_END, touchEndHandler, this);
+                    this.bq_content.active = false;
+                }
+            }
+        };
+        this.bq_content.on(NodeEventType.TOUCH_END, touchEndHandler, this);
     }
 }
 

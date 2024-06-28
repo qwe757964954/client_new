@@ -599,7 +599,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 140,
+      "width": 70,
       "height": 44.1
     },
     "_anchorPoint": {
@@ -635,7 +635,7 @@
       "b": 255,
       "a": 255
     },
-    "_string": "确认退出",
+    "_string": "确认",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 35,

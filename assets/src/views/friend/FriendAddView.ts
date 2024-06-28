@@ -64,6 +64,8 @@ export class FriendAddView extends BaseView {
         this.resultBox.active = true;
         let realName = this.resultBox.getChildByName("realName");
         realName.getComponent(Label).string = friendDatas.user_name;
+        let idTxt = this.resultBox.getChildByName("idTxt");
+        idTxt.getComponent(Label).string = friendDatas.user_id+"";
     }
 
     updateData(friendDatas: any[]){

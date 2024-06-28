@@ -37,6 +37,7 @@ export class EmailListItem extends ListItem {
         this.lblRealName.string = data.title;
         this.lblState.string = data.create_time;
         this.lblIsLand.string = TextConfig.Friend_EmailSys;
+        this.ndRedPoint.active = data.status !==1;
     }
 }
 
