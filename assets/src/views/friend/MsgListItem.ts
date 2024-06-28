@@ -68,7 +68,7 @@ export class MsgListItem extends ListItem {
     private onAcceptClick() {
         let param:ApplyModifyModel = {
             friend_id:this._data.user_id,
-            status:ApplicationStatus.Rejected
+            status:ApplicationStatus.Approved
         }
         FdServer.reqUserFriendApplyModify(param);
     }

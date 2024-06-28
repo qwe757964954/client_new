@@ -51,7 +51,7 @@ export class FriendsDialogView extends BasePopup {
     private _fEmailView:FriendEmailView = null;
 
     private _friend_list:FriendListItemModel[] = [];
-    
+    private _selectedFriend:FriendListItemModel = null;
     async initUI() {
         
         await this.initViews();
@@ -146,6 +146,7 @@ export class FriendsDialogView extends BasePopup {
         this._fEmailView.setEmailListener(this.onSelectEmail.bind(this));
     }
     private onSelectFriend(data:FriendListItemModel){
+        this._selectedFriend = data;
         this._rightPlayerInfo.updateData(data);
     }
 
@@ -227,6 +228,8 @@ export class FriendsDialogView extends BasePopup {
     async onFriendTalk(){
         let node = await ViewsManager.instance.showPopup(PrefabType.FriendTalkDialogView);
         let talk_script = node.getComponent(FriendTalkDialogView)
+        let selected = this._friend_list.findIndex(friend => friend.friend_id === this._selectedFriend.friend_id);
+        talk_script.currentFriendSelected = selected;
         talk_script.init(this._friend_list);
     }
 

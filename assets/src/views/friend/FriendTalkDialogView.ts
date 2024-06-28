@@ -1,4 +1,4 @@
-import { _decorator, EventTouch, isValid, Node, NodeEventType, Prefab, UITransform } from 'cc';
+import { _decorator, EventTouch, isValid, Node, NodeEventType, UITransform } from 'cc';
 import { ChatDataItem, ChatMessageResponse, DataFriendListResponse, FriendListItemModel, SendMessageModel } from '../../models/FriendModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BasePopup } from '../../script/BasePopup';
@@ -38,16 +38,6 @@ export class FriendTalkDialogView extends BasePopup {
 
     @property({ type: List, tooltip: "聊天列表" }) // friendList
     talkList: List = null;
-
-    @property({ type: Prefab, tooltip: "表情选择预制体" })
-    preEmoteItem: Prefab = null;
-
-    @property({ type: Prefab, tooltip: "朋友列表中的一项预制体" })
-    preFriendItem: Prefab = null;
-
-    @property({ type: Prefab, tooltip: "聊天的一项预制体" })
-    preTalkItem: Prefab = null;
-
     @property({ type: Node, tooltip: "表情区域" })
     bq_content: Node = null;
 
@@ -56,10 +46,11 @@ export class FriendTalkDialogView extends BasePopup {
     private _selectFriend: FriendListItemModel = null;
     private _friendDataList: FriendListItemModel[] = [];
     private _chatDatas:ChatDataItem[] = [];
+    private _currentFriendSelected: number = 0;
     init(friend:FriendListItemModel[]) {
         this._friendDataList = friend;
         this.friendList.numItems = this._friendDataList.length;
-        this.friendList.selectedId = 0;
+        this.friendList.selectedId = this._currentFriendSelected;
     }
 
     protected initUI(): void {
@@ -67,6 +58,10 @@ export class FriendTalkDialogView extends BasePopup {
         this.enableClickBlankToClose([this.node.getChildByName("content")]).then(()=>{
         });
         
+    }
+
+    set currentFriendSelected(selected: number) {
+        this._currentFriendSelected = selected;
     }
 
     protected onInitModuleEvent(){
@@ -106,18 +101,22 @@ export class FriendTalkDialogView extends BasePopup {
     }
 
     onloadFriendListVertical(item:Node,idx:number) {
+        console.log("onloadFriendListVertical....",this._friendDataList[idx]);
         let item_script = item.getComponent(ChatListItem);
         item_script.initData(this._friendDataList[idx]);
     }
 
     onUserMessageStatusUpdate(response:any){
         console.log("onUserMessageStatusUpdate....",response);
-        FdServer.reqUserFriendList();
+        this._friendDataList[this._currentFriendSelected].unread_count = 0;
+        this.friendList.numItems = this._friendDataList.length;
+        this.talkList.updateAll();
     }
 
     onFriendListVerticalSelected(item: any, selectedId: number, lastSelectedId: number, val: number) {
         if(!isValid(selectedId) || selectedId < 0 || !isValid(item)){return;}
         this._selectFriend = this._friendDataList[selectedId];
+        this._currentFriendSelected = selectedId;
         FdServer.reqUserFriendMessageList(this._selectFriend.friend_id);
         if(this._selectFriend.unread_count > 0){
             FdServer.reqUserMessageStatusUpdate(this._selectFriend.friend_id);

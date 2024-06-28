@@ -1637,7 +1637,7 @@
     "pageChangeEvent": {
       "__id__": 71
     },
-    "_virtual": true,
+    "_virtual": false,
     "cyclic": false,
     "lackCenter": false,
     "lackSlide": false,
@@ -4536,18 +4536,6 @@
     },
     "talkList": {
       "__id__": 111
-    },
-    "preEmoteItem": {
-      "__uuid__": "d1585720-6df9-46ec-8121-74751fe4b8ea",
-      "__expectedType__": "cc.Prefab"
-    },
-    "preFriendItem": {
-      "__uuid__": "1cb383fe-9577-48e7-afee-49f96285624f",
-      "__expectedType__": "cc.Prefab"
-    },
-    "preTalkItem": {
-      "__uuid__": "c9bdf1e5-1533-4d4d-be55-b1dee8edfb83",
-      "__expectedType__": "cc.Prefab"
     },
     "bq_content": {
       "__id__": 156

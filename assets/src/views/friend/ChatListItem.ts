@@ -9,9 +9,6 @@ export class ChatListItem extends ListItem {
     @property({ type: Sprite, tooltip: "头像图片精灵" })
     imgHead: Sprite = null;
 
-    @property({ type: Node, tooltip: "按钮处理" })
-    btnItem: Node = null;
-
     @property({ type: Label, tooltip: "名字标签" })
     lblRealName: Label = null;
 
@@ -39,7 +36,7 @@ export class ChatListItem extends ListItem {
         let bNoReadVisible: boolean = data.unread_count > 0
         this.unRead.active = bNoReadVisible;
         if (data.unread_count > 0) {
-            this.lblUnRead.string = "" + data.unread_count;
+            this.lblUnRead.string = "未读" + data.unread_count;
         }
         else {
             this.lblUnRead.string = "0";
