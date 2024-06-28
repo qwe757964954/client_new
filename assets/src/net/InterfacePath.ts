@@ -124,6 +124,7 @@ export const InterfacePath = {
     Classification_UserFriendMessageList: "1107", //获取用户好友消息列表
     Classification_UserSendMessageFriend: "1108", //用户给好友发送消息
     Classification_UserMessageStatusUpdate: "1109", //用户与朋友消息更新为已读
+    Classification_UserRecommendFriendList: "1110", //好友推荐列表消息
     Classification_UserSystemMailList: "1201", //用户系统邮件列表
     Classification_UserSystemMailDetail: "1202", //用户系统邮件详情消息
     Classification_UserSystemAwardGet: "1203", //用户系统邮件奖励领取

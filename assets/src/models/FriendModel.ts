@@ -6,7 +6,11 @@ export interface FriendListItemModel {
     user_name: string;
     level: number;
     avatar: string;
-    unread_count:number
+    nick_name:string;
+    online:number;//online
+    unread_count:number;
+    user_id?: number;
+
 }
 
 // Interface for the response data
@@ -149,5 +153,14 @@ export class c2sUserSystemMailDetail {
 export class c2sUserSystemAwardGet{
     command_id: string = InterfacePath.Classification_UserSystemAwardGet;//用户给好友发送消息
     sm_id:string;
+}
+
+export interface UserSystemAwardResponse extends BaseRepPacket {
+    awards: SystemMailAwards
+}
+
+
+export class c2sUserRecommendFriendList{
+    command_id: string = InterfacePath.Classification_UserRecommendFriendList;//用户给好友发送消息
 }
 

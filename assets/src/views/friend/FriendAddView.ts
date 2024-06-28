@@ -1,6 +1,6 @@
 import { _decorator, EditBox, isValid, Label, Node } from 'cc';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { UserFriendData } from '../../models/FriendModel';
+import { FriendListItemModel, UserFriendData } from '../../models/FriendModel';
 import { BaseView } from '../../script/BaseView';
 import { FdServer } from '../../service/FriendService';
 import CCUtil from '../../util/CCUtil';
@@ -25,7 +25,7 @@ export class FriendAddView extends BaseView {
     @property({ type: EditBox, tooltip: "查找好友编辑框" })
     public searchEdt: EditBox = null;
 
-    private _recommendFriendDataList: any[] = []; //我的推荐好友列表
+    private _recommendFriendDataList: FriendListItemModel[] = []; //我的推荐好友列表
 
     private _searchData:UserFriendData = null;
 
@@ -68,10 +68,10 @@ export class FriendAddView extends BaseView {
         idTxt.getComponent(Label).string = friendDatas.user_id+"";
     }
 
-    updateData(friendDatas: any[]){
+    updateData(friendDatas: FriendListItemModel[]){
         this.resultBox.active = false;
-        // this._recommendFriendDataList = friendDatas;
-        // this.recommendList.numItems = this._recommendFriendDataList.length;
+        this._recommendFriendDataList = friendDatas;
+        this.recommendList.numItems = this._recommendFriendDataList.length;
     }
 
     onLoadFriendVertical(item:Node, idx:number){

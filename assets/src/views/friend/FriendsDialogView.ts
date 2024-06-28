@@ -3,11 +3,13 @@ import { EventType } from '../../config/EventType';
 import { PrefabType, PrefabTypeEntry } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { DataFriendApplyListResponse, DataFriendListResponse, FriendListItemModel, SystemMailItem, SystemMailListResponse, UserFriendData } from '../../models/FriendModel';
+import { DataFriendApplyListResponse, DataFriendListResponse, FriendListItemModel, SystemMailItem, SystemMailListResponse, UserFriendData, UserSystemAwardResponse } from '../../models/FriendModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BasePopup } from '../../script/BasePopup';
 import { FdServer } from '../../service/FriendService';
 import CCUtil from '../../util/CCUtil';
+import { ObjectUtil } from '../../util/ObjectUtil';
+import { CongratulationsView } from '../task/CongratulationsView';
 import { FriendAddView } from './FriendAddView';
 import { FriendEmailView } from './FriendEmailView';
 import { FriendTabType } from './FriendInfo';
@@ -71,7 +73,7 @@ export class FriendsDialogView extends BasePopup {
             [NetNotify.Classification_UserSystemMailList, this.onUserSystemMailList],
             [NetNotify.Classification_UserSystemMailDetail, this.onUserSystemMailDetail],
             [NetNotify.Classification_UserSystemAwardGet, this.onUserSystemAwardGet],
-            
+            [NetNotify.Classification_UserRecommendFriendList, this.onShowRecommendList],
             [EventType.Friend_Talk_Event, this.onFriendTalk],
         ]);
     }
@@ -150,11 +152,15 @@ export class FriendsDialogView extends BasePopup {
     private onSelectEmail(data:SystemMailItem){
         FdServer.reqUserSystemMailDetail(data.sm_id);
     }
-    private onUserSystemAwardGet(data:any){
-        console.log("onUserSystemAwardGet...",data);
+    private async onUserSystemAwardGet(response:UserSystemAwardResponse){
+        console.log("onUserSystemAwardGet...",response);
+        let propsDta = ObjectUtil.convertAwardsToItemData(response.awards);
+        let node:Node = await ViewsManager.instance.showPopup(PrefabType.CongratulationsView);
+        let nodeScript: CongratulationsView = node.getComponent(CongratulationsView);
+        nodeScript.updateRewardScroll(propsDta);
         FdServer.reqUserSystemMailLis();
     }
-    private onUserSystemMailDetail(data:SystemMailItem){
+    private async onUserSystemMailDetail(data:SystemMailItem){
         console.log("onUserSystemMailDetail...",data);
         this._rightPlayerInfo.updateMessageData(data);
     }
@@ -215,6 +221,7 @@ export class FriendsDialogView extends BasePopup {
         FdServer.reqUserFriendList();
         FdServer.reqUserFriendApplyList();
         FdServer.reqUserSystemMailLis();
+        FdServer.reqUserRecommendFriendList();
     }
 
     async onFriendTalk(){
@@ -231,9 +238,10 @@ export class FriendsDialogView extends BasePopup {
     }
 
     /**更新推荐朋友列表 */
-    // onShowRecommendList(friendDatas: FriendUnitInfo[]) {
-    //     this._fAddView.updateData(friendDatas);
-    // }
+    onShowRecommendList(friendDatas: DataFriendListResponse) {
+        console.log("onShowRecommendList",friendDatas);
+        this._fAddView.updateData(friendDatas.data);
+    }
 
     onUserFriendApplyModify(data:any){
         FdServer.reqUserFriendApplyList();

@@ -1,6 +1,6 @@
 import { _decorator, Component, Label, Node, Sprite } from 'cc';
 import { LoadManager } from '../../manager/LoadManager';
-import { FriendUnitInfo } from '../../models/FriendModel';
+import { FriendListItemModel } from '../../models/FriendModel';
 import CCUtil from '../../util/CCUtil';
 const { ccclass, property } = _decorator;
 
@@ -21,7 +21,7 @@ export class FriendSearchItem extends Component {
     @property({ type: Node, tooltip: "添加朋友按钮" })
     btnAddFriend: Node = null;
 
-    _data: FriendUnitInfo = null;
+    _data: FriendListItemModel = null;
 
     protected onLoad(): void {
         //console.log("FriendListItem onLoad");
@@ -44,18 +44,18 @@ export class FriendSearchItem extends Component {
 
     }
 
-    async initData(data: FriendUnitInfo) {
+    async initData(data: FriendListItemModel) {
         this._data = data;
         let headIdMap = { "101": 101, "1101": 101, "102": 102, "1102": 102, "103": 103, "1103": 103 }
-        let avatar: number = headIdMap[data.ModelId];
+        let avatar: number = headIdMap[data.avatar];
         let avatarPath: string = "friend/head_" + avatar + "/spriteFrame";
         await LoadManager.loadSprite(avatarPath, this.imgHead.getComponent(Sprite)).then(() => { },
             (error) => {
                 // console.log("loadShowSprite->resource load failed:" + this._data.icon.skin + "," + error.message);
             });
-        this.lblRealName.string = data.RealName;
-        this.lblState.string = data.Ltmsg;
-        this.lblID.string = "" + data.FriendId;
+        this.lblRealName.string = data.nick_name;
+        this.lblState.string = data.online === 1 ? "在线" : "离线";
+        this.lblID.string = "" + data.user_id;
     }
 }
 
