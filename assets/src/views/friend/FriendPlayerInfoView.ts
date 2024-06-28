@@ -1,6 +1,8 @@
 import { _decorator, Button, instantiate, Label, Layers, Node, Prefab, Sprite, UITransform, v3 } from 'cc';
 import { EventType } from '../../config/EventType';
+import { TextConfig } from '../../config/TextConfig';
 import { ItemData } from '../../manager/DataMgr';
+import { ViewsManager } from '../../manager/ViewsManager';
 import { FriendListItemModel, SystemMailItem } from '../../models/FriendModel';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
 import { BaseView } from '../../script/BaseView';
@@ -101,6 +103,7 @@ export class FriendPlayerInfoView extends BaseView {
     }
     onHouseClick() {
         console.log("onHouseClick");
+        ViewsManager.showTip(TextConfig.Function_Tip);
     }
     onReciveClick() {
         console.log("onReciveClick");

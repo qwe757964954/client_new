@@ -10,7 +10,6 @@ export interface FriendListItemModel {
     online:number;//online
     unread_count:number;
     user_id?: number;
-
 }
 
 // Interface for the response data

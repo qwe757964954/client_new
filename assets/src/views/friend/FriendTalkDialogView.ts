@@ -74,6 +74,7 @@ export class FriendTalkDialogView extends BasePopup {
             [NetNotify.Classification_UserFriendMessageList, this.onUserFriendMessageList],
             [NetNotify.Classification_UserSendMessageFriend, this.onUserSendMessageFriend],
             [NetNotify.Classification_UserFriendList, this.onUpdateFriendList],
+            [NetNotify.Classification_UserMessageStatusUpdate, this.onUserMessageStatusUpdate],
         ]);
     }
     protected initEvent(): void {
@@ -85,7 +86,8 @@ export class FriendTalkDialogView extends BasePopup {
     onUserFriendMessageList(response:ChatMessageResponse){
         this._chatDatas = response.data;
         this.talkList.numItems = this._chatDatas.length;
-        FdServer.reqUserMessageStatusUpdate(this._selectFriend.friend_id);
+        this.talkList.update();
+        this.talkList.scrollTo(this._chatDatas.length - 1);
     }
 
     async setMagicData() {
@@ -108,10 +110,18 @@ export class FriendTalkDialogView extends BasePopup {
         item_script.initData(this._friendDataList[idx]);
     }
 
+    onUserMessageStatusUpdate(response:any){
+        console.log("onUserMessageStatusUpdate....",response);
+        FdServer.reqUserFriendList();
+    }
+
     onFriendListVerticalSelected(item: any, selectedId: number, lastSelectedId: number, val: number) {
         if(!isValid(selectedId) || selectedId < 0 || !isValid(item)){return;}
         this._selectFriend = this._friendDataList[selectedId];
         FdServer.reqUserFriendMessageList(this._selectFriend.friend_id);
+        if(this._selectFriend.unread_count > 0){
+            FdServer.reqUserMessageStatusUpdate(this._selectFriend.friend_id);
+        }
     }
 
 
