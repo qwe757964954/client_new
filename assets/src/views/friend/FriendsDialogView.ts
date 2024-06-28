@@ -260,18 +260,9 @@ export class FriendsDialogView extends BasePopup {
     onCloseView() {
         this.closePop();
     }
-    // onApplyFriendTo(res: FriendResponseData) {
-    //     // ViewsManager.instance.showTip(res.Msg);
-    // }
 
     onHouseClick() {
         ViewsManager.instance.showTip(TextConfig.Function_Tip2);
-    }
-    /**点击收取奖励 */
-    onReciveAwardClick() {
-        // if (!this._selectMsg) return;
-        // if (this._selectMsg.RecFlag != 0) return; //未领过的才能领取
-        // ServiceMgr.friendService.sysMsgRecAwards(this._selectMsg.Id);
     }
 }
 

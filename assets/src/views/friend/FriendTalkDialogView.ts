@@ -8,6 +8,7 @@ import List from '../../util/list/List';
 import { ChatContentItem } from './ChatContentItem';
 import { ChatEmoteItem } from './ChatEmoteItem';
 import { ChatListItem } from './ChatListItem';
+
 const { ccclass, property } = _decorator;
 
 @ccclass('FriendTalkDialogView')
@@ -21,7 +22,7 @@ export class FriendTalkDialogView extends BasePopup {
     @property({ type: Node, tooltip: "发送表情按钮" })
     bqBtn: Node = null;
 
-    @property({ type: Node, tooltip: "发送表情按钮2" })
+    @property({ type: Node, tooltip: "发送消息按钮" })
     sendBtn: Node = null;
 
     @property({ type: Node, tooltip: "热点区域" })
@@ -30,24 +31,26 @@ export class FriendTalkDialogView extends BasePopup {
     @property({ type: Node, tooltip: "表情选择区域" })
     bqSelectBox: Node = null;
 
-    @property({ type: List, tooltip: "表情选择列表" }) // 
+    @property({ type: List, tooltip: "表情选择列表" })
     selectList: List = null;
 
-    @property({ type: List, tooltip: "好友列表" }) // friendList
+    @property({ type: List, tooltip: "好友列表" })
     friendList: List = null;
 
-    @property({ type: List, tooltip: "聊天列表" }) // friendList
+    @property({ type: List, tooltip: "聊天列表" })
     talkList: List = null;
+
     @property({ type: Node, tooltip: "表情区域" })
-    bq_content: Node = null;
+    bqContent: Node = null;
 
     private _bqList: number[] = [];
     private _magicList: number[] = [];
     private _selectFriend: FriendListItemModel = null;
     private _friendDataList: FriendListItemModel[] = [];
-    private _chatDatas:ChatDataItem[] = [];
+    private _chatDatas: ChatDataItem[] = [];
     private _currentFriendSelected: number = 0;
-    init(friend:FriendListItemModel[]) {
+
+    init(friend: FriendListItemModel[]): void {
         this._friendDataList = friend;
         this.friendList.numItems = this._friendDataList.length;
         this.friendList.selectedId = this._currentFriendSelected;
@@ -55,16 +58,14 @@ export class FriendTalkDialogView extends BasePopup {
 
     protected initUI(): void {
         this.setMagicData();
-        this.enableClickBlankToClose([this.node.getChildByName("content")]).then(()=>{
-        });
-        
+        this.enableClickBlankToClose([this.node.getChildByName("content")]);
     }
 
     set currentFriendSelected(selected: number) {
         this._currentFriendSelected = selected;
     }
 
-    protected onInitModuleEvent(){
+    protected onInitModuleEvent(): void {
         this.addModelListeners([
             [NetNotify.Classification_UserFriendMessageList, this.onUserFriendMessageList],
             [NetNotify.Classification_UserSendMessageFriend, this.onUserSendMessageFriend],
@@ -72,23 +73,24 @@ export class FriendTalkDialogView extends BasePopup {
             [NetNotify.Classification_UserMessageStatusUpdate, this.onUserMessageStatusUpdate],
         ]);
     }
+
     protected initEvent(): void {
-        CCUtil.onBtnClick(this.closeBtn,this.onCloseView.bind(this));
-        CCUtil.onBtnClick(this.bqBtn,this.onBqBtnClick.bind(this));
-        CCUtil.onBtnClick(this.sendBtn,this.onSendBtnClick.bind(this));
+        CCUtil.onBtnClick(this.closeBtn, this.onCloseView.bind(this));
+        CCUtil.onBtnClick(this.bqBtn, this.onBqBtnClick.bind(this));
+        CCUtil.onBtnClick(this.sendBtn, this.onSendBtnClick.bind(this));
     }
 
-    onUserFriendMessageList(response:ChatMessageResponse){
+    private async onUserFriendMessageList(response: ChatMessageResponse): Promise<void> {
         this._chatDatas = response.data;
         this.talkList.numItems = this._chatDatas.length;
         this.talkList.update();
         this.talkList.scrollTo(this._chatDatas.length - 1);
     }
 
-    async setMagicData() {
+    private async setMagicData(): Promise<void> {
         this._bqList = [];
         for (let i = 1; i <= 40; i++) {
-            if (i == 2 || i == 3 || i == 9 || i == 12 || i == 14) continue;
+            if ([2, 3, 9, 12, 14].includes(i)) continue;
             this._bqList.push(i);
         }
         for (let i = 100; i < 127; i++) {
@@ -96,74 +98,70 @@ export class FriendTalkDialogView extends BasePopup {
         }
     }
 
-    onUpdateFriendList(friendDatas: DataFriendListResponse){
+    private onUpdateFriendList(friendDatas: DataFriendListResponse): void {
         this.init(friendDatas.data);
     }
 
-    onloadFriendListVertical(item:Node,idx:number) {
-        console.log("onloadFriendListVertical....",this._friendDataList[idx]);
-        let item_script = item.getComponent(ChatListItem);
-        item_script.initData(this._friendDataList[idx]);
+    private onloadFriendListVertical(item: Node, idx: number): void {
+        console.log("onloadFriendListVertical....", this._friendDataList[idx]);
+        const itemScript = item.getComponent(ChatListItem);
+        itemScript.initData(this._friendDataList[idx]);
     }
 
-    onUserMessageStatusUpdate(response:any){
-        console.log("onUserMessageStatusUpdate....",response);
+    private onUserMessageStatusUpdate(response: any): void {
+        console.log("onUserMessageStatusUpdate....", response);
         this._friendDataList[this._currentFriendSelected].unread_count = 0;
         this.friendList.numItems = this._friendDataList.length;
         this.talkList.updateAll();
     }
-
-    onFriendListVerticalSelected(item: any, selectedId: number, lastSelectedId: number, val: number) {
-        if(!isValid(selectedId) || selectedId < 0 || !isValid(item)){return;}
+    onUserSendMessageFriend(data:any){
+        this.bqContent.active = false;
+        FdServer.reqUserFriendList();
+    }
+    private onFriendListVerticalSelected(item: any, selectedId: number, lastSelectedId: number, val: number): void {
+        if (!isValid(selectedId) || selectedId < 0 || !isValid(item)) return;
         this._selectFriend = this._friendDataList[selectedId];
         this._currentFriendSelected = selectedId;
         FdServer.reqUserFriendMessageList(this._selectFriend.friend_id);
-        if(this._selectFriend.unread_count > 0){
+        if (this._selectFriend.unread_count > 0) {
             FdServer.reqUserMessageStatusUpdate(this._selectFriend.friend_id);
         }
     }
 
-
-    onloadMagicFaceVertical(item:Node,idx:number) {
-        let item_script = item.getComponent(ChatEmoteItem);
-        item_script.initData(this._magicList[idx]);
+    private onloadMagicFaceVertical(item: Node, idx: number): void {
+        const itemScript = item.getComponent(ChatEmoteItem);
+        itemScript.initData(this._magicList[idx]);
     }
 
-    onMagicFaceVerticalSelected(item: any, selectedId: number, lastSelectedId: number, val: number) {
-        if(!isValid(selectedId) || selectedId < 0 || !isValid(item)){return;}
-        let param:SendMessageModel = {
-            friend_id:this._selectFriend.friend_id,
-            message:`${this._magicList[selectedId]}` 
-        }
+    private onMagicFaceVerticalSelected(item: any, selectedId: number, lastSelectedId: number, val: number): void {
+        if (!isValid(selectedId) || selectedId < 0 || !isValid(item)) return;
+        const param: SendMessageModel = {
+            friend_id: this._selectFriend.friend_id,
+            message: `${this._magicList[selectedId]}`
+        };
         FdServer.reqUserSendMessageFriend(param);
     }
-    onCloseView() {
-        this.closePop();
+
+    private onloadChatContentListVertical(item: Node, idx: number): void {
+        const itemScript = item.getComponent(ChatContentItem);
+        itemScript.initData(this._chatDatas[idx], this._selectFriend);
     }
 
-    onloadChatContentListVertical(item:Node,idx:number) {
-        let item_script = item.getComponent(ChatContentItem);
-        item_script.initData(this._chatDatas[idx],this._selectFriend);
-    }
-    //点击发送表情
-    async onBqBtnClick() {
-        this.bq_content.active = true;
+    private async onBqBtnClick(): Promise<void> {
+        this.bqContent.active = true;
         this.magicClickBlankToClose();
-        this._magicList= this._bqList.filter(num => num < 100);
+        this._magicList = this._bqList.filter(num => num < 100);
         this.selectList.numItems = this._magicList.length;
     }
 
-    onUserSendMessageFriend(data:any){
-        this.bq_content.active = false;
-        FdServer.reqUserFriendList();
-    }
-    async onSendBtnClick() {
-        this.bq_content.active = true;
+    private async onSendBtnClick(): Promise<void> {
+        this.bqContent.active = true;
         this.magicClickBlankToClose();
-        this._magicList= this._bqList.filter(num => num >= 100);
+        this._magicList = this._bqList.filter(num => num >= 100);
         this.selectList.numItems = this._magicList.length;
     }
-    magicClickBlankToClose() {
+
+    private magicClickBlankToClose(): void {
         const touchEndHandler = (evt: EventTouch) => {
             const startPos = evt.getUIStartLocation();
             const endPos = evt.getUILocation();
@@ -175,13 +173,15 @@ export class FriendTalkDialogView extends BasePopup {
                     needClose = false;
                 }
                 if (needClose) {
-                    this.bq_content.off(NodeEventType.TOUCH_END, touchEndHandler, this);
-                    this.bq_content.active = false;
+                    this.bqContent.off(NodeEventType.TOUCH_END, touchEndHandler, this);
+                    this.bqContent.active = false;
                 }
             }
         };
-        this.bq_content.on(NodeEventType.TOUCH_END, touchEndHandler, this);
+        this.bqContent.on(NodeEventType.TOUCH_END, touchEndHandler, this);
+    }
+
+    private onCloseView(): void {
+        this.closePop();
     }
 }
-
-

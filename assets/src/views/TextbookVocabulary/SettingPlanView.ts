@@ -104,6 +104,7 @@ export class SettingPlanView extends BasePopup {
                 this.dayScroll.scrollToNumber(`${days}`)
             }
         },0.2)
+        
     }
 
     onLoadLeftVerticalList(item:Node, idx:number){

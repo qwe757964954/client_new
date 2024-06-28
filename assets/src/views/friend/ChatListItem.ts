@@ -15,33 +15,39 @@ export class ChatListItem extends ListItem {
     @property({ type: Label, tooltip: "状态标签" })
     lblState: Label = null;
 
-    @property({ type: Label, tooltip: "关卡标签" })
+    @property({ type: Label, tooltip: "未读标签" })
     lblUnRead: Label = null;
 
-    @property({ type: Node, tooltip: "未读红结点" })
+    @property({ type: Node, tooltip: "未读红点结点" })
     unRead: Node = null;
+
     private _data: FriendListItemModel = null;
 
     async initData(data: FriendListItemModel) {
         this._data = data;
-        let headIdMap = { "101": 101, "1101": 101, "102": 102, "1102": 102, "103": 103, "1103": 103 }
-        let avatar: number = headIdMap[data.avatar];
-        let avatarPath: string = "friend/head_" + avatar + "/spriteFrame";
-        await LoadManager.loadSprite(avatarPath, this.imgHead.getComponent(Sprite)).then(() => { },
-            (error) => {
-                // console.log("loadShowSprite->resource load failed:" + this._data.icon.skin + "," + error.message);
-            });
-        this.lblRealName.string = data.user_name;
+        await this.updateAvatar(data.avatar);
+        this.updateName(data.user_name);
+        this.updateUnreadStatus(data.unread_count);
+    }
 
-        let bNoReadVisible: boolean = data.unread_count > 0
-        this.unRead.active = bNoReadVisible;
-        if (data.unread_count > 0) {
-            this.lblUnRead.string = "未读" + data.unread_count;
-        }
-        else {
-            this.lblUnRead.string = "0";
+    private async updateAvatar(avatarId: string) {
+        const headIdMap = { "101": 101, "1101": 101, "102": 102, "1102": 102, "103": 103, "1103": 103 };
+        const avatar = headIdMap[avatarId] || 101; // Default to 101 if not found
+        const avatarPath = `friend/head_${avatar}/spriteFrame`;
+        try {
+            await LoadManager.loadSprite(avatarPath, this.imgHead.getComponent(Sprite));
+        } catch (error) {
+            console.error(`Failed to load avatar sprite: ${avatarPath}`, error);
         }
     }
+
+    private updateName(userName: string) {
+        this.lblRealName.string = userName || 'Unknown';
+    }
+
+    private updateUnreadStatus(unreadCount: number) {
+        const hasUnread = unreadCount > 0;
+        this.unRead.active = hasUnread;
+        this.lblUnRead.string = hasUnread ? `未读 ${unreadCount}` : "0";
+    }
 }
-
-

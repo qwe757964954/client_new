@@ -12,10 +12,11 @@ export class ChatEmoteItem extends ListItem {
     async initData(bqId: number) {
         this._bqId = bqId;
         let emotePath: string = "friend/" + bqId + "/spriteFrame";
-        await LoadManager.loadSprite(emotePath, this.bgIcon).then(() => { },
-            (error) => {
-                // console.log("loadShowSprite->resource load failed:" + this._data.icon.skin + "," + error.message);
-            });
+        try {
+            await LoadManager.loadSprite(emotePath, this.bgIcon);
+        } catch (error) {
+            console.error(`Failed to load avatar sprite: ${emotePath}`, error);
+        }
     }
 }
 
