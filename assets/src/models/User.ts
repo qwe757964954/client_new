@@ -252,7 +252,8 @@ class UserModel {
     public getStaminaLeftTime(): number {
         if (!this._staminaTime) return null;
         if (this._stamina >= this._staminaLimit) return null;
-        return this._staminaTime - ToolUtil.now();
+        let dt = this._staminaTime - ToolUtil.now();
+        return dt > 0 ? dt : 0;
     }
     /**设置体力上限、更新时间 */
     public updateStaminaLimitAndTime(limit: number, time: number) {
