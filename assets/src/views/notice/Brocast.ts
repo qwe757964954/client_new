@@ -1,9 +1,9 @@
 import { _decorator, Component, Label, Node, tween, Tween, UITransform, v3, Widget } from 'cc';
-import { LabelUtils } from '../../util/LabelUtils';
-import { ToolUtil } from '../../util/ToolUtil';
+import { EventType } from '../../config/EventType';
 import CCUtil from '../../util/CCUtil';
 import EventManager from '../../util/EventManager';
-import { EventType } from '../../config/EventType';
+import { LabelUtils } from '../../util/LabelUtils';
+import { ToolUtil } from '../../util/ToolUtil';
 const { ccclass, property } = _decorator;
 /**公告内容 */
 export interface NoticeContentData {
@@ -63,11 +63,7 @@ export class Brocast extends Component {
     }
 
     onClickNotice() {
-        let data: NoticeContentData = {
-            "id": "1001",
-            "content": "这是一则公告\n公告内容明天公布\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新",
-        };
-        EventManager.emit(EventType.Notice_ShowNotice, data);
+        EventManager.emit(EventType.Notice_ShowNotice);
     }
 
     setContent(content: Array<string>) {

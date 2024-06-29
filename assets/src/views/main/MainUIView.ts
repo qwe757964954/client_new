@@ -9,7 +9,6 @@ import { User } from '../../models/User';
 import { NetMgr } from '../../net/NetManager';
 import CCUtil from '../../util/CCUtil';
 import EventManager from '../../util/EventManager';
-import { NoticeContentData } from '../notice/Brocast';
 import { ReviewPlanView } from '../reviewPlan/ReviewPlanView';
 import { MainScene } from './MainScene';
 const { ccclass, property } = _decorator;
@@ -172,11 +171,7 @@ export class MainUIView extends Component {
 
     //点击公告
     public onClickNotice() {
-        let data: NoticeContentData = {
-            "id": "1001",
-            "content": "这是一则公告\n公告内容明天公布\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新\n明天更新",
-        };
-        EventManager.emit(EventType.Notice_ShowNotice, data);
+        EventManager.emit(EventType.Notice_ShowNotice);
     }
 }
 

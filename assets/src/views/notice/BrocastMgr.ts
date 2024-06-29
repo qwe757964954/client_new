@@ -1,10 +1,9 @@
 import { _decorator, Component, instantiate, Node, Prefab, resources, UIOpacity } from 'cc';
-import { Brocast, NoticeContentData } from './Brocast';
-import EventManager from '../../util/EventManager';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
-import { NoticeDialogView } from './NoticeDialogView';
 import { ViewsManager } from '../../manager/ViewsManager';
+import EventManager from '../../util/EventManager';
+import { Brocast, NoticeContentData } from './Brocast';
 const { ccclass, property } = _decorator;
 /**跑马灯管理器 */
 @ccclass('BrocastMgr')
@@ -68,11 +67,9 @@ export class BrocastMgr extends Component {
         this.stopAuto();
     }
 
-    onShowNotice(data: NoticeContentData) {
-        ViewsManager.instance.showView(PrefabType.NoticeDialogView, (node: Node) => {
-            node.getComponent(NoticeDialogView).init(data.content);
-            this.stopAuto();
-        });
+    async onShowNotice(data: NoticeContentData) {
+        let node = await ViewsManager.instance.showPopup(PrefabType.NoticeDialogView)
+        this.stopAuto();
     }
     //设定是否是自定义模式
     setCustomMode(bCustom: boolean = false) {

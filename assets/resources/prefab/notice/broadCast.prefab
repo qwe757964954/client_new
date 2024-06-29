@@ -253,7 +253,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 316.04296875,
+      "width": 0,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -289,7 +289,7 @@
       "b": 255,
       "a": 255
     },
-    "_string": "06.03更新(单词大冒险等功能)",
+    "_string": "",
     "_horizontalAlign": 0,
     "_verticalAlign": 1,
     "_actualFontSize": 24,
@@ -448,7 +448,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 1460,
+      "width": 1460.0000000000002,
       "height": 45
     },
     "_anchorPoint": {
@@ -593,7 +593,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 1500,
+      "width": 1500.0000000000002,
       "height": 39
     },
     "_anchorPoint": {
