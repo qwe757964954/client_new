@@ -89,11 +89,6 @@ export class MapUICtl extends MainBaseCtl {
         this.initGrid();
         this.initMap();
 
-        if (GlobalConfig.OLD_SERVER) {
-            this.initLand({});
-            this.updateCameraVisible();
-            return;
-        }
         ServiceMgr.buildingService.reqPetInfo();
         ServiceMgr.buildingService.reqBuildingList();
 
