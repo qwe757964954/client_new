@@ -65,6 +65,8 @@ export class FriendPlayerInfoView extends BaseView {
         this._showPos = pos.clone();
     }
 
+    
+
     updateData(data: FriendListItemModel) {
         this._data = data;
         this.showRoleInfo();
