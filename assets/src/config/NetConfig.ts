@@ -56,11 +56,11 @@ class NetCfg {
     }
     public converToDebug() {
         if (!DebugConfig.TEST_SERVER) return;
-        this.server = "192.168.1.67";
-        this.port = 40003;
+        // this.server = "192.168.1.67";
+        // this.port = 40003;
         /**林景 */
-        // this.server = "192.168.1.164";
-        // this.port = 9803;
+        this.server = "192.168.1.164";
+        this.port = 9803;
     }
 }
 
