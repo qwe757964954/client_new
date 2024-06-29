@@ -1,4 +1,4 @@
-import { _decorator, Button, instantiate, Label, Layers, Node, Prefab, Sprite, UITransform, v3 } from 'cc';
+import { _decorator, Button, instantiate, Label, Layers, Node, Prefab, Sprite, tween, UITransform, v3, Vec3 } from 'cc';
 import { EventType } from '../../config/EventType';
 import { TextConfig } from '../../config/TextConfig';
 import { ItemData } from '../../manager/DataMgr';
@@ -51,9 +51,19 @@ export class FriendPlayerInfoView extends BaseView {
     @property(Node)
     public reciveBtn: Node = null; // 接收按钮
 
+    @property(Node)
+    public btnHide: Node = null; // 删除好友按钮
+
     private _data: FriendListItemModel = null;
     private _msgData: SystemMailItem = null;
     private _propsData: ItemData[] = [];
+    private _isShow:boolean = false;
+
+    private _showPos:Vec3 = null;
+
+    set showPos(pos:Vec3) {
+        this._showPos = pos.clone();
+    }
 
     updateData(data: FriendListItemModel) {
         this._data = data;
@@ -118,6 +128,7 @@ export class FriendPlayerInfoView extends BaseView {
         this.registerButtonEvent(this.btnHouse, this.onHouseClick);
         this.registerButtonEvent(this.btnDelete, this.onDeleteClick);
         this.registerButtonEvent(this.reciveBtn, this.onReceiveClick);
+        this.registerButtonEvent(this.btnHide, this.onHidenClick);
     }
 
     private registerButtonEvent(buttonNode: Node, callback: () => void) {
@@ -146,5 +157,19 @@ export class FriendPlayerInfoView extends BaseView {
         const scale = 92.4 / uiTransform.height;
         item.setScale(scale, scale, scale);
         rewardItem.init(this._propsData[idx]);
+    }
+
+    private onHidenClick() {
+        this._isShow = !this._isShow;
+        this.showPlayerInfo(this._isShow);
+    }
+
+    public showPlayerInfo(isShow: boolean) {
+        this._isShow = isShow;
+        let node_size = this.node.getComponent(UITransform);
+        let temp_width = node_size.width - 200;
+        let posx = isShow ? 0 : -temp_width;
+        tween(this.node).to(0.3, { position: new Vec3(this._showPos.x +posx, this._showPos.y, 0) }).call(() => {
+        }).start();
     }
 }

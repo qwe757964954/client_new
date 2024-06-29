@@ -85,7 +85,10 @@ export class FriendsDialogView extends BasePopup {
                 top: 229,
                 left: 37
             }),
-            this.initViewComponent(PrefabType.FriendPlayerInfoView, (node) => this._rightPlayerInfo = node.getComponent(FriendPlayerInfoView), {
+            this.initViewComponent(PrefabType.FriendPlayerInfoView, (node) => {
+                this._rightPlayerInfo = node.getComponent(FriendPlayerInfoView)
+                this._rightPlayerInfo.showPos = this._rightPlayerInfo.node.position;
+            }, {
                 isAlignVerticalCenter: true,
                 isAlignRight: true,
                 verticalCenter: 0,
@@ -182,27 +185,24 @@ export class FriendsDialogView extends BasePopup {
         switch (click) {
             case FriendTabType.List:// 好友列表
                 this.titleTxt.string = TextConfig.Friend_List; //"好友列表";
-                this._fListView.node.active = true;
-                this._rightPlayerInfo.node.active = true;
                 FdServer.reqUserFriendList();
                 break;
             case FriendTabType.Add: //添加好友
                 this.titleTxt.string = TextConfig.Friend_Add; //"添加好友";
                 this._fAddView.node.active = true;
-                this._rightPlayerInfo.node.active = false;
                 break;
             case FriendTabType.Apply: //好友申请列表
                 this.titleTxt.string = TextConfig.Friend_Apply; //"好友申请";
                 this._fMsgView.node.active = true;
-                this._rightPlayerInfo.node.active = false;
                 break;
             case FriendTabType.Message: // 好友消息通知
                 this.titleTxt.string = TextConfig.Friend_Notify; // "好友通知";
                 this._fEmailView.node.active = true;
-                this._rightPlayerInfo.node.active = true;
                 this._fEmailView.setEmailListSelected(0);
                 break;
         }
+        let isShow = click === FriendTabType.List || click === FriendTabType.Message;
+        this._rightPlayerInfo.showPlayerInfo(isShow); 
     }
 
     
