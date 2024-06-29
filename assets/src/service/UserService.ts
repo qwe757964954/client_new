@@ -19,6 +19,7 @@ export class UserService extends BaseControll {
 
     /**体力值更新 */
     reqStaminaUpdate() {
+        console.log("reqStaminaUpdate");
         let para = new c2sStaminaUpdate();
         NetMgr.sendMsg(para);
     }
