@@ -684,6 +684,15 @@
     "selectedFlag2": null,
     "selectedSpriteFrame": null,
     "adaptiveSize": false,
+    "icon_star": {
+      "__id__": 8
+    },
+    "answer_icon": {
+      "__id__": 20
+    },
+    "title_txt": {
+      "__id__": 17
+    },
     "_id": ""
   },
   {
