@@ -3,6 +3,7 @@ import { EventType } from '../../../config/EventType';
 import { PrefabType } from '../../../config/PrefabType';
 import { GameRes } from '../../../GameRes';
 import { inf_SpineAniCreate } from '../../../manager/InterfaceDefines';
+import { SoundMgr } from '../../../manager/SoundMgr';
 import { ViewsManager } from '../../../manager/ViewsManager';
 import { AdventureResult } from '../../../models/AdventureModel';
 import { RoleBaseModel } from '../../../models/RoleBaseModel';
@@ -14,8 +15,16 @@ import List from '../../../util/list/List';
 import { NodeUtil } from '../../../util/NodeUtil';
 import { ConditionItem } from './ConditionItem';
 import { ReportItem } from './ReportItem';
-import { SoundMgr } from '../../../manager/SoundMgr';
 const { ccclass, property } = _decorator;
+
+
+
+export const ClearanceConditionsConfig = [
+    { id: 1, title: "完成本关卡"},
+    { id: 2, title: "在5分钟内完成通关"},
+    { id: 3, title: "错误词书低于5"},
+];
+
 
 @ccclass('WordReportView')
 export class WordReportView extends BaseView {
@@ -167,6 +176,7 @@ export class WordReportView extends BaseView {
 
     onLoadConditionVertical(item: Node, idx: number) {
         let item_script = item.getComponent(ConditionItem);
+        item_script.updateItemProps(idx, this._resultSubmitResponse.flag_star_num);
     }
 }
 
