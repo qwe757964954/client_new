@@ -5,7 +5,6 @@ const DebugConfig = {
     UPLOAD_ERROR: true,//是否上传错误
     SHOW_FPS: false,//是否显示FPS
     TEST_SERVER: true,//是否测试服
-    OLD_SERVER: false,//是否旧服
 };
 
 export default DebugConfig;

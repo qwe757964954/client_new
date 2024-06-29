@@ -89,11 +89,6 @@ export class MapUICtl extends MainBaseCtl {
         this.initGrid();
         this.initMap();
 
-        if (GlobalConfig.OLD_SERVER) {
-            this.initLand({});
-            this.updateCameraVisible();
-            return;
-        }
         ServiceMgr.buildingService.reqPetInfo();
         ServiceMgr.buildingService.reqBuildingList();
 
@@ -128,6 +123,7 @@ export class MapUICtl extends MainBaseCtl {
         this.addEvent(InterfacePath.c2sPetUpgrade, this.onRepPetUpgrade.bind(this));
         this.addEvent(EventType.Mood_Score_Update, this.onMoodUpdate.bind(this));
         this.addEvent(EventType.BuidingModel_Remove, this.onBuildingRemove.bind(this));
+        this.addEvent(EventType.Building_Flipx, this.onBuildingFlipX.bind(this));
     }
     // 移除事件
     removeEvent() {
@@ -1027,6 +1023,9 @@ export class MapUICtl extends MainBaseCtl {
         if (building.parent == this._mainScene.buildingLayer) {
             this.removeBuilding(building);
         }
+    }
+    /**建筑翻转事件 */
+    onBuildingFlipX(building: BuildingModel) {
     }
     /**心情分变化 */
     onMoodUpdate() {
