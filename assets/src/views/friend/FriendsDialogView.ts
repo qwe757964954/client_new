@@ -185,6 +185,7 @@ export class FriendsDialogView extends BasePopup {
         switch (click) {
             case FriendTabType.List:// 好友列表
                 this.titleTxt.string = TextConfig.Friend_List; //"好友列表";
+                this._fListView.node.active = true;
                 FdServer.reqUserFriendList();
                 break;
             case FriendTabType.Add: //添加好友
