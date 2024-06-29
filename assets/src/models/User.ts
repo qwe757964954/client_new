@@ -1,6 +1,8 @@
 import { EventType, itemEventKey } from "../config/EventType";
 import { ItemID } from "../export/ItemConfig";
 import { EventMgr } from "../util/EventManager";
+import { TimerMgr } from "../util/TimerMgr";
+import { ToolUtil } from "../util/ToolUtil";
 /**登录类型 */
 export enum LoginType {
     account = 1,//账号密码登录
@@ -52,6 +54,10 @@ class UserModel {
 
     public castleLevel: number = 1;    // 城堡等级
 
+    private _staminaLimit: number = 0;    // 体力上限
+    private _staminaTime: number = 0;     // 体力恢复时间
+    private _staminaTimer: number = null;  // 体力恢复定时器
+
 
     // 测试数据
     //// 头像数据
@@ -86,6 +92,9 @@ class UserModel {
         this._itemAry = [];
         this._buildingList = [];
         this._landList = [];
+        this._staminaLimit = 0;
+        this._staminaTime = 0;
+        this.clearStaminaTimer();
     }
 
     set account(account: string) {
@@ -177,6 +186,9 @@ class UserModel {
     get moodScore(): number {
         return this._moodScore;
     }
+    get staminaLimit(): number {
+        return this._staminaLimit;
+    }
 
     public addBuilding(id: number) {
         if (this._buildingList.find(item => item === id)) return;
@@ -221,6 +233,34 @@ class UserModel {
         }
         this._itemAry[id] = num;
         EventMgr.emit(itemEventKey(id), num);
+    }
+    /**清理体力定时器 */
+    public clearStaminaTimer() {
+        if (this._staminaTimer) {
+            TimerMgr.stopLoop(this._staminaTimer);
+            this._staminaTimer = null;
+        }
+    }
+    /**体力定时器 */
+    public onStaminaTimer() {
+        if (ToolUtil.now() >= this._staminaTime) {
+            this.clearStaminaTimer();
+            EventMgr.emit(EventType.Stamina_Timeout);
+        }
+    }
+    /**体力更新剩余时间 */
+    public getStaminaLeftTime(): number {
+        if (!this._staminaTime) return null;
+        if (this._stamina >= this._staminaLimit) return null;
+        return this._staminaTime - ToolUtil.now();
+    }
+    /**设置体力上限、更新时间 */
+    public updateStaminaLimitAndTime(limit: number, time: number) {
+        this._staminaLimit = limit;
+        this._staminaTime = ToolUtil.now() + time;
+        this.clearStaminaTimer();
+        this._staminaTimer = TimerMgr.loop(this.onStaminaTimer.bind(this), 1000);
+        EventMgr.emit(EventType.Stamina_Timer_Update, time);
     }
 }
 

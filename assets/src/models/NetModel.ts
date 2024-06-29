@@ -71,8 +71,8 @@ export class BaseDataPacket {
 export class BaseRepPacket {
     code: number;//返回码
     msg: string;//返回信息
-    command_id?: number;
-    seq?: number;
+    // command_id?: number;
+    // seq?: number;
 }
 /**账号密码登录 */
 export class c2sAccountLogin {
@@ -97,6 +97,8 @@ export class s2cAccountLoginDetailExtra {
     nick_name: string;//昵称
     avatar: string;//头像
     phone: string;//手机号
+    stamina_limit: number;//体力上限
+    nex_stamina_update: number;//下次体力更新时间
 }
 export class s2cAccountLoginDetail {
     extra: s2cAccountLoginDetailExtra;//额外信息
@@ -131,6 +133,16 @@ export class s2cPhoneCodeLogin extends BaseRepPacket {
 export class s2cItemUpdate {
     user_id: number;//用户id
     item_list: ItemData[];//物品列表
+}
+/**体力更新 */
+export class c2sStaminaUpdate {
+    command_id: string = InterfacePath.c2sStaminaUpdate;
+}
+/**体力更新返回 */
+export class s2cStaminaUpdate extends BaseRepPacket {
+    stamina: number;//体力
+    stamina_limit: number;//体力上限
+    nex_stamina_update: number;//下次体力更新时间
 }
 /**建筑生产信息 */
 export class s2cBuildingProduceInfo {

@@ -7,6 +7,8 @@ export const InterfacePath = {
     c2sTokenLogin: "1004",//token登录
     c2sGetPhoneCode: "1008",//获取手机验证码
 
+    c2sStaminaUpdate: "1301",//体力值更新
+
     c2sBuildingList: "2005",//建筑列表
     c2sBuildingCreate: "2006",//新建建筑
     c2sBuildingEdit: "2007",//建筑修改
@@ -106,7 +108,7 @@ export const InterfacePath = {
     Classification_CompleteMainTask: "254", //完成主线任务
     Classification_CompleteBoxWeekTask: "255", //达成每周任务宝箱
     /***********************************************主线任务进度信息 end*********************************************/
-    
+
     /***********************************************设置相关start*********************************************/
     Classification_UserPlayerDetail: "1011", //用户信息详情消息
     Classification_UserPlayerModify: "1012", //用户信息修改
@@ -131,6 +133,6 @@ export const InterfacePath = {
     /***********************************************好友相关 end*********************************************/
 
 
-    
+
     /************************************socket消息类型end*********************************************/
 }
