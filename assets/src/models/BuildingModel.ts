@@ -5,7 +5,7 @@ import { PrefabType } from "../config/PrefabType";
 import { TextConfig } from "../config/TextConfig";
 import { DataMgr, EditInfo, EditType } from "../manager/DataMgr";
 import { LoadManager } from "../manager/LoadManager";
-import { ViewsManager } from "../manager/ViewsManager";
+import { ViewsManager, ViewsMgr } from "../manager/ViewsManager";
 import { ServiceMgr } from "../net/ServiceManager";
 import CCUtil from "../util/CCUtil";
 import EventManager, { EventMgr } from "../util/EventManager";
@@ -387,6 +387,15 @@ export class BuildingModel extends BaseModel {
     // 回收按钮点击
     public recycleBtnClick(): void {
         if (!this._isRecycle && this._buildingID) {
+            if (this.buildingData.queue.length > 0) {
+                ViewsMgr.showTip(TextConfig.Building_Recycle_Error1);
+                return;
+            }
+            // TODO 建筑升级显示
+            // if (this.buildingData.queue.length > 0) {
+            //     ViewsMgr.showTip(TextConfig.Building_Recycle_Error2);
+            //     return;
+            // }
             ServiceMgr.buildingService.reqBuildingRecycle(this._buildingID);
         } else {
             this.recycle();
@@ -501,9 +510,10 @@ export class BuildingModel extends BaseModel {
         if (!grids || grids.length < 1) return;
         let pos0 = grids[0].pos.clone();
         pos0.y = pos0.y - 0.5 * this._height * grids[0].height;
-        g.fillColor = new Color(99, 210, 198, 180);
+        // g.fillColor = new Color(99, 210, 198, 180);
+        g.fillColor = new Color(180, 0, 0, 180);
         grids.forEach(grid => {
-            // if (grid.isCanBuilding()) return;
+            if (grid.isCanBuilding()) return;
             let pos = grid.pos;
             let x = pos.x - pos0.x;
             let y = pos.y - pos0.y;

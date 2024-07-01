@@ -23,7 +23,7 @@ export const TextConfig = {
     Update_Error: "更新失败，请检测网络后再重试",
     Update_Success: "更新成功，是否立即重启游戏",
 
-    Building_Sure_Tip: "有重叠建筑，暂时不能保存!",
+    Building_Sure_Tip: "这个位置有其他建筑哦~",
     Building_Cell_Tip: "此建筑不能售卖!",
     // Building_Edit_Error: "该建筑不能编辑!",
     Building_New_Error: "该位置建筑不能放置!",
@@ -32,11 +32,14 @@ export const TextConfig = {
     Building_Upgrade_Error: "生产中，暂不能升级",
     Building_Upgrade_Success: "升级成功",
     Building_Flipx_Failed: "翻转失败",
+    Building_Recycle_Error1: "这个建筑正在制作中，请稍后完成后，再回收吧～",
+    Building_Recycle_Error2: "这个建筑正在升级中，请稍后完成后，再回收吧～",
 
     Role_Text1: "点我做啥",
     Role_Text2: "不能移动的位置",
 
     Cloud_Unlock_Tip: "是否解锁乌云",
+    Cloud_Unlock_Error1: "需要先拓张外围区域，才能拓张这里",
 
     Net_Error: "网络异常，请检查后再试",
 

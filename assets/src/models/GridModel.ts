@@ -77,4 +77,8 @@ export class GridModel {
         if (!this._dataBuilding) return true;
         return this._building === this._dataBuilding;
     }
+    /**是否是编辑区域 */
+    isEditArea() {
+        return true;
+    }
 }

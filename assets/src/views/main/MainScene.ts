@@ -159,12 +159,7 @@ export class MainScene extends BaseComponent {
         this._buildingEditCtl = new BuildEditCtl(this, this.getLoadOverCall());
         this._landEditCtl = new LandEditCtl(this, this.getLoadOverCall());
         this._recycleCtl = new RecycleCtl(this, this.getLoadOverCall());
-        console.time("MapUICtl");
-        call = this.getLoadOverCall();
-        this._mapUICtl = new MapUICtl(this, () => {
-            console.timeEnd("MapUICtl");
-            if (call) call();
-        });
+        this._mapUICtl = new MapUICtl(this, this.getLoadOverCall());
     }
     // 初始化事件
     initEvent() {
@@ -329,7 +324,18 @@ export class MainScene extends BaseComponent {
     /**乌云点击 */
     onCloudClick(cloud: CloudModel) {
         if (!cloud) return;
-        cloud.onCloudClick();
+        let width = cloud.width;
+        let xAry = [0, width, 0, -width];
+        let yAry = [-width, 0, width, 0];
+        for (let i = 0; i < xAry.length; i++) {
+            let grid = this._mapUICtl.getGridInfo(cloud.x + xAry[i], cloud.y + yAry[i]);
+            // console.log("onCloudClick", xAry[i], yAry[i], grid);
+            if (grid && grid.isEditArea && !grid.cloud) {
+                cloud.onCloudClick();
+                return;
+            }
+        }
+        ViewsMgr.showTip(TextConfig.Cloud_Unlock_Error1);
     }
     // 新建建筑与地块
     onBuildLandClick(data: EditInfo) {
