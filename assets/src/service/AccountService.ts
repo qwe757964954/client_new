@@ -80,7 +80,7 @@ export default class AccountService {
                 User.level = extra.level;
                 User.exp = extra.exp;
                 User.nick = extra.nick_name;
-                // User.updateStaminaLimitAndTime(extra.stamina_limit, extra.nex_stamina_update);
+                // User.updateStaminaLimitAndTime(extra.stamina_limit, extra.next_stamina_update);
                 EventMgr.emit(EventType.Stamina_Timeout);
             }
             this.itemUpdate(data.detail?.item_list);

@@ -41,7 +41,7 @@ export class s2cAccountLoginDetailExtra {
     avatar: string;//头像
     phone: string;//手机号
     stamina_limit: number;//体力上限
-    nex_stamina_update: number;//下次体力更新时间
+    next_stamina_update: number;//下次体力更新时间
 }
 export class s2cAccountLoginDetail {
     extra: s2cAccountLoginDetailExtra;//额外信息
@@ -85,7 +85,7 @@ export class c2sStaminaUpdate {
 export class s2cStaminaUpdate extends BaseRepPacket {
     stamina: number;//体力
     stamina_limit: number;//体力上限
-    nex_stamina_update: number;//下次体力更新时间
+    next_stamina_update: number;//下次体力更新时间
 }
 /**建筑生产信息 */
 export class s2cBuildingProduceInfo {

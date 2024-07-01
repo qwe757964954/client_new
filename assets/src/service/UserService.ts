@@ -27,6 +27,6 @@ export class UserService extends BaseControll {
     onStaminaUpdate(data: s2cStaminaUpdate) {
         if (200 != data.code) return;
         User.stamina = data.stamina;
-        User.updateStaminaLimitAndTime(data.stamina_limit, data.nex_stamina_update);
+        User.updateStaminaLimitAndTime(data.stamina_limit, data.next_stamina_update);
     }
 }
