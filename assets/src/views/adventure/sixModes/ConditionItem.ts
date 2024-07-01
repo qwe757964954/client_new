@@ -1,4 +1,4 @@
-import { Label, Node, _decorator } from 'cc';
+import { Label, Node, Sprite, _decorator } from 'cc';
 import ListItem from '../../../util/list/ListItem';
 import { ClearanceConditionsConfig } from './WordReportView';
 const { ccclass, property } = _decorator;
@@ -22,8 +22,10 @@ export class ConditionItem extends ListItem {
         
     }
 
-    updateItemProps(idx: number,flag_star_num:number){
-        this.title_txt.string = ClearanceConditionsConfig[idx].title;
+    updateItemProps(key: string, value:number){
+        this.title_txt.string = ClearanceConditionsConfig[key];
+        this.icon_star.getComponent(Sprite).grayscale = value === 0;
+        this.answer_icon.active = value === 1;
     }
 }
 

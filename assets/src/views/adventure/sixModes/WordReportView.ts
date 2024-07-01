@@ -1,7 +1,8 @@
-import { _decorator, instantiate, Layers, Node, Prefab } from 'cc';
+import { _decorator, instantiate, Layers, Node, Prefab, UITransform } from 'cc';
 import { EventType } from '../../../config/EventType';
 import { PrefabType } from '../../../config/PrefabType';
 import { GameRes } from '../../../GameRes';
+import { ItemData } from '../../../manager/DataMgr';
 import { inf_SpineAniCreate } from '../../../manager/InterfaceDefines';
 import { SoundMgr } from '../../../manager/SoundMgr';
 import { ViewsManager } from '../../../manager/ViewsManager';
@@ -13,17 +14,18 @@ import CCUtil from '../../../util/CCUtil';
 import { EventMgr } from '../../../util/EventManager';
 import List from '../../../util/list/List';
 import { NodeUtil } from '../../../util/NodeUtil';
+import { ObjectUtil } from '../../../util/ObjectUtil';
+import { RewardItem } from '../../common/RewardItem';
 import { ConditionItem } from './ConditionItem';
-import { ReportItem } from './ReportItem';
 const { ccclass, property } = _decorator;
 
 
 
-export const ClearanceConditionsConfig = [
-    { id: 1, title: "完成本关卡"},
-    { id: 2, title: "在5分钟内完成通关"},
-    { id: 3, title: "错误词书低于5"},
-];
+export const ClearanceConditionsConfig = {
+    star_one:"完成本关卡",
+    star_two:"在5分钟内完成通关",
+    star_three:"错误词书低于5",
+}
 
 
 @ccclass('WordReportView')
@@ -58,7 +60,7 @@ export class WordReportView extends BaseView {
 
     @property(Node)
     public reward_line: Node = null;
-
+    private _propsData: ItemData[] = [];
     private _resultSubmitResponse: GameSubmitResponse | AdventureResult = null;
 
     initUI() {
@@ -70,11 +72,13 @@ export class WordReportView extends BaseView {
         this._resultSubmitResponse = data;
         if (this._resultSubmitResponse.pass_flag == 1) {
             let startAnim = ["sta", "sta2", "sta3"]
-            let curAnim = startAnim[this._resultSubmitResponse.flag_star_num - 1];
+            let ket_length = Object.keys(this._resultSubmitResponse.flag_info).length;
+            let curAnim = startAnim[ket_length - 1];
             let idleAnim = `${curAnim}_idle`;
             this.showResultSpAni(curAnim, idleAnim);
-            this.reward_scroll.numItems = Object.keys(this._resultSubmitResponse.award).length;
-            this.condition_scroll.numItems = this._resultSubmitResponse.flag_star_num;
+            this._propsData = ObjectUtil.convertAwardsToItemData(this._resultSubmitResponse.award_info);
+            this.reward_scroll.numItems = this._propsData.length;
+            this.condition_scroll.numItems = ket_length;
             this.showRewardSpAni();
             SoundMgr.victory();
         } else {
@@ -166,17 +170,18 @@ export class WordReportView extends BaseView {
     }
 
     onLoadRewardHorizontal(item: Node, idx: number) {
-        let keys = Object.keys(this._resultSubmitResponse.award);
-        let key: string = keys[idx];
-        let item_script = item.getComponent(ReportItem);
-        item_script.updateItemProps(key, this._resultSubmitResponse.award[key]);
-        // let unitStatus:UnitItemStatus = this._unitListArr[idx];
-        // item_sript.updateRewardStatus(unitStatus.studywordnum >=unitStatus.totalwordnum);
+        const rewardItem = item.getComponent(RewardItem);
+        const uiTransform = item.getComponent(UITransform);
+        const scale = 126.5 / uiTransform.height;
+        item.setScale(scale, scale, scale);
+        rewardItem.init(this._propsData[idx]);
     }
 
     onLoadConditionVertical(item: Node, idx: number) {
         let item_script = item.getComponent(ConditionItem);
-        item_script.updateItemProps(idx, this._resultSubmitResponse.flag_star_num);
+        let keys = Object.keys(this._resultSubmitResponse.flag_info);
+        let key: string = keys[idx];
+        item_script.updateItemProps(key,this._resultSubmitResponse.flag_info[key]);
     }
 }
 
