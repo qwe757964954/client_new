@@ -3,63 +3,6 @@
 import { ItemData } from "../manager/DataMgr";
 import { InterfacePath } from "../net/InterfacePath";
 
-//公告检测
-export class c2sCheckNotice {
-    channel_id: number;
-    client_version: string;
-}
-export class s2cMaintenanceInfo {
-    maintenance_id: number;
-    content: string;
-}
-export class s2cCheckNotice {
-    code: number;
-    data: s2cMaintenanceInfo;
-}
-// token登录
-export class c2sTokenLoginOld {
-    LoginToken: string;
-}
-export class s2cTokenLogin {
-    WebSocketAddr: string;//socket地址
-    WebSocketPort: number;//socket端口
-    MemberToken: string;//token
-    TotalTime: string;
-    LastTime: string;
-    WebPort: number;//提交评测端口
-    op_code: string;//返回信息 disable账号被禁用 die账号密码错误 iplimit受限IP
-
-    Code: number;//返回码
-    UnionId: string;//微信unionid
-
-}
-// moble登录
-export class c2sMobileLogin {
-    Mobile: string;//手机号
-    UnionId: string;//微信unionid（非必须？）
-}
-// 请求验证码
-export class c2sReqSms {
-    Mobile: string;//手机号
-}
-// 短信登录
-export class c2sSmsLogin {
-    Mobile: string;//手机号
-    RandomCode: string;//验证码
-    UnionId: string;//微信unionid（非必须）
-}
-// 微信登录
-export class c2sWechatLogin {
-    Code: string;//微信code
-}
-// 账号密码登录
-// export class c2sAccountLogin {
-//     AccountName: string;//账号
-//     LoginPwd: string;//密码
-//     SysType: number;//系统类型 0:教室端 1:家庭端
-// }
-/*****************************************************************************/
-
 
 /**********************************SOCKET*************************************/
 /**基础接口类 */
@@ -71,8 +14,8 @@ export class BaseDataPacket {
 export class BaseRepPacket {
     code: number;//返回码
     msg: string;//返回信息
-    command_id?: number;
-    seq?: number;
+    // command_id?: number;
+    // seq?: number;
 }
 /**账号密码登录 */
 export class c2sAccountLogin {
@@ -97,6 +40,8 @@ export class s2cAccountLoginDetailExtra {
     nick_name: string;//昵称
     avatar: string;//头像
     phone: string;//手机号
+    stamina_limit: number;//体力上限
+    next_stamina_update: number;//下次体力更新时间
 }
 export class s2cAccountLoginDetail {
     extra: s2cAccountLoginDetailExtra;//额外信息
@@ -131,6 +76,16 @@ export class s2cPhoneCodeLogin extends BaseRepPacket {
 export class s2cItemUpdate {
     user_id: number;//用户id
     item_list: ItemData[];//物品列表
+}
+/**体力更新 */
+export class c2sStaminaUpdate {
+    command_id: string = InterfacePath.c2sStaminaUpdate;
+}
+/**体力更新返回 */
+export class s2cStaminaUpdate extends BaseRepPacket {
+    stamina: number;//体力
+    stamina_limit: number;//体力上限
+    next_stamina_update: number;//下次体力更新时间
 }
 /**建筑生产信息 */
 export class s2cBuildingProduceInfo {

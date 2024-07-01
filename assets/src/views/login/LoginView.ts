@@ -4,12 +4,10 @@ import { KeyConfig } from '../../config/KeyConfig';
 import { NetConfig } from '../../config/NetConfig';
 import { SceneType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
-import GlobalConfig from '../../GlobalConfig';
 import { DataMgr } from '../../manager/DataMgr';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { s2cAccountLogin, s2cGetPhoneCode } from '../../models/NetModel';
 import { LoginType, User } from '../../models/User';
-import { HttpManager } from '../../net/HttpManager';
 import { InterfacePath } from '../../net/InterfacePath';
 import { NetMgr } from '../../net/NetManager';
 import { ServiceMgr } from '../../net/ServiceManager';
@@ -112,32 +110,6 @@ export class LoginView extends BaseView {
     }
 
     checkToken() {
-        if (GlobalConfig.OLD_SERVER) {
-            // 有token且登录成功直接进入主界面，否则初始化UI
-            let loginInfoStr = StorageUtil.getData(LOGIN_INFO_KEY);
-            if (!loginInfoStr) {
-                return;
-            }
-            try {
-                let loginInfo = JSON.parse(loginInfoStr);
-                if (loginInfo.AccountName && loginInfo.LoginPwd) {
-                    this.userNameEdit.string = loginInfo.AccountName;
-                    this.pwdEdit.string = loginInfo.LoginPwd;
-                }
-                this.middle.active = false;
-                HttpManager.reqTokenLogin(loginInfo?.LoginToken, (obj) => {
-                    if (!this.loginSuc(obj)) {
-                        this.middle.active = true;
-                    }
-                }, () => {
-                    this.middle.active = true;
-                });
-            } catch (error) {
-                console.error(error);
-                this.middle.active = true;
-            }
-            return;
-        }
         if (User.isAutoLogin) {
             let token = StorageUtil.getData(KeyConfig.Last_Login_Token, "");
             if (token && "" != token) {
@@ -184,14 +156,6 @@ export class LoginView extends BaseView {
         }
         if (pwd == "") {
             ViewsMgr.showTip(TextConfig.Password_Null_Tip);
-            return;
-        }
-        if (GlobalConfig.OLD_SERVER) {
-            HttpManager.reqAccountLogin(userName, pwd, 0, (obj) => {
-                this.loginSuc(obj);
-            }, () => {
-                console.log("账号密码登录失败");
-            })
             return;
         }
         this.accountLogin(userName, pwd);

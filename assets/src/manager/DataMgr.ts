@@ -57,6 +57,7 @@ export class EditInfo {
     sell: number;//出售金币数
     enable: number;//是否可用
     width: number;//宽
+    height: number;//高
     png: string;//图片
     description: string;//描述
     function: string;//功能描述
@@ -159,7 +160,7 @@ export class DataManager {
     public archConfig: { [key: number]: ArchConfig } = {}; //成就信息
     public medalConfig: MedalConfig[] = []; //勋章信息
     public helpConfig = {} //帮助配置
-    public adventureBossConfig:BossLevelData[] = []; //大冒险岛屿boss信息
+    public adventureBossConfig: BossLevelData[] = []; //大冒险岛屿boss信息
 
     private _isInit: boolean = false;
     public defaultLand: EditInfo = null;//默认地块

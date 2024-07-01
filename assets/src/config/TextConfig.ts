@@ -31,6 +31,7 @@ export const TextConfig = {
     Building_Product_Delete: "是否删除此生产",
     Building_Upgrade_Error: "生产中，暂不能升级",
     Building_Upgrade_Success: "升级成功",
+    Building_Flipx_Failed: "翻转失败",
 
     Role_Text1: "点我做啥",
     Role_Text2: "不能移动的位置",

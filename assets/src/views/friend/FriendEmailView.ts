@@ -17,6 +17,10 @@ export class FriendEmailView extends Component {
     updateData(data:SystemMailItem[]){
         this._emailDataList = data;
         this.emailList.numItems = this._emailDataList.length;
+        
+    }
+    setEmailListSelected(index:number){
+        this.emailList.selectedId = index;
     }
     setEmailListener(listener:(data:SystemMailItem) => void){
         this._clickListener = listener;

@@ -51,28 +51,43 @@ export class SettingPlanView extends BasePopup {
         CCUtil.offTouch(this.cancelBtn, this.onClickCancel, this);
     }
     setLeftRightDatePick() {
-        this.levelScroll.initSelectCallFunc((select_num:number)=>{
-            if(this._levelSelect === select_num){
-                // if(this._levelSelect === this)
-                let days = TextbookUtil.calculateDays(this._totoal_level,select_num);
-                this.dayScroll.scrollToNumber(`${days}`)
-                return;
-            }
-            this._levelSelect = select_num;
-            console.log("_leftSelect....",select_num);
-            let days = TextbookUtil.calculateDays(this._totoal_level,select_num);
-            this.dayScroll.scrollToNumber(`${days}`)
-        })
-        this.dayScroll.initSelectCallFunc((select_num:number)=>{
-            if(this._daySelect === select_num){
-                return;
-            }
-            console.log("_rightSelect....",select_num);
-            this._daySelect = select_num;
-            let levels = TextbookUtil.calculateLevels(this._totoal_level,select_num);
-            this.levelScroll.scrollToNumber(`${levels}`)
-        })
+        this.levelScroll.initSelectCallFunc((selectedLevel: number) => {
+            this.handleLevelSelect(selectedLevel);
+        });
+
+        this.dayScroll.initSelectCallFunc((selectedDay: number) => {
+            this.handleDaySelect(selectedDay);
+        });
     }
+    private handleLevelSelect(selectedLevel: number): void {
+        if (this._levelSelect === selectedLevel) {
+            this.updateDays(selectedLevel);
+            return;
+        }
+        this._levelSelect = selectedLevel;
+        console.log("_leftSelect....", selectedLevel);
+        this.updateDays(selectedLevel);
+    }
+
+    private handleDaySelect(selectedDay: number): void {
+        if (this._daySelect === selectedDay) {
+            return;
+        }
+        this._daySelect = selectedDay;
+        console.log("_rightSelect....", selectedDay);
+        this.updateLevels(selectedDay);
+    }
+
+    private updateDays(selectedLevel: number): void {
+        const days = TextbookUtil.calculateDays(this._totoal_level, selectedLevel);
+        this.dayScroll.scrollToNumber(`${days}`);
+    }
+
+    private updateLevels(selectedDay: number): void {
+        const levels = TextbookUtil.calculateLevels(this._totoal_level, selectedDay);
+        this.levelScroll.scrollToNumber(`${levels}`);
+    }
+
     updateTitleName(title:string,total_level:number) {
         this.book_title.string = title;
         this._totoal_level = total_level;
@@ -89,6 +104,7 @@ export class SettingPlanView extends BasePopup {
                 this.dayScroll.scrollToNumber(`${days}`)
             }
         },0.2)
+        
     }
 
     onLoadLeftVerticalList(item:Node, idx:number){

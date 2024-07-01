@@ -23,63 +23,55 @@ export class MsgListItem extends ListItem {
     @property({ type: Node, tooltip: "同意按钮" })
     btnAccept: Node = null;
 
-    _data: UserApplyModel = null;
+    private _data: UserApplyModel = null;
 
     onLoad(): void {
-        //console.log("FriendListItem onLoad");
-        this.addEvent();
+        this.addEventListeners();
     }
 
-    addEvent() {
-        CCUtil.onTouch(this.btnAccept, this.onAcceptClick, this);
-        CCUtil.onTouch(this.btnIgnore, this.onIngoreClick, this);
+    protected onDestroy(): void {
+        this.removeEventListeners();
     }
 
-    removeEvent() {
-        CCUtil.offTouch(this.btnAccept, this.onAcceptClick, this);
-        CCUtil.offTouch(this.btnIgnore, this.onIngoreClick, this);
+    private addEventListeners(): void {
+        CCUtil.onTouch(this.btnAccept, this.handleAcceptClick, this);
+        CCUtil.onTouch(this.btnIgnore, this.handleIgnoreClick, this);
     }
 
-    onDestroy(): void {
-        this.removeEvent();
+    private removeEventListeners(): void {
+        CCUtil.offTouch(this.btnAccept, this.handleAcceptClick, this);
+        CCUtil.offTouch(this.btnIgnore, this.handleIgnoreClick, this);
     }
 
-    async initData(data: UserApplyModel) {
+    async initData(data: UserApplyModel): Promise<void> {
         this._data = data;
-        let headIdMap = { "101": 101, "1101": 101, "102": 102, "1102": 102, "103": 103, "1103": 103 }
-        let avatar: number = headIdMap[data.avatar];
-        let avatarPath: string = "friend/head_" + avatar + "/spriteFrame";
-        await LoadManager.loadSprite(avatarPath, this.imgHead.getComponent(Sprite)).then(() => { },
-            (error) => {
-                // console.log("loadShowSprite->resource load failed:" + this._data.icon.skin + "," + error.message);
-            });
+        const headIdMap = { "101": 101, "1101": 101, "102": 102, "1102": 102, "103": 103, "1103": 103 };
+        const avatar = headIdMap[data.avatar] || 101; // 默认头像
+        const avatarPath = `friend/head_${avatar}/spriteFrame`;
+
+        try {
+            await LoadManager.loadSprite(avatarPath, this.imgHead);
+        } catch (error) {
+            console.error(`Failed to load avatar sprite: ${error.message}`);
+        }
+
         this.lblRealName.string = data.nick_name;
-        this.lblID.string = "" + data.user_id;
+        this.lblID.string = `${data.user_id}`;
     }
 
-    private onIngoreClick() {
-        let param:ApplyModifyModel = {
-            friend_id:this._data.user_id,
-            status:ApplicationStatus.Rejected
-        }
+    private handleIgnoreClick(): void {
+        this.modifyApplicationStatus(ApplicationStatus.Rejected);
+    }
+
+    private handleAcceptClick(): void {
+        this.modifyApplicationStatus(ApplicationStatus.Approved);
+    }
+
+    private modifyApplicationStatus(status: ApplicationStatus): void {
+        const param: ApplyModifyModel = {
+            friend_id: this._data.user_id,
+            status
+        };
         FdServer.reqUserFriendApplyModify(param);
-    }
-
-    private onAcceptClick() {
-        let param:ApplyModifyModel = {
-            friend_id:this._data.user_id,
-            status:ApplicationStatus.Rejected
-        }
-        FdServer.reqUserFriendApplyModify(param);
-    }
-
-    start() {
-
-    }
-
-    update(deltaTime: number) {
-
     }
 }
-
-

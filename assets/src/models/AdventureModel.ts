@@ -162,7 +162,12 @@ export interface AdventureResultModel {
 export class AdventureResult extends BaseRepPacket {
     pass_flag: number;
     award?: any;
+    award_info?: any;
     flag_star_num: number;
+    flag_info?: {
+        star_one?:number;
+        star_three?:number;
+        star_two?:number};
     word: string;
 }
 

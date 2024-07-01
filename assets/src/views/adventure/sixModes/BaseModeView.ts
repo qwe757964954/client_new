@@ -1,10 +1,12 @@
-import { _decorator, assetManager, BlockInputEvents, Button, instantiate, isValid, Label, Node, Prefab, resources, Sprite, tween, UIOpacity, UITransform, Vec3, view } from 'cc';
+import { _decorator, BlockInputEvents, Button, instantiate, isValid, Label, Node, Prefab, Sprite, tween, UIOpacity, UITransform, Vec3, view } from 'cc';
 import { EventType } from '../../../config/EventType';
 import { GameRes } from '../../../GameRes';
 import GlobalConfig from '../../../GlobalConfig';
 import { AdvLevelConfig, BookLevelConfig } from '../../../manager/DataMgr';
+import { inf_SpineAniCreate } from '../../../manager/InterfaceDefines';
 import { LoadManager } from '../../../manager/LoadManager';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
+import { SoundMgr } from '../../../manager/SoundMgr';
 import { ViewsMgr } from '../../../manager/ViewsManager';
 import { AdventureCollectWordModel, AdventureResult, AdventureResultModel, GameMode, WordsDetailData } from '../../../models/AdventureModel';
 import { s2cReviewPlanSubmit } from '../../../models/NetModel';
@@ -22,8 +24,6 @@ import FileUtil from '../../../util/FileUtil';
 import { ToolUtil } from '../../../util/ToolUtil';
 import { SmallMonsterModel } from '../../common/SmallMonsterModel';
 import { MonsterModel } from '../common/MonsterModel';
-import { inf_SpineAniCreate } from '../../../manager/InterfaceDefines';
-import { SoundMgr } from '../../../manager/SoundMgr';
 const { ccclass, property } = _decorator;
 
 export enum WordSourceType {
@@ -298,6 +298,8 @@ export class BaseModeView extends BaseView {
             let pass = levelData.word_num - levelData.error_num;
             let totalHp = this.gameMode == GameMode.Exam ? this._wordsData.length : this._wordsData.length * 5;
             monsterModel.setHp(this._wordsData.length * this._hpLevels[this.gameMode] + pass, totalHp);
+            let hp_scale = monsterModel.hpNode.getScale();
+            monsterModel.hpNode.scale = new Vec3(-hp_scale.x, hp_scale.y, 1);
         } else if (WordSourceType.review == this._sourceType) { //复习规划
             this._monster = instantiate(this.monsterModel);
             this.monster.addChild(this._monster);

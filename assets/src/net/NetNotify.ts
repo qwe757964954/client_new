@@ -65,8 +65,14 @@ export const NetNotify = {
     Classification_UserMessageStatusUpdate: "Classification_UserMessageStatusUpdate", //用户与朋友消息更新为已读
     Classification_UserSystemMailList: "Classification_UserSystemMailList", //用户系统邮件列表
     Classification_UserSystemMailDetail: "Classification_UserSystemMailDetail", //用户系统邮件详情消息
+    Classification_UserSystemAwardGet: "Classification_UserSystemAwardGet", //用户系统邮件奖励领取
+    Classification_UserRecommendFriendList: "Classification_UserRecommendFriendList", //好友推荐列表消息
     /***********************************************好友相关信息 end*********************************************/
     
+    /***********************************************用户公告start*********************************************/
+    Classification_Announcement: "Classification_Announcement", //用户公告列表获取
+    /***********************************************用户公告 end*********************************************/
 
+    
     /***********************************************选择词书 end*********************************************/
 }

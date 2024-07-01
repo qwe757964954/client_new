@@ -20,7 +20,6 @@ export default class GlobalConfig {
     public static ANDROID_ID: string = "";
 
     public static TEST_SERVER: boolean = DebugConfig.TEST_SERVER;
-    public static OLD_SERVER: boolean = DebugConfig.OLD_SERVER;
 
     public static LOG_DIR_NAME: string = "Logs/";
     public static ERROR_LOG_NAME: string = "chuangcierror.log";

@@ -7,6 +7,8 @@ export const InterfacePath = {
     c2sTokenLogin: "1004",//token登录
     c2sGetPhoneCode: "1008",//获取手机验证码
 
+    c2sStaminaUpdate: "1301",//体力值更新
+
     c2sBuildingList: "2005",//建筑列表
     c2sBuildingCreate: "2006",//新建建筑
     c2sBuildingEdit: "2007",//建筑修改
@@ -106,7 +108,7 @@ export const InterfacePath = {
     Classification_CompleteMainTask: "254", //完成主线任务
     Classification_CompleteBoxWeekTask: "255", //达成每周任务宝箱
     /***********************************************主线任务进度信息 end*********************************************/
-    
+
     /***********************************************设置相关start*********************************************/
     Classification_UserPlayerDetail: "1011", //用户信息详情消息
     Classification_UserPlayerModify: "1012", //用户信息修改
@@ -124,11 +126,13 @@ export const InterfacePath = {
     Classification_UserFriendMessageList: "1107", //获取用户好友消息列表
     Classification_UserSendMessageFriend: "1108", //用户给好友发送消息
     Classification_UserMessageStatusUpdate: "1109", //用户与朋友消息更新为已读
+    Classification_UserRecommendFriendList: "1110", //好友推荐列表消息
     Classification_UserSystemMailList: "1201", //用户系统邮件列表
     Classification_UserSystemMailDetail: "1202", //用户系统邮件详情消息
+    Classification_UserSystemAwardGet: "1203", //用户系统邮件奖励领取
     /***********************************************好友相关 end*********************************************/
-
-
-    
+    /***********************************************公告start*********************************************/
+    Classification_Announcement: "1351", //用户公告列表获取
+    /***********************************************公告 end*********************************************/
     /************************************socket消息类型end*********************************************/
 }

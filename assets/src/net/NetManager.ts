@@ -1,5 +1,4 @@
 import { Game, game } from "cc";
-import GlobalConfig from "../GlobalConfig";
 import { EventType } from "../config/EventType";
 import { NetConfig } from "../config/NetConfig";
 import { TextConfig } from "../config/TextConfig";
@@ -20,7 +19,7 @@ class FailedMsgInfo {
 class NetManager {
     private _serverUrl: string;//服务器地址
     private _serverPort: number;//服务器端口
-    private _webPort: number;//web服务器端口
+    // private _webPort: number;//web服务器端口
     // public memberToken: string;//用户token
 
     private _socket: Socket = null;
@@ -48,7 +47,7 @@ class NetManager {
     public setServer(serverUrl: string, serverPort: number, webPort: number = 8080) {
         this._serverUrl = serverUrl;
         this._serverPort = serverPort;
-        this._webPort = webPort;
+        // this._webPort = webPort;
     }
     //连接服务器
     public connectNet() {
@@ -62,21 +61,11 @@ class NetManager {
         this._socket.recvFun = this.onRecvMsg.bind(this);
         this._socket.errorFun = this.onError.bind(this);
         this._socket.closeFun = this.onClose.bind(this);
-        if (GlobalConfig.OLD_SERVER) {
-            this._socket.connect("wss://" + this._serverUrl + ":" + this._serverPort);
-            return;
-        }
         this._socket.connect("ws://" + this._serverUrl + ":" + this._serverPort);
     }
     //发送消息
     public sendMsg(pbobj?: any) {
         if (this._socket) {
-            if (GlobalConfig.OLD_SERVER) {
-                console.log("sendMsg", pbobj.Path);
-                let buffer = pbobj ? JSON.stringify(pbobj) : pbobj;
-                this._socket.sendMsg(buffer);
-                return;
-            }
             let command_id = pbobj.command_id;
             let obj = new BaseDataPacket();
             if (Array.isArray(pbobj)) {
@@ -109,10 +98,6 @@ class NetManager {
         console.log("onConnect");
         // this._reconnceTime = 0;//让登录结果来重置，防止假连接
         EventMgr.emit(EventType.Socket_Connect);
-        if (GlobalConfig.OLD_SERVER) {
-            ServiceMgr.accountService.accountInit();
-            return;
-        }
         if (!this.sendSpecialFailedMsg()) {
             if (User.memberToken && "" != User.memberToken) {
                 ServiceMgr.accountService.tokenLogin();
@@ -131,15 +116,6 @@ class NetManager {
     //socket接收消息
     public onRecvMsg(data: string) {
         let obj = JSON.parse(data);
-        if (GlobalConfig.OLD_SERVER) {
-            if (obj.Path) {
-                console.log("onRecvMsg id", obj.Path);
-                EventMgr.emit(obj.Path, obj);
-            } else {
-                console.log("onRecvMsg no path", obj);
-            }
-            return;
-        }
         if (obj.command_id) {
             console.log("onRecvMsg id", obj.command_id, obj);
 

@@ -8,7 +8,7 @@ import { LoadManager } from "../manager/LoadManager";
 import { ViewsManager } from "../manager/ViewsManager";
 import { ServiceMgr } from "../net/ServiceManager";
 import CCUtil from "../util/CCUtil";
-import EventManager from "../util/EventManager";
+import EventManager, { EventMgr } from "../util/EventManager";
 import { NodeUtil } from "../util/NodeUtil";
 import { TimerMgr } from "../util/TimerMgr";
 import { ToolUtil } from "../util/ToolUtil";
@@ -63,6 +63,7 @@ export class BuildingModel extends BaseModel {
     private _x: number;//x格子坐标
     private _y: number;//y格子坐标
     private _width: number;//宽
+    private _height: number;//高
     private _grids: GridModel[];//格子
     private _isFlip: boolean = false;//是否翻转
     private _isShowEx: boolean = false;//是否显示
@@ -104,6 +105,7 @@ export class BuildingModel extends BaseModel {
         this._x = x;
         this._y = y;
         this._width = editInfo.width;
+        this._height = editInfo.height;
         this.isFlip = isFlip;
         this._dataIsFlip = isFlip;
         this._isShowEx = true;
@@ -154,7 +156,7 @@ export class BuildingModel extends BaseModel {
     // 设置所占格子。清理以前老数据，设置新数据，更新节点位置
     public set grids(grids: GridModel[]) {
         // console.log("set grids",grids);
-        if (!grids || grids.length != this._width * this._width) {
+        if (!grids || grids.length != this._width * this._height) {
             return;
         }
         this.recoverGrids();
@@ -170,7 +172,7 @@ export class BuildingModel extends BaseModel {
         this._x = gridInfo.x;
         this._y = gridInfo.y;
         let gridPos = gridInfo.pos;
-        let pos = new Vec3(gridPos.x, gridPos.y - 0.5 * this._width * gridInfo.height, 0);
+        let pos = new Vec3(gridPos.x, gridPos.y - 0.5 * this._height * gridInfo.height, 0);
         this.pos = pos;
         this.fixImgPos();
         if (!this.isNew && !this._dataGrids) {//初始化已有建筑
@@ -195,8 +197,12 @@ export class BuildingModel extends BaseModel {
     get width(): number {
         return this._width;
     }
+    get height(): number {
+        return this._height;
+    }
     set isFlip(isFlip: boolean) {
         this._isFlip = isFlip;
+        this.fixGridWidthAndHeight();
         if (this._building)
             this._building.node.scale = new Vec3(isFlip ? -1 : 1, 1, 1);
     }
@@ -313,8 +319,8 @@ export class BuildingModel extends BaseModel {
     }
     // 还原数据
     public resetData(): void {
-        this.grids = this._dataGrids;
         this.isFlip = this._dataIsFlip;
+        this.grids = this._dataGrids;
         this.isShowEx = this._dataIsShow;
     }
     /** 信息按钮 */
@@ -376,6 +382,7 @@ export class BuildingModel extends BaseModel {
     // 翻转
     public flip(): void {
         this.isFlip = !this.isFlip;
+        EventMgr.emit(EventType.Building_Flipx, this);
     }
     // 回收按钮点击
     public recycleBtnClick(): void {
@@ -493,10 +500,10 @@ export class BuildingModel extends BaseModel {
         let grids = this._grids;
         if (!grids || grids.length < 1) return;
         let pos0 = grids[0].pos.clone();
-        pos0.y = pos0.y - 0.5 * this._width * grids[0].height;
+        pos0.y = pos0.y - 0.5 * this._height * grids[0].height;
         g.fillColor = new Color(99, 210, 198, 180);
         grids.forEach(grid => {
-            if (grid.isCanBuilding()) return;
+            // if (grid.isCanBuilding()) return;
             let pos = grid.pos;
             let x = pos.x - pos0.x;
             let y = pos.y - pos0.y;
@@ -753,5 +760,10 @@ export class BuildingModel extends BaseModel {
             data.queue.push(tmpData);
         });
         return data;
+    }
+    /**调整宽高 */
+    public fixGridWidthAndHeight() {
+        this._width = this._isFlip ? this._editInfo.height : this._editInfo.width;
+        this._height = this._isFlip ? this._editInfo.width : this._editInfo.height;
     }
 }

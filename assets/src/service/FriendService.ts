@@ -1,5 +1,5 @@
 import { _decorator } from 'cc';
-import { ApplyModifyModel, c2sUserDelFriendMessage, c2sUserFriendAdd, c2sUserFriendApplyList, c2sUserFriendApplyModify, c2sUserFriendList, c2sUserFriendMessageList, c2sUserFriendSearch, c2sUserMessageStatusUpdate, c2sUserSendMessageFriend, c2sUserSystemMailDetail, c2sUserSystemMailList, SendMessageModel } from '../models/FriendModel';
+import { ApplyModifyModel, c2sUserDelFriendMessage, c2sUserFriendAdd, c2sUserFriendApplyList, c2sUserFriendApplyModify, c2sUserFriendList, c2sUserFriendMessageList, c2sUserFriendSearch, c2sUserMessageStatusUpdate, c2sUserRecommendFriendList, c2sUserSendMessageFriend, c2sUserSystemAwardGet, c2sUserSystemMailDetail, c2sUserSystemMailList, SendMessageModel } from '../models/FriendModel';
 import { InterfacePath } from '../net/InterfacePath';
 import { NetMgr } from '../net/NetManager';
 import { NetNotify } from '../net/NetNotify';
@@ -32,6 +32,10 @@ export class _FriendService extends BaseControll {
             [InterfacePath.Classification_UserMessageStatusUpdate, this.onUserMessageStatusUpdate],
             [InterfacePath.Classification_UserSystemMailList, this.onUserSystemMailList],
             [InterfacePath.Classification_UserSystemMailDetail, this.onUserSystemMailDetail],
+            
+
+            [InterfacePath.Classification_UserSystemAwardGet, this.onUserSystemAwardGet],
+            [InterfacePath.Classification_UserRecommendFriendList, this.onUserRecommendFriendList],
             
         ]);
     }
@@ -101,6 +105,25 @@ export class _FriendService extends BaseControll {
         param.sm_id = sm_id;
         NetMgr.sendMsg(param);
         
+    }
+
+    reqUserSystemAwardGet(sm_id:string){
+        let param:c2sUserSystemAwardGet = new c2sUserSystemAwardGet();
+        param.sm_id = sm_id;
+        NetMgr.sendMsg(param);
+    }
+
+    reqUserRecommendFriendList(){
+        let param:c2sUserRecommendFriendList = new c2sUserRecommendFriendList();
+        NetMgr.sendMsg(param);
+    }
+
+    onUserRecommendFriendList(data:any){
+        this.handleResponse(data, NetNotify.Classification_UserRecommendFriendList);
+    }
+
+    onUserSystemAwardGet(data:any){
+        this.handleResponse(data, NetNotify.Classification_UserSystemAwardGet);
     }
 
     onUserSystemMailDetail(data:any){

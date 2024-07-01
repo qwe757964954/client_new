@@ -21,6 +21,7 @@ export const EventType = {
     GridRect_Need_Draw: "GridRectNeedDraw",//格子需要绘制
     EditUIView_Refresh: "EditUIViewRefresh",//编辑界面刷新
     New_Building: "NewBuilding",//新建建筑
+    Building_Flipx: "BuildingFlipx",//建筑翻转
 
     Stamina_Update: "StaminaUpdate",//体力更新
     Coin_Update: "CoinUpdate",//金币更新
@@ -29,6 +30,9 @@ export const EventType = {
     Ticket_Update: "TicketUpdate",//奖券更新
     Mood_Score_Update: "MoodUpdate",//心情分更新
     Item_Update: "ItemUpdate_{0}",//物品更新（注意：参数为物品类型）
+
+    Stamina_Timer_Update: "StaminaTimerUpdate",//体力计时器更新
+    Stamina_Timeout: "Stamina_Timeout",//体力计时器超时
 
     Study_Page_Switching: "Study_Page_Switching",//学习页面切换
 
@@ -120,7 +124,7 @@ export const EventType = {
     Challenge_Main_Task_Reward: "Challenge_Main_Task_Reward",  //领取主线任务奖励
     Box_Challenge_Reward: "Box_Challenge_Reward",  //领取宝箱奖励
 
-    Friend_Talk_Event:"Friend_Talk_Event",
+    Friend_Talk_Event: "Friend_Talk_Event",
 }
 
 export function itemEventKey(id: ItemID) {

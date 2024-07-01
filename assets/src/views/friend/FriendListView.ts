@@ -14,9 +14,10 @@ export class FriendListView extends Component {
     updateData(friendDatas: FriendListItemModel[]){
         this._friendDataList = friendDatas;
         this.friendList.numItems = friendDatas.length;
-        this.friendList.selectedId = 0;
     }
-
+    setFriendListSelected(index:number){
+        this.friendList.selectedId = index;
+    }
     setFriendSelectListener(clickListener: (data:FriendListItemModel) => void) {
         this._clickListener = clickListener;
     }
