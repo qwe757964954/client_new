@@ -170,6 +170,7 @@ export class c2sUnitStatus {
 
 export interface UnitStatusData extends BaseRepPacket{
     book_id: string;            // Unique identifier for the book
+    error_count: number;
     error_word: any;  // An object for errors, assuming it's a flexible structure
     flag: number;               // A numerical flag
     game_mode: number;          // Game mode identifier

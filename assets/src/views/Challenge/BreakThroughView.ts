@@ -150,12 +150,12 @@ export class BreakThroughView extends BaseView {
             game_mode: LearnGameModel.Tutoring,
             small_id: this._selectGate.small_id,
             word_num: this._curUnitStatus.word_num,
+            error_count: this._curUnitStatus.error_count,
             time_remaining: this._curUnitStatus.time_remaining,
         };
 
         if (isValid(this._curUnitStatus.error_word)) {
             bookLevelData.error_word = this._curUnitStatus.error_word;
-            bookLevelData.error_num = this._curUnitStatus.error_word.length;
         }
 
         switch (gameModel) {
@@ -186,10 +186,21 @@ export class BreakThroughView extends BaseView {
             default:
                 break;
         }
+        this.removeTopAmoutView();
         this._scrollMap.removePointEvent();
     }
 
+    removeTopAmoutView(){
+        for (let index = 0; index < this.top_layout.children.length; index++) {
+            const item = this.top_layout.children[index] as Node;
+            if (item.name === "TopAmoutView") {
+                item.removeFromParent();
+            }
+        }
+    }
+
     onExitIsland() {
+        this.initAmout();
         this.hideRightPanelchangeView();
         this.getUnitListStatus();
     }

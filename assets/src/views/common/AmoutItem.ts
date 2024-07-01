@@ -1,4 +1,5 @@
-import { _decorator, Label, Node, resources, Sprite, SpriteFrame, UITransform } from 'cc';
+import { _decorator, error, Label, Node, Sprite, SpriteFrame, UITransform } from 'cc';
+import { ResLoader } from '../../manager/ResLoader';
 import ListItem from '../../util/list/ListItem';
 import { AmoutItemData, AmoutType } from './TopAmoutView';
 const { ccclass, property } = _decorator;
@@ -60,23 +61,12 @@ export class AmoutItem extends ListItem {
      * @param node 节点
      */
     updateStatic(url:string,node:Node){
-        resources.load(url, SpriteFrame, (err, spriteFrame) => {
-            if (!err) {
-                node.getComponent(Sprite).spriteFrame = spriteFrame;
-            }else{
-                console.log(err);
+        ResLoader.instance.load(url, SpriteFrame, (err: Error | null, spriteFrame: SpriteFrame) => {
+            if (err) {
+                error && console.error(err);
             }
+            node.getComponent(Sprite).spriteFrame = spriteFrame;
         });
-        // let image = new Image();
-        // image.src = url;
-        // image.onload = ()=>{
-        //     let texture = new Texture2D();
-        //     let spriteFrame = new SpriteFrame();
-        //     let imgAsset = new ImageAsset(image);
-        //     texture.image = imgAsset
-        //     spriteFrame.texture = texture;
-        //     node.getComponent(Sprite).spriteFrame = spriteFrame
-        // }
     }
 }
 
