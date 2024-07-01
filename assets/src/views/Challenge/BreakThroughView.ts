@@ -186,10 +186,21 @@ export class BreakThroughView extends BaseView {
             default:
                 break;
         }
+        this.removeTopAmoutView();
         this._scrollMap.removePointEvent();
     }
 
+    removeTopAmoutView(){
+        for (let index = 0; index < this.top_layout.children.length; index++) {
+            const item = this.top_layout.children[index] as Node;
+            if (item.name === "TopAmoutView") {
+                item.removeFromParent();
+            }
+        }
+    }
+
     onExitIsland() {
+        this.initAmout();
         this.hideRightPanelchangeView();
         this.getUnitListStatus();
     }
