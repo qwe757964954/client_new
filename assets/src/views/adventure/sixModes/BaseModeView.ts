@@ -126,7 +126,6 @@ export class BaseModeView extends BaseView {
             /**如果当前关卡有错词，自动放到最后 */
             if (isValid(levelData.error_word)) {
                 if (levelData.cur_game_mode === this.gameMode) {
-                    levelData.error_num = Object.keys(levelData.error_word).length;
                     this._errorWords = levelData.error_word;
                     for (const key in levelData.error_word) {
                         if (levelData.error_word.hasOwnProperty(key)) {
@@ -137,7 +136,6 @@ export class BaseModeView extends BaseView {
                         }
                     }
                 } else {
-                    levelData.error_num = 0;
                     this._wordIndex = 0;
                     const uniqueWordList: UnitWordModel[] = Object["values"](wordsdata.reduce((acc, curr) => {
                         acc[curr.word] = curr;
@@ -155,7 +153,6 @@ export class BaseModeView extends BaseView {
                 this._wordIndex = progressData.word_num - 1;
                 this._rightNum = progressData.pass_num;
                 if (isValid(progressData.error_word)) {
-                    levelData.error_num = Object.keys(progressData.error_word).length;
                     this._errorWords = progressData.error_word;
                     for (const key in progressData.error_word) {
                         if (progressData.error_word.hasOwnProperty(key)) {
@@ -165,13 +162,10 @@ export class BaseModeView extends BaseView {
                             }
                         }
                     }
-                } else {
-                    levelData.error_num = 0;
                 }
             } else {
                 this._wordIndex = 0;
                 levelData.mapLevelData.current_mode = this.gameMode;
-                levelData.error_num = 0;
                 levelData.progressData.error_word = null;
                 const uniqueWordList: UnitWordModel[] = Object["values"](wordsdata.reduce((acc, curr) => {
                     acc[curr.word] = curr;
@@ -196,7 +190,7 @@ export class BaseModeView extends BaseView {
         if (this._remainTime > 0 && this.gameMode != GameMode.Exam) {
             this.schedule(this.onTimer, 1);
         }
-        this._errorNum = levelData.error_num;
+        this._errorNum = levelData.error_count;
         this.errorNumLabel.string = "错误次数:" + this._errorNum;
         return wordsdata;
     }
@@ -292,7 +286,7 @@ export class BaseModeView extends BaseView {
                 this.monster.getComponent(UIOpacity).opacity = 125;
             }
             let levelData = this._levelData as BookLevelConfig;
-            let pass = levelData.word_num - levelData.error_num;
+            let pass = levelData.word_num - levelData.error_count;
             let totalHp = this.gameMode == GameMode.Exam ? this._wordsData.length : this._wordsData.length * 5;
             monsterModel.setHp(this._wordsData.length * this._hpLevels[this.gameMode] + pass, totalHp);
             let hp_scale = monsterModel.hpNode.getScale();

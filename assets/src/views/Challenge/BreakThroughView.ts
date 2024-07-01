@@ -150,12 +150,12 @@ export class BreakThroughView extends BaseView {
             game_mode: LearnGameModel.Tutoring,
             small_id: this._selectGate.small_id,
             word_num: this._curUnitStatus.word_num,
+            error_count: this._curUnitStatus.error_count,
             time_remaining: this._curUnitStatus.time_remaining,
         };
 
         if (isValid(this._curUnitStatus.error_word)) {
             bookLevelData.error_word = this._curUnitStatus.error_word;
-            bookLevelData.error_num = this._curUnitStatus.error_word.length;
         }
 
         switch (gameModel) {
