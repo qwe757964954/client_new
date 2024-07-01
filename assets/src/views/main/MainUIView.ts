@@ -1,5 +1,4 @@
-import { _decorator, Component, director, Label, Node, Sprite } from 'cc';
-import { EventType } from '../../config/EventType';
+import { _decorator, director, Label, Node, Sprite } from 'cc';
 import { MapStatus } from '../../config/MapConfig';
 import { PrefabType, SceneType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
@@ -7,14 +6,14 @@ import GlobalConfig from '../../GlobalConfig';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { User } from '../../models/User';
 import { NetMgr } from '../../net/NetManager';
+import { BaseView } from '../../script/BaseView';
 import CCUtil from '../../util/CCUtil';
-import EventManager from '../../util/EventManager';
 import { ReviewPlanView } from '../reviewPlan/ReviewPlanView';
 import { MainScene } from './MainScene';
 const { ccclass, property } = _decorator;
 
 @ccclass('MainUIView')
-export class MainUIView extends Component {
+export class MainUIView extends BaseView {
     @property(Node)
     public btnHead: Node = null;//头像
     @property(Node)
@@ -41,30 +40,10 @@ export class MainUIView extends Component {
     public btnReviewFix: Node = null;//复习计划修复
     @property(Node)
     public btnTranslateFix: Node = null;//翻译查词修复
-    @property(Node)
-    public btnBrocast: Node = null;//点击公告
     @property(Label)
     public labelNick: Label = null;//昵称
 
     private _mainScene: MainScene = null;//主场景
-
-    start() {
-        this.init();
-    }
-
-    update(deltaTime: number) {
-
-    }
-    //销毁
-    protected onDestroy(): void {
-        this.removeEvent();
-    }
-    //初始化
-    public init(): void {
-        this.initUI();
-        this.initEvent();
-        //this.setBrocast(); //跑马灯测试，不用此功能可注掉
-    }
     /**初始化UI */
     initUI() {
         if (GlobalConfig.WIN_RATE < GlobalConfig.MAIN_RATE_MAX) {
@@ -72,7 +51,18 @@ export class MainUIView extends Component {
             this.btnTranslate.node.position = this.btnTranslateFix.position;
         }
         this.labelNick.string = User.nick;
+        this.initNotifyView();
     }
+
+    async initNotifyView(){
+        const node = await this.loadAndInitPrefab(PrefabType.MainNotifyView, this.node.getChildByName("RightUp"), {
+            isAlignBottom: true,
+            isAlignRight: true,
+            bottom: -22.447,
+            right: 44.158
+        });
+    }
+
     //设置主场景
     public set mainScene(mainScene: MainScene) {
         this._mainScene = mainScene;
@@ -89,7 +79,6 @@ export class MainUIView extends Component {
         CCUtil.onTouch(this.btnTask, this.onClickTask, this);
         CCUtil.onTouch(this.btnTaskGo, this.onClickTaskGo, this);
         CCUtil.onTouch(this.btnStudy, this.onClickStudy, this);
-        CCUtil.onTouch(this.btnBrocast, this.onClickNotice, this);
         CCUtil.onBtnClick(this.btn_friend, this.onClickFriend.bind(this));
     }
     //移除事件
@@ -103,7 +92,6 @@ export class MainUIView extends Component {
         CCUtil.offTouch(this.btnShop, this.onClickShop, this);
         CCUtil.offTouch(this.btnTask, this.onClickTask, this);
         CCUtil.offTouch(this.btnTaskGo, this.onClickTaskGo, this);
-        CCUtil.offTouch(this.btnBrocast, this.onClickNotice, this);
     }
     /**好友点击 */
     async onClickFriend(){
@@ -167,11 +155,6 @@ export class MainUIView extends Component {
     //学习点击
     public onClickStudy() {
         director.loadScene(SceneType.WorldMapScene);
-    }
-
-    //点击公告
-    public onClickNotice() {
-        EventManager.emit(EventType.Notice_ShowNotice);
     }
 }
 
