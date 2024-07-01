@@ -237,7 +237,7 @@ class UserModel {
     /**清理体力定时器 */
     public clearStaminaTimer() {
         if (this._staminaTimer) {
-            TimerMgr.stopLoop(this._staminaTimer);
+            TimerMgr.stop(this._staminaTimer);
             this._staminaTimer = null;
         }
     }
@@ -260,7 +260,7 @@ class UserModel {
         this._staminaLimit = limit;
         this._staminaTime = ToolUtil.now() + time;
         this.clearStaminaTimer();
-        this._staminaTimer = TimerMgr.loop(this.onStaminaTimer.bind(this), 1000);
+        this._staminaTimer = TimerMgr.once(this.onStaminaTimer.bind(this), 1000);
         EventMgr.emit(EventType.Stamina_Timer_Update, time);
     }
 }

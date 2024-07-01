@@ -547,16 +547,17 @@ export class MapUICtl extends MainBaseCtl {
     setBuildingGrid(building: BuildingModel, gridX: number, gridY: number) {
         let grids: GridModel[] = [];
         for (let i = 0; i < building.width; i++) {
-            for (let j = 0; j < building.width; j++) {
+            for (let j = 0; j < building.height; j++) {
                 let grid = this.getGridInfo(gridX + i, gridY + j);
                 if (!grid) {
                     // console.log("setBuildingGrid error",gridX,gridY);
-                    return;
+                    return false;
                 }
                 grids.push(grid);
             }
         }
         building.grids = grids;
+        return true;
     }
     // 设置地块格子
     setLandGrid(land: LandModel, gridX: number, gridY: number) {
@@ -622,7 +623,7 @@ export class MapUICtl extends MainBaseCtl {
         let grid = this.getTouchGrid(winSize.width * 0.5, winSize.height * 0.5);
         if (grid) {
             for (let i = 0; i < data.width; i++) {
-                for (let j = 0; j < data.width; j++) {
+                for (let j = 0; j < data.height; j++) {
                     if (i == 0 && j == 0) continue;
                     let tmpGrid = this.getGridInfo(grid.x + i, grid.y + j);
                     if (!tmpGrid) {
@@ -1026,6 +1027,19 @@ export class MapUICtl extends MainBaseCtl {
     }
     /**建筑翻转事件 */
     onBuildingFlipX(building: BuildingModel) {
+        // 翻转后暂用格子可能会发生变化
+        if (building.width == building.height) return;
+        let grid = building?.grids[0];
+        if (!grid) return;
+        let mx = grid.x + Math.floor((building.height - 1) / 2);
+        let my = grid.y + Math.floor((building.width - 1) / 2);
+        let x = grid.y - my + mx;
+        let y = grid.x - mx + my;
+        // console.log("onBuildingFlipX", grid.x, grid.y, x, y, mx, my, building.width, building.height);
+        if (!this.setBuildingGrid(building, x, y)) {
+            building.isFlip = !building.isFlip;
+            ViewsMgr.showTip(TextConfig.Building_Flipx_Failed);
+        }
     }
     /**心情分变化 */
     onMoodUpdate() {
