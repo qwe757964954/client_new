@@ -48,6 +48,7 @@ export class EnergyItem extends Component {
     public destoryEvent() {
         CCUtil.offTouch(this, this.onClick, this);
         EventManager.off(EventType.Stamina_Update, this._energyUpdateHandle);
+        EventManager.off(EventType.Stamina_Timer_Update, this._timeUpdateHandle);
     }
     //界面点击
     public onClick() {
