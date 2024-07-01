@@ -94,6 +94,7 @@ export class BaseModeView extends BaseView {
     protected _remainTime: number = 0; //剩余时间
     protected _errorWords: any = {}; //错误单词
     protected _hpLevels = { 0: 0, 7: 1, 3: 2, 1: 3, 4: 4, 2: 0 }; //各模式对应的已扣除血量
+    protected _totalTime: number = 5 * 60 * 1000;
 
     protected _comboNum: number = 0; //连击次数
     start() {
@@ -149,7 +150,8 @@ export class BaseModeView extends BaseView {
         } else if (WordSourceType.word_game == this._sourceType) {
             let levelData = this._levelData as AdvLevelConfig;
             let progressData = levelData.progressData;
-            this._remainTime = Math.round(progressData.time_remaining);
+            let costTime = progressData.cost_time;
+            this._remainTime = Math.round((this._totalTime - costTime) / 1000);
             /**如果当前关卡有错词，自动放到最后 */
             if (progressData.game_mode === this.gameMode) {
                 this._wordIndex = progressData.word_num - 1;
@@ -213,7 +215,8 @@ export class BaseModeView extends BaseView {
         }
         if (WordSourceType.word_game == this._sourceType) {
             let levelData = this._levelData as AdvLevelConfig;
-            levelData.progressData.time_remaining = this._remainTime;
+            // levelData.progressData.time_remaining = this._remainTime;
+            levelData.progressData.cost_time += 1000;
         } else if (WordSourceType.classification == this._sourceType) {
             let levelData = this._levelData as BookLevelConfig;
             levelData.time_remaining = this._remainTime;

@@ -232,6 +232,8 @@ export class LevelProgressData extends BaseRepPacket {
     word_num: number;
     error_word: any;
     time_remaining: number;
+    cost_time: number;
+    err_count: number;
 }
 
 export class c2sBossLevelTopic {

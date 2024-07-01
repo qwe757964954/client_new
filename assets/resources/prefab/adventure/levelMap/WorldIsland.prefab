@@ -2456,7 +2456,7 @@
         "__id__": 109
       }
     ],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 115
@@ -2477,7 +2477,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": -219,
-      "y": 0,
+      "y": 15.506999999999998,
       "z": 0
     },
     "_lrot": {
@@ -2612,8 +2612,11 @@
     "_lineHeight": 40,
     "_overflow": 0,
     "_enableWrapText": true,
-    "_font": null,
-    "_isSystemFontUsed": true,
+    "_font": {
+      "__uuid__": "a446d5bd-e204-4bf8-a0a0-865931b6d0ad",
+      "__expectedType__": "cc.TTFFont"
+    },
+    "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_isItalic": false,
     "_isBold": false,
