@@ -61,6 +61,17 @@ class NetCfg {
         /**林景 */
         // this.server = "192.168.1.164";
         // this.port = 9803;
+        let ip = this.getUrlParam("ip");
+        if (ip) this.server = ip;
+        let port = this.getUrlParam("port");
+        if (port) this.port = parseInt(port);
+    }
+    /**获取链接参数 */
+    public getUrlParam(key: string) {
+        let reg = new RegExp("(^|&)" + key + "=([^&]*)(&|$)");
+        let r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]);
+        return null;
     }
 }
 
