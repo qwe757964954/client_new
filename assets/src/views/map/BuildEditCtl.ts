@@ -44,7 +44,10 @@ export class BuildEditCtl extends MapBaseCtl {
             return;
         }
         let building = this._mainScene.findBuilding(data.id);
-        building?.saveData();
+        if (building) {
+            building.saveData();
+            this._mainScene.newBuildingFromBuilding(building);
+        }
     }
     /**建筑卖出返回 */
     onBuildingSell(data: s2cBuildingSell) {
@@ -69,6 +72,7 @@ export class BuildEditCtl extends MapBaseCtl {
             building.saveData();
 
             User.addBuilding(building.editInfo.id);
+            this._mainScene.newBuildingFromBuilding(building);
         }
     }
     /**建筑回收返回 */

@@ -150,14 +150,19 @@ export const MapConfig = {
     {
         width: 6,
         pngs: [
-            "map/cloud/1/spriteFrame",
-            "map/cloud/3/spriteFrame",
-            "map/cloud/4/spriteFrame",
-            "map/cloud/5/spriteFrame",
-            "map/cloud/6/spriteFrame",
-            "map/cloud/7/spriteFrame",
-            "map/cloud/8/spriteFrame",
-            "map/cloud/9/spriteFrame",
+            // "map/cloud/1/spriteFrame",
+            // "map/cloud/3/spriteFrame",
+            // "map/cloud/4/spriteFrame",
+            // "map/cloud/5/spriteFrame",
+            // "map/cloud/6/spriteFrame",
+            // "map/cloud/7/spriteFrame",
+            // "map/cloud/8/spriteFrame",
+            // "map/cloud/9/spriteFrame",
+            "map/cloud/11/spriteFrame",
+            "map/cloud/12/spriteFrame",
+            "map/cloud/13/spriteFrame",
+            "map/cloud/14/spriteFrame",
+            "map/cloud/15/spriteFrame",
         ]
     }
 }

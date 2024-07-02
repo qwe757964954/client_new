@@ -4,7 +4,7 @@ import { EventType } from "../../config/EventType";
 import { MapConfig } from "../../config/MapConfig";
 import { PetMoodType } from "../../config/PetConfig";
 import { TextConfig } from "../../config/TextConfig";
-import { DataMgr, EditInfo } from "../../manager/DataMgr";
+import { DataMgr, EditInfo, EditType } from "../../manager/DataMgr";
 import { ViewsMgr } from "../../manager/ViewsManager";
 import { BaseModel } from "../../models/BaseModel";
 import { BgModel } from "../../models/BgModel";
@@ -639,6 +639,19 @@ export class MapUICtl extends MainBaseCtl {
         this._buidingModelAry.push(buildingModel);
         return buildingModel;
     }
+    newBuildingEx(data: EditInfo, gridX: number, gridY: number, isFlip: boolean = false) {
+        if (data.type != EditType.Decoration) {
+            if (this.findBuildingBytypeID(data.id)) return null;
+        }
+        let building = this.newBuilding(data, gridX, gridY, isFlip);
+        if (building) {
+            let recycleData = this.getRecycleBuilding(data.id);
+            if (null != recycleData) {
+                building.restoreRecycleData(recycleData);
+            }
+        }
+        return building;
+    }
     newBuildingInCamera(data: EditInfo) {
         let winSize = GlobalConfig.SCREEN_SIZE;
         let grid = this.getTouchGrid(winSize.width * 0.5, winSize.height * 0.5);
@@ -652,18 +665,41 @@ export class MapUICtl extends MainBaseCtl {
                     }
                 }
             }
-            let building = this.newBuilding(data, grid.x, grid.y);
-            if (building) {
-                let recycleData = this.getRecycleBuilding(data.id);
-                // console.log("getRecycleBuilding start", data.id, recycleData);
-                if (null != recycleData) {
-                    building.restoreRecycleData(recycleData);
-                }
-            }
-            return building;
+            return this.newBuildingEx(data, grid.x, grid.y);
         }
         return null;
-        // return this.newBuilding(data, 20, 20);
+    }
+    newBuildingFromBuilding(building: BuildingModel) {
+        let width = building.width;
+        let height = building.height;
+        let isFlip = building.isFlip;
+        let xAry = [0, width, -width, 0];
+        let yAry = [height, 0, 0, -height];
+        let gridInfo = building?.grids[0];
+        if (!gridInfo) return null;
+        console.log("newBuildingFromBuilding", gridInfo.x, gridInfo.y, width, height, isFlip);
+        for (let i = 0; i < xAry.length; i++) {
+            let x = gridInfo.x + xAry[i];
+            let y = gridInfo.y + yAry[i];
+            let canCreate = true;
+            for (let m = 0; m < width; m++) {
+                for (let n = 0; n < height; n++) {
+                    let grid = this.getGridInfo(x + m, y + n);
+                    console.log("newBuildingFromBuilding for", grid, x, y, m, n);
+                    if (grid && grid.isCanBuildingNew()) {
+                        continue;
+                    }
+                    console.log("newBuildingFromBuilding break", i, m, n);
+                    canCreate = false;
+                    break;
+                }
+                if (!canCreate) break;
+            }
+            if (canCreate) {
+                return this.newBuildingEx(building.editInfo, x, y, isFlip);
+            }
+        }
+        return this.newBuildingEx(building.editInfo, gridInfo.x + xAry[0], gridInfo.y + yAry[0], isFlip);
     }
     // 摄像头移动到指定建筑
     moveCameraToBuilding(building: BuildingModel, plPos: Vec3, scale: number = 1) {
@@ -759,10 +795,10 @@ export class MapUICtl extends MainBaseCtl {
             let grid2 = this.getGridInfo(grid.x - i, grid.y);
             let grid3 = this.getGridInfo(grid.x, grid.y + i);
             let grid4 = this.getGridInfo(grid.x, grid.y - i);
-            if (grid1 && !grid1.building && !grid1.cloud) grids.push(grid1);
-            if (grid2 && !grid2.building && !grid2.cloud) grids.push(grid2);
-            if (grid3 && !grid3.building && !grid3.cloud) grids.push(grid3);
-            if (grid4 && !grid4.building && !grid4.cloud) grids.push(grid4);
+            if (grid1 && grid1.isCanBuildingNew()) grids.push(grid1);
+            if (grid2 && grid2.isCanBuildingNew()) grids.push(grid2);
+            if (grid3 && grid3.isCanBuildingNew()) grids.push(grid3);
+            if (grid4 && grid4.isCanBuildingNew()) grids.push(grid4);
         }
         if (0 == grids.length) {
             roleModel.standby();
@@ -895,6 +931,14 @@ export class MapUICtl extends MainBaseCtl {
         for (let i = 0; i < children.length; i++) {
             const building = children[i];
             if (building.idx == idx) return building;
+        }
+        return null;
+    }
+    findBuildingBytypeID(typeID: number) {
+        let children = this._buidingModelAry;
+        for (let i = 0; i < children.length; i++) {
+            const building = children[i];
+            if (building.editInfo.id == typeID) return building;
         }
         return null;
     }

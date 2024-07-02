@@ -247,8 +247,6 @@ export class MainScene extends BaseComponent {
                 if (!building.getProduce()) {
                     this.showBuildingProduceView(building);
                 }
-            } else {
-                ViewsMgr.showTip(TextConfig.Function_Tip2);
             }
         }
     }
@@ -586,6 +584,15 @@ export class MainScene extends BaseComponent {
     /**回收建筑是否包含指定建筑 */
     isRecycleBuildingContain(bid: number) {
         return this._mapUICtl.isRecycleBuildingContain(bid);
+    }
+    /**新建建筑 */
+    newBuildingFromBuilding(buildingModel: BuildingModel) {
+        let building = this._mapUICtl.newBuildingFromBuilding(buildingModel);
+        if (!building) {
+            return;
+        }
+        this._buildingEditCtl.selectBuilding = building;
+        this.changeMapStatus(MapStatus.BUILD_EDIT);
     }
 }
 

@@ -77,6 +77,12 @@ export class GridModel {
         if (!this._dataBuilding) return true;
         return this._building === this._dataBuilding;
     }
+    /**是否可以摆放新建筑 */
+    isCanBuildingNew() {
+        if (this._cloud) return false;
+        if (!this._dataBuilding) return true;
+        return false;
+    }
     /**是否是编辑区域 */
     isEditArea() {
         return true;

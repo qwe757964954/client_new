@@ -70,6 +70,7 @@ export class BuildingModel extends BaseModel {
     private _isNew: boolean = false;//是否是新建
     private _isRecycle: boolean = false;//是否是回收
     public isSell: boolean = false;//是否卖出
+    private _isRemove: boolean = false;//是否移除
 
     // private _dataX:number;//数据x
     // private _dataY:number;//数据y
@@ -407,7 +408,7 @@ export class BuildingModel extends BaseModel {
         this.isShowEx = false;
         this.saveData();
 
-        this.removeFromScene(true);
+        this.removeFromScene();
     }
     // 还原
     public recover() {
@@ -415,7 +416,7 @@ export class BuildingModel extends BaseModel {
         this.closeBtnView();
         this.closeLongView();
         if (this._isNew) {
-            this.removeFromScene(true);
+            this.removeFromScene();
         }
     }
     // 还原数据（不通知按钮界面关闭事件）
@@ -428,7 +429,7 @@ export class BuildingModel extends BaseModel {
         }
         this._graphics.node.active = false;
         if (this._isNew) {
-            this.removeFromScene(true);
+            this.removeFromScene();
         }
     }
     // 摄像头缩放事件
@@ -438,7 +439,9 @@ export class BuildingModel extends BaseModel {
         }
     }
     // 画面中移除
-    public removeFromScene(isDestory: boolean = false): void {
+    public removeFromScene(): void {
+        if (this._isRemove) return;
+        this._isRemove = true;
         this.isShowEx = false;
         EventManager.emit(EventType.BuidingModel_Remove, this);
         this._node.destroy();
