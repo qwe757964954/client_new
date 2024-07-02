@@ -161,7 +161,7 @@ export class FriendPlayerInfoView extends BaseView {
         rewardItem.init(this._propsData[idx]);
     }
 
-    private onHidenClick() {
+    public onHidenClick() {
         this._isShow = !this._isShow;
         this.showPlayerInfo(this._isShow);
     }
@@ -170,7 +170,7 @@ export class FriendPlayerInfoView extends BaseView {
         this._isShow = isShow;
         let node_size = this.node.getComponent(UITransform);
         let temp_width = node_size.width - 200;
-        let posx = isShow ? 0 : -temp_width;
+        let posx = this._isShow ? temp_width : 0;
         tween(this.node).to(0.3, { position: new Vec3(this._showPos.x +posx, this._showPos.y, 0) }).call(() => {
         }).start();
     }

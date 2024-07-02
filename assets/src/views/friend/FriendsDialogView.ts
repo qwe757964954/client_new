@@ -56,7 +56,7 @@ export class FriendsDialogView extends BasePopup {
         
         await this.initViews();
         this.initData();
-        this.node.getChildByName("content").setSiblingIndex(99);
+        this._rightPlayerInfo.node.setSiblingIndex(0);
         this.setLeftTab();
         this.setFriendListSelect();
         this.setEmailListSelect();
@@ -82,9 +82,9 @@ export class FriendsDialogView extends BasePopup {
             this.initViewComponent(PrefabType.FriendLeftTabView, (node) => this._leftTab = node.getComponent(FriendLeftTabView), {
                 isAlignTop: true,
                 isAlignLeft: true,
-                top: 229,
-                left: 37
-            }),
+                top: 129,
+                left: -207
+            },this.contentNd),
             this.initViewComponent(PrefabType.FriendPlayerInfoView, (node) => {
                 this._rightPlayerInfo = node.getComponent(FriendPlayerInfoView)
                 this._rightPlayerInfo.showPos = this._rightPlayerInfo.node.position;
@@ -92,8 +92,8 @@ export class FriendsDialogView extends BasePopup {
                 isAlignVerticalCenter: true,
                 isAlignRight: true,
                 verticalCenter: 0,
-                right: 0
-            }),
+                right: -25.394
+            },this.contentNd),
             this.initViewComponent(PrefabType.FriendListView, (node) => this._fListView = node.getComponent(FriendListView), {
                 isAlignLeft: true,
                 isAlignRight: true,
@@ -150,10 +150,12 @@ export class FriendsDialogView extends BasePopup {
     }
     private onSelectFriend(data:FriendListItemModel){
         this._selectedFriend = data;
+        this._rightPlayerInfo.showPlayerInfo(true);
         this._rightPlayerInfo.updateData(data);
     }
 
     private onSelectEmail(data:SystemMailItem){
+        this._rightPlayerInfo.showPlayerInfo(true);
         FdServer.reqUserSystemMailDetail(data.sm_id);
     }
     private async onUserSystemAwardGet(response:UserSystemAwardResponse){
@@ -199,11 +201,13 @@ export class FriendsDialogView extends BasePopup {
             case FriendTabType.Message: // 好友消息通知
                 this.titleTxt.string = TextConfig.Friend_Notify; // "好友通知";
                 this._fEmailView.node.active = true;
-                this._fEmailView.setEmailListSelected(0);
+                // this._fEmailView.setEmailListSelected(0);
                 break;
         }
         let isShow = click === FriendTabType.List || click === FriendTabType.Message;
-        this._rightPlayerInfo.showPlayerInfo(isShow); 
+        if(!isShow){
+            this._rightPlayerInfo.showPlayerInfo(isShow); 
+        }
     }
 
     
@@ -238,7 +242,7 @@ export class FriendsDialogView extends BasePopup {
     onUpdateFriendList(friendDatas: DataFriendListResponse) {
         this._friend_list = friendDatas.data;
         this._fListView.updateData(this._friend_list);
-        this._fListView.setFriendListSelected(0);
+        // this._fListView.setFriendListSelected(0);
     }
 
     /**更新推荐朋友列表 */
