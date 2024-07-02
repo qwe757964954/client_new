@@ -245,6 +245,7 @@ class UserModel {
     public onStaminaTimer() {
         if (ToolUtil.now() >= this._staminaTime) {
             this.clearStaminaTimer();
+            this._staminaTimer = TimerMgr.once(this.onStaminaTimer.bind(this), 2000);
             EventMgr.emit(EventType.Stamina_Timeout);
         }
     }
@@ -260,7 +261,7 @@ class UserModel {
         this._staminaLimit = limit;
         this._staminaTime = ToolUtil.now() + time;
         this.clearStaminaTimer();
-        this._staminaTimer = TimerMgr.once(this.onStaminaTimer.bind(this), 1000);
+        this._staminaTimer = TimerMgr.once(this.onStaminaTimer.bind(this), time * 1000);
         EventMgr.emit(EventType.Stamina_Timer_Update, time);
     }
 }
