@@ -84,6 +84,7 @@ export class MapUICtl extends MainBaseCtl {
 
     // 初始化
     public async init() {
+        console.time("MapUICtl");
         this.initData();
         this.initEvent();
         this.initGrid();
@@ -325,22 +326,28 @@ export class MapUICtl extends MainBaseCtl {
         if (!map) return;
         console.time("initCloud");
         // console.log("initCloud 1", i, this._landModelAry.length);
-        for (let i = 0; i < this._landModelAry.length; i++) {
-            // console.log("initCloud 2", i);
-            const element = this._landModelAry[i];
-            if (element.y <= 16) continue;
-            let key = ToolUtil.replace(TextConfig.Land_Key, element.x, element.y);
-            let leftTime = null;
-            if (map.hasOwnProperty(key)) {
-                leftTime = map[key];
-                if (leftTime < 0) continue;
+        let gridInfo = MapConfig.gridInfo;
+        let col = gridInfo.col;
+        let row = gridInfo.row;
+        let cloudWidth = MapConfig.cloud.width;
+        for (let i = 0; i < col; i += cloudWidth) {
+            for (let j = 0; j < row; j += cloudWidth) {
+                if (j < 18) continue;
+                let gridInfo = this.getGridInfo(i, j);
+                if (!gridInfo || gridInfo.cloud) continue;
+                let key = ToolUtil.replace(TextConfig.Land_Key, i, j);
+                let leftTime = null;
+                if (map.hasOwnProperty(key)) {
+                    leftTime = map[key];
+                    if (leftTime < 0) continue;
+                }
+                let cloud = new CloudModel();
+                cloud.initData(i, j, cloudWidth, leftTime, this._mainScene.buildingLayer);
+                this._cloudModelAry.push(cloud);
+                this.setCloudGrid(cloud, i, j);
             }
-            let cloud = new CloudModel();
-            cloud.initData(element.x, element.y, element.width, leftTime, this._mainScene.buildingLayer);
-            cloud.grids = element.grids;
-            this._cloudModelAry.push(cloud);
         }
-        this.refreshCloudShowType();
+        // this.refreshCloudShowType();
         this.updateCameraVisible();
         console.timeEnd("initCloud");
     }
@@ -573,6 +580,21 @@ export class MapUICtl extends MainBaseCtl {
             }
         }
         land.grids = grids;
+    }
+    /**设置乌云格子 */
+    setCloudGrid(cloud: CloudModel, gridX: number, gridY: number) {
+        let grids: GridModel[] = [];
+        for (let i = 0; i < cloud.width; i++) {
+            for (let j = 0; j < cloud.width; j++) {
+                let grid = this.getGridInfo(gridX + i, gridY + j);
+                if (!grid) {
+                    // console.log("setCloudGrid error",gridX,gridY);
+                    return;
+                }
+                grids.push(grid);
+            }
+        }
+        cloud.grids = grids;
     }
     /**回收建筑 */
     addRecycleBuilding(data: RecycleData) {
@@ -834,6 +856,7 @@ export class MapUICtl extends MainBaseCtl {
         if (this._loadCount <= 0) {
             this._loadCount = 0;
             if (this._callBack) {
+                console.timeEnd("MapUICtl");
                 this._callBack();
                 this._callBack = null;
             }

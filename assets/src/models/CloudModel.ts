@@ -128,7 +128,8 @@ export class CloudModel extends BaseModel {
     }
     //显示图片
     public showImg(callBack?: Function) {
-        LoadManager.loadSprite(MapConfig.cloud[this._showID], this._img).then(() => {
+        let id = ToolUtil.getRandomInt(0, MapConfig.cloud.pngs.length - 1);
+        LoadManager.loadSprite(MapConfig.cloud.pngs[id], this._img).then(() => {
             this._isLoadOver = true;
             this.refreshTime();
             if (callBack) callBack();
@@ -180,7 +181,7 @@ export class CloudModel extends BaseModel {
     }
     /**获取显示范围 */
     public getRect() {
-        let rect = new Rect(-72, 0, 144, 72);
+        let rect = new Rect(-216, 0, 432, 216);
         rect.x += this._pos.x;
         rect.y += this._pos.y;
         return rect;

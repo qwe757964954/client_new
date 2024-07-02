@@ -52,7 +52,7 @@ export class LoadManager {
             // console.log("releaseAsset", asset.name);
             asset.decRef();
             if (0 == asset.refCount) {
-                console.log("releaseAsset 2", asset.refCount,asset.name);
+                // console.log("releaseAsset 2", asset.refCount,asset.name);
                 assetManager.releaseAsset(asset);
             }
         }
