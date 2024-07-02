@@ -84,14 +84,14 @@ export class ViewsManager {
         let nd_name = viewConfig.path.replace("/", "_");
         let nd: Node = ImgUtil.create_2DNode(nd_name);
         parent.addChild(nd);
-    
+
         // Add blocking input events and set widget settings
         nd.addComponent(BlockInputEvents);
         CCUtil.addWidget(nd, { left: 0, right: 0, top: 0, bottom: 0 });
-    
+
         // Ensure that the node is properly initialized
         await ImgUtil.create_PureNode(nd);
-    
+
         return new Promise((resolve, reject) => {
             // Load the prefab and instantiate it
             ResLoader.instance.load(`prefab/${viewConfig.path}`, Prefab, async (err, prefab) => {
@@ -100,15 +100,15 @@ export class ViewsManager {
                     reject(err);
                     return;
                 }
-    
+
                 // Instantiate and add the prefab as a child node
                 let node = instantiate(prefab);
                 nd.addChild(node);
                 CCUtil.addWidget(nd, { left: 0, right: 0, top: 0, bottom: 0 });
-    
+
                 // Retrieve the component and execute the show animation
                 let scpt: BasePopup = node.getComponent(viewConfig.componentName);
-    
+
                 try {
                     await scpt.showAnim();
                     resolve(node as Node); // Resolve after the animation completes
@@ -119,7 +119,7 @@ export class ViewsManager {
             });
         });
     }
-        
+
 
 
     // 显示界面
@@ -141,7 +141,7 @@ export class ViewsManager {
         parent.addChild(tmpNode);
 
         console.time(viewConfig.path);
-        LoadManager.loadPrefab(viewConfig.path, parent).then((node: Node) => {
+        LoadManager.loadPrefab(viewConfig.path, parent, viewConfig.isCache).then((node: Node) => {
             console.log("显示界面", viewConfig.path);
             console.timeEnd(viewConfig.path);
             node.name = viewConfig.path.replace("/", "_");
@@ -172,38 +172,38 @@ export class ViewsManager {
             console.log("View already exists", viewConfig.path);
             return Promise.reject(new Error(`View already exists: ${viewConfig.path}`));
         }
-    
+
         console.log("Loading view", viewConfig.path);
         const parent = this.getParentNode(viewConfig.zindex);
-    
+
         // Increment loading state
         this._loadingPrefabMap[viewConfig.path] = (this._loadingPrefabMap[viewConfig.path] || 0) + 1;
-    
+
         // Create a temporary node to hold the loading state
         const tmpNode = new Node();
         tmpNode.name = `tmp_${viewConfig.path.replace("/", "_")}`;
         parent.addChild(tmpNode);
-    
+
         try {
             // Load the prefab
             const node = await LoadManager.loadPrefab(viewConfig.path, parent);
             console.log("Loaded view", viewConfig.path);
             node.name = viewConfig.path.replace("/", "_");
-    
+
             // Remove temporary node if it still exists
             if (tmpNode && tmpNode.parent) {
                 tmpNode.destroy();
             }
-    
+
             return node;
         } catch (error) {
             console.error("Failed to load view", viewConfig.path, error);
-    
+
             // Ensure temporary node is removed
             if (tmpNode && tmpNode.parent) {
                 tmpNode.destroy();
             }
-    
+
             throw error;
         } finally {
             // Decrement loading state
@@ -212,7 +212,7 @@ export class ViewsManager {
             }
         }
     }
-    
+
 
 
     // 关闭界面

@@ -532,7 +532,7 @@ export class BuildingModel extends BaseModel {
         this._isShow = isShow;
         if (isShow && !this._isLoad) {
             this._isLoad = true;
-            LoadManager.loadPrefab(PrefabType.BuildingModel.path, this._parent).then((node: Node) => {
+            LoadManager.loadPrefab(PrefabType.BuildingModel.path, this._parent, true).then((node: Node) => {
                 this._node = node;
                 this._node.active = this._isShow;
                 this._node.position = this._pos;
@@ -542,7 +542,7 @@ export class BuildingModel extends BaseModel {
                 this._sp = this._node.getComponentInChildren(sp.Skeleton);
                 this._graphics = this._node.getComponentInChildren(Graphics);
                 this._graphics.node.active = false;
-                LoadManager.loadSprite(DataMgr.getEditPng(this._editInfo), this._building).then(() => {
+                LoadManager.loadSprite(DataMgr.getEditPng(this._editInfo), this._building, true).then(() => {
                     this._isLoadOver = true;
                     if (callBack) callBack();
                 });

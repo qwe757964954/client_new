@@ -129,7 +129,7 @@ export class CloudModel extends BaseModel {
     //显示图片
     public showImg(callBack?: Function) {
         let id = ToolUtil.getRandomInt(0, MapConfig.cloud.pngs.length - 1);
-        LoadManager.loadSprite(MapConfig.cloud.pngs[id], this._img).then(() => {
+        LoadManager.loadSprite(MapConfig.cloud.pngs[id], this._img, true).then(() => {
             this._isLoadOver = true;
             this.refreshTime();
             if (callBack) callBack();
@@ -156,7 +156,7 @@ export class CloudModel extends BaseModel {
     public loadNode(callBack?: Function) {
         if (!this._isLoadNode) {
             this._isLoadNode = true;
-            LoadManager.loadPrefab(PrefabType.CloudModel.path, this._parent).then((node: Node) => {
+            LoadManager.loadPrefab(PrefabType.CloudModel.path, this._parent, true).then((node: Node) => {
                 this._node = node;
                 this._node.active = this._isShow;
                 this._node.position = this._pos;

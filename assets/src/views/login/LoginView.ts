@@ -82,7 +82,6 @@ export class LoginView extends BaseView {
         this.plQRCode.setBackCall(this.onPlQrCodeBack.bind(this));
         this.plActivationCode.setCallFunc(this.onPlActivationCodeBack.bind(this), this.onActivationCodeActive.bind(this));
 
-
         this.checkToken();
         DataMgr.instance.initData();
     }

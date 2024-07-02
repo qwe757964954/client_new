@@ -23,6 +23,7 @@ export class PrefabConfig {
     public zindex: number = Hierarchy.SCENELAYER;
     public tips: string;
     public componentName?: string;
+    public isCache?: boolean = false;
 }
 
 export type PrefabTypeEntry = {
@@ -65,14 +66,14 @@ export const PrefabType = {
     SettingTabView: { path: "setting/SettingTabView", zindex: Hierarchy.POPUPLAYER, tips: "设置tab界面" },
     VideoView: { path: "setting/VideoView", zindex: Hierarchy.POPUPLAYER, tips: "视频播放界面" },
     ChangeHeadView: { path: "setting/ChangeHeadView", zindex: Hierarchy.POPUPLAYER, tips: "头像调整" },
-    ChangeNameView: { path: "setting/ChangeNameView",componentName: "ChangeNameView", zindex: Hierarchy.POPUPLAYER, tips: "设置昵称" },
+    ChangeNameView: { path: "setting/ChangeNameView", componentName: "ChangeNameView", zindex: Hierarchy.POPUPLAYER, tips: "设置昵称" },
     MyTableView: { path: "setting/MyTableView", zindex: Hierarchy.POPUPLAYER, tips: "我的表格" },
     SubscribeView: { path: "setting/SubscribeView", zindex: Hierarchy.POPUPLAYER, tips: "订阅学习周报" },
     AccountActivationView: { path: "setting/AccountActivationView", zindex: Hierarchy.POPUPLAYER, tips: "账号激活中心" },
     MemberCentreView: { path: "setting/MemberCentreView", zindex: Hierarchy.POPUPLAYER, tips: "会员中心" },
     ChangeRoleView: { path: "setting/ChangeRoleView", zindex: Hierarchy.POPUPLAYER, tips: "角色更换" },
     FeedbackView: { path: "setting/FeedbackView", zindex: Hierarchy.POPUPLAYER, tips: "意见反馈" },
-    ResetPasswordView: { path: "setting/ResetPasswordView", componentName: "ResetPasswordView",zindex: Hierarchy.POPUPLAYER, tips: "重置密码" },
+    ResetPasswordView: { path: "setting/ResetPasswordView", componentName: "ResetPasswordView", zindex: Hierarchy.POPUPLAYER, tips: "重置密码" },
     ApplyLogoutView: { path: "setting/ApplyLogoutView", zindex: Hierarchy.POPUPLAYER, tips: "申请注销" },
     LogoutView: { path: "setting/LogoutView", zindex: Hierarchy.POPUPLAYER, tips: "注销账号" },
     // 设置相关END
@@ -122,7 +123,7 @@ export const PrefabType = {
     // RoleModel: { path: "map/model/RoleModel", zindex: Hierarchy.SCENELAYER, tips: "角色模型" },
     // PetMode: { path: "map/model/PetMode", zindex: Hierarchy.SCENELAYER, tips: "宠物模型" },
     RoleBaseModel: { path: "map/model/RoleBaseModel", zindex: Hierarchy.SCENELAYER, tips: "角色模型" },
-    MainUIView: { path: "map/MainUIView", zindex: Hierarchy.SCENELAYER, tips: "地图UI界面" },
+    MainUIView: { path: "map/MainUIView", zindex: Hierarchy.SCENELAYER, tips: "地图UI界面", isCache: true },
     EditUIView: { path: "map/EditUIView", zindex: Hierarchy.SCENELAYER, tips: "地图编辑UI界面" },
     LandEditUIView: { path: "map/LandEditUIView", zindex: Hierarchy.SCENELAYER, tips: "地块编辑UI界面" },
     BuildingBtnView: { path: "map/BuildingBtnView", zindex: Hierarchy.POPUPLAYER, tips: "建筑按钮界面" },
@@ -151,7 +152,7 @@ export const PrefabType = {
     NewbieRewardDialogView: { path: "gift/RewardDialogView", zindex: Hierarchy.POPUPLAYER, tips: "领奖励结算窗口" },
     /*********************************************新人七天豪礼 End*************************************************************/
     /*********************************************跑马灯和公告 start***********************************************************/
-    NoticeDialogView: { path: "notice/NoticeDialogView",componentName: "NoticeDialogView", zindex: Hierarchy.POPUPLAYER, tips: "新人七天大礼" },
+    NoticeDialogView: { path: "notice/NoticeDialogView", componentName: "NoticeDialogView", zindex: Hierarchy.POPUPLAYER, tips: "新人七天大礼" },
     /*********************************************跑马灯和公告 End*************************************************************/
     /*********************************************成就 start***********************************************************/
     AchieveDialogView: { path: "achieve/AchieveDialogView", zindex: Hierarchy.POPUPLAYER, tips: "成就面板" },
@@ -167,7 +168,7 @@ export const PrefabType = {
     /*********************************************复习规划end***********************************************************/
     /*********************************************社交 start***********************************************************/
     FriendsDialogView: { path: "social/FriendsDialogView", componentName: "FriendsDialogView", zindex: Hierarchy.POPUPLAYER, tips: "好友界面" },
-    FriendTalkDialogView: { path: "social/FriendTalkDialogView",componentName: "FriendTalkDialogView" , zindex: Hierarchy.POPUPLAYER, tips: "好友聊天界面" },
+    FriendTalkDialogView: { path: "social/FriendTalkDialogView", componentName: "FriendTalkDialogView", zindex: Hierarchy.POPUPLAYER, tips: "好友聊天界面" },
     FriendLeftTabView: { path: "social/FriendLeftTabView", zindex: Hierarchy.POPUPLAYER, tips: "好友tab界面" },
     FriendPlayerInfoView: { path: "social/FriendPlayerInfoView", zindex: Hierarchy.POPUPLAYER, tips: "好友玩家信息界面" },
     FriendListView: { path: "social/FriendListView", zindex: Hierarchy.POPUPLAYER, tips: "好友列表界面" },

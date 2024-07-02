@@ -84,6 +84,9 @@ export class MapUICtl extends MainBaseCtl {
 
     // 初始化
     public async init() {
+        this._needLoadCallBack = true;
+        this._loadCount++;
+        // ToolUtil.clearCountKey("showBg");
         console.time("MapUICtl");
         this.initData();
         this.initEvent();
@@ -92,12 +95,8 @@ export class MapUICtl extends MainBaseCtl {
 
         ServiceMgr.buildingService.reqPetInfo();
         ServiceMgr.buildingService.reqBuildingList();
-
-        this._needLoadCallBack = true;
-        TimerMgr.once(this.getLoadOverCall(), 10);//注意一定要加延时
         this.mapMove(-288, 588);
-        this.updateCameraVisible(true);
-        this._needLoadCallBack = false;
+        // console.log("MapUICtl showBg", ToolUtil.getCountKey("showBg"), this._bgModelAry.length, this._landModelAry.length, this._buidingModelAry.length, this._roleModelAry.length, this._cloudModelAry.length);
     }
     // 初始化数据
     initData(): void {
@@ -855,8 +854,8 @@ export class MapUICtl extends MainBaseCtl {
         // console.log("loadOverCall", this._loadCount);
         if (this._loadCount <= 0) {
             this._loadCount = 0;
+            console.timeEnd("MapUICtl");
             if (this._callBack) {
-                console.timeEnd("MapUICtl");
                 this._callBack();
                 this._callBack = null;
             }
@@ -876,7 +875,10 @@ export class MapUICtl extends MainBaseCtl {
         this.initRole();
         this.initCloud(data.cloud_dict);
 
-        this.updateCameraVisible();
+        // this.updateCameraVisible();
+        this.updateCameraVisible(true);
+        this._needLoadCallBack = false;
+        this.loadOverCall();
         console.timeEnd("onBuildingList");
     }
     /**查找建筑 */

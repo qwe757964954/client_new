@@ -70,7 +70,7 @@ export class LandModel extends BaseModel {
     }
     //显示地块
     public showLand(callBack?: Function) {
-        LoadManager.loadSprite(DataMgr.getEditPng(this._landInfo), this._sprite).then(() => {
+        LoadManager.loadSprite(DataMgr.getEditPng(this._landInfo), this._sprite, true).then(() => {
             if (callBack) callBack();
         });
         if (this.isDefault()) {
@@ -140,7 +140,7 @@ export class LandModel extends BaseModel {
         if (!this._isLoadNode) {
             this._isLoadNode = true;
 
-            LoadManager.loadPrefab(PrefabType.LandModel.path, this._parent).then((node: Node) => {
+            LoadManager.loadPrefab(PrefabType.LandModel.path, this._parent, true).then((node: Node) => {
                 this._node = node;
                 this._node.active = this._isShow;
                 this._node.position = this._pos;
@@ -151,7 +151,6 @@ export class LandModel extends BaseModel {
                 } else {
                     if (callBack) callBack();
                 }
-                this.showLand(callBack);
             });
         } else {
             if (callBack) callBack();
