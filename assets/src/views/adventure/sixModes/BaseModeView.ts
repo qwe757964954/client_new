@@ -192,7 +192,7 @@ export class BaseModeView extends BaseView {
         if (this._remainTime > 0 && this.gameMode != GameMode.Exam) {
             this.schedule(this.onTimer, 1);
         }
-        this._errorNum = levelData.error_count;
+        this._errorNum = levelData.error_num;
         this.errorNumLabel.string = "错误次数:" + this._errorNum;
         return wordsdata;
     }
@@ -261,7 +261,8 @@ export class BaseModeView extends BaseView {
                 this.monster.getComponent(UIOpacity).opacity = 125;
                 return;
             }
-            let len = this._wordsData.length - this._errorNum - 1;
+            let errNum = Object.keys(this._errorWords).length;
+            let len = this._wordsData.length - errNum - 1;
             if (len > 4) {
                 len = 4;
             }
@@ -289,7 +290,7 @@ export class BaseModeView extends BaseView {
                 this.monster.getComponent(UIOpacity).opacity = 125;
             }
             let levelData = this._levelData as BookLevelConfig;
-            let pass = levelData.word_num - levelData.error_count;
+            let pass = levelData.word_num - levelData.error_num;
             let totalHp = this.gameMode == GameMode.Exam ? this._wordsData.length : this._wordsData.length * 5;
             monsterModel.setHp(this._wordsData.length * this._hpLevels[this.gameMode] + pass, totalHp);
             let hp_scale = monsterModel.hpNode.getScale();

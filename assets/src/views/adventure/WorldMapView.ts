@@ -218,6 +218,7 @@ export class WorldMapView extends Component {
         let levelData = DataMgr.instance.getAdvLevelConfig(this._currentIslandID, this._currentLevelData.small_id);
         levelData.mapLevelData = this._currentLevelData;
         levelData.progressData = this._levelProgressData;
+        levelData.error_num = this._levelProgressData.err_num;
         switch (gameMode) {
             case GameMode.Study:
                 ViewsManager.instance.showView(PrefabType.StudyModeView, (node: Node) => {

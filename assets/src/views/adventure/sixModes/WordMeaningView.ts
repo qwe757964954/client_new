@@ -222,12 +222,12 @@ export class WordMeaningView extends BaseModeView {
             answerNode.getComponent(Shake).shakeNode(0.5, 6);
             resSymbol.getComponent(Sprite).spriteFrame = this.errorSymbol;
             this._comboNum = 0;
-            if (this._wrongWordList.indexOf(this._rightWordData) == -1 && !this._wrongMode && !this._errorWords[this._rightWordData.word]) {
-                this._errorNum++;
-                this._levelData.error_num = this._errorNum;
-                this.errorNumLabel.string = "错误次数：" + this._errorNum;
+            // if (this._wrongWordList.indexOf(this._rightWordData) == -1 && !this._wrongMode && !this._errorWords[this._rightWordData.word]) {
+            this._errorNum++;
+            this._levelData.error_num = this._errorNum;
+            this.errorNumLabel.string = "错误次数：" + this._errorNum;
 
-            }
+            // }
             this._wrongWordList.push(this._rightWordData);
             if (!this._wrongMode) {
                 this._wordIndex++;

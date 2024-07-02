@@ -150,7 +150,7 @@ export class BreakThroughView extends BaseView {
             game_mode: LearnGameModel.Tutoring,
             small_id: this._selectGate.small_id,
             word_num: this._curUnitStatus.word_num,
-            error_count: this._curUnitStatus.error_count,
+            error_num: this._curUnitStatus.error_num,
             time_remaining: this._curUnitStatus.time_remaining,
         };
 
@@ -190,7 +190,7 @@ export class BreakThroughView extends BaseView {
         this._scrollMap.removePointEvent();
     }
 
-    removeTopAmoutView(){
+    removeTopAmoutView() {
         for (let index = 0; index < this.top_layout.children.length; index++) {
             const item = this.top_layout.children[index] as Node;
             if (item.name === "TopAmoutView") {
@@ -272,7 +272,7 @@ export class BreakThroughView extends BaseView {
     }
 
     async initNavTitle() {
-        this.createNavigation(`${this._bookData.book_name} ${this._bookData.grade}`,this.top_layout, () => {
+        this.createNavigation(`${this._bookData.book_name} ${this._bookData.grade}`, this.top_layout, () => {
             ViewsManager.instance.showView(PrefabType.TextbookChallengeView, () => {
                 ViewsManager.instance.closeView(PrefabType.BreakThroughView);
             });
