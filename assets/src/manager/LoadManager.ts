@@ -23,7 +23,7 @@ class CacheInfo {
 }
 
 class LoadManagerClass {
-    private _cacheReleaseTime: number = 60;
+    private _cacheReleaseTime: number = 10;//缓存释放时间
     private _cacheAssets: Map<string, CacheInfo> = new Map();
 
     /**单例 */
