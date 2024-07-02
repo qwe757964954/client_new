@@ -105,7 +105,7 @@ export class AdvLevelConfig {
     miniMonsterAni: string;
     mapLevelData: MapLevelData;
     progressData: LevelProgressData;
-    error_count: number;
+    error_num: number;
 }
 //教材单词关卡配置
 export class BookLevelConfig {
@@ -117,7 +117,7 @@ export class BookLevelConfig {
     word_num: number;
     cur_game_mode: number;
     error_word?: any;
-    error_count?:number;
+    error_num?: number;
     time_remaining: number;
 }
 //成就信息配置

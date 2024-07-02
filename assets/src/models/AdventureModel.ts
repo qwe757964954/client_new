@@ -165,10 +165,12 @@ export class AdventureResult extends BaseRepPacket {
     award_info?: any;
     flag_star_num: number;
     flag_info?: {
-        star_one?:number;
-        star_three?:number;
-        star_two?:number};
+        star_one?: number;
+        star_three?: number;
+        star_two?: number
+    };
     word: string;
+    star_num?: number
 }
 
 //组合模式拆分数据
@@ -237,6 +239,8 @@ export class LevelProgressData extends BaseRepPacket {
     word_num: number;
     error_word: any;
     time_remaining: number;
+    cost_time: number;
+    err_num: number;
 }
 
 export class c2sBossLevelTopic {

@@ -125,12 +125,12 @@ export class WordExamView extends BaseModeView {
                 this.onGameSubmit(this._rightWordData.word, false);
                 this._comboNum = 0;
                 SoundMgr.wrong();
-                if (this._wrongWordList.indexOf(this._rightWordData) == -1 && !this._wrongMode && !this._errorWords[this._rightWordData.word]) {
-                    this._errorNum++;
-                    this._levelData.error_num = this._errorNum;
-                    this.timeLabel.string = "错误次数：" + this._errorNum;
+                // if (this._wrongWordList.indexOf(this._rightWordData) == -1 && !this._wrongMode && !this._errorWords[this._rightWordData.word]) {
+                this._errorNum++;
+                this._levelData.error_num = this._errorNum;
+                this.timeLabel.string = "错误次数：" + this._errorNum;
 
-                }
+                // }
                 this._wrongWordList.push(this._rightWordData);
                 if (!this._wrongMode) {
                     this._wordIndex++;

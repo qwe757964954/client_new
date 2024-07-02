@@ -22,9 +22,9 @@ const { ccclass, property } = _decorator;
 
 
 export const ClearanceConditionsConfig = {
-    star_one:"完成本关卡",
-    star_two:"在5分钟内完成通关",
-    star_three:"错误词书低于5",
+    star_one: "完成本关卡",
+    star_two: "在5分钟内完成通关",
+    star_three: "错误次数低于5",
 }
 
 
@@ -181,7 +181,7 @@ export class WordReportView extends BaseView {
         let item_script = item.getComponent(ConditionItem);
         let keys = Object.keys(this._resultSubmitResponse.flag_info);
         let key: string = keys[idx];
-        item_script.updateItemProps(key,this._resultSubmitResponse.flag_info[key]);
+        item_script.updateItemProps(key, this._resultSubmitResponse.flag_info[key]);
     }
 }
 

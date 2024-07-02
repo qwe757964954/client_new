@@ -94,6 +94,7 @@ export class BaseModeView extends BaseView {
     protected _remainTime: number = 0; //剩余时间
     protected _errorWords: any = {}; //错误单词
     protected _hpLevels = { 0: 0, 7: 1, 3: 2, 1: 3, 4: 4, 2: 0 }; //各模式对应的已扣除血量
+    protected _totalTime: number = 5 * 60 * 1000;
 
     protected _comboNum: number = 0; //连击次数
     start() {
@@ -147,7 +148,8 @@ export class BaseModeView extends BaseView {
         } else if (WordSourceType.word_game == this._sourceType) {
             let levelData = this._levelData as AdvLevelConfig;
             let progressData = levelData.progressData;
-            this._remainTime = Math.round(progressData.time_remaining);
+            let costTime = progressData.cost_time;
+            this._remainTime = Math.round((this._totalTime - costTime) / 1000);
             /**如果当前关卡有错词，自动放到最后 */
             if (progressData.game_mode === this.gameMode) {
                 this._wordIndex = progressData.word_num - 1;
@@ -190,7 +192,7 @@ export class BaseModeView extends BaseView {
         if (this._remainTime > 0 && this.gameMode != GameMode.Exam) {
             this.schedule(this.onTimer, 1);
         }
-        this._errorNum = levelData.error_count;
+        this._errorNum = levelData.error_num;
         this.errorNumLabel.string = "错误次数:" + this._errorNum;
         return wordsdata;
     }
@@ -207,7 +209,8 @@ export class BaseModeView extends BaseView {
         }
         if (WordSourceType.word_game == this._sourceType) {
             let levelData = this._levelData as AdvLevelConfig;
-            levelData.progressData.time_remaining = this._remainTime;
+            // levelData.progressData.time_remaining = this._remainTime;
+            levelData.progressData.cost_time += 1000;
         } else if (WordSourceType.classification == this._sourceType) {
             let levelData = this._levelData as BookLevelConfig;
             levelData.time_remaining = this._remainTime;
@@ -258,7 +261,8 @@ export class BaseModeView extends BaseView {
                 this.monster.getComponent(UIOpacity).opacity = 125;
                 return;
             }
-            let len = this._wordsData.length - this._errorNum - 1;
+            let errNum = Object.keys(this._errorWords).length;
+            let len = this._wordsData.length - errNum - 1;
             if (len > 4) {
                 len = 4;
             }
@@ -286,7 +290,7 @@ export class BaseModeView extends BaseView {
                 this.monster.getComponent(UIOpacity).opacity = 125;
             }
             let levelData = this._levelData as BookLevelConfig;
-            let pass = levelData.word_num - levelData.error_count;
+            let pass = levelData.word_num - levelData.error_num;
             let totalHp = this.gameMode == GameMode.Exam ? this._wordsData.length : this._wordsData.length * 5;
             monsterModel.setHp(this._wordsData.length * this._hpLevels[this.gameMode] + pass, totalHp);
             let hp_scale = monsterModel.hpNode.getScale();
@@ -468,7 +472,7 @@ export class BaseModeView extends BaseView {
                 pointData.big_id = levelData.mapLevelData.big_id;
                 pointData.small_id = levelData.mapLevelData.small_id;
                 pointData.micro_id = levelData.mapLevelData.micro_id;
-                pointData.star = data.flag_star_num;
+                pointData.star = data.star_num;
                 EventManager.emit(EventType.Update_MapPoint, pointData);
             }
             // this.checkResult();

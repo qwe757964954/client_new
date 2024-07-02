@@ -315,7 +315,7 @@ export class WorldIsland extends Component {
     private initEvent() {
         CCUtil.onTouch(this.back, this.onBtnBackClick, this);
         CCUtil.onTouch(this.btn_details, this.onBtnDetailsClick, this);
-        CCUtil.onTouch(this.btn_pos, this.openLevelView, this);
+        CCUtil.onTouch(this.btn_pos, this.skipToCurrent, this);
         CCUtil.onTouch(this._boss, this.challangeBoss, this);
 
         this._mapPointClickEvId = EventManager.on(EventType.MapPoint_Click, this.mapPointClick.bind(this));
@@ -327,7 +327,7 @@ export class WorldIsland extends Component {
     private removeEvent() {
         CCUtil.offTouch(this.back, this.onBtnBackClick, this);
         CCUtil.offTouch(this.btn_details, this.onBtnDetailsClick, this);
-        CCUtil.offTouch(this.btn_pos, this.openLevelView, this);
+        CCUtil.offTouch(this.btn_pos, this.skipToCurrent, this);
         CCUtil.offTouch(this._boss, this.challangeBoss, this);
         EventManager.off(EventType.MapPoint_Click, this._mapPointClickEvId);
         EventManager.off(EventType.Update_MapPoint, this._mapPointUpdateEvId);
@@ -339,9 +339,23 @@ export class WorldIsland extends Component {
         EventManager.emit(EventType.Exit_World_Island);
     }
 
-    /**打开闯关界面 */
-    openLevelView() {
-
+    /**跳转到当前位置 */
+    skipToCurrent() {
+        if (this._currentPos) {
+            let transform = this.mapContent.getComponent(UITransform);
+            let width = 0;
+            for (let i = 0; i < this._mapLevelsData.length; i++) {
+                if (this._mapLevelsData[i].length < this._mapBaseCounts[this._bigId - 1]) {
+                    let pos = WorldIsland.getMapPointsByBigId(this._bigId)[this._mapLevelsData[i].length - 1];
+                    width += pos[0] + 250;
+                } else {
+                    width += 2145;
+                }
+            }
+            this.skipToMapPoint(this._bigId, this._currentPos.small_id, this._currentPos.micro_id);
+            this.mapPointList.updateAll();
+            transform.width = width;
+        }
     }
     /**返回关卡模式 */
     private onBtnBackClick() {
