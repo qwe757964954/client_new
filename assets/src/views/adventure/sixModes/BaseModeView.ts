@@ -472,7 +472,7 @@ export class BaseModeView extends BaseView {
                 pointData.big_id = levelData.mapLevelData.big_id;
                 pointData.small_id = levelData.mapLevelData.small_id;
                 pointData.micro_id = levelData.mapLevelData.micro_id;
-                pointData.star = data.flag_star_num;
+                pointData.star = data.star_num;
                 EventManager.emit(EventType.Update_MapPoint, pointData);
             }
             // this.checkResult();

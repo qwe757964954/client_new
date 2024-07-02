@@ -12,6 +12,8 @@ import { ReportItem } from './ReportItem';
 import { GameSubmitResponse } from '../../../models/TextbookModel';
 import { AdventureResult, BossLevelSubmitData } from '../../../models/AdventureModel';
 import { SoundMgr } from '../../../manager/SoundMgr';
+import { ItemData } from '../../../manager/DataMgr';
+import { ObjectUtil } from '../../../util/ObjectUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('ExamReportView')
@@ -42,6 +44,7 @@ export class ExamReportView extends BaseView {
     public timeLabel: Label = null;
     @property(Label)
     public rankLabel: Label = null;
+    private _propsData: ItemData[] = [];
 
 
     private _resultSubmitResponse: GameSubmitResponse | AdventureResult = null;
@@ -54,7 +57,13 @@ export class ExamReportView extends BaseView {
         this.next_level_btn.active = this._resultSubmitResponse.pass_flag == 1;
         if (this._resultSubmitResponse.pass_flag == 1) {
             this.result_spine.setAnimation(0, "vic", true);
-            this.reward_scroll.numItems = Object.keys(this._resultSubmitResponse.award).length;
+            if (this._resultSubmitResponse) {
+                this._propsData = ObjectUtil.convertAwardsToItemData(this._resultSubmitResponse.award_info);
+            } else {
+                this._propsData = ObjectUtil.convertAwardsToItemData(this._bossLevelResult.award);
+            }
+
+            this.reward_scroll.numItems = this._propsData.length;
             SoundMgr.victory();
         } else {
             this.result_spine.setAnimation(0, "def", false);
@@ -128,11 +137,8 @@ export class ExamReportView extends BaseView {
     }
 
     onLoadRewardHorizontal(item: Node, idx: number) {
-        let award = this._resultSubmitResponse ? this._resultSubmitResponse.award : this._bossLevelResult.award;
-        let keys = Object.keys(award);
-        let key: string = keys[idx];
         let item_script = item.getComponent(ReportItem);
-        item_script.updateItemProps(key, award[key]);
+        item_script.updateItemProps(this._propsData[idx]);
     }
 }
 

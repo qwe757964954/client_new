@@ -170,6 +170,7 @@ export class AdventureResult extends BaseRepPacket {
         star_two?: number
     };
     word: string;
+    star_num?: number
 }
 
 //组合模式拆分数据

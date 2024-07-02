@@ -682,7 +682,7 @@
     "selectedSpriteFrame": null,
     "adaptiveSize": false,
     "icon": {
-      "__id__": 14
+      "__id__": 17
     },
     "num_text": {
       "__id__": 23
@@ -702,6 +702,7 @@
       "__id__": 0
     },
     "fileId": "4ecQz5GdtMlY9U7fsh0mO1",
-    "instance": null
+    "instance": null,
+    "targetOverrides": null
   }
 ]

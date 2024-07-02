@@ -24,7 +24,7 @@ const { ccclass, property } = _decorator;
 export const ClearanceConditionsConfig = {
     star_one: "完成本关卡",
     star_two: "在5分钟内完成通关",
-    star_three: "错误词书低于5",
+    star_three: "错误次数低于5",
 }
 
 
