@@ -24,8 +24,6 @@ export class ResetPasswordView extends BasePopup {
     protected initUI(): void {
         this.enableClickBlankToClose([this.node.getChildByName("content")]).then(()=>{
         });
-        this.passEdit.update();
-        this.sureEdit.update();
     }
 
     protected initEvent(): void {
