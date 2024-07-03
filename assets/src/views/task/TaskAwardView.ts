@@ -27,27 +27,7 @@ export class TaskAwardView extends BaseView {
         
     }
 
-    removeDuplicateBoxes(weekly_box: BoxWeekData[]): BoxWeekData[] {
-        // 首先根据 box_id 对数组进行排序
-        weekly_box.sort((a, b) => a.box_id - b.box_id);
-    
-        // 使用 Map 来存储唯一的 box_id
-        let uniqueBoxes = new Map<number, BoxWeekData>();
-    
-        for (let box of weekly_box) {
-            // 仅在 Map 中不存在该 box_id 时，添加该元素
-            if (!uniqueBoxes.has(box.box_id)) {
-                uniqueBoxes.set(box.box_id, box);
-            }
-        }
-    
-        // 将 Map 转换为数组
-        return Array.from(uniqueBoxes.values());
-    }
-
     updateTaskAwardProgress(val: number, weekly_box: BoxWeekData[]) {
-        // Sort weekly_box by box_id
-        weekly_box = this.removeDuplicateBoxes(weekly_box);
         this._weekly_box = weekly_box.sort((a, b) => a.box_id - b.box_id);
         console.log("updateTaskAwardProgress",this._weekly_box);
         this._taskProcess = val;
