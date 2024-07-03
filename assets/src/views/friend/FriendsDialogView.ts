@@ -10,6 +10,7 @@ import { BasePopup } from '../../script/BasePopup';
 import { FdServer } from '../../service/FriendService';
 import CCUtil from '../../util/CCUtil';
 import { ObjectUtil } from '../../util/ObjectUtil';
+import { ToolUtil } from '../../util/ToolUtil';
 import { CongratulationsView } from '../task/CongratulationsView';
 import { FriendAddView } from './FriendAddView';
 import { FriendEmailView } from './FriendEmailView';
@@ -54,6 +55,8 @@ export class FriendsDialogView extends BasePopup {
     private _friend_list:FriendListItemModel[] = [];
     private _selectedFriend:FriendListItemModel = null;
     async initUI() {
+        let scale = ToolUtil.getValue(GlobalConfig.WIN_DESIGN_RATE, 0.1, 1.0);
+        CCUtil.setNodeScale(this.contentNd, scale);
         GlobalConfig.initResolutionRules();
         await this.initViews();
         this.initData();

@@ -1,4 +1,4 @@
-import { Game, ResolutionPolicy, Size, View, game, macro, profiler, screen, sys, view } from "cc";
+import { Game, Size, View, game, macro, profiler, screen, sys, view } from "cc";
 import { APP_VERSION } from "./AppConfig";
 import DebugConfig from "./DebugConfig";
 import { TextConfig } from "./config/TextConfig";
@@ -102,6 +102,7 @@ export default class GlobalConfig {
     }
     // 屏幕适配规则
     public static initResolutionRules() {
+        /*
         var _desWidth = view.getDesignResolutionSize().width;
         var _desHeight = view.getDesignResolutionSize().height;
 
@@ -116,9 +117,12 @@ export default class GlobalConfig {
         } else {
             view.setResolutionPolicy(ResolutionPolicy.FIXED_WIDTH);
         }
+            */
     }
     public static initRessolutionHeight() {
+        /*
         view.setResolutionPolicy(ResolutionPolicy.FIXED_HEIGHT);
+        */
     }
 }
 // 游戏初始化

@@ -1,5 +1,6 @@
 import { _decorator, Node } from 'cc';
 import { PrefabType, PrefabTypeEntry } from '../../config/PrefabType';
+import { TextConfig } from '../../config/TextConfig';
 import GlobalConfig from '../../GlobalConfig';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { UserPlayerDetail } from '../../models/SettingModel';
@@ -122,7 +123,8 @@ export class SettingView extends BaseView {
     // 关于我们
     btnAboutUsFunc() {
         console.log("btnAboutUsFunc");
-        ViewsManager.instance.showView(PrefabType.VideoView);
+        ViewsManager.showTip(TextConfig.Function_Tip);
+        // ViewsManager.instance.showView(PrefabType.VideoView);
     }
 
     // 返回主界面
