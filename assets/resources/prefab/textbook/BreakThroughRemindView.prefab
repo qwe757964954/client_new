@@ -1,7 +1,7 @@
 [
   {
     "__type__": "cc.Prefab",
-    "_name": "TextbookRemindView",
+    "_name": "BreakThroughRemindView",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_native": "",
@@ -13,7 +13,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "TextbookRemindView",
+    "_name": "BreakThroughRemindView",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": null,
@@ -1508,7 +1508,7 @@
     "fileId": "c4KhE4ZCZPoIMuStxYEJKQ"
   },
   {
-    "__type__": "2f7ca9OP1hJc7FgiMzEFKkf",
+    "__type__": "e545c+DJERNeZVJjSP2M4hg",
     "_name": "",
     "_objFlags": 0,
     "__editorExtras__": {},
@@ -1538,7 +1538,7 @@
   },
   {
     "__type__": "cc.CompPrefabInfo",
-    "fileId": "f6PxMAKC5Fw6Mr0Fm+edJC"
+    "fileId": "fdBbN3NwpGr4gDvncjQgEc"
   },
   {
     "__type__": "cc.PrefabInfo",

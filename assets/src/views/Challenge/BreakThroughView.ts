@@ -229,7 +229,7 @@ export class BreakThroughView extends BaseView {
     }
 
     showRemainCalL(data: ITextbookRemindData) {
-        ViewsManager.instance.showPopup(PrefabType.TextbookRemindView).then((node: Node)=>{
+        ViewsManager.instance.showPopup(PrefabType.BreakThroughRemindView).then((node: Node)=>{
             let remindScript: BreakThroughRemindView = node.getComponent(BreakThroughRemindView);
             remindScript.initRemind(data);
         });

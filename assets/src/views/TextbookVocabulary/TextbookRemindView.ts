@@ -28,7 +28,7 @@ export class TextbookRemindView extends BasePopup {
     @property(Node)
     public btn_green: Node = null;
 
-    private _callFunc:(isSure:boolean)=>void = null;
+    public _callFunc:(isSure:boolean)=>void = null;
     public initUI(): void {
         this.enableClickBlankToClose([this.node.getChildByName("frame")]).then(() => {
             if(this._callFunc){
@@ -47,6 +47,7 @@ export class TextbookRemindView extends BasePopup {
         this.cancel_text.string = data.cancel_text;
         this.content_text.string = data.content_text;
         this._callFunc = data.callFunc;
+        console.log("this._callFunc....",this._callFunc);
     }
 
     onClickSure(){
