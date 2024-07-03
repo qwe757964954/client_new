@@ -38,14 +38,8 @@ export class TextbookRemindView extends BasePopup {
     }
 
     initEvent() {
-        CCUtil.onTouch(this.btn_blue, this.onClickSure, this);
-        CCUtil.onTouch(this.btn_green, this.onClickCancel, this);
-    }
-
-    /**移除监听 */
-    removeEvent() {
-        CCUtil.offTouch(this.btn_blue, this.onClickSure, this);
-        CCUtil.offTouch(this.btn_green, this.onClickCancel, this);
+        CCUtil.onBtnClick(this.btn_blue, this.onClickSure.bind(this));
+        CCUtil.onBtnClick(this.btn_green, this.onClickCancel.bind(this));
     }
 
     initRemind(data:ITextbookRemindData){
