@@ -33,6 +33,9 @@ export class SettingPlanView extends BasePopup {
     @property(Label)
     public time_tip:Label = null;
 
+    @property(Label)
+    public date_tip:Label = null;
+
     private _levelSelect:number = 0;
     private _daySelect:number = 0;
     private _isModify:boolean = false;
@@ -84,9 +87,8 @@ export class SettingPlanView extends BasePopup {
     }
 
     private updatePlanDate(){
-        let date_str = TextbookUtil.getFormattedDate(this._daySelect);
-        let time_str = TextbookUtil.formatTotalMinutes(this._levelSelect);
-        this.time_tip.string = `完成日期：${date_str} 预计每天${time_str}`;
+        this.date_tip.string = TextbookUtil.getFormattedDate(this._daySelect);
+        this.time_tip.string = TextbookUtil.formatTotalMinutes(this._levelSelect);
     }
 
     private updateDays(selectedLevel: number): void {

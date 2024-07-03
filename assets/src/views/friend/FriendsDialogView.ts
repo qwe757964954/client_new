@@ -2,6 +2,7 @@ import { _decorator, Label, Node, Prefab } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType, PrefabTypeEntry } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
+import GlobalConfig from '../../GlobalConfig';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { DataFriendApplyListResponse, DataFriendListResponse, FriendListItemModel, SystemMailItem, SystemMailListResponse, UserFriendData, UserSystemAwardResponse } from '../../models/FriendModel';
 import { NetNotify } from '../../net/NetNotify';
@@ -53,7 +54,7 @@ export class FriendsDialogView extends BasePopup {
     private _friend_list:FriendListItemModel[] = [];
     private _selectedFriend:FriendListItemModel = null;
     async initUI() {
-        
+        GlobalConfig.initResolutionRules();
         await this.initViews();
         this.initData();
         this._rightPlayerInfo.node.setSiblingIndex(0);
@@ -61,6 +62,7 @@ export class FriendsDialogView extends BasePopup {
         this.setFriendListSelect();
         this.setEmailListSelect();
         this.enableClickBlankToClose([this.node.getChildByName("content"),this._rightPlayerInfo.node,this._leftTab.node]).then(()=>{
+            GlobalConfig.initRessolutionHeight();
         });
     }
     protected onInitModuleEvent(): void {
@@ -264,6 +266,7 @@ export class FriendsDialogView extends BasePopup {
     }
     onCloseView() {
         this.closePop();
+        GlobalConfig.initRessolutionHeight();
     }
 
     onHouseClick() {

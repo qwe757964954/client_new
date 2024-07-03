@@ -13,6 +13,8 @@ export class TextbookUtil {
 	 * @returns 
 	 */
 	public static getFormattedDate(days: number): string {
+        // 几天算作一天
+        days = days - 1;
 		// 获取当前日期
 		let currentDate = new Date();
 	
