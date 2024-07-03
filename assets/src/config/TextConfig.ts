@@ -111,4 +111,13 @@ export const TextConfig = {
 
     PetInteraction_Tip: "互动次数不足",
     PetUpgrade_Tip: "升级成功",
+
+    Sure_Tip: "确定",
+    Cancel_Tip: "取消",
+    Textbook_Delete_Tip:"确定要删除s%吗？请注意删除后学习进度数据依然会保存",
+    Textbook_Change_Tip:"是否切换s%注意切换后复习有奖里面的教材单词复习也会同步为新词书",
+    Success_Change_Book: "成功切换当前学习词书s%",
+    Begin_Break_Through_Tip:"是否延续上一次闯关进度",
+    Continue_From_Last_Time_Tip:"延续上次",
+    Restart_Tip:"重新开始",
 }

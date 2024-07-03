@@ -1,5 +1,6 @@
 import { _decorator, isValid, Node } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
+import { TextConfig } from '../../config/TextConfig';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { CurrentBookStatus, MyTextbookListStatus, MyTextbookStatus } from '../../models/TextbookModel';
 import { NetNotify } from '../../net/NetNotify';
@@ -98,9 +99,9 @@ export class TextbookListView extends BaseView {
         myTextbookItemScript.updateMyContentItemProps(idx, itemInfo);
         myTextbookItemScript.setDeleteClickCallback((delIdx: number, bookStatus: MyTextbookStatus) => {
             let data: ITextbookRemindData = {
-                sure_text: "确定",
-                cancel_text: "取消",
-                content_text: `确定要删除${itemInfo.book_name}(${itemInfo.grade})吗？请注意删除后将不再保留该词书学习记录`,
+                sure_text: TextConfig.Sure_Tip,
+                cancel_text: TextConfig.Cancel_Tip,
+                content_text: TextConfig.Textbook_Delete_Tip.replace("s%",`${itemInfo.book_name}(${itemInfo.grade})`),
                 callFunc: (isSure: boolean) => {
                     if (isSure) {
                         this.myScrollView.aniDelItem(delIdx, () => {
@@ -128,11 +129,12 @@ export class TextbookListView extends BaseView {
         }
         let itemInfo: MyTextbookStatus = this._myTextbookDataArr[selectedId];
         let data: ITextbookRemindData = {
-            sure_text: "确定",
-            cancel_text: "取消",
-            content_text: `是否切换\n《${itemInfo.book_name}${itemInfo.grade}》为当前在学`,
+            sure_text: TextConfig.Sure_Tip,
+            cancel_text: TextConfig.Cancel_Tip,
+            content_text:TextConfig.Textbook_Change_Tip.replace("s%",`《${itemInfo.book_name}${itemInfo.grade}》`),
             callFunc: (isSure: boolean) => {
                 if (isSure) {
+                    ViewsManager.showTip(TextConfig.Success_Change_Book.replace("s%",`《${itemInfo.book_name}${itemInfo.grade}》`));
                     TBServer.reqChangeTextbook(itemInfo.book_id);
                 }else{
                     let select_id = this.getSelectDataIndex()
