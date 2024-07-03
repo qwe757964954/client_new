@@ -60,7 +60,6 @@ export class FriendsDialogView extends BasePopup {
         GlobalConfig.initResolutionRules();
         await this.initViews();
         this.initData();
-        this._rightPlayerInfo.node.setSiblingIndex(0);
         this.setLeftTab();
         this.setFriendListSelect();
         this.setEmailListSelect();
@@ -91,6 +90,7 @@ export class FriendsDialogView extends BasePopup {
                 left: -207
             },this.contentNd),
             this.initViewComponent(PrefabType.FriendPlayerInfoView, (node) => {
+                node.setSiblingIndex(0);
                 this._rightPlayerInfo = node.getComponent(FriendPlayerInfoView)
                 this._rightPlayerInfo.showPos = this._rightPlayerInfo.node.position;
             }, {
