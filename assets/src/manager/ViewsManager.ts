@@ -110,7 +110,8 @@ export class ViewsManager {
                 let scpt: BasePopup = node.getComponent(viewConfig.componentName);
 
                 try {
-                    await scpt.showAnim();
+                    // await scpt.showAnim();
+                    scpt.showAnim();
                     resolve(node as Node); // Resolve after the animation completes
                 } catch (animationError) {
                     console.error(animationError);
