@@ -48,7 +48,7 @@ export class CenterView extends Component {
     // 初始化头像/框
     public initHead() {
         let headBoxUrl = ImgUtil.getPropImgUrl(User.curHeadBoxPropId);
-        let headUrl = ImgUtil.getAvatarUrl(User.curHeadPropId);
+        let headUrl = ImgUtil.getAvatarUrl(User.roleID);
         LoadManager.loadSprite(headBoxUrl, this.headBox);
         LoadManager.loadSprite(headUrl, this.head);
     }
