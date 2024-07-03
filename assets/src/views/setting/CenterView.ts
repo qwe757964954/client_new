@@ -42,7 +42,7 @@ export class CenterView extends Component {
 
     //初始化
     public init(): void {
-        this.initHead();
+        
         // this.initEvent();
     }
     // 初始化头像/框
@@ -54,6 +54,7 @@ export class CenterView extends Component {
     }
     // 初始化用户id、昵称、称号等信息
     public updateUserInfo(data:UserPlayerDetail) {
+        this.initHead();
         this._playerDetail = data;
         this.idTxt.string = data.user_id.toString();
         this.nameTxt.string = data.nick_name;

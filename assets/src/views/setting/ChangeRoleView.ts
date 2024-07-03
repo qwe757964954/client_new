@@ -29,7 +29,7 @@ export class ChangeRoleView extends BaseView {
         [102, [9550, 9800, 9801, 9802, 9803, 9805]],
         [103, [9600, 9900, 9901, 9902, 9903]],
     ]);
-
+    
     protected initUI(): void {
         for (let index = 0; index < this.roleList.length; index++) {
             const roleItem = this.roleList[index];

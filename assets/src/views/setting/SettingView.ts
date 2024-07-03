@@ -4,6 +4,7 @@ import { TextConfig } from '../../config/TextConfig';
 import GlobalConfig from '../../GlobalConfig';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { UserPlayerDetail } from '../../models/SettingModel';
+import { User } from '../../models/User';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { STServer } from '../../service/SettingService';
@@ -40,6 +41,7 @@ export class SettingView extends BaseView {
 
     onUserPlayerDetail(data:UserPlayerDetail){
         console.log("onUserPlayerDetail data = ", data);
+        User.roleID = data.role_id;
         this.center.getComponent(CenterView).updateUserInfo(data);
         this.account.getComponent(AccountView).updateUserInfo(data);
     }
