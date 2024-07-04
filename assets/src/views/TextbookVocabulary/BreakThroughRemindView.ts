@@ -37,7 +37,6 @@ export class BreakThroughRemindView extends BasePopup {
         this.cancel_text.string = data.cancel_text;
         this.content_text.string = data.content_text;
         this._callFunc = data.callFunc;
-        console.log("this._callFunc....",this._callFunc);
     }
 
     onClickSure(){
