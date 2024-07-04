@@ -25,6 +25,24 @@ export enum BuildingIDType {
     castle = 0,//城堡
     mine = 3,//矿山
 }
+/**建筑操作类型 */
+export enum BuildingOperationType {
+    new = 1,//新建
+    edit = 2,//编辑
+    sell = 3,//卖出
+    recycle = 4,//回收
+}
+/**建筑操作数据 */
+export class BuildingOperationData {
+    public type: BuildingOperationType = null;//操作类型
+    public buildingID: number = null;//建筑唯一索引id
+    public idx: number = null;//索引(前端使用)
+    public x: number = null;//x坐标
+    public y: number = null;//y坐标
+    public isFlip: boolean = null;//是否翻转
+    public isRecycle: boolean = null;//是否回收
+}
+
 /**回收数据 */
 export class RecycleData {
     public bid: number;//建筑id
