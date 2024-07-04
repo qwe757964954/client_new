@@ -39,7 +39,7 @@ export class LandEditCtl extends MapBaseCtl {
         }
         this._selectLand = null;
         this.saveLand();
-        this._mainScene.changeMapStatus(MapStatus.EDIT);
+        this._mainScene.changeMapStatus(MapStatus.BUILD_EDIT);
     }
 
     //设置选中地块
@@ -92,15 +92,12 @@ export class LandEditCtl extends MapBaseCtl {
     // 确定事件
     confirmEvent(): void {
         this.reqLandEdit();
-        // this._selectLand = null;
-        // this.saveLand();
-        // this._mainScene.changeMapStatus(MapStatus.EDIT);
     }
     // 取消事件
     cancelEvent(): void {
         this._selectLand = null;
         this.recoverLand();
-        this._mainScene.changeMapStatus(MapStatus.EDIT);
+        this._mainScene.changeMapStatus(MapStatus.BUILD_EDIT);
     }
     // 缓存修改地块
     cacheLand(land: LandModel): void {

@@ -54,7 +54,7 @@ export class MainUIView extends BaseView {
         this.initNotifyView();
     }
 
-    async initNotifyView(){
+    async initNotifyView() {
         const node = await this.loadAndInitPrefab(PrefabType.MainNotifyView, this.node.getChildByName("RightUp"), {
             isAlignBottom: true,
             isAlignRight: true,
@@ -94,7 +94,7 @@ export class MainUIView extends BaseView {
         CCUtil.offTouch(this.btnTaskGo, this.onClickTaskGo, this);
     }
     /**好友点击 */
-    async onClickFriend(){
+    async onClickFriend() {
         await ViewsManager.instance.showPopup(PrefabType.FriendsDialogView);
     }
 
@@ -128,7 +128,7 @@ export class MainUIView extends BaseView {
     }
     //编辑点击
     public onClickEdit() {
-        this._mainScene.changeMapStatus(MapStatus.EDIT);
+        this._mainScene.changeMapStatus(MapStatus.BUILD_EDIT);
     }
     //BOSS点击
     public onClickBoss() {

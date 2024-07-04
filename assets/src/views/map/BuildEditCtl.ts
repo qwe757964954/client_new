@@ -1,5 +1,4 @@
 import { EventMouse, EventTouch, Vec3 } from "cc";
-import { MapStatus } from "../../config/MapConfig";
 import { ViewsManager } from "../../manager/ViewsManager";
 import { BuildingModel } from "../../models/BuildingModel";
 import { GridModel } from "../../models/GridModel";
@@ -195,10 +194,8 @@ export class BuildEditCtl extends MapBaseCtl {
     }
     // UI上一步
     prevStepEvent(): void {
-        this._mainScene.changeMapStatus(MapStatus.EDIT);
     }
     // UI下一步
     nextStepEvent(): void {
-        this._mainScene.changeMapStatus(MapStatus.EDIT);
     }
 }

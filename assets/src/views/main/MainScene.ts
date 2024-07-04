@@ -1,29 +1,27 @@
 import { _decorator, Camera, Canvas, EventMouse, EventTouch, Layers, Node, Prefab, sp, UITransform, Vec3 } from 'cc';
 import { EventType } from '../../config/EventType';
 import { MapStatus } from '../../config/MapConfig';
-import { BuildingIDType, BuildingModel } from '../../models/BuildingModel';
-import EventManager from '../../util/EventManager';
-import { BuildEditCtl } from '../map/BuildEditCtl';
-import { LandEditCtl } from '../map/LandEditCtl';
-import { MapEditCtl } from '../map/MapEditCtl';
-import { MapNormalCtl } from '../map/MapNormalCtl';
-import { RecycleCtl } from '../map/RecycleCtl';
-// import { MainUICtl } from './MainUICtl';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { DataMgr, EditInfo, EditType } from '../../manager/DataMgr';
 import { SoundMgr } from '../../manager/SoundMgr';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
+import { BuildingIDType, BuildingModel } from '../../models/BuildingModel';
 import { CloudModel } from '../../models/CloudModel';
 import { RoleType } from '../../models/RoleBaseModel';
 import { RoleDataModel } from '../../models/RoleDataModel';
 import { BaseComponent } from '../../script/BaseComponent';
 import CCUtil from '../../util/CCUtil';
+import EventManager from '../../util/EventManager';
 import { TimerMgr } from '../../util/TimerMgr';
+import { BuildEditCtl } from '../map/BuildEditCtl';
 import { BuildingProduceView } from '../map/BuildingProduceView';
 import { CastleInfoView } from '../map/CastleInfoView';
+import { LandEditCtl } from '../map/LandEditCtl';
+import { MapNormalCtl } from '../map/MapNormalCtl';
 import { MapUICtl } from '../map/MapUICtl';
 import { PetInteractionView } from '../map/PetInteractionView';
+import { RecycleCtl } from '../map/RecycleCtl';
 import { EditUIView } from './EditUIView';
 import { LandEditUIView } from './LandEditUIView';
 import { MainUIView } from './MainUIView';
@@ -81,11 +79,9 @@ export class MainScene extends BaseComponent {
     /**=========================变量============================ */
     private _mapStatus: MapStatus = MapStatus.DEFAULT;//地图状态
     private _mapNormalCtl: MapNormalCtl = null;//普通地图控制器
-    private _mapEditCtl: MapEditCtl = null;//编辑地图控制器
     private _buildingEditCtl: BuildEditCtl = null;//建筑编辑控制器
     private _landEditCtl: LandEditCtl = null;//地块编辑控制器
     private _recycleCtl: RecycleCtl = null;//地图回收控制器
-    // private _mainUICtl:MainUICtl = null;//主界面控制器
     private _mapUICtl: MapUICtl = null;//地图界面控制器
 
     private _loadCount: number = 0;//加载计数
@@ -155,7 +151,6 @@ export class MainScene extends BaseComponent {
         this.showLoading();
 
         this._mapNormalCtl = new MapNormalCtl(this, this.getLoadOverCall());
-        this._mapEditCtl = new MapEditCtl(this, this.getLoadOverCall());
         this._buildingEditCtl = new BuildEditCtl(this, this.getLoadOverCall());
         this._landEditCtl = new LandEditCtl(this, this.getLoadOverCall());
         this._recycleCtl = new RecycleCtl(this, this.getLoadOverCall());
@@ -195,7 +190,6 @@ export class MainScene extends BaseComponent {
     // 移除控制器
     removeCtl() {
         this._mapNormalCtl.dispose();
-        this._mapEditCtl.dispose();
         this._buildingEditCtl.dispose();
         this._landEditCtl.dispose();
         this._recycleCtl.dispose();
@@ -233,13 +227,7 @@ export class MainScene extends BaseComponent {
         if (!building) return;
         SoundMgr.click();
         console.log("onBuildingClick", building);
-        if (MapStatus.EDIT == this._mapStatus) {
-            if (!building.isCanEdit) return;
-            this._buildingEditCtl.selectBuilding = building;
-            this.changeMapStatus(MapStatus.BUILD_EDIT);
-            return;
-        }
-        else if (MapStatus.DEFAULT == this._mapStatus) {// 普通点击 展示建筑建造界面
+        if (MapStatus.DEFAULT == this._mapStatus) {// 普通点击 展示建筑建造界面
             let editInfo = building.editInfo;
             if (EditType.Null == editInfo.type) {
                 this.showCastleView(building);
@@ -362,7 +350,7 @@ export class MainScene extends BaseComponent {
     }
     // 建筑按钮界面关闭
     onBuildingBtnViewClose() {
-        this.changeMapStatus(MapStatus.EDIT);
+        this.changeMapStatus(MapStatus.BUILD_EDIT);
     }
     // 场景状态切换
     changeMapStatus(status: MapStatus) {
@@ -372,8 +360,8 @@ export class MainScene extends BaseComponent {
         this.lineLayer.active = MapStatus.DEFAULT != status;
         this._mainUIView.node.active = MapStatus.DEFAULT == status;
         if (this._editUIView) {
-            this._editUIView.node.active = (MapStatus.EDIT == status || MapStatus.BUILD_EDIT == status);
-        } else if (MapStatus.EDIT == status || MapStatus.BUILD_EDIT == status) {
+            this._editUIView.node.active = (MapStatus.BUILD_EDIT == status);
+        } else if (MapStatus.BUILD_EDIT == status) {
             ViewsMgr.showView(PrefabType.EditUIView, (node: Node) => {
                 let view = node.getComponent(EditUIView);
                 this._editUIView = view;
@@ -418,9 +406,6 @@ export class MainScene extends BaseComponent {
         if (!status) status = this._mapStatus;
         if (MapStatus.DEFAULT == status) {
             return this._mapNormalCtl;
-        }
-        if (MapStatus.EDIT == status) {
-            return this._mapEditCtl;
         }
         if (MapStatus.BUILD_EDIT == status) {
             return this._buildingEditCtl;
