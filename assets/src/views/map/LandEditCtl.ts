@@ -65,7 +65,7 @@ export class LandEditCtl extends MapBaseCtl {
 
         let pos = e.getLocation();
         let gridModel = this._mainScene.getTouchGrid(pos.x, pos.y);
-        if (gridModel && gridModel.land) {
+        if (gridModel && gridModel.land && !gridModel.cloud) {
             gridModel.land.refreshLand(this._selectLand);
             this.cacheLand(gridModel.land);
         }
@@ -77,7 +77,7 @@ export class LandEditCtl extends MapBaseCtl {
         if (!this._isTouchMove) {
             let pos = e.getLocation();
             let gridModel = this._mainScene.getTouchGrid(pos.x, pos.y);
-            if (gridModel && gridModel.land) {
+            if (gridModel && gridModel.land && !gridModel.cloud) {
                 gridModel.land.refreshOneLand(this._selectLand);
                 this.cacheLand(gridModel.land);
             }
