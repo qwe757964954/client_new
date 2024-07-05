@@ -80,8 +80,8 @@ export class WeekTaskView extends BaseView {
             }),
             this.initViewComponent(PrefabType.TaskTabView, (node) => {
                 this._tabView = node.getComponent(TaskTabView);
-                this._tabView.updateData(TaskTabInfos);
                 this._tabView.setTabSelectClick(this.onTabSelect.bind(this));
+                this._tabView.updateData(TaskTabInfos);
             }, {
                 isAlignTop: true,
                 isAlignLeft: true,

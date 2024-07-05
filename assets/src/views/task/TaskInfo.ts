@@ -13,7 +13,11 @@ export enum TaskTabIds {
   AchievementChallenge = 1, // 成就挑战
   WeeklyTasks,
   MainTasks,
-  DailyTasks
+  DailyTasks,
+  AchievementMedals,
+  WordMonsterCards,
+  BuildingAtlas,
+  ClothingAtlas
 }
 
 // 定义 AchevementRewardIds 枚举
@@ -23,8 +27,18 @@ export enum AchevementRewardIds {
   Kingdom,           // 王国
   Instance,          // 副本
   Elf,               // 精灵
-  Social             // 社交
+  Social,             // 社交
+  All, //全部
+  Functional, //功能建筑
+  Landmark, //地标建筑
+  Decorative, //装饰建筑
+  Flooring, //地板
+  AllClothing, //服装全部
+  Hairstyle,  //发型
+  Hat,   //帽子
+  Jacket, //上衣
 }
+
 
 // 定义 AchevementRewardInfo 接口
 export interface AchevementRewardInfo {

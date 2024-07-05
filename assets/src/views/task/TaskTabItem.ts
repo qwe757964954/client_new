@@ -77,7 +77,7 @@ export class TaskTabItem extends ListItem {
 
     onLoadSubItemVertical(item:Node, idx:number){
         let item_sript:TaskTabSubItem = item.getComponent(TaskTabSubItem);
-        item_sript.initPropsItem(idx);
+        item_sript.initPropsItem(this._tab_info.subTabItems[idx]);
     }
 
     onSubItemListHorizontalSelected(item: any, selectedId: number, lastSelectedId: number, val: number) {

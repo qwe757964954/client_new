@@ -199,4 +199,12 @@ export const PrefabType = {
     /*********************************************每周任务 End*************************************************************/
 
     MainNotifyView: { path: "map/MainNotifyView", componentName: "MainNotifyView", zindex: Hierarchy.POPUPLAYER, tips: "任务奖励界面" },
+
+    /*********************************************角色 start***********************************************************/
+    CollectView: { path: "collect/CollectView", zindex: Hierarchy.POPUPLAYER, tips: "成就徽章" },
+    AchievementMedalsView: { path: "collect/AchievementMedalsView", zindex: Hierarchy.POPUPLAYER, tips: "成就徽章" },
+    MonsterCardView: { path: "collect/MonsterCardView", zindex: Hierarchy.POPUPLAYER, tips: "单词怪兽卡" },
+    BuildingAtlasView: { path: "collect/BuildingAtlasView", zindex: Hierarchy.POPUPLAYER, tips: "建筑图鉴" },
+    ClothingIllustratedView: { path: "collect/ClothingIllustratedView", zindex: Hierarchy.POPUPLAYER, tips: "服装图鉴" },
+    /*********************************************角色 end***********************************************************/
 }

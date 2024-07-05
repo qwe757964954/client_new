@@ -13,7 +13,7 @@ export class TaskTabView extends BaseView {
 
     public tab_datas:TaskTabInfo[] = [];
 
-    private callSelectCallback:(selectId:number)=>void = null;
+    private callSelectCallback:(info:TaskTabInfo)=>void = null;
 
     updateData(tabs:TaskTabInfo[]){
         this.tab_datas = tabs;
@@ -21,7 +21,7 @@ export class TaskTabView extends BaseView {
         this.tab_scroll.selectedId = 0;
     }
 
-    setTabSelectClick(callBack:(selectId:number)=>void){
+    setTabSelectClick(callBack:(info:TaskTabInfo)=>void){
         this.callSelectCallback = callBack;
     }
     onLoadTabHorizontal(item:Node, idx:number){
@@ -36,7 +36,7 @@ export class TaskTabView extends BaseView {
         item_sript.showSubItem = true;
         item_sript.updateSelectTabContent();
         if(this.callSelectCallback){
-            this.callSelectCallback(selectedId);
+            this.callSelectCallback(this.tab_datas[selectedId]);
         }
     }
 
