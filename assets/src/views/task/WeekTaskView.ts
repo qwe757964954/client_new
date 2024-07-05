@@ -18,18 +18,11 @@ import { MainTaskView } from './MainTaskView';
 import { TaskAchievementView } from './TaskAchievementView';
 import { TaskAwardView } from './TaskAwardView';
 import { TKConfig } from './TaskConfig';
-import { WeeklyTaskBox } from './TaskInfo';
+import { TaskTabIds, TaskTabInfos, WeeklyTaskBox } from './TaskInfo';
 import { TaskTabView } from './TaskTabView';
 import { WeeklyTaskView } from './WeeklyTaskView';
 
 const { ccclass, property } = _decorator;
-
-export enum TaskMenuType {
-    Achievement = 0, // 成就
-    Week = 1, // 每周
-    Main = 2, // 主线
-    Daily = 3 // 每日
-}
 
 @ccclass('WeekTaskView')
 export class WeekTaskView extends BaseView {
@@ -87,6 +80,7 @@ export class WeekTaskView extends BaseView {
             }),
             this.initViewComponent(PrefabType.TaskTabView, (node) => {
                 this._tabView = node.getComponent(TaskTabView);
+                this._tabView.updateData(TaskTabInfos);
                 this._tabView.setTabSelectClick(this.onTabSelect.bind(this));
             }, {
                 isAlignTop: true,
@@ -232,18 +226,18 @@ export class WeekTaskView extends BaseView {
         this.selectMenuType(selectId);
     }
 
-    private selectMenuType(menuType: TaskMenuType) {
+    private selectMenuType(menuType: TaskTabIds) {
         switch (menuType) {
-            case TaskMenuType.Achievement:
+            case TaskTabIds.AchievementChallenge:
                 this._achievementView.node.active = true;
                 break;
-            case TaskMenuType.Week:
+            case TaskTabIds.WeeklyTasks:
                 this._weekTask.showTask();
                 break;
-            case TaskMenuType.Main:
+            case TaskTabIds.MainTasks:
                 this._mainTask.showTask();
                 break;
-            case TaskMenuType.Daily:
+            case TaskTabIds.DailyTasks:
                 this._dailyTask.showTask();
                 break;
             default:
