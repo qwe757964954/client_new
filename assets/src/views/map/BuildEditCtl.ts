@@ -1,10 +1,14 @@
 import { EventMouse, EventTouch, Vec3 } from "cc";
+import { EventType } from "../../config/EventType";
+import { MapStatus } from "../../config/MapConfig";
 import { ViewsManager } from "../../manager/ViewsManager";
-import { BuildingModel } from "../../models/BuildingModel";
+import { BuildingModel, BuildingOperationData, BuildingOperationType } from "../../models/BuildingModel";
 import { GridModel } from "../../models/GridModel";
-import { s2cBuildingCreate, s2cBuildingEdit, s2cBuildingRecycle, s2cBuildingSell } from "../../models/NetModel";
+import { c2sBuildingCreate, c2sBuildingEdit, s2cBuildingCreate, s2cBuildingEdit, s2cBuildingEditBatch, s2cBuildingRecycle, s2cBuildingSell } from "../../models/NetModel";
 import { User } from "../../models/User";
 import { InterfacePath } from "../../net/InterfacePath";
+import { ServiceMgr } from "../../net/ServiceManager";
+import { EventMgr } from "../../util/EventManager";
 import { MainScene } from "../main/MainScene";
 import { MapBaseCtl } from "./MapBaseCtl";
 
@@ -19,6 +23,11 @@ export class BuildEditCtl extends MapBaseCtl {
     // private _buildingEditHandle: string;//建筑编辑事件
     // private _buildingCreateHandle: string;//建筑创建事件
 
+    private _step: number = 0;//步骤
+    private _operationCacheAry: BuildingOperationData[][] = [];//操作缓存
+    private _operationCache: BuildingOperationData[] = [];//本次操作缓存
+    private _tmpOperationData: BuildingOperationData = new BuildingOperationData();//临时操作数据
+
     constructor(mainScene: MainScene, callBack?: Function) {
         super(mainScene, callBack);
 
@@ -28,8 +37,15 @@ export class BuildEditCtl extends MapBaseCtl {
     initEvent() {
         this.addEvent(InterfacePath.c2sBuildingEdit, this.onBuildingEdit.bind(this));
         this.addEvent(InterfacePath.c2sBuildingCreate, this.onBuildingCreate.bind(this));
-        this.addEvent(InterfacePath.c2sBuildingSell, this.onBuildingSell.bind(this));
-        this.addEvent(InterfacePath.c2sBuildingRecycle, this.onBuildingRecycle.bind(this));
+        this.addEvent(InterfacePath.c2sBuildingSell, this.onRepBuildingSell.bind(this));
+        this.addEvent(InterfacePath.c2sBuildingRecycle, this.onRepBuildingRecycle.bind(this));
+        this.addEvent(InterfacePath.c2sBuildingEditBatch, this.onRepBuildingEditBatch.bind(this));
+
+        this.addEvent(EventType.Building_Save, this.onBuildingSave.bind(this));
+        this.addEvent(EventType.Building_Recycle, this.onBuildingRecycle.bind(this));
+        this.addEvent(EventType.Building_RecycleEx, this.onBuildingRecycleEx.bind(this));
+        this.addEvent(EventType.Building_Sell, this.onBuildingSell.bind(this));
+        this.addEvent(EventType.BuildingBtnView_Close, this.onBuildingBtnViewClose.bind(this));
     }
     // 销毁
     public dispose(): void {
@@ -49,7 +65,7 @@ export class BuildEditCtl extends MapBaseCtl {
         }
     }
     /**建筑卖出返回 */
-    onBuildingSell(data: s2cBuildingSell) {
+    onRepBuildingSell(data: s2cBuildingSell) {
         if (this._mainScene.getMapCtl() != this) return;
         if (200 != data.code) {
             ViewsManager.showAlert(data.msg);
@@ -75,7 +91,7 @@ export class BuildEditCtl extends MapBaseCtl {
         }
     }
     /**建筑回收返回 */
-    onBuildingRecycle(data: s2cBuildingRecycle) {
+    onRepBuildingRecycle(data: s2cBuildingRecycle) {
         if (this._mainScene.getMapCtl() != this) return;
         if (200 != data.code) {
             ViewsManager.showAlert(data.msg);
@@ -83,6 +99,21 @@ export class BuildEditCtl extends MapBaseCtl {
         }
         let building = this._mainScene.findBuilding(data.id);
         building?.recycle();
+    }
+    /**建筑批量修改返回 */
+    onRepBuildingEditBatch(data: s2cBuildingEditBatch) {
+        if (200 != data.code) {
+            ViewsManager.showAlert(data.msg);
+            return;
+        }
+        data.insert_result.forEach((item) => {
+            let building = this._mainScene.findBuildingByIdx(item.idx);
+            building.buildingID = item.id;
+            User.addBuilding(building.editInfo.id);
+        });
+        this._step = 0;
+        this._operationCacheAry = [];
+        this._mainScene.changeMapStatus(MapStatus.DEFAULT);
     }
     // 设置选中建筑
     public set selectBuilding(building: BuildingModel) {
@@ -147,7 +178,7 @@ export class BuildEditCtl extends MapBaseCtl {
     //点击结束
     public onTouchEnd(e: EventTouch) {
         if (this._isTouchInSelf && !this._isTouchMove && !this._isBuildingMove) {
-            if (!this._touchBuilding || this._touchBuilding == this._selectBuilding) {
+            if (this._selectBuilding && (!this._touchBuilding || this._touchBuilding == this._selectBuilding)) {
                 let pos = e.getLocation();
                 let gridModel = this._mainScene.getTouchGrid(pos.x, pos.y);
                 if (gridModel) {
@@ -185,17 +216,181 @@ export class BuildEditCtl extends MapBaseCtl {
         this._isBuildingMove = false;
         super.clearData();
     }
+    // 确定事件
+    confirmEvent(): void {
+        if (this._selectBuilding) {
+            this._selectBuilding.recoverData();
+            this._selectBuilding = null;
+        }
+
+        let processedAry: number[] = [];//已处理建筑idx
+        let createAry: c2sBuildingCreate[] = [];
+        let updateAry: c2sBuildingEdit[] = [];
+        let deleteAry: number[] = [];
+        let step = this._step;
+        while (step > 0) {
+            step--;
+            this._operationCacheAry[step].forEach((data) => {
+                if (-1 != processedAry.findIndex(element => element == data.idx)) return;
+                if (BuildingOperationType.edit == data.type) {
+                    if (data.buildingID) {
+                        let obj = new c2sBuildingEdit();
+                        obj.id = data.buildingID;
+                        obj.x = data.x;
+                        obj.y = data.y;
+                        obj.direction = data.isFlip ? 1 : 0;
+                        updateAry.push(obj);
+                    } else {
+                        let obj = new c2sBuildingCreate();
+                        obj.idx = data.idx;
+                        obj.bid = data.editInfo.id;
+                        obj.x = data.x;
+                        obj.y = data.y;
+                        obj.direction = data.isFlip ? 1 : 0;
+                        createAry.push(obj);
+                    }
+                } else if (BuildingOperationType.recycle == data.type) {
+                    if (data.buildingID) {
+                        let obj = new c2sBuildingEdit();
+                        obj.id = data.buildingID;
+                        obj.x = data.x;
+                        obj.y = data.y;
+                        obj.direction = data.isFlip ? 1 : 0;
+                        obj.hide = 1;
+                        updateAry.push(obj);
+                    }
+                } else if (BuildingOperationType.sell == data.type) {
+                    if (data.buildingID) {
+                        deleteAry.push(data.buildingID);
+                    }
+                }
+                processedAry.push(data.idx);
+            });
+        }
+        if (0 == createAry.length && 0 == updateAry.length && 0 == deleteAry.length) {
+            this._step = 0;
+            this._operationCacheAry = [];
+            this._mainScene.changeMapStatus(MapStatus.DEFAULT);
+            return;
+        }
+        ServiceMgr.buildingService.reqBuildingEditBatch(createAry, updateAry, deleteAry);
+    }
     // 取消事件
     cancelEvent(): void {
         if (this._selectBuilding) {
             this._selectBuilding.recoverData();
             this._selectBuilding = null;
         }
+        // TODO 还原步骤
+        while (this._step > 0) {
+            this._step--;
+            this._operationCacheAry[this._step].forEach((data) => {
+                this.recoverByOperationData(this.getRecoverOperationData(data, true));
+            });
+        }
+        this._step = 0;
+        this._operationCacheAry = [];
+        this._mainScene.changeMapStatus(MapStatus.DEFAULT);
     }
     // UI上一步
     prevStepEvent(): void {
+        if (this._step <= 0) return;
+        this._step--;
+        this._operationCacheAry[this._step].forEach((data) => {
+            this.recoverByOperationData(this.getRecoverOperationData(data, true));
+        });
     }
     // UI下一步
     nextStepEvent(): void {
+        if (this._step >= this._operationCacheAry.length) return;
+        this._operationCacheAry[this._step].forEach((data) => {
+            this.recoverByOperationData(this.getRecoverOperationData(data, false));
+        });
+        this._step++;
+    }
+    /** 下一步 */
+    nextStep(): void {
+        if (this._operationCache.length <= 0) return;
+        if (this._operationCacheAry.length > this._step) {
+            this._operationCacheAry.splice(this._step);
+        }
+        this._step++;
+        this._operationCacheAry.push(this._operationCache);
+        this._operationCache = [];
+
+        this._selectBuilding = null;
+        this.clearData();
+        EventMgr.emit(EventType.Building_Step_Update);
+    }
+    /**当前步数 */
+    getStep(): number {
+        return this._step;
+    }
+    /**总步数 */
+    getTotalStep(): number {
+        return this._operationCacheAry.length;
+    }
+    /**缓存建筑操作数据 */
+    cacheBuildingOperationData(type: BuildingOperationType, building: BuildingModel): void {
+        this._operationCache.push(building.getOperationData(type));
+    }
+    /**建筑保存事件 */
+    onBuildingSave(building: BuildingModel): void {
+        this.cacheBuildingOperationData(BuildingOperationType.edit, building);
+        building.saveData();
+        this.nextStep();
+        this._mainScene.newBuildingFromBuilding(building);
+    }
+    /**建筑回收事件 */
+    onBuildingRecycle(building: BuildingModel): void {
+        building.recycle();
+        if (!building.isNew) {
+            this.nextStep();
+        }
+    }
+    onBuildingRecycleEx(building: BuildingModel): void {
+        if (!building.isNew) {
+            this.cacheBuildingOperationData(BuildingOperationType.recycle, building);
+        }
+    }
+    /**建筑卖出事件 */
+    onBuildingSell(building: BuildingModel): void {
+        if (building.isNew) {
+            building.sell(true);
+            return;
+        }
+        this.cacheBuildingOperationData(BuildingOperationType.sell, building);
+        building.sell(true);
+        this.nextStep();
+    }
+    /**获取数据 */
+    getRecoverOperationData(data: BuildingOperationData, toLast: boolean) {
+        this._tmpOperationData.reset();
+        this._tmpOperationData.type = data.type;
+        this._tmpOperationData.idx = data.idx;
+        this._tmpOperationData.buildingID = data.buildingID;
+        this._tmpOperationData.editInfo = data.editInfo;
+        if (toLast) {
+            this._tmpOperationData.x = data.dataX;
+            this._tmpOperationData.y = data.dataY;
+            this._tmpOperationData.grids = data.dataGrids;
+            this._tmpOperationData.isFlip = data.dataIsFlip;
+        } else {
+            if (BuildingOperationType.edit == data.type) {
+                this._tmpOperationData.x = data.x;
+                this._tmpOperationData.y = data.y;
+                this._tmpOperationData.grids = data.grids;
+                this._tmpOperationData.isFlip = data.isFlip;
+            }
+        }
+        return this._tmpOperationData;
+    }
+    /**从操作数据中还原 */
+    recoverByOperationData(data: BuildingOperationData): void {
+        this._mainScene.recoverByOperationData(data);
+    }
+    /**建筑按钮界面关闭 */
+    onBuildingBtnViewClose() {
+        this.clearData();
     }
 }

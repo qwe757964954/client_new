@@ -6,7 +6,7 @@ import { TextConfig } from '../../config/TextConfig';
 import { DataMgr, EditInfo, EditType } from '../../manager/DataMgr';
 import { SoundMgr } from '../../manager/SoundMgr';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
-import { BuildingIDType, BuildingModel } from '../../models/BuildingModel';
+import { BuildingIDType, BuildingModel, BuildingOperationData } from '../../models/BuildingModel';
 import { CloudModel } from '../../models/CloudModel';
 import { RoleType } from '../../models/RoleBaseModel';
 import { RoleDataModel } from '../../models/RoleDataModel';
@@ -357,6 +357,9 @@ export class MainScene extends BaseComponent {
         let oldStatus = this._mapStatus;
         if (status == oldStatus) return;
         console.log("changeMapStatus", oldStatus, status);
+        let ctl = this.getMapCtl();
+        ctl.clearData();
+        this._mapStatus = status;
         this.lineLayer.active = MapStatus.DEFAULT != status;
         this._mainUIView.node.active = MapStatus.DEFAULT == status;
         if (this._editUIView) {
@@ -379,9 +382,9 @@ export class MainScene extends BaseComponent {
         }
         this._mapUICtl.roleIsShow = MapStatus.DEFAULT == status;
         this._mapUICtl.countdownFrameIsShow = MapStatus.DEFAULT == status;
-        let ctl = this.getMapCtl();
-        ctl.clearData();
-        this._mapStatus = status;
+        // let ctl = this.getMapCtl();
+        // ctl.clearData();
+        // this._mapStatus = status;
         EventManager.emit(EventType.MapStatus_Change, { oldStatus: oldStatus, status: status });
     }
     // UI确定事件
@@ -399,6 +402,14 @@ export class MainScene extends BaseComponent {
     // UI下一步
     nextStepEvent() {
         this.getMapCtl().nextStepEvent();
+    }
+    /**当前步数 */
+    getStep(): number {
+        return this.getMapCtl().getStep();
+    }
+    /**总步数 */
+    getTotalStep(): number {
+        return this.getMapCtl().getTotalStep();
     }
 
     /** 获取当前场景控制器 */
@@ -578,6 +589,9 @@ export class MainScene extends BaseComponent {
         }
         this._buildingEditCtl.selectBuilding = building;
         this.changeMapStatus(MapStatus.BUILD_EDIT);
+    }
+    recoverByOperationData(data: BuildingOperationData) {
+        this._mapUICtl.recoverByOperationData(data);
     }
 }
 

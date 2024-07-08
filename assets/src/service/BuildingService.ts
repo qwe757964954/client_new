@@ -1,4 +1,4 @@
-import { c2sBuildingCreate, c2sBuildingEdit, c2sBuildingList, c2sBuildingProduceAdd, c2sBuildingProduceDelete, c2sBuildingProduceGet, c2sBuildingRecycle, c2sBuildingSell, c2sBuildingUpgrade, c2sCloudUnlock, c2sCloudUnlockGet, c2sLandUpdate, c2sPetGetReward, c2sPetInfo, c2sPetInteraction, c2sPetUpgrade } from "../models/NetModel";
+import { c2sBuildingCreate, c2sBuildingEdit, c2sBuildingEditBatch, c2sBuildingList, c2sBuildingProduceAdd, c2sBuildingProduceDelete, c2sBuildingProduceGet, c2sBuildingRecycle, c2sBuildingSell, c2sBuildingUpgrade, c2sCloudUnlock, c2sCloudUnlockGet, c2sLandUpdate, c2sPetGetReward, c2sPetInfo, c2sPetInteraction, c2sPetUpgrade } from "../models/NetModel";
 import { NetMgr } from "../net/NetManager";
 import { BaseControll } from "../script/BaseControll";
 
@@ -129,6 +129,15 @@ export class BuildingService extends BaseControll {
     reqPetGetReward() {
         console.log("reqPetGetReward");
         let para = new c2sPetGetReward();
+        NetMgr.sendMsg(para);
+    }
+    /**建筑批量编辑 */
+    reqBuildingEditBatch(createAry: c2sBuildingCreate[], updateAry: c2sBuildingEdit[], deleteAry: number[]) {
+        console.log("reqBuildingEditBatch", createAry, updateAry, deleteAry);
+        let para = new c2sBuildingEditBatch();
+        para.insert_list = createAry;
+        para.update_list = updateAry;
+        para.delete_list = deleteAry;
         NetMgr.sendMsg(para);
     }
 }

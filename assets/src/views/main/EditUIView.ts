@@ -1,11 +1,12 @@
 import { _decorator, color, Label, Node, Prefab, ScrollView, Sprite, SpriteFrame } from 'cc';
 import { EventType } from '../../config/EventType';
-import { MapStatus } from '../../config/MapConfig';
+import { TextConfig } from '../../config/TextConfig';
 import { DataMgr, EditInfo, EditType } from '../../manager/DataMgr';
 import { BuildingIDType } from '../../models/BuildingModel';
 import { BaseComponent } from '../../script/BaseComponent';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
+import { ToolUtil } from '../../util/ToolUtil';
 import { EditItem } from '../map/EditItem';
 import { MainScene } from './MainScene';
 const { ccclass, property } = _decorator;
@@ -34,7 +35,14 @@ export class EditUIView extends BaseComponent {
     public spriteFrames: SpriteFrame[] = [];//图片资源
     @property(List)
     public listView: List = null;//列表
-
+    @property(Node)
+    public btnSave: Node = null;//保存按钮
+    @property(Node)
+    public btnLast: Node = null;//上一步按钮
+    @property(Node)
+    public btnNext: Node = null;//下一步按钮
+    @property(Label)
+    public labelStep: Label = null;//步骤
 
     private _mainScene: MainScene = null;//主场景
     private _isFirst: boolean = true;//是否是第一次
@@ -54,8 +62,12 @@ export class EditUIView extends BaseComponent {
         CCUtil.onTouch(this.btnDecoration, this.onBtnDecorationClick, this);
         CCUtil.onTouch(this.btnLand, this.onBtnLandClick, this);
         CCUtil.onTouch(this.btnClose, this.onBtnCloseClick, this);
+        CCUtil.onTouch(this.btnLast, this.onBtnLastClick, this);
+        CCUtil.onTouch(this.btnNext, this.onBtnNextClick, this);
+        CCUtil.onTouch(this.btnSave, this.onBtnSaveClick, this);
 
         this.addEvent(EventType.EditUIView_Refresh, this.onRefresh.bind(this));
+        this.addEvent(EventType.Building_Step_Update, this.updateStep.bind(this));
     }
 
     // 移除监听
@@ -66,6 +78,9 @@ export class EditUIView extends BaseComponent {
         CCUtil.offTouch(this.btnDecoration, this.onBtnDecorationClick, this);
         CCUtil.offTouch(this.btnLand, this.onBtnLandClick, this);
         CCUtil.offTouch(this.btnClose, this.onBtnCloseClick, this);
+        CCUtil.offTouch(this.btnLast, this.onBtnLastClick, this);
+        CCUtil.offTouch(this.btnNext, this.onBtnNextClick, this);
+        CCUtil.offTouch(this.btnSave, this.onBtnSaveClick, this);
 
         this.clearEvent();
     }
@@ -99,11 +114,27 @@ export class EditUIView extends BaseComponent {
     }
     // 关闭按钮点击 
     onBtnCloseClick() {
-        this._mainScene.changeMapStatus(MapStatus.DEFAULT);
+        // this._mainScene.changeMapStatus(MapStatus.DEFAULT);
+        this._mainScene.cancelEvent();
+    }
+    /**保存按钮点击 */
+    onBtnSaveClick() {
+        this._mainScene.confirmEvent();
+    }
+    /**上一步按钮点击 */
+    onBtnLastClick() {
+        this._mainScene.prevStepEvent();
+        this.updateStep();
+    }
+    /**下一步按钮点击 */
+    onBtnNextClick() {
+        this._mainScene.nextStepEvent();
+        this.updateStep();
     }
     protected onEnable(): void {
         this.initData();
         this.initEvent();
+        this.updateStep();
     }
     protected onDisable(): void {
         this.removeEvent();
@@ -162,6 +193,16 @@ export class EditUIView extends BaseComponent {
         let editType = this._editType;
         this._editType = null;
         this.showEditType(editType);
+    }
+    /**更新步骤 */
+    updateStep() {
+        let str;
+        if (this._mainScene) {
+            str = ToolUtil.replace(TextConfig.Queue_Text, this._mainScene.getStep(), this._mainScene.getTotalStep());
+        } else {
+            str = "0/0";
+        }
+        this.labelStep.string = str;
     }
 }
 

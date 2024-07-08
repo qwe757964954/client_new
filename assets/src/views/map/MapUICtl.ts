@@ -8,7 +8,7 @@ import { DataMgr, EditInfo, EditType } from "../../manager/DataMgr";
 import { ViewsMgr } from "../../manager/ViewsManager";
 import { BaseModel } from "../../models/BaseModel";
 import { BgModel } from "../../models/BgModel";
-import { BuildingModel, RecycleData } from "../../models/BuildingModel";
+import { BuildingModel, BuildingOperationData, RecycleData } from "../../models/BuildingModel";
 import { CloudModel } from "../../models/CloudModel";
 import { GridModel } from "../../models/GridModel";
 import { LandModel } from "../../models/LandModel";
@@ -18,7 +18,7 @@ import { RoleDataModel } from "../../models/RoleDataModel";
 import { User } from "../../models/User";
 import { InterfacePath } from "../../net/InterfacePath";
 import { ServiceMgr } from "../../net/ServiceManager";
-import EventManager from "../../util/EventManager";
+import EventManager, { EventMgr } from "../../util/EventManager";
 import { TimerMgr } from "../../util/TimerMgr";
 import { ToolUtil } from "../../util/ToolUtil";
 import { MainBaseCtl } from "../main/MainBaseCtl";
@@ -619,6 +619,25 @@ export class MapUICtl extends MainBaseCtl {
         }
         return data;
     }
+    getRecycleBuildingByBuildingID(buildingID: number) {
+        if (null == buildingID) return null;
+        // console.log("getRecycleBuilding", bid, this._recycleBuildingAry);
+        let index = -1;
+        let data = null;
+        for (let i = 0; i < this._recycleBuildingAry.length; i++) {
+            let element = this._recycleBuildingAry[i];
+            if (element.data.id == buildingID) {
+                index = i;
+                data = element;
+                break;
+            }
+        }
+        if (index > -1) {
+            this._recycleBuildingAry.splice(index, 1);
+            return data;
+        }
+        return data;
+    }
     /**回收建筑是否包含指定建筑 */
     isRecycleBuildingContain(bid: number) {
         return undefined != this._recycleBuildingAry.find(element => element.bid == bid);
@@ -631,10 +650,10 @@ export class MapUICtl extends MainBaseCtl {
         }
     }
     // 新建建筑物
-    newBuilding(data: EditInfo, gridX: number, gridY: number, isFlip: boolean = false, isNew: boolean = true) {
+    newBuilding(data: EditInfo, gridX: number, gridY: number, isFlip: boolean = false, isNew: boolean = true, idx: number = null) {
         let buildingModel = new BuildingModel();
         buildingModel.addToParent(this._mainScene.buildingLayer);
-        buildingModel.initData(gridX, gridY, data, isFlip, isNew);
+        buildingModel.initData(gridX, gridY, data, isFlip, isNew, idx);
         this.setBuildingGrid(buildingModel, gridX, gridY);
         this._buidingModelAry.push(buildingModel);
         return buildingModel;
@@ -677,7 +696,11 @@ export class MapUICtl extends MainBaseCtl {
         let yAry = [height, 0, 0, -height];
         let gridInfo = building?.grids[0];
         if (!gridInfo) return null;
-        console.log("newBuildingFromBuilding", gridInfo.x, gridInfo.y, width, height, isFlip);
+        let editInfo = building.editInfo;
+        if (editInfo.type != EditType.Decoration) {
+            if (this.findBuildingBytypeID(editInfo.id)) return null;
+        }
+        // console.log("newBuildingFromBuilding", gridInfo.x, gridInfo.y, width, height, isFlip);
         for (let i = 0; i < xAry.length; i++) {
             let x = gridInfo.x + xAry[i];
             let y = gridInfo.y + yAry[i];
@@ -685,21 +708,21 @@ export class MapUICtl extends MainBaseCtl {
             for (let m = 0; m < width; m++) {
                 for (let n = 0; n < height; n++) {
                     let grid = this.getGridInfo(x + m, y + n);
-                    console.log("newBuildingFromBuilding for", grid, x, y, m, n);
+                    // console.log("newBuildingFromBuilding for", grid, x, y, m, n);
                     if (grid && grid.isCanBuildingNew()) {
                         continue;
                     }
-                    console.log("newBuildingFromBuilding break", i, m, n);
+                    // console.log("newBuildingFromBuilding break", i, m, n);
                     canCreate = false;
                     break;
                 }
                 if (!canCreate) break;
             }
             if (canCreate) {
-                return this.newBuildingEx(building.editInfo, x, y, isFlip);
+                return this.newBuildingEx(editInfo, x, y, isFlip);
             }
         }
-        return this.newBuildingEx(building.editInfo, gridInfo.x + xAry[0], gridInfo.y + yAry[0], isFlip);
+        return this.newBuildingEx(editInfo, gridInfo.x + xAry[0], gridInfo.y + yAry[0], isFlip);
     }
     // 摄像头移动到指定建筑
     moveCameraToBuilding(building: BuildingModel, plPos: Vec3, scale: number = 1) {
@@ -1150,5 +1173,24 @@ export class MapUICtl extends MainBaseCtl {
         if (0 == count && this._loadCloudNodeIdx > 0 && this._loadLandNodeIdx > 0) {
             this._isupdateLoadModelNodeOver = true;
         }
+    }
+    /**还原建筑通过操作数据 */
+    recoverByOperationData(data: BuildingOperationData) {
+        let building = this.findBuildingByIdx(data.idx);
+        console.log("recoverByOperationData", data, building);
+        if (!building) {
+            building = new BuildingModel();
+            building.addToParent(this._mainScene.buildingLayer);
+            building.initData(data.x, data.y, data.editInfo, building.isFlip, true, data.idx);
+            let recycleData = this.getRecycleBuildingByBuildingID(data.buildingID);
+            if (null != recycleData) {
+                building.restoreRecycleData(recycleData);
+                EventMgr.emit(EventType.EditUIView_Refresh);
+            } else {
+                building.buildingID = data.buildingID;
+            }
+            this._buidingModelAry.push(building);
+        }
+        building.restoreOperationData(data);
     }
 }
