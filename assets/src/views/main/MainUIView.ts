@@ -1,6 +1,6 @@
 import { _decorator, director, Label, Node, Sprite } from 'cc';
 import { MapStatus } from '../../config/MapConfig';
-import { PrefabType, SceneType } from '../../config/PrefabType';
+import { PrefabType, PrefabTypeEntry, SceneType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import GlobalConfig from '../../GlobalConfig';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
@@ -9,6 +9,7 @@ import { NetMgr } from '../../net/NetManager';
 import { BaseView } from '../../script/BaseView';
 import CCUtil from '../../util/CCUtil';
 import { ReviewPlanView } from '../reviewPlan/ReviewPlanView';
+import { MainRightActivity } from './MainRightActivity';
 import { MainScene } from './MainScene';
 const { ccclass, property } = _decorator;
 
@@ -43,16 +44,8 @@ export class MainUIView extends BaseView {
     @property(Label)
     public labelNick: Label = null;//昵称
 
-    @property(Node)
-    public btn_bag:Node = null;//
-
-    @property(Node)
-    public btn_collect:Node = null;//
-
-    @property(Node)
-    public btn_rank:Node = null;//
-
     private _mainScene: MainScene = null;//主场景
+    private _mainRightActivity: MainRightActivity = null;//右侧活动
     /**初始化UI */
     initUI() {
         if (GlobalConfig.WIN_RATE < GlobalConfig.MAIN_RATE_MAX) {
@@ -60,16 +53,31 @@ export class MainUIView extends BaseView {
             this.btnTranslate.node.position = this.btnTranslateFix.position;
         }
         this.labelNick.string = User.nick;
-        this.initNotifyView();
+        this.initViews();
     }
 
-    async initNotifyView(){
-        const node = await this.loadAndInitPrefab(PrefabType.MainNotifyView, this.node.getChildByName("RightUp"), {
-            isAlignBottom: true,
-            isAlignRight: true,
-            bottom: -22.447,
-            right: 44.158
-        });
+    private async initViews() {
+        await Promise.all([
+            this.initViewComponent(PrefabType.MainRightActivity, (node) => {
+                this._mainRightActivity = node.getComponent(MainRightActivity)
+                this._mainRightActivity.showPos = this._mainRightActivity.node.position;
+            }, {
+                isAlignVerticalCenter: true,
+                isAlignRight: true,
+                verticalCenter: 0,
+                right: -480
+            }),
+            this.initViewComponent(PrefabType.MainNotifyView,(node)=>{},{
+                isAlignBottom: true,
+                isAlignRight: true,
+                bottom: -22.447,
+                right: 44.158
+            },this.node.getChildByName("RightUp"))
+        ]);
+    }
+    private async initViewComponent(prefabType: PrefabTypeEntry, onComponentInit: (node: Node) => void, alignOptions?: object,defaultParent:Node = this.node) {
+        let node = await this.loadAndInitPrefab(prefabType, defaultParent, alignOptions);
+        onComponentInit(node);
     }
 
     //设置主场景
@@ -89,9 +97,6 @@ export class MainUIView extends BaseView {
         CCUtil.onTouch(this.btnTaskGo, this.onClickTaskGo, this);
         CCUtil.onTouch(this.btnStudy, this.onClickStudy, this);
         CCUtil.onBtnClick(this.btn_friend, this.onClickFriend.bind(this));
-        CCUtil.onBtnClick(this.btn_bag, this.onClickBag.bind(this));
-        CCUtil.onBtnClick(this.btn_collect,this.onClickCollect.bind(this));
-        CCUtil.onBtnClick(this.btn_rank, this.onClickRank.bind(this));
     }
     //移除事件
     public removeEvent() {
@@ -110,17 +115,7 @@ export class MainUIView extends BaseView {
         await ViewsManager.instance.showPopup(PrefabType.FriendsDialogView);
     }
 
-    async onClickBag(){
-        await ViewsManager.instance.showViewAsync(PrefabType.BagView);
-    }
-
-    async onClickCollect(){
-        await ViewsManager.instance.showViewAsync(PrefabType.CollectView);
-    }
-
-    async onClickRank(){
-        await ViewsManager.instance.showViewAsync(PrefabType.RankView);
-    }
+    
 
     //头像点击
     public onClickHead() {
