@@ -1,38 +1,21 @@
-import { _decorator, instantiate, Label, Layout, Node, Prefab } from 'cc';
-import { PrefabType } from '../../config/PrefabType';
-import { TextConfig } from '../../config/TextConfig';
+import { _decorator, Node } from 'cc';
+import { PrefabType, PrefabTypeEntry } from '../../config/PrefabType';
 import GlobalConfig from '../../GlobalConfig';
-import { DataMgr, EditInfo, EditType } from '../../manager/DataMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { BuildingIDType } from '../../models/BuildingModel';
 import { User } from '../../models/User';
 import { BaseView } from '../../script/BaseView';
 import CCUtil from '../../util/CCUtil';
-import List from '../../util/list/List';
 import { ToolUtil } from '../../util/ToolUtil';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
-import { ShopClassItem } from './ShopClassItem';
-import { ShopGoodsItem } from './ShopGoodsItem';
+import { TaskTabIds, TaskTabInfo } from '../task/TaskInfo';
+import { TaskTabView } from '../task/TaskTabView';
+import { DebrisAreaView } from './DebrisAreaView';
+import { ShopBuildView } from './ShopBuildView';
+import { ShopDecorationView } from './ShopDecorationView';
+import { ShopTabInfos } from './ShopInfo';
+import { ShopStoreView } from './ShopStoreView';
 const { ccclass, property } = _decorator;
 
-const shopClass = [
-    {
-        name: "形象商店",
-        subclass: ["帽子", "发型", "上衣", "裤子", "鞋子", "脸型"],
-    },
-    {
-        name: "碎片区",
-        subclass: ["test1", "test2"],
-    },
-    {
-        name: "建筑商店",
-        subclass: ["功能性建筑", "地标建筑", "装饰", "地板"],
-    },
-    {
-        name: "装饰类",
-        subclass: ["test3", "test4"],
-    },
-]
 
 @ccclass('ShopUIView')
 export class ShopUIView extends BaseView {
@@ -40,123 +23,90 @@ export class ShopUIView extends BaseView {
     public bg: Node = null;
     @property(Node)
     public top_layout: Node = null;          // 商城
-
-    @property({ type: Node, tooltip: "返回按钮" })
-    public btnClose: Node = null;
-
-    @property({ type: List, tooltip: "商品列表" })
-    public goodsList: List = null;
-
-    @property({ type: Label, tooltip: "顶部标题" })
-    public lblTitle: Label = null;
     @property(Node)
-    public plLeft: Node = null;//左侧菜单栏
-    @property(Prefab)
-    public shopClassItemPrefab: Prefab = null;//商店分类
+    public content_layout: Node = null; //
 
-    private _showClassNode: Node = null;//显示的菜单
-    //标题文字
-    private _titleAry: string[] = [TextConfig.Shop_Figure, TextConfig.Shop_Fragment, TextConfig.Shop_Building, TextConfig.Shop_Decoration];
-
-    private _editType: EditType = null;//编辑类型
-    private _itemsData: EditInfo[] = null;//编辑数据
-    initUI() {
+    private _tabView: TaskTabView = null;
+    private _shopBuildView: ShopBuildView = null;
+    private _shopStoreView: ShopStoreView = null;
+    private _shopDecorationView: ShopDecorationView = null;
+    private _debrisAreaView: DebrisAreaView = null;
+    async initUI() {
         let scale = ToolUtil.getValue(GlobalConfig.WIN_DESIGN_RATE, 0.1, 1.0);
         CCUtil.setNodeScale(this.bg, scale);
-        //this.initNavTitle();
         this.initAmout();
-
-        this.lblTitle.string = TextConfig.Shop_Figure;
-
-        for (let i = 0; i < shopClass.length; i++) {
-            const element = shopClass[i];
-            let node: Node = instantiate(this.shopClassItemPrefab);
-            this.plLeft.addChild(node);
-            let shopClassItem = node.getComponent(ShopClassItem);
-            shopClassItem.init(element, this.onClassClick.bind(this), this.onSubClassClick.bind(this));
+        this.initNavTitle();
+        try {
+            await this.initViews();
+            this.initTabs();
+            console.log("Shop configuration loaded:", );
+        } catch (err) {
+            console.error("Failed to initialize UI:", err);
         }
 
-        this.plLeft.getComponent(Layout).updateLayout(true);
-        this.onClassClick(this.plLeft.children[2]);
-    }
-    /**菜单点击 */
-    onClassClick(node: Node) {
-        if (this._showClassNode) {
-            if (node != this._showClassNode) {
-                return;
-            }
-            let shopClassItem = node.getComponent(ShopClassItem);
-            let height = shopClassItem.getSlideDistance();
-            shopClassItem.hideClass();
-            let needMove = false;
-            this.plLeft.children.forEach(child => {
-                if (child == node) {
-                    needMove = true;
-                    return;
-                }
-                let shopClassItem = child.getComponent(ShopClassItem);
-                shopClassItem.showClassBtn();
-                if (needMove)
-                    shopClassItem.classSlideDistance(height);
-            });
-            this._showClassNode = null;
-            return;
-        }
-
-        let shopClassItem = node.getComponent(ShopClassItem);
-        let height = shopClassItem.getSlideDistance();
-        shopClassItem.showClass();
-        shopClassItem.showSubClass();
-        let needMove = false;
-        this.plLeft.children.forEach(child => {
-            if (child == node) {
-                needMove = true;
-                return;
-            }
-            let shopClassItem = child.getComponent(ShopClassItem);
-            shopClassItem.hideClassBtn();
-            if (needMove) {
-                shopClassItem.classSlideDistance(-height);
-            }
-        });
-        this._showClassNode = node;
-    }
-    /**子菜单点击 */
-    onSubClassClick(node: Node, subName: string) {
-        console.log("onSubClassClick", subName);
-        if ("功能性建筑" == subName) {
-            this.showEditType(EditType.Buiding);
-            return;
-        }
-        if ("地标建筑" == subName) {
-            this.showEditType(EditType.LandmarkBuiding);
-            return;
-        }
-        if ("装饰" == subName) {
-            this.showEditType(EditType.Decoration);
-            return;
-        }
-        if ("地板" == subName) {
-            this.showEditType(EditType.Land);
-            return;
-        }
     }
 
-    initEvent() {
-        CCUtil.onTouch(this.btnClose, this.onCloseView, this);
+    private async initViews() {
+        await Promise.all([
+            this.initViewComponent(PrefabType.ShopBuildView, (node) => this._shopBuildView = node.getComponent(ShopBuildView)),
+            this.initViewComponent(PrefabType.ShopStoreView, (node) => this._shopStoreView = node.getComponent(ShopStoreView)),
+            this.initViewComponent(PrefabType.ShopDecorationView, (node) => this._shopDecorationView = node.getComponent(ShopDecorationView)),
+            this.initViewComponent(PrefabType.DebrisAreaView, (node) => this._debrisAreaView = node.getComponent(DebrisAreaView)),
+        ]);
+    }
+    initTabs(){
+        this.initViewComponent(PrefabType.TaskTabView, (node) => {
+            this._tabView = node.getComponent(TaskTabView);
+            this._tabView.setTabSelectClick(this.onTabSelect.bind(this));
+            this._tabView.updateData(ShopTabInfos);
+        }, {
+            isAlignTop: true,
+            isAlignLeft: true,
+            top: 129,
+            left: 50
+        })
+    }
+    private async initViewComponent(prefabType: PrefabTypeEntry, onComponentInit: (node: Node) => void, alignOptions?: object) {
+        let node = await this.loadAndInitPrefab(prefabType, this.node, alignOptions);
+        onComponentInit(node);
     }
 
-    removeEvent() {
-        CCUtil.offTouch(this.btnClose, this.onCloseView, this);
+    private onTabSelect(info: TaskTabInfo) {
+        this.hideAllContent();
+        this.selectMenuType(info);
     }
-
-    onDestroy(): void {
-        this.removeEvent();
+    private hideAllContent(){
+        this._shopBuildView.node.active = false;
+        this._shopStoreView.node.active = false;
+        this._shopDecorationView.node.active = false;
+        this._debrisAreaView.node.active = false;
     }
-
+    private selectMenuType(info: TaskTabInfo) {
+        this._navTitleView.setTitleName(info.title);
+        switch (info.id) {
+            case TaskTabIds.ImageStore:
+                this._shopStoreView.node.active = true;
+                break;
+            case TaskTabIds.DebrisArea:
+                this._debrisAreaView.node.active = true;
+                // this._weekTask.showTask();
+                break;
+            case TaskTabIds.BuildingShop:
+                this._shopBuildView.node.active = true;
+                this._shopBuildView.updateData();
+                break;
+            case TaskTabIds.Decoration:
+                this._shopDecorationView.node.active = true;
+                // this._dailyTask.showTask();
+                break;
+            default:
+                break;
+        }
+                
+    }
     /**初始化导航栏 */
     initNavTitle() {
-        this.createNavigation("会员中心",this.top_layout, () => {
+        this.createNavigation("商城",this.top_layout, () => {
             ViewsManager.instance.closeView(PrefabType.ShopUIView);
         });
     }
@@ -172,32 +122,6 @@ export class ShopUIView extends BaseView {
 
     onCloseView() {
         ViewsManager.instance.closeView(PrefabType.ShopUIView);
-    }
-    /**列表加载 */
-    onListLoad(node: Node, idx: number) {
-        let info = this._itemsData[idx];
-        node.getComponent(ShopGoodsItem).initData(info);
-    }
-    /**显示对应编辑类型 */
-    showEditType(editType: EditType) {
-        if (editType == this._editType) return;
-        this._editType = editType;
-
-        let editConfig = DataMgr.instance.editInfo;
-        this._itemsData = [];
-        editConfig.forEach(info => {
-            if (editType != EditType.Null && editType != info.type) return;
-            if (BuildingIDType.mine == info.id) return;//矿山，需特殊处理
-            if (EditType.Decoration == info.type || EditType.Land == info.type) {
-                this._itemsData.push(info);
-            } else {
-                if (undefined == User.buildingList.find(item => item == info.id)) {
-                    this._itemsData.push(info);
-                }
-            }
-        });
-        this.goodsList.numItems = this._itemsData.length;
-        this.goodsList.scrollTo(0, 0);
     }
 }
 

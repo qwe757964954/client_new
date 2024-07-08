@@ -13,6 +13,11 @@ export class TaskAchievementView extends BaseView {
     protected _className = "TaskAchievementView";
     @property(List)
     public scroll_list: List = null;
+    @property(List)
+    public head_scroll_list: List = null;
+
+    @property(Node)
+    public get_one_click:Node = null
 
     private _AchievementDataInfo:AchInfoResponse = null;
     private _listData = {};
@@ -98,6 +103,7 @@ export class TaskAchievementView extends BaseView {
         this._achievementListData = dataList;
         this.scroll_list.numItems = this._achievementListData.length;
         this.scroll_list.scrollView.scrollToTop();
+        this.head_scroll_list.numItems = 4;
     }
 
     onLoadTabHorizontal(item:Node, idx:number){
@@ -107,6 +113,11 @@ export class TaskAchievementView extends BaseView {
 
     onTabListHorizontalSelected(item: any, selectedId: number, lastSelectedId: number, val: number) {
         if(!isValid(selectedId) || selectedId < 0 || !isValid(item)){return;}
+    }
+
+    onLoadHeadHorizontal(item:Node, idx:number){
+        // let item_sript:WeekAchievementItem = item.getComponent(WeekAchievementItem);
+        // item_sript.updateAchievementProps(this._achievementListData[idx]);
     }
 
 }

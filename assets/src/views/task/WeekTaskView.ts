@@ -18,18 +18,11 @@ import { MainTaskView } from './MainTaskView';
 import { TaskAchievementView } from './TaskAchievementView';
 import { TaskAwardView } from './TaskAwardView';
 import { TKConfig } from './TaskConfig';
-import { WeeklyTaskBox } from './TaskInfo';
+import { TaskTabIds, TaskTabInfo, TaskTabInfos, WeeklyTaskBox } from './TaskInfo';
 import { TaskTabView } from './TaskTabView';
 import { WeeklyTaskView } from './WeeklyTaskView';
 
 const { ccclass, property } = _decorator;
-
-export enum TaskMenuType {
-    Achievement = 0, // 成就
-    Week = 1, // 每周
-    Main = 2, // 主线
-    Daily = 3 // 每日
-}
 
 @ccclass('WeekTaskView')
 export class WeekTaskView extends BaseView {
@@ -56,6 +49,7 @@ export class WeekTaskView extends BaseView {
         try {
             await TKConfig.loadTaskConfigInfo();
             await this.initViews();
+            this.initTabs();
             console.log("Task configuration loaded:", TKConfig.taskConfigInfo);
         } catch (err) {
             console.error("Failed to initialize UI:", err);
@@ -65,7 +59,10 @@ export class WeekTaskView extends BaseView {
 
     private async initViews() {
         await Promise.all([
-            this.initViewComponent(PrefabType.TaskAwardView, (node) => this._taskAward = node.getComponent(TaskAwardView), {
+            this.initViewComponent(PrefabType.TaskAwardView, (node) => {
+                this._taskAward = node.getComponent(TaskAwardView)
+                this._taskAward.node.active = false;
+            }, {
                 isAlignTop: true,
                 isAlignRight: true,
                 top: 123,
@@ -85,18 +82,21 @@ export class WeekTaskView extends BaseView {
                 this._dailyTask.updateData([]);
                 this._dailyTask.node.active = false;
             }),
-            this.initViewComponent(PrefabType.TaskTabView, (node) => {
-                this._tabView = node.getComponent(TaskTabView);
-                this._tabView.setTabSelectClick(this.onTabSelect.bind(this));
-            }, {
-                isAlignTop: true,
-                isAlignLeft: true,
-                top: 129,
-                left: 50
-            })
+            
         ]);
     }
-
+    initTabs(){
+        this.initViewComponent(PrefabType.TaskTabView, (node) => {
+            this._tabView = node.getComponent(TaskTabView);
+            this._tabView.setTabSelectClick(this.onTabSelect.bind(this));
+            this._tabView.updateData(TaskTabInfos);
+        }, {
+            isAlignTop: true,
+            isAlignLeft: true,
+            top: 129,
+            left: 50
+        })
+    }
     private async initViewComponent(prefabType: PrefabTypeEntry, onComponentInit: (node: Node) => void, alignOptions?: object) {
         let node = await this.loadAndInitPrefab(prefabType, this.node, alignOptions);
         onComponentInit(node);
@@ -227,23 +227,25 @@ export class WeekTaskView extends BaseView {
         amoutScript.loadAmoutData(dataArr);
     }
 
-    private onTabSelect(selectId: number) {
+    private onTabSelect(info: TaskTabInfo) {
         this.hideAllContent();
-        this.selectMenuType(selectId);
+        this.selectMenuType(info.id);
+        this._navTitleView.setTitleName(info.title);
     }
 
-    private selectMenuType(menuType: TaskMenuType) {
+    private selectMenuType(menuType: TaskTabIds) {
+        this._taskAward.node.active = menuType !==TaskTabIds.AchievementChallenge;
         switch (menuType) {
-            case TaskMenuType.Achievement:
+            case TaskTabIds.AchievementChallenge:
                 this._achievementView.node.active = true;
                 break;
-            case TaskMenuType.Week:
+            case TaskTabIds.WeeklyTasks:
                 this._weekTask.showTask();
                 break;
-            case TaskMenuType.Main:
+            case TaskTabIds.MainTasks:
                 this._mainTask.showTask();
                 break;
-            case TaskMenuType.Daily:
+            case TaskTabIds.DailyTasks:
                 this._dailyTask.showTask();
                 break;
             default:

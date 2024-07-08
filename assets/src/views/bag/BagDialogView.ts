@@ -1,20 +1,25 @@
-import { _decorator, Color, Component, EventTouch, instantiate, Layers, Node, Prefab, ScrollView, Sprite, SpriteFrame, v3 } from 'cc';
+import { _decorator, Color, instantiate, isValid, Layers, Node, Prefab, UITransform, v3 } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
+import { ItemID } from '../../export/ItemConfig';
 import { ItemData } from '../../manager/DataMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
 import { User } from '../../models/User';
 import { ServiceMgr } from '../../net/ServiceManager';
+import { BaseView } from '../../script/BaseView';
 import CCUtil from '../../util/CCUtil';
-import EventManager from '../../util/EventManager';
+import List from '../../util/list/List';
 import { NodeUtil } from '../../util/NodeUtil';
 import { RewardItem } from '../common/RewardItem';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
+import { BagDressItem } from './BagDressItem';
+import { BagGressItems, BagTabNames } from './BagInfo';
+import { BagTabItem } from './BagTabItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('BagDialogView')
-export class BagDialogView extends Component {
+export class BagDialogView extends BaseView {
 
     @property(Node)
     public btn_close: Node = null;
@@ -22,20 +27,8 @@ export class BagDialogView extends Component {
     @property(Node)
     public top_layout: Node = null;
 
-    @property({ type: Node, tooltip: "全部" })
-    public tab1: Node = null;
-
-    @property({ type: Node, tooltip: "装扮" })
-    public tab2: Node = null;
-
-    @property({ type: Node, tooltip: "消耗品" })
-    public tab3: Node = null;
-
-    @property({ type: Node, tooltip: "其他" })
-    public tab4: Node = null;
-
-    @property({ type: ScrollView, tooltip: "物品列表" })
-    public propList: ScrollView = null;
+    @property({ type: List })
+    public propList: List = null;
 
     @property({ type: Prefab, tooltip: "物品预制体" })
     public propPrefab: Prefab = null;
@@ -46,78 +39,34 @@ export class BagDialogView extends Component {
     @property({ type: Node, tooltip: "角色容器" })
     public roleContainer: Node = null;
 
-    @property({ type: [SpriteFrame], tooltip: "tab页的图片数组" }) // 0:选中 1: 未选中
-    public sprTabAry: SpriteFrame[] = [];
-
+    @property(List)
+    @property tabList:List = null;
+    @property(List)
+    @property dress_list:List = null;
     private _currentTab: string = "1"; //当前tab页
-    private _selectTab: Node = null;
 
     private _role: Node = null;
 
-    private _getBagListEveId: string = ""; //获取我的背包列表
-
-    protected onLoad(): void {
-        this.addEvent();
-        this.initData();
+    initEvent() {
+        CCUtil.onBtnClick(this.btn_close, this.onCloseView.bind(this));
     }
-
-    initData() {
-        this._currentTab = "1";
+    protected onInitModuleEvent() {
+        this.addModelListeners([
+            [EventType.Bag_PropList, this.onPropList.bind(this)],
+        ]);
     }
-
-    start() {
-        this.initUI();
-    }
-
-    addEvent() {
-        CCUtil.onTouch(this.btn_close, this.onCloseView, this);
-        for (let i = 1; i <= 4; i++) {
-            CCUtil.onTouch(this["tab" + i], this.onTabClick, this);
-        }
-        this._getBagListEveId = EventManager.on(EventType.Bag_PropList, this.onPropList.bind(this));
-    }
-
-    removeEvent() {
-        CCUtil.offTouch(this.btn_close, this.onCloseView, this);
-        for (let i = 1; i <= 4; i++) {
-            CCUtil.offTouch(this["tab" + i], this.onTabClick, this);
-        }
-        EventManager.off(EventType.Bag_PropList, this._getBagListEveId);
-    }
-
-    protected onDestroy(): void {
-        this.removeEvent();
-    }
-
     initUI() {
         this.initAmout();
-
         //显示角色动画
         this.showRoleDress();
+        this.tabList.numItems = BagTabNames.length;
+        this.tabList.selectedId = 0;
+        this.dress_list.numItems = BagGressItems.length;
+        this.propList.numItems = 40;
 
-        this.onClickTab();
     }
-
-    onTabClick(e: EventTouch) {
-        let tabName: string = e.target.name;
-        tabName = tabName.substring(3); //截取最后一位，如tab2最后一位2
-        if (tabName == this._currentTab) return;
-        this._currentTab = tabName;
-        this.onClickTab();
-    }
-
     onClickTab() {
         let curTabIndex: number = +this._currentTab;
-        for (let i = 1; i <= 4; i++) {
-            if (curTabIndex == i) { //选中
-                this["tab" + i].getComponent(Sprite).spriteFrame = this.sprTabAry[0];
-                this["tab" + i].getChildByName("txt").color = new Color("#FFFFFF");
-            }
-            else { //未选中
-                this["tab" + i].getComponent(Sprite).spriteFrame = this.sprTabAry[1];
-                this["tab" + i].getChildByName("txt").color = new Color("#CAC4B7");
-            }
-        }
 
         this.propList.content.removeAllChildren();
         switch (curTabIndex) {
@@ -137,12 +86,7 @@ export class BagDialogView extends Component {
     }
 
     onPropList(propDatas: ItemData[]) {
-        this.propList.content.removeAllChildren();
-        for (let i = 0; i < propDatas.length; i++) {
-            let propData: ItemData = propDatas[i];
-            this.addPropItem(propData);
-        }
-        this.propList.scrollToTop();
+
     }
 
     private addPropItem(propData: ItemData) {
@@ -155,7 +99,7 @@ export class BagDialogView extends Component {
 
     /**初始化游戏数值 */
     initAmout() {
-        ViewsManager.addAmout(this.top_layout, 11.314, 160.722).then((amoutScript: TopAmoutView) => {
+        ViewsManager.addAmout(this.top_layout, 11.314, 260.722).then((amoutScript: TopAmoutView) => {
             let dataArr: AmoutItemData[] = [{ type: AmoutType.Diamond, num: User.diamond },
             { type: AmoutType.Coin, num: User.coin },
             { type: AmoutType.Energy, num: User.stamina }];
@@ -181,8 +125,62 @@ export class BagDialogView extends Component {
         roleModel.show(true);
     }
 
-    update(deltaTime: number) {
+    // 随机选择一个枚举值的函数
+    getRandomEnumValue(enumObject: typeof ItemID): ItemID {
+        const enumValues = Object.values(enumObject).filter(value => typeof value === 'number') as number[];
+        const randomIndex = Math.floor(Math.random() * enumValues.length);
+        return enumValues[randomIndex] as ItemID;
+    }
 
+    onLoadPropsGrid(item:Node, idx:number){
+        let itemScript: RewardItem = item.getComponent(RewardItem);
+        let node_trans = item.getComponent(UITransform);
+        let scale = 125 / node_trans.height;
+        item.setScale(scale, scale, scale)
+        const randomItemID = this.getRandomEnumValue(ItemID);
+        let data:ItemData = {
+            id: randomItemID,
+            num: 999,
+        }
+        itemScript.init(data);
+        // let item_script = item.getComponent(BagDressItem);
+        // item_script.updateTabProps(BagGressItems[idx]);
+    }
+
+    onLoadDressGrid(item:Node, idx:number){
+        let item_script = item.getComponent(BagDressItem);
+        item_script.updateTabProps(BagGressItems[idx]);
+    }
+
+    onDressGridSelected(item: any, selectedId: number, lastSelectedId: number, val: number) {
+        if(!isValid(selectedId) || selectedId < 0 || !isValid(item)){return;}
+        console.log("onDressGridSelected",selectedId);
+        // this.clearAllTabLabelColors();
+        // let item_script = item.getComponent(BagTabItem);
+        // item_script.tab_name.color = new Color("#FFFFFF");
+    }
+
+
+    onLoadTabHorizontal(item:Node, idx:number){
+        let item_script = item.getComponent(BagTabItem);
+        item_script.updateTabProps(BagTabNames[idx].title);
+    }
+
+    onTabHorizontalSelected(item: any, selectedId: number, lastSelectedId: number, val: number) {
+        if(!isValid(selectedId) || selectedId < 0 || !isValid(item)){return;}
+        console.log("onTabHorizontalSelected",selectedId);
+        this.clearAllTabLabelColors();
+        let item_script = item.getComponent(BagTabItem);
+        item_script.tab_name.color = new Color("#FFFFFF");
+    }
+
+    clearAllTabLabelColors() {
+        for (let index = 0; index < this.tabList.numItems; index++) {
+            const item = this.tabList.getItemByListId(index);
+            let item_script = item.getComponent(BagTabItem);
+            item_script.tab_name.color = new Color("#CAC4B7");
+            
+        }
     }
 }
 

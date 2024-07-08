@@ -103,6 +103,10 @@ export const PrefabType = {
     /*********************************************教材单词相关end*************************************************************/
     /*********************************************商城相关start***********************************************************/
     ShopUIView: { path: "shop/ShopUIView", zindex: Hierarchy.POPUPLAYER, tips: "商城模块" },
+    ShopBuildView: { path: "shop/ShopBuildView", zindex: Hierarchy.POPUPLAYER, tips: "商城建筑模块" }, 
+    ShopStoreView: { path: "shop/ShopStoreView", zindex: Hierarchy.POPUPLAYER, tips: "形象商店模块" },
+    ShopDecorationView: { path: "shop/ShopDecorationView", zindex: Hierarchy.POPUPLAYER, tips: "装饰模块" },
+    DebrisAreaView: { path: "shop/DebrisAreaView", zindex: Hierarchy.POPUPLAYER, tips: "碎片区模块" },
     GoodsDetailView: { path: "shop/GoodsDetailView", zindex: Hierarchy.POPUPLAYER, tips: "商品详情" },
     /*********************************************商城相关end*************************************************************/
     /*********************************************语法训练start***********************************************************/
@@ -199,4 +203,23 @@ export const PrefabType = {
     /*********************************************每周任务 End*************************************************************/
 
     MainNotifyView: { path: "map/MainNotifyView", componentName: "MainNotifyView", zindex: Hierarchy.POPUPLAYER, tips: "任务奖励界面" },
+    MainRightActivity: { path: "map/MainRightActivity", componentName: "MainRightActivity", zindex: Hierarchy.POPUPLAYER, tips: "主界面右侧活动" },
+    /*********************************************收集 start***********************************************************/
+    CollectView: { path: "collect/CollectView", zindex: Hierarchy.POPUPLAYER, tips: "成就徽章" },
+    AchievementMedalsView: { path: "collect/AchievementMedalsView", zindex: Hierarchy.POPUPLAYER, tips: "成就徽章" },
+    MonsterCardView: { path: "collect/MonsterCardView", zindex: Hierarchy.POPUPLAYER, tips: "单词怪兽卡" },
+    BuildingAtlasView: { path: "collect/BuildingAtlasView", zindex: Hierarchy.POPUPLAYER, tips: "建筑图鉴" },
+    ClothingIllustratedView: { path: "collect/ClothingIllustratedView", zindex: Hierarchy.POPUPLAYER, tips: "服装图鉴" },
+    /*********************************************收集 end***********************************************************/
+
+    /*********************************************排行 start***********************************************************/
+    RankView: { path: "rank/RankView", zindex: Hierarchy.POPUPLAYER, tips: "排行" },
+    VocabularyRankingView: { path: "rank/VocabularyRankingView", zindex: Hierarchy.POPUPLAYER, tips: "词汇量排名" },
+    KingdomRankingView: { path: "rank/KingdomRankingView", zindex: Hierarchy.POPUPLAYER, tips: "王国分排名" },
+    CombatPowerRankingView: { path: "rank/CombatPowerRankingView", zindex: Hierarchy.POPUPLAYER, tips: "战力排名" },
+    /*********************************************排行 end***********************************************************/
+
+    /*********************************************活动 start***********************************************************/
+    ActivityView: { path: "activities/ActivityView", zindex: Hierarchy.POPUPLAYER, tips: "新人豪礼" },
+    /*********************************************活动 end***********************************************************/
 }
