@@ -18,7 +18,7 @@ import { MainTaskView } from './MainTaskView';
 import { TaskAchievementView } from './TaskAchievementView';
 import { TaskAwardView } from './TaskAwardView';
 import { TKConfig } from './TaskConfig';
-import { TaskTabIds, TaskTabInfos, WeeklyTaskBox } from './TaskInfo';
+import { TaskTabIds, TaskTabInfo, TaskTabInfos, WeeklyTaskBox } from './TaskInfo';
 import { TaskTabView } from './TaskTabView';
 import { WeeklyTaskView } from './WeeklyTaskView';
 
@@ -221,12 +221,13 @@ export class WeekTaskView extends BaseView {
         amoutScript.loadAmoutData(dataArr);
     }
 
-    private onTabSelect(selectId: number) {
+    private onTabSelect(info: TaskTabInfo) {
         this.hideAllContent();
-        this.selectMenuType(selectId);
+        this.selectMenuType(info.id);
     }
 
     private selectMenuType(menuType: TaskTabIds) {
+        this._taskAward.node.active = menuType !==TaskTabIds.AchievementChallenge;
         switch (menuType) {
             case TaskTabIds.AchievementChallenge:
                 this._achievementView.node.active = true;
