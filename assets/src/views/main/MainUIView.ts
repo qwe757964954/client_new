@@ -44,6 +44,9 @@ export class MainUIView extends BaseView {
     @property(Label)
     public labelNick: Label = null;//昵称
 
+    @property(Node)
+    public operational_activities:Node = null;//
+
     private _mainScene: MainScene = null;//主场景
     private _mainRightActivity: MainRightActivity = null;//右侧活动
     /**初始化UI */
@@ -97,6 +100,7 @@ export class MainUIView extends BaseView {
         CCUtil.onTouch(this.btnTaskGo, this.onClickTaskGo, this);
         CCUtil.onTouch(this.btnStudy, this.onClickStudy, this);
         CCUtil.onBtnClick(this.btn_friend, this.onClickFriend.bind(this));
+        CCUtil.onBtnClick(this.operational_activities, this.onClickOperationalActivities.bind(this));
     }
     //移除事件
     public removeEvent() {
@@ -114,8 +118,10 @@ export class MainUIView extends BaseView {
     async onClickFriend(){
         await ViewsManager.instance.showPopup(PrefabType.FriendsDialogView);
     }
-
-    
+    /**运营活动 */
+    async onClickOperationalActivities(){
+        await ViewsManager.instance.showViewAsync(PrefabType.ActivityView);
+    }
 
     //头像点击
     public onClickHead() {

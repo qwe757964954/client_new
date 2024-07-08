@@ -219,4 +219,7 @@ export const PrefabType = {
     CombatPowerRankingView: { path: "rank/CombatPowerRankingView", zindex: Hierarchy.POPUPLAYER, tips: "战力排名" },
     /*********************************************排行 end***********************************************************/
 
+    /*********************************************活动 start***********************************************************/
+    ActivityView: { path: "activities/ActivityView", zindex: Hierarchy.POPUPLAYER, tips: "新人豪礼" },
+    /*********************************************活动 end***********************************************************/
 }
