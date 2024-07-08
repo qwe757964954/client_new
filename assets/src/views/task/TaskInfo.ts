@@ -22,6 +22,9 @@ export enum TaskTabIds {
   DebrisArea,
   BuildingShop,
   Decoration,
+  VocabularyRanking,
+  KingdomRanking,
+  CombatPowerRanking
 }
 
 // 定义 AchevementRewardIds 枚举

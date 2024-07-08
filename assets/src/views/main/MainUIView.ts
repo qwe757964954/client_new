@@ -49,6 +49,9 @@ export class MainUIView extends BaseView {
     @property(Node)
     public btn_collect:Node = null;//
 
+    @property(Node)
+    public btn_rank:Node = null;//
+
     private _mainScene: MainScene = null;//主场景
     /**初始化UI */
     initUI() {
@@ -88,6 +91,7 @@ export class MainUIView extends BaseView {
         CCUtil.onBtnClick(this.btn_friend, this.onClickFriend.bind(this));
         CCUtil.onBtnClick(this.btn_bag, this.onClickBag.bind(this));
         CCUtil.onBtnClick(this.btn_collect,this.onClickCollect.bind(this));
+        CCUtil.onBtnClick(this.btn_rank, this.onClickRank.bind(this));
     }
     //移除事件
     public removeEvent() {
@@ -112,6 +116,10 @@ export class MainUIView extends BaseView {
 
     async onClickCollect(){
         await ViewsManager.instance.showViewAsync(PrefabType.CollectView);
+    }
+
+    async onClickRank(){
+        await ViewsManager.instance.showViewAsync(PrefabType.RankView);
     }
 
     //头像点击

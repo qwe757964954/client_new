@@ -59,7 +59,10 @@ export class WeekTaskView extends BaseView {
 
     private async initViews() {
         await Promise.all([
-            this.initViewComponent(PrefabType.TaskAwardView, (node) => this._taskAward = node.getComponent(TaskAwardView), {
+            this.initViewComponent(PrefabType.TaskAwardView, (node) => {
+                this._taskAward = node.getComponent(TaskAwardView)
+                this._taskAward.node.active = false;
+            }, {
                 isAlignTop: true,
                 isAlignRight: true,
                 top: 123,

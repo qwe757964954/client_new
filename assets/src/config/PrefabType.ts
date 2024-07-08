@@ -213,7 +213,10 @@ export const PrefabType = {
     /*********************************************收集 end***********************************************************/
 
     /*********************************************排行 start***********************************************************/
-    RankView: { path: "collect/RankView", zindex: Hierarchy.POPUPLAYER, tips: "排行" },
+    RankView: { path: "rank/RankView", zindex: Hierarchy.POPUPLAYER, tips: "排行" },
+    VocabularyRankingView: { path: "rank/VocabularyRankingView", zindex: Hierarchy.POPUPLAYER, tips: "词汇量排名" },
+    KingdomRankingView: { path: "rank/KingdomRankingView", zindex: Hierarchy.POPUPLAYER, tips: "王国分排名" },
+    CombatPowerRankingView: { path: "rank/CombatPowerRankingView", zindex: Hierarchy.POPUPLAYER, tips: "战力排名" },
     /*********************************************排行 end***********************************************************/
 
 }
