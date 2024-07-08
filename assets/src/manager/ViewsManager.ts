@@ -110,7 +110,8 @@ export class ViewsManager {
                 let scpt: BasePopup = node.getComponent(viewConfig.componentName);
 
                 try {
-                    await scpt.showAnim();
+                    // await scpt.showAnim();
+                    scpt.showAnim();
                     resolve(node as Node); // Resolve after the animation completes
                 } catch (animationError) {
                     console.error(animationError);
@@ -141,7 +142,7 @@ export class ViewsManager {
         parent.addChild(tmpNode);
 
         console.time(viewConfig.path);
-        LoadManager.loadPrefab(viewConfig.path, parent).then((node: Node) => {
+        LoadManager.loadPrefab(viewConfig.path, parent, viewConfig.isCache).then((node: Node) => {
             console.log("显示界面", viewConfig.path);
             console.timeEnd(viewConfig.path);
             node.name = viewConfig.path.replace("/", "_");

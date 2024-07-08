@@ -28,7 +28,7 @@ export class TextbookRemindView extends BasePopup {
     @property(Node)
     public btn_green: Node = null;
 
-    private _callFunc:(isSure:boolean)=>void = null;
+    public _callFunc:(isSure:boolean)=>void = null;
     public initUI(): void {
         this.enableClickBlankToClose([this.node.getChildByName("frame")]).then(() => {
             if(this._callFunc){
@@ -38,14 +38,8 @@ export class TextbookRemindView extends BasePopup {
     }
 
     initEvent() {
-        CCUtil.onTouch(this.btn_blue, this.onClickSure, this);
-        CCUtil.onTouch(this.btn_green, this.onClickCancel, this);
-    }
-
-    /**移除监听 */
-    removeEvent() {
-        CCUtil.offTouch(this.btn_blue, this.onClickSure, this);
-        CCUtil.offTouch(this.btn_green, this.onClickCancel, this);
+        CCUtil.onBtnClick(this.btn_blue, this.onClickSure.bind(this));
+        CCUtil.onBtnClick(this.btn_green, this.onClickCancel.bind(this));
     }
 
     initRemind(data:ITextbookRemindData){

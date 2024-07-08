@@ -1,6 +1,7 @@
 import { _decorator, isValid, Layers, Node, UITransform } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
+import { TextConfig } from '../../config/TextConfig';
 import GlobalConfig from '../../GlobalConfig';
 import { BookLevelConfig, DataMgr } from '../../manager/DataMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
@@ -20,6 +21,8 @@ import { WordPracticeView } from '../adventure/sixModes/WordPracticeView';
 import { WordReadingView } from '../adventure/sixModes/WordReadingView';
 import { WordSpellView } from '../adventure/sixModes/WordSpellView';
 import { AmoutItemData, AmoutType } from '../common/TopAmoutView';
+import { BreakThroughRemindView } from '../TextbookVocabulary/BreakThroughRemindView';
+import { ITextbookRemindData } from '../TextbookVocabulary/TextbookRemindView';
 import { ScrollMapView } from './ScrollMapView';
 
 const { ccclass, property } = _decorator;
@@ -206,12 +209,30 @@ export class BreakThroughView extends BaseView {
     }
 
     onEnterIsland(data: MapLevelData) {
-        const reqParam: ReqUnitStatusParam = {
-            book_id: this._bookData.book_id,
-            unit_id: this._selectitemStatus.unit_id,
-            small_id: this._selectGate.small_id
-        };
-        TBServer.reqUnitStatus(reqParam);
+        let param: ITextbookRemindData = {
+            sure_text: TextConfig.Restart_Tip,
+            cancel_text: TextConfig.Continue_From_Last_Time_Tip,
+            content_text: TextConfig.Begin_Break_Through_Tip,
+            callFunc: (isSure: boolean) => {
+                // if (isSure) {
+                    
+                // }
+                const reqParam: ReqUnitStatusParam = {
+                    book_id: this._bookData.book_id,
+                    unit_id: this._selectitemStatus.unit_id,
+                    small_id: this._selectGate.small_id
+                };
+                TBServer.reqUnitStatus(reqParam);
+            }
+        }
+        this.showRemainCalL(param);
+    }
+
+    showRemainCalL(data: ITextbookRemindData) {
+        ViewsManager.instance.showPopup(PrefabType.BreakThroughRemindView).then((node: Node)=>{
+            let remindScript: BreakThroughRemindView = node.getComponent(BreakThroughRemindView);
+            remindScript.initRemind(data);
+        });
     }
 
     async gotoSpell(wordData: VocabularyWordData, bookLevelData: BookLevelConfig) {

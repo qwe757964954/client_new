@@ -1,6 +1,7 @@
 import { _decorator, Node } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType, PrefabTypeEntry } from '../../config/PrefabType';
+import GlobalConfig from '../../GlobalConfig';
 import { ItemData } from '../../manager/DataMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { ChallengeBoxRewardData, ChallengeTaskReward, TaskBaseData, UserMainTaskData, UserWeekTaskData } from '../../models/TaskModel';
@@ -8,6 +9,8 @@ import { User } from '../../models/User';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TkServer } from '../../service/TaskService';
+import CCUtil from '../../util/CCUtil';
+import { ToolUtil } from '../../util/ToolUtil';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { CongratulationsView } from './CongratulationsView';
 import { DailyTaskView } from './DailyTaskView';
@@ -15,18 +18,11 @@ import { MainTaskView } from './MainTaskView';
 import { TaskAchievementView } from './TaskAchievementView';
 import { TaskAwardView } from './TaskAwardView';
 import { TKConfig } from './TaskConfig';
-import { WeeklyTaskBox } from './TaskInfo';
+import { TaskTabIds, TaskTabInfo, TaskTabInfos, WeeklyTaskBox } from './TaskInfo';
 import { TaskTabView } from './TaskTabView';
 import { WeeklyTaskView } from './WeeklyTaskView';
 
 const { ccclass, property } = _decorator;
-
-export enum TaskMenuType {
-    Achievement = 0, // 成就
-    Week = 1, // 每周
-    Main = 2, // 主线
-    Daily = 3 // 每日
-}
 
 @ccclass('WeekTaskView')
 export class WeekTaskView extends BaseView {
@@ -46,6 +42,8 @@ export class WeekTaskView extends BaseView {
     private _taskAward: TaskAwardView = null;
 
     async initUI() {
+        let scale = ToolUtil.getValue(GlobalConfig.WIN_DESIGN_RATE, 0.1, 1.0);
+        CCUtil.setNodeScale(this.node, scale);
         this.initNavTitle();
         this.initAmout();
         try {
@@ -83,6 +81,7 @@ export class WeekTaskView extends BaseView {
             this.initViewComponent(PrefabType.TaskTabView, (node) => {
                 this._tabView = node.getComponent(TaskTabView);
                 this._tabView.setTabSelectClick(this.onTabSelect.bind(this));
+                this._tabView.updateData(TaskTabInfos);
             }, {
                 isAlignTop: true,
                 isAlignLeft: true,
@@ -222,23 +221,24 @@ export class WeekTaskView extends BaseView {
         amoutScript.loadAmoutData(dataArr);
     }
 
-    private onTabSelect(selectId: number) {
+    private onTabSelect(info: TaskTabInfo) {
         this.hideAllContent();
-        this.selectMenuType(selectId);
+        this.selectMenuType(info.id);
     }
 
-    private selectMenuType(menuType: TaskMenuType) {
+    private selectMenuType(menuType: TaskTabIds) {
+        this._taskAward.node.active = menuType !==TaskTabIds.AchievementChallenge;
         switch (menuType) {
-            case TaskMenuType.Achievement:
+            case TaskTabIds.AchievementChallenge:
                 this._achievementView.node.active = true;
                 break;
-            case TaskMenuType.Week:
+            case TaskTabIds.WeeklyTasks:
                 this._weekTask.showTask();
                 break;
-            case TaskMenuType.Main:
+            case TaskTabIds.MainTasks:
                 this._mainTask.showTask();
                 break;
-            case TaskMenuType.Daily:
+            case TaskTabIds.DailyTasks:
                 this._dailyTask.showTask();
                 break;
             default:

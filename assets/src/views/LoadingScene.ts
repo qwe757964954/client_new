@@ -1,7 +1,9 @@
 import { _decorator, Asset, Component, director, Label, Node, ProgressBar, sys } from 'cc';
+import { MapConfig } from '../config/MapConfig';
 import { SceneType } from '../config/PrefabType';
 import { TextConfig } from '../config/TextConfig';
 import GlobalConfig from '../GlobalConfig';
+import { LoadManager } from '../manager/LoadManager';
 import { ViewsManager, ViewsMgr } from '../manager/ViewsManager';
 import { HttpManager } from '../net/HttpManager';
 import DownloaderUtil from '../util/DownloaderUtil';
@@ -45,6 +47,7 @@ export class LoadingScene extends Component {
     start() {
         ViewsManager.instance.initLayer(this.sceneLayer, this.popupLayer, this.tipLayer, this.loadingLayer);
         this.labelVer.string = GlobalConfig.getVersionStr();
+        LoadManager.preload(MapConfig.bgInfo.preload);
         this.checkVersion();
     }
 
@@ -69,7 +72,7 @@ export class LoadingScene extends Component {
         this.progressBar.progress = 0;
 
         this._time = 0;
-        this._maxtime = 1.0;
+        this._maxtime = 1.5;
 
         this.httpReqVersionCheck();
     }

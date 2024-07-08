@@ -31,6 +31,9 @@ export const EventType = {
     Mood_Score_Update: "MoodUpdate",//心情分更新
     Item_Update: "ItemUpdate_{0}",//物品更新（注意：参数为物品类型）
 
+    NickName_Update: "NickNameUpdate",//昵称更新
+    RoleID_Update: "RoleIDUpdate",//角色ID更新
+
     Stamina_Timer_Update: "StaminaTimerUpdate",//体力计时器更新
     Stamina_Timeout: "Stamina_Timeout",//体力计时器超时
 

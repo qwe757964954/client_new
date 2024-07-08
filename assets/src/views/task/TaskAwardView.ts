@@ -27,24 +27,25 @@ export class TaskAwardView extends BaseView {
         
     }
 
-    updateTaskAwardProgress(val: number,weekly_box:BoxWeekData[]) {
-        this._weekly_box = weekly_box;
+    updateTaskAwardProgress(val: number, weekly_box: BoxWeekData[]) {
+        this._weekly_box = weekly_box.sort((a, b) => a.box_id - b.box_id);
+        console.log("updateTaskAwardProgress",this._weekly_box);
         this._taskProcess = val;
-        val = val ? val:0;
+        val = val ? val : 0;
         this.award_progress.progress = val / 100;
         this.progress_label.string = `${val}`;
         this.award_scroll.numItems = boxAniData.length;
-        this.scheduleOnce(()=>{
-            for (let index = 0; index < weekly_box.length; index++) {
-                const box_data:BoxWeekData = weekly_box[index];
-                let item:Node = this.award_scroll.getItemByListId(index);
-                let item_sript:TaskAwardItem = item.getComponent(TaskAwardItem);
-                if(isValid(box_data) && box_data.status === TaskStatusType.RewardClaimed){
-                    item_sript.changeBoxAni("idle_empty",index,true);
+        this.scheduleOnce(() => {
+            for (let index = 0; index < this._weekly_box.length; index++) {
+                const box_data: BoxWeekData = this._weekly_box[index];
+                let item: Node = this.award_scroll.getItemByListId(index);
+                let item_script: TaskAwardItem = item.getComponent(TaskAwardItem);
+    
+                if (isValid(box_data) && box_data.status === TaskStatusType.RewardClaimed) {
+                    item_script.changeBoxAni("idle_empty", index, true);
                 }
             }
         });
-        
     }
 
     onLoadTaskHorizontal(item:Node, idx:number){

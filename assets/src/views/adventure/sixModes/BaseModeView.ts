@@ -145,6 +145,7 @@ export class BaseModeView extends BaseView {
                     wordsdata = uniqueWordList;
                 }
             }
+            this._rightNum = this._wordIndex;
         } else if (WordSourceType.word_game == this._sourceType) {
             let levelData = this._levelData as AdvLevelConfig;
             let progressData = levelData.progressData;
@@ -290,19 +291,22 @@ export class BaseModeView extends BaseView {
         } else if (WordSourceType.classification == this._sourceType) { //教材单词关卡
             this._monster = instantiate(this.monsterModel);
             this.monster.addChild(this._monster);
-            let scale = this._monster.getScale();
-            this._monster.scale = new Vec3(-scale.x, scale.y, 1);
+            let sp = this._monster.getChildByName("sp");
+            let scale = sp.getScale();
+            sp.scale = new Vec3(-scale.x, scale.y, 1);
             let monsterModel = this._monster.getComponent(MonsterModel);
             monsterModel.init(FileUtil.removeFileExtension(GameRes.Spine_Stitches.path), true);
             if (this.gameMode == GameMode.Exam) {
                 this.monster.getComponent(UIOpacity).opacity = 125;
             }
             let levelData = this._levelData as BookLevelConfig;
-            let pass = levelData.word_num - levelData.error_num;
+            let pass = levelData.word_num -1;
+            console.log("this.gameMode = " , this.gameMode,this._wordsData);
             let totalHp = this.gameMode == GameMode.Exam ? this._wordsData.length : this._wordsData.length * 5;
+            console.log("totalHp = " , totalHp,this._hpLevels[this.gameMode]);
             monsterModel.setHp(this._wordsData.length * this._hpLevels[this.gameMode] + pass, totalHp);
-            let hp_scale = monsterModel.hpNode.getScale();
-            monsterModel.hpNode.scale = new Vec3(-hp_scale.x, hp_scale.y, 1);
+            // let hp_scale = monsterModel.hpNode.getScale();
+            // monsterModel.hpNode.scale = new Vec3(-hp_scale.x, hp_scale.y, 1);
         } else if (WordSourceType.review == this._sourceType) { //复习规划
             this._monster = instantiate(this.monsterModel);
             this.monster.addChild(this._monster);
@@ -336,6 +340,10 @@ export class BaseModeView extends BaseView {
     }
     //当前模式结束,跳转下一模式或结算
     protected modeOver() {
+        if (WordSourceType.classification == this._sourceType) {
+            let levelData = this._levelData as BookLevelConfig;
+            levelData.word_num = 1;
+        }
         ViewsMgr.closeConfirmView();
     }
 
@@ -411,7 +419,7 @@ export class BaseModeView extends BaseView {
                     monsterModel.setHp(this._wordsData.length * this._hpLevels[this.gameMode] + this._rightNum, totalHp);
                 } else if (WordSourceType.classification == this._sourceType) {
                     let totalHp = this.gameMode == GameMode.Exam ? this._wordsData.length : this._wordsData.length * 5;
-                    let pass = this._wordIndex - this._errorNum;
+                    let pass = this._rightNum;
                     monsterModel.setHp(this._wordsData.length * this._hpLevels[this.gameMode] + pass, totalHp);
                     monsterModel.inHit().then(() => {
                         resolve(true);

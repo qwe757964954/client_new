@@ -30,6 +30,12 @@ export class SettingPlanView extends BasePopup {
     @property(Node)
     public cancelBtn:Node = null;
 
+    @property(Label)
+    public time_tip:Label = null;
+
+    @property(Label)
+    public date_tip:Label = null;
+
     private _levelSelect:number = 0;
     private _daySelect:number = 0;
     private _isModify:boolean = false;
@@ -67,6 +73,7 @@ export class SettingPlanView extends BasePopup {
         this._levelSelect = selectedLevel;
         console.log("_leftSelect....", selectedLevel);
         this.updateDays(selectedLevel);
+        this.updatePlanDate();
     }
 
     private handleDaySelect(selectedDay: number): void {
@@ -76,6 +83,12 @@ export class SettingPlanView extends BasePopup {
         this._daySelect = selectedDay;
         console.log("_rightSelect....", selectedDay);
         this.updateLevels(selectedDay);
+        this.updatePlanDate();
+    }
+
+    private updatePlanDate(){
+        this.date_tip.string = TextbookUtil.getFormattedDate(this._daySelect);
+        this.time_tip.string = TextbookUtil.formatTotalMinutes(this._levelSelect);
     }
 
     private updateDays(selectedLevel: number): void {

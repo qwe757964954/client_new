@@ -18,11 +18,11 @@ export class BasePopup extends BaseView  {
 
     showAnim(): Promise<void> {
         return new Promise<void>((resolve) => {
+            this.initUI();
             this.node.scale = new Vec3(0.2, 0.2, 1.0);
             tween(this.node)
                 .to(0.2, { scale: new Vec3(1.0, 1.0, 1.0) }, { easing: easing.backOut })
                 .call(() => {
-                    this.initUI();
                     resolve();
                 })
                 .start();

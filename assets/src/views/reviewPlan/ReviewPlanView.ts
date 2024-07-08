@@ -1,5 +1,5 @@
-import { _decorator, director, Label, Node, ProgressBar, sp } from 'cc';
-import { PrefabType, SceneType } from '../../config/PrefabType';
+import { _decorator, Label, Node, ProgressBar, sp } from 'cc';
+import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import GlobalConfig from '../../GlobalConfig';
 import { ItemData } from '../../manager/DataMgr';
@@ -329,11 +329,12 @@ export class ReviewPlanView extends BaseComponent {
                 });
             });
         };
-        if (SceneType.WorldMapScene == director.getScene().name) {
-            showView();
-        } else {
-            director.loadScene(SceneType.WorldMapScene, showView);
-        }
+        showView();
+        // if (SceneType.WorldMapScene == director.getScene().name) {
+        //     showView();
+        // } else {
+        //     director.loadScene(SceneType.WorldMapScene, showView);
+        // }
     }
 }
 

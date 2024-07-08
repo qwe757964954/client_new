@@ -125,6 +125,11 @@ export class MapNormalCtl extends MapBaseCtl {
             TimerMgr.stop(this._timer);
             this._timer = null;
         }
+        if (this._touchRole) {
+            if (this._isLongClick) {
+                this._mainScene.onRoleDragEnd(this._touchRole);
+            }
+        }
         this._touchBuilding = null;
         this._isLongClick = false;
         this._touchRole = null;

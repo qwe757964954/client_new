@@ -18,7 +18,6 @@ export class ChangeNameView extends BasePopup {
     public initUI(): void {
         this.enableClickBlankToClose([this.node.getChildByName("BG")]).then(()=>{
         });
-        this.editBox.update();
     }
     updataData(data:UserPlayerDetail){
         this._playerDetail = data;

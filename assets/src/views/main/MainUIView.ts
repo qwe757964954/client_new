@@ -43,6 +43,12 @@ export class MainUIView extends BaseView {
     @property(Label)
     public labelNick: Label = null;//昵称
 
+    @property(Node)
+    public btn_bag:Node = null;//
+
+    @property(Node)
+    public btn_collect:Node = null;//
+
     private _mainScene: MainScene = null;//主场景
     /**初始化UI */
     initUI() {
@@ -80,6 +86,8 @@ export class MainUIView extends BaseView {
         CCUtil.onTouch(this.btnTaskGo, this.onClickTaskGo, this);
         CCUtil.onTouch(this.btnStudy, this.onClickStudy, this);
         CCUtil.onBtnClick(this.btn_friend, this.onClickFriend.bind(this));
+        CCUtil.onBtnClick(this.btn_bag, this.onClickBag.bind(this));
+        CCUtil.onBtnClick(this.btn_collect,this.onClickCollect.bind(this));
     }
     //移除事件
     public removeEvent() {
@@ -96,6 +104,14 @@ export class MainUIView extends BaseView {
     /**好友点击 */
     async onClickFriend(){
         await ViewsManager.instance.showPopup(PrefabType.FriendsDialogView);
+    }
+
+    async onClickBag(){
+        await ViewsManager.instance.showViewAsync(PrefabType.BagView);
+    }
+
+    async onClickCollect(){
+        await ViewsManager.instance.showViewAsync(PrefabType.CollectView);
     }
 
     //头像点击

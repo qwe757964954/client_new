@@ -145,6 +145,7 @@ class UserModel {
     }
 
     set coin(coin: number) {
+        if (null == coin) return;
         this._coin = coin;
         EventMgr.emit(EventType.Coin_Update, this._coin);
     }
@@ -152,6 +153,7 @@ class UserModel {
         return this._coin;
     }
     set diamond(diamond: number) {
+        if (null == diamond) return;
         this._diamond = diamond;
         EventMgr.emit(EventType.Diamond_Update, this._diamond);
     }
@@ -159,6 +161,7 @@ class UserModel {
         return this._diamond;
     }
     set stamina(stamina: number) {
+        if (null == stamina) return;
         this._stamina = stamina;
         EventMgr.emit(EventType.Stamina_Update, this._stamina);
     }
@@ -166,6 +169,7 @@ class UserModel {
         return this._stamina;
     }
     set amethyst(amethyst: number) {
+        if (null == amethyst) return;
         this._amethyst = amethyst;
         EventMgr.emit(EventType.Amethyst_Update, this._amethyst);
     }
@@ -173,6 +177,7 @@ class UserModel {
         return this._amethyst;
     }
     set ticket(ticket: number) {
+        if (null == ticket) return;
         this._ticket = ticket;
         EventMgr.emit(EventType.Ticket_Update, this._ticket);
     }

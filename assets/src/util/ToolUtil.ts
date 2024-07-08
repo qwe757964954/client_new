@@ -161,4 +161,21 @@ export class ToolUtil {
     static md5(str: string): string {
         return CryptoES.MD5(str).toString();
     }
+
+    private static _countMap: { [key: string]: number } = {};
+    /**统计key */
+    static countKey(key: string) {
+        if (!this._countMap[key]) this._countMap[key] = 0;
+        this._countMap[key]++;
+    }
+    /**获取统计key */
+    static getCountKey(key: string) {
+        if (!this._countMap[key]) return 0;
+        return this._countMap[key];
+    }
+    /**清空统计key */
+    static clearCountKey(key: string) {
+        if (!this._countMap[key]) return;
+        this._countMap[key] = 0;
+    }
 }

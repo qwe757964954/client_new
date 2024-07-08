@@ -24,6 +24,7 @@ export class PrefabConfig {
     public zindex: number = Hierarchy.SCENELAYER;
     public tips: string;
     public componentName?: string;
+    public isCache?: boolean = false;
 }
 
 export type PrefabTypeEntry = {
@@ -96,6 +97,7 @@ export const PrefabType = {
     ScrollMapView: { path: "textbook/ScrollMapView", zindex: Hierarchy.POPUPLAYER, tips: "滑动地图模块" },
     BreakThroughView: { path: "textbook/BreakThroughView", zindex: Hierarchy.POPUPLAYER, tips: "单词大冒险挑战模块" },
     TextbookRemindView: { path: "textbook/TextbookRemindView", componentName: "TextbookRemindView", zindex: Hierarchy.POPUPLAYER, tips: "二级确认弹窗" },
+    BreakThroughRemindView: { path: "textbook/BreakThroughRemindView", componentName: "BreakThroughRemindView", zindex: Hierarchy.POPUPLAYER, tips: "二级确认弹窗" },
     ChallengeRemindView: { path: "textbook/ChallengeRemindView", componentName: "ChallengeRemindView", zindex: Hierarchy.POPUPLAYER, tips: "首次故事背景引导" },
     SearchWorldView: { path: "textbook/SearchWordView", zindex: Hierarchy.POPUPLAYER, tips: "查找单词弹窗" },
     WordSearchView: { path: "textbook/WordSearchView", zindex: Hierarchy.POPUPLAYER, tips: "查找单词详情弹窗" },
@@ -124,7 +126,7 @@ export const PrefabType = {
     // RoleModel: { path: "map/model/RoleModel", zindex: Hierarchy.SCENELAYER, tips: "角色模型" },
     // PetMode: { path: "map/model/PetMode", zindex: Hierarchy.SCENELAYER, tips: "宠物模型" },
     RoleBaseModel: { path: "map/model/RoleBaseModel", zindex: Hierarchy.SCENELAYER, tips: "角色模型" },
-    MainUIView: { path: "map/MainUIView", zindex: Hierarchy.SCENELAYER, tips: "地图UI界面" },
+    MainUIView: { path: "map/MainUIView", zindex: Hierarchy.SCENELAYER, tips: "地图UI界面", isCache: true },
     EditUIView: { path: "map/EditUIView", zindex: Hierarchy.SCENELAYER, tips: "地图编辑UI界面" },
     LandEditUIView: { path: "map/LandEditUIView", zindex: Hierarchy.SCENELAYER, tips: "地块编辑UI界面" },
     BuildingBtnView: { path: "map/BuildingBtnView", zindex: Hierarchy.POPUPLAYER, tips: "建筑按钮界面" },
@@ -199,4 +201,17 @@ export const PrefabType = {
     /*********************************************每周任务 End*************************************************************/
 
     MainNotifyView: { path: "map/MainNotifyView", componentName: "MainNotifyView", zindex: Hierarchy.POPUPLAYER, tips: "任务奖励界面" },
+
+    /*********************************************收集 start***********************************************************/
+    CollectView: { path: "collect/CollectView", zindex: Hierarchy.POPUPLAYER, tips: "成就徽章" },
+    AchievementMedalsView: { path: "collect/AchievementMedalsView", zindex: Hierarchy.POPUPLAYER, tips: "成就徽章" },
+    MonsterCardView: { path: "collect/MonsterCardView", zindex: Hierarchy.POPUPLAYER, tips: "单词怪兽卡" },
+    BuildingAtlasView: { path: "collect/BuildingAtlasView", zindex: Hierarchy.POPUPLAYER, tips: "建筑图鉴" },
+    ClothingIllustratedView: { path: "collect/ClothingIllustratedView", zindex: Hierarchy.POPUPLAYER, tips: "服装图鉴" },
+    /*********************************************收集 end***********************************************************/
+
+    /*********************************************排行 start***********************************************************/
+    RankView: { path: "collect/RankView", zindex: Hierarchy.POPUPLAYER, tips: "排行" },
+    /*********************************************排行 end***********************************************************/
+
 }
