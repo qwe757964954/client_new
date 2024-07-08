@@ -38,7 +38,8 @@ export class CollectView extends BaseView {
         this.initAmout();
         try {
             await this.initViews();
-            console.log("Task configuration loaded:", );
+            this.initTabs();
+            console.log("CollectView configuration loaded:", );
         } catch (err) {
             console.error("Failed to initialize UI:", err);
         }
@@ -46,23 +47,24 @@ export class CollectView extends BaseView {
 
     private async initViews() {
         await Promise.all([
-            this.initViewComponent(PrefabType.TaskTabView, (node) => {
-                this._tabView = node.getComponent(TaskTabView);
-                this._tabView.setTabSelectClick(this.onTabSelect.bind(this));
-                this._tabView.updateData(CollectTabInfos);
-            }, {
-                isAlignTop: true,
-                isAlignLeft: true,
-                top: 129,
-                left: 50
-            }),
             this.initViewComponent(PrefabType.AchievementMedalsView, (node) => this._achievementMedalsView = node.getComponent(AchievementMedalsView)),
             this.initViewComponent(PrefabType.MonsterCardView, (node) => this._monsterCardView = node.getComponent(MonsterCardView)),
             this.initViewComponent(PrefabType.BuildingAtlasView, (node) => this._buildAtlasView = node.getComponent(BuildingAtlasView)),
             this.initViewComponent(PrefabType.ClothingIllustratedView, (node) => this._clothingIllustratedView = node.getComponent(ClothingIllustratedView)),
         ]);
     }
-
+    initTabs(){
+        this.initViewComponent(PrefabType.TaskTabView, (node) => {
+            this._tabView = node.getComponent(TaskTabView);
+            this._tabView.setTabSelectClick(this.onTabSelect.bind(this));
+            this._tabView.updateData(CollectTabInfos);
+        }, {
+            isAlignTop: true,
+            isAlignLeft: true,
+            top: 129,
+            left: 50
+        })
+    }
     private onTabSelect(info: TaskTabInfo) {
         this.hideAllContent();
         this.selectMenuType(info);

@@ -103,6 +103,10 @@ export const PrefabType = {
     /*********************************************教材单词相关end*************************************************************/
     /*********************************************商城相关start***********************************************************/
     ShopUIView: { path: "shop/ShopUIView", zindex: Hierarchy.POPUPLAYER, tips: "商城模块" },
+    ShopBuildView: { path: "shop/ShopBuildView", zindex: Hierarchy.POPUPLAYER, tips: "商城建筑模块" }, 
+    ShopStoreView: { path: "shop/ShopStoreView", zindex: Hierarchy.POPUPLAYER, tips: "形象商店模块" },
+    ShopDecorationView: { path: "shop/ShopDecorationView", zindex: Hierarchy.POPUPLAYER, tips: "装饰模块" },
+    DebrisAreaView: { path: "shop/DebrisAreaView", zindex: Hierarchy.POPUPLAYER, tips: "碎片区模块" },
     GoodsDetailView: { path: "shop/GoodsDetailView", zindex: Hierarchy.POPUPLAYER, tips: "商品详情" },
     /*********************************************商城相关end*************************************************************/
     /*********************************************语法训练start***********************************************************/

@@ -49,6 +49,7 @@ export class WeekTaskView extends BaseView {
         try {
             await TKConfig.loadTaskConfigInfo();
             await this.initViews();
+            this.initTabs();
             console.log("Task configuration loaded:", TKConfig.taskConfigInfo);
         } catch (err) {
             console.error("Failed to initialize UI:", err);
@@ -78,19 +79,21 @@ export class WeekTaskView extends BaseView {
                 this._dailyTask.updateData([]);
                 this._dailyTask.node.active = false;
             }),
-            this.initViewComponent(PrefabType.TaskTabView, (node) => {
-                this._tabView = node.getComponent(TaskTabView);
-                this._tabView.setTabSelectClick(this.onTabSelect.bind(this));
-                this._tabView.updateData(TaskTabInfos);
-            }, {
-                isAlignTop: true,
-                isAlignLeft: true,
-                top: 129,
-                left: 50
-            })
+            
         ]);
     }
-
+    initTabs(){
+        this.initViewComponent(PrefabType.TaskTabView, (node) => {
+            this._tabView = node.getComponent(TaskTabView);
+            this._tabView.setTabSelectClick(this.onTabSelect.bind(this));
+            this._tabView.updateData(TaskTabInfos);
+        }, {
+            isAlignTop: true,
+            isAlignLeft: true,
+            top: 129,
+            left: 50
+        })
+    }
     private async initViewComponent(prefabType: PrefabTypeEntry, onComponentInit: (node: Node) => void, alignOptions?: object) {
         let node = await this.loadAndInitPrefab(prefabType, this.node, alignOptions);
         onComponentInit(node);

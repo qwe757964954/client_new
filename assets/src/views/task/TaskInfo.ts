@@ -17,7 +17,11 @@ export enum TaskTabIds {
   AchievementMedals,
   WordMonsterCards,
   BuildingAtlas,
-  ClothingAtlas
+  ClothingAtlas,
+  ImageStore,
+  DebrisArea,
+  BuildingShop,
+  Decoration,
 }
 
 // 定义 AchevementRewardIds 枚举
@@ -37,7 +41,18 @@ export enum AchevementRewardIds {
   Hairstyle,  //发型
   Hat,   //帽子
   Jacket, //上衣
+  FunctionalBuilding,
+  LandmarkBuilding,
+  Decoration,
+  ShopFlooring,
+  ShopHat,
+  ShopHairstyle,  // Hairstyles
+  ShopTop,  // Tops
+  ShopPants,  // Pants
+  ShopShoes,  // Shoes
+  ShopFaceShape  // Face Shapes
 }
+
 
 
 // 定义 AchevementRewardInfo 接口
