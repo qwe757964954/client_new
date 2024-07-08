@@ -23,6 +23,7 @@ export class BaseView extends Component{
 	protected _Eventlistener = {};
 	protected _schedulerHandler = {};
 	protected _schedulerHandlerOnce = {};
+	protected _navTitleView:NavTitleView = null;
 	//实例化
 	constructor(name: string) {
         super();
@@ -133,8 +134,8 @@ export class BaseView extends Component{
 		this.removeEvent();
 	};
 	protected async createNavigation(title: string, top_layout: Node,onBack: () => void) {
-        let navScript: NavTitleView = await ViewsManager.addNavigation(top_layout, 0, 0);
-        navScript.updateNavigationProps(title, onBack);
+        this._navTitleView = await ViewsManager.addNavigation(top_layout, 0, 0);
+        this._navTitleView.updateNavigationProps(title, onBack);
     }
 
 

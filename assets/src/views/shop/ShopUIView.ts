@@ -82,6 +82,7 @@ export class ShopUIView extends BaseView {
         this._debrisAreaView.node.active = false;
     }
     private selectMenuType(info: TaskTabInfo) {
+        this._navTitleView.setTitleName(info.title);
         switch (info.id) {
             case TaskTabIds.ImageStore:
                 this._shopStoreView.node.active = true;

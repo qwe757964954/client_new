@@ -230,6 +230,7 @@ export class WeekTaskView extends BaseView {
     private onTabSelect(info: TaskTabInfo) {
         this.hideAllContent();
         this.selectMenuType(info.id);
+        this._navTitleView.setTitleName(info.title);
     }
 
     private selectMenuType(menuType: TaskTabIds) {

@@ -92,6 +92,7 @@ export class RankView extends BaseView {
         this._combatPowerRankingView.node.active = false;
     }
     private selectMenuType(info: TaskTabInfo) {
+        this._navTitleView.setTitleName(info.title);
         switch (info.id) {
             case TaskTabIds.VocabularyRanking:
                 this._vocabularyRankingView.node.active = true;

@@ -68,6 +68,7 @@ export class CollectView extends BaseView {
     private onTabSelect(info: TaskTabInfo) {
         this.hideAllContent();
         this.selectMenuType(info);
+        this._navTitleView.setTitleName(info.title);
     }
     private hideAllContent(){
         this._achievementMedalsView.node.active = false;
