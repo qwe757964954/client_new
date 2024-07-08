@@ -13,6 +13,7 @@ import { TransitionView } from '../common/TransitionView';
 import { BaseModeView } from './BaseModeView';
 import { WordSplitItem } from './items/WordSplitItem';
 import { WordMeaningView } from './WordMeaningView';
+import { Shake } from '../../../util/Shake';
 const { ccclass, property } = _decorator;
 
 /**学习模式页面 何存发 2024年4月15日15:38:41 */
@@ -174,8 +175,10 @@ export class StudyModeView extends BaseModeView {
 
     //拆分部分点击
     onSplitItemClick(item: Node, idx: number) {
-        if (this._isSplitPlaying) return;
-        if (idx != this._currentSplitIdx) return;
+        if (this._isSplitPlaying || idx != this._currentSplitIdx) {
+            item.getComponent(Shake).shakeNode();
+            return;
+        }
         this._isSplitPlaying = true;
         console.log('item', item);
         let wordSplitItem = item.getComponent(WordSplitItem);

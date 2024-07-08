@@ -1,4 +1,4 @@
-import { _decorator, BlockInputEvents, Button, instantiate, isValid, Label, Node, Prefab, Sprite, tween, UIOpacity, UITransform, Vec3, view } from 'cc';
+import { _decorator, BlockInputEvents, Button, Color, instantiate, isValid, Label, Node, Prefab, Sprite, tween, UIOpacity, UITransform, Vec3, view } from 'cc';
 import { EventType } from '../../../config/EventType';
 import { GameRes } from '../../../GameRes';
 import GlobalConfig from '../../../GlobalConfig';
@@ -191,6 +191,10 @@ export class BaseModeView extends BaseView {
         this.timeLabel.string = "剩余时间:" + ToolUtil.secondsToTimeFormat(this._remainTime);
         if (this._remainTime > 0 && this.gameMode != GameMode.Exam) {
             this.schedule(this.onTimer, 1);
+            this.timeLabel.color = Color.WHITE;
+        } else {
+            this.timeLabel.string = "已超时";
+            this.timeLabel.color = Color.RED;
         }
         this._errorNum = levelData.error_num;
         this.errorNumLabel.string = "错误次数:" + this._errorNum;
@@ -206,6 +210,10 @@ export class BaseModeView extends BaseView {
         if (this._remainTime <= 0) {
             this.unschedule(this.onTimer);
             this._remainTime = 0;
+            this.timeLabel.string = "已超时";
+            this.timeLabel.color = Color.RED;
+        } else {
+            this.timeLabel.string = "剩余时间:" + ToolUtil.secondsToTimeFormat(this._remainTime);
         }
         if (WordSourceType.word_game == this._sourceType) {
             let levelData = this._levelData as AdvLevelConfig;
@@ -215,7 +223,7 @@ export class BaseModeView extends BaseView {
             let levelData = this._levelData as BookLevelConfig;
             levelData.time_remaining = this._remainTime;
         }
-        this.timeLabel.string = "剩余时间:" + ToolUtil.secondsToTimeFormat(this._remainTime);
+
     }
     onInitModuleEvent() {
         console.log("onInitModuleEvent..base");

@@ -14,6 +14,7 @@ import { InterfacePath } from '../../net/InterfacePath';
 import { DataMgr } from '../../manager/DataMgr';
 import { WordBossView } from './sixModes/WordBossView';
 import { MonsterModel } from './common/MonsterModel';
+import { MapRewardBoxItem } from './levelmap/MapRewardBoxItem';
 const { ccclass, property } = _decorator;
 
 /**魔法森林 何存发 2024年4月9日17:51:36 */
@@ -70,6 +71,10 @@ export class WorldIsland extends Component {
 
     private _isRequest: boolean = false; //是否请求中
     private _currentPos: MicroListItem;
+
+    @property(List)
+    rewardBoxList: List = null;
+    private _progressRewards: any[] = [1, 2, 3, 4];
     start() {
         this.initUI();
         this.initEvent();
@@ -252,6 +257,7 @@ export class WorldIsland extends Component {
 
         this.initPet();
         this.initRole();
+        this.rewardBoxList.numItems = this._progressRewards.length;
         // this.initMonster();
     }
 
@@ -309,6 +315,10 @@ export class WorldIsland extends Component {
 
     hideRightPanel() {
         // this.levelPanel.node.active = false;
+    }
+
+    onMapRewardBoxRender(item: Node, index: number) {
+        item.getComponent(MapRewardBoxItem).setData(this._progressRewards[index]);
     }
 
     /**初始化监听事件 */
