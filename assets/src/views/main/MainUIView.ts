@@ -5,7 +5,6 @@ import { TextConfig } from '../../config/TextConfig';
 import GlobalConfig from '../../GlobalConfig';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { User } from '../../models/User';
-import { NetMgr } from '../../net/NetManager';
 import { BaseView } from '../../script/BaseView';
 import CCUtil from '../../util/CCUtil';
 import { ReviewPlanView } from '../reviewPlan/ReviewPlanView';
@@ -129,10 +128,11 @@ export class MainUIView extends BaseView {
     }
     //菜单点击
     public onClickMenu() {
-        User.isAutoLogin = false;
-        User.resetData();
-        NetMgr.closeNet();
-        director.loadScene(SceneType.LoginScene);
+        this._mainRightActivity.onHidenClick();
+        // User.isAutoLogin = false;
+        // User.resetData();
+        // NetMgr.closeNet();
+        // director.loadScene(SceneType.LoginScene);
     }
     //复习计划点击
     public onClickReview() {
