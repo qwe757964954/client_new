@@ -2,14 +2,13 @@ import { _decorator, Node } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType, PrefabTypeEntry } from '../../config/PrefabType';
 import GlobalConfig from '../../GlobalConfig';
-import { EditType } from '../../manager/DataMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { User } from '../../models/User';
 import { BaseView } from '../../script/BaseView';
 import CCUtil from '../../util/CCUtil';
 import { ToolUtil } from '../../util/ToolUtil';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
-import { TabItemDataInfo, TabTypeIds, TaskTabIds, TaskTabInfo } from '../task/TaskInfo';
+import { TabItemDataInfo, TaskTabIds, TaskTabInfo } from '../task/TaskInfo';
 import { TaskTabView } from '../task/TaskTabView';
 import { DebrisAreaView } from './DebrisAreaView';
 import { ShopBuildView } from './ShopBuildView';
@@ -78,25 +77,7 @@ export class ShopUIView extends BaseView {
     }
 
     subTabItemClick(data:TabItemDataInfo){
-        switch (data.id) {
-            case TabTypeIds.Castle:
-                this._shopBuildView.updateData(EditType.Null);
-                break;
-            case TabTypeIds.FunctionalBuilding:
-                this._shopBuildView.updateData(EditType.Buiding);
-                break;
-            case TabTypeIds.LandmarkBuilding:
-                this._shopBuildView.updateData(EditType.LandmarkBuiding);
-                break;
-            case TabTypeIds.Decoration:
-                this._shopBuildView.updateData(EditType.Decoration);
-                break;
-            case TabTypeIds.ShopFlooring:
-                this._shopBuildView.updateData(EditType.Land);
-                break;
-            default:
-                break;
-        }
+        this._shopBuildView.updateData(data.id);
     }
     private onTabSelect(info: TaskTabInfo) {
         this.hideAllContent();

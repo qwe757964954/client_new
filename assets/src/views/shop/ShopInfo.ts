@@ -12,7 +12,7 @@ export const ShopStoreSubTabInfos: TabItemDataInfo[] = [
 ];
 // 定义 ShopBuildingTabInfos 数组
 export const ShopBuildingTabInfos: TabItemDataInfo[] = [
-    { id: TabTypeIds.Castle, title: "城堡",imageUrl:"" },
+    { id: TabTypeIds.BuildAll, title: "全部",imageUrl:"" },
     { id: TabTypeIds.FunctionalBuilding, title: "功能性建筑",imageUrl:"" },
     { id: TabTypeIds.LandmarkBuilding, title: "地标建筑",imageUrl:"" },
     { id: TabTypeIds.Decoration, title: "装饰",imageUrl:"" },

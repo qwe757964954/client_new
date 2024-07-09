@@ -43,7 +43,7 @@ export enum TabTypeIds {
   Hairstyle,         // 发型
   Hat,               // 帽子
   Jacket,            // 上衣
-  Castle,            // 城堡
+  BuildAll,            // 建筑全部
   FunctionalBuilding,// 功能建筑
   LandmarkBuilding,  // 地标建筑
   Decoration,        // 装饰
