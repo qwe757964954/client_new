@@ -182,7 +182,8 @@ export class CloudModel extends BaseModel {
     }
     /**获取显示范围 */
     public getRect() {
-        let rect = new Rect(-216, 0, 432, 216);
+        // let rect = new Rect(-216, 0, 432, 216);
+        let rect = new Rect(-216, 0, 432, 300);//增加树丛显示高度，防止某些树丛过高
         rect.x += this._pos.x;
         rect.y += this._pos.y;
         return rect;

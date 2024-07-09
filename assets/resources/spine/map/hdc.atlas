@@ -1,0 +1,48 @@
+
+hdc.png
+size: 1024,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+chuan_0
+  rotate: false
+  xy: 2, 2
+  size: 113, 151
+  orig: 113, 151
+  offset: 0, 0
+  index: -1
+chuan_1
+  rotate: false
+  xy: 675, 759
+  size: 23, 10
+  orig: 23, 10
+  offset: 0, 0
+  index: -1
+chuan_2
+  rotate: false
+  xy: 2, 155
+  size: 437, 154
+  orig: 437, 154
+  offset: 0, 0
+  index: -1
+chuan_3
+  rotate: false
+  xy: 441, 242
+  size: 76, 67
+  orig: 76, 67
+  offset: 0, 0
+  index: -1
+chuan_4
+  rotate: false
+  xy: 2, 311
+  size: 671, 629
+  orig: 671, 629
+  offset: 0, 0
+  index: -1
+chuan_5
+  rotate: false
+  xy: 675, 771
+  size: 98, 169
+  orig: 98, 169
+  offset: 0, 0
+  index: -1

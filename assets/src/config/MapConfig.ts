@@ -1,4 +1,4 @@
-import { Rect } from "cc";
+import { Rect, Vec3 } from "cc";
 
 export enum MapStatus {//地图状态
     DEFAULT = 0,//默认状态
@@ -13,6 +13,15 @@ export class RoleInfo {//角色配置
     spPath: string;//spine路径
     spNames: string[];//spine名字
     rect: Rect;//[x,y,width,height]
+}
+/**地图动画配置 */
+export class MapSpInfo {
+    id: number;//id
+    path: string;//动画路径
+    names: string[] = [];//动画名字
+    pos: Vec3;//位置
+    rect: Rect;//显示区域
+    scale?: Vec3;//缩放
 }
 
 export const MapConfig = {
@@ -168,5 +177,14 @@ export const MapConfig = {
             13, 14, 4, 13, 6,
             6, 7, 16, 2, 12,
         ]
-    }
+    },
+    mapSp: [
+        { id: 1, path: "spine/map/hdc", names: ["animation"], pos: new Vec3(1750, 330, 10), rect: new Rect(-250, -80, 500, 560) },
+        { id: 2, path: "spine/map/ql", names: ["animation"], pos: new Vec3(2620, 1580, 10), rect: new Rect(-200, -100, 400, 240) },
+        { id: 3, path: "spine/map/xuanwu", names: ["idle"], pos: new Vec3(-2750, 1150, 10), rect: new Rect(-200, -100, 400, 240), scale: new Vec3(-1, 1, 1) },
+        { id: 4, path: "spine/map/shujingling", names: ["idle"], pos: new Vec3(-2040, -120, 10), rect: new Rect(-200, -60, 400, 400) },
+        { id: 5, path: "spine/map/penquan", names: ["animation"], pos: new Vec3(-1400, -980, 10), rect: new Rect(-180, -70, 360, 340) },
+        { id: 6, path: "spine/map/huodui", names: ["animation"], pos: new Vec3(-1080, -1430, 10), rect: new Rect(-200, 0, 400, 300) },
+        { id: 7, path: "spine/map/bh", names: ["forward"], pos: new Vec3(-3100, -1700, 10), rect: new Rect(-100, -20, 200, 120), scale: new Vec3(-1, 1, 1) },
+    ],
 }

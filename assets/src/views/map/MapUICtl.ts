@@ -12,6 +12,7 @@ import { BuildingModel, BuildingOperationData, RecycleData } from "../../models/
 import { CloudModel } from "../../models/CloudModel";
 import { GridModel } from "../../models/GridModel";
 import { LandModel } from "../../models/LandModel";
+import { MapSpModel } from "../../models/MapSpModel";
 import { s2cBuildingList, s2cBuildingListInfo, s2cBuildingProduceAdd, s2cBuildingProduceDelete, s2cBuildingProduceGet, s2cCloudUnlock, s2cCloudUnlockGet, s2cPetGetReward, s2cPetInfoRep, s2cPetUpgrade } from "../../models/NetModel";
 import { RoleType } from "../../models/RoleBaseModel";
 import { RoleDataModel } from "../../models/RoleDataModel";
@@ -43,6 +44,7 @@ export class MapUICtl extends MainBaseCtl {
     private _buidingModelAry: BuildingModel[] = [];//建筑模型数组
     private _roleModelAry: RoleDataModel[] = [];//角色模型数组
     private _cloudModelAry: CloudModel[] = [];//乌云模型数组
+    private _mapSpModeAry: MapSpModel[] = [];//地图动画模型数组
     private _recycleBuildingAry: RecycleData[] = [];//回收建筑信息
     private _isNeedUpdateVisible: boolean = false;//是否需要更新可视区域
     private _isNeedSort: boolean = false;//是否需要重新排序
@@ -72,12 +74,14 @@ export class MapUICtl extends MainBaseCtl {
         this.disposeModel(this._buidingModelAry);
         this.disposeModel(this._roleModelAry);
         this.disposeModel(this._cloudModelAry);
+        this.disposeModel(this._mapSpModeAry);
         this._gridAry = [];
         this._bgModelAry = [];
         this._landModelAry = [];
         this._buidingModelAry = [];
         this._roleModelAry = [];
         this._cloudModelAry = [];
+        this._mapSpModeAry = [];
         this._recycleBuildingAry = [];
         this.removeEvent();
     }
@@ -92,6 +96,7 @@ export class MapUICtl extends MainBaseCtl {
         this.initEvent();
         this.initGrid();
         this.initMap();
+        this.initMapSpine();
 
         ServiceMgr.buildingService.reqPetInfo();
         ServiceMgr.buildingService.reqBuildingList();
@@ -200,7 +205,15 @@ export class MapUICtl extends MainBaseCtl {
         this._mapMaxHeight = bgInfo.maxHeight;
         console.timeEnd("initMap");
     }
-    private _landLoadOver: boolean = false;//地块是否加载完成
+    /**初始化地图动画 */
+    public initMapSpine() {
+        let mapSpInfo = MapConfig.mapSp;
+        mapSpInfo.forEach(item => {
+            let model = new MapSpModel();
+            model.init(item, this._mainScene.mapSpLayer);
+            this._mapSpModeAry.push(model);
+        });
+    }
     //初始化地块层
     initLand(map: { [key: string]: number }) {
         console.time("initLand");
@@ -260,7 +273,6 @@ export class MapUICtl extends MainBaseCtl {
             }
         }
         console.timeEnd("initLand");
-        this._landLoadOver = true;
 
     }
     // 初始化建筑
@@ -769,11 +781,16 @@ export class MapUICtl extends MainBaseCtl {
         //for test 显示区域
         // let g = this._mainScene.lineLayer.getComponent(Graphics);
         // g.clear();
+        /**地图加载 */
         this._bgModelAry.forEach(element => {
             element.show(visibleRect.intersects(element.getRect()), this.getLoadOverCall());
         });
         //地块动态加载
         this._landModelAry.forEach(element => {
+            element.show(visibleRect.intersects(element.getRect()), this.getLoadOverCall());
+        });
+        /**地图动画加载 */
+        this._mapSpModeAry.forEach(element => {
             element.show(visibleRect.intersects(element.getRect()), this.getLoadOverCall());
         });
         //建筑动态加载

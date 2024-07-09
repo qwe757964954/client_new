@@ -1,0 +1,62 @@
+
+ql.png
+size: 1024,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+ql_0
+  rotate: false
+  xy: 267, 55
+  size: 236, 181
+  orig: 236, 181
+  offset: 0, 0
+  index: -1
+ql_1
+  rotate: false
+  xy: 755, 127
+  size: 221, 109
+  orig: 221, 109
+  offset: 0, 0
+  index: -1
+qlt_0
+  rotate: false
+  xy: 900, 55
+  size: 70, 70
+  orig: 70, 70
+  offset: 0, 0
+  index: -1
+qlt_1
+  rotate: true
+  xy: 2, 11
+  size: 53, 104
+  orig: 53, 104
+  offset: 0, 0
+  index: -1
+qlt_2
+  rotate: true
+  xy: 108, 2
+  size: 62, 70
+  orig: 62, 70
+  offset: 0, 0
+  index: -1
+qlt_3
+  rotate: false
+  xy: 755, 5
+  size: 143, 120
+  orig: 143, 120
+  offset: 0, 0
+  index: -1
+qlt_4
+  rotate: false
+  xy: 505, 96
+  size: 248, 140
+  orig: 248, 140
+  offset: 0, 0
+  index: -1
+qlt_5
+  rotate: false
+  xy: 2, 66
+  size: 263, 170
+  orig: 263, 170
+  offset: 0, 0
+  index: -1

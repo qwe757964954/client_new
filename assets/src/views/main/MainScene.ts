@@ -50,6 +50,8 @@ export class MainScene extends BaseComponent {
     @property(Node)
     public lineLayer: Node = null;//编辑层
     @property(Node)
+    public mapSpLayer: Node = null;//地图动画层
+    @property(Node)
     public buildingLayer: Node = null;//建筑层
     @property(Camera)
     public mapCamera: Camera = null;//地图摄像机

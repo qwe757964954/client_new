@@ -1,0 +1,76 @@
+
+shujingling.png
+size: 2048,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+01_00
+  rotate: false
+  xy: 510, 238
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+01_1
+  rotate: false
+  xy: 989, 254
+  size: 446, 245
+  orig: 446, 245
+  offset: 0, 0
+  index: -1
+01_2
+  rotate: false
+  xy: 2, 207
+  size: 506, 292
+  orig: 506, 292
+  offset: 0, 0
+  index: -1
+01_3
+  rotate: false
+  xy: 207, 3
+  size: 126, 88
+  orig: 126, 88
+  offset: 0, 0
+  index: -1
+01_4
+  rotate: false
+  xy: 207, 93
+  size: 127, 112
+  orig: 127, 112
+  offset: 0, 0
+  index: -1
+01_5
+  rotate: false
+  xy: 1437, 210
+  size: 316, 289
+  orig: 316, 289
+  offset: 0, 0
+  index: -1
+01_6
+  rotate: false
+  xy: 1755, 274
+  size: 257, 225
+  orig: 257, 225
+  offset: 0, 0
+  index: -1
+01_7
+  rotate: false
+  xy: 336, 141
+  size: 126, 64
+  orig: 126, 64
+  offset: 0, 0
+  index: -1
+01_8
+  rotate: false
+  xy: 2, 2
+  size: 203, 203
+  orig: 203, 203
+  offset: 0, 0
+  index: -1
+01_9
+  rotate: false
+  xy: 510, 248
+  size: 477, 251
+  orig: 477, 251
+  offset: 0, 0
+  index: -1
