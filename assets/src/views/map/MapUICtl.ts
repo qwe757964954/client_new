@@ -136,6 +136,17 @@ export class MapUICtl extends MainBaseCtl {
         }
         return null;
     }
+    //是否是解锁的乌云
+    cloudIsUnlock(i: number, j: number) {
+        let range = MapConfig.cloud.range;
+        for (let k = 0; k < range.length; k++) {
+            let item = range[k];
+            if (item.is <= i && i < item.ie && item.js <= j && j < item.je) {
+                return true;
+            }
+        }
+        return false;
+    }
     //是否是可编辑的格子
     gridIsCanEdit(i: number, j: number) {
         let landInfo = MapConfig.gridInfo;
@@ -329,9 +340,10 @@ export class MapUICtl extends MainBaseCtl {
         let col = gridInfo.col;
         let row = gridInfo.row;
         let cloudWidth = MapConfig.cloud.width;
+        let index = 0;
         for (let i = 0; i < col; i += cloudWidth) {
             for (let j = 0; j < row; j += cloudWidth) {
-                if (j < 18) continue;
+                if (this.cloudIsUnlock(i, j)) continue;
                 let gridInfo = this.getGridInfo(i, j);
                 if (!gridInfo || gridInfo.cloud) continue;
                 let key = ToolUtil.replace(TextConfig.Land_Key, i, j);
@@ -344,6 +356,8 @@ export class MapUICtl extends MainBaseCtl {
                 cloud.initData(i, j, cloudWidth, leftTime, this._mainScene.buildingLayer);
                 this._cloudModelAry.push(cloud);
                 this.setCloudGrid(cloud, i, j);
+                cloud.showID = index;
+                index++;
             }
         }
         // this.refreshCloudShowType();
@@ -357,34 +371,34 @@ export class MapUICtl extends MainBaseCtl {
         return gridInfo.cloud != null;
     }
     /**刷新乌云显示类型 */
-    public refreshCloudShowType() {
-        this._cloudModelAry.forEach(element => {
-            let x = element.x;
-            let y = element.y;
-            let width = element.width;
-            let has1 = this.getGridInfo(x + width, y);
-            let has2 = this.getGridInfo(x, y - width);
-            if (!has1 && !has2) {
-                element.showID = 0;
-                return;
-            }
-            let has3 = this.getGridInfo(x - width, y);
-            if (!has2 && !has3) {
-                element.showID = 1;
-                return;
-            }
-            let has4 = this.getGridInfo(x, y + width);
-            if (!has1 && !has4) {
-                element.showID = 4;
-                return;
-            }
-            if (!has3 && !has4) {
-                element.showID = 3;
-                return;
-            }
-            element.showID = 2;
-        });
-    }
+    // public refreshCloudShowType() {
+    //     this._cloudModelAry.forEach(element => {
+    //         let x = element.x;
+    //         let y = element.y;
+    //         let width = element.width;
+    //         let has1 = this.getGridInfo(x + width, y);
+    //         let has2 = this.getGridInfo(x, y - width);
+    //         if (!has1 && !has2) {
+    //             element.showID = 0;
+    //             return;
+    //         }
+    //         let has3 = this.getGridInfo(x - width, y);
+    //         if (!has2 && !has3) {
+    //             element.showID = 1;
+    //             return;
+    //         }
+    //         let has4 = this.getGridInfo(x, y + width);
+    //         if (!has1 && !has4) {
+    //             element.showID = 4;
+    //             return;
+    //         }
+    //         if (!has3 && !has4) {
+    //             element.showID = 3;
+    //             return;
+    //         }
+    //         element.showID = 2;
+    //     });
+    // }
     // 摄像头缩放大小
     get cameraRate(): number {
         return this._cameraRate;

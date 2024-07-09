@@ -128,8 +128,9 @@ export class CloudModel extends BaseModel {
     }
     //显示图片
     public showImg(callBack?: Function) {
-        let id = ToolUtil.getRandomInt(0, MapConfig.cloud.pngs.length - 1);
-        LoadManager.loadSprite(MapConfig.cloud.pngs[id], this._img, true).then(() => {
+        let cloudInfo = MapConfig.cloud;
+        let path = ToolUtil.replace(cloudInfo.path, cloudInfo.pngs[this._showID]);
+        LoadManager.loadSprite(path, this._img, true).then(() => {
             this._isLoadOver = true;
             this.refreshTime();
             if (callBack) callBack();

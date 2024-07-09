@@ -149,20 +149,24 @@ export const MapConfig = {
     cloud:
     {
         width: 6,
+        path: "map/cloud/{0}/spriteFrame",
+        range: [//可编辑范围
+            // 从上往下 i左边 j右边
+            { is: 12, ie: 48, js: 0, je: 18 },
+        ],
         pngs: [
-            // "map/cloud/1/spriteFrame",
-            // "map/cloud/3/spriteFrame",
-            // "map/cloud/4/spriteFrame",
-            // "map/cloud/5/spriteFrame",
-            // "map/cloud/6/spriteFrame",
-            // "map/cloud/7/spriteFrame",
-            // "map/cloud/8/spriteFrame",
-            // "map/cloud/9/spriteFrame",
-            "map/cloud/11/spriteFrame",
-            "map/cloud/12/spriteFrame",
-            "map/cloud/13/spriteFrame",
-            "map/cloud/14/spriteFrame",
-            "map/cloud/15/spriteFrame",
+            17, 11, 18, 14,
+            16, 13, 12, 8,
+            14, 15, 9, 14, 7, 2, 14, 19, 17, 1,
+            13, 21, 17, 13, 17, 7, 4, 13, 18, 10,
+            13, 17, 13, 21, 18, 16, 13, 12, 16, 18,
+            21, 8, 1, 20, 1, 23, 17, 20, 13, 11,
+            14, 7, 16, 4, 17, 13, 22, 14, 21, 15,
+            15, 22, 7, 10, 20, 20, 1, 13, 23, 16,
+            14, 16, 17, 20, 24, 17, 13, 20, 14, 9, 8,
+            10, 2, 11, 14, 5, 19, 10, 17, 7, 5,
+            13, 14, 4, 13, 6,
+            6, 7, 16, 2, 12,
         ]
     }
 }
