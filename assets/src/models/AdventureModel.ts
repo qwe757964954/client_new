@@ -73,8 +73,6 @@ export class IslandProgressModel extends BaseRepPacket {
     micro_list: MicroListItem[];
     micro_total_num: number;
     micro_pass_num: number;
-    // code: number;
-    // msg: string;
 }
 
 export interface MicroListItem {

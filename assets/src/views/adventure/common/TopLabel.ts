@@ -5,6 +5,8 @@ const { ccclass, property } = _decorator;
 export class TopLabel extends Component {
     @property({ type: ProgressBar, tooltip: "进度条" })
     public progressbar: ProgressBar = null;
+    @property({ type: Node, tooltip: "警告icon" })
+    public warnIcon: Node = null;
     start() {
 
     }

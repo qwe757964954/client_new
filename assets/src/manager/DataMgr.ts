@@ -24,6 +24,7 @@ const ConfigPath = {
     PetConfig: "pet",
     ProduceConfig: "produce",
     ItemInfoConfig: "item_info",
+    WordGameConfig: "word_game",
 }
 
 //角色插槽
@@ -365,6 +366,11 @@ export class DataManager {
         for (let k in json) {
             this.helpConfig[k] = json[k];
         }
+    }
+
+    //初始化大冒险相关配置
+    public async initWordGameConfig() {
+        let json = await LoadManager.loadJson(ConfigPath.WordGameConfig);
     }
 
     //获取导学模式单词拆分配置

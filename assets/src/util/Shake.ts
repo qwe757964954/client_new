@@ -5,6 +5,7 @@ const { ccclass, property } = _decorator;
 export class Shake extends Component {
     private originalPosition: Vec3 | null = null;
     private shakeTween: Tween<Node> | null = null;
+    private _isShaking: boolean = false;
     start() {
 
     }
@@ -14,6 +15,8 @@ export class Shake extends Component {
      * @param intensity 抖动强度
      */
     shakeNode(duration: number = 0.5, intensity: number = 6) {
+        if (this._isShaking) return;
+        this._isShaking = true;
         let node = this.node;
         this.originalPosition = node.position.clone();
         this.shakeTween = tween(node)
@@ -30,6 +33,7 @@ export class Shake extends Component {
     }
 
     stopShake() {
+        this._isShaking = false;
         if (this.shakeTween) {
             this.shakeTween.stop();
             this.shakeTween = null;

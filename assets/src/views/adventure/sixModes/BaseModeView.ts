@@ -24,6 +24,7 @@ import FileUtil from '../../../util/FileUtil';
 import { ToolUtil } from '../../../util/ToolUtil';
 import { SmallMonsterModel } from '../../common/SmallMonsterModel';
 import { MonsterModel } from '../common/MonsterModel';
+import { TopLabel } from '../common/TopLabel';
 const { ccclass, property } = _decorator;
 
 export enum WordSourceType {
@@ -215,6 +216,9 @@ export class BaseModeView extends BaseView {
             this.timeLabel.color = Color.RED;
         } else {
             this.timeLabel.string = "剩余时间:" + ToolUtil.secondsToTimeFormat(this._remainTime);
+            if (this._remainTime <= 60) {
+                this.topNode.getComponent(TopLabel).warnIcon.active = true;
+            }
         }
         if (WordSourceType.word_game == this._sourceType) {
             let levelData = this._levelData as AdvLevelConfig;
@@ -300,10 +304,10 @@ export class BaseModeView extends BaseView {
                 this.monster.getComponent(UIOpacity).opacity = 125;
             }
             let levelData = this._levelData as BookLevelConfig;
-            let pass = levelData.word_num -1;
-            console.log("this.gameMode = " , this.gameMode,this._wordsData);
+            let pass = levelData.word_num - 1;
+            console.log("this.gameMode = ", this.gameMode, this._wordsData);
             let totalHp = this.gameMode == GameMode.Exam ? this._wordsData.length : this._wordsData.length * 5;
-            console.log("totalHp = " , totalHp,this._hpLevels[this.gameMode]);
+            console.log("totalHp = ", totalHp, this._hpLevels[this.gameMode]);
             monsterModel.setHp(this._wordsData.length * this._hpLevels[this.gameMode] + pass, totalHp);
             // let hp_scale = monsterModel.hpNode.getScale();
             // monsterModel.hpNode.scale = new Vec3(-hp_scale.x, hp_scale.y, 1);
