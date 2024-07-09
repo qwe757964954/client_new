@@ -1,5 +1,6 @@
 import { _decorator, Node } from 'cc';
 import { DataMgr, EditInfo, EditType } from '../../manager/DataMgr';
+import { User } from '../../models/User';
 import { BaseView } from '../../script/BaseView';
 import List from '../../util/list/List';
 import { TabTypeIds } from '../task/TaskInfo';
@@ -21,7 +22,10 @@ export class ShopBuildView extends BaseView {
     getBuildItems(id:TabTypeIds){
         this._itemsData = [];
         let editConfig = DataMgr.instance.editInfo;
-        const cleanedEditConfig = editConfig.filter(item => item !== null && item !== undefined );
+        let cleanedEditConfig = editConfig.filter(item => item !== null && item !== undefined );
+        // 使用 filter 方法过滤掉具有特定 id 的元素
+        cleanedEditConfig = cleanedEditConfig.filter(item => !User.buildingList.includes(item.id));
+        // console.log("cleanedEditConfig.........",cleanedEditConfig);
         switch (id) {
             case TabTypeIds.BuildAll:
                 this._itemsData = cleanedEditConfig;
