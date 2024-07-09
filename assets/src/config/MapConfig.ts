@@ -185,6 +185,7 @@ export const MapConfig = {
         { id: 4, path: "spine/map/shujingling", names: ["idle"], pos: new Vec3(-2040, -120, 10), rect: new Rect(-200, -60, 400, 400) },
         { id: 5, path: "spine/map/penquan", names: ["animation"], pos: new Vec3(-1400, -980, 10), rect: new Rect(-180, -70, 360, 340) },
         { id: 6, path: "spine/map/huodui", names: ["animation"], pos: new Vec3(-1080, -1430, 10), rect: new Rect(-200, 0, 400, 300) },
-        { id: 7, path: "spine/map/bh", names: ["forward"], pos: new Vec3(-3100, -1700, 10), rect: new Rect(-100, -20, 200, 120), scale: new Vec3(-1, 1, 1) },
+        { id: 7, path: "spine/map/bh", names: ["forward", "backward", "anger"], pos: new Vec3(-3360, -1620, 10), rect: new Rect(-100, -20, 200, 120), scale: new Vec3(-1, 1, 1) },
+        { id: 8, path: "spine/map/fenghuang", names: ["idle", "idle2"], pos: new Vec3(2750, -1850, 10), rect: new Rect(-200, 0, 400, 300) },
     ],
 }
