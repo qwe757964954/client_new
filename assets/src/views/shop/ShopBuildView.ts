@@ -1,7 +1,5 @@
 import { _decorator, Node } from 'cc';
 import { DataMgr, EditInfo, EditType } from '../../manager/DataMgr';
-import { BuildingIDType } from '../../models/BuildingModel';
-import { User } from '../../models/User';
 import { BaseView } from '../../script/BaseView';
 import List from '../../util/list/List';
 import { ShopGoodsItem } from './ShopGoodsItem';
@@ -16,19 +14,10 @@ export class ShopBuildView extends BaseView {
 
     }
 
-    updateData(){
+    updateData(type:EditType){
         let editConfig = DataMgr.instance.editInfo;
         this._itemsData = [];
-        editConfig.forEach(info => {
-            if (BuildingIDType.mine == info.id) return;//矿山，需特殊处理
-            if (EditType.Decoration == info.type || EditType.Land == info.type) {
-                this._itemsData.push(info);
-            } else {
-                if (undefined == User.buildingList.find(item => item == info.id)) {
-                    this._itemsData.push(info);
-                }
-            }
-        });
+        this._itemsData = editConfig.filter(item => item.type === type);
         this.build_list.numItems = this._itemsData.length;
         this.build_list.scrollTo(0, 0);
     }

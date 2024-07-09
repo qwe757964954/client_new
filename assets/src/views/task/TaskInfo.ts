@@ -27,40 +27,39 @@ export enum TaskTabIds {
   CombatPowerRanking
 }
 
-// 定义 AchevementRewardIds 枚举
-export enum AchevementRewardIds {
+export enum TabTypeIds {
   Overview = 1,      // 成就总览
   Growth,            // 成长
   Kingdom,           // 王国
   Instance,          // 副本
   Elf,               // 精灵
-  Social,             // 社交
-  All, //全部
-  Functional, //功能建筑
-  Landmark, //地标建筑
-  Decorative, //装饰建筑
-  Flooring, //地板
-  AllClothing, //服装全部
-  Hairstyle,  //发型
-  Hat,   //帽子
-  Jacket, //上衣
-  FunctionalBuilding,
-  LandmarkBuilding,
-  Decoration,
-  ShopFlooring,
-  ShopHat,
-  ShopHairstyle,  // Hairstyles
-  ShopTop,  // Tops
-  ShopPants,  // Pants
-  ShopShoes,  // Shoes
-  ShopFaceShape  // Face Shapes
+  Social,            // 社交
+  All,               // 全部
+  Functional,        // 功能建筑
+  Landmark,          // 地标建筑
+  Decorative,        // 装饰建筑
+  Flooring,          // 地板
+  AllClothing,       // 服装全部
+  Hairstyle,         // 发型
+  Hat,               // 帽子
+  Jacket,            // 上衣
+  Castle,            // 城堡
+  FunctionalBuilding,// 功能建筑
+  LandmarkBuilding,  // 地标建筑
+  Decoration,        // 装饰
+  ShopFlooring,      // 商店地板
+  ShopHat,           // 商店帽子
+  ShopHairstyle,     // 商店发型
+  ShopTop,           // 商店上衣
+  ShopPants,         // 商店裤子
+  ShopShoes,         // 商店鞋子
+  ShopFaceShape      // 商店脸型
 }
 
 
-
-// 定义 AchevementRewardInfo 接口
-export interface AchevementRewardInfo {
-  id: AchevementRewardIds;
+// 定义 TabItemDataInfo 接口
+export interface TabItemDataInfo {
+  id: TabTypeIds;
   title: string;
   imageUrl: string;
 }
@@ -69,17 +68,17 @@ export interface AchevementRewardInfo {
 export interface TaskTabInfo {
   id: TaskTabIds;
   title: string;
-  subTabItems?: AchevementRewardInfo[];
+  subTabItems?: TabItemDataInfo[];
 }
 
-// 定义 AchevementRewardInfos 数组
-export const AchevementRewardInfos: AchevementRewardInfo[] = [
-  { id: AchevementRewardIds.Overview, title: "成就总览", imageUrl: "totallook" },
-  { id: AchevementRewardIds.Growth, title: "成长", imageUrl: "juese" },
-  { id: AchevementRewardIds.Kingdom, title: "王国", imageUrl: "badge" },
-  { id: AchevementRewardIds.Instance, title: "副本", imageUrl: "fuben" },
-  { id: AchevementRewardIds.Elf, title: "精灵", imageUrl: "jingling" },
-  { id: AchevementRewardIds.Social, title: "社交", imageUrl: "shejiao" },
+// 定义 TabItemDataInfos 数组
+export const TabItemDataInfos: TabItemDataInfo[] = [
+  { id: TabTypeIds.Overview, title: "成就总览", imageUrl: "totallook" },
+  { id: TabTypeIds.Growth, title: "成长", imageUrl: "juese" },
+  { id: TabTypeIds.Kingdom, title: "王国", imageUrl: "badge" },
+  { id: TabTypeIds.Instance, title: "副本", imageUrl: "fuben" },
+  { id: TabTypeIds.Elf, title: "精灵", imageUrl: "jingling" },
+  { id: TabTypeIds.Social, title: "社交", imageUrl: "shejiao" },
 ];
 
 // 定义 TaskTabInfos 数组
@@ -87,7 +86,7 @@ export const TaskTabInfos: TaskTabInfo[] = [
   {
       id: TaskTabIds.AchievementChallenge,
       title: "成就挑战",
-      subTabItems: AchevementRewardInfos
+      subTabItems: TabItemDataInfos
   },
   {
       id: TaskTabIds.WeeklyTasks,

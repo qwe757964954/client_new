@@ -1,20 +1,20 @@
-import { AchevementRewardIds, AchevementRewardInfo, TaskTabIds, TaskTabInfo } from "../task/TaskInfo";
+import { TabItemDataInfo, TabTypeIds, TaskTabIds, TaskTabInfo } from "../task/TaskInfo";
 
 // 定义 CollectTabIds 枚举
-// 定义 AchevementRewardInfos 数组
-export const BuildingSubTabInfos: AchevementRewardInfo[] = [
-    { id: AchevementRewardIds.All, title: "全部",imageUrl:"" },
-    { id: AchevementRewardIds.Functional, title: "功能建筑",imageUrl:"" },
-    { id: AchevementRewardIds.Landmark, title: "地标建筑",imageUrl:"" },
-    { id: AchevementRewardIds.Decorative, title: "装饰建筑",imageUrl:"" },
-    { id: AchevementRewardIds.Flooring, title: "地板",imageUrl:"" }
+// 定义 TabItemDataInfos 数组
+export const BuildingSubTabInfos: TabItemDataInfo[] = [
+    { id: TabTypeIds.All, title: "全部",imageUrl:"" },
+    { id: TabTypeIds.Functional, title: "功能建筑",imageUrl:"" },
+    { id: TabTypeIds.Landmark, title: "地标建筑",imageUrl:"" },
+    { id: TabTypeIds.Decorative, title: "装饰建筑",imageUrl:"" },
+    { id: TabTypeIds.Flooring, title: "地板",imageUrl:"" }
 ];
 // 定义 Clothing Illustrated 数组
-export const ClothingIllustratedTabInfos: AchevementRewardInfo[] = [
-    { id: AchevementRewardIds.AllClothing, title: "全部",imageUrl:"" },
-    { id: AchevementRewardIds.Hairstyle, title: "发型",imageUrl:"" },
-    { id: AchevementRewardIds.Hat, title: "帽子",imageUrl:"" },
-    { id: AchevementRewardIds.Jacket, title: "上衣",imageUrl:"" }
+export const ClothingIllustratedTabInfos: TabItemDataInfo[] = [
+    { id: TabTypeIds.AllClothing, title: "全部",imageUrl:"" },
+    { id: TabTypeIds.Hairstyle, title: "发型",imageUrl:"" },
+    { id: TabTypeIds.Hat, title: "帽子",imageUrl:"" },
+    { id: TabTypeIds.Jacket, title: "上衣",imageUrl:"" }
 ];
 
 // 定义 CollectTabInfos 数组

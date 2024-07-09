@@ -1,13 +1,15 @@
 import { _decorator, Node } from 'cc';
+import { EventType } from '../../config/EventType';
 import { PrefabType, PrefabTypeEntry } from '../../config/PrefabType';
 import GlobalConfig from '../../GlobalConfig';
+import { EditType } from '../../manager/DataMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { User } from '../../models/User';
 import { BaseView } from '../../script/BaseView';
 import CCUtil from '../../util/CCUtil';
 import { ToolUtil } from '../../util/ToolUtil';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
-import { TaskTabIds, TaskTabInfo } from '../task/TaskInfo';
+import { TabItemDataInfo, TabTypeIds, TaskTabIds, TaskTabInfo } from '../task/TaskInfo';
 import { TaskTabView } from '../task/TaskTabView';
 import { DebrisAreaView } from './DebrisAreaView';
 import { ShopBuildView } from './ShopBuildView';
@@ -46,6 +48,10 @@ export class ShopUIView extends BaseView {
 
     }
 
+    protected onInitModuleEvent() {
+        this.addModelListener(EventType.Sub_Tab_Item_Click,this.subTabItemClick);
+	}
+
     private async initViews() {
         await Promise.all([
             this.initViewComponent(PrefabType.ShopBuildView, (node) => this._shopBuildView = node.getComponent(ShopBuildView)),
@@ -71,6 +77,27 @@ export class ShopUIView extends BaseView {
         onComponentInit(node);
     }
 
+    subTabItemClick(data:TabItemDataInfo){
+        switch (data.id) {
+            case TabTypeIds.Castle:
+                this._shopBuildView.updateData(EditType.Null);
+                break;
+            case TabTypeIds.FunctionalBuilding:
+                this._shopBuildView.updateData(EditType.Buiding);
+                break;
+            case TabTypeIds.LandmarkBuilding:
+                this._shopBuildView.updateData(EditType.LandmarkBuiding);
+                break;
+            case TabTypeIds.Decoration:
+                this._shopBuildView.updateData(EditType.Decoration);
+                break;
+            case TabTypeIds.ShopFlooring:
+                this._shopBuildView.updateData(EditType.Land);
+                break;
+            default:
+                break;
+        }
+    }
     private onTabSelect(info: TaskTabInfo) {
         this.hideAllContent();
         this.selectMenuType(info);
@@ -93,7 +120,7 @@ export class ShopUIView extends BaseView {
                 break;
             case TaskTabIds.BuildingShop:
                 this._shopBuildView.node.active = true;
-                this._shopBuildView.updateData();
+                
                 break;
             case TaskTabIds.Decoration:
                 this._shopDecorationView.node.active = true;

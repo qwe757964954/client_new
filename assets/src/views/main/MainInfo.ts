@@ -10,7 +10,7 @@ export interface MainActivityInfo {
     imageUrl: string;
   }
 
-  // 定义 AchevementRewardInfos 数组
+  // 定义 TabItemDataInfos 数组
 export const MainActivityInfos: MainActivityInfo[] = [
     { id: MainActivityIds.Package, title: "背包", imageUrl: "" },
     { id: MainActivityIds.Collect, title: "收集", imageUrl: "" },
