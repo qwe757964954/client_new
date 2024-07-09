@@ -1,13 +1,9 @@
 import { _decorator, Component, Label, Node, Sprite, SpriteFrame } from 'cc';
-import { EventType } from '../../config/EventType';
-import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { EditInfo } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
-import { ViewsMgr } from '../../manager/ViewsManager';
 import CCUtil from '../../util/CCUtil';
 import { EffectUtil } from '../../util/EffectUtil';
-import { EventMgr } from '../../util/EventManager';
 import { ToolUtil } from '../../util/ToolUtil';
 const { ccclass, property } = _decorator;
 /** 建筑信息 */
@@ -111,9 +107,9 @@ export class GoodsDetailView extends Component {
 
     onClickBuy() {
         // ServiceMgr.shopService.buyGood(this._data.id);
-        EventMgr.emit(EventType.New_Building, this._data);
-        ViewsMgr.closeView(PrefabType.ShopUIView);
-        ViewsMgr.closeView(PrefabType.GoodsDetailView);
+        // EventMgr.emit(EventType.New_Building, this._data);
+        // ViewsMgr.closeView(PrefabType.ShopUIView);
+        // ViewsMgr.closeView(PrefabType.GoodsDetailView);
     }
 }
 

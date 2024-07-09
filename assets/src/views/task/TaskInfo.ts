@@ -1,11 +1,11 @@
 
   // Box animation data array
  export const boxAniData = [
-    { id: 1, aniurl: "chest_tutor", x: 130, y: -20 },
-    { id: 2, aniurl: "chest_uncommon", x: 255, y: -20 },
-    { id: 3, aniurl: "chest_rare", x: 380, y: -20 },
-    { id: 4, aniurl: "chest_epic", x: 510, y: -20 },
-    { id: 5, aniurl: "chest_legend", x: 625, y: -20 }
+    { id: 1, aniurl: "chest_tutor", },
+    { id: 2, aniurl: "chest_uncommon", },
+    { id: 3, aniurl: "chest_rare",  },
+    { id: 4, aniurl: "chest_epic",},
+    { id: 5, aniurl: "chest_legend",}
   ];
   
 // 定义 TaskTabIds 枚举
