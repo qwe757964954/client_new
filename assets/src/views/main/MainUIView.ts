@@ -99,6 +99,7 @@ export class MainUIView extends BaseView {
         CCUtil.onTouch(this.btnStudy, this.onClickStudy, this);
         CCUtil.onBtnClick(this.btn_friend, this.onClickFriend.bind(this));
         CCUtil.onBtnClick(this.operational_activities, this.onClickOperationalActivities.bind(this));
+        CCUtil.onBtnClick(this.node.getChildByName('mask_node'),this.onMaskClick.bind(this));
     }
     //移除事件
     public removeEvent() {
@@ -128,6 +129,7 @@ export class MainUIView extends BaseView {
     }
     //菜单点击
     public onClickMenu() {
+        this.node.getChildByName('mask_node').active = true;
         this._mainRightActivity.onHidenClick();
         // User.isAutoLogin = false;
         // User.resetData();
@@ -162,6 +164,10 @@ export class MainUIView extends BaseView {
     //商店点击
     public onClickShop() {
         ViewsMgr.showView(PrefabType.ShopUIView);
+    }
+    onMaskClick(){
+        this.node.getChildByName('mask_node').active = false;
+        this._mainRightActivity.onHidenClick();
     }
     //任务点击
     public onClickTask() {

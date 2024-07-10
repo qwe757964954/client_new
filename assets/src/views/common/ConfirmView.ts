@@ -1,10 +1,10 @@
-import { _decorator, Component, Label, Node } from 'cc';
+import { _decorator, Label, Node } from 'cc';
+import { BasePopup } from '../../script/BasePopup';
 import CCUtil from '../../util/CCUtil';
-import { EffectUtil } from '../../util/EffectUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('ConfirmView')
-export class ConfirmView extends Component {
+export class ConfirmView extends BasePopup {
     @property(Node)
     public bg: Node = null;
     @property(Label)
@@ -18,11 +18,10 @@ export class ConfirmView extends Component {
     private _cancelCall: Function = null;
     private _canClose: boolean = false;
 
-    start() {
-        this.initEvent();
-    }
-    protected onDestroy(): void {
-        this.removeEvent();
+    protected initUI(): void {
+        this.enableClickBlankToClose([this.node.getChildByName("frame")]).then(()=>{
+            this._cancelCall?.();
+        });
     }
 
     initEvent() {
@@ -39,35 +38,16 @@ export class ConfirmView extends Component {
         this._sureCall = sureCall;
         this._cancelCall = cancelCall;
         this.label.string = content;
-        this.show();
-    }
-    //销毁
-    dispose() {
-        this.removeEvent();
-        this.node.destroy();
     }
     // 确定按钮点击
     onSureClick() {
-        this.close(this._sureCall);
+        this._sureCall?.();
+        this.closePop();
     }
     // 关闭按钮点击
     onCancelClick() {
-        this.close(this._cancelCall);
-    }
-    // 显示界面
-    show() {
-        EffectUtil.centerPopup(this.bg, () => {
-            this._canClose = true;
-        });
-    }
-    /** 关闭界面 */
-    close(callBack?: Function) {
-        if (!this._canClose) return;
-        this._canClose = false;
-        EffectUtil.centerClose(this.bg, () => {
-            if (callBack) callBack();
-            this.dispose();
-        });
+        this._cancelCall?.();
+        this.closePop();
     }
 }
 
