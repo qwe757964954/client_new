@@ -1,0 +1,104 @@
+
+ks.png
+size: 256,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+KS_0
+  rotate: false
+  xy: 79, 20
+  size: 26, 30
+  orig: 26, 30
+  offset: 0, 0
+  index: -1
+KS_1
+  rotate: true
+  xy: 79, 5
+  size: 13, 10
+  orig: 13, 10
+  offset: 0, 0
+  index: -1
+KS_10
+  rotate: false
+  xy: 160, 26
+  size: 23, 30
+  orig: 23, 30
+  offset: 0, 0
+  index: -1
+KS_11
+  rotate: false
+  xy: 107, 20
+  size: 24, 30
+  orig: 24, 30
+  offset: 0, 0
+  index: -1
+KS_12
+  rotate: true
+  xy: 160, 2
+  size: 22, 26
+  orig: 22, 26
+  offset: 0, 0
+  index: -1
+KS_13
+  rotate: true
+  xy: 139, 58
+  size: 63, 61
+  orig: 63, 61
+  offset: 0, 0
+  index: -1
+KS_2
+  rotate: false
+  xy: 47, 12
+  size: 30, 38
+  orig: 30, 38
+  offset: 0, 0
+  index: -1
+KS_3
+  rotate: true
+  xy: 91, 8
+  size: 10, 9
+  orig: 10, 9
+  offset: 0, 0
+  index: -1
+KS_4
+  rotate: true
+  xy: 133, 3
+  size: 17, 19
+  orig: 17, 19
+  offset: 0, 0
+  index: -1
+KS_5
+  rotate: true
+  xy: 2, 4
+  size: 46, 43
+  orig: 46, 43
+  offset: 0, 0
+  index: -1
+KS_6
+  rotate: true
+  xy: 139, 186
+  size: 68, 103
+  orig: 68, 103
+  offset: 0, 0
+  index: -1
+KS_7
+  rotate: true
+  xy: 139, 123
+  size: 61, 93
+  orig: 61, 93
+  offset: 0, 0
+  index: -1
+KS_8
+  rotate: false
+  xy: 2, 52
+  size: 135, 202
+  orig: 135, 202
+  offset: 0, 0
+  index: -1
+KS_9
+  rotate: false
+  xy: 133, 22
+  size: 25, 28
+  orig: 25, 28
+  offset: 0, 0
+  index: -1

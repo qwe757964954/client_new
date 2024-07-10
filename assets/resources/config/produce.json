@@ -1,93 +1,6 @@
 {
     "produce": [
         {
-            "id": 0,
-            "level": 1,
-            "unlock": 1,
-            "res_name": "无",
-            "res_png": "无",
-            "res_time": 60,
-            "produce": [
-                10002,
-                4
-            ],
-            "expend": [],
-            "upgrade_need": [],
-            "upgrade_time": 0
-        },
-        {
-            "id": 0,
-            "level": 2,
-            "unlock": 2,
-            "res_name": "无",
-            "res_png": "无",
-            "res_time": 300,
-            "produce": [
-                10002,
-                4
-            ],
-            "expend": [],
-            "upgrade_need": [
-                10001,
-                500
-            ],
-            "upgrade_time": 0
-        },
-        {
-            "id": 0,
-            "level": 3,
-            "unlock": 1,
-            "res_name": "无",
-            "res_png": "无",
-            "res_time": 60,
-            "produce": [
-                10002,
-                4
-            ],
-            "expend": [],
-            "upgrade_need": [
-                10001,
-                500
-            ],
-            "upgrade_time": 0
-        },
-        {
-            "id": 0,
-            "level": 4,
-            "unlock": 2,
-            "res_name": "无",
-            "res_png": "无",
-            "res_time": 300,
-            "produce": [
-                10002,
-                4
-            ],
-            "expend": [],
-            "upgrade_need": [
-                10001,
-                500
-            ],
-            "upgrade_time": 0
-        },
-        {
-            "id": 0,
-            "level": 5,
-            "unlock": 3,
-            "res_name": "无",
-            "res_png": "无",
-            "res_time": 600,
-            "produce": [
-                10002,
-                4
-            ],
-            "expend": [],
-            "upgrade_need": [
-                10001,
-                500
-            ],
-            "upgrade_time": 0
-        },
-        {
             "id": 1,
             "level": 1,
             "unlock": 1,
@@ -95,12 +8,16 @@
             "res_png": "img_wood",
             "res_time": 60,
             "produce": [
-                10002,
-                4
+                20001,
+                5
             ],
-            "expend": [],
+            "expend": [
+                10001,
+                2
+            ],
             "upgrade_need": [],
-            "upgrade_time": 0
+            "upgrade_time": 0,
+            "upgrade_tips": ""
         },
         {
             "id": 1,
@@ -110,15 +27,21 @@
             "res_png": "img_wood2",
             "res_time": 300,
             "produce": [
-                10002,
-                4
+                20001,
+                10
             ],
-            "expend": [],
-            "upgrade_need": [
+            "expend": [
                 10001,
-                500
+                2
             ],
-            "upgrade_time": 0
+            "upgrade_need": [
+                20004,
+                50,
+                10003,
+                50
+            ],
+            "upgrade_time": 0,
+            "upgrade_tips": "升级可解锁xx"
         },
         {
             "id": 1,
@@ -128,15 +51,21 @@
             "res_png": "img_wood3",
             "res_time": 600,
             "produce": [
-                10002,
-                4
+                20001,
+                15
             ],
-            "expend": [],
-            "upgrade_need": [
+            "expend": [
                 10001,
-                500
+                2
             ],
-            "upgrade_time": 0
+            "upgrade_need": [
+                20005,
+                80,
+                10003,
+                80
+            ],
+            "upgrade_time": 0,
+            "upgrade_tips": "升级可解锁xx"
         },
         {
             "id": 2,
@@ -146,15 +75,16 @@
             "res_png": "img_gloves",
             "res_time": 60,
             "produce": [
-                10002,
-                4
+                20002,
+                5
             ],
             "expend": [
                 20001,
                 2
             ],
             "upgrade_need": [],
-            "upgrade_time": 0
+            "upgrade_time": 0,
+            "upgrade_tips": ""
         },
         {
             "id": 2,
@@ -164,8 +94,8 @@
             "res_png": "img_hammer",
             "res_time": 180,
             "produce": [
-                10002,
-                4
+                20004,
+                5
             ],
             "expend": [
                 20001,
@@ -174,10 +104,13 @@
                 3
             ],
             "upgrade_need": [
-                10001,
-                500
+                20002,
+                50,
+                10003,
+                50
             ],
-            "upgrade_time": 0
+            "upgrade_time": 0,
+            "upgrade_tips": "升级可解锁xx"
         },
         {
             "id": 2,
@@ -187,8 +120,8 @@
             "res_png": "img_hoe",
             "res_time": 300,
             "produce": [
-                10002,
-                4
+                20005,
+                5
             ],
             "expend": [
                 20001,
@@ -197,10 +130,13 @@
                 5
             ],
             "upgrade_need": [
-                10001,
-                500
+                20002,
+                80,
+                10003,
+                80
             ],
-            "upgrade_time": 0
+            "upgrade_time": 0,
+            "upgrade_tips": "升级可解锁xx"
         },
         {
             "id": 3,
@@ -210,8 +146,8 @@
             "res_png": "img_crystal",
             "res_time": 180,
             "produce": [
-                10002,
-                4
+                10003,
+                3
             ],
             "expend": [
                 20002,
@@ -220,7 +156,8 @@
                 6
             ],
             "upgrade_need": [],
-            "upgrade_time": 0
+            "upgrade_time": 0,
+            "upgrade_tips": ""
         },
         {
             "id": 3,
@@ -230,8 +167,8 @@
             "res_png": "img_crystal2",
             "res_time": 360,
             "produce": [
-                10002,
-                4
+                10003,
+                5
             ],
             "expend": [
                 20004,
@@ -240,10 +177,13 @@
                 10
             ],
             "upgrade_need": [
-                10001,
-                500
+                20004,
+                50,
+                10003,
+                50
             ],
-            "upgrade_time": 0
+            "upgrade_time": 0,
+            "upgrade_tips": "升级可解锁xx"
         },
         {
             "id": 3,
@@ -253,8 +193,8 @@
             "res_png": "img_crystal3",
             "res_time": 600,
             "produce": [
-                10002,
-                4
+                10003,
+                15
             ],
             "expend": [
                 20005,
@@ -263,10 +203,13 @@
                 20
             ],
             "upgrade_need": [
-                10001,
-                500
+                20005,
+                80,
+                10003,
+                80
             ],
-            "upgrade_time": 0
+            "upgrade_time": 0,
+            "upgrade_tips": "升级可解锁xx"
         },
         {
             "id": 4,
@@ -276,12 +219,16 @@
             "res_png": "img_scroll",
             "res_time": 100,
             "produce": [
-                10002,
-                4
+                20003,
+                3
             ],
-            "expend": [],
+            "expend": [
+                10001,
+                2
+            ],
             "upgrade_need": [],
-            "upgrade_time": 0
+            "upgrade_time": 0,
+            "upgrade_tips": ""
         },
         {
             "id": 4,
@@ -291,15 +238,21 @@
             "res_png": "img_scroll2",
             "res_time": 300,
             "produce": [
-                10002,
-                4
+                20003,
+                5
             ],
-            "expend": [],
-            "upgrade_need": [
+            "expend": [
                 10001,
-                500
+                2
             ],
-            "upgrade_time": 0
+            "upgrade_need": [
+                20004,
+                50,
+                10003,
+                50
+            ],
+            "upgrade_time": 0,
+            "upgrade_tips": "升级可解锁xx"
         },
         {
             "id": 4,
@@ -309,15 +262,21 @@
             "res_png": "img_scroll3",
             "res_time": 600,
             "produce": [
-                10002,
-                4
+                20003,
+                10
             ],
-            "expend": [],
-            "upgrade_need": [
+            "expend": [
                 10001,
-                500
+                2
             ],
-            "upgrade_time": 0
+            "upgrade_need": [
+                20005,
+                80,
+                10003,
+                80
+            ],
+            "upgrade_time": 0,
+            "upgrade_tips": "升级可解锁xx"
         },
         {
             "id": 5,
@@ -327,12 +286,16 @@
             "res_png": "img_juice",
             "res_time": 100,
             "produce": [
-                10002,
-                4
+                20006,
+                3
             ],
-            "expend": [],
+            "expend": [
+                10001,
+                2
+            ],
             "upgrade_need": [],
-            "upgrade_time": 0
+            "upgrade_time": 0,
+            "upgrade_tips": ""
         },
         {
             "id": 5,
@@ -342,15 +305,21 @@
             "res_png": "img_juice2",
             "res_time": 300,
             "produce": [
-                10002,
-                4
+                20006,
+                5
             ],
-            "expend": [],
-            "upgrade_need": [
+            "expend": [
                 10001,
-                500
+                2
             ],
-            "upgrade_time": 0
+            "upgrade_need": [
+                20004,
+                50,
+                10003,
+                50
+            ],
+            "upgrade_time": 0,
+            "upgrade_tips": "升级可解锁xx"
         },
         {
             "id": 5,
@@ -360,15 +329,21 @@
             "res_png": "img_juice3",
             "res_time": 600,
             "produce": [
-                10002,
-                4
+                20006,
+                10
             ],
-            "expend": [],
-            "upgrade_need": [
+            "expend": [
                 10001,
-                500
+                2
             ],
-            "upgrade_time": 0
+            "upgrade_need": [
+                20005,
+                80,
+                10003,
+                80
+            ],
+            "upgrade_time": 0,
+            "upgrade_tips": "升级可解锁xx"
         }
     ]
 }

@@ -174,14 +174,14 @@ export class MapSpModel extends BaseModel {
     /**动画完成回调 */
     onAnimationComplete(trackEntry: sp.spine.TrackEntry) {
         if (trackEntry.animation.name == this._data.names[2]) {
-            TimerMgr.once(() => {
+            this._sp.scheduleOnce(() => {
                 TweenSystem.instance.ActionManager.resumeTarget(this._node);
                 if (MapSpState.rightMove == this._spState) {
                     this._sp.setAnimation(0, this._data.names[0], true);
                 } else {
                     this._sp.setAnimation(0, this._data.names[1], true);
                 }
-            }, 1);
+            });
         }
     }
 }

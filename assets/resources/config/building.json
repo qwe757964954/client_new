@@ -68,8 +68,11 @@
             "height": 8,
             "type": 1,
             "png": "gongneng08_mine",
-            "animation": "",
-            "animpos": [],
+            "animation": "ks",
+            "animpos": [
+                32,
+                194
+            ],
             "description": "矿工们深入紫金矿山，提取出闪烁着神秘光芒的紫晶石，这是你扩张领土的必备材料。",
             "function": "主要用途：生产紫晶石"
         },

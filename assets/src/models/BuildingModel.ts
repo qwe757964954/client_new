@@ -87,7 +87,7 @@ export class BuildingData {
     public queue: BuildingProduceData[] = [];
 }
 
-const defaultSpAnim = ["animation", "idle"];
+const defaultSpAnim = ["animation", "idle", "click"];
 
 //建筑模型
 export class BuildingModel extends BaseModel {
@@ -629,6 +629,8 @@ export class BuildingModel extends BaseModel {
                     LoadManager.loadSpine(animation, this._sp).then(() => {
                         if (this._sp.findAnimation(defaultSpAnim[0])) {
                             this._sp.setAnimation(0, defaultSpAnim[0], true);
+                        } else if (this._sp.findAnimation(defaultSpAnim[2])) {
+                            this._sp.setAnimation(0, defaultSpAnim[2], true);
                         } else {
                             this._sp.setAnimation(0, defaultSpAnim[1], true);
                         }
@@ -637,8 +639,8 @@ export class BuildingModel extends BaseModel {
                             this._sp.node.position = this._editInfo.animpos;
                         } else {
                             let pos = this._building.node.position.clone();
-                            pos.x = -16;
-                            pos.y = - pos.y;
+                            pos.x = 32;
+                            pos.y = 194;
                             this._sp.node.position = pos;
                             console.log("pos", pos.x, pos.y);
                         }

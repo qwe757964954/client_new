@@ -88,6 +88,7 @@ export class ProduceInfo {
     expend: ItemData[];//消耗
     upgrade_need: ItemData[];//升级消耗
     upgrade_time: number;//升级时间
+    upgrade_tips: string;//升级提示
 }
 /**建筑生产信息 */
 export class BuildProduceInfo {
@@ -281,6 +282,7 @@ export class DataManager {
             info.expend = this.converAryToReward(value.expend);
             info.upgrade_need = this.converAryToReward(value.upgrade_need);
             info.upgrade_time = value.upgrade_time;
+            info.upgrade_tips = value.upgrade_tips;
             obj.data[info.level] = info;
             obj.count++;
         }
