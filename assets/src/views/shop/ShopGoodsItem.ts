@@ -82,10 +82,10 @@ export class ShopGoodsItem extends Component {
         // ViewsMgr.closeView(PrefabType.ShopUIView);
     }
 
-    onClickGoods() {
-        ViewsManager.instance.showView(PrefabType.GoodsDetailView, (node: Node) => {
-            node.getComponent(GoodsDetailView).initData(this._data);
-        });
+    async onClickGoods() {
+        let node = await ViewsManager.instance.showPopup(PrefabType.GoodsDetailView);
+        let detail_script = node.getComponent(GoodsDetailView)
+        detail_script.initData(this._data);
     }
 
     protected onDestroy(): void {
