@@ -168,7 +168,9 @@ export class CastleInfoView extends BaseComponent {
     }
     /**升级按钮 */
     onBtnUpgradeClick() {
-        // ViewsMgr.showTip(TextConfig.Function_Tip);
+        if (!User.checkItems(this._data.upgrade_need, TextConfig.Upgrade_Condition_Error)) {
+            return;
+        }
         ServiceMgr.buildingService.reqBuildingUpgrade(this._building.buildingID, this._building.buildingData.level);
     }
     /**goto按钮 */

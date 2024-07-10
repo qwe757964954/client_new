@@ -37,6 +37,7 @@ export const TextConfig = {
     Castle_Condition1: "通过水下管道城{0}-{1}",
     Castle_Condition2: "精灵等级达到{0}级",
     Castle_Condition3: "人物等级达到{0}",
+    Upgrade_Condition_Error: "你的{0}不足，暂时还不能升级哦～",
 
     Role_Text1: "点我做啥",
     Role_Text2: "不能移动的位置",

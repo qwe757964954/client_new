@@ -5,6 +5,7 @@ import { LoadManager } from '../../manager/LoadManager';
 import { ViewsMgr } from '../../manager/ViewsManager';
 import { BuildingModel } from '../../models/BuildingModel';
 import { s2cBuildingUpgrade } from '../../models/NetModel';
+import { User } from '../../models/User';
 import { InterfacePath } from '../../net/InterfacePath';
 import { ServiceMgr } from '../../net/ServiceManager';
 import { BaseComponent } from '../../script/BaseComponent';
@@ -76,6 +77,9 @@ export class BuildingUpgradeView extends BaseComponent {
     }
     /** 升级按钮 */
     public onClickUpgrade() {
+        if (!User.checkItems(this._upgradeNeed, TextConfig.Upgrade_Condition_Error)) {
+            return;
+        }
         ServiceMgr.buildingService.reqBuildingUpgrade(this._building.buildingID, this._building.buildingData.level);
     }
     /**关闭按钮 */
