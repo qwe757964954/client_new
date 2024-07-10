@@ -8,14 +8,8 @@ import { LoadManager } from "./LoadManager";
 const ConfigPath = {
     RoleSlot: "role_slots",
     RoleSlotConfig: "dress_up",
-    // EditInfo: "building",
-    // ProduceInfo: "produce",
     WordSplit: "word_split",
     AdventureLevel: "adventure_level",
-    // PropConfig: "propConfig",
-    // PetInteraction: "petInteraction",
-    // PetMoodConfig: "petMoodConfig",
-    // PetConfig: "petConfig",
     ArchConfig: "AchConfig",
     MedalConfig: "medal",
     HelpConfig: "gameHelp",
@@ -144,6 +138,17 @@ export class MedalConfig {
     Type: string;
     Ce: number;
 }
+/**城堡配置 */
+export class CastleConfig {
+    id: number;
+    level: number;//等级
+    upgrade_need: ItemData[];//升级消耗
+    upgrade_time: number;//升级时间
+    unlock1: number;//解锁条件(岛屿)
+    unlock2: number;//解锁条件(关卡)
+    unlock3: number;//解锁条件(精灵等级)
+    unlock4: number;//解锁条件(人物等级)
+}
 
 //数据管理器
 export class DataManager {
@@ -151,6 +156,7 @@ export class DataManager {
     public roleSlot: RoleSlot[] = [];//角色插槽
     public roleSlotConfig: RoleSlotConfig[] = [];//角色插槽配置
     public editInfo: EditInfo[] = [];//编辑信息
+    public castleConfig: CastleConfig[] = [];//城堡配置
     public buildProduceInfo: BuildProduceInfo[] = [];//建筑生产信息
     public wordSplitConfig: any = null;
     public adventureLevelConfig: AdvLevelConfig[] = null;
@@ -223,6 +229,7 @@ export class DataManager {
     /** 初始化建筑配置 */
     public async initBuildingConfig() {
         let json = await LoadManager.loadJson(ConfigPath.BuildingConfig);
+        /**建筑配置 */
         let building_info = json.building_info;
         for (let k in building_info) {
             let obj = building_info[k];
@@ -244,6 +251,13 @@ export class DataManager {
                 obj.animpos = null;
             }
             this.editInfo[obj.id] = obj;
+        }
+        /**城堡配置 */
+        let castle_info = json.castle_info;
+        for (let k in castle_info) {
+            let obj = castle_info[k];
+            obj.upgrade_need = this.converAryToReward(obj.upgrade_need);
+            this.castleConfig.push(obj);
         }
     }
     public converAryToReward(ary: number[]): ItemData[] {

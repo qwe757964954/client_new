@@ -1,15 +1,21 @@
-import { _decorator, Button, instantiate, Label, Layers, Node, Vec3, Widget } from 'cc';
+import { _decorator, Button, director, instantiate, Label, Layers, Node, Vec3, Widget } from 'cc';
+import { PrefabType, SceneType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import GlobalConfig from '../../GlobalConfig';
+import { CastleConfig, DataMgr } from '../../manager/DataMgr';
+import { LoadManager } from '../../manager/LoadManager';
 import { ViewsMgr } from '../../manager/ViewsManager';
 import { BuildingModel } from '../../models/BuildingModel';
 import { s2cBuildingUpgrade } from '../../models/NetModel';
+import { User } from '../../models/User';
 import { InterfacePath } from '../../net/InterfacePath';
 import { ServiceMgr } from '../../net/ServiceManager';
 import { BaseComponent } from '../../script/BaseComponent';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
 import { ToolUtil } from '../../util/ToolUtil';
+import { RewardItem } from '../common/RewardItem';
+import { PetInfoView } from './PetInfoView';
 const { ccclass, property } = _decorator;
 
 @ccclass('CastleInfoView')
@@ -49,8 +55,10 @@ export class CastleInfoView extends BaseComponent {
     @property(Node)
     public plRight: Node = null;//右侧层
 
-    private _building: BuildingModel = null;
-    private _closeCallBack: Function = null;
+    private _building: BuildingModel = null;//建筑
+    private _closeCallBack: Function = null;//关闭回调
+    private _data: CastleConfig = null;//数据
+    private _isCondition: boolean[] = [];//是否条件
 
     onLoad() {
         this.adaptUI();
@@ -95,7 +103,7 @@ export class CastleInfoView extends BaseComponent {
         this._building.addToParent(this.building);
         this._building.setCameraType(Layers.Enum.UI_2D);
 
-        let maxLevel = 5;
+        let maxLevel = DataMgr.castleConfig.length;
         let buildingData = this._building.buildingData;
         let editInfo = this._building.editInfo;
         this.labelName1.string = editInfo.name;
@@ -112,20 +120,44 @@ export class CastleInfoView extends BaseComponent {
         this.labelLevel1.string = ToolUtil.replace(TextConfig.Level_Text, buildingData.level);
         this.labelLevel2.string = ToolUtil.replace(TextConfig.Level_Text, buildingData.level + 1);
         // this.labelCoin.string = "3000";// TODO升级所需金币
-        // TODO升级所需条件
-        // TODO升级所需资源
-        for (let i = 0; i < 1; i++) {
-            let node = 0 == i ? this.condition : instantiate(this.condition);
-            // node.getComponentInChildren(Label).string = "1";// TODO升级所需条件
-            let button = node.getComponentInChildren(Button);// TODO升级条件去往界面
+        let data = DataMgr.castleConfig[buildingData.level];
+        this._data = data;
+        // 升级所需条件
+        for (let i = 0; i < 3; i++) {
+            let node = this.condition;
+            if (0 != i) {
+                node = instantiate(this.condition);
+                this.plConditions.addChild(node);
+            }
+            let right = node.getChildByName("img_right");
+            let wrong = node.getChildByName("img_wrong");
+            let label = node.getComponentInChildren(Label);
+            let isCondition = false;
+            if (0 == i) {
+                label.string = ToolUtil.replace(TextConfig.Castle_Condition1, data.unlock1, data.unlock2);
+            } else if (1 == i) {
+                label.string = ToolUtil.replace(TextConfig.Castle_Condition2, data.unlock3);
+                isCondition = User.petLevel >= data.unlock3;
+            } else {
+                label.string = ToolUtil.replace(TextConfig.Castle_Condition3, data.unlock4);
+                isCondition = User.roleID >= data.unlock4;
+            }
+            right.active = isCondition;
+            wrong.active = !isCondition;
+            this._isCondition[i] = isCondition;
+            let button = node.getComponentInChildren(Button);
+            CCUtil.offTouch(button);
             CCUtil.onTouch(button, this.onBtnGotoClick.bind(this, i), this);
         }
-        // this.listView.numItems = 4;
+        // 升级所需资源
+        this.listView.numItems = data.upgrade_need.length;
+        director.preloadScene(SceneType.WorldMapScene);
+        LoadManager.preloadPrefab(PrefabType.WorldMapView.path);
     }
 
     /**加载列表 */
     onLoadList(node: Node, idx: number) {
-
+        node.getComponent(RewardItem).init(this._data.upgrade_need[idx]);
     }
     /**关闭按钮 */
     onBtnCloseClick() {
@@ -141,7 +173,19 @@ export class CastleInfoView extends BaseComponent {
     }
     /**goto按钮 */
     onBtnGotoClick(id: number) {
-        ViewsMgr.showTip(TextConfig.Function_Tip);
+        // ViewsMgr.showTip(TextConfig.Function_Tip);
+        if (0 == id) {
+            director.loadScene(SceneType.WorldMapScene, () => {
+                ViewsMgr.showView(PrefabType.WorldMapView);
+            });
+        } else if (1 == id) {
+            ViewsMgr.showView(PrefabType.PetInfoView, (node: Node) => {
+                node.getComponent(PetInfoView).init(User.petID, User.petLevel);
+            });
+            this.onBtnCloseClick();
+        } else if (2 == id) {
+            ViewsMgr.showView(PrefabType.SettingView);
+        }
     }
     // 获取建筑所在位置
     getBuildingPos() {

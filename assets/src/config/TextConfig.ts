@@ -34,6 +34,9 @@ export const TextConfig = {
     Building_Flipx_Failed: "翻转失败",
     Building_Recycle_Error1: "这个建筑正在制作中，请稍后完成后，再回收吧～",
     Building_Recycle_Error2: "这个建筑正在升级中，请稍后完成后，再回收吧～",
+    Castle_Condition1: "通过水下管道城{0}-{1}",
+    Castle_Condition2: "精灵等级达到{0}级",
+    Castle_Condition3: "人物等级达到{0}",
 
     Role_Text1: "点我做啥",
     Role_Text2: "不能移动的位置",
