@@ -3,19 +3,19 @@ import { NetConfig } from '../../../config/NetConfig';
 import { PrefabType } from '../../../config/PrefabType';
 import GlobalConfig from '../../../GlobalConfig';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
+import { SoundMgr } from '../../../manager/SoundMgr';
 import { ViewsManager, ViewsMgr } from '../../../manager/ViewsManager';
 import { GameMode, SentenceData, WordsDetailData } from '../../../models/AdventureModel';
 import { s2cReviewPlanSubmit } from '../../../models/NetModel';
 import { UnitWordModel } from '../../../models/TextbookModel';
 import CCUtil from '../../../util/CCUtil';
+import { Shake } from '../../../util/Shake';
 import { ToolUtil } from '../../../util/ToolUtil';
 import { WordDetailView } from '../../common/WordDetailView';
 import { ReviewEndView } from '../../reviewPlan/ReviewEndView';
 import { TransitionView } from '../common/TransitionView';
 import { BaseModeView, WordSourceType } from './BaseModeView';
 import { WordPracticeView } from './WordPracticeView';
-import { Shake } from '../../../util/Shake';
-import { SoundMgr } from '../../../manager/SoundMgr';
 const { ccclass, property } = _decorator;
 
 /**词意模式页面*/
@@ -264,6 +264,7 @@ export class WordMeaningView extends BaseModeView {
             node.getComponent(TransitionView).setTransitionCallback(() => {
                 console.log("过渡界面回调_________________________");
                 ViewsManager.instance.showView(PrefabType.WordPracticeView, (node: Node) => {
+                    console.log("WordPracticeView_________________________finished");
                     node.getComponent(WordPracticeView).initData(wordData, levelData);
                     ViewsManager.instance.closeView(PrefabType.WordMeaningView);
                 });
