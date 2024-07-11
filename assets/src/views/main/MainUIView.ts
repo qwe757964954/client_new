@@ -35,10 +35,6 @@ export class MainUIView extends BaseView {
     public btnTaskGo: Sprite = null;//任务前往
     @property(Sprite)
     public btnStudy: Sprite = null;//学习
-    @property(Node)
-    public btnReviewFix: Node = null;//复习计划修复
-    @property(Node)
-    public btnTranslateFix: Node = null;//翻译查词修复
     @property(Label)
     public labelNick: Label = null;//昵称
 
