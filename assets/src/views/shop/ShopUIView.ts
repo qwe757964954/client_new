@@ -33,8 +33,7 @@ export class ShopUIView extends BaseView {
     private _shopDecorationView: ShopDecorationView = null;
     private _debrisAreaView: DebrisAreaView = null;
     async initUI() {
-        let scale = ToolUtil.getValue(GlobalConfig.WIN_DESIGN_RATE, 0.1, 1.0);
-        CCUtil.setNodeScale(this.bg, scale);
+        
         this.initAmout();
         this.initNavTitle();
         try {
@@ -44,7 +43,8 @@ export class ShopUIView extends BaseView {
         } catch (err) {
             console.error("Failed to initialize UI:", err);
         }
-
+        let scale = ToolUtil.getValue(GlobalConfig.WIN_DESIGN_RATE, 0.1, 1.0);
+        CCUtil.setNodeScale(this.bg, scale);
     }
 
     protected onInitModuleEvent() {
