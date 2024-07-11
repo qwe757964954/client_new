@@ -31,6 +31,15 @@ export enum BuildingOperationType {
     sell = 2,//卖出
     recycle = 3,//回收
 }
+export enum BuildingState {
+    // preBuilding = -1,//预建造
+    normal = 0,//正常
+    unBuilding = 1,//未建造
+    building = 2,//建造中
+    buildingOver = 3,//建造完成
+    upgrade = 4,//升级中
+    upgradeOver = 5,//升级完成
+}
 /**建筑操作数据 */
 export class BuildingOperationData {
     public type: BuildingOperationType = null;//操作类型
@@ -79,8 +88,8 @@ export class BuildingData {
     public id: number;//建筑唯一索引id
     public idx: number;//索引(前端使用)
     public level: number = 1;//建筑等级
-    // TODO
-    // 建筑当前状态（普通、生产中、生产完成、升级中、升级完成）
+    // 建筑当前状态（普通、建造中、建造完成、升级中、升级完成）
+    public state: BuildingState = null;
     public time: number = 0;//建筑时间
     public queueMaxCount: number = 5;//队列最大数量
     // 正在建造的队列（id，时间）
@@ -111,6 +120,7 @@ export class BuildingModel extends BaseModel {
     private _isRecycle: boolean = false;//是否是回收
     public isSell: boolean = false;//是否卖出
     private _isRemove: boolean = false;//是否移除
+    private _isShowBaseColor: boolean = false;//是否显示底格颜色
 
     // private _dataX:number;//数据x
     // private _dataY:number;//数据y
@@ -273,6 +283,18 @@ export class BuildingModel extends BaseModel {
         if (this._node)
             this._node.position = pos;
     }
+    public set isShowBaseColor(isShow: boolean) {
+        this._isShowBaseColor = isShow;
+        if (this._graphics) {
+            this._graphics.node.active = isShow;
+        }
+        if (this._building) {
+            if (!this._btnView || !this._btnView.active) {
+                this._building.node.active = !isShow;
+            }
+        }
+        this.drawGridRect();
+    }
     // 格子数据还原
     // public recoverGrids() {
     //     // console.log("recoverGrids",this._grids);
@@ -326,6 +348,9 @@ export class BuildingModel extends BaseModel {
         this._node.setSiblingIndex(-1);//放到最高层
         this._graphics.node.active = true;//画图层显示
         this._building.color = new Color(255, 255, 255, 180);//半透明
+        if (this._isShowBaseColor) {
+            this._building.node.active = true;//建筑显示
+        }
         if (this._btnView) {
             this._btnView.active = true;
             this.onCameraScale(scale);
@@ -359,8 +384,12 @@ export class BuildingModel extends BaseModel {
             EventManager.emit(EventType.BuildingBtnView_Close);
             EventManager.emit(EventType.Building_Need_Sort);
         }
-        if (this._graphics) {
-            this._graphics.node.active = false;
+        if (this._isShowBaseColor) {
+            this._building.node.active = false;
+        } else {
+            if (this._graphics) {
+                this._graphics.node.active = false;
+            }
         }
     }
     // 刷新按钮界面
@@ -495,7 +524,9 @@ export class BuildingModel extends BaseModel {
             this._btnView.active = false;
             this.topZIndex = false;
         }
-        this._graphics.node.active = false;
+        if (!this._isShowBaseColor) {
+            this._graphics.node.active = false;
+        }
         if (this._isNew) {
             this.removeFromScene();
         }
@@ -583,10 +614,10 @@ export class BuildingModel extends BaseModel {
         if (!grids || grids.length < 1) return;
         let pos0 = grids[0].pos.clone();
         pos0.y = pos0.y - 0.5 * this._height * grids[0].height;
-        // g.fillColor = new Color(99, 210, 198, 180);
-        g.fillColor = new Color(180, 0, 0, 180);
+        let isFill = false;
         grids.forEach(grid => {
             if (grid.isCanBuilding(this)) return;
+            isFill = true;
             let pos = grid.pos;
             let x = pos.x - pos0.x;
             let y = pos.y - pos0.y;
@@ -595,7 +626,27 @@ export class BuildingModel extends BaseModel {
             g.lineTo(x, y - grid.height);
             g.lineTo(x - 0.5 * grid.width, y - 0.5 * grid.height);
         });
-        g.fill();
+        if (isFill) {
+            g.fillColor = new Color(180, 0, 0, 180);
+            g.fill();
+        }
+        if (!this._isShowBaseColor) return;
+        isFill = false;
+        grids.forEach(grid => {
+            if (!grid.isCanBuilding(this)) return;
+            isFill = true;
+            let pos = grid.pos;
+            let x = pos.x - pos0.x;
+            let y = pos.y - pos0.y;
+            g.moveTo(x, y);
+            g.lineTo(x + 0.5 * grid.width, y - 0.5 * grid.height);
+            g.lineTo(x, y - grid.height);
+            g.lineTo(x - 0.5 * grid.width, y - 0.5 * grid.height);
+        });
+        if (isFill) {
+            g.fillColor = new Color(this.editInfo.baseColor);
+            g.fill();
+        }
     }
     /**显示与否 */
     public show(isShow: boolean, callBack?: Function) {

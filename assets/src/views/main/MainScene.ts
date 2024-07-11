@@ -589,11 +589,18 @@ export class MainScene extends BaseComponent {
         if (!building) {
             return;
         }
+        if (this._editUIView.isBaseColor) {
+            building.isShowBaseColor = true;
+        }
         this._buildingEditCtl.selectBuilding = building;
         this.changeMapStatus(MapStatus.BUILD_EDIT);
     }
     recoverByOperationData(data: BuildingOperationData) {
         this._mapUICtl.recoverByOperationData(data);
+    }
+    /**切换底格颜色 */
+    changeBaseColor(isBaseColor: boolean) {
+        this._mapUICtl.changeBaseColor(isBaseColor);
     }
 }
 

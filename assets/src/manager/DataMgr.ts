@@ -57,6 +57,7 @@ export class EditInfo {
     function: string;//功能描述
     animation: string;//动画
     animpos: Vec3;//位置
+    baseColor: string;//底格颜色
 }
 /**道具数据 */
 export class ItemData {

@@ -1224,4 +1224,10 @@ export class MapUICtl extends MainBaseCtl {
         }
         building.restoreOperationData(data);
     }
+    /**切换底格颜色 */
+    changeBaseColor(isBaseColor: boolean) {
+        this._buidingModelAry.forEach(element => {
+            element.isShowBaseColor = isBaseColor;
+        });
+    }
 }

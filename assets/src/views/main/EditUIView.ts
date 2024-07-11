@@ -43,12 +43,17 @@ export class EditUIView extends BaseComponent {
     public btnNext: Node = null;//下一步按钮
     @property(Label)
     public labelStep: Label = null;//步骤
+    @property(Node)
+    public plBaseColor: Node = null;//底格颜色开关
+    @property(Label)
+    public labelBaseColor: Label = null;//底格颜色
 
     private _mainScene: MainScene = null;//主场景
     private _isFirst: boolean = true;//是否是第一次
     private _editType: EditType = null;//编辑类型
     private _lastSelect: Sprite = null;//上次选中
     private _itemsData: EditInfo[] = null;//编辑数据
+    private _isBaseColor: boolean = false;//底格颜色开关
     //设置主场景
     public set mainScene(mainScene: MainScene) {
         this._mainScene = mainScene;
@@ -65,6 +70,7 @@ export class EditUIView extends BaseComponent {
         CCUtil.onTouch(this.btnLast, this.onBtnLastClick, this);
         CCUtil.onTouch(this.btnNext, this.onBtnNextClick, this);
         CCUtil.onTouch(this.btnSave, this.onBtnSaveClick, this);
+        CCUtil.onTouch(this.plBaseColor, this.onBaseColorClick, this);
 
         this.addEvent(EventType.EditUIView_Refresh, this.onRefresh.bind(this));
         this.addEvent(EventType.Building_Step_Update, this.updateStep.bind(this));
@@ -81,6 +87,7 @@ export class EditUIView extends BaseComponent {
         CCUtil.offTouch(this.btnLast, this.onBtnLastClick, this);
         CCUtil.offTouch(this.btnNext, this.onBtnNextClick, this);
         CCUtil.offTouch(this.btnSave, this.onBtnSaveClick, this);
+        CCUtil.offTouch(this.plBaseColor, this.onBaseColorClick, this);
 
         this.clearEvent();
     }
@@ -114,7 +121,6 @@ export class EditUIView extends BaseComponent {
     }
     // 关闭按钮点击 
     onBtnCloseClick() {
-        // this._mainScene.changeMapStatus(MapStatus.DEFAULT);
         this._mainScene.cancelEvent();
     }
     /**保存按钮点击 */
@@ -135,12 +141,17 @@ export class EditUIView extends BaseComponent {
         this.initData();
         this.initEvent();
         this.updateStep();
+        this.showBtnBaseColor();
     }
     protected onDisable(): void {
+        if (this._isBaseColor) {
+            this._mainScene.changeBaseColor(false);
+        }
         this.removeEvent();
     }
     // 初始化数据
     initData() {
+        this._isBaseColor = false;
         this.selectBtn(this.btnAll);
         this.showEditType(EditType.Null);
     }
@@ -203,6 +214,19 @@ export class EditUIView extends BaseComponent {
             str = "0/0";
         }
         this.labelStep.string = str;
+    }
+    public get isBaseColor() {
+        return this._isBaseColor;
+    }
+    /**底格颜色开关点击 */
+    onBaseColorClick() {
+        this._isBaseColor = !this._isBaseColor;
+        this.showBtnBaseColor();
+        this._mainScene?.changeBaseColor(this._isBaseColor);
+    }
+    /**底格颜色开关显示 */
+    showBtnBaseColor() {
+        this.labelBaseColor.string = this._isBaseColor ? "开" : "关";
     }
 }
 
