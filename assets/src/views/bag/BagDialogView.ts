@@ -56,6 +56,7 @@ export class BagDialogView extends BaseView {
         ]);
     }
     initUI() {
+        this.viewAdaptSize();
         this.initAmout();
         //显示角色动画
         this.showRoleDress();

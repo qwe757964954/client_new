@@ -1,11 +1,8 @@
 import { _decorator, Node } from 'cc';
 import { PrefabType, PrefabTypeEntry } from '../../config/PrefabType';
-import GlobalConfig from '../../GlobalConfig';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { User } from '../../models/User';
 import { BaseView } from '../../script/BaseView';
-import CCUtil from '../../util/CCUtil';
-import { ToolUtil } from '../../util/ToolUtil';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 const { ccclass, property } = _decorator;
 
@@ -18,10 +15,9 @@ export class RankView extends BaseView {
     public content_layout: Node = null;
     
     protected async initUI() {
-        let scale = ToolUtil.getValue(GlobalConfig.WIN_DESIGN_RATE, 0.1, 1.0);
-        CCUtil.setNodeScale(this.node, scale);
         this.initNavTitle();
         this.initAmout();
+        this.viewAdaptScreen();
     }
 
     private async initViewComponent(prefabType: PrefabTypeEntry, onComponentInit: (node: Node) => void, alignOptions?: object) {

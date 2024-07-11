@@ -1,7 +1,6 @@
 import { _decorator, Node } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType, PrefabTypeEntry } from '../../config/PrefabType';
-import GlobalConfig from '../../GlobalConfig';
 import { ItemData } from '../../manager/DataMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { ChallengeBoxRewardData, ChallengeTaskReward, TaskBaseData, UserMainTaskData, UserWeekTaskData } from '../../models/TaskModel';
@@ -9,8 +8,6 @@ import { User } from '../../models/User';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TkServer } from '../../service/TaskService';
-import CCUtil from '../../util/CCUtil';
-import { ToolUtil } from '../../util/ToolUtil';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { CongratulationsView } from './CongratulationsView';
 import { DailyTaskView } from './DailyTaskView';
@@ -42,8 +39,7 @@ export class WeekTaskView extends BaseView {
     private _taskAward: TaskAwardView = null;
 
     async initUI() {
-        let scale = ToolUtil.getValue(GlobalConfig.WIN_DESIGN_RATE, 0.1, 1.0);
-        CCUtil.setNodeScale(this.node, scale);
+        this.viewAdaptSize();
         this.initNavTitle();
         this.initAmout();
         try {

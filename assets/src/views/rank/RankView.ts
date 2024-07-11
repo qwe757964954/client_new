@@ -1,11 +1,8 @@
 import { _decorator, Node } from 'cc';
 import { PrefabType, PrefabTypeEntry } from '../../config/PrefabType';
-import GlobalConfig from '../../GlobalConfig';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { User } from '../../models/User';
 import { BaseView } from '../../script/BaseView';
-import CCUtil from '../../util/CCUtil';
-import { ToolUtil } from '../../util/ToolUtil';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { TaskTabIds, TaskTabInfo } from '../task/TaskInfo';
 import { TaskTabView } from '../task/TaskTabView';
@@ -28,8 +25,7 @@ export class RankView extends BaseView {
     private _combatPowerRankingView:CombatPowerRankingView = null;
     private _tabView: TaskTabView = null;
     protected async initUI() {
-        let scale = ToolUtil.getValue(GlobalConfig.WIN_DESIGN_RATE, 0.1, 1.0);
-        CCUtil.setNodeScale(this.node, scale);
+        this.viewAdaptSize();
         this.initNavTitle();
         this.initAmout();
         try {

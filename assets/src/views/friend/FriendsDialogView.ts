@@ -2,7 +2,6 @@ import { _decorator, Label, Node, Prefab } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType, PrefabTypeEntry } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
-import GlobalConfig from '../../GlobalConfig';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { DataFriendApplyListResponse, DataFriendListResponse, FriendListItemModel, SystemMailItem, SystemMailListResponse, UserFriendData, UserSystemAwardResponse } from '../../models/FriendModel';
 import { NetNotify } from '../../net/NetNotify';
@@ -10,7 +9,6 @@ import { BasePopup } from '../../script/BasePopup';
 import { FdServer } from '../../service/FriendService';
 import CCUtil from '../../util/CCUtil';
 import { ObjectUtil } from '../../util/ObjectUtil';
-import { ToolUtil } from '../../util/ToolUtil';
 import { CongratulationsView } from '../task/CongratulationsView';
 import { FriendAddView } from './FriendAddView';
 import { FriendEmailView } from './FriendEmailView';
@@ -55,16 +53,13 @@ export class FriendsDialogView extends BasePopup {
     private _friend_list:FriendListItemModel[] = [];
     private _selectedFriend:FriendListItemModel = null;
     async initUI() {
-        let scale = ToolUtil.getValue(GlobalConfig.WIN_DESIGN_RATE, 0.1, 1.0);
-        CCUtil.setNodeScale(this.contentNd, scale);
-        GlobalConfig.initResolutionRules();
         await this.initViews();
         this.initData();
         this.setLeftTab();
         this.setFriendListSelect();
         this.setEmailListSelect();
         this.enableClickBlankToClose([this.node.getChildByName("content"),this._rightPlayerInfo.node,this._leftTab.node]).then(()=>{
-            GlobalConfig.initRessolutionHeight();
+            
         });
     }
     protected onInitModuleEvent(): void {
@@ -269,7 +264,6 @@ export class FriendsDialogView extends BasePopup {
     }
     onCloseView() {
         this.closePop();
-        GlobalConfig.initRessolutionHeight();
     }
 
     onHouseClick() {

@@ -2,7 +2,6 @@ import { _decorator, isValid, Layers, Node, UITransform } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
-import GlobalConfig from '../../GlobalConfig';
 import { BookLevelConfig, DataMgr } from '../../manager/DataMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { MapLevelData } from '../../models/AdventureModel';
@@ -65,8 +64,8 @@ export class BreakThroughView extends BaseView {
     private _selectGate: GateListItem = null;
 
     start() {
+        this.viewAdaptSize();
         super.start();
-        GlobalConfig.initRessolutionHeight();
     }
 
     initEvent() {

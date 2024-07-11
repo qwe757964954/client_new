@@ -1,6 +1,5 @@
 import { _decorator, Label, Node } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
-import GlobalConfig from '../../GlobalConfig';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { BookItemData, CheckOrderType, CheckWordItem, CheckWordModel, CheckWordResponse, CheckWordType, CurrentBookStatus } from '../../models/TextbookModel';
 import { NetNotify } from '../../net/NetNotify';
@@ -36,6 +35,7 @@ export class WordCheckView extends BaseView {
     private _wordUnits:{ [unit: string]: CheckWordItem[] } = {};
 
     start() {
+        this.viewAdaptSize();
         super.start();
         this.initTabData();
     }
@@ -64,7 +64,6 @@ export class WordCheckView extends BaseView {
     initNavTitle(){
         this.createNavigation("单词列表",this.top_layout, () => {
             ViewsManager.instance.closeView(PrefabType.WordCheckView);
-                GlobalConfig.initRessolutionHeight();
         });
     }
     /** 初始化模块事件 */

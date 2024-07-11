@@ -2,7 +2,6 @@ import { _decorator, error, Node, Prefab, SpriteFrame, view } from 'cc';
 import { EventType } from '../../config/EventType';
 import { KeyConfig } from '../../config/KeyConfig';
 import { PrefabType } from '../../config/PrefabType';
-import GlobalConfig from '../../GlobalConfig';
 import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { BookAwardListModel, BookPlanDetail, CurrentBookStatus, ModifyPlanData, UnitListItemStatus } from '../../models/TextbookModel';
@@ -45,9 +44,9 @@ export class TextbookChallengeView extends BaseView {
     // EventMgr.dispatch(NetNotify.Classification_UnitListStatus,dataArr);
     start() {
         super.start();
-        GlobalConfig.initResolutionRules();
     }
     protected async initUI(){
+        this.viewAdaptSize();
         await this.initLeftMonster();
         this.initNavTitle();
         this.initAmout();
@@ -148,7 +147,6 @@ export class TextbookChallengeView extends BaseView {
     initNavTitle(){
         this.createNavigation("我的词书",this.top_layout, () => {
             ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);
-            GlobalConfig.initRessolutionHeight();
         });
     }
     /**初始化游戏数值 */

@@ -39,6 +39,7 @@ export class TextbookListView extends BaseView {
         CCUtil.offTouch(this.add_textbook_bg, this.onClickAddTextbook, this);
     }
     protected initUI() {
+        this.viewAdaptSize();
         this.initNavTitle();
         TBServer.reqBookStatus();
     }

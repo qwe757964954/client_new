@@ -2,12 +2,10 @@ import { _decorator, director, Label, Node, Sprite } from 'cc';
 import { MapStatus } from '../../config/MapConfig';
 import { PrefabType, PrefabTypeEntry, SceneType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
-import GlobalConfig from '../../GlobalConfig';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { User } from '../../models/User';
 import { BaseView } from '../../script/BaseView';
 import CCUtil from '../../util/CCUtil';
-import { ToolUtil } from '../../util/ToolUtil';
 import { ReviewPlanView } from '../reviewPlan/ReviewPlanView';
 import { MainRightActivity } from './MainRightActivity';
 import { MainScene } from './MainScene';
@@ -51,14 +49,9 @@ export class MainUIView extends BaseView {
     private _mainRightActivity: MainRightActivity = null;//右侧活动
     /**初始化UI */
     initUI() {
-        if (GlobalConfig.WIN_RATE < GlobalConfig.MAIN_RATE_MAX) {
-            // this.btnReview.node.position = this.btnReviewFix.position;
-            // this.btnTranslate.node.position = this.btnTranslateFix.position;
-        }
         this.labelNick.string = User.nick;
         this.initViews();
-        let scale = ToolUtil.getValue(GlobalConfig.WIN_DESIGN_RATE, 0.1, 1.0);
-        CCUtil.setNodeScale(this.node, scale);
+        this.viewAdaptSize();
     }
     private async initViews() {
         await Promise.all([

@@ -8,11 +8,14 @@
  *
  */
 
-import { Component, Node, Prefab, Widget, instantiate } from "cc";
+import { Component, Node, Prefab, Widget, instantiate, view } from "cc";
 import { PrefabTypeEntry } from "../config/PrefabType";
+import GlobalConfig from "../GlobalConfig";
 import { ResLoader } from "../manager/ResLoader";
 import { ViewsManager } from "../manager/ViewsManager";
+import CCUtil from "../util/CCUtil";
 import { EventMgr } from "../util/EventManager";
+import { ToolUtil } from "../util/ToolUtil";
 import { NavTitleView } from "../views/common/NavTitleView";
 export class BaseView extends Component{
 	protected _className = "BaseView";
@@ -56,7 +59,24 @@ export class BaseView extends Component{
 	start() {
 		this.initUI();
         this.initEvent();
+		
 	}
+
+	viewAdaptScreen() {
+		let scale = ToolUtil.getValue(GlobalConfig.WIN_DESIGN_RATE, 0.1, 1.0);
+        CCUtil.setNodeScale(this.node, scale);
+	}
+	
+	viewAdaptSize() {
+		let realSize = view.getVisibleSize();
+        var minscale = 1;
+        var maxscale = 1;
+		minscale =  Number(Math.min(realSize.height / 1000, realSize.width / 1778).toFixed(3));
+        maxscale =  Number(Math.max(realSize.height / 1000, realSize.width / 1778).toFixed(3));
+		var scaleNum = this.node.getScale();
+        this.node.setScale(scaleNum.x * minscale, scaleNum.y * minscale, scaleNum.z * minscale);
+	}
+
 	protected initUI(){
 
     }

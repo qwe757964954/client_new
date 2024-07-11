@@ -1,12 +1,9 @@
 import { _decorator, Node } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType, PrefabTypeEntry } from '../../config/PrefabType';
-import GlobalConfig from '../../GlobalConfig';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { User } from '../../models/User';
 import { BaseView } from '../../script/BaseView';
-import CCUtil from '../../util/CCUtil';
-import { ToolUtil } from '../../util/ToolUtil';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { TabItemDataInfo, TaskTabIds, TaskTabInfo } from '../task/TaskInfo';
 import { TaskTabView } from '../task/TaskTabView';
@@ -33,7 +30,7 @@ export class ShopUIView extends BaseView {
     private _shopDecorationView: ShopDecorationView = null;
     private _debrisAreaView: DebrisAreaView = null;
     async initUI() {
-        
+        this.viewAdaptSize();
         this.initAmout();
         this.initNavTitle();
         try {
@@ -43,8 +40,6 @@ export class ShopUIView extends BaseView {
         } catch (err) {
             console.error("Failed to initialize UI:", err);
         }
-        let scale = ToolUtil.getValue(GlobalConfig.WIN_DESIGN_RATE, 0.1, 1.0);
-        CCUtil.setNodeScale(this.bg, scale);
     }
 
     protected onInitModuleEvent() {
@@ -115,6 +110,7 @@ export class ShopUIView extends BaseView {
     /**初始化导航栏 */
     initNavTitle() {
         this.createNavigation("商城",this.top_layout, () => {
+            // GlobalConfig.initRessolutionHeight();
             ViewsManager.instance.closeView(PrefabType.ShopUIView);
         });
     }
