@@ -52,7 +52,7 @@ export default class ImgUtil {
             imgNode.getComponent(UITransform).height = height;
         })
         */
-       
+
         let sprite = imgNode.getComponent(Sprite);
         if (!isValid(sprite)) {
             sprite = imgNode.addComponent(Sprite);
@@ -81,13 +81,21 @@ export default class ImgUtil {
         uiTrans.enabled = true;
         return node;
     }
+    /**创建一个2D sprite节点 */
+    public static create_Sprite(): Sprite {
+        let node = new Node();
+        let uiTrans: UITransform = node.addComponent(UITransform);
+        uiTrans.anchorPoint = new Vec2(0.5, 0.5);
+        uiTrans.enabled = true;
+        return node.addComponent(Sprite);
+    }
 
     /**
      * 创建一个2D半透明节点
      * @param name 节点名称
      * @returns 
      */
-    public static async create_PureNode(parent:Node) {
+    public static async create_PureNode(parent: Node) {
         return new Promise((resolve, reject) => {
             ResLoader.instance.load("common/img_banTouMing/spriteFrame", SpriteFrame, (err: Error | null, spriteFrame: SpriteFrame) => {
                 if (err) {
@@ -102,7 +110,7 @@ export default class ImgUtil {
                 uiTrans.enabled = true;
                 node.addComponent(Sprite).spriteFrame = spriteFrame;
                 node.parent = parent;
-                CCUtil.addWidget(node,{ left: 0, right: 0, top: 0, bottom: 0 });
+                CCUtil.addWidget(node, { left: 0, right: 0, top: 0, bottom: 0 });
                 resolve(true);
             });
         });

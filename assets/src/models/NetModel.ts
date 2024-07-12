@@ -104,7 +104,7 @@ export class s2cBuildingListInfo {
     direction: number;//建筑方向 0:未翻转, 1: 翻转
     level: number;//建筑等级
     hide: number;//是否回收 0:未回收, 1: 已回收
-    remaining_infos: s2cBuildingProduceInfo[];//生产信息
+    product_infos: s2cBuildingProduceInfo[];//生产信息
 }
 /**建筑列表返回*/
 export class s2cBuildingList extends BaseRepPacket {

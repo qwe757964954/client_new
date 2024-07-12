@@ -9,6 +9,7 @@ import { ViewsManager, ViewsMgr } from "../manager/ViewsManager";
 import { ServiceMgr } from "../net/ServiceManager";
 import CCUtil from "../util/CCUtil";
 import EventManager, { EventMgr } from "../util/EventManager";
+import ImgUtil from "../util/ImgUtil";
 import { NodeUtil } from "../util/NodeUtil";
 import { TimerMgr } from "../util/TimerMgr";
 import { ToolUtil } from "../util/ToolUtil";
@@ -100,9 +101,10 @@ const defaultSpAnim = ["animation", "idle", "click"];
 
 //建筑模型
 export class BuildingModel extends BaseModel {
-    public _building: Sprite = null;//建筑
-    public _graphics: Graphics = null;//格子图层
-    public _sp: sp.Skeleton = null;//动画
+    private _building: Sprite = null;//建筑
+    private _graphics: Graphics = null;//格子图层
+    private _sp: sp.Skeleton = null;//动画
+    private _fence: Node = null;//围栏
 
     private _editInfo: EditInfo;//编辑信息
     private _buildingID: number = undefined;//建筑唯一索引id
@@ -121,6 +123,7 @@ export class BuildingModel extends BaseModel {
     public isSell: boolean = false;//是否卖出
     private _isRemove: boolean = false;//是否移除
     private _isShowBaseColor: boolean = false;//是否显示底格颜色
+    private _isLoadFence: boolean = false;//是否加载围栏
 
     // private _dataX:number;//数据x
     // private _dataY:number;//数据y
@@ -671,6 +674,12 @@ export class BuildingModel extends BaseModel {
                 this._sp = this._node.getComponentInChildren(sp.Skeleton);
                 this._graphics = this._node.getComponentInChildren(Graphics);
                 this._graphics.node.active = false;
+                this._fence = this._node.getChildByName("Fence");
+                // if (this._editInfo.id == 0) {
+                //     this.showFence(true);
+                //     this._building.node.active = false;
+                // }
+
                 LoadManager.loadSprite(DataMgr.getEditPng(this._editInfo), this._building, true).then(() => {
                     this._isLoadOver = true;
                     if (callBack) callBack();
@@ -779,6 +788,7 @@ export class BuildingModel extends BaseModel {
     }
     /**设置生产队列 */
     public setProducts(ary: { product_type: number, remaining_seconds: number }[]) {
+        if (!ary) return;
         this.clearProduct();
         ary.forEach(element => {
             this.addProduct(element.product_type, element.remaining_seconds);
@@ -894,7 +904,7 @@ export class BuildingModel extends BaseModel {
         data.id = msg.id;
         data.level = msg.level;
         let now = ToolUtil.now();
-        msg.remaining_infos.forEach(element => {
+        msg.product_infos.forEach(element => {
             let tmpData = new BuildingProduceData();
             tmpData.type = element.product_type;
             tmpData.sec = element.remaining_seconds;
@@ -946,5 +956,49 @@ export class BuildingModel extends BaseModel {
         // if (EditType.Buiding == this._editInfo.type || EditType.LandmarkBuiding == this._editInfo.type) {
         //     this.checkProduce();
         // }
+    }
+    /**显示围栏 */
+    public showFence(isShow: boolean) {
+        if (!this._fence) return;
+        this._fence.active = isShow;
+        if (this._isLoadFence) return;
+        let grids = this._grids;
+        if (!grids || grids.length < 1) return;
+        let pos0 = grids[0].pos.clone();
+        pos0.y = pos0.y - 0.5 * this._height * grids[0].height;
+        let maxi = this._width - 1;
+        let maxj = this._height - 1;
+        let node1 = this._fence.getChildByName("Node1");
+        let node2 = this._fence.getChildByName("Node2");
+        for (let i = 0; i <= maxi; i++) {
+            for (let j = 0; j <= maxj; j++) {
+                if (i != 0 && i != maxi && j != 0 && j != maxj) continue;
+                let grid = grids[i * this._height + j];
+                let pos = grid.pos;
+                let x = pos.x - pos0.x;
+                let y = pos.y - pos0.y;
+
+                let sprite = ImgUtil.create_Sprite();
+                let node = sprite.node;
+                // node.getComponent(UITransform).anchorPoint = new Vec2(0.5, 0.0);
+                node.position = new Vec3(x, y, 0);
+                node2.addChild(node);
+                LoadManager.loadSprite("map/img_build_pillar/spriteFrame", sprite);
+
+                if (i == maxi && j == maxj) continue;
+
+                let line = ImgUtil.create_Sprite();
+                node = line.node;
+                if (((0 == j || maxj == j) && (0 != i && maxi != i)) || (0 == i && j == maxj)) {
+                    node.scale = new Vec3(-1, 1, 1);
+                    node.position = new Vec3(x - grid.width * 0.25, y - grid.height * 0.25, 0);
+                } else {
+                    node.position = new Vec3(x + grid.width * 0.25, y - grid.height * 0.25, 0);
+                }
+                // node.position = new Vec3(x, y, 0);
+                node1.addChild(node);
+                LoadManager.loadSprite("map/img_build_line/spriteFrame", line);
+            }
+        }
     }
 }

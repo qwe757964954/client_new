@@ -294,7 +294,7 @@ export class MapUICtl extends MainBaseCtl {
             let building = this.newBuilding(editInfo, element.x, element.y, 1 == element.direction, false);
             building.buildingID = element.id;
             building.buildingData.level = element.level;
-            building.setProducts(element.remaining_infos);
+            building.setProducts(element.product_infos);
             building.showCountDownView();
 
             // if (BuildingIDType.castle == element.bid) {
