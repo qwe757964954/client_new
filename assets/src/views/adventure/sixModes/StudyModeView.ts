@@ -1,4 +1,4 @@
-import { _decorator, instantiate, Label, math, Node, NodePool, Prefab, Sprite, tween, UIOpacity, UITransform, Vec3 } from 'cc';
+import { _decorator, instantiate, Label, Node, NodePool, Prefab, Sprite, tween, UIOpacity, UITransform, Vec3 } from 'cc';
 import { NetConfig } from '../../../config/NetConfig';
 import { PrefabType } from '../../../config/PrefabType';
 import { DataMgr } from '../../../manager/DataMgr';
@@ -245,6 +245,7 @@ export class StudyModeView extends BaseModeView {
             node.getComponent(TransitionView).setTransitionCallback(() => {
                 console.log("过渡界面回调_________________________");
                 ViewsManager.instance.showView(PrefabType.WordMeaningView, (node: Node) => {
+                    console.log("WordMeaningView_________________________Finished");
                     node.getComponent(WordMeaningView).initData(wordData, levelData);
                     ViewsManager.instance.closeView(PrefabType.StudyModeView);
                 });

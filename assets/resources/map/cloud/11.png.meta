@@ -20,8 +20,8 @@
         "imageUuidOrDatabaseUri": "a98fefad-2a1f-44a3-a8d3-6b172aea78d1",
         "isUuid": true,
         "visible": false,
-        "minfilter": "linear",
-        "magfilter": "linear",
+        "minfilter": "nearest",
+        "magfilter": "nearest",
         "mipfilter": "none",
         "anisotropy": 0
       },
@@ -47,9 +47,9 @@
         "trimX": 0,
         "trimY": 0,
         "width": 436,
-        "height": 305,
+        "height": 294,
         "rawWidth": 436,
-        "rawHeight": 305,
+        "rawHeight": 294,
         "borderTop": 0,
         "borderBottom": 0,
         "borderLeft": 0,
@@ -62,16 +62,16 @@
         "vertices": {
           "rawPosition": [
             -218,
-            -152.5,
+            -147,
             0,
             218,
-            -152.5,
+            -147,
             0,
             -218,
-            152.5,
+            147,
             0,
             218,
-            152.5,
+            147,
             0
           ],
           "indexes": [
@@ -84,9 +84,9 @@
           ],
           "uv": [
             0,
-            305,
+            294,
             436,
-            305,
+            294,
             0,
             0,
             436,
@@ -104,12 +104,12 @@
           ],
           "minPos": [
             -218,
-            -152.5,
+            -147,
             0
           ],
           "maxPos": [
             218,
-            152.5,
+            147,
             0
           ]
         },

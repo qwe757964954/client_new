@@ -1,4 +1,4 @@
-import { EventTouch, Node, NodeEventType, UITransform, Vec3, _decorator, easing, tween } from 'cc';
+import { EventTouch, Node, NodeEventType, UITransform, Vec3, _decorator, easing, tween, view } from 'cc';
 import { BaseView } from './BaseView';
 const { ccclass, property } = _decorator;
 
@@ -20,8 +20,10 @@ export class BasePopup extends BaseView  {
         return new Promise<void>((resolve) => {
             this.initUI();
             this.node.scale = new Vec3(0.2, 0.2, 1.0);
+            let realSize = view.getVisibleSize();
+            let minscale =  Number(Math.min(realSize.height / 1000, realSize.width / 1778).toFixed(3));
             tween(this.node)
-                .to(0.2, { scale: new Vec3(1.0, 1.0, 1.0) }, { easing: easing.backOut })
+                .to(0.2, { scale: new Vec3(minscale, minscale, minscale) }, { easing: easing.backOut })
                 .call(() => {
                     resolve();
                 })

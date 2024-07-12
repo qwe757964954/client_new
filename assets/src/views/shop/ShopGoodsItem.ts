@@ -1,12 +1,11 @@
 import { _decorator, Component, Label, Node, Sprite, SpriteFrame } from 'cc';
-import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { EditInfo } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
-import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
+import { ViewsManager } from '../../manager/ViewsManager';
+import { ServiceMgr } from '../../net/ServiceManager';
 import CCUtil from '../../util/CCUtil';
-import { EventMgr } from '../../util/EventManager';
 import { ToolUtil } from '../../util/ToolUtil';
 import { GoodsDetailView } from './GoodsDetailView';
 const { ccclass, property } = _decorator;
@@ -73,15 +72,20 @@ export class ShopGoodsItem extends Component {
     }
 
     onBuyClick() {
+        let use_amout = "金币";
+        let content_str = `确认消耗${this._data.buy}个${use_amout}购买${this._data.name}吗？`;
+        ViewsManager.showConfirm(content_str,() => {
+            ServiceMgr.shopService.buyGood(this._data.id);
+        })
         // ServiceMgr.shopService.buyGood(this._data.id);
-        EventMgr.emit(EventType.New_Building, this._data);
-        ViewsMgr.closeView(PrefabType.ShopUIView);
+        // EventMgr.emit(EventType.New_Building, this._data);
+        // ViewsMgr.closeView(PrefabType.ShopUIView);
     }
 
-    onClickGoods() {
-        ViewsManager.instance.showView(PrefabType.GoodsDetailView, (node: Node) => {
-            node.getComponent(GoodsDetailView).initData(this._data);
-        });
+    async onClickGoods() {
+        let node = await ViewsManager.instance.showPopup(PrefabType.GoodsDetailView);
+        let detail_script = node.getComponent(GoodsDetailView)
+        detail_script.initData(this._data);
     }
 
     protected onDestroy(): void {

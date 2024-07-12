@@ -112,15 +112,29 @@ export class s2cBuildingList extends BaseRepPacket {
     land_dict: { [key: string]: number };//地块字典
     cloud_dict: { [key: string]: number };//乌云字典
 }
+/**建筑批量操作 */
+export class c2sBuildingEditBatch {
+    command_id: string = InterfacePath.c2sBuildingEditBatch;
+    insert_list: c2sBuildingCreate[] = [];
+    update_list: c2sBuildingEdit[] = [];
+    delete_list: number[] = [];
+}
+/**建筑批量操作返回 */
+export class s2cBuildingEditBatch extends BaseRepPacket {
+    insert_result: s2cBuildingCreate[] = [];
+    update_result: s2cBuildingEdit[] = [];
+    delete_result: s2cBuildingSell[] = [];
+}
+
 /**建筑修改（地块修改） */
 export class c2sBuildingEdit {
-    command_id: string = InterfacePath.c2sBuildingEdit;
+    // command_id: string = InterfacePath.c2sBuildingEdit;
     id: number;//建筑唯一索引id
-    bid: number = undefined;//建筑id
+    // bid: number = undefined;//建筑id
     x: number;//建筑x坐标
     y: number;//建筑y坐标
     direction: number;//建筑方向
-    hide: number;//是否回收 0:未回收, 1: 已回收
+    hide: number = 0;//是否回收 0:未回收, 1: 已回收
 }
 /**建筑修改返回 */
 export class s2cBuildingEdit extends BaseRepPacket {
@@ -128,12 +142,13 @@ export class s2cBuildingEdit extends BaseRepPacket {
 }
 /**新建建筑 */
 export class c2sBuildingCreate {
-    command_id: string = InterfacePath.c2sBuildingCreate;
+    // command_id: string = InterfacePath.c2sBuildingCreate;
     bid: number;//建筑id
     x: number;//建筑x坐标
     y: number;//建筑y坐标
     idx: number;//建筑索引(前端使用)
     direction: number;//建筑方向
+    hide: number = 0;//是否回收 0:未回收, 1: 已回收
 }
 /**新建建筑返回 */
 export class s2cBuildingCreate extends BaseRepPacket {
@@ -161,7 +176,7 @@ export class s2cBuildingUpgrade extends BaseRepPacket {
 }
 /**建筑卖出 */
 export class c2sBuildingSell {
-    command_id: string = InterfacePath.c2sBuildingSell;
+    // command_id: string = InterfacePath.c2sBuildingSell;
     id: number;//建筑唯一索引id
 }
 /**建筑卖出返回 */

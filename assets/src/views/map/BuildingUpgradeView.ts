@@ -5,6 +5,7 @@ import { LoadManager } from '../../manager/LoadManager';
 import { ViewsMgr } from '../../manager/ViewsManager';
 import { BuildingModel } from '../../models/BuildingModel';
 import { s2cBuildingUpgrade } from '../../models/NetModel';
+import { User } from '../../models/User';
 import { InterfacePath } from '../../net/InterfacePath';
 import { ServiceMgr } from '../../net/ServiceManager';
 import { BaseComponent } from '../../script/BaseComponent';
@@ -24,6 +25,8 @@ export class BuildingUpgradeView extends BaseComponent {
     public labelLevel1: Label = null;//等级1
     @property(Label)
     public labelLevel2: Label = null;//等级2
+    @property(Label)
+    public labelTip: Label = null;//提示
     @property(Label)
     public labelCoin: Label = null;//金币
     @property(Node)
@@ -67,12 +70,16 @@ export class BuildingUpgradeView extends BaseComponent {
         this.labelLevel2.string = ToolUtil.replace(TextConfig.Level_Text, level + 1);
         let data = produceInfo.data[level + 1];
         if (!data) return;
+        this.labelTip.string = data.upgrade_tips;
         this._upgradeNeed = data.upgrade_need;
         this.listView.numItems = this._upgradeNeed.length;
         LoadManager.loadSprite(data.res_png, this.img);
     }
     /** 升级按钮 */
     public onClickUpgrade() {
+        if (!User.checkItems(this._upgradeNeed, TextConfig.Upgrade_Condition_Error)) {
+            return;
+        }
         ServiceMgr.buildingService.reqBuildingUpgrade(this._building.buildingID, this._building.buildingData.level);
     }
     /**关闭按钮 */

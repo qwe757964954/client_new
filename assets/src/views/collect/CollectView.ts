@@ -1,11 +1,8 @@
 import { _decorator, Node } from 'cc';
 import { PrefabType, PrefabTypeEntry } from '../../config/PrefabType';
-import GlobalConfig from '../../GlobalConfig';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { User } from '../../models/User';
 import { BaseView } from '../../script/BaseView';
-import CCUtil from '../../util/CCUtil';
-import { ToolUtil } from '../../util/ToolUtil';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { TaskTabIds, TaskTabInfo } from '../task/TaskInfo';
 import { TaskTabView } from '../task/TaskTabView';
@@ -32,40 +29,42 @@ export class CollectView extends BaseView {
     private _buildAtlasView:BuildingAtlasView = null;
     private _clothingIllustratedView:ClothingIllustratedView = null;
     async initUI() {
-        let scale = ToolUtil.getValue(GlobalConfig.WIN_DESIGN_RATE, 0.1, 1.0);
-        CCUtil.setNodeScale(this.node, scale);
+        this.viewAdaptSize();
         this.initNavTitle();
         this.initAmout();
         try {
             await this.initViews();
-            console.log("Task configuration loaded:", );
+            this.initTabs();
+            console.log("CollectView configuration loaded:", );
         } catch (err) {
             console.error("Failed to initialize UI:", err);
-        }
+        }   
     }
 
     private async initViews() {
         await Promise.all([
-            this.initViewComponent(PrefabType.TaskTabView, (node) => {
-                this._tabView = node.getComponent(TaskTabView);
-                this._tabView.setTabSelectClick(this.onTabSelect.bind(this));
-                this._tabView.updateData(CollectTabInfos);
-            }, {
-                isAlignTop: true,
-                isAlignLeft: true,
-                top: 129,
-                left: 50
-            }),
             this.initViewComponent(PrefabType.AchievementMedalsView, (node) => this._achievementMedalsView = node.getComponent(AchievementMedalsView)),
             this.initViewComponent(PrefabType.MonsterCardView, (node) => this._monsterCardView = node.getComponent(MonsterCardView)),
             this.initViewComponent(PrefabType.BuildingAtlasView, (node) => this._buildAtlasView = node.getComponent(BuildingAtlasView)),
             this.initViewComponent(PrefabType.ClothingIllustratedView, (node) => this._clothingIllustratedView = node.getComponent(ClothingIllustratedView)),
         ]);
     }
-
+    initTabs(){
+        this.initViewComponent(PrefabType.TaskTabView, (node) => {
+            this._tabView = node.getComponent(TaskTabView);
+            this._tabView.setTabSelectClick(this.onTabSelect.bind(this));
+            this._tabView.updateData(CollectTabInfos);
+        }, {
+            isAlignTop: true,
+            isAlignLeft: true,
+            top: 129,
+            left: 50
+        })
+    }
     private onTabSelect(info: TaskTabInfo) {
         this.hideAllContent();
         this.selectMenuType(info);
+        this._navTitleView.setTitleName(info.title);
     }
     private hideAllContent(){
         this._achievementMedalsView.node.active = false;

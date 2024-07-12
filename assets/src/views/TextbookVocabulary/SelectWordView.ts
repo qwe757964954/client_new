@@ -1,7 +1,6 @@
 import { _decorator, Node } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
-import GlobalConfig from '../../GlobalConfig';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { BookListItemData, SchoolBookGradeItemData, SchoolBookListGradeItemData, SchoolBookListItemData, UnitListItemStatus } from '../../models/TextbookModel';
 import { NetNotify } from '../../net/NetNotify';
@@ -39,10 +38,9 @@ export class SelectWordView extends BaseView {
     private _curPhaseId:number = 0;
     start() {
         super.start();
-        GlobalConfig.initResolutionRules();
-        
     }
     protected async initUI(){
+        this.viewAdaptSize();
         this.initNavTitle();
         await this.initTabContent();
         this.loadRightNav();
@@ -124,7 +122,6 @@ export class SelectWordView extends BaseView {
     initNavTitle(){
         this.createNavigation("添加词书",this.top_layout, () => {
             ViewsManager.instance.closeView(PrefabType.SelectWordView);
-                GlobalConfig.initRessolutionHeight();
         });
     }
     /**初始化tab选项 */

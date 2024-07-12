@@ -1,14 +1,13 @@
 import { _decorator, director, Label, Node, Sprite } from 'cc';
 import { MapStatus } from '../../config/MapConfig';
-import { PrefabType, SceneType } from '../../config/PrefabType';
+import { PrefabType, PrefabTypeEntry, SceneType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
-import GlobalConfig from '../../GlobalConfig';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { User } from '../../models/User';
-import { NetMgr } from '../../net/NetManager';
 import { BaseView } from '../../script/BaseView';
 import CCUtil from '../../util/CCUtil';
 import { ReviewPlanView } from '../reviewPlan/ReviewPlanView';
+import { MainRightActivity } from './MainRightActivity';
 import { MainScene } from './MainScene';
 const { ccclass, property } = _decorator;
 
@@ -36,37 +35,42 @@ export class MainUIView extends BaseView {
     public btnTaskGo: Sprite = null;//任务前往
     @property(Sprite)
     public btnStudy: Sprite = null;//学习
-    @property(Node)
-    public btnReviewFix: Node = null;//复习计划修复
-    @property(Node)
-    public btnTranslateFix: Node = null;//翻译查词修复
     @property(Label)
     public labelNick: Label = null;//昵称
 
     @property(Node)
-    public btn_bag:Node = null;//
-
-    @property(Node)
-    public btn_collect:Node = null;//
+    public operational_activities: Node = null;//
 
     private _mainScene: MainScene = null;//主场景
+    private _mainRightActivity: MainRightActivity = null;//右侧活动
     /**初始化UI */
     initUI() {
-        if (GlobalConfig.WIN_RATE < GlobalConfig.MAIN_RATE_MAX) {
-            this.btnReview.node.position = this.btnReviewFix.position;
-            this.btnTranslate.node.position = this.btnTranslateFix.position;
-        }
         this.labelNick.string = User.nick;
-        this.initNotifyView();
+        this.initViews();
+        this.viewAdaptSize();
     }
-
-    async initNotifyView(){
-        const node = await this.loadAndInitPrefab(PrefabType.MainNotifyView, this.node.getChildByName("RightUp"), {
-            isAlignBottom: true,
-            isAlignRight: true,
-            bottom: -22.447,
-            right: 44.158
-        });
+    private async initViews() {
+        await Promise.all([
+            this.initViewComponent(PrefabType.MainRightActivity, (node) => {
+                this._mainRightActivity = node.getComponent(MainRightActivity)
+                this._mainRightActivity.showPos = this._mainRightActivity.node.position;
+            }, {
+                isAlignVerticalCenter: true,
+                isAlignRight: true,
+                verticalCenter: 0,
+                right: -480
+            }),
+            this.initViewComponent(PrefabType.MainNotifyView, (node) => { }, {
+                isAlignBottom: true,
+                isAlignRight: true,
+                bottom: -22.447,
+                right: 44.158
+            }, this.node.getChildByName("RightUp"))
+        ]);
+    }
+    private async initViewComponent(prefabType: PrefabTypeEntry, onComponentInit: (node: Node) => void, alignOptions?: object, defaultParent: Node = this.node) {
+        let node = await this.loadAndInitPrefab(prefabType, defaultParent, alignOptions);
+        onComponentInit(node);
     }
 
     //设置主场景
@@ -86,8 +90,8 @@ export class MainUIView extends BaseView {
         CCUtil.onTouch(this.btnTaskGo, this.onClickTaskGo, this);
         CCUtil.onTouch(this.btnStudy, this.onClickStudy, this);
         CCUtil.onBtnClick(this.btn_friend, this.onClickFriend.bind(this));
-        CCUtil.onBtnClick(this.btn_bag, this.onClickBag.bind(this));
-        CCUtil.onBtnClick(this.btn_collect,this.onClickCollect.bind(this));
+        CCUtil.onBtnClick(this.operational_activities, this.onClickOperationalActivities.bind(this));
+        CCUtil.onBtnClick(this.node.getChildByName('mask_node'),this.onMaskClick.bind(this));
     }
     //移除事件
     public removeEvent() {
@@ -102,16 +106,12 @@ export class MainUIView extends BaseView {
         CCUtil.offTouch(this.btnTaskGo, this.onClickTaskGo, this);
     }
     /**好友点击 */
-    async onClickFriend(){
+    async onClickFriend() {
         await ViewsManager.instance.showPopup(PrefabType.FriendsDialogView);
     }
-
-    async onClickBag(){
-        await ViewsManager.instance.showViewAsync(PrefabType.BagView);
-    }
-
-    async onClickCollect(){
-        await ViewsManager.instance.showViewAsync(PrefabType.CollectView);
+    /**运营活动 */
+    async onClickOperationalActivities() {
+        await ViewsManager.instance.showViewAsync(PrefabType.ActivityView);
     }
 
     //头像点击
@@ -121,10 +121,12 @@ export class MainUIView extends BaseView {
     }
     //菜单点击
     public onClickMenu() {
-        User.isAutoLogin = false;
-        User.resetData();
-        NetMgr.closeNet();
-        director.loadScene(SceneType.LoginScene);
+        this.node.getChildByName('mask_node').active = true;
+        this._mainRightActivity.onHidenClick();
+        // User.isAutoLogin = false;
+        // User.resetData();
+        // NetMgr.closeNet();
+        // director.loadScene(SceneType.LoginScene);
     }
     //复习计划点击
     public onClickReview() {
@@ -144,7 +146,7 @@ export class MainUIView extends BaseView {
     }
     //编辑点击
     public onClickEdit() {
-        this._mainScene.changeMapStatus(MapStatus.EDIT);
+        this._mainScene.changeMapStatus(MapStatus.BUILD_EDIT);
     }
     //BOSS点击
     public onClickBoss() {
@@ -154,6 +156,10 @@ export class MainUIView extends BaseView {
     //商店点击
     public onClickShop() {
         ViewsMgr.showView(PrefabType.ShopUIView);
+    }
+    onMaskClick(){
+        this.node.getChildByName('mask_node').active = false;
+        this._mainRightActivity.onHidenClick();
     }
     //任务点击
     public onClickTask() {

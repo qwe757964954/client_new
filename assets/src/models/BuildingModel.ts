@@ -25,6 +25,54 @@ export enum BuildingIDType {
     castle = 0,//城堡
     mine = 3,//矿山
 }
+/**建筑操作类型 */
+export enum BuildingOperationType {
+    edit = 1,//编辑
+    sell = 2,//卖出
+    recycle = 3,//回收
+}
+export enum BuildingState {
+    // preBuilding = -1,//预建造
+    normal = 0,//正常
+    unBuilding = 1,//未建造
+    building = 2,//建造中
+    buildingOver = 3,//建造完成
+    upgrade = 4,//升级中
+    upgradeOver = 5,//升级完成
+}
+/**建筑操作数据 */
+export class BuildingOperationData {
+    public type: BuildingOperationType = null;//操作类型
+    public buildingID: number;//建筑唯一索引id
+    public idx: number;//索引(前端使用)
+    public editInfo: EditInfo;//编辑数据
+
+    public x: number;//x坐标
+    public y: number;//y坐标
+    public isFlip: boolean = false;//是否翻转
+    public grids: GridModel[] = null;//格子数据
+
+    public dataX: number;//数据x坐标
+    public dataY: number;//数据y坐标
+    public dataIsFlip: boolean = false;//数据是否翻转
+    public dataGrids: GridModel[] = null;//数据格子
+
+    public reset() {
+        this.type = null;
+        this.buildingID = null;
+        this.idx = null;
+        this.editInfo = null;
+        this.x = null;
+        this.y = null;
+        this.isFlip = null;
+        this.grids = null;
+        this.dataX = null;
+        this.dataY = null;
+        this.dataIsFlip = null;
+        this.dataGrids = null;
+    }
+}
+
 /**回收数据 */
 export class RecycleData {
     public bid: number;//建筑id
@@ -38,16 +86,17 @@ class BuildingProduceData {
 }
 export class BuildingData {
     public id: number;//建筑唯一索引id
+    public idx: number;//索引(前端使用)
     public level: number = 1;//建筑等级
-    // TODO
-    // 建筑当前状态（普通、生产中、生产完成、升级中、升级完成）
+    // 建筑当前状态（普通、建造中、建造完成、升级中、升级完成）
+    public state: BuildingState = null;
     public time: number = 0;//建筑时间
     public queueMaxCount: number = 5;//队列最大数量
     // 正在建造的队列（id，时间）
     public queue: BuildingProduceData[] = [];
 }
 
-const defaultSpAnim = ["animation", "idle"];
+const defaultSpAnim = ["animation", "idle", "click"];
 
 //建筑模型
 export class BuildingModel extends BaseModel {
@@ -71,6 +120,7 @@ export class BuildingModel extends BaseModel {
     private _isRecycle: boolean = false;//是否是回收
     public isSell: boolean = false;//是否卖出
     private _isRemove: boolean = false;//是否移除
+    private _isShowBaseColor: boolean = false;//是否显示底格颜色
 
     // private _dataX:number;//数据x
     // private _dataY:number;//数据y
@@ -99,9 +149,9 @@ export class BuildingModel extends BaseModel {
     public destoryEvent() {
     }
     // 初始化数据
-    initData(x: number, y: number, editInfo: EditInfo, isFlip: boolean, isNew: boolean) {
+    initData(x: number, y: number, editInfo: EditInfo, isFlip: boolean, isNew: boolean, idx: number) {
         // console.log("initData", x, y, editInfo, isFlip, isNew);
-        this._idx = ToolUtil.getIdx();
+        this._idx = idx ? idx : ToolUtil.getIdx();
         this._editInfo = editInfo;
         this._x = x;
         this._y = y;
@@ -112,6 +162,7 @@ export class BuildingModel extends BaseModel {
         this._isShowEx = true;
         this._dataIsShow = true;
         this._isNew = isNew;
+        this.buildingData.idx = this._idx;
 
         this.initEvent();
         if (isNew) {
@@ -160,15 +211,18 @@ export class BuildingModel extends BaseModel {
         if (!grids || grids.length != this._width * this._height) {
             return;
         }
-        this.recoverGrids();
+        // this.recoverGrids();
         this._grids = grids;
-        for (let i = 0; i < this._grids.length; i++) {
-            this._grids[i].building = this;
-            if (!this.isNew && !this._dataGrids) {//初始化已有建筑
-                this._grids[i].saveData();
-                // console.log("set grids saveData", i, this.isNew);
-            }
+        if (!this.isNew && !this._dataGrids) {//初始化已有建筑
+            this.saveGrids();
         }
+        // for (let i = 0; i < this._grids.length; i++) {
+        //     this._grids[i].building = this;
+        //     if (!this.isNew && !this._dataGrids) {//初始化已有建筑
+        //         this._grids[i].saveData();
+        //         // console.log("set grids saveData", i, this.isNew);
+        //     }
+        // }
         let gridInfo = this._grids[0];
         this._x = gridInfo.x;
         this._y = gridInfo.y;
@@ -229,36 +283,60 @@ export class BuildingModel extends BaseModel {
         if (this._node)
             this._node.position = pos;
     }
-    // 格子数据还原
-    public recoverGrids() {
-        // console.log("recoverGrids",this._grids);
-        if (!this._grids) return;
-        for (let i = 0; i < this._grids.length; i++) {
-            // this._grids[i].building = null;
-            this._grids[i].recoverData();
+    public set isShowBaseColor(isShow: boolean) {
+        this._isShowBaseColor = isShow;
+        if (this._graphics) {
+            this._graphics.node.active = isShow;
         }
+        if (this._building) {
+            if (!this._btnView || !this._btnView.active) {
+                this._building.node.active = !isShow;
+            }
+        }
+        this.drawGridRect();
     }
+    // 格子数据还原
+    // public recoverGrids() {
+    //     // console.log("recoverGrids",this._grids);
+    //     if (!this._grids) return;
+    //     for (let i = 0; i < this._grids.length; i++) {
+    //         // this._grids[i].building = null;
+    //         this._grids[i].recoverData();
+    //     }
+    // }
     /**格子数据置空 */
     public resetGrids() {
         if (!this._grids) return;
-        for (let i = 0; i < this._grids.length; i++) {
-            this._grids[i].resetData();
-        }
+        this._grids.forEach((grid: GridModel) => {
+            if (grid.building == this) {
+                grid.resetData();
+            }
+        });
+        // for (let i = 0; i < this._grids.length; i++) {
+        //     this._grids[i].resetData();
+        // }
     }
     // 格子数据保存
     public saveGrids() {
-        if (this._grids) {
-            this._grids.forEach((grid: GridModel) => {
-                grid.saveData();
-            });
-        }
         if (this._dataGrids) {
             this._dataGrids.forEach((grid: GridModel) => {
-                if (!this._grids.find(obj => obj === grid)) {
+                if (grid.building == this) {
                     grid.resetData();
                 }
             });
         }
+        if (this._grids) {
+            this._grids.forEach((grid: GridModel) => {
+                grid.saveData(this);
+            });
+        }
+        // if (this._dataGrids) {
+        //     this._dataGrids.forEach((grid: GridModel) => {
+        //         if (!this._grids.find(obj => obj === grid)) {
+        //             grid.resetData();
+        //         }
+        //     });
+        // }
     }
     // 显示按钮界面
     public showBtnView(scale: number): void {
@@ -270,6 +348,9 @@ export class BuildingModel extends BaseModel {
         this._node.setSiblingIndex(-1);//放到最高层
         this._graphics.node.active = true;//画图层显示
         this._building.color = new Color(255, 255, 255, 180);//半透明
+        if (this._isShowBaseColor) {
+            this._building.node.active = true;//建筑显示
+        }
         if (this._btnView) {
             this._btnView.active = true;
             this.onCameraScale(scale);
@@ -303,14 +384,20 @@ export class BuildingModel extends BaseModel {
             EventManager.emit(EventType.BuildingBtnView_Close);
             EventManager.emit(EventType.Building_Need_Sort);
         }
-        this._graphics.node.active = false;
+        if (this._isShowBaseColor) {
+            this._building.node.active = false;
+        } else {
+            if (this._graphics) {
+                this._graphics.node.active = false;
+            }
+        }
     }
     // 刷新按钮界面
     public refreshBtnView(): void {
         if (!this._btnView || !this._btnView.active) return;
         let canSure = true;
         for (let i = 0; i < this._grids.length; i++) {
-            if (!this._grids[i].isCanBuilding()) {
+            if (!this._grids[i].isCanBuilding(this)) {
                 canSure = false;
                 break;
             }
@@ -351,13 +438,15 @@ export class BuildingModel extends BaseModel {
     public reqSaveData(status: boolean = true) {
         if (!status) {
             ViewsManager.showTip(TextConfig.Building_Sure_Tip);
+            // TODO 回收占位建筑recycle()
             return;
         }
-        if (this._buildingID) {
-            ServiceMgr.buildingService.reqBuildingEdit(this._buildingID, this._x, this._y, this._isFlip);
-        } else {
-            ServiceMgr.buildingService.reqBuildingCreate(this._editInfo.id, this._x, this._y, this._idx, this._isFlip);
-        }
+        EventMgr.emit(EventType.Building_Save, this);
+        // if (this._buildingID) {
+        //     ServiceMgr.buildingService.reqBuildingEdit(this._buildingID, this._x, this._y, this._isFlip);
+        // } else {
+        //     ServiceMgr.buildingService.reqBuildingCreate(this._editInfo.id, this._x, this._y, this._idx, this._isFlip);
+        // }
     }
     // 卖出
     public sell(canCell: boolean): void {
@@ -366,7 +455,11 @@ export class BuildingModel extends BaseModel {
             return;
         }
         this.isSell = true;
-        this.recycle();//与回收差别?，如不能还原则需修改逻辑
+        this.resetGrids();
+        this.isShowEx = false;
+        this.closeBtnView();
+        this.closeLongView();
+        this.removeFromScene();
     }
     /**请求卖出 */
     public reqSell(canCell: boolean) {
@@ -374,11 +467,12 @@ export class BuildingModel extends BaseModel {
             ViewsManager.showTip(TextConfig.Building_Cell_Tip);
             return;
         }
-        if (this._buildingID) {
-            ServiceMgr.buildingService.reqBuildingSell(this._buildingID);
-        } else {
-            this.sell(true);
-        }
+        EventMgr.emit(EventType.Building_Sell, this);
+        // if (this._buildingID) {
+        //     ServiceMgr.buildingService.reqBuildingSell(this._buildingID);
+        // } else {
+        //     this.sell(true);
+        // }
     }
     // 翻转
     public flip(): void {
@@ -386,7 +480,7 @@ export class BuildingModel extends BaseModel {
         EventMgr.emit(EventType.Building_Flipx, this);
     }
     // 回收按钮点击
-    public recycleBtnClick(): void {
+    public recycleBtnClick() {
         if (!this._isRecycle && this._buildingID) {
             if (this.buildingData.queue.length > 0) {
                 ViewsMgr.showTip(TextConfig.Building_Recycle_Error1);
@@ -397,17 +491,20 @@ export class BuildingModel extends BaseModel {
             //     ViewsMgr.showTip(TextConfig.Building_Recycle_Error2);
             //     return;
             // }
-            ServiceMgr.buildingService.reqBuildingRecycle(this._buildingID);
+            EventMgr.emit(EventType.Building_Recycle, this);
+            // ServiceMgr.buildingService.reqBuildingRecycle(this._buildingID);
         } else {
-            this.recycle();
+            EventMgr.emit(EventType.Building_Recycle, this);
+            // this.recycle();
         }
     }
     // 回收
     public recycle() {
+        EventMgr.emit(EventType.Building_RecycleEx, this);
         this.resetGrids();
         this.isShowEx = false;
-        this.saveData();
-
+        this.closeBtnView();
+        this.closeLongView();
         this.removeFromScene();
     }
     // 还原
@@ -427,7 +524,9 @@ export class BuildingModel extends BaseModel {
             this._btnView.active = false;
             this.topZIndex = false;
         }
-        this._graphics.node.active = false;
+        if (!this._isShowBaseColor) {
+            this._graphics.node.active = false;
+        }
         if (this._isNew) {
             this.removeFromScene();
         }
@@ -444,7 +543,9 @@ export class BuildingModel extends BaseModel {
         this._isRemove = true;
         this.isShowEx = false;
         EventManager.emit(EventType.BuidingModel_Remove, this);
-        this._node.destroy();
+        if (this._node) {
+            this._node.destroy();
+        }
         this.dispose();
     }
     // 从父节点移除(对象、资源暂未删除)
@@ -513,10 +614,10 @@ export class BuildingModel extends BaseModel {
         if (!grids || grids.length < 1) return;
         let pos0 = grids[0].pos.clone();
         pos0.y = pos0.y - 0.5 * this._height * grids[0].height;
-        // g.fillColor = new Color(99, 210, 198, 180);
-        g.fillColor = new Color(180, 0, 0, 180);
+        let isFill = false;
         grids.forEach(grid => {
-            if (grid.isCanBuilding()) return;
+            if (grid.isCanBuilding(this)) return;
+            isFill = true;
             let pos = grid.pos;
             let x = pos.x - pos0.x;
             let y = pos.y - pos0.y;
@@ -525,7 +626,27 @@ export class BuildingModel extends BaseModel {
             g.lineTo(x, y - grid.height);
             g.lineTo(x - 0.5 * grid.width, y - 0.5 * grid.height);
         });
-        g.fill();
+        if (isFill) {
+            g.fillColor = new Color(180, 0, 0, 180);
+            g.fill();
+        }
+        if (!this._isShowBaseColor) return;
+        isFill = false;
+        grids.forEach(grid => {
+            if (!grid.isCanBuilding(this)) return;
+            isFill = true;
+            let pos = grid.pos;
+            let x = pos.x - pos0.x;
+            let y = pos.y - pos0.y;
+            g.moveTo(x, y);
+            g.lineTo(x + 0.5 * grid.width, y - 0.5 * grid.height);
+            g.lineTo(x, y - grid.height);
+            g.lineTo(x - 0.5 * grid.width, y - 0.5 * grid.height);
+        });
+        if (isFill) {
+            g.fillColor = new Color(this.editInfo.baseColor);
+            g.fill();
+        }
     }
     /**显示与否 */
     public show(isShow: boolean, callBack?: Function) {
@@ -536,6 +657,11 @@ export class BuildingModel extends BaseModel {
         if (isShow && !this._isLoad) {
             this._isLoad = true;
             LoadManager.loadPrefab(PrefabType.BuildingModel.path, this._parent, true).then((node: Node) => {
+                if (this._isRemove) {
+                    if (callBack) callBack();
+                    node.destroy();
+                    return;
+                }
                 this._node = node;
                 this._node.active = this._isShow;
                 this._node.position = this._pos;
@@ -554,6 +680,8 @@ export class BuildingModel extends BaseModel {
                     LoadManager.loadSpine(animation, this._sp).then(() => {
                         if (this._sp.findAnimation(defaultSpAnim[0])) {
                             this._sp.setAnimation(0, defaultSpAnim[0], true);
+                        } else if (this._sp.findAnimation(defaultSpAnim[2])) {
+                            this._sp.setAnimation(0, defaultSpAnim[2], true);
                         } else {
                             this._sp.setAnimation(0, defaultSpAnim[1], true);
                         }
@@ -562,8 +690,8 @@ export class BuildingModel extends BaseModel {
                             this._sp.node.position = this._editInfo.animpos;
                         } else {
                             let pos = this._building.node.position.clone();
-                            pos.x = -16;
-                            pos.y = - pos.y;
+                            pos.x = 32;
+                            pos.y = 194;
                             this._sp.node.position = pos;
                             console.log("pos", pos.x, pos.y);
                         }
@@ -753,6 +881,7 @@ export class BuildingModel extends BaseModel {
         console.log("restoreRecycleData", data, this._buildingID, this._editInfo.id);
         if (this._buildingID || data.bid != this._editInfo.id) return;
         this.buildingID = data.data.id;
+        this._idx = data.data.idx;
         this.buildingData = data.data;
         this._isRecycle = true;
         if (EditType.Buiding == this._editInfo.type || EditType.LandmarkBuiding == this._editInfo.type) {
@@ -778,5 +907,44 @@ export class BuildingModel extends BaseModel {
     public fixGridWidthAndHeight() {
         this._width = this._isFlip ? this._editInfo.height : this._editInfo.width;
         this._height = this._isFlip ? this._editInfo.width : this._editInfo.height;
+    }
+    /**操作数据 */
+    public getOperationData(type: BuildingOperationType) {
+        let data = new BuildingOperationData();
+        data.type = type;
+        data.buildingID = this._buildingID;
+        data.idx = this._idx;
+        data.editInfo = this._editInfo;
+        data.x = this._x;
+        data.y = this._y;
+        data.isFlip = this._isFlip;
+        data.grids = this._grids.concat();
+        data.dataIsFlip = this._dataIsFlip;
+        if (this._dataGrids) {
+            let grid = this._dataGrids[0];
+            if (grid) {
+                data.dataX = grid.x;
+                data.dataY = grid.y;
+            }
+            data.dataGrids = this._dataGrids.concat();
+        }
+        return data;
+    }
+    /**从操作数据还原 */
+    public restoreOperationData(data: BuildingOperationData) {
+        console.log("BuildingModel restoreOperationData", this._buildingID, this._idx);
+        if (data.grids) {
+            this.grids = data.grids;
+            this.isFlip = data.isFlip;
+            this.saveData();
+        } else {
+            this.isSell = BuildingOperationType.sell == data.type;
+            this.resetGrids();
+            this.isShowEx = false;
+            this.removeFromScene();
+        }
+        // if (EditType.Buiding == this._editInfo.type || EditType.LandmarkBuiding == this._editInfo.type) {
+        //     this.checkProduce();
+        // }
     }
 }

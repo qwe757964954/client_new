@@ -14,7 +14,7 @@ export class GridModel {
     private _land: LandModel = null;//地块
     private _cloud: CloudModel = null;//乌云
 
-    private _dataBuilding: BuildingModel = null;//数据建筑
+    // private _dataBuilding: BuildingModel = null;//数据建筑
 
     constructor(x: number, y: number, pos: Vec3, width: number, height: number) {
         this._x = x;
@@ -42,9 +42,9 @@ export class GridModel {
     get building(): BuildingModel {
         return this._building;
     }
-    set building(model: BuildingModel) {
-        this._building = model;
-    }
+    // set building(model: BuildingModel) {
+    //     this._building = model;
+    // }
     get land(): LandModel {
         return this._land;
     }
@@ -58,30 +58,31 @@ export class GridModel {
         this._cloud = model;
     }
     //保存数据
-    saveData() {
-        this._dataBuilding = this._building;
+    saveData(building: BuildingModel) {
+        this._building = building;
+        // this._dataBuilding = this._building;
     }
     //恢复数据
-    recoverData() {
-        this._building = this._dataBuilding;
-    }
+    // recoverData() {
+    //     this._building = this._dataBuilding;
+    // }
     // 置空数据
     resetData() {
         this._building = null;
-        this._dataBuilding = null;
+        // this._dataBuilding = null;
     }
     //是否建筑可以摆放
-    isCanBuilding() {
+    isCanBuilding(building: BuildingModel) {
         // console.log("isSameBuilding", this._building, this._dataBuilding);
-        if (this._cloud) return false;
-        if (!this._dataBuilding) return true;
-        return this._building === this._dataBuilding;
+        // if (this._cloud) return false;
+        // if (!this._dataBuilding) return true;
+        // return this._building === this._dataBuilding;
+        return (null == this._cloud) && ((null == this._building) || (building == this._building));
     }
     /**是否可以摆放新建筑 */
     isCanBuildingNew() {
-        if (this._cloud) return false;
-        if (!this._dataBuilding) return true;
-        return false;
+        // if (!this._dataBuilding) return true;
+        return (null == this._cloud) && (null == this._building);
     }
     /**是否是编辑区域 */
     isEditArea() {

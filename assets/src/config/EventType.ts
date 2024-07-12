@@ -22,6 +22,11 @@ export const EventType = {
     EditUIView_Refresh: "EditUIViewRefresh",//编辑界面刷新
     New_Building: "NewBuilding",//新建建筑
     Building_Flipx: "BuildingFlipx",//建筑翻转
+    Building_Save: "BuildingSave",//建筑保存
+    Building_Sell: "BuildingSell",//建筑出售
+    Building_Recycle: "BuildingRecycle",//建筑回收
+    Building_RecycleEx: "Building_RecycleEx",//建筑回收
+    Building_Step_Update: "BuildingStepUpdate",//建筑步数更新
 
     Stamina_Update: "StaminaUpdate",//体力更新
     Coin_Update: "CoinUpdate",//金币更新

@@ -1,7 +1,6 @@
 import { _decorator, Node } from 'cc';
 import { PrefabType, PrefabTypeEntry } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
-import GlobalConfig from '../../GlobalConfig';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { UserPlayerDetail } from '../../models/SettingModel';
 import { User } from '../../models/User';
@@ -48,7 +47,7 @@ export class SettingView extends BaseView {
 
     //初始化
     public async initUI() {
-        GlobalConfig.initResolutionRules();
+        this.viewAdaptSize();
         this.initNavTitle();
         await this.initViews();
         this.initTabLisen();
@@ -133,7 +132,6 @@ export class SettingView extends BaseView {
     btnCloseFunc() {
         console.log("btnCloseFunc");
         ViewsManager.instance.closeView(PrefabType.SettingView);
-        GlobalConfig.initRessolutionHeight();
     }
 }
 

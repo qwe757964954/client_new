@@ -1,5 +1,7 @@
 import { EventType, itemEventKey } from "../config/EventType";
 import { ItemID } from "../export/ItemConfig";
+import { DataMgr, ItemData } from "../manager/DataMgr";
+import { ViewsMgr } from "../manager/ViewsManager";
 import { EventMgr } from "../util/EventManager";
 import { TimerMgr } from "../util/TimerMgr";
 import { ToolUtil } from "../util/ToolUtil";
@@ -147,6 +149,7 @@ class UserModel {
     set coin(coin: number) {
         if (null == coin) return;
         this._coin = coin;
+        this._itemAry[ItemID.coin] = coin;
         EventMgr.emit(EventType.Coin_Update, this._coin);
     }
     get coin(): number {
@@ -155,6 +158,7 @@ class UserModel {
     set diamond(diamond: number) {
         if (null == diamond) return;
         this._diamond = diamond;
+        this._itemAry[ItemID.diamond] = diamond;
         EventMgr.emit(EventType.Diamond_Update, this._diamond);
     }
     get diamond(): number {
@@ -163,6 +167,7 @@ class UserModel {
     set stamina(stamina: number) {
         if (null == stamina) return;
         this._stamina = stamina;
+        this._itemAry[ItemID.stamina] = stamina;
         EventMgr.emit(EventType.Stamina_Update, this._stamina);
     }
     get stamina(): number {
@@ -171,6 +176,7 @@ class UserModel {
     set amethyst(amethyst: number) {
         if (null == amethyst) return;
         this._amethyst = amethyst;
+        this._itemAry[ItemID.amethyst] = amethyst;
         EventMgr.emit(EventType.Amethyst_Update, this._amethyst);
     }
     get amethyst(): number {
@@ -179,6 +185,7 @@ class UserModel {
     set ticket(ticket: number) {
         if (null == ticket) return;
         this._ticket = ticket;
+        this._itemAry[ItemID.ticket] = ticket;
         EventMgr.emit(EventType.Ticket_Update, this._ticket);
     }
     get ticket(): number {
@@ -268,6 +275,20 @@ class UserModel {
         this.clearStaminaTimer();
         this._staminaTimer = TimerMgr.once(this.onStaminaTimer.bind(this), time * 1000);
         EventMgr.emit(EventType.Stamina_Timer_Update, time);
+    }
+    /**判断物品条件是否满足 */
+    public checkItems(data: ItemData[], tipStr: string = null): boolean {
+        for (let i = 0; i < data.length; i++) {
+            const item = data[i];
+            let hasNum = this._itemAry[item.id] || 0;
+            if (hasNum < item.num) {
+                if (tipStr) {
+                    ViewsMgr.showConfirm(ToolUtil.replace(tipStr, DataMgr.getItemInfo(item.id).name));
+                }
+                return false;
+            }
+        }
+        return true;
     }
 }
 

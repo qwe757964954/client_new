@@ -49,6 +49,9 @@ class LoadManagerClass {
             })
         });
     }
+    public preloadPrefab(path: string | string[]): Promise<any | undefined> {
+        return LoadManager.preload("prefab/" + path);
+    }
     //加载json资源
     public loadJson(name: string): Promise<any | undefined> {
         return new Promise((resolve, reject) => {

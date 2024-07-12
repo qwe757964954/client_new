@@ -1,10 +1,10 @@
-import { _decorator, Component, Node } from 'cc';
-import { BaseControll } from '../script/BaseControll';
-import { GoodsItemData, ShopAllGoods } from '../models/GoodsModel';
-import EventManager from '../util/EventManager';
+import { _decorator } from 'cc';
 import { EventType } from '../config/EventType';
-import { ViewsManager } from '../manager/ViewsManager';
 import { TextConfig } from '../config/TextConfig';
+import { ViewsManager } from '../manager/ViewsManager';
+import { GoodsItemData, ShopAllGoods } from '../models/GoodsModel';
+import { BaseControll } from '../script/BaseControll';
+import EventManager from '../util/EventManager';
 const { ccclass, property } = _decorator;
 /**商城相关的服务 */
 @ccclass('ShopService')

@@ -21,8 +21,11 @@ export class NavTitleView extends Component {
         CCUtil.offTouch(this.btn_returnbtn, this.onClickReture, this);
     }
     updateNavigationProps(title_name: string,returnCb:Function) {
-        this.title_name.string = title_name;
+        this.setTitleName(title_name);
         this._returnCallback = returnCb;
+    }
+    setTitleName(title_name: string) {
+        this.title_name.string = title_name;
     }
     /**点击返回 */
     onClickReture(){

@@ -128,8 +128,9 @@ export class CloudModel extends BaseModel {
     }
     //显示图片
     public showImg(callBack?: Function) {
-        let id = ToolUtil.getRandomInt(0, MapConfig.cloud.pngs.length - 1);
-        LoadManager.loadSprite(MapConfig.cloud.pngs[id], this._img, true).then(() => {
+        let cloudInfo = MapConfig.cloud;
+        let path = ToolUtil.replace(cloudInfo.path, cloudInfo.pngs[this._showID]);
+        LoadManager.loadSprite(path, this._img, true).then(() => {
             this._isLoadOver = true;
             this.refreshTime();
             if (callBack) callBack();
@@ -181,7 +182,8 @@ export class CloudModel extends BaseModel {
     }
     /**获取显示范围 */
     public getRect() {
-        let rect = new Rect(-216, 0, 432, 216);
+        // let rect = new Rect(-216, 0, 432, 216);
+        let rect = new Rect(-216, 0, 432, 300);//增加树丛显示高度，防止某些树丛过高
         rect.x += this._pos.x;
         rect.y += this._pos.y;
         return rect;

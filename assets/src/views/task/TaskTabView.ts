@@ -47,6 +47,10 @@ export class TaskTabView extends BaseView {
             item_script.clearTabContent();
         }
     }
+    onDestroy(): void {
+        super.onDestroy();
+        console.log("TaskTabView   onDestroy");
+    }
 }
 
 

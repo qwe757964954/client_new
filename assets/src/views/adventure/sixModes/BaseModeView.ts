@@ -352,7 +352,7 @@ export class BaseModeView extends BaseView {
             let levelData = this._levelData as BookLevelConfig;
             levelData.word_num = 1;
         }
-        ViewsMgr.closeConfirmView();
+        // ViewsMgr.closeConfirmView();
     }
 
     //单个单词学习情况上报

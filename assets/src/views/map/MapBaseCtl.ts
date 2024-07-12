@@ -80,6 +80,14 @@ export class MapBaseCtl extends MainBaseCtl {
     // UI下一步
     nextStepEvent() {
     }
+    /**当前步数 */
+    getStep(): number {
+        return 0;
+    }
+    /**总步数 */
+    getTotalStep(): number {
+        return 0;
+    }
     // 两点缩放地图
     public mapZoomByTouches(touch1: Touch, touch2: Touch) {
         let touchPos1 = touch1.getUILocation();

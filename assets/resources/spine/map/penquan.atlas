@@ -1,0 +1,153 @@
+
+penquan.png
+size: 1024,2048
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+13
+  rotate: false
+  xy: 823, 1276
+  size: 196, 208
+  orig: 196, 208
+  offset: 0, 0
+  index: -1
+2
+  rotate: false
+  xy: 2, 970
+  size: 348, 240
+  orig: 348, 240
+  offset: 0, 0
+  index: -1
+21
+  rotate: false
+  xy: 2, 728
+  size: 348, 240
+  orig: 348, 240
+  offset: 0, 0
+  index: -1
+3
+  rotate: false
+  xy: 2, 486
+  size: 348, 240
+  orig: 348, 240
+  offset: 0, 0
+  index: -1
+31
+  rotate: false
+  xy: 2, 244
+  size: 348, 240
+  orig: 348, 240
+  offset: 0, 0
+  index: -1
+4
+  rotate: false
+  xy: 2, 2
+  size: 348, 240
+  orig: 348, 240
+  offset: 0, 0
+  index: -1
+41
+  rotate: true
+  xy: 536, 878
+  size: 348, 240
+  orig: 348, 240
+  offset: 0, 0
+  index: -1
+5
+  rotate: true
+  xy: 778, 878
+  size: 348, 240
+  orig: 348, 240
+  offset: 0, 0
+  index: -1
+51
+  rotate: false
+  xy: 536, 636
+  size: 348, 240
+  orig: 348, 240
+  offset: 0, 0
+  index: -1
+6
+  rotate: false
+  xy: 529, 394
+  size: 348, 240
+  orig: 348, 240
+  offset: 0, 0
+  index: -1
+61
+  rotate: false
+  xy: 485, 152
+  size: 348, 240
+  orig: 348, 240
+  offset: 0, 0
+  index: -1
+pq_0
+  rotate: true
+  xy: 886, 641
+  size: 56, 66
+  orig: 56, 66
+  offset: 0, 0
+  index: -1
+pq_1
+  rotate: true
+  xy: 352, 2
+  size: 418, 131
+  orig: 418, 131
+  offset: 0, 0
+  index: -1
+pq_10
+  rotate: false
+  xy: 2, 1212
+  size: 503, 272
+  orig: 503, 272
+  offset: 0, 0
+  index: -1
+pq_11
+  rotate: false
+  xy: 507, 1228
+  size: 314, 256
+  orig: 314, 256
+  offset: 0, 0
+  index: -1
+pq_12
+  rotate: true
+  xy: 832, 1594
+  size: 419, 178
+  orig: 419, 178
+  offset: 0, 0
+  index: -1
+pq_2
+  rotate: false
+  xy: 485, 43
+  size: 130, 107
+  orig: 130, 107
+  offset: 0, 0
+  index: -1
+pq_3
+  rotate: true
+  xy: 352, 812
+  size: 398, 182
+  orig: 398, 182
+  offset: 0, 0
+  index: -1
+pq_4
+  rotate: false
+  xy: 2, 1486
+  size: 828, 527
+  orig: 828, 527
+  offset: 0, 0
+  index: -1
+pq_5
+  rotate: true
+  xy: 352, 422
+  size: 388, 175
+  orig: 388, 175
+  offset: 0, 0
+  index: -1
+pq_8
+  rotate: true
+  xy: 886, 699
+  size: 177, 124
+  orig: 177, 124
+  offset: 0, 0
+  index: -1

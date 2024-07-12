@@ -1,7 +1,6 @@
 import { _decorator, Node } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType, PrefabTypeEntry } from '../../config/PrefabType';
-import GlobalConfig from '../../GlobalConfig';
 import { ItemData } from '../../manager/DataMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { ChallengeBoxRewardData, ChallengeTaskReward, TaskBaseData, UserMainTaskData, UserWeekTaskData } from '../../models/TaskModel';
@@ -9,8 +8,6 @@ import { User } from '../../models/User';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TkServer } from '../../service/TaskService';
-import CCUtil from '../../util/CCUtil';
-import { ToolUtil } from '../../util/ToolUtil';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { CongratulationsView } from './CongratulationsView';
 import { DailyTaskView } from './DailyTaskView';
@@ -42,13 +39,13 @@ export class WeekTaskView extends BaseView {
     private _taskAward: TaskAwardView = null;
 
     async initUI() {
-        let scale = ToolUtil.getValue(GlobalConfig.WIN_DESIGN_RATE, 0.1, 1.0);
-        CCUtil.setNodeScale(this.node, scale);
+        this.viewAdaptSize();
         this.initNavTitle();
         this.initAmout();
         try {
             await TKConfig.loadTaskConfigInfo();
             await this.initViews();
+            this.initTabs();
             console.log("Task configuration loaded:", TKConfig.taskConfigInfo);
         } catch (err) {
             console.error("Failed to initialize UI:", err);
@@ -58,7 +55,10 @@ export class WeekTaskView extends BaseView {
 
     private async initViews() {
         await Promise.all([
-            this.initViewComponent(PrefabType.TaskAwardView, (node) => this._taskAward = node.getComponent(TaskAwardView), {
+            this.initViewComponent(PrefabType.TaskAwardView, (node) => {
+                this._taskAward = node.getComponent(TaskAwardView)
+                this._taskAward.node.active = false;
+            }, {
                 isAlignTop: true,
                 isAlignRight: true,
                 top: 123,
@@ -78,19 +78,21 @@ export class WeekTaskView extends BaseView {
                 this._dailyTask.updateData([]);
                 this._dailyTask.node.active = false;
             }),
-            this.initViewComponent(PrefabType.TaskTabView, (node) => {
-                this._tabView = node.getComponent(TaskTabView);
-                this._tabView.setTabSelectClick(this.onTabSelect.bind(this));
-                this._tabView.updateData(TaskTabInfos);
-            }, {
-                isAlignTop: true,
-                isAlignLeft: true,
-                top: 129,
-                left: 50
-            })
+            
         ]);
     }
-
+    initTabs(){
+        this.initViewComponent(PrefabType.TaskTabView, (node) => {
+            this._tabView = node.getComponent(TaskTabView);
+            this._tabView.setTabSelectClick(this.onTabSelect.bind(this));
+            this._tabView.updateData(TaskTabInfos);
+        }, {
+            isAlignTop: true,
+            isAlignLeft: true,
+            top: 129,
+            left: 50
+        })
+    }
     private async initViewComponent(prefabType: PrefabTypeEntry, onComponentInit: (node: Node) => void, alignOptions?: object) {
         let node = await this.loadAndInitPrefab(prefabType, this.node, alignOptions);
         onComponentInit(node);
@@ -224,6 +226,7 @@ export class WeekTaskView extends BaseView {
     private onTabSelect(info: TaskTabInfo) {
         this.hideAllContent();
         this.selectMenuType(info.id);
+        this._navTitleView.setTitleName(info.title);
     }
 
     private selectMenuType(menuType: TaskTabIds) {

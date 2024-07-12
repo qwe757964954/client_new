@@ -1,18 +1,16 @@
-import { _decorator, Component, Label, Node, Sprite, SpriteFrame } from 'cc';
-import { EventType } from '../../config/EventType';
-import { PrefabType } from '../../config/PrefabType';
+import { _decorator, Label, Node, Sprite, SpriteFrame } from 'cc';
 import { TextConfig } from '../../config/TextConfig';
 import { EditInfo } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
-import { ViewsMgr } from '../../manager/ViewsManager';
+import { ViewsManager } from '../../manager/ViewsManager';
+import { ServiceMgr } from '../../net/ServiceManager';
+import { BasePopup } from '../../script/BasePopup';
 import CCUtil from '../../util/CCUtil';
-import { EffectUtil } from '../../util/EffectUtil';
-import { EventMgr } from '../../util/EventManager';
 import { ToolUtil } from '../../util/ToolUtil';
 const { ccclass, property } = _decorator;
 /** 建筑信息 */
 @ccclass('GoodsDetailView')
-export class GoodsDetailView extends Component {
+export class GoodsDetailView extends BasePopup {
     @property(Node)
     public imgNode: Node = null;//图片父节点
     @property(Sprite)
@@ -49,13 +47,10 @@ export class GoodsDetailView extends Component {
 
     private _canClose: boolean = true;
 
-
-    start() {
-        this.initEvent();
-    }
-    /** 销毁 */
-    public onDestroy() {
-        this.removeEvent();
+    protected initUI(): void {
+        this.enableClickBlankToClose([this.node.getChildByName("img_bg")]).then(()=>{
+            
+        });
     }
 
     /** 初始化事件 */
@@ -68,11 +63,6 @@ export class GoodsDetailView extends Component {
         CCUtil.offTouch(this.btnClose, this.onClickClose, this);
         CCUtil.offTouch(this.btnBuy, this.onClickBuy, this);
     }
-    /** 销毁 */
-    public dispose() {
-        this.node.destroy();
-    }
-
     /** 初始化数据 */
     public initData(data: EditInfo) {
         this._data = data;
@@ -87,33 +77,21 @@ export class GoodsDetailView extends Component {
         LoadManager.loadSprite(data.png, this.img).then(() => {
             CCUtil.fixNodeScale(this.img.node, 260, 400);
         });
-
-        this.show();
-    }
-
-    /**弹出式窗口 */
-    private show() {
-        EffectUtil.centerPopup(this.contentNd);
-        setTimeout(() => {
-            this._canClose = true;
-        })
-    }
-    /** 关闭按钮 */
-    public onClickClose() {
-        if (!this._canClose) return;
-        this._canClose = false;
-        EffectUtil.centerClose(this.contentNd, () => {
-            //if (this._callBack) this._callBack();
-            this.dispose();
-        });
-        //this.dispose();
     }
 
     onClickBuy() {
+        let use_amout = "金币";
+        let content_str = `确认消耗${this._data.buy}个${use_amout}购买${this._data.name}吗？`;
+        ViewsManager.showConfirm(content_str,() => {
+            ServiceMgr.shopService.buyGood(this._data.id);
+        })
         // ServiceMgr.shopService.buyGood(this._data.id);
-        EventMgr.emit(EventType.New_Building, this._data);
-        ViewsMgr.closeView(PrefabType.ShopUIView);
-        ViewsMgr.closeView(PrefabType.GoodsDetailView);
+        // EventMgr.emit(EventType.New_Building, this._data);
+        // ViewsMgr.closeView(PrefabType.ShopUIView);
+        // ViewsMgr.closeView(PrefabType.GoodsDetailView);
+    }
+    onClickClose(){
+        this.closePop();
     }
 }
 

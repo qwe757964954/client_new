@@ -8,17 +8,18 @@ import { DataMgr, EditInfo, EditType } from "../../manager/DataMgr";
 import { ViewsMgr } from "../../manager/ViewsManager";
 import { BaseModel } from "../../models/BaseModel";
 import { BgModel } from "../../models/BgModel";
-import { BuildingModel, RecycleData } from "../../models/BuildingModel";
+import { BuildingModel, BuildingOperationData, RecycleData } from "../../models/BuildingModel";
 import { CloudModel } from "../../models/CloudModel";
 import { GridModel } from "../../models/GridModel";
 import { LandModel } from "../../models/LandModel";
+import { MapSpModel } from "../../models/MapSpModel";
 import { s2cBuildingList, s2cBuildingListInfo, s2cBuildingProduceAdd, s2cBuildingProduceDelete, s2cBuildingProduceGet, s2cCloudUnlock, s2cCloudUnlockGet, s2cPetGetReward, s2cPetInfoRep, s2cPetUpgrade } from "../../models/NetModel";
 import { RoleType } from "../../models/RoleBaseModel";
 import { RoleDataModel } from "../../models/RoleDataModel";
 import { User } from "../../models/User";
 import { InterfacePath } from "../../net/InterfacePath";
 import { ServiceMgr } from "../../net/ServiceManager";
-import EventManager from "../../util/EventManager";
+import EventManager, { EventMgr } from "../../util/EventManager";
 import { TimerMgr } from "../../util/TimerMgr";
 import { ToolUtil } from "../../util/ToolUtil";
 import { MainBaseCtl } from "../main/MainBaseCtl";
@@ -43,6 +44,7 @@ export class MapUICtl extends MainBaseCtl {
     private _buidingModelAry: BuildingModel[] = [];//建筑模型数组
     private _roleModelAry: RoleDataModel[] = [];//角色模型数组
     private _cloudModelAry: CloudModel[] = [];//乌云模型数组
+    private _mapSpModeAry: MapSpModel[] = [];//地图动画模型数组
     private _recycleBuildingAry: RecycleData[] = [];//回收建筑信息
     private _isNeedUpdateVisible: boolean = false;//是否需要更新可视区域
     private _isNeedSort: boolean = false;//是否需要重新排序
@@ -72,12 +74,14 @@ export class MapUICtl extends MainBaseCtl {
         this.disposeModel(this._buidingModelAry);
         this.disposeModel(this._roleModelAry);
         this.disposeModel(this._cloudModelAry);
+        this.disposeModel(this._mapSpModeAry);
         this._gridAry = [];
         this._bgModelAry = [];
         this._landModelAry = [];
         this._buidingModelAry = [];
         this._roleModelAry = [];
         this._cloudModelAry = [];
+        this._mapSpModeAry = [];
         this._recycleBuildingAry = [];
         this.removeEvent();
     }
@@ -92,6 +96,7 @@ export class MapUICtl extends MainBaseCtl {
         this.initEvent();
         this.initGrid();
         this.initMap();
+        this.initMapSpine();
 
         ServiceMgr.buildingService.reqPetInfo();
         ServiceMgr.buildingService.reqBuildingList();
@@ -135,6 +140,17 @@ export class MapUICtl extends MainBaseCtl {
             return this._gridAry[i][j];
         }
         return null;
+    }
+    //是否是解锁的乌云
+    cloudIsUnlock(i: number, j: number) {
+        let range = MapConfig.cloud.range;
+        for (let k = 0; k < range.length; k++) {
+            let item = range[k];
+            if (item.is <= i && i < item.ie && item.js <= j && j < item.je) {
+                return true;
+            }
+        }
+        return false;
     }
     //是否是可编辑的格子
     gridIsCanEdit(i: number, j: number) {
@@ -189,7 +205,15 @@ export class MapUICtl extends MainBaseCtl {
         this._mapMaxHeight = bgInfo.maxHeight;
         console.timeEnd("initMap");
     }
-    private _landLoadOver: boolean = false;//地块是否加载完成
+    /**初始化地图动画 */
+    public initMapSpine() {
+        let mapSpInfo = MapConfig.mapSp;
+        mapSpInfo.forEach(item => {
+            let model = new MapSpModel();
+            model.init(item, this._mainScene.mapSpLayer);
+            this._mapSpModeAry.push(model);
+        });
+    }
     //初始化地块层
     initLand(map: { [key: string]: number }) {
         console.time("initLand");
@@ -249,7 +273,6 @@ export class MapUICtl extends MainBaseCtl {
             }
         }
         console.timeEnd("initLand");
-        this._landLoadOver = true;
 
     }
     // 初始化建筑
@@ -329,9 +352,10 @@ export class MapUICtl extends MainBaseCtl {
         let col = gridInfo.col;
         let row = gridInfo.row;
         let cloudWidth = MapConfig.cloud.width;
+        let index = 0;
         for (let i = 0; i < col; i += cloudWidth) {
             for (let j = 0; j < row; j += cloudWidth) {
-                if (j < 18) continue;
+                if (this.cloudIsUnlock(i, j)) continue;
                 let gridInfo = this.getGridInfo(i, j);
                 if (!gridInfo || gridInfo.cloud) continue;
                 let key = ToolUtil.replace(TextConfig.Land_Key, i, j);
@@ -344,6 +368,8 @@ export class MapUICtl extends MainBaseCtl {
                 cloud.initData(i, j, cloudWidth, leftTime, this._mainScene.buildingLayer);
                 this._cloudModelAry.push(cloud);
                 this.setCloudGrid(cloud, i, j);
+                cloud.showID = index;
+                index++;
             }
         }
         // this.refreshCloudShowType();
@@ -357,34 +383,34 @@ export class MapUICtl extends MainBaseCtl {
         return gridInfo.cloud != null;
     }
     /**刷新乌云显示类型 */
-    public refreshCloudShowType() {
-        this._cloudModelAry.forEach(element => {
-            let x = element.x;
-            let y = element.y;
-            let width = element.width;
-            let has1 = this.getGridInfo(x + width, y);
-            let has2 = this.getGridInfo(x, y - width);
-            if (!has1 && !has2) {
-                element.showID = 0;
-                return;
-            }
-            let has3 = this.getGridInfo(x - width, y);
-            if (!has2 && !has3) {
-                element.showID = 1;
-                return;
-            }
-            let has4 = this.getGridInfo(x, y + width);
-            if (!has1 && !has4) {
-                element.showID = 4;
-                return;
-            }
-            if (!has3 && !has4) {
-                element.showID = 3;
-                return;
-            }
-            element.showID = 2;
-        });
-    }
+    // public refreshCloudShowType() {
+    //     this._cloudModelAry.forEach(element => {
+    //         let x = element.x;
+    //         let y = element.y;
+    //         let width = element.width;
+    //         let has1 = this.getGridInfo(x + width, y);
+    //         let has2 = this.getGridInfo(x, y - width);
+    //         if (!has1 && !has2) {
+    //             element.showID = 0;
+    //             return;
+    //         }
+    //         let has3 = this.getGridInfo(x - width, y);
+    //         if (!has2 && !has3) {
+    //             element.showID = 1;
+    //             return;
+    //         }
+    //         let has4 = this.getGridInfo(x, y + width);
+    //         if (!has1 && !has4) {
+    //             element.showID = 4;
+    //             return;
+    //         }
+    //         if (!has3 && !has4) {
+    //             element.showID = 3;
+    //             return;
+    //         }
+    //         element.showID = 2;
+    //     });
+    // }
     // 摄像头缩放大小
     get cameraRate(): number {
         return this._cameraRate;
@@ -619,6 +645,25 @@ export class MapUICtl extends MainBaseCtl {
         }
         return data;
     }
+    getRecycleBuildingByBuildingID(buildingID: number) {
+        if (null == buildingID) return null;
+        // console.log("getRecycleBuilding", bid, this._recycleBuildingAry);
+        let index = -1;
+        let data = null;
+        for (let i = 0; i < this._recycleBuildingAry.length; i++) {
+            let element = this._recycleBuildingAry[i];
+            if (element.data.id == buildingID) {
+                index = i;
+                data = element;
+                break;
+            }
+        }
+        if (index > -1) {
+            this._recycleBuildingAry.splice(index, 1);
+            return data;
+        }
+        return data;
+    }
     /**回收建筑是否包含指定建筑 */
     isRecycleBuildingContain(bid: number) {
         return undefined != this._recycleBuildingAry.find(element => element.bid == bid);
@@ -631,10 +676,10 @@ export class MapUICtl extends MainBaseCtl {
         }
     }
     // 新建建筑物
-    newBuilding(data: EditInfo, gridX: number, gridY: number, isFlip: boolean = false, isNew: boolean = true) {
+    newBuilding(data: EditInfo, gridX: number, gridY: number, isFlip: boolean = false, isNew: boolean = true, idx: number = null) {
         let buildingModel = new BuildingModel();
         buildingModel.addToParent(this._mainScene.buildingLayer);
-        buildingModel.initData(gridX, gridY, data, isFlip, isNew);
+        buildingModel.initData(gridX, gridY, data, isFlip, isNew, idx);
         this.setBuildingGrid(buildingModel, gridX, gridY);
         this._buidingModelAry.push(buildingModel);
         return buildingModel;
@@ -677,7 +722,11 @@ export class MapUICtl extends MainBaseCtl {
         let yAry = [height, 0, 0, -height];
         let gridInfo = building?.grids[0];
         if (!gridInfo) return null;
-        console.log("newBuildingFromBuilding", gridInfo.x, gridInfo.y, width, height, isFlip);
+        let editInfo = building.editInfo;
+        if (editInfo.type != EditType.Decoration) {
+            if (this.findBuildingBytypeID(editInfo.id)) return null;
+        }
+        // console.log("newBuildingFromBuilding", gridInfo.x, gridInfo.y, width, height, isFlip);
         for (let i = 0; i < xAry.length; i++) {
             let x = gridInfo.x + xAry[i];
             let y = gridInfo.y + yAry[i];
@@ -685,21 +734,21 @@ export class MapUICtl extends MainBaseCtl {
             for (let m = 0; m < width; m++) {
                 for (let n = 0; n < height; n++) {
                     let grid = this.getGridInfo(x + m, y + n);
-                    console.log("newBuildingFromBuilding for", grid, x, y, m, n);
+                    // console.log("newBuildingFromBuilding for", grid, x, y, m, n);
                     if (grid && grid.isCanBuildingNew()) {
                         continue;
                     }
-                    console.log("newBuildingFromBuilding break", i, m, n);
+                    // console.log("newBuildingFromBuilding break", i, m, n);
                     canCreate = false;
                     break;
                 }
                 if (!canCreate) break;
             }
             if (canCreate) {
-                return this.newBuildingEx(building.editInfo, x, y, isFlip);
+                return this.newBuildingEx(editInfo, x, y, isFlip);
             }
         }
-        return this.newBuildingEx(building.editInfo, gridInfo.x + xAry[0], gridInfo.y + yAry[0], isFlip);
+        return this.newBuildingEx(editInfo, gridInfo.x + xAry[0], gridInfo.y + yAry[0], isFlip);
     }
     // 摄像头移动到指定建筑
     moveCameraToBuilding(building: BuildingModel, plPos: Vec3, scale: number = 1) {
@@ -732,11 +781,16 @@ export class MapUICtl extends MainBaseCtl {
         //for test 显示区域
         // let g = this._mainScene.lineLayer.getComponent(Graphics);
         // g.clear();
+        /**地图加载 */
         this._bgModelAry.forEach(element => {
             element.show(visibleRect.intersects(element.getRect()), this.getLoadOverCall());
         });
         //地块动态加载
         this._landModelAry.forEach(element => {
+            element.show(visibleRect.intersects(element.getRect()), this.getLoadOverCall());
+        });
+        /**地图动画加载 */
+        this._mapSpModeAry.forEach(element => {
             element.show(visibleRect.intersects(element.getRect()), this.getLoadOverCall());
         });
         //建筑动态加载
@@ -1150,5 +1204,30 @@ export class MapUICtl extends MainBaseCtl {
         if (0 == count && this._loadCloudNodeIdx > 0 && this._loadLandNodeIdx > 0) {
             this._isupdateLoadModelNodeOver = true;
         }
+    }
+    /**还原建筑通过操作数据 */
+    recoverByOperationData(data: BuildingOperationData) {
+        let building = this.findBuildingByIdx(data.idx);
+        console.log("recoverByOperationData", data, building);
+        if (!building) {
+            building = new BuildingModel();
+            building.addToParent(this._mainScene.buildingLayer);
+            building.initData(data.x, data.y, data.editInfo, building.isFlip, true, data.idx);
+            let recycleData = this.getRecycleBuildingByBuildingID(data.buildingID);
+            if (null != recycleData) {
+                building.restoreRecycleData(recycleData);
+                EventMgr.emit(EventType.EditUIView_Refresh);
+            } else {
+                building.buildingID = data.buildingID;
+            }
+            this._buidingModelAry.push(building);
+        }
+        building.restoreOperationData(data);
+    }
+    /**切换底格颜色 */
+    changeBaseColor(isBaseColor: boolean) {
+        this._buidingModelAry.forEach(element => {
+            element.isShowBaseColor = isBaseColor;
+        });
     }
 }

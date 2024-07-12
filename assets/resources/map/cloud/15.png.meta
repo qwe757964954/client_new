@@ -20,8 +20,8 @@
         "imageUuidOrDatabaseUri": "1a380989-9ea6-4331-baaa-c7ef24704149",
         "isUuid": true,
         "visible": false,
-        "minfilter": "linear",
-        "magfilter": "linear",
+        "minfilter": "nearest",
+        "magfilter": "nearest",
         "mipfilter": "none",
         "anisotropy": 0
       },
@@ -42,13 +42,13 @@
         "trimType": "auto",
         "trimThreshold": 1,
         "rotated": false,
-        "offsetX": -0.5,
+        "offsetX": 0,
         "offsetY": 0,
         "trimX": 0,
         "trimY": 0,
-        "width": 437,
+        "width": 436,
         "height": 327,
-        "rawWidth": 438,
+        "rawWidth": 436,
         "rawHeight": 327,
         "borderTop": 0,
         "borderBottom": 0,
@@ -61,16 +61,16 @@
         "meshType": 0,
         "vertices": {
           "rawPosition": [
-            -218.5,
+            -218,
             -163.5,
             0,
-            218.5,
+            218,
             -163.5,
             0,
-            -218.5,
+            -218,
             163.5,
             0,
-            218.5,
+            218,
             163.5,
             0
           ],
@@ -85,30 +85,30 @@
           "uv": [
             0,
             327,
-            437,
+            436,
             327,
             0,
             0,
-            437,
+            436,
             0
           ],
           "nuv": [
             0,
             0,
-            0.997716894977169,
+            1,
             0,
             0,
             1,
-            0.997716894977169,
+            1,
             1
           ],
           "minPos": [
-            -218.5,
+            -218,
             -163.5,
             0
           ],
           "maxPos": [
-            218.5,
+            218,
             163.5,
             0
           ]

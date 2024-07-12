@@ -1,8 +1,8 @@
-import { Rect } from "cc";
+import { Rect, Vec3 } from "cc";
 
 export enum MapStatus {//地图状态
     DEFAULT = 0,//默认状态
-    EDIT = 1,//编辑状态
+    // EDIT = 1,//编辑状态
     BUILD_EDIT = 2,//建筑编辑状态
     LAND_EDIT = 3,//地块编辑状态
     RECYCLE = 4,//回收状态
@@ -13,6 +13,15 @@ export class RoleInfo {//角色配置
     spPath: string;//spine路径
     spNames: string[];//spine名字
     rect: Rect;//[x,y,width,height]
+}
+/**地图动画配置 */
+export class MapSpInfo {
+    id: number;//id
+    path: string;//动画路径
+    names: string[] = [];//动画名字
+    pos: Vec3;//位置
+    rect: Rect;//显示区域
+    scale?: Vec3;//缩放
 }
 
 export const MapConfig = {
@@ -34,14 +43,14 @@ export const MapConfig = {
         path: "map/newbg/bg{0}/spriteFrame",
         commonPath: "map/newbg/bg193/spriteFrame",
         commonAry: [
-            194, 195, 217, 218, 219, 220, 221, 222, 223, 243,
-            244, 245, 246, 247, 248, 249, 250, 251, 268, 269,
-            270, 271, 272, 273, 274, 275, 276, 277, 278, 279,
-            280, 281, 282, 296, 297, 298, 299, 300, 301, 302,
-            303, 304, 305, 306, 307, 308, 323, 324, 325, 326,
-            327, 328, 329, 330, 331, 332, 333, 334, 349, 350,
-            351, 352, 353, 354, 355, 356, 357, 358, 376, 377,
-            378, 379, 380, 381, 382, 404,
+            // 194, 195, 217, 218, 219, 220, 221, 222, 223, 243,
+            // 244, 245, 246, 247, 248, 249, 250, 251, 268, 269,
+            // 270, 271, 272, 273, 274, 275, 276, 277, 278, 279,
+            // 280, 281, 282, 296, 297, 298, 299, 300, 301, 302,
+            // 303, 304, 305, 306, 307, 308, 323, 324, 325, 326,
+            // 327, 328, 329, 330, 331, 332, 333, 334, 349, 350,
+            // 351, 352, 353, 354, 355, 356, 357, 358, 376, 377,
+            // 378, 379, 380, 381, 382, 404,
         ],
         preload: [
             "map/newbg/bg112/spriteFrame",
@@ -85,7 +94,7 @@ export const MapConfig = {
     },
     gridInfo: {
         dtX: 2,//格子X偏差
-        dtY: 26,//格子Y偏差
+        dtY: 24,//格子Y偏差
         width: 72,//格子像素宽
         height: 36,//格子像素高
         col: 72,//格子列
@@ -149,20 +158,34 @@ export const MapConfig = {
     cloud:
     {
         width: 6,
+        path: "map/cloud/{0}/spriteFrame",
+        range: [//可编辑范围
+            // 从上往下 i左边 j右边
+            { is: 12, ie: 48, js: 0, je: 18 },
+        ],
         pngs: [
-            // "map/cloud/1/spriteFrame",
-            // "map/cloud/3/spriteFrame",
-            // "map/cloud/4/spriteFrame",
-            // "map/cloud/5/spriteFrame",
-            // "map/cloud/6/spriteFrame",
-            // "map/cloud/7/spriteFrame",
-            // "map/cloud/8/spriteFrame",
-            // "map/cloud/9/spriteFrame",
-            "map/cloud/11/spriteFrame",
-            "map/cloud/12/spriteFrame",
-            "map/cloud/13/spriteFrame",
-            "map/cloud/14/spriteFrame",
-            "map/cloud/15/spriteFrame",
+            17, 11, 18, 14,
+            16, 13, 12, 8,
+            14, 15, 9, 14, 7, 2, 14, 19, 17, 1,
+            13, 21, 17, 13, 17, 7, 4, 13, 18, 10,
+            13, 17, 13, 21, 18, 16, 13, 12, 16, 18,
+            21, 8, 1, 20, 1, 23, 17, 20, 13, 11,
+            14, 7, 16, 4, 17, 13, 22, 14, 21, 15,
+            15, 22, 7, 10, 20, 20, 1, 13, 23, 16,
+            14, 16, 17, 20, 24, 17, 13, 20, 14, 9, 8,
+            10, 2, 11, 14, 5, 19, 10, 17, 7, 5,
+            13, 14, 4, 13, 6,
+            6, 7, 16, 2, 12,
         ]
-    }
+    },
+    mapSp: [
+        { id: 1, path: "spine/map/hdc", names: ["animation"], pos: new Vec3(1750, 330, 10), rect: new Rect(-250, -80, 500, 560) },
+        { id: 2, path: "spine/map/ql", names: ["animation"], pos: new Vec3(2620, 1580, 10), rect: new Rect(-200, -100, 400, 240) },
+        { id: 3, path: "spine/map/xuanwu", names: ["idle"], pos: new Vec3(-2750, 1150, 10), rect: new Rect(-200, -100, 400, 240), scale: new Vec3(-1, 1, 1) },
+        { id: 4, path: "spine/map/shujingling", names: ["idle"], pos: new Vec3(-2040, -120, 10), rect: new Rect(-200, -60, 400, 400) },
+        { id: 5, path: "spine/map/penquan", names: ["animation"], pos: new Vec3(-1400, -980, 10), rect: new Rect(-180, -70, 360, 340) },
+        { id: 6, path: "spine/map/huodui", names: ["animation"], pos: new Vec3(-1080, -1430, 10), rect: new Rect(-200, 0, 400, 300) },
+        { id: 7, path: "spine/map/bh", names: ["forward", "backward", "anger"], pos: new Vec3(-3360, -1620, 10), rect: new Rect(-100, -20, 200, 120), scale: new Vec3(-1, 1, 1) },
+        { id: 8, path: "spine/map/fenghuang", names: ["idle", "idle2"], pos: new Vec3(2750, -1850, 10), rect: new Rect(-200, 0, 400, 300) },
+    ],
 }
