@@ -58,9 +58,9 @@ export class ExamReportView extends BaseView {
         if (this._resultSubmitResponse.pass_flag == 1) {
             this.result_spine.setAnimation(0, "vic", true);
             if (this._resultSubmitResponse) {
-                this._propsData = ObjectUtil.convertAwardsToItemData(this._resultSubmitResponse.award_info);
+                this._propsData = this._resultSubmitResponse.award_info.pass_reward; //ObjectUtil.convertAwardsToItemData(this._resultSubmitResponse.award_info.pass_reward);
             } else {
-                this._propsData = ObjectUtil.convertAwardsToItemData(this._bossLevelResult.award);
+                this._propsData = ObjectUtil.convertAwardsToItemData(this._bossLevelResult.award.pass_reward);
             }
 
             this.reward_scroll.numItems = this._propsData.length;

@@ -1,5 +1,5 @@
 import { _decorator, Component, isValid, Label, Node, Sprite } from 'cc';
-import { MapLevelData, MicroListItem } from '../../../models/AdventureModel';
+import { GateData, MapLevelData, MicroListItem } from '../../../models/AdventureModel';
 import { ObjectUtil } from '../../../util/ObjectUtil';
 import { LoadManager } from '../../../manager/LoadManager';
 const { ccclass, property } = _decorator;
@@ -20,6 +20,7 @@ export class MapPointItem extends Component {
     public levelLabel: Label = null;
 
     public data: MapLevelData | MicroListItem = null;
+    public gateData: GateData = null;
 
     public index: number = 0;
 
@@ -56,8 +57,34 @@ export class MapPointItem extends Component {
                 this.stars[2].getComponent(Sprite).grayscale = false;
             }
         }
+    }
 
-
+    initGateData(data: GateData) {
+        this.gateData = data;
+        this.levelLabel.string = data.big_id + "-" + data.small_id;
+        let bgSp = this.bgNode.getComponent(Sprite);
+        let framePath = `adventure/forest/img_mappoint_${data.big_id}/spriteFrame`;
+        LoadManager.loadSprite(framePath, bgSp);
+        if (!data.can_play) {
+            for (let i = 0; i < this.stars.length; i++) {
+                this.stars[i].active = false;
+            }
+            bgSp.grayscale = true;
+            return;
+        }
+        bgSp.grayscale = false;
+        this.clearPointStars();
+        if (isValid(data.flag_info) && isValid(data.flag_info.star_one)) {
+            if (isValid(data.flag_info.star_one)) {
+                this.stars[0].getComponent(Sprite).grayscale = false;
+            }
+            if (isValid(data.flag_info.star_two)) {
+                this.stars[1].getComponent(Sprite).grayscale = false;
+            }
+            if (isValid(data.flag_info.star_three)) {
+                this.stars[2].getComponent(Sprite).grayscale = false;
+            }
+        }
     }
 
     clearPointStars() {

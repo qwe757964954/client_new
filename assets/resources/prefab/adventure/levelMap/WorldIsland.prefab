@@ -2497,8 +2497,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 200,
-      "height": 22
+      "width": 0,
+      "height": 15
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -2584,7 +2584,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 550,
-      "height": 28
+      "height": 20
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -2685,7 +2685,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 127.157,
+      "x": -96.516,
       "y": 35.124,
       "z": 0
     },
@@ -2790,7 +2790,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -21.885,
+      "x": 0,
       "y": 0,
       "z": 0
     },
@@ -2844,7 +2844,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 0,
+      "x": 50,
       "y": 0,
       "z": 0
     },
@@ -2907,8 +2907,8 @@
     },
     "_lscale": {
       "__type__": "cc.Vec3",
-      "x": 0.1,
-      "y": 0.1,
+      "x": 0.12,
+      "y": 0.13,
       "z": 1
     },
     "_mobility": 0,
@@ -3088,7 +3088,7 @@
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
+      "x": 0,
       "y": 0.5
     },
     "_id": ""
@@ -3167,7 +3167,7 @@
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
+      "x": 0,
       "y": 0.5
     },
     "_id": ""
@@ -3208,7 +3208,7 @@
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
+      "x": 0,
       "y": 0.5
     },
     "_id": ""
@@ -4719,6 +4719,12 @@
     "monsterModel": {
       "__uuid__": "454d1313-bf02-482a-a45a-97ea7e2bc8b4",
       "__expectedType__": "cc.Prefab"
+    },
+    "progressLabel": {
+      "__id__": 101
+    },
+    "progressBar": {
+      "__id__": 105
     },
     "rewardBoxList": {
       "__id__": 143

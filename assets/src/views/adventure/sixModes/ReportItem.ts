@@ -17,9 +17,13 @@ export class ReportItem extends ListItem {
 
     @property(Sprite)
     public icon: Sprite = null;
-
     @property(Label)
     public num_text: Label = null;
+    @property([Node])
+    stars: Node[] = [];
+
+    @property(Node)
+    starNode: Node = null;
 
     start() {
 
@@ -28,6 +32,23 @@ export class ReportItem extends ListItem {
     updateItemProps(data: ItemData) {
         this.loadShow(data.id);
         this.num_text.string = `x${data.num}`;
+        if (!data.from) {
+            this.starNode.active = false;
+        } else {
+            this.starNode.active = true;
+            if (data.from == "star_one_reward") { //一星奖励
+                this.stars[0].active = true;
+            } else if (data.from == "star_two_reward") { //二星奖励
+                this.stars[0].active = true;
+                this.stars[1].active = true;
+            } else if (data.from == "star_three_reward") {
+                this.stars[0].active = true;
+                this.stars[1].active = true;
+                this.stars[2].active = true;
+            } else {
+                this.starNode.active = false;
+            }
+        }
     }
 
     /**加载显示 */

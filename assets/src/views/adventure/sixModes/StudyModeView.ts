@@ -175,6 +175,7 @@ export class StudyModeView extends BaseModeView {
 
     //拆分部分点击
     onSplitItemClick(item: Node, idx: number) {
+        if (this._isCombine) return;
         if (this._isSplitPlaying || idx != this._currentSplitIdx) {
             item.getComponent(Shake).shakeNode();
             return;
@@ -203,6 +204,7 @@ export class StudyModeView extends BaseModeView {
         let total = this._spliteItems.length;
         let halfIdx = (total % 2 == 0) ? (Math.ceil(total / 2) - 0.5) : ((total + 1) / 2 - 1);
         for (let i = 0; i < this._spliteItems.length; i++) {
+            this._spliteItems[i].getComponent(Shake).stopShake();
             if (total % 2 != 0 && i == halfIdx) continue;
             let oldPos = this._spliteItems[i].position;
             targetX = i < halfIdx ? (oldPos.x + 35 * (halfIdx - i)) : (oldPos.x - 35 * (i - halfIdx));

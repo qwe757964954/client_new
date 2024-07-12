@@ -1,6 +1,6 @@
 import { Component, Label, Node, Sprite, SpriteFrame, _decorator } from 'cc';
 import { ItemID } from '../../export/ItemConfig';
-import { DataMgr } from '../../manager/DataMgr';
+import { DataMgr, ItemData } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
 const { ccclass, property } = _decorator;
 
@@ -16,12 +16,9 @@ export class BaseItem extends Component {
     @property({ type: [Node], tooltip: "星星" })
     public allStars: Node[] = [];
 
-    setData(data: { id: number, num: number, star: number }) {
+    setData(data: ItemData) {
         this.loadShow(data.id);
         this.numTxt.string = data.num.toString();
-        for (let i = 0; i < 3; i++) {
-            this.allStars[i].active = i < data.star;
-        }
     }
 
     /**加载显示 */

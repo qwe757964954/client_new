@@ -2,13 +2,13 @@ import { _decorator, BlockInputEvents, Button, Color, instantiate, isValid, Labe
 import { EventType } from '../../../config/EventType';
 import { GameRes } from '../../../GameRes';
 import GlobalConfig from '../../../GlobalConfig';
-import { AdvLevelConfig, BookLevelConfig } from '../../../manager/DataMgr';
+import { BookLevelConfig, DataMgr } from '../../../manager/DataMgr';
 import { inf_SpineAniCreate } from '../../../manager/InterfaceDefines';
 import { LoadManager } from '../../../manager/LoadManager';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { SoundMgr } from '../../../manager/SoundMgr';
 import { ViewsMgr } from '../../../manager/ViewsManager';
-import { AdventureCollectWordModel, AdventureResult, AdventureResultModel, GameMode, WordsDetailData } from '../../../models/AdventureModel';
+import { AdventureCollectWordModel, AdventureResult, AdventureResultModel, GameMode, GateData, WordsDetailData } from '../../../models/AdventureModel';
 import { s2cReviewPlanSubmit } from '../../../models/NetModel';
 import { PetModel } from '../../../models/PetModel';
 import { RoleBaseModel } from '../../../models/RoleBaseModel';
@@ -116,7 +116,7 @@ export class BaseModeView extends BaseView {
         if (null != this._levelData.source_type) {
             this._sourceType = this._levelData.source_type;
         } else {
-            let isAdventure = this._levelData.hasOwnProperty('bigId'); //是否是大冒险关卡
+            let isAdventure = this._levelData.hasOwnProperty('big_id'); //是否是大冒险关卡
             this._sourceType = isAdventure ? WordSourceType.word_game : WordSourceType.classification;
         }
 
@@ -148,7 +148,7 @@ export class BaseModeView extends BaseView {
             }
             this._rightNum = this._wordIndex;
         } else if (WordSourceType.word_game == this._sourceType) {
-            let levelData = this._levelData as AdvLevelConfig;
+            let levelData = this._levelData as GateData;
             let progressData = levelData.progressData;
             let costTime = progressData.cost_time;
             this._remainTime = Math.round((this._totalTime - costTime) / 1000);
@@ -169,7 +169,7 @@ export class BaseModeView extends BaseView {
                 }
             } else {
                 this._wordIndex = 0;
-                levelData.mapLevelData.current_mode = this.gameMode;
+                levelData.current_mode = this.gameMode;
                 levelData.progressData.error_word = null;
                 const uniqueWordList: UnitWordModel[] = Object["values"](wordsdata.reduce((acc, curr) => {
                     acc[curr.word] = curr;
@@ -195,8 +195,10 @@ export class BaseModeView extends BaseView {
             this.schedule(this.onTimer, 1);
             this.timeLabel.color = Color.WHITE;
         } else {
-            this.timeLabel.string = "已超时";
-            this.timeLabel.color = Color.RED;
+            if (this.gameMode != GameMode.Exam) {
+                this.timeLabel.string = "已超时";
+                this.timeLabel.color = Color.RED;
+            }
         }
         this._errorNum = levelData.error_num;
         this.errorNumLabel.string = "错误次数:" + this._errorNum;
@@ -221,7 +223,7 @@ export class BaseModeView extends BaseView {
             }
         }
         if (WordSourceType.word_game == this._sourceType) {
-            let levelData = this._levelData as AdvLevelConfig;
+            let levelData = this._levelData as GateData;
             // levelData.progressData.time_remaining = this._remainTime;
             levelData.progressData.cost_time += 1000;
         } else if (WordSourceType.classification == this._sourceType) {
@@ -263,11 +265,12 @@ export class BaseModeView extends BaseView {
     async initMonster() {
         //单词大冒险关卡
         if (WordSourceType.word_game == this._sourceType) {
-            let lvData = this._levelData as AdvLevelConfig;
+            let lvData = this._levelData as GateData;
             this._monster = instantiate(this.monsterModel);
             this.monster.addChild(this._monster);
             let monsterModel = this._monster.getComponent(MonsterModel);
-            monsterModel.init("spine/monster/adventure/" + lvData.monsterAni, true);
+            let monsterData = DataMgr.getMonsterData(lvData.monster_id);
+            monsterModel.init("spine/monster/adventure/" + monsterData.monsterAni, true);
             let totalHp = this.gameMode == GameMode.Exam ? this._wordsData.length : this._wordsData.length * 5;
             monsterModel.setHp(this._wordsData.length * this._hpLevels[this.gameMode] + this._rightNum, totalHp);
             if (this.gameMode == GameMode.Exam) {
@@ -285,7 +288,8 @@ export class BaseModeView extends BaseView {
                 let monster = instantiate(this.smallMonsterModel);
                 sPoint.addChild(monster);
                 let monsterModel = monster.getComponent(SmallMonsterModel);
-                monsterModel.init("spine/monster/adventure/" + lvData.miniMonsterAni).then(() => {
+                let monsterData = DataMgr.getMonsterData(lvData.monster_id);
+                monsterModel.init("spine/monster/adventure/" + monsterData.miniMonsterAni).then(() => {
                     if (i < this._rightNum) {
                         monsterModel.die();
                     }
@@ -355,13 +359,12 @@ export class BaseModeView extends BaseView {
     onGameSubmit(word: string, isRight: boolean, wordData?: any, answer?: string) {
         /**单词上报仅限教材单词 */
         if (WordSourceType.word_game == this._sourceType) {
-            let levelData = this._levelData as AdvLevelConfig;
+            let levelData = this._levelData as GateData;
             let costTime = Date.now() - this._costTime;
             let params: AdventureResultModel = {
-                big_id: levelData.bigId,
-                small_id: levelData.smallId,
-                micro_id: levelData.mapLevelData.micro_id,
-                game_mode: levelData.mapLevelData.current_mode,
+                big_id: levelData.big_id,
+                small_id: levelData.small_id,
+                game_mode: levelData.current_mode,
                 cost_time: costTime,
                 status: isRight ? 1 : 0,
                 word: word
@@ -487,11 +490,10 @@ export class BaseModeView extends BaseView {
             this._currentSubmitResponse = data;
             this._upResultSucce = true;
             if (data.pass_flag == 1 && WordSourceType.word_game == this._sourceType) { //大冒险关卡
-                let levelData = this._levelData as AdvLevelConfig;
+                let levelData = this._levelData as GateData;
                 let pointData: any = {};
-                pointData.big_id = levelData.mapLevelData.big_id;
-                pointData.small_id = levelData.mapLevelData.small_id;
-                pointData.micro_id = levelData.mapLevelData.micro_id;
+                pointData.big_id = levelData.big_id;
+                pointData.small_id = levelData.small_id;
                 pointData.star = data.star_num;
                 EventManager.emit(EventType.Update_MapPoint, pointData);
             }

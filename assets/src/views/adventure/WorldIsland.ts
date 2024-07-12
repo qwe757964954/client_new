@@ -1,6 +1,6 @@
-import { _decorator, Button, Component, director, instantiate, Node, Prefab, UITransform, Vec2, Vec3 } from 'cc';
+import { _decorator, Button, Component, director, instantiate, Label, Node, Prefab, UITransform, Vec2, Vec3 } from 'cc';
 import { EventType } from '../../config/EventType';
-import { BossLevelData, BossLevelTopicData, IslandProgressModel, MapLevelData, MicroListItem } from '../../models/AdventureModel';
+import { BossLevelData, BossLevelTopicData, GateData, IslandProgressModel, MapLevelData, MicroListItem, ProgressRewardData, UnitListData } from '../../models/AdventureModel';
 import CCUtil from '../../util/CCUtil';
 import EventManager, { EventMgr } from '../../util/EventManager';
 import List from '../../util/list/List';
@@ -52,6 +52,10 @@ export class WorldIsland extends Component {
     public monsterContainer: Node = null;
     @property({ type: Prefab, tooltip: "怪物模型" })
     public monsterModel: Prefab = null;
+    @property({ type: Label, tooltip: "进度Label" })
+    public progressLabel: Label = null;
+    @property(Node)
+    public progressBar: Node = null;
 
     protected _pet: Node = null; //精灵
     protected _role: Node = null; //人物
@@ -60,7 +64,7 @@ export class WorldIsland extends Component {
 
     private _bigId: number = 1; //岛屿id
     private _mapBaseCounts: number[] = [12, 9, 8]; //地图点数量
-    private _mapLevelsData: MicroListItem[][] = [];
+    private _mapLevelsData: GateData[][] = [];
     private static mapPoints: Map<number, number[][]> = null; //各岛屿地图点坐标
 
     private _mapPointClickEvId: string;
@@ -70,11 +74,11 @@ export class WorldIsland extends Component {
     private _progressData: IslandProgressModel = null;
 
     private _isRequest: boolean = false; //是否请求中
-    private _currentPos: MicroListItem;
+    private _currentPos: GateData;
 
     @property(List)
     rewardBoxList: List = null;
-    private _progressRewards: any[] = [1, 2, 3, 4];
+    private _progressRewards: ProgressRewardData[] = [];
     start() {
         this.initUI();
         this.initEvent();
@@ -83,9 +87,9 @@ export class WorldIsland extends Component {
     setPointsData(bigId: number, progresssData: IslandProgressModel) {
         this._progressData = progresssData;
         this._bigId = bigId;
-        this._passNum = progresssData.micro_pass_num;
+        this._passNum = progresssData.gate_pass_num;
         this.initBoss();
-        let pointsData = progresssData.micro_list;
+        let pointsData = progresssData.gate_list;
         //分割数组
         this._mapLevelsData = [];
         let baseCount = this._mapBaseCounts[bigId - 1]
@@ -106,9 +110,15 @@ export class WorldIsland extends Component {
         console.log('地图宽度', transform.width);
 
         if (this._currentPos) {
-            this.skipToMapPoint(this._bigId, this._currentPos.small_id, this._currentPos.micro_id);
+            this.skipToMapPoint(this._bigId, this._currentPos.big_id, this._currentPos.small_id);
         }
 
+        this.progressLabel.string = this._progressData.gate_pass_num + "/" + this._progressData.gate_total_num;
+        this.progressBar.getComponent(UITransform).width = this._progressData.gate_pass_num / this._progressData.gate_total_num * 545;
+        this._progressRewards = this._progressData.progress_reward_list;
+        this.rewardBoxList.numItems = this._progressRewards.length;
+
+        ServiceMgr.studyService.getWordGameUnits(this._bigId);
     }
 
     mapPointClick(data: MapLevelData) {
@@ -127,12 +137,12 @@ export class WorldIsland extends Component {
             this.roleAniContainer.position = new Vec3(pos.x - 150, pos.y, 0);
             posData.map.setAniNode(this.roleAniContainer);
 
-            let levelData = DataMgr.instance.getAdvLevelConfig(+posData.pointData.big_id, +posData.pointData.small_id);
             if (!this._monster) {
                 this.initMonster();
             }
+            let monsterData = DataMgr.getMonsterData(posData.pointData.monster_id);
             let monsterModel = this._monster.getComponent(MonsterModel);
-            monsterModel.init("spine/monster/adventure/" + levelData.monsterAni);
+            monsterModel.init("spine/monster/adventure/" + monsterData.monsterAni);
             this.monsterContainer.position = new Vec3(pos.x + 100, pos.y, 0);
             posData.map.setMonsterNode(this.monsterContainer);
 
@@ -141,8 +151,6 @@ export class WorldIsland extends Component {
         //最后一个地图添加岛屿boss
         if (idx == this._mapLevelsData.length - 1) {
             item.getComponent(IslandMap).setBossNode(this.bossContainer);
-            let monsterModel = this._boss.getComponent(MonsterModel);
-            monsterModel.idle();
         }
     }
 
@@ -151,7 +159,7 @@ export class WorldIsland extends Component {
         let points = WorldIsland.getMapPointsByBigId(big_id);
         for (let i = 0; i < this._mapLevelsData.length; i++) {
             for (let j = 0; j < this._mapLevelsData[i].length; j++) {
-                if (this._mapLevelsData[i][j].big_id == big_id && this._mapLevelsData[i][j].small_id == small_id && this._mapLevelsData[i][j].micro_id == micro_id) {
+                if (this._mapLevelsData[i][j].big_id == big_id && this._mapLevelsData[i][j].big_id == big_id && this._mapLevelsData[i][j].small_id == small_id) {
                     skipPosX = i * 2145 + points[j][0] - 250;
                     this.mapPointList.scrollView.scrollToOffset(new Vec2(skipPosX, 0));
                     return;
@@ -160,14 +168,14 @@ export class WorldIsland extends Component {
         }
     }
 
-    updatePointData(big_id: number, small_id: number, micro_id: number, star: number) {
+    updatePointData(big_id: number, small_id: number, star: number) {
         let mapoint = null;
-        let microList = this._progressData.micro_list;
+        let gateList = this._progressData.gate_list;
         let currentIdx = -1;
-        for (let i = 0; i < microList.length; i++) {
-            if (microList[i].big_id == big_id && microList[i].small_id == small_id && microList[i].micro_id == micro_id) {
+        for (let i = 0; i < gateList.length; i++) {
+            if (gateList[i].big_id == big_id && gateList[i].small_id == small_id) {
                 currentIdx = i;
-                mapoint = microList[i];
+                mapoint = gateList[i];
                 break;
             }
         }
@@ -188,9 +196,10 @@ export class WorldIsland extends Component {
             mapoint.flag = 1;
             if (currentIdx == this._passNum) { //是否是当前进度关卡
                 this._passNum++;
-                if (this._passNum < microList.length) {
-                    microList[this._passNum].can_play = 1;
+                if (this._passNum < gateList.length) {
+                    gateList[this._passNum].can_play = 1;
                 }
+                this._progressData.gate_pass_num = this._passNum;
             }
             this.mapPointList.numItems = this._mapLevelsData.length;
             let transform = this.mapContent.getComponent(UITransform);
@@ -204,33 +213,34 @@ export class WorldIsland extends Component {
                 }
             }
             console.log('地图宽度', transform.width);
+            this.rewardBoxList.numItems = this._progressRewards.length;
         }
     }
 
-    getNextLevelData(big_id: number, small_id: number, micro_id: number): MicroListItem {
+    getNextLevelData(big_id: number, small_id: number): GateData {
         let currentIdx = -1;
-        let microList = this._progressData.micro_list;
-        let nextPoint: MicroListItem = null;
+        let gateList = this._progressData.gate_list;
+        let nextPoint: GateData = null;
         //找到当前地图点
-        for (let i = 0; i < microList.length; i++) {
-            if (microList[i].big_id == big_id && microList[i].small_id == small_id && microList[i].micro_id == micro_id) {
+        for (let i = 0; i < gateList.length; i++) {
+            if (gateList[i].big_id == big_id && gateList[i].small_id == small_id) {
                 currentIdx = i;
                 break;
             }
         }
         if (currentIdx == -1) return null;
-        if (currentIdx == microList.length - 1) { //岛屿通关
+        if (currentIdx == gateList.length - 1) { //岛屿通关
             ViewsMgr.showTip("已通关第" + big_id + "岛屿");
             return null;
         } else {
             currentIdx++;
-            nextPoint = microList[currentIdx];
+            nextPoint = gateList[currentIdx];
         }
         return nextPoint;
     }
 
-    onUpdatePoint(data: { big_id: number, small_id: number, micro_id: number, star: number }) {
-        this.updatePointData(data.big_id, data.small_id, data.micro_id, data.star);
+    onUpdatePoint(data: { big_id: number, small_id: number, star: number }) {
+        this.updatePointData(data.big_id, data.small_id, data.star);
     }
 
     static initMapPoints() {
@@ -257,7 +267,6 @@ export class WorldIsland extends Component {
 
         this.initPet();
         this.initRole();
-        this.rewardBoxList.numItems = this._progressRewards.length;
         // this.initMonster();
     }
 
@@ -285,8 +294,8 @@ export class WorldIsland extends Component {
         this._boss = instantiate(this.monsterModel);
         this.bossContainer.addChild(this._boss);
         let monsterModel = this._boss.getComponent(MonsterModel);
-        let levelData: BossLevelData = DataMgr.getIslandBossConfig(this._bigId);
-        monsterModel.init("spine/monster/adventure/" + levelData.bossAni);
+        let islandData = DataMgr.getIslandData(this._bigId);
+        monsterModel.init("spine/monster/adventure/" + islandData.bossAni);
     }
 
     challangeBoss() {
@@ -318,7 +327,11 @@ export class WorldIsland extends Component {
     }
 
     onMapRewardBoxRender(item: Node, index: number) {
-        item.getComponent(MapRewardBoxItem).setData(this._progressRewards[index]);
+        item.getComponent(MapRewardBoxItem).setData(this._progressRewards[index], this._progressData.gate_pass_num);
+    }
+
+    onGetUnits(data: UnitListData) {
+        console.log("onGetUnits", data);
     }
 
     /**初始化监听事件 */
@@ -332,6 +345,7 @@ export class WorldIsland extends Component {
         this._mapPointUpdateEvId = EventManager.on(EventType.Update_MapPoint, this.onUpdatePoint.bind(this));
         EventMgr.addListener(InterfacePath.BossLevel_Topic, this.onGetBossLevelTopic, this);
         EventMgr.addListener(EventType.Enter_Boss_Level, this.enterBossLevel, this);
+        EventMgr.addListener(InterfacePath.WordGame_UnitList, this.onGetUnits, this);
     }
     /**移除监听 */
     private removeEvent() {
@@ -341,8 +355,10 @@ export class WorldIsland extends Component {
         CCUtil.offTouch(this._boss, this.challangeBoss, this);
         EventManager.off(EventType.MapPoint_Click, this._mapPointClickEvId);
         EventManager.off(EventType.Update_MapPoint, this._mapPointUpdateEvId);
+
         EventMgr.removeListener(InterfacePath.BossLevel_Topic, this);
         EventMgr.removeListener(EventType.Enter_Boss_Level, this);
+        EventMgr.removeListener(InterfacePath.WordGame_UnitList, this);
     }
 
     onBtnDetailsClick() {
@@ -362,7 +378,7 @@ export class WorldIsland extends Component {
                     width += 2145;
                 }
             }
-            this.skipToMapPoint(this._bigId, this._currentPos.small_id, this._currentPos.micro_id);
+            this.skipToMapPoint(this._bigId, this._currentPos.big_id, this._currentPos.small_id);
             this.mapPointList.updateAll();
             transform.width = width;
         }

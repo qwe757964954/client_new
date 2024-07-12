@@ -7,7 +7,7 @@ export class Shake extends Component {
     private shakeTween: Tween<Node> | null = null;
     private _isShaking: boolean = false;
     start() {
-
+        this.originalPosition = null;
     }
 
     /** 抖动
@@ -33,6 +33,7 @@ export class Shake extends Component {
     }
 
     stopShake() {
+        this.unscheduleAllCallbacks();
         this._isShaking = false;
         if (this.shakeTween) {
             this.shakeTween.stop();
@@ -40,6 +41,7 @@ export class Shake extends Component {
         }
         if (this.node && this.originalPosition) {
             this.node.setPosition(this.originalPosition); // 确保回到原来的位置
+            this.originalPosition = null;
         }
     }
 }

@@ -4,7 +4,7 @@ import { PrefabType } from '../../config/PrefabType';
 import GlobalConfig from '../../GlobalConfig';
 import { DataMgr } from '../../manager/DataMgr';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
-import { GameMode, IslandProgressModel, IslandStatusData, LevelProgressData, MapLevelData } from '../../models/AdventureModel';
+import { GameMode, GateData, IslandProgressModel, IslandStatusData, LevelProgressData, MapLevelData } from '../../models/AdventureModel';
 import { UnitWordModel } from '../../models/TextbookModel';
 import { InterfacePath } from '../../net/InterfacePath';
 import { ServiceMgr } from '../../net/ServiceManager';
@@ -46,7 +46,7 @@ export class WorldMapView extends Component {
     private _enterTestEveId: string; //进入测试
 
     private _currentIslandID: number = 0;//当前岛屿id
-    private _currentLevelData: MapLevelData = null;//当前关卡数据
+    private _currentLevelData: GateData = null;//当前关卡数据
     private _levelProgressData: LevelProgressData = null; //当前关卡进度
 
     private _getingIslandStatus: boolean = false;//是否正在获取岛屿状态
@@ -144,7 +144,7 @@ export class WorldMapView extends Component {
     }
 
     //进入关卡
-    private enterLevel(data: MapLevelData) {
+    private enterLevel(data: GateData) {
         if (this._getingWords) {
             console.log('正在获取单词中', data);
             return;
@@ -153,11 +153,11 @@ export class WorldMapView extends Component {
         this._currentLevelData = data;
         // this._currentLevelData.current_mode = GameMode.Study;
         this._getingWords = true;
-        ServiceMgr.studyService.getAdvLevelProgress(data.big_id, data.small_id, data.micro_id, 1);
+        ServiceMgr.studyService.getAdvLevelProgress(data.big_id, data.small_id, data.subject_id, 1);
     }
 
     //进入关卡测试
-    enterTest(data: MapLevelData) {
+    enterTest(data: GateData) {
         // ViewsMgr.showTip("测评模式暂未开放");
         // return;
         if (this._getingWords) {
@@ -173,7 +173,7 @@ export class WorldMapView extends Component {
         //     this._levelProgressData.game_mode = GameMode.Exam;
         //     ServiceMgr.studyService.getWordGameWords(this._currentLevelData.big_id, this._currentLevelData.small_id, this._currentLevelData.micro_id);
         // } else {
-        ServiceMgr.studyService.getAdvLevelProgress(this._currentLevelData.big_id, this._currentLevelData.small_id, this._currentLevelData.micro_id, 2);
+        ServiceMgr.studyService.getAdvLevelProgress(this._currentLevelData.big_id, this._currentLevelData.small_id, this._currentLevelData.subject_id, 2);
         // }
     }
 
@@ -186,14 +186,14 @@ export class WorldMapView extends Component {
         if (this._currentLevelData.current_mode != GameMode.Exam) { //不是测试模式
             this._currentLevelData.current_mode = this._levelProgressData.game_mode;
         }
-        ServiceMgr.studyService.getWordGameWords(this._currentLevelData.big_id, this._currentLevelData.small_id, this._currentLevelData.micro_id);
+        ServiceMgr.studyService.getWordGameWords(this._currentLevelData.big_id, this._currentLevelData.small_id);
     }
 
     goNextLevel() {
         if (!this._currentIsland) return;
         this._getingIslandStatus = false;
         this._currentLevelData = null;
-        let nextLevel = this._currentIsland.getComponent(WorldIsland).getNextLevelData(this._levelProgressData.big_id, this._levelProgressData.small_id, this._levelProgressData.micro_id);
+        let nextLevel = this._currentIsland.getComponent(WorldIsland).getNextLevelData(this._levelProgressData.big_id, this._levelProgressData.small_id);
         if (nextLevel) {
             this.enterLevel(nextLevel);
         }
@@ -215,39 +215,37 @@ export class WorldMapView extends Component {
         }
         this._getingWords = false;
         let gameMode = this._currentLevelData.current_mode;
-        let levelData = DataMgr.instance.getAdvLevelConfig(this._currentIslandID, this._currentLevelData.small_id);
-        levelData.mapLevelData = this._currentLevelData;
-        levelData.progressData = this._levelProgressData;
-        levelData.error_num = this._levelProgressData.err_num;
+        this._currentLevelData.progressData = this._levelProgressData;
+        this._currentLevelData.error_num = this._levelProgressData.err_num;
         switch (gameMode) {
             case GameMode.Study:
                 ViewsManager.instance.showView(PrefabType.StudyModeView, (node: Node) => {
-                    node.getComponent(StudyModeView).initData(data, levelData);
+                    node.getComponent(StudyModeView).initData(data, this._currentLevelData);
                 });
                 break;
             case GameMode.WordMeaning:
                 ViewsManager.instance.showView(PrefabType.WordMeaningView, (node: Node) => {
-                    node.getComponent(WordMeaningView).initData(data, levelData);
+                    node.getComponent(WordMeaningView).initData(data, this._currentLevelData);
                 });
                 break;
             case GameMode.Practice:
                 ViewsManager.instance.showView(PrefabType.WordPracticeView, (node: Node) => {
-                    node.getComponent(WordPracticeView).initData(data, levelData);
+                    node.getComponent(WordPracticeView).initData(data, this._currentLevelData);
                 });
                 break;
             case GameMode.Spelling:
                 ViewsManager.instance.showView(PrefabType.WordSpellView, (node: Node) => {
-                    node.getComponent(WordSpellView).initData(data, levelData);
+                    node.getComponent(WordSpellView).initData(data, this._currentLevelData);
                 });
                 break;
             case GameMode.Reading:
                 ViewsManager.instance.showView(PrefabType.WordReadingView, (node: Node) => {
-                    node.getComponent(WordReadingView).initData(data, levelData);
+                    node.getComponent(WordReadingView).initData(data, this._currentLevelData);
                 });
                 break;
             case GameMode.Exam: //测试模式
                 ViewsManager.instance.showView(PrefabType.WordExamView, (node: Node) => {
-                    node.getComponent(WordExamView).initData(data, levelData);
+                    node.getComponent(WordExamView).initData(data, this._currentLevelData);
                 });
                 break;
             default:
