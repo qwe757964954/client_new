@@ -254,13 +254,13 @@ export class ViewsManager {
         ViewsManager.instance.showTip(content, callBack);
     }
     // 显示确定弹窗
-    public async showConfirm(content: string, sureCall?: Function, cancelCall?: Function) {
-        let node:Node = await this.showPopup(PrefabType.ConfirmView);
+    public async showConfirm(content: string, sureCall?: Function, cancelCall?: Function, sureStr?: string, cancelStr?: string, canClose: boolean = true) {
+        let node: Node = await this.showPopup(PrefabType.ConfirmView);
         let nodeScript: ConfirmView = node.getComponent(ConfirmView);
-        nodeScript.getComponent(ConfirmView).init(content, sureCall, cancelCall);
+        nodeScript.getComponent(ConfirmView).init(content, sureCall, cancelCall, sureStr, cancelStr, canClose);
     }
-    static showConfirm(content: string, sureCall?: Function, cancelCall?: Function) {
-        ViewsManager.instance.showConfirm(content, sureCall, cancelCall);
+    static showConfirm(content: string, sureCall?: Function, cancelCall?: Function, sureStr?: string, cancelStr?: string, canClose: boolean = true) {
+        ViewsManager.instance.showConfirm(content, sureCall, cancelCall, sureStr, cancelStr, canClose);
     }
     /**
      * 显示奖励弹窗

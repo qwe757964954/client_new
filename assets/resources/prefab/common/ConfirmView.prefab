@@ -1646,6 +1646,12 @@
     "btnCancel": {
       "__id__": 37
     },
+    "labelSure": {
+      "__id__": 27
+    },
+    "labelCancel": {
+      "__id__": 41
+    },
     "_id": ""
   },
   {

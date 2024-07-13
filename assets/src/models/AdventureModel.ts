@@ -323,7 +323,6 @@ export class c2sGetProgressReward {
     big_id: number;
     pass_count: number;
 }
-
 export class ProgressRewardReply extends BaseRepPacket {
     pass_reward: ItemData[];
 }
@@ -333,12 +332,86 @@ export class c2sGetUnitList {
     command_id: string = InterfacePath.WordGame_UnitList;
     big_id: number;
 }
-
 export class UnitListData extends BaseRepPacket {
-    data: UnitData[];
+    unit_info_dict: any;
 }
-
 export class UnitData {
     big_id: number;
     unit: string;
+    status: number;
+}
+
+//关卡重新开始
+export class c2sWordGameLevelRestart {
+    command_id: string = InterfacePath.WordGame_LevelRestart;
+    big_id: number;
+    small_id: number;
+}
+export class LevelRestartData extends BaseRepPacket {
+
+}
+
+//获取大冒险单元单词
+export class c2sWordGameUnitWords {
+    command_id: string = InterfacePath.WordGame_UnitWords;
+    big_id: number;
+    unit: string;
+}
+export class WordGameUnitWordReply extends BaseRepPacket {
+    word_list: UnitWord[] = [];
+}
+export class UnitWord {
+    w_id: string;
+    big_id: number;
+    small_id: number;
+    subject_id: number;
+    word: string;
+    cn: string;
+    image_url: string;
+    symbol: string;
+}
+
+//获取大冒险主题
+export class c2sWordGameSubject {
+    command_id: string = InterfacePath.WordGame_Subject;
+    subject_id: number;
+}
+export class WordGameSubjectReply extends BaseRepPacket {
+    subject: Subject;
+    word_list: UnitWord[];
+}
+export class Subject {
+    big_id: number;
+    subject_id: number;
+    subject_name: string;
+    sentence_knowledge: string;
+}
+
+//大冒险主题ai文章列表
+export class c2sSubjectArticleList {
+    command_id: string = InterfacePath.Subject_ArticleList;
+    subject_id: number;
+}
+export class SubjectArticleListReply extends BaseRepPacket {
+    article_list: Article[];
+}
+export class Article {
+    article_id: number;
+    subject_id: number;
+    article: string;
+    create_time: string;
+}
+
+//大冒险文章题目列表
+export class c2sArticleExercisesList {
+    command_id: string = InterfacePath.Article_ExercisesList;
+    subject_id: number;
+    article_id: number;
+}
+export class ArticleExercisesListReply extends BaseRepPacket {
+    exercises_list: ArticleExercise[];
+}
+export class ArticleExercise {
+    se_id: string;
+    content: string;
 }

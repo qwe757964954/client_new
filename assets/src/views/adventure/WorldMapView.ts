@@ -4,7 +4,7 @@ import { PrefabType } from '../../config/PrefabType';
 import GlobalConfig from '../../GlobalConfig';
 import { DataMgr } from '../../manager/DataMgr';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
-import { GameMode, GateData, IslandProgressModel, IslandStatusData, LevelProgressData, MapLevelData } from '../../models/AdventureModel';
+import { GameMode, GateData, IslandProgressModel, IslandStatusData, LevelProgressData, LevelRestartData, MapLevelData } from '../../models/AdventureModel';
 import { UnitWordModel } from '../../models/TextbookModel';
 import { InterfacePath } from '../../net/InterfacePath';
 import { ServiceMgr } from '../../net/ServiceManager';
@@ -151,7 +151,6 @@ export class WorldMapView extends Component {
         }
         console.log('进入关卡', data);
         this._currentLevelData = data;
-        // this._currentLevelData.current_mode = GameMode.Study;
         this._getingWords = true;
         ServiceMgr.studyService.getAdvLevelProgress(data.big_id, data.small_id, data.subject_id, 1);
     }
@@ -186,7 +185,27 @@ export class WorldMapView extends Component {
         if (this._currentLevelData.current_mode != GameMode.Exam) { //不是测试模式
             this._currentLevelData.current_mode = this._levelProgressData.game_mode;
         }
-        ServiceMgr.studyService.getWordGameWords(this._currentLevelData.big_id, this._currentLevelData.small_id);
+        if (this._levelProgressData.pass_num != 0) {
+            ViewsMgr.showConfirm("是否继续上次闯关进度?", () => {
+                ServiceMgr.studyService.getWordGameWords(this._currentLevelData.big_id, this._currentLevelData.small_id);
+            }, () => {
+                // this._getingWords = false;
+                ServiceMgr.studyService.wordGameLevelRestart(this._currentLevelData.big_id, this._currentLevelData.small_id);
+            }, "延续上次", "重新开始", false);
+        } else {
+            ServiceMgr.studyService.getWordGameWords(this._currentLevelData.big_id, this._currentLevelData.small_id);
+        }
+    }
+
+    levelRestart(data: LevelRestartData) {
+        console.log("LevelRestartData", data);
+        if (data.code == 200) {
+            let category = this._currentLevelData.current_mode == GameMode.Exam ? 2 : 1;
+            ServiceMgr.studyService.getAdvLevelProgress(this._currentLevelData.big_id, this._currentLevelData.small_id, this._currentLevelData.subject_id, category);
+        } else {
+            ViewsManager.showTip(data.msg);
+            this._getingWords = false;
+        }
     }
 
     goNextLevel() {
@@ -268,6 +287,7 @@ export class WorldMapView extends Component {
         EventMgr.addListener(EventType.Enter_Level_Test, this.enterTest, this);
         EventMgr.addListener(EventType.Goto_Textbook_Next_Level, this.goNextLevel, this);
         EventMgr.addListener(EventType.Goto_Exam_Mode, this.goExamMode, this);
+        EventMgr.addListener(InterfacePath.WordGame_LevelRestart, this.levelRestart, this);
         CCUtil.onTouch(this.btn_back.node, this.onBtnBackClick, this)
 
     }
@@ -286,6 +306,7 @@ export class WorldMapView extends Component {
         EventMgr.removeListener(EventType.Enter_Level_Test, this);
         EventMgr.removeListener(EventType.Goto_Textbook_Next_Level, this);
         EventMgr.removeListener(EventType.Goto_Exam_Mode, this);
+        EventMgr.removeListener(InterfacePath.WordGame_LevelRestart, this);
         CCUtil.offTouch(this.btn_back.node, this.onBtnBackClick, this)
 
     }

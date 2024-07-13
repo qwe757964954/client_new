@@ -1,6 +1,6 @@
 import { _decorator, Button, Component, director, instantiate, Label, Node, Prefab, UITransform, Vec2, Vec3 } from 'cc';
 import { EventType } from '../../config/EventType';
-import { BossLevelData, BossLevelTopicData, GateData, IslandProgressModel, MapLevelData, MicroListItem, ProgressRewardData, UnitListData } from '../../models/AdventureModel';
+import { BossLevelData, BossLevelTopicData, GateData, IslandProgressModel, MapLevelData, MicroListItem, ProgressRewardData, UnitData, UnitListData, WordGameUnitWordReply } from '../../models/AdventureModel';
 import CCUtil from '../../util/CCUtil';
 import EventManager, { EventMgr } from '../../util/EventManager';
 import List from '../../util/list/List';
@@ -15,6 +15,7 @@ import { DataMgr } from '../../manager/DataMgr';
 import { WordBossView } from './sixModes/WordBossView';
 import { MonsterModel } from './common/MonsterModel';
 import { MapRewardBoxItem } from './levelmap/MapRewardBoxItem';
+import { UnitItem } from './common/UnitItem';
 const { ccclass, property } = _decorator;
 
 /**魔法森林 何存发 2024年4月9日17:51:36 */
@@ -56,6 +57,9 @@ export class WorldIsland extends Component {
     public progressLabel: Label = null;
     @property(Node)
     public progressBar: Node = null;
+    @property(List)
+    public unitList: List = null;
+    private _unitDatas: UnitData[] = [];
 
     protected _pet: Node = null; //精灵
     protected _role: Node = null; //人物
@@ -75,6 +79,8 @@ export class WorldIsland extends Component {
 
     private _isRequest: boolean = false; //是否请求中
     private _currentPos: GateData;
+
+    private _isGetUnitWords: boolean = false; //是否正在获取单元单词
 
     @property(List)
     rewardBoxList: List = null;
@@ -332,6 +338,39 @@ export class WorldIsland extends Component {
 
     onGetUnits(data: UnitListData) {
         console.log("onGetUnits", data);
+        if (data.code != 200) {
+            ViewsManager.showTip(data.msg);
+            return;
+        }
+        this._unitDatas = [];
+        for (let k in data.unit_info_dict) {
+            this._unitDatas.push({
+                big_id: data.unit_info_dict[k].big_id,
+                status: data.unit_info_dict[k].status,
+                unit: data.unit_info_dict[k].unit
+            });
+        }
+        this.unitList.numItems = this._unitDatas.length;
+    }
+
+    onUnitItemRender(item: Node, index: number) {
+        item.getComponent(UnitItem).setData(this._unitDatas[index]);
+    }
+
+    onUnitClick(data: UnitData) {
+        if (this._isGetUnitWords) return;
+        this._isGetUnitWords = true;
+        console.log("UnitData", data);
+        ServiceMgr.studyService.getUnitWords(data.big_id, data.unit);
+    }
+
+    onGetUnitWords(data: WordGameUnitWordReply) {
+        this._isGetUnitWords = false;
+        if (data.code != 200) {
+            ViewsManager.showTip(data.msg);
+            return;
+        }
+        console.log("WordGameUnitWordReply", data);
     }
 
     /**初始化监听事件 */
@@ -346,6 +385,8 @@ export class WorldIsland extends Component {
         EventMgr.addListener(InterfacePath.BossLevel_Topic, this.onGetBossLevelTopic, this);
         EventMgr.addListener(EventType.Enter_Boss_Level, this.enterBossLevel, this);
         EventMgr.addListener(InterfacePath.WordGame_UnitList, this.onGetUnits, this);
+        EventMgr.addListener(EventType.WordGame_Unit_Click, this.onUnitClick, this);
+        EventMgr.addListener(InterfacePath.WordGame_UnitWords, this.onGetUnitWords, this);
     }
     /**移除监听 */
     private removeEvent() {
@@ -359,6 +400,8 @@ export class WorldIsland extends Component {
         EventMgr.removeListener(InterfacePath.BossLevel_Topic, this);
         EventMgr.removeListener(EventType.Enter_Boss_Level, this);
         EventMgr.removeListener(InterfacePath.WordGame_UnitList, this);
+        EventMgr.removeListener(EventType.WordGame_Unit_Click, this);
+        EventMgr.removeListener(InterfacePath.WordGame_UnitWords, this);
     }
 
     onBtnDetailsClick() {

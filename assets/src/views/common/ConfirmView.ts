@@ -13,15 +13,17 @@ export class ConfirmView extends BasePopup {
     public btnSure: Node = null;//确认
     @property(Node)
     public btnCancel: Node = null;//取消
+    @property(Label)
+    public labelSure: Label = null;//确认文字
+    @property(Label)
+    public labelCancel: Label = null;//取消文字
 
     private _sureCall: Function = null;
     private _cancelCall: Function = null;
-    private _canClose: boolean = false;
+    private _canClose: boolean = true;
 
     protected initUI(): void {
-        this.enableClickBlankToClose([this.node.getChildByName("frame")]).then(()=>{
-            this._cancelCall?.();
-        });
+
     }
 
     initEvent() {
@@ -34,10 +36,19 @@ export class ConfirmView extends BasePopup {
         CCUtil.offTouch(this.btnCancel, this.onCancelClick, this);
     }
 
-    init(content: string, sureCall?: Function, cancelCall?: Function) {
+    init(content: string, sureCall?: Function, cancelCall?: Function, sureStr?: string, cancelStr?: string, canClose: boolean = true) {
         this._sureCall = sureCall;
         this._cancelCall = cancelCall;
         this.label.string = content;
+        this.labelSure.string = sureStr ? sureStr : "确定";
+        this.labelCancel.string = cancelStr ? cancelStr : "取消";
+
+        this._canClose = canClose;
+        if (this._canClose) {
+            this.enableClickBlankToClose([this.node.getChildByName("frame")]).then(() => {
+                this._cancelCall?.();
+            });
+        }
     }
     // 确定按钮点击
     onSureClick() {

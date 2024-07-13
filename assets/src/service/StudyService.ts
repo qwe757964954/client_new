@@ -1,7 +1,7 @@
 import { isValid } from "cc";
 import { EventType } from "../config/EventType";
 import { ViewsManager } from "../manager/ViewsManager";
-import { AdventureCollectWordModel, AdventureResultModel, c2sAdventureCollectWord, c2sAdventureResult, c2sAdventureWord, c2sAdventureWordSentence, c2sAdvLevelProgress, c2sBossLevelSubmit, c2sBossLevelTopic, c2sGetProgressReward, c2sGetUnitList, c2sIslandProgress, c2sIslandStatus, c2sTextbookWordGroup, c2sWordGameWords, c2sWordGroup, WordGameWordsData } from "../models/AdventureModel";
+import { AdventureCollectWordModel, AdventureResultModel, c2sAdventureCollectWord, c2sAdventureResult, c2sAdventureWord, c2sAdventureWordSentence, c2sAdvLevelProgress, c2sBossLevelSubmit, c2sBossLevelTopic, c2sGetProgressReward, c2sGetUnitList, c2sIslandProgress, c2sIslandStatus, c2sTextbookWordGroup, c2sWordGameLevelRestart, c2sWordGameSubject, c2sWordGameUnitWords, c2sWordGameWords, c2sWordGroup, WordGameWordsData } from "../models/AdventureModel";
 import { c2sReviewPlan, c2sReviewPlanDraw, c2sReviewPlanList, c2sReviewPlanStatus, c2sReviewPlanSubmit, c2sReviewPlanUpdate } from "../models/NetModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
@@ -203,6 +203,29 @@ export default class StudyService extends BaseControll {
     getWordGameUnits(big_id: number) {
         let para: c2sGetUnitList = new c2sGetUnitList();
         para.big_id = big_id;
+        NetMgr.sendMsg(para);
+    }
+
+    //关卡重新开始
+    wordGameLevelRestart(big_id: number, small_id: number) {
+        let para: c2sWordGameLevelRestart = new c2sWordGameLevelRestart();
+        para.big_id = big_id;
+        para.small_id = small_id;
+        NetMgr.sendMsg(para);
+    }
+
+    //获取单元单词
+    getUnitWords(big_id: number, unit: string) {
+        let para: c2sWordGameUnitWords = new c2sWordGameUnitWords();
+        para.big_id = big_id;
+        para.unit = unit;
+        NetMgr.sendMsg(para);
+    }
+
+    //获取大冒险主题数据
+    getWordGameSubject(subject_id: number) {
+        let para: c2sWordGameSubject = new c2sWordGameSubject();
+        para.subject_id = subject_id;
         NetMgr.sendMsg(para);
     }
 }
