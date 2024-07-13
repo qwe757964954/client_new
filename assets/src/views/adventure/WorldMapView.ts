@@ -3,6 +3,7 @@ import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import GlobalConfig from '../../GlobalConfig';
 import { AdvLevelConfig, DataMgr } from '../../manager/DataMgr';
+import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { GameMode, IslandProgressModel, IslandStatusData, LevelProgressData, MapLevelData } from '../../models/AdventureModel';
 import { UnitWordModel } from '../../models/TextbookModel';
@@ -311,6 +312,8 @@ export class WorldMapView extends Component {
     /**点击返回按钮 */
     onBtnBackClick() {
         // EventManager.emit(EventType.Study_Page_Switching, [0])
+        ResLoader.instance.releaseDir("adventure");
+        ResLoader.instance.releaseDir("prefab/studyModes");
         this.node.destroy();
     }
 
