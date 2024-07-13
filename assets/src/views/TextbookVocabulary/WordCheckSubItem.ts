@@ -1,7 +1,8 @@
 import { Label, Node, Sprite, _decorator } from 'cc';
 import { NetConfig } from '../../config/NetConfig';
 import { RemoteSoundMgr } from '../../manager/RemoteSoundManager';
-import { CheckWordItem } from '../../models/TextbookModel';
+import { CheckWordItem, ReqCollectWord } from '../../models/TextbookModel';
+import { TBServer } from '../../service/TextbookService';
 import CCUtil from '../../util/CCUtil';
 import ListItem from '../../util/list/ListItem';
 const { ccclass, property } = _decorator;
@@ -37,6 +38,7 @@ export class WordCheckSubItem extends ListItem {
         this._subData = subData;
         this.CntTxt.string = subData.cn;
         this.sentenceTxt.string = subData.word;
+        this.starNd.getComponent(Sprite).grayscale = !subData.collect;
     }
     playWordSound() {
         let wordSoundUrl = "/sounds/glossary/words/en/" + this._subData.word + ".wav";
@@ -44,7 +46,12 @@ export class WordCheckSubItem extends ListItem {
     }
 
     clickCollectEvent(){
-        this.starNd.getComponent(Sprite).grayscale = !this.starNd.getComponent(Sprite).grayscale;
+        let reqParam: ReqCollectWord = {
+            w_id: this._subData.w_id,
+            action: this._subData.collect ? 0 : 1,
+        }
+        TBServer.reqCollectWord(reqParam);
+        // this.starNd.getComponent(Sprite).grayscale = !this.starNd.getComponent(Sprite).grayscale;
     }
 
     onDestroy(): void {
