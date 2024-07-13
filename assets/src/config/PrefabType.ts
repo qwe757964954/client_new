@@ -56,7 +56,7 @@ export const PrefabType = {
     NavTitleView: { path: "common/NavTitleView", zindex: Hierarchy.POPUPLAYER, tips: "导航公共模块" },
     PopView: { path: "common/PopView", zindex: Hierarchy.TIPLAYER, tips: "提示弹窗" },
     TipView: { path: "common/TipView", zindex: Hierarchy.TIPLAYER, tips: "提示界面" },
-    ConfirmView: { path: "common/ConfirmView", componentName: "ConfirmView",zindex: Hierarchy.TIPLAYER, tips: "确定弹窗" },
+    ConfirmView: { path: "common/ConfirmView", componentName: "ConfirmView", zindex: Hierarchy.TIPLAYER, tips: "确定弹窗" },
     RewardItem: { path: "common/RewardItem", zindex: Hierarchy.SCENELAYER, tips: "奖励道具" },
     RewardView: { path: "common/RewardView", zindex: Hierarchy.POPUPLAYER, tips: "奖励弹窗" },
     WaitingView: { path: "common/WaittingView", zindex: Hierarchy.LOADINGLAYER, tips: "等待弹窗" },
@@ -107,7 +107,7 @@ export const PrefabType = {
     ShopStoreView: { path: "shop/ShopStoreView", zindex: Hierarchy.POPUPLAYER, tips: "形象商店模块" },
     ShopDecorationView: { path: "shop/ShopDecorationView", zindex: Hierarchy.POPUPLAYER, tips: "装饰模块" },
     DebrisAreaView: { path: "shop/DebrisAreaView", zindex: Hierarchy.POPUPLAYER, tips: "碎片区模块" },
-    GoodsDetailView: { path: "shop/GoodsDetailView", componentName: "GoodsDetailView",zindex: Hierarchy.POPUPLAYER, tips: "商品详情" },
+    GoodsDetailView: { path: "shop/GoodsDetailView", componentName: "GoodsDetailView", zindex: Hierarchy.POPUPLAYER, tips: "商品详情" },
     /*********************************************商城相关end*************************************************************/
     /*********************************************语法训练start***********************************************************/
     GrammarTrainingView: { path: "grammar/GrammarTrainingView", zindex: Hierarchy.POPUPLAYER, tips: "语法训练" },
@@ -142,7 +142,7 @@ export const PrefabType = {
     CountdownFrame: { path: "map/CountdownFrame", zindex: Hierarchy.SCENELAYER, tips: "倒计时框加速" },
     BuildingSuccessView: { path: "map/BuildingSuccessView", zindex: Hierarchy.POPUPLAYER, tips: "建筑成功界面" },
     ProduceItemView: { path: "map/ProduceItemView", zindex: Hierarchy.POPUPLAYER, tips: "生产物品界面" },
-
+    BuildBuiltView: { path: "map/BuildBuiltView", zindex: Hierarchy.POPUPLAYER, tips: "建筑建造界面" },
     /*********************************************地图相关end*************************************************************/
     /*********************************************宠物相关start*************************************************************/
     PetInteractionView: { path: "map/PetInteractionView", zindex: Hierarchy.POPUPLAYER, tips: "宠物交互界面" },

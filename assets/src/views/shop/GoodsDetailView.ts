@@ -48,8 +48,8 @@ export class GoodsDetailView extends BasePopup {
     private _canClose: boolean = true;
 
     protected initUI(): void {
-        this.enableClickBlankToClose([this.node.getChildByName("img_bg")]).then(()=>{
-            
+        this.enableClickBlankToClose([this.node.getChildByName("img_bg")]).then(() => {
+
         });
     }
 
@@ -82,15 +82,15 @@ export class GoodsDetailView extends BasePopup {
     onClickBuy() {
         let use_amout = "金币";
         let content_str = `确认消耗${this._data.buy}个${use_amout}购买${this._data.name}吗？`;
-        ViewsManager.showConfirm(content_str,() => {
-            ServiceMgr.shopService.buyGood(this._data.id);
+        ViewsManager.showConfirm(content_str, () => {
+            ServiceMgr.buildingService.reqBuyBuilding(this._data.id);
         })
         // ServiceMgr.shopService.buyGood(this._data.id);
         // EventMgr.emit(EventType.New_Building, this._data);
         // ViewsMgr.closeView(PrefabType.ShopUIView);
         // ViewsMgr.closeView(PrefabType.GoodsDetailView);
     }
-    onClickClose(){
+    onClickClose() {
         this.closePop();
     }
 }

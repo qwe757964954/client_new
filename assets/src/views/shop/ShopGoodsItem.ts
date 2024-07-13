@@ -74,8 +74,8 @@ export class ShopGoodsItem extends Component {
     onBuyClick() {
         let use_amout = "金币";
         let content_str = `确认消耗${this._data.buy}个${use_amout}购买${this._data.name}吗？`;
-        ViewsManager.showConfirm(content_str,() => {
-            ServiceMgr.shopService.buyGood(this._data.id);
+        ViewsManager.showConfirm(content_str, () => {
+            ServiceMgr.buildingService.reqBuyBuilding(this._data.id);
         })
         // ServiceMgr.shopService.buyGood(this._data.id);
         // EventMgr.emit(EventType.New_Building, this._data);

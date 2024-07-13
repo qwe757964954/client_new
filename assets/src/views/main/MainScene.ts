@@ -6,7 +6,7 @@ import { TextConfig } from '../../config/TextConfig';
 import { DataMgr, EditInfo, EditType } from '../../manager/DataMgr';
 import { SoundMgr } from '../../manager/SoundMgr';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
-import { BuildingIDType, BuildingModel, BuildingOperationData } from '../../models/BuildingModel';
+import { BuildingIDType, BuildingModel, BuildingOperationData, BuildingState } from '../../models/BuildingModel';
 import { CloudModel } from '../../models/CloudModel';
 import { RoleType } from '../../models/RoleBaseModel';
 import { RoleDataModel } from '../../models/RoleDataModel';
@@ -14,6 +14,7 @@ import { BaseComponent } from '../../script/BaseComponent';
 import CCUtil from '../../util/CCUtil';
 import EventManager from '../../util/EventManager';
 import { TimerMgr } from '../../util/TimerMgr';
+import { BuildBuiltView } from '../map/BuildBuiltView';
 import { BuildEditCtl } from '../map/BuildEditCtl';
 import { BuildingProduceView } from '../map/BuildingProduceView';
 import { CastleInfoView } from '../map/CastleInfoView';
@@ -230,6 +231,10 @@ export class MainScene extends BaseComponent {
         SoundMgr.click();
         console.log("onBuildingClick", building);
         if (MapStatus.DEFAULT == this._mapStatus) {// 普通点击 展示建筑建造界面
+            if (BuildingState.unBuilding == building.buildingState) {
+                this.showBuildingBuiltView(building);
+                return;
+            }
             let editInfo = building.editInfo;
             if (EditType.Null == editInfo.type) {
                 this.showCastleView(building);
@@ -496,7 +501,7 @@ export class MainScene extends BaseComponent {
     findAllBuilding(typeID: number) {
         return this._mapUICtl.findAllBuilding(typeID);
     }
-    /**展示建筑建造界面 */
+    /**展示建筑生产界面 */
     showBuildingProduceView(selectBuilding: BuildingModel) {
         ViewsManager.instance.showView(PrefabType.BuildingProduceView, (node: Node) => {
             let children = this._mapUICtl.getBuildingModelAry();
@@ -553,6 +558,18 @@ export class MainScene extends BaseComponent {
             }
         });
     }
+    /**展示建筑建造界面 */
+    showBuildingBuiltView(building: BuildingModel) {
+        let self = this;
+        ViewsMgr.showView(PrefabType.BuildBuiltView, (node: Node) => {
+            let view = node.getComponent(BuildBuiltView);
+            view.init(building.buildingID, () => {
+                self._mainUIView.node.active = true;
+            });
+            self._mainUIView.node.active = false;
+        });
+        this._mapUICtl.moveCameraToBuilding(building, Vec3.ZERO, 1.0);
+    }
     /**显示城堡升级界面 */
     showCastleView(selectBuilding: BuildingModel) {
         ViewsManager.instance.showView(PrefabType.CastleInfoView, (node: Node) => {
@@ -578,6 +595,10 @@ export class MainScene extends BaseComponent {
     }
     showMainUIView() {
         this._mainUIView.node.active = true;
+    }
+    /**获取回收数据 */
+    findRecycleData(idx: number) {
+        return this._mapUICtl.findRecycleData(idx);
     }
     /**回收建筑是否包含指定建筑 */
     isRecycleBuildingContain(bid: number) {
