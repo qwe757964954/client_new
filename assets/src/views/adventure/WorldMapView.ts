@@ -2,7 +2,7 @@ import { _decorator, Button, Component, instantiate, Node, Prefab, v3 } from 'cc
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import GlobalConfig from '../../GlobalConfig';
-import { DataMgr } from '../../manager/DataMgr';
+import { AdvLevelConfig, DataMgr } from '../../manager/DataMgr';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { GameMode, IslandProgressModel, IslandStatusData, LevelProgressData, MapLevelData } from '../../models/AdventureModel';
 import { UnitWordModel } from '../../models/TextbookModel';
@@ -19,7 +19,6 @@ import { WordReadingView } from './sixModes/WordReadingView';
 import { WordSpellView } from './sixModes/WordSpellView';
 import { WorldIsland } from './WorldIsland';
 import { WorldMapItem } from './WorldMapItem';
-import { LevelUpView } from '../common/LevelUpView';
 const { ccclass, property } = _decorator;
 /**大冒险 世界地图 何存发 2024年4月8日14:45:44 */
 @ccclass('WorldMapView')
@@ -207,7 +206,7 @@ export class WorldMapView extends Component {
     }
 
     //获取关卡单词回包
-    onWordGameWords(data: UnitWordModel[]) {
+     onWordGameWords(data: UnitWordModel[]) {
         if (!this._getingWords) return;
         console.log('获取单词', data);
         if (this._currentIsland) {
@@ -219,41 +218,59 @@ export class WorldMapView extends Component {
         levelData.mapLevelData = this._currentLevelData;
         levelData.progressData = this._levelProgressData;
         levelData.error_num = this._levelProgressData.err_num;
-        switch (gameMode) {
+        switch  (gameMode) {
             case GameMode.Study:
-                ViewsManager.instance.showView(PrefabType.StudyModeView, (node: Node) => {
-                    node.getComponent(StudyModeView).initData(data, levelData);
-                });
+                this.gotoTutoring(data,levelData);
                 break;
             case GameMode.WordMeaning:
-                ViewsManager.instance.showView(PrefabType.WordMeaningView, (node: Node) => {
-                    node.getComponent(WordMeaningView).initData(data, levelData);
-                });
+                this.gotoMeaning(data,levelData);
                 break;
             case GameMode.Practice:
-                ViewsManager.instance.showView(PrefabType.WordPracticeView, (node: Node) => {
-                    node.getComponent(WordPracticeView).initData(data, levelData);
-                });
+                this.gotoPractice(data,levelData);
                 break;
             case GameMode.Spelling:
-                ViewsManager.instance.showView(PrefabType.WordSpellView, (node: Node) => {
-                    node.getComponent(WordSpellView).initData(data, levelData);
-                });
+                this.gotoSpell(data,levelData);
                 break;
             case GameMode.Reading:
-                ViewsManager.instance.showView(PrefabType.WordReadingView, (node: Node) => {
-                    node.getComponent(WordReadingView).initData(data, levelData);
-                });
+                this.gotoReed(data,levelData);
                 break;
             case GameMode.Exam: //测试模式
-                ViewsManager.instance.showView(PrefabType.WordExamView, (node: Node) => {
-                    node.getComponent(WordExamView).initData(data, levelData);
-                });
+                this.gotoAllSpelledOut(data,levelData);
                 break;
             default:
                 break;
         }
     }
+    async gotoSpell(data: UnitWordModel[], bookLevelData: AdvLevelConfig) {
+        const node = await ViewsManager.instance.showLearnView(PrefabType.WordSpellView);
+        node.getComponent(WordSpellView).initData(data, bookLevelData);
+    }
+
+    async gotoReed(data: UnitWordModel[], bookLevelData: AdvLevelConfig) {
+        const node = await ViewsManager.instance.showLearnView(PrefabType.WordReadingView);
+        node.getComponent(WordReadingView).initData(data, bookLevelData);
+    }
+
+    async gotoPractice(data: UnitWordModel[], bookLevelData: AdvLevelConfig) {
+        const node = await ViewsManager.instance.showLearnView(PrefabType.WordPracticeView);
+        node.getComponent(WordPracticeView).initData(data, bookLevelData);
+    }
+
+    async gotoMeaning(data: UnitWordModel[], bookLevelData: AdvLevelConfig) {
+        const node = await ViewsManager.instance.showLearnView(PrefabType.WordMeaningView);
+        node.getComponent(WordMeaningView).initData(data, bookLevelData);
+    }
+
+    async gotoAllSpelledOut(data: UnitWordModel[], bookLevelData: AdvLevelConfig) {
+        const node = await ViewsManager.instance.showLearnView(PrefabType.WordExamView);
+        node.getComponent(WordExamView).initData(data, bookLevelData);
+    }
+
+    async gotoTutoring(data: UnitWordModel[], bookLevelData: AdvLevelConfig) {
+        const node = await ViewsManager.instance.showLearnView(PrefabType.StudyModeView);
+        node.getComponent(StudyModeView).initData(data, bookLevelData);
+    }
+
 
     /**初始化监听事件 */
     initEvent() {

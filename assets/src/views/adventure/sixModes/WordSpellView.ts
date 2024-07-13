@@ -229,28 +229,14 @@ export class WordSpellView extends BaseModeView {
     protected modeOver(): void {
         super.modeOver();
         console.log('拼模式完成');
-        this.showTransitionView(() =>{
+        this.showTransitionView(async () =>{
             let wordData = JSON.parse(JSON.stringify(this._wordsData));
             let levelData = JSON.parse(JSON.stringify(this._levelData));
             console.log("过渡界面回调_________________________");
-            ViewsManager.instance.showView(PrefabType.WordReadingView, (node: Node) => {
-                console.log("WordMeaningView_________________________Finished");
-                node.getComponent(WordReadingView).initData(wordData, levelData);
-                ViewsManager.instance.closeView(PrefabType.WordSpellView);
-            });
+            let node = await ViewsManager.instance.showLearnView(PrefabType.WordReadingView);
+            node.getComponent(WordReadingView).initData(wordData, levelData);
+            this.node.parent.destroy();
         })
-        // ViewsManager.instance.showView(PrefabType.TransitionView, (node: Node) => {
-        //     let wordData = JSON.parse(JSON.stringify(this._wordsData));
-        //     let levelData = JSON.parse(JSON.stringify(this._levelData));
-        //     //跳转到下一场景
-        //     node.getComponent(TransitionView).setTransitionCallback(() => {
-        //         ViewsManager.instance.showView(PrefabType.WordReadingView, (node: Node) => {
-        //             ViewsManager.instance.closeView(PrefabType.WordSpellView);
-        //             this.node.destroy();
-        //             node.getComponent(WordReadingView).initData(wordData, levelData);
-        //         });
-        //     });
-        // });
     }
 
     getItemBySelectIdx(idx: number) {

@@ -256,29 +256,14 @@ export class WordMeaningView extends BaseModeView {
             });
             return;
         }
-        this.showTransitionView(() =>{
+        this.showTransitionView(async () =>{
             let wordData = JSON.parse(JSON.stringify(this._wordsData));
             let levelData = JSON.parse(JSON.stringify(this._levelData));
             console.log("过渡界面回调_________________________");
-            ViewsManager.instance.showView(PrefabType.WordPracticeView, (node: Node) => {
-                console.log("WordMeaningView_________________________Finished");
-                node.getComponent(WordPracticeView).initData(wordData, levelData);
-                ViewsManager.instance.closeView(PrefabType.WordMeaningView);
-            });
+            let node = await ViewsManager.instance.showLearnView(PrefabType.WordPracticeView);
+            node.getComponent(WordPracticeView).initData(wordData, levelData);
+            this.node.parent.destroy();
         })
-        // ViewsManager.instance.showView(PrefabType.TransitionView, (node: Node) => {
-        //     let wordData = JSON.parse(JSON.stringify(this._wordsData));
-        //     let levelData = JSON.parse(JSON.stringify(this._levelData));
-        //     //跳转到下一场景
-        //     node.getComponent(TransitionView).setTransitionCallback(() => {
-        //         console.log("过渡界面回调_________________________");
-        //         ViewsManager.instance.showView(PrefabType.WordPracticeView, (node: Node) => {
-        //             console.log("WordPracticeView_________________________finished");
-        //             node.getComponent(WordPracticeView).initData(wordData, levelData);
-        //             ViewsManager.instance.closeView(PrefabType.WordMeaningView);
-        //         });
-        //     });
-        // });
     }
 
     onClassificationWord(data: WordsDetailData) {

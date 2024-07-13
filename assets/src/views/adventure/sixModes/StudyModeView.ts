@@ -206,15 +206,12 @@ export class StudyModeView extends BaseModeView {
     protected modeOver(): void {
         super.modeOver();
         console.log('学习完成,跳转词意模式');
-        this.showTransitionView(() => {
+        this.showTransitionView(async () => {
             const wordData = JSON.parse(JSON.stringify(this._wordsData));
             const levelData = JSON.parse(JSON.stringify(this._levelData));
-            console.log("过渡界面回调_________________________");
-            ViewsManager.instance.showView(PrefabType.WordMeaningView, (node: Node) => {
-                console.log("WordMeaningView_________________________Finished");
-                node.getComponent(WordMeaningView).initData(wordData, levelData);
-                ViewsManager.instance.closeView(PrefabType.StudyModeView);
-            });
+            let node = await ViewsManager.instance.showLearnView(PrefabType.WordMeaningView);
+            node.getComponent(WordMeaningView).initData(wordData, levelData);
+            this.node.parent.destroy();
         });
     }
 

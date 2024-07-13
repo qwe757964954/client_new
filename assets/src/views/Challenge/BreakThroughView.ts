@@ -3,6 +3,7 @@ import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { BookLevelConfig, DataMgr } from '../../manager/DataMgr';
+import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { MapLevelData } from '../../models/AdventureModel';
 import { CurrentBookStatus, GateListItem, ReqUnitStatusParam, ReqUnitType, UnitItemStatus, UnitListItemStatus, UnitStatusData, VocabularyWordData } from '../../models/TextbookModel';
@@ -235,32 +236,32 @@ export class BreakThroughView extends BaseView {
     }
 
     async gotoSpell(wordData: VocabularyWordData, bookLevelData: BookLevelConfig) {
-        const node = await ViewsManager.instance.showViewAsync(PrefabType.WordSpellView);
+        const node = await ViewsManager.instance.showLearnView(PrefabType.WordSpellView);
         node.getComponent(WordSpellView).initData(wordData.data, bookLevelData);
     }
 
     async gotoReed(wordData: VocabularyWordData, bookLevelData: BookLevelConfig) {
-        const node = await ViewsManager.instance.showViewAsync(PrefabType.WordReadingView);
+        const node = await ViewsManager.instance.showLearnView(PrefabType.WordReadingView);
         node.getComponent(WordReadingView).initData(wordData.data, bookLevelData);
     }
 
     async gotoPractice(wordData: VocabularyWordData, bookLevelData: BookLevelConfig) {
-        const node = await ViewsManager.instance.showViewAsync(PrefabType.WordPracticeView);
+        const node = await ViewsManager.instance.showLearnView(PrefabType.WordPracticeView);
         node.getComponent(WordPracticeView).initData(wordData.data, bookLevelData);
     }
 
     async gotoMeaning(wordData: VocabularyWordData, bookLevelData: BookLevelConfig) {
-        const node = await ViewsManager.instance.showViewAsync(PrefabType.WordMeaningView);
+        const node = await ViewsManager.instance.showLearnView(PrefabType.WordMeaningView);
         node.getComponent(WordMeaningView).initData(wordData.data, bookLevelData);
     }
 
     async gotoAllSpelledOut(wordData: VocabularyWordData, bookLevelData: BookLevelConfig) {
-        const node = await ViewsManager.instance.showViewAsync(PrefabType.WordExamView);
+        const node = await ViewsManager.instance.showLearnView(PrefabType.WordExamView);
         node.getComponent(WordExamView).initData(wordData.data, bookLevelData);
     }
 
     async gotoTutoring(wordData: VocabularyWordData, bookLevelData: BookLevelConfig) {
-        const node = await ViewsManager.instance.showViewAsync(PrefabType.StudyModeView);
+        const node = await ViewsManager.instance.showLearnView(PrefabType.StudyModeView);
         node.getComponent(StudyModeView).initData(wordData.data, bookLevelData);
     }
 
@@ -294,6 +295,8 @@ export class BreakThroughView extends BaseView {
     async initNavTitle() {
         this.createNavigation(`${this._bookData.book_name} ${this._bookData.grade}`, this.top_layout, () => {
             ViewsManager.instance.showView(PrefabType.TextbookChallengeView, () => {
+                ResLoader.instance.releaseDir("adventure");
+                ResLoader.instance.releaseDir("prefab/studyModes");
                 ViewsManager.instance.closeView(PrefabType.BreakThroughView);
             });
         });

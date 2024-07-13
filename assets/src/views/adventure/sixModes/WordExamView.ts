@@ -1,5 +1,6 @@
 import { _decorator, instantiate, Label, Node, NodePool, Prefab, Sprite, SpriteFrame, Vec3 } from 'cc';
 import { PrefabType } from '../../../config/PrefabType';
+import { SoundMgr } from '../../../manager/SoundMgr';
 import { ViewsManager } from '../../../manager/ViewsManager';
 import { GameMode } from '../../../models/AdventureModel';
 import { UnitWordModel } from '../../../models/TextbookModel';
@@ -7,7 +8,6 @@ import List from '../../../util/list/List';
 import { BaseModeView, WordSourceType } from './BaseModeView';
 import { ExamReportView } from './ExamReportView';
 import { ExamItem } from './items/ExamItem';
-import { SoundMgr } from '../../../manager/SoundMgr';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordExamView')
@@ -174,7 +174,7 @@ export class WordExamView extends BaseModeView {
             ViewsManager.instance.showView(PrefabType.ExamReportView, (node: Node) => {
                 let nodeScript = node.getComponent(ExamReportView);
                 nodeScript.initData(this._currentSubmitResponse);
-                ViewsManager.instance.closeView(PrefabType.WordExamView);
+                this.node.parent.destroy();
             });
         }
     }

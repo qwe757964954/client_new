@@ -120,7 +120,31 @@ export class ViewsManager {
             });
         });
     }
-
+    public showLearnView(viewConfig: PrefabConfig) : Promise<Node> {
+        let parent = this.getParentNode(viewConfig.zindex);
+        let nd_name = viewConfig.path.replace("/", "_");
+        let nd: Node = ImgUtil.create_2DNode(nd_name);
+        parent.addChild(nd);
+        return new Promise((resolve, reject) => {
+            // Load the prefab and instantiate it
+            ResLoader.instance.load(`prefab/${viewConfig.path}`, Prefab, async (err, prefab) => {
+                if (err) {
+                    console.error(err);
+                    reject(err);
+                    return;
+                }
+                let node = instantiate(prefab);
+                nd.addChild(node);
+                CCUtil.addWidget(nd, { left: 0, right: 0, top: 0, bottom: 0 });
+                try {
+                    resolve(node as Node); // Resolve after the animation completes
+                } catch (animationError) {
+                    console.error(animationError);
+                    reject(animationError);
+                }
+            });
+        });
+    }
 
 
     // 显示界面

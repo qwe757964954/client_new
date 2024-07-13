@@ -82,10 +82,6 @@ export class BaseModeView extends BaseView {
     protected _rightNum: number = 0; //正确数量
     protected _costTime: number = 0; //花费时间
 
-    protected _getResultEveId: string; //获取结果
-    protected _wordDetailEveId: string; //获取单词详情
-    protected _getReviewResultEveId: string; //获取复习规划结果
-
     private _upResultSucce: boolean = false; //上报结果成功
     // protected _currentSubmitResponse: GameSubmitResponse | AdventureResult = null;
     protected _currentSubmitResponse: any = null;
@@ -246,6 +242,9 @@ export class BaseModeView extends BaseView {
         this.addModelListener(NetNotify.Classification_CollectWord, this.onCollectWord);
         this.addModelListener(EventType.Classification_AdventureCollectWord, this.onAdventureCollectWord);
         this.addModelListener(NetNotify.Classification_GameSubmit, this.onGameSubmitResponse);
+        this.addModelListener(InterfacePath.Adventure_Result, this.onUpResult);
+        this.addModelListener(InterfacePath.Adventure_Word, this.onClassificationWord);
+        this.addModelListener(InterfacePath.c2sReviewPlanSubmit, this.onRepReviewSubmit);
     }
     onGameSubmitResponse(data: GameSubmitResponse) {
         console.log("onGameSubmitResponse....", data);
@@ -581,18 +580,13 @@ export class BaseModeView extends BaseView {
     protected initEvent(): void {
         console.log("initEvent");
         CCUtil.onTouch(this.btn_close.node, this.closeView, this);
-        this._getResultEveId = EventManager.on(InterfacePath.Adventure_Result, this.onUpResult.bind(this));
-        this._wordDetailEveId = EventManager.on(InterfacePath.Adventure_Word, this.onClassificationWord.bind(this));
-        this._getReviewResultEveId = EventMgr.on(InterfacePath.c2sReviewPlanSubmit, this.onRepReviewSubmit.bind(this));
+        
         CCUtil.onBtnClick(this.btn_collect, () => {
             this.onClickCollectEvent();
         });
     }
     protected removeEvent(): void {
         CCUtil.offTouch(this.btn_close.node, this.closeView, this);
-        EventManager.off(InterfacePath.Adventure_Result, this._getResultEveId);
-        EventManager.off(InterfacePath.Adventure_Word, this._wordDetailEveId);
-        EventMgr.off(InterfacePath.c2sReviewPlanSubmit, this._getReviewResultEveId);
         this.unschedule(this.onTimer);
     }
 
@@ -627,7 +621,6 @@ export class BaseModeView extends BaseView {
         let wordData = this._wordsData[this._wordIndex];
         console.log('word', wordData);
         if (WordSourceType.classification == this._sourceType) { //教材关卡
-            let levelData = this._levelData as BookLevelConfig;
             let reqParam: ReqCollectWord = {
                 w_id: wordData.w_id,
                 action: this._detailData.collect_flag ? 0 : 1,
@@ -635,7 +628,6 @@ export class BaseModeView extends BaseView {
             TBServer.reqCollectWord(reqParam);
         } else if (WordSourceType.word_game == this._sourceType) {
             //大冒险关卡
-            // let levelData = this._levelData as AdvLevelConfig;
             let reqParam: AdventureCollectWordModel = {
                 w_id: wordData.w_id,
                 action: this._detailData.collect_flag ? 0 : 1,
