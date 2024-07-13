@@ -3,7 +3,6 @@ import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { BookLevelConfig, DataMgr } from '../../manager/DataMgr';
-import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { MapLevelData } from '../../models/AdventureModel';
 import { CurrentBookStatus, GateListItem, ReqUnitStatusParam, ReqUnitType, UnitItemStatus, UnitListItemStatus, UnitStatusData, VocabularyWordData } from '../../models/TextbookModel';
@@ -295,8 +294,6 @@ export class BreakThroughView extends BaseView {
     async initNavTitle() {
         this.createNavigation(`${this._bookData.book_name} ${this._bookData.grade}`, this.top_layout, () => {
             ViewsManager.instance.showView(PrefabType.TextbookChallengeView, () => {
-                ResLoader.instance.releaseDir("adventure");
-                ResLoader.instance.releaseDir("prefab/studyModes");
                 ViewsManager.instance.closeView(PrefabType.BreakThroughView);
             });
         });
