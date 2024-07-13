@@ -1,9 +1,9 @@
 import { _decorator, Button, Component, instantiate, isValid, Label, Node, Prefab, Sprite, tween, UITransform, Vec3 } from 'cc';
 import { EventType } from '../../../config/EventType';
 import { GameRes } from '../../../GameRes';
-import { DataMgr } from '../../../manager/DataMgr';
+import { DataMgr, ItemData } from '../../../manager/DataMgr';
 import { ViewsMgr } from '../../../manager/ViewsManager';
-import { BossLevelData, MapLevelData } from '../../../models/AdventureModel';
+import { BossLevelData, GateData, MapLevelData } from '../../../models/AdventureModel';
 import CCUtil from '../../../util/CCUtil';
 import EventManager, { EventMgr } from '../../../util/EventManager';
 import FileUtil from '../../../util/FileUtil';
@@ -11,6 +11,7 @@ import List from '../../../util/list/List';
 import { ObjectUtil } from '../../../util/ObjectUtil';
 import { BaseItem } from '../../common/BaseItem';
 import { MonsterModel } from './MonsterModel';
+import { ReportItem } from '../sixModes/ReportItem';
 const { ccclass, property } = _decorator;
 
 export interface LevelConfig {
@@ -41,10 +42,10 @@ export class rightPanelchange extends Component {
     @property({ type: List, tooltip: "奖励列表" })
     public rewardList: List = null;
 
-    private _data: MapLevelData = null;
+    private _data: MapLevelData | GateData = null;
     private _eveId: string;
     private _monsterAni: Node = null;
-    private _rewardData: any[] = []; //奖励数据
+    private _rewardData: ItemData[] = []; //奖励数据
 
     private _isTweening: boolean = false;
     private _isBossPanel: boolean = false; //是否是boss关
@@ -56,40 +57,6 @@ export class rightPanelchange extends Component {
     }
 
     onLoad() {
-        //测试数据
-        this._rewardData = [{
-            id: 1,
-            num: 1000,
-            star: 1
-        }, {
-            id: 2,
-            num: 500,
-            star: 0
-        }, {
-            id: 3,
-            num: 10,
-            star: 2
-        }, {
-            id: 4,
-            num: 10,
-            star: 3
-        }, {
-            id: 5,
-            num: 10,
-            star: 0
-        }, {
-            id: 6,
-            num: 10,
-            star: 0
-        }, {
-            id: 7,
-            num: 10,
-            star: 0
-        }, {
-            id: 8,
-            num: 10,
-            star: 0
-        }]
         this.initEvent();
         this.initUI()
     }
@@ -125,9 +92,43 @@ export class rightPanelchange extends Component {
 
     }
     /** 打开界面 */
-    openView(param: MapLevelData = null) {
+    openView(param: MapLevelData | GateData = null) {
         console.log('接收到的参数=', param);
         this._data = param;
+        if (!this._data.game_modes || this._data.game_modes != "word") {
+            let awardInfo = this._data as GateData;
+            this._rewardData = [];
+            if (awardInfo.star_one_reward) { //一星奖励
+                for (let i = 0; i < awardInfo.star_one_reward.length; i++) {
+                    awardInfo.star_one_reward[i].from = "star_one_reward";
+                }
+                this._rewardData = [...awardInfo.star_one_reward];
+            }
+            if (awardInfo.star_two_reward) { //二星奖励
+                for (let i = 0; i < awardInfo.star_two_reward.length; i++) {
+                    awardInfo.star_two_reward[i].from = "star_two_reward";
+                }
+                this._rewardData = [...this._rewardData, ...awardInfo.star_two_reward];
+            }
+            if (awardInfo.star_three_reward) { //三星奖励
+                for (let i = 0; i < awardInfo.star_three_reward.length; i++) {
+                    awardInfo.star_three_reward[i].from = "star_three_reward";
+                }
+                this._rewardData = [...this._rewardData, ...awardInfo.star_three_reward];
+            }
+            if (awardInfo.pass_reward) { //固定奖励
+                for (let i = 0; i < awardInfo.pass_reward.length; i++) {
+                    awardInfo.pass_reward[i].from = "pass_reward";
+                }
+                this._rewardData = [...this._rewardData, ...awardInfo.pass_reward];
+            }
+            if (awardInfo.random_reward) { //随机奖励
+                for (let i = 0; i < awardInfo.random_reward.length; i++) {
+                    awardInfo.random_reward[i].from = "random_reward";
+                }
+                this._rewardData = [...this._rewardData, ...awardInfo.random_reward];
+            }
+        }
         this._isBossPanel = false;
         this.updateView();
         this.node.active = true;
@@ -182,10 +183,10 @@ export class rightPanelchange extends Component {
             monsterModel.init(FileUtil.removeFileExtension(GameRes.Spine_Stitches.path));
             this.monsterNameTxt.string = "缝合怪";
         } else {
-            let levelData = DataMgr.instance.getAdvLevelConfig(+this._data.big_id, +this._data.small_id);
-            this.levelTxt.string = this._data.small_id + '-' + this._data.micro_id;
-            monsterModel.init("spine/monster/adventure/" + levelData.monsterAni);
-            this.monsterNameTxt.string = levelData.monsterName;
+            this.levelTxt.string = this._data.big_id + '-' + this._data.small_id;
+            let monsterData = DataMgr.getMonsterData(this._data.monster_id);
+            monsterModel.init("spine/monster/adventure/" + monsterData.monsterAni);
+            this.monsterNameTxt.string = monsterData.monsterName;
         }
         let data = this._data;
         //有星星
@@ -223,7 +224,7 @@ export class rightPanelchange extends Component {
     }
 
     onRewardItemRender(item: Node, idx: number) {
-        item.getComponent(BaseItem).setData(this._rewardData[idx]);
+        item.getComponent(ReportItem).updateItemProps(this._rewardData[idx]);
     }
 
     hideView() {

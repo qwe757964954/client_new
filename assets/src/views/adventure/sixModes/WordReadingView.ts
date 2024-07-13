@@ -3,11 +3,11 @@ import { EventType } from '../../../config/EventType';
 import { NetConfig } from '../../../config/NetConfig';
 import { PrefabType } from '../../../config/PrefabType';
 import { TextConfig } from '../../../config/TextConfig';
-import { AdvLevelConfig, BookLevelConfig } from '../../../manager/DataMgr';
+import { BookLevelConfig } from '../../../manager/DataMgr';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { ResLoader } from '../../../manager/ResLoader';
 import { ViewsManager } from '../../../manager/ViewsManager';
-import { AdventureResultModel, GameMode } from '../../../models/AdventureModel';
+import { AdventureResultModel, GameMode, GateData } from '../../../models/AdventureModel';
 import { GameSubmitModel, UnitWordModel } from '../../../models/TextbookModel';
 import { ServiceMgr } from '../../../net/ServiceManager';
 import { TBServer } from '../../../service/TextbookService';
@@ -15,7 +15,7 @@ import CCUtil from '../../../util/CCUtil';
 import { RecordApi } from '../../../util/third/RecordApi';
 import { RecordResponseData } from '../../../util/third/RecordModel';
 import { MonsterModel } from '../common/MonsterModel';
-import { BaseModeView } from './BaseModeView';
+import { BaseModeView, WordSourceType } from './BaseModeView';
 import { WordReportView } from './WordReportView';
 const { ccclass, property } = _decorator;
 
@@ -130,14 +130,13 @@ export class WordReadingView extends BaseModeView {
 
         // }
         console.log("this._rightWordData.word______", this._rightWordData.word)
-        if (this._levelData.hasOwnProperty('bigId')) {
-            let levelData = this._levelData as AdvLevelConfig;
+        if (WordSourceType.word_game == this._sourceType) {
+            let levelData = this._levelData as GateData;
             let costTime = Date.now() - this._costTime;
             let params: AdventureResultModel = {
-                big_id: levelData.bigId,
-                small_id: levelData.smallId,
-                micro_id: levelData.mapLevelData.micro_id,
-                game_mode: levelData.mapLevelData.current_mode,
+                big_id: levelData.big_id,
+                small_id: levelData.small_id,
+                game_mode: levelData.current_mode,
                 cost_time: costTime,
                 status: isRight ? 1 : 0,
                 score: response.result.overall,
@@ -237,7 +236,7 @@ export class WordReadingView extends BaseModeView {
     }
 
     update(deltaTime: number) {
-        let isAdventure = this._levelData.hasOwnProperty('bigId'); //是否是大冒险关卡
+        let isAdventure = WordSourceType.word_game == this._sourceType; //是否是大冒险关卡
         if (!isAdventure && !this._turnIsBegin && this._currentSubmitResponse && this._currentSubmitResponse.pass_flag == 1 && !this._finished) {
             this.gotoResult();
         }
@@ -250,16 +249,7 @@ export class WordReadingView extends BaseModeView {
             let nodeScript = node.getComponent(WordReportView);
             console.log('朗读模式完成', this._currentSubmitResponse);
             nodeScript.initData(this._currentSubmitResponse, this.gameMode);
-            ViewsManager.instance.closeView(PrefabType.WordReadingView);
-            //跳转到下一场景
-            /*
-            node.getComponent(TransitionView).setTransitionCallback(() => {
-                ViewsManager.instance.showView(PrefabType.WordPracticeView, (node: Node) => {
-                    node.getComponent(WordPracticeView).initData(wordData, levelData);
-                    ViewsManager.instance.closeView(PrefabType.WordMeaningView);
-                });
-            });
-            */
+            this.node.parent.destroy();
         });
     }
     onDestroy(): void {

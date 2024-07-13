@@ -1,19 +1,19 @@
-import { _decorator, Component, Label, Node, sp } from 'cc';
-import { BaseView } from '../../../script/BaseView';
-import List from '../../../util/list/List';
-import { inf_SpineAniCreate } from '../../../manager/InterfaceDefines';
-import { GameRes } from '../../../GameRes';
-import { EventMgr } from '../../../util/EventManager';
+import { _decorator, Label, Node, sp } from 'cc';
 import { EventType } from '../../../config/EventType';
-import CCUtil from '../../../util/CCUtil';
-import { ViewsManager } from '../../../manager/ViewsManager';
 import { PrefabType } from '../../../config/PrefabType';
-import { ReportItem } from './ReportItem';
-import { GameSubmitResponse } from '../../../models/TextbookModel';
-import { AdventureResult, BossLevelSubmitData } from '../../../models/AdventureModel';
-import { SoundMgr } from '../../../manager/SoundMgr';
+import { GameRes } from '../../../GameRes';
 import { ItemData } from '../../../manager/DataMgr';
+import { inf_SpineAniCreate } from '../../../manager/InterfaceDefines';
+import { SoundMgr } from '../../../manager/SoundMgr';
+import { ViewsManager } from '../../../manager/ViewsManager';
+import { AdventureResult, BossLevelSubmitData } from '../../../models/AdventureModel';
+import { GameSubmitResponse } from '../../../models/TextbookModel';
+import { BaseView } from '../../../script/BaseView';
+import CCUtil from '../../../util/CCUtil';
+import { EventMgr } from '../../../util/EventManager';
+import List from '../../../util/list/List';
 import { ObjectUtil } from '../../../util/ObjectUtil';
+import { ReportItem } from './ReportItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('ExamReportView')
@@ -58,9 +58,9 @@ export class ExamReportView extends BaseView {
         if (this._resultSubmitResponse.pass_flag == 1) {
             this.result_spine.setAnimation(0, "vic", true);
             if (this._resultSubmitResponse) {
-                this._propsData = ObjectUtil.convertAwardsToItemData(this._resultSubmitResponse.award_info);
+                this._propsData = this._resultSubmitResponse.award_info.pass_reward; //ObjectUtil.convertAwardsToItemData(this._resultSubmitResponse.award_info.pass_reward);
             } else {
-                this._propsData = ObjectUtil.convertAwardsToItemData(this._bossLevelResult.award);
+                this._propsData = ObjectUtil.convertAwardsToItemData(this._bossLevelResult.award.pass_reward);
             }
 
             this.reward_scroll.numItems = this._propsData.length;

@@ -1,3 +1,4 @@
+import { ItemData } from "../manager/DataMgr";
 import { InterfacePath } from "../net/InterfacePath";
 import { BaseRepPacket } from "./NetModel";
 import { UnitWordModel } from "./TextbookModel";
@@ -43,6 +44,7 @@ export class MapLevelData {
     game_modes?: string;
     current_mode?: number;
     flag_info?: any;
+    monster_id?: number;
 }
 
 export class BossLevelData {
@@ -73,8 +75,11 @@ export class IslandProgressModel extends BaseRepPacket {
     micro_list: MicroListItem[];
     micro_total_num: number;
     micro_pass_num: number;
-    // code: number;
-    // msg: string;
+
+    gate_list: GateData[];
+    progress_reward_list: ProgressRewardData[];
+    gate_total_num: number;
+    gate_pass_num: number;
 }
 
 export interface MicroListItem {
@@ -84,6 +89,33 @@ export interface MicroListItem {
     flag: number;
     can_play: number;
     flag_info?: any;
+}
+
+export interface GateData {
+    big_id: number;
+    small_id: number;
+    unit: string;
+    subject_id: number;
+    monster_id: number;
+    star_one_reward: ItemData[];
+    star_two_reward: ItemData[];
+    star_three_reward: ItemData[];
+    pass_reward: ItemData[];
+    random_reward: ItemData[];
+    flag: number;
+    can_play: number;
+    flag_info?: any;
+    current_mode: number;
+    progressData: LevelProgressData;
+    error_num: number;
+    game_modes?: number;
+}
+
+export interface ProgressRewardData {
+    big_id: number;
+    pass_count: number;
+    pass_reward: ItemData[];
+    open: number; //1领取过 0 未领取过
 }
 
 export interface MicroData {
@@ -100,7 +132,6 @@ export class c2sWordGameWords {
     command_id: string = InterfacePath.WordGame_Words;
     big_id: number;
     small_id: number;
-    micro_id: number;
 }
 
 export class WordGameWordsData extends BaseRepPacket {
@@ -150,7 +181,6 @@ export class c2sAdventureResult {
 export interface AdventureResultModel {
     big_id: number;
     small_id: number;
-    micro_id: number;
     game_mode: number;
     cost_time: number;
     status: number;
@@ -192,7 +222,6 @@ export class c2sWordGroup {
     command_id: string = InterfacePath.Words_Group;
     big_id: number;
     small_id: number;
-    micro_id: number;
 }
 
 //教材单词获取组合模式选项
@@ -225,14 +254,14 @@ export class c2sAdvLevelProgress {
     command_id: string = InterfacePath.Adventure_LevelProgress;
     big_id: number;
     small_id: number;
-    micro_id: number;
-    category: number;
+    subject_id: number;
+    category?: number;
 }
 
 export class LevelProgressData extends BaseRepPacket {
     big_id: number;
     small_id: number;
-    micro_id: number;
+    subject_id: number;
     game_mode: number;
     flag: number;
     pass_num: number;
@@ -286,4 +315,103 @@ export class c2sBossLevelSubmit {
 export class BossLevelSubmitData extends BaseRepPacket {
     flag: number;
     award: any;
+}
+
+//获取岛屿进度奖励
+export class c2sGetProgressReward {
+    command_id: string = InterfacePath.Progress_RewardGet;
+    big_id: number;
+    pass_count: number;
+}
+export class ProgressRewardReply extends BaseRepPacket {
+    pass_reward: ItemData[];
+}
+
+//获取单元列表
+export class c2sGetUnitList {
+    command_id: string = InterfacePath.WordGame_UnitList;
+    big_id: number;
+}
+export class UnitListData extends BaseRepPacket {
+    unit_info_dict: any;
+}
+export class UnitData {
+    big_id: number;
+    unit: string;
+    status: number;
+}
+
+//关卡重新开始
+export class c2sWordGameLevelRestart {
+    command_id: string = InterfacePath.WordGame_LevelRestart;
+    big_id: number;
+    small_id: number;
+}
+export class LevelRestartData extends BaseRepPacket {
+
+}
+
+//获取大冒险单元单词
+export class c2sWordGameUnitWords {
+    command_id: string = InterfacePath.WordGame_UnitWords;
+    big_id: number;
+    unit: string;
+}
+export class WordGameUnitWordReply extends BaseRepPacket {
+    word_list: UnitWord[] = [];
+}
+export class UnitWord {
+    w_id: string;
+    big_id: number;
+    small_id: number;
+    subject_id: number;
+    word: string;
+    cn: string;
+    image_url: string;
+    symbol: string;
+}
+
+//获取大冒险主题
+export class c2sWordGameSubject {
+    command_id: string = InterfacePath.WordGame_Subject;
+    subject_id: number;
+}
+export class WordGameSubjectReply extends BaseRepPacket {
+    subject: Subject;
+    word_list: UnitWord[];
+}
+export class Subject {
+    big_id: number;
+    subject_id: number;
+    subject_name: string;
+    sentence_knowledge: string;
+}
+
+//大冒险主题ai文章列表
+export class c2sSubjectArticleList {
+    command_id: string = InterfacePath.Subject_ArticleList;
+    subject_id: number;
+}
+export class SubjectArticleListReply extends BaseRepPacket {
+    article_list: Article[];
+}
+export class Article {
+    article_id: number;
+    subject_id: number;
+    article: string;
+    create_time: string;
+}
+
+//大冒险文章题目列表
+export class c2sArticleExercisesList {
+    command_id: string = InterfacePath.Article_ExercisesList;
+    subject_id: number;
+    article_id: number;
+}
+export class ArticleExercisesListReply extends BaseRepPacket {
+    exercises_list: ArticleExercise[];
+}
+export class ArticleExercise {
+    se_id: string;
+    content: string;
 }

@@ -1,0 +1,532 @@
+{
+    "island_data": [
+        {
+            "big_id": 1,
+            "big_name": "魔法森林",
+            "phase_id": 1,
+            "phase_name": "小学阶段",
+            "grade": "小学一二年级",
+            "bossName": "树王·西坝",
+            "bossAni": "Shuren",
+            "star_one_reward": [
+                10001,
+                200,
+                10002,
+                20
+            ],
+            "star_two_reward": [
+                10002,
+                30
+            ],
+            "star_three_reward": [
+                10002,
+                50
+            ]
+        },
+        {
+            "big_id": 2,
+            "big_name": "龙息山脉",
+            "phase_id": 1,
+            "phase_name": "小学阶段",
+            "grade": "小学三四年级",
+            "bossName": "火龙·炽焰",
+            "bossAni": "",
+            "star_one_reward": [
+                10001,
+                200,
+                10002,
+                30
+            ],
+            "star_two_reward": [
+                10002,
+                40
+            ],
+            "star_three_reward": [
+                10002,
+                50
+            ]
+        },
+        {
+            "big_id": 3,
+            "big_name": "星辉湖",
+            "phase_id": 1,
+            "phase_name": "小学阶段",
+            "grade": "小学五六年级",
+            "bossName": "水妖·星涟",
+            "bossAni": "",
+            "star_one_reward": [
+                10001,
+                200,
+                10002,
+                40
+            ],
+            "star_two_reward": [
+                10002,
+                50
+            ],
+            "star_three_reward": [
+                10002,
+                50
+            ]
+        },
+        {
+            "big_id": 4,
+            "big_name": "冰霜之地",
+            "phase_id": 2,
+            "phase_name": "初中阶段",
+            "grade": "初一",
+            "bossName": "雪魔·寒魄",
+            "bossAni": "",
+            "star_one_reward": [
+                10001,
+                200,
+                10002,
+                50
+            ],
+            "star_two_reward": [
+                10002,
+                60
+            ],
+            "star_three_reward": [
+                10002,
+                50
+            ]
+        },
+        {
+            "big_id": 5,
+            "big_name": "精灵花园",
+            "phase_id": 2,
+            "phase_name": "初中阶段",
+            "grade": "初二",
+            "bossName": "花妖·翠露",
+            "bossAni": "",
+            "star_one_reward": [
+                10001,
+                200,
+                10002,
+                60
+            ],
+            "star_two_reward": [
+                10002,
+                70
+            ],
+            "star_three_reward": [
+                10002,
+                50
+            ]
+        },
+        {
+            "big_id": 6,
+            "big_name": "烈焰峡谷",
+            "phase_id": 2,
+            "phase_name": "初中阶段",
+            "grade": "初二",
+            "bossName": "岩魔·炽心",
+            "bossAni": "",
+            "star_one_reward": [
+                10001,
+                200,
+                10002,
+                70
+            ],
+            "star_two_reward": [
+                10002,
+                80
+            ],
+            "star_three_reward": [
+                10002,
+                50
+            ]
+        },
+        {
+            "big_id": 7,
+            "big_name": "月影海岸",
+            "phase_id": 3,
+            "phase_name": "高中阶段",
+            "grade": "高一高二",
+            "bossName": "月影·银沙",
+            "bossAni": "",
+            "star_one_reward": [
+                10001,
+                200,
+                10002,
+                80
+            ],
+            "star_two_reward": [
+                10002,
+                90
+            ],
+            "star_three_reward": [
+                10002,
+                50
+            ]
+        },
+        {
+            "big_id": 8,
+            "big_name": "神秘荒原",
+            "phase_id": 3,
+            "phase_name": "高中阶段",
+            "grade": "高三",
+            "bossName": " 沙妖·迷踪",
+            "bossAni": "",
+            "star_one_reward": [
+                10001,
+                200,
+                10002,
+                90
+            ],
+            "star_two_reward": [
+                10002,
+                100
+            ],
+            "star_three_reward": [
+                10002,
+                50
+            ]
+        },
+        {
+            "big_id": 9,
+            "big_name": "晨曦平原",
+            "phase_id": 4,
+            "phase_name": "大学阶段",
+            "grade": "大一大二",
+            "bossName": "晨灵·曦光",
+            "bossAni": "",
+            "star_one_reward": [
+                10001,
+                200,
+                10002,
+                100
+            ],
+            "star_two_reward": [
+                10002,
+                110
+            ],
+            "star_three_reward": [
+                10002,
+                50
+            ]
+        },
+        {
+            "big_id": 10,
+            "big_name": "云中城",
+            "phase_id": 4,
+            "phase_name": "大学阶段",
+            "grade": "大三大四",
+            "bossName": "云龙·霄凌",
+            "bossAni": "",
+            "star_one_reward": [
+                10001,
+                200,
+                10002,
+                110
+            ],
+            "star_two_reward": [
+                10002,
+                120
+            ],
+            "star_three_reward": [
+                10002,
+                50
+            ]
+        }
+    ],
+    "monster_data": [
+        {
+            "monster_id": 1001,
+            "monsterName": "绿翼龙",
+            "monsterAni": "01lvyilong",
+            "miniMonsterAni": "xg_blr"
+        },
+        {
+            "monster_id": 1002,
+            "monsterName": "红翼龙",
+            "monsterAni": "02hongyilong",
+            "miniMonsterAni": "xg_blr"
+        },
+        {
+            "monster_id": 1003,
+            "monsterName": "黄翼龙",
+            "monsterAni": "03huangyilong",
+            "miniMonsterAni": "xg_blr"
+        },
+        {
+            "monster_id": 1004,
+            "monsterName": "红圆肥",
+            "monsterAni": "04hongyanfei",
+            "miniMonsterAni": "xg_blr"
+        },
+        {
+            "monster_id": 1005,
+            "monsterName": "白毛圆肥",
+            "monsterAni": "05baimaoyanfei",
+            "miniMonsterAni": "xg_blr"
+        },
+        {
+            "monster_id": 1006,
+            "monsterName": "紫圆肥",
+            "monsterAni": "06ziyanfei",
+            "miniMonsterAni": "xg_blr"
+        }
+    ],
+    "subject_data": [
+        {
+            "subject_id": 1,
+            "subject_name": "Greetings and politeness",
+            "sentence_knowledge": "Greetings；\nFarewells；\nPolite Expressions；\nNames and Addressing。",
+            "big_id": 1
+        },
+        {
+            "subject_id": 2,
+            "subject_name": "Body part",
+            "sentence_knowledge": "Head；\nLimbs；\nTorso；\nSenses and Touch；\nDemonstratives。",
+            "big_id": 1
+        }
+    ],
+    "article_data": [
+        {
+            "article_id": 1,
+            "article": "\"Good morning,\" she greeted cheerfully as the sun peeked over the horizon, casting a warm glow over the sleepy town. Throughout the day, \"good afternoon\" echoed through bustling streets where people hurried on their way. By evening, under a painted sky, voices softened to wish each other \"good evening\" as day turned to dusk. As night fell, quiet whispers of \"good night\" floated through the air, bidding farewell to the day's adventures. And with a final \"goodbye,\" friends parted, promising to meet again under tomorrow's rising sun.",
+            "subject_id": 1
+        },
+        {
+            "article_id": 2,
+            "article": "Welcome to our little story. Hello! My name is Alice. It's so nice to meet you. I hope you enjoy your time here. We love making new friends. What's your name? It's always a pleasure to greet new visitors. If you need anything, just let us know. We want you to feel at home. As you explore, you'll find many exciting things. Don't forget to say hello to everyone you meet. It's a wonderful way to make connections. When it's time to leave, we'll say goodbye with a smile. Bye for now, and come back soon!",
+            "subject_id": 1
+        },
+        {
+            "article_id": 3,
+            "article": "Nice to meet you! Is this your first visit to our cozy café? We're thrilled to welcome you to our warm atmosphere. Take your time to enjoy the delicious treats we have to offer. Whether you're here to meet friends, catch up on work, or simply relax, our place is designed to be your favorite spot in town. Don't hesitate to let us know how we can make your experience even better. We can't wait to be part of your day!",
+            "subject_id": 1
+        },
+        {
+            "article_id": 4,
+            "article": "\nHer eyes sparkled with excitement as she listened intently, hanging on every word that danced off his tongue. A mischievous grin spread across his face, causing her to giggle, covering her mouth with her hand. He winked, and she wrinkled her nose playfully in response. Their playful banter filled the air, echoing between them like a secret language only they understood. As they shared these moments, each word spoken and expression exchanged became a cherished memory etched in their hearts forever.",
+            "subject_id": 2
+        },
+        {
+            "article_id": 5,
+            "article": "She hesitated to touch these delicate flowers, their petals soft and vibrant in the sunlight. This moment, with this beauty around her, felt surreal. These tiny wonders reminded her of the simple joys in life, urging her to pause and appreciate the world's natural marvels.",
+            "subject_id": 2
+        },
+        {
+            "article_id": 6,
+            "article": "She felt a gentle touch on her arm, turning to see her friend smiling warmly. They walked side by side, their bodies relaxed in the cool breeze of the evening. She tapped her foot to the rhythm of their conversation, feeling at ease. As they reached their destination, she patted her friend on the back, grateful for their company. Holding hands, they waved goodbye, heading home with thoughts buzzing in their heads about the day's adventures.",
+            "subject_id": 2
+        }
+    ],
+    "island_gate": [
+        {
+            "big_id": 1,
+            "unit": "小一上",
+            "subject_id": 1,
+            "small_id": 1,
+            "monster_id": 1001,
+            "star_one_reward": [
+                10001,
+                200,
+                10002,
+                20
+            ],
+            "star_two_reward": [
+                10002,
+                30
+            ],
+            "star_three_reward": [
+                10002,
+                50
+            ],
+            "pass_reward": [
+                10001,
+                500
+            ],
+            "random_reward": [
+                10002,
+                20
+            ],
+            "random_percent": 40
+        },
+        {
+            "big_id": 1,
+            "unit": "小一上",
+            "subject_id": 1,
+            "small_id": 2,
+            "monster_id": 1002,
+            "star_one_reward": [
+                10001,
+                300,
+                10002,
+                30
+            ],
+            "star_two_reward": [
+                10002,
+                30
+            ],
+            "star_three_reward": [
+                10002,
+                50
+            ],
+            "pass_reward": [
+                10001,
+                500
+            ],
+            "random_reward": [
+                10002,
+                20
+            ],
+            "random_percent": 40
+        },
+        {
+            "big_id": 1,
+            "unit": "小一上",
+            "subject_id": 1,
+            "small_id": 3,
+            "monster_id": 1003,
+            "star_one_reward": [
+                10001,
+                400,
+                10002,
+                40
+            ],
+            "star_two_reward": [
+                10002,
+                30
+            ],
+            "star_three_reward": [
+                10002,
+                50
+            ],
+            "pass_reward": [
+                10001,
+                500
+            ],
+            "random_reward": [
+                10002,
+                20
+            ],
+            "random_percent": 40
+        },
+        {
+            "big_id": 1,
+            "unit": "小一上",
+            "subject_id": 2,
+            "small_id": 4,
+            "monster_id": 1004,
+            "star_one_reward": [
+                10001,
+                500,
+                10002,
+                50
+            ],
+            "star_two_reward": [
+                10002,
+                30
+            ],
+            "star_three_reward": [
+                10002,
+                50
+            ],
+            "pass_reward": [
+                10001,
+                500
+            ],
+            "random_reward": [
+                10002,
+                20
+            ],
+            "random_percent": 40
+        },
+        {
+            "big_id": 1,
+            "unit": "小一下",
+            "subject_id": 2,
+            "small_id": 5,
+            "monster_id": 1005,
+            "star_one_reward": [
+                10001,
+                600,
+                10002,
+                60
+            ],
+            "star_two_reward": [
+                10002,
+                30
+            ],
+            "star_three_reward": [
+                10002,
+                50
+            ],
+            "pass_reward": [
+                10001,
+                500
+            ],
+            "random_reward": [
+                10002,
+                20
+            ],
+            "random_percent": 40
+        },
+        {
+            "big_id": 1,
+            "unit": "小一下",
+            "subject_id": 2,
+            "small_id": 6,
+            "monster_id": 1006,
+            "star_one_reward": [
+                10001,
+                700,
+                10002,
+                70
+            ],
+            "star_two_reward": [
+                10002,
+                30
+            ],
+            "star_three_reward": [
+                10002,
+                50
+            ],
+            "pass_reward": [
+                10001,
+                500
+            ],
+            "random_reward": [
+                10002,
+                20
+            ],
+            "random_percent": 40
+        }
+    ],
+    "cumulative_reward": [
+        {
+            "big_id": 1,
+            "pass_count": 2,
+            "star_one_reward": [
+                10001,
+                200,
+                10002,
+                20
+            ]
+        },
+        {
+            "big_id": 1,
+            "pass_count": 4,
+            "star_one_reward": [
+                10001,
+                400,
+                10002,
+                40
+            ]
+        },
+        {
+            "big_id": 1,
+            "pass_count": 6,
+            "star_one_reward": [
+                10001,
+                600,
+                10002,
+                60
+            ]
+        }
+    ]
+}

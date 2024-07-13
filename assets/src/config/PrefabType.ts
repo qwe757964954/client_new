@@ -1,3 +1,4 @@
+import { MapProcessRewardView } from "../views/adventure/common/MapProcessRewardView";
 
 // 场景类型
 export const SceneType = {
@@ -50,6 +51,7 @@ export const PrefabType = {
     ExamReportView: { path: "studyModes/ExamReportView", zindex: Hierarchy.POPUPLAYER, tips: "测评模式结算界面" },
     WordBossView: { path: "studyModes/WordBossView", zindex: Hierarchy.POPUPLAYER, tips: "Boss关卡" },
     LevelUpView: { path: "common/LevelUpView", zindex: Hierarchy.POPUPLAYER, tips: "升级界面" },
+    MapProcessRewardView: { path: "adventure/common/MapProcessRewardView", componentName: "MapProcessRewardView", zindex: Hierarchy.POPUPLAYER, tips: "岛屿进度奖励展示" },
     //**学习模式相关 end*/
     /*********************************************公共相关start***********************************************************/
     TopAmoutView: { path: "common/TopAmoutView", zindex: Hierarchy.POPUPLAYER, tips: "数值公共模块" },

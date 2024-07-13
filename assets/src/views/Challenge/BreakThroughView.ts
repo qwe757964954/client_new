@@ -235,32 +235,32 @@ export class BreakThroughView extends BaseView {
     }
 
     async gotoSpell(wordData: VocabularyWordData, bookLevelData: BookLevelConfig) {
-        const node = await ViewsManager.instance.showViewAsync(PrefabType.WordSpellView);
+        const node = await ViewsManager.instance.showLearnView(PrefabType.WordSpellView);
         node.getComponent(WordSpellView).initData(wordData.data, bookLevelData);
     }
 
     async gotoReed(wordData: VocabularyWordData, bookLevelData: BookLevelConfig) {
-        const node = await ViewsManager.instance.showViewAsync(PrefabType.WordReadingView);
+        const node = await ViewsManager.instance.showLearnView(PrefabType.WordReadingView);
         node.getComponent(WordReadingView).initData(wordData.data, bookLevelData);
     }
 
     async gotoPractice(wordData: VocabularyWordData, bookLevelData: BookLevelConfig) {
-        const node = await ViewsManager.instance.showViewAsync(PrefabType.WordPracticeView);
+        const node = await ViewsManager.instance.showLearnView(PrefabType.WordPracticeView);
         node.getComponent(WordPracticeView).initData(wordData.data, bookLevelData);
     }
 
     async gotoMeaning(wordData: VocabularyWordData, bookLevelData: BookLevelConfig) {
-        const node = await ViewsManager.instance.showViewAsync(PrefabType.WordMeaningView);
+        const node = await ViewsManager.instance.showLearnView(PrefabType.WordMeaningView);
         node.getComponent(WordMeaningView).initData(wordData.data, bookLevelData);
     }
 
     async gotoAllSpelledOut(wordData: VocabularyWordData, bookLevelData: BookLevelConfig) {
-        const node = await ViewsManager.instance.showViewAsync(PrefabType.WordExamView);
+        const node = await ViewsManager.instance.showLearnView(PrefabType.WordExamView);
         node.getComponent(WordExamView).initData(wordData.data, bookLevelData);
     }
 
     async gotoTutoring(wordData: VocabularyWordData, bookLevelData: BookLevelConfig) {
-        const node = await ViewsManager.instance.showViewAsync(PrefabType.StudyModeView);
+        const node = await ViewsManager.instance.showLearnView(PrefabType.StudyModeView);
         node.getComponent(StudyModeView).initData(wordData.data, bookLevelData);
     }
 

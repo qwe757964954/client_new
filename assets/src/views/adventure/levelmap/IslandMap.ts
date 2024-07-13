@@ -1,6 +1,6 @@
 import { _decorator, Component, instantiate, Node, Prefab, Sprite, SpriteFrame, UITransform, Vec3 } from 'cc';
 import { EventType } from '../../../config/EventType';
-import { MapLevelData, MicroListItem } from '../../../models/AdventureModel';
+import { GateData, MapLevelData, MicroListItem } from '../../../models/AdventureModel';
 import CCUtil from '../../../util/CCUtil';
 import EventManager from '../../../util/EventManager';
 import { WorldIsland } from '../WorldIsland';
@@ -20,7 +20,7 @@ export class IslandMap extends Component {
     @property({ type: [SpriteFrame], tooltip: "岛屿地图背景" })
     public islandBg: SpriteFrame[] = [];
 
-    private _pointDatas: MicroListItem[] = [];
+    private _pointDatas: GateData[] = [];
     private _pointItems: Node[] = [];
 
     private _progressData: number;
@@ -34,7 +34,7 @@ export class IslandMap extends Component {
     }
 
     //设置数据
-    setData(islandId: number, mapPoints: MicroListItem[], progressData: number) {
+    setData(islandId: number, mapPoints: GateData[], progressData: number) {
         this.removePointEvent();
         this._progressData = progressData;
         this._pointDatas = mapPoints;
@@ -45,13 +45,13 @@ export class IslandMap extends Component {
         this._pointItems = [];
         this.bg.spriteFrame = this.islandBg[islandId - 1];
         let points = WorldIsland.getMapPointsByBigId(islandId);
-        let posData: { map: IslandMap, position: Vec3, pointData: MicroListItem } = null;
+        let posData: { map: IslandMap, position: Vec3, pointData: GateData } = null;
         for (let i = 0; i < mapPoints.length; i++) {
             let mapPoint = instantiate(this.mapPointPrefab);
             mapPoint.position = new Vec3(points[i][0], points[i][1], 0);
             this.mapPointContainer.addChild(mapPoint);
             mapPoint.active = true;
-            mapPoint.getComponent(MapPointItem).initData(mapPoints[i]);
+            mapPoint.getComponent(MapPointItem).initGateData(mapPoints[i]);
             this._pointItems.push(mapPoint);
             CCUtil.onTouch(mapPoint, this.onPointClick.bind(this, mapPoint), this);
             if (mapPoints[i].flag == 0 && mapPoints[i].can_play == 1) { //当前关卡
@@ -103,7 +103,7 @@ export class IslandMap extends Component {
     }
 
     onPointClick(point: Node) {
-        let data: MicroListItem = point.getComponent(MapPointItem).data as MicroListItem;
+        let data: GateData = point.getComponent(MapPointItem).gateData;
         if (!data.can_play) {
             ViewsMgr.showTip("请先通过前置关卡");
             return;

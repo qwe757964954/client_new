@@ -2,21 +2,19 @@ import { _decorator, instantiate, isValid, Label, Node, NodePool, Prefab, Sprite
 import { NetConfig } from '../../../config/NetConfig';
 import { PrefabType } from '../../../config/PrefabType';
 import GlobalConfig from '../../../GlobalConfig';
-import { AdvLevelConfig, BookLevelConfig, DataMgr } from '../../../manager/DataMgr';
+import { BookLevelConfig, DataMgr } from '../../../manager/DataMgr';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
+import { SoundMgr } from '../../../manager/SoundMgr';
 import { ViewsManager } from '../../../manager/ViewsManager';
-import { GameMode, SentenceData, WordGroupData, WordGroupModel, WordsDetailData } from '../../../models/AdventureModel';
+import { GameMode, GateData, SentenceData, WordGroupData, WordGroupModel, WordsDetailData } from '../../../models/AdventureModel';
 import { UnitWordModel } from '../../../models/TextbookModel';
 import { InterfacePath } from '../../../net/InterfacePath';
 import { ServiceMgr } from '../../../net/ServiceManager';
 import CCUtil from '../../../util/CCUtil';
 import { ToolUtil } from '../../../util/ToolUtil';
-import { TransitionView } from '../common/TransitionView';
-import { BaseModeView } from './BaseModeView';
+import { BaseModeView, WordSourceType } from './BaseModeView';
 import { SpellWordItem } from './items/SpellWordItem';
 import { WordReadingView } from './WordReadingView';
-import { Shake } from '../../../util/Shake';
-import { SoundMgr } from '../../../manager/SoundMgr';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordSpellView')
@@ -72,10 +70,10 @@ export class WordSpellView extends BaseModeView {
         }
         console.log("this.resultSprite_____", this.resultSprite);
         this._wordsData = data;
-        let isAdventure = this._levelData.hasOwnProperty('bigId'); //是否是大冒险关卡
+        let isAdventure = WordSourceType.word_game == this._sourceType; //是否是大冒险关卡
         if (isAdventure) { //单词大冒险获取组合模式选项
-            let levelData = this._levelData as AdvLevelConfig;
-            ServiceMgr.studyService.getWordGroup(levelData.bigId, levelData.smallId, levelData.mapLevelData.micro_id);
+            let levelData = this._levelData as GateData;
+            ServiceMgr.studyService.getWordGroup(levelData.big_id, levelData.small_id);
         } else { //教材单词获取组合模式选项
             let levelData = this._levelData as BookLevelConfig;
             ServiceMgr.studyService.getTextbookWordGroup(levelData.book_id, levelData.unit_id);
@@ -231,18 +229,14 @@ export class WordSpellView extends BaseModeView {
     protected modeOver(): void {
         super.modeOver();
         console.log('拼模式完成');
-        ViewsManager.instance.showView(PrefabType.TransitionView, (node: Node) => {
+        this.showTransitionView(async () => {
             let wordData = JSON.parse(JSON.stringify(this._wordsData));
             let levelData = JSON.parse(JSON.stringify(this._levelData));
-            //跳转到下一场景
-            node.getComponent(TransitionView).setTransitionCallback(() => {
-                ViewsManager.instance.showView(PrefabType.WordReadingView, (node: Node) => {
-                    ViewsManager.instance.closeView(PrefabType.WordSpellView);
-                    this.node.destroy();
-                    node.getComponent(WordReadingView).initData(wordData, levelData);
-                });
-            });
-        });
+            console.log("过渡界面回调_________________________");
+            let node = await ViewsManager.instance.showLearnView(PrefabType.WordReadingView);
+            node.getComponent(WordReadingView).initData(wordData, levelData);
+            this.node.parent.destroy();
+        })
     }
 
     getItemBySelectIdx(idx: number) {

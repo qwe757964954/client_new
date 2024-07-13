@@ -1,7 +1,7 @@
 import { isValid } from "cc";
 import { EventType } from "../config/EventType";
 import { ViewsManager } from "../manager/ViewsManager";
-import { AdventureCollectWordModel, AdventureResultModel, c2sAdventureCollectWord, c2sAdventureResult, c2sAdventureWord, c2sAdventureWordSentence, c2sAdvLevelProgress, c2sBossLevelSubmit, c2sBossLevelTopic, c2sIslandProgress, c2sIslandStatus, c2sTextbookWordGroup, c2sWordGameWords, c2sWordGroup, WordGameWordsData } from "../models/AdventureModel";
+import { AdventureCollectWordModel, AdventureResultModel, c2sAdventureCollectWord, c2sAdventureResult, c2sAdventureWord, c2sAdventureWordSentence, c2sAdvLevelProgress, c2sBossLevelSubmit, c2sBossLevelTopic, c2sGetProgressReward, c2sGetUnitList, c2sIslandProgress, c2sIslandStatus, c2sTextbookWordGroup, c2sWordGameLevelRestart, c2sWordGameSubject, c2sWordGameUnitWords, c2sWordGameWords, c2sWordGroup, WordGameWordsData } from "../models/AdventureModel";
 import { c2sReviewPlan, c2sReviewPlanDraw, c2sReviewPlanList, c2sReviewPlanStatus, c2sReviewPlanSubmit, c2sReviewPlanUpdate } from "../models/NetModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
@@ -39,11 +39,10 @@ export default class StudyService extends BaseControll {
     }
 
     //获取大冒险关卡单词
-    getWordGameWords(bigId: number, smallId: number, microId: number) {
+    getWordGameWords(bigId: number, smallId: number) {
         let para: c2sWordGameWords = new c2sWordGameWords();
         para.big_id = bigId;
         para.small_id = smallId;
-        para.micro_id = microId;
         NetMgr.sendMsg(para);
     }
     onWordGameWords(data: WordGameWordsData) {
@@ -72,7 +71,6 @@ export default class StudyService extends BaseControll {
         let para: c2sAdventureResult = new c2sAdventureResult();
         para.big_id = params.big_id;
         para.small_id = params.small_id;
-        para.micro_id = params.micro_id;
         para.game_mode = params.game_mode;
         para.cost_time = params.cost_time;
         para.status = params.status;
@@ -84,11 +82,10 @@ export default class StudyService extends BaseControll {
     }
 
     //获取组合模式选项
-    getWordGroup(bigId: number, smallId: number, microId: number) {
+    getWordGroup(bigId: number, smallId: number) {
         let para: c2sWordGroup = new c2sWordGroup();
         para.big_id = bigId;
         para.small_id = smallId;
-        para.micro_id = microId;
         NetMgr.sendMsg(para);
     }
 
@@ -123,11 +120,11 @@ export default class StudyService extends BaseControll {
     }
 
     //获取大冒险关卡进度
-    getAdvLevelProgress(big_id: number, small_id: number, micro_id: number, category: number) {
+    getAdvLevelProgress(big_id: number, small_id: number, subject_id: number, category: number) {
         let para: c2sAdvLevelProgress = new c2sAdvLevelProgress();
         para.big_id = big_id;
         para.small_id = small_id;
-        para.micro_id = micro_id;
+        para.subject_id = subject_id;
         para.category = category;
         NetMgr.sendMsg(para);
     }
@@ -191,6 +188,44 @@ export default class StudyService extends BaseControll {
         para.status = status;
         para.option = option;
         para.cost_time = cost_time;
+        NetMgr.sendMsg(para);
+    }
+
+    //获取岛屿进度奖励
+    getProgressReward(big_id: number, pass_count: number) {
+        let para: c2sGetProgressReward = new c2sGetProgressReward();
+        para.big_id = big_id;
+        para.pass_count = pass_count;
+        NetMgr.sendMsg(para);
+    }
+
+    //获取单元列表
+    getWordGameUnits(big_id: number) {
+        let para: c2sGetUnitList = new c2sGetUnitList();
+        para.big_id = big_id;
+        NetMgr.sendMsg(para);
+    }
+
+    //关卡重新开始
+    wordGameLevelRestart(big_id: number, small_id: number) {
+        let para: c2sWordGameLevelRestart = new c2sWordGameLevelRestart();
+        para.big_id = big_id;
+        para.small_id = small_id;
+        NetMgr.sendMsg(para);
+    }
+
+    //获取单元单词
+    getUnitWords(big_id: number, unit: string) {
+        let para: c2sWordGameUnitWords = new c2sWordGameUnitWords();
+        para.big_id = big_id;
+        para.unit = unit;
+        NetMgr.sendMsg(para);
+    }
+
+    //获取大冒险主题数据
+    getWordGameSubject(subject_id: number) {
+        let para: c2sWordGameSubject = new c2sWordGameSubject();
+        para.subject_id = subject_id;
         NetMgr.sendMsg(para);
     }
 }

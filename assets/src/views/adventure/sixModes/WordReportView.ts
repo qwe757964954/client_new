@@ -17,6 +17,7 @@ import { NodeUtil } from '../../../util/NodeUtil';
 import { ObjectUtil } from '../../../util/ObjectUtil';
 import { RewardItem } from '../../common/RewardItem';
 import { ConditionItem } from './ConditionItem';
+import { ReportItem } from './ReportItem';
 const { ccclass, property } = _decorator;
 
 
@@ -76,7 +77,38 @@ export class WordReportView extends BaseView {
             let curAnim = startAnim[ket_length - 1];
             let idleAnim = `${curAnim}_idle`;
             this.showResultSpAni(curAnim, idleAnim);
-            this._propsData = ObjectUtil.convertAwardsToItemData(this._resultSubmitResponse.award_info);
+            this._propsData = [];
+            let awardInfo = this._resultSubmitResponse.award_info;
+            if (awardInfo.star_one_reward) { //一星奖励
+                for (let i = 0; i < awardInfo.star_one_reward.length; i++) {
+                    awardInfo.star_one_reward[i].from = "star_one_reward";
+                }
+                this._propsData = [...awardInfo.star_one_reward];
+            }
+            if (awardInfo.star_two_reward) { //二星奖励
+                for (let i = 0; i < awardInfo.star_two_reward.length; i++) {
+                    awardInfo.star_two_reward[i].from = "star_two_reward";
+                }
+                this._propsData = [...this._propsData, ...awardInfo.star_two_reward];
+            }
+            if (awardInfo.star_three_reward) { //三星奖励
+                for (let i = 0; i < awardInfo.star_three_reward.length; i++) {
+                    awardInfo.star_three_reward[i].from = "star_three_reward";
+                }
+                this._propsData = [...this._propsData, ...awardInfo.star_three_reward];
+            }
+            if (awardInfo.pass_reward) { //固定奖励
+                for (let i = 0; i < awardInfo.pass_reward.length; i++) {
+                    awardInfo.pass_reward[i].from = "pass_reward";
+                }
+                this._propsData = [...this._propsData, ...awardInfo.pass_reward];
+            }
+            if (awardInfo.random_reward) { //随机奖励
+                for (let i = 0; i < awardInfo.random_reward.length; i++) {
+                    awardInfo.random_reward[i].from = "random_reward";
+                }
+                this._propsData = [...this._propsData, ...awardInfo.random_reward];
+            }
             this.reward_scroll.numItems = this._propsData.length;
             this.condition_scroll.numItems = ket_length;
             this.showRewardSpAni();
@@ -153,7 +185,6 @@ export class WordReportView extends BaseView {
         console.log("关卡列表")
         EventMgr.dispatch(EventType.Exit_Island_Level);
         this.node.destroy();
-        // ViewsManager.instance.closeView(PrefabType.WordReportView);
     }
     onInitModuleEvent() {
 
@@ -170,11 +201,11 @@ export class WordReportView extends BaseView {
     }
 
     onLoadRewardHorizontal(item: Node, idx: number) {
-        const rewardItem = item.getComponent(RewardItem);
+        const rewardItem = item.getComponent(ReportItem);
         const uiTransform = item.getComponent(UITransform);
         const scale = 126.5 / uiTransform.height;
         item.setScale(scale, scale, scale);
-        rewardItem.init(this._propsData[idx]);
+        rewardItem.updateItemProps(this._propsData[idx]);
     }
 
     onLoadConditionVertical(item: Node, idx: number) {

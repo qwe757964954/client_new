@@ -18,6 +18,7 @@ const ConfigPath = {
     PetConfig: "pet",
     ProduceConfig: "produce",
     ItemInfoConfig: "item_info",
+    WordGameConfig: "word_game",
 }
 
 //角色插槽
@@ -63,6 +64,7 @@ export class EditInfo {
 export class ItemData {
     id: number;//id
     num: number;//数量
+    from?: string; //来源（如一星，二星奖励）
 }
 /**物品信息 */
 export class ItemInfo {
@@ -151,6 +153,34 @@ export class CastleConfig {
     unlock4: number;//解锁条件(人物等级)
 }
 
+//岛屿信息
+export class IslandData {
+    big_id: number;
+    big_name: string;
+    phase_id: number;
+    phase_name: string;
+    grade: string;
+    bossName: string;
+    bossAni: string;
+}
+
+//怪物信息
+export class MonsterData {
+    monster_id: number;
+    monsterName: string;
+    monsterAni: string;
+    miniMonsterAni: string;
+}
+
+//岛屿学期信息
+export class IslandGateData {
+    big_id: number;
+    unit: string;
+    subject_id: number;
+    small_id: number;
+    monster_id: number;
+}
+
 //数据管理器
 export class DataManager {
 
@@ -169,6 +199,9 @@ export class DataManager {
     public medalConfig: MedalConfig[] = []; //勋章信息
     public helpConfig = {} //帮助配置
     public adventureBossConfig: BossLevelData[] = []; //大冒险岛屿boss信息
+    public islandConfig: IslandData[] = []; //岛屿配置
+    public monsterConfig: MonsterData[] = []; //岛屿怪物配置
+    public islandGateConfig: IslandGateData[] = []; //岛屿学期配置
 
     private _isInit: boolean = false;
     public defaultLand: EditInfo = null;//默认地块
@@ -201,6 +234,7 @@ export class DataManager {
         await this.initAchieveConfig();
         await this.initMedalConfig();
         await this.initHelpConfig();
+        await this.initWordGameConfig();
         console.timeEnd("DataMgr initData");
     }
     /** 初始化角色插槽 */
@@ -384,6 +418,14 @@ export class DataManager {
         }
     }
 
+    //初始化大冒险相关配置
+    public async initWordGameConfig() {
+        let json = await LoadManager.loadJson(ConfigPath.WordGameConfig);
+        this.islandConfig = json.island_data;
+        this.monsterConfig = json.monster_data;
+        this.islandGateConfig = json.island_gate;
+    }
+
     //获取导学模式单词拆分配置
     public async getWordSplitConfig() {
         if (this.wordSplitConfig != null) return this.wordSplitConfig;
@@ -415,6 +457,26 @@ export class DataManager {
             return cfg.bigId == bigId;
         });
         return cfgData;
+    }
+
+    //获取岛屿配置
+    public getIslandData(big_id: number): IslandData {
+        return this.islandConfig.find((cfg) => {
+            return cfg.big_id == big_id;
+        });
+    }
+
+    //获取怪物配置
+    public getMonsterData(monster_id: number): MonsterData {
+        return this.monsterConfig.find((cfg) => {
+            return cfg.monster_id == monster_id;
+        });
+    }
+    //获取学期配置
+    public getIslandGateData(big_id: number, small_id: number): IslandGateData {
+        return this.islandGateConfig.find((cfg) => {
+            return cfg.big_id == big_id && cfg.small_id == small_id;
+        });
     }
 
     /**获取编辑图片 */

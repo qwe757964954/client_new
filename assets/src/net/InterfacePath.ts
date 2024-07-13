@@ -58,8 +58,16 @@ export const InterfacePath = {
     Words_Group: "3106", //获取组合模式单词选项
     Adventure_LevelProgress: "3107", //大冒险当前关卡进度
     Classification_AdventureCollectWord: "3108", //单词大冒险收藏
+    Progress_RewardGet: "3109", //岛屿进度宝箱领取
     BossLevel_Topic: "3110", //大冒险Boss关卡题目
     BossLevel_Submit: "3111", //大冒险Boss关卡题目提交
+    WordGame_LevelRestart: "3114", //单词大冒险关卡重玩
+    WordGame_UnitList: "3115", //单元列表
+    WordGame_UnitWords: "3116", //单词大冒险单元单词
+    WordGame_Subject: "3117", //大冒险主题信息
+    Subject_ArticleList: "3118", //主题ai文章列表
+    Article_ExercisesList: "3119", //文章题目列表
+
     /***********************************************选择词书 begin*********************************************/
     Classification_BookStatus: "3011", //我的词书-列表
     Classification_PlanModify: "3017", //我的词书-修改计划

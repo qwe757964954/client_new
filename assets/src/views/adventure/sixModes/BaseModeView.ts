@@ -1,14 +1,14 @@
-import { _decorator, BlockInputEvents, Button, instantiate, isValid, Label, Node, Prefab, Sprite, tween, UIOpacity, UITransform, Vec3, view } from 'cc';
+import { _decorator, BlockInputEvents, Button, Color, instantiate, isValid, Label, Node, Prefab, Sprite, tween, UIOpacity, UITransform, Vec3, view } from 'cc';
 import { EventType } from '../../../config/EventType';
 import { GameRes } from '../../../GameRes';
 import GlobalConfig from '../../../GlobalConfig';
-import { AdvLevelConfig, BookLevelConfig } from '../../../manager/DataMgr';
+import { BookLevelConfig, DataMgr } from '../../../manager/DataMgr';
 import { inf_SpineAniCreate } from '../../../manager/InterfaceDefines';
 import { LoadManager } from '../../../manager/LoadManager';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { SoundMgr } from '../../../manager/SoundMgr';
 import { ViewsMgr } from '../../../manager/ViewsManager';
-import { AdventureCollectWordModel, AdventureResult, AdventureResultModel, GameMode, WordsDetailData } from '../../../models/AdventureModel';
+import { AdventureCollectWordModel, AdventureResult, AdventureResultModel, GameMode, GateData, WordsDetailData } from '../../../models/AdventureModel';
 import { s2cReviewPlanSubmit } from '../../../models/NetModel';
 import { PetModel } from '../../../models/PetModel';
 import { RoleBaseModel } from '../../../models/RoleBaseModel';
@@ -21,9 +21,11 @@ import { TBServer } from '../../../service/TextbookService';
 import CCUtil from '../../../util/CCUtil';
 import EventManager, { EventMgr } from '../../../util/EventManager';
 import FileUtil from '../../../util/FileUtil';
+import ImgUtil from '../../../util/ImgUtil';
 import { ToolUtil } from '../../../util/ToolUtil';
 import { SmallMonsterModel } from '../../common/SmallMonsterModel';
 import { MonsterModel } from '../common/MonsterModel';
+import { TopLabel } from '../common/TopLabel';
 const { ccclass, property } = _decorator;
 
 export enum WordSourceType {
@@ -81,10 +83,6 @@ export class BaseModeView extends BaseView {
     protected _rightNum: number = 0; //正确数量
     protected _costTime: number = 0; //花费时间
 
-    protected _getResultEveId: string; //获取结果
-    protected _wordDetailEveId: string; //获取单词详情
-    protected _getReviewResultEveId: string; //获取复习规划结果
-
     private _upResultSucce: boolean = false; //上报结果成功
     // protected _currentSubmitResponse: GameSubmitResponse | AdventureResult = null;
     protected _currentSubmitResponse: any = null;
@@ -110,21 +108,39 @@ export class BaseModeView extends BaseView {
         this._rightAniNode.parent = this.node;
         this._rightAniNode.active = false;
     }
-    updateTextbookWords(wordsdata: UnitWordModel[], levelData: any) {
-        this._levelData = levelData;
-        if (null != this._levelData.source_type) {
-            this._sourceType = this._levelData.source_type;
-        } else {
-            let isAdventure = this._levelData.hasOwnProperty('bigId'); //是否是大冒险关卡
-            this._sourceType = isAdventure ? WordSourceType.word_game : WordSourceType.classification;
-        }
 
-        /** 从关卡数据中获取单词学习到哪个单词*/
-        if (WordSourceType.classification == this._sourceType) {
+    async addTransitionView() {
+
+        if (!isValid(this.node.getChildByName("dark"))) {
+            await ImgUtil.create_PureNode(this.node);
+            let dark = this.node.getChildByName("dark");
+            dark.addComponent(UIOpacity);
+            dark.active = false;
+        }
+    }
+
+    showTransitionView(callback: () => void) {
+        let dark = this.node.getChildByName("dark");
+        dark.active = true;
+        let uiOpacity = dark.getComponent(UIOpacity);
+        uiOpacity.opacity = 0;
+        tween(uiOpacity).to(0.5, { opacity: 255 }).call(() => {
+            // callback?.();
+        }).to(0.5, { opacity: 0 }).call(() => {
+            callback?.();
+        }).start();
+    }
+
+    updateTextbookWords(wordsdata: UnitWordModel[], levelData: any) {
+        this.addTransitionView();
+        this._levelData = levelData;
+        this._sourceType = this._levelData.source_type || (this._levelData.hasOwnProperty('big_id') ? WordSourceType.word_game : WordSourceType.classification);
+
+        if (WordSourceType.classification === this._sourceType) {
             let levelData = this._levelData as BookLevelConfig;
             this._wordIndex = levelData.word_num - 1;
             this._remainTime = Math.round(levelData.time_remaining);
-            /**如果当前关卡有错词，自动放到最后 */
+
             if (isValid(levelData.error_word)) {
                 if (levelData.cur_game_mode === this.gameMode) {
                     this._errorWords = levelData.error_word;
@@ -138,20 +154,19 @@ export class BaseModeView extends BaseView {
                     }
                 } else {
                     this._wordIndex = 0;
-                    const uniqueWordList: UnitWordModel[] = Object["values"](wordsdata.reduce((acc, curr) => {
+                    const uniqueWordList: UnitWordModel[] = Object.values(wordsdata.reduce((acc, curr) => {
                         acc[curr.word] = curr;
                         return acc;
-                    }, {} as Record<string, UnitWordModel>));
+                    }, {}));
                     wordsdata = uniqueWordList;
                 }
             }
             this._rightNum = this._wordIndex;
         } else if (WordSourceType.word_game == this._sourceType) {
-            let levelData = this._levelData as AdvLevelConfig;
+            let levelData = this._levelData as GateData;
             let progressData = levelData.progressData;
-            let costTime = progressData.cost_time;
-            this._remainTime = Math.round((this._totalTime - costTime) / 1000);
-            /**如果当前关卡有错词，自动放到最后 */
+            this._remainTime = Math.round((this._totalTime - progressData.cost_time) / 1000);
+
             if (progressData.game_mode === this.gameMode) {
                 this._wordIndex = progressData.word_num - 1;
                 this._rightNum = progressData.pass_num;
@@ -168,16 +183,16 @@ export class BaseModeView extends BaseView {
                 }
             } else {
                 this._wordIndex = 0;
-                levelData.mapLevelData.current_mode = this.gameMode;
+                levelData.current_mode = this.gameMode;
                 levelData.progressData.error_word = null;
-                const uniqueWordList: UnitWordModel[] = Object["values"](wordsdata.reduce((acc, curr) => {
+                const uniqueWordList: UnitWordModel[] = Object.values(wordsdata.reduce((acc, curr) => {
                     acc[curr.word] = curr;
                     return acc;
-                }, {} as Record<string, UnitWordModel>));
+                }, {}));
                 wordsdata = uniqueWordList;
             }
-            console.log("progressData", progressData);
-        } else if (WordSourceType.review == this._sourceType) {
+
+        } else if (WordSourceType.review === this._sourceType) {
             this._wordIndex = this._levelData.word_num;
             this._rightNum = this._levelData.pass_num;
             this._errorNum = this._levelData.error_num;
@@ -187,16 +202,24 @@ export class BaseModeView extends BaseView {
             LoadManager.loadSprite("adventure/sixModes/study/img_bg2/spriteFrame", bg.getComponent(Sprite)).then(() => {
                 CCUtil.fillNodeScale(bg, GlobalConfig.WIN_SIZE.width, GlobalConfig.WIN_SIZE.height);
             });
-            console.log("updateTextbookWords", this._levelData.ws_id, this._levelData);
         }
+
         this.timeLabel.string = "剩余时间:" + ToolUtil.secondsToTimeFormat(this._remainTime);
-        if (this._remainTime > 0 && this.gameMode != GameMode.Exam) {
+        if (this._remainTime > 0 && this.gameMode !== GameMode.Exam) {
             this.schedule(this.onTimer, 1);
+            this.timeLabel.color = Color.WHITE;
+        } else {
+            if (this.gameMode != GameMode.Exam) {
+                this.timeLabel.string = "已超时";
+                this.timeLabel.color = Color.RED;
+            }
         }
         this._errorNum = levelData.error_num;
         this.errorNumLabel.string = "错误次数:" + this._errorNum;
         return wordsdata;
     }
+
+
 
     updateConstTime() {
         this._costTime = Date.now();
@@ -207,16 +230,23 @@ export class BaseModeView extends BaseView {
         if (this._remainTime <= 0) {
             this.unschedule(this.onTimer);
             this._remainTime = 0;
+            this.timeLabel.string = "已超时";
+            this.timeLabel.color = Color.RED;
+        } else {
+            this.timeLabel.string = "剩余时间:" + ToolUtil.secondsToTimeFormat(this._remainTime);
+            if (this._remainTime <= 60) {
+                this.topNode.getComponent(TopLabel).warnIcon.active = true;
+            }
         }
         if (WordSourceType.word_game == this._sourceType) {
-            let levelData = this._levelData as AdvLevelConfig;
+            let levelData = this._levelData as GateData;
             // levelData.progressData.time_remaining = this._remainTime;
             levelData.progressData.cost_time += 1000;
         } else if (WordSourceType.classification == this._sourceType) {
             let levelData = this._levelData as BookLevelConfig;
             levelData.time_remaining = this._remainTime;
         }
-        this.timeLabel.string = "剩余时间:" + ToolUtil.secondsToTimeFormat(this._remainTime);
+
     }
     onInitModuleEvent() {
         console.log("onInitModuleEvent..base");
@@ -225,6 +255,9 @@ export class BaseModeView extends BaseView {
         this.addModelListener(NetNotify.Classification_CollectWord, this.onCollectWord);
         this.addModelListener(EventType.Classification_AdventureCollectWord, this.onAdventureCollectWord);
         this.addModelListener(NetNotify.Classification_GameSubmit, this.onGameSubmitResponse);
+        this.addModelListener(InterfacePath.Adventure_Result, this.onUpResult);
+        this.addModelListener(InterfacePath.Adventure_Word, this.onClassificationWord);
+        this.addModelListener(InterfacePath.c2sReviewPlanSubmit, this.onRepReviewSubmit);
     }
     onGameSubmitResponse(data: GameSubmitResponse) {
         console.log("onGameSubmitResponse....", data);
@@ -251,11 +284,12 @@ export class BaseModeView extends BaseView {
     async initMonster() {
         //单词大冒险关卡
         if (WordSourceType.word_game == this._sourceType) {
-            let lvData = this._levelData as AdvLevelConfig;
+            let lvData = this._levelData as GateData;
             this._monster = instantiate(this.monsterModel);
             this.monster.addChild(this._monster);
             let monsterModel = this._monster.getComponent(MonsterModel);
-            monsterModel.init("spine/monster/adventure/" + lvData.monsterAni, true);
+            let monsterData = DataMgr.getMonsterData(lvData.monster_id);
+            monsterModel.init("spine/monster/adventure/" + monsterData.monsterAni, true);
             let totalHp = this.gameMode == GameMode.Exam ? this._wordsData.length : this._wordsData.length * 5;
             monsterModel.setHp(this._wordsData.length * this._hpLevels[this.gameMode] + this._rightNum, totalHp);
             if (this.gameMode == GameMode.Exam) {
@@ -273,7 +307,8 @@ export class BaseModeView extends BaseView {
                 let monster = instantiate(this.smallMonsterModel);
                 sPoint.addChild(monster);
                 let monsterModel = monster.getComponent(SmallMonsterModel);
-                monsterModel.init("spine/monster/adventure/" + lvData.miniMonsterAni).then(() => {
+                let monsterData = DataMgr.getMonsterData(lvData.monster_id);
+                monsterModel.init("spine/monster/adventure/" + monsterData.miniMonsterAni).then(() => {
                     if (i < this._rightNum) {
                         monsterModel.die();
                     }
@@ -292,10 +327,10 @@ export class BaseModeView extends BaseView {
                 this.monster.getComponent(UIOpacity).opacity = 125;
             }
             let levelData = this._levelData as BookLevelConfig;
-            let pass = levelData.word_num -1;
-            console.log("this.gameMode = " , this.gameMode,this._wordsData);
+            let pass = levelData.word_num - 1;
+            console.log("this.gameMode = ", this.gameMode, this._wordsData);
             let totalHp = this.gameMode == GameMode.Exam ? this._wordsData.length : this._wordsData.length * 5;
-            console.log("totalHp = " , totalHp,this._hpLevels[this.gameMode]);
+            console.log("totalHp = ", totalHp, this._hpLevels[this.gameMode]);
             monsterModel.setHp(this._wordsData.length * this._hpLevels[this.gameMode] + pass, totalHp);
             // let hp_scale = monsterModel.hpNode.getScale();
             // monsterModel.hpNode.scale = new Vec3(-hp_scale.x, hp_scale.y, 1);
@@ -343,13 +378,12 @@ export class BaseModeView extends BaseView {
     onGameSubmit(word: string, isRight: boolean, wordData?: any, answer?: string) {
         /**单词上报仅限教材单词 */
         if (WordSourceType.word_game == this._sourceType) {
-            let levelData = this._levelData as AdvLevelConfig;
+            let levelData = this._levelData as GateData;
             let costTime = Date.now() - this._costTime;
             let params: AdventureResultModel = {
-                big_id: levelData.bigId,
-                small_id: levelData.smallId,
-                micro_id: levelData.mapLevelData.micro_id,
-                game_mode: levelData.mapLevelData.current_mode,
+                big_id: levelData.big_id,
+                small_id: levelData.small_id,
+                game_mode: levelData.current_mode,
                 cost_time: costTime,
                 status: isRight ? 1 : 0,
                 word: word
@@ -430,11 +464,11 @@ export class BaseModeView extends BaseView {
     petAttackShow(target: Node) {
         return new Promise((resolve, reject) => {
             let petPos = new Vec3(this._pet.position);
-            let targetTranform = target.parent.getComponent(UITransform);
+            let targetTransform = target.parent.getComponent(UITransform);
             let petTransform = this.petContainer.getComponent(UITransform);
-            let targetpos = petTransform.convertToNodeSpaceAR(targetTranform.convertToWorldSpaceAR(new Vec3(0, 0, 0)));
-            let startPosx = targetpos.x - petPos.x > 600 ? (targetpos.x - 600) : petPos.x;
-            tween(this._pet).to(0.5, { position: new Vec3(startPosx, targetpos.y, targetpos.z) }).call(() => {
+            let targetPos = petTransform.convertToNodeSpaceAR(targetTransform.convertToWorldSpaceAR(new Vec3(0, 0, 0)));
+            let startPosX = targetPos.x - petPos.x > 600 ? (targetPos.x - 600) : petPos.x;
+            tween(this._pet).to(0.5, { position: new Vec3(startPosX, targetPos.y, targetPos.z) }).call(() => {
                 this._pet.getComponent(PetModel).hit().then(() => {
                     tween(this._pet).to(0.5, { position: petPos }).start();
                     resolve(true);
@@ -452,12 +486,12 @@ export class BaseModeView extends BaseView {
             }
             let target = this._pet;
             let monsterPos = new Vec3(this._monster.position);
-            let targetTranform = target.parent.getComponent(UITransform);
+            let targetTransform = target.parent.getComponent(UITransform);
             let transform = this.monster.getComponent(UITransform);
-            let targetpos = transform.convertToNodeSpaceAR(targetTranform.convertToWorldSpaceAR(new Vec3(0, 0, 0)));
-            let startPosx = targetpos.x + 100;
-            tween(this._monster).to(0.5, { position: new Vec3(startPosx, targetpos.y, targetpos.z) }).call(() => {
-                let action = (WordSourceType.word_game == this._sourceType) ? "attack" : "atk1";
+            let targetPos = transform.convertToNodeSpaceAR(targetTransform.convertToWorldSpaceAR(new Vec3(0, 0, 0)));
+            let startPosX = targetPos.x + 100;
+            tween(this._monster).to(0.5, { position: new Vec3(startPosX, targetPos.y, targetPos.z) }).call(() => {
+                let action = (WordSourceType.word_game === this._sourceType) ? "attack" : "atk1";
                 this._monster.getComponent(MonsterModel).hit(action).then(() => {
                     tween(this._monster).to(0.5, { position: monsterPos }).start();
                     this._pet.getComponent(PetModel).inHit().then(() => {
@@ -475,11 +509,10 @@ export class BaseModeView extends BaseView {
             this._currentSubmitResponse = data;
             this._upResultSucce = true;
             if (data.pass_flag == 1 && WordSourceType.word_game == this._sourceType) { //大冒险关卡
-                let levelData = this._levelData as AdvLevelConfig;
+                let levelData = this._levelData as GateData;
                 let pointData: any = {};
-                pointData.big_id = levelData.mapLevelData.big_id;
-                pointData.small_id = levelData.mapLevelData.small_id;
-                pointData.micro_id = levelData.mapLevelData.micro_id;
+                pointData.big_id = levelData.big_id;
+                pointData.small_id = levelData.small_id;
                 pointData.star = data.star_num;
                 EventManager.emit(EventType.Update_MapPoint, pointData);
             }
@@ -560,18 +593,13 @@ export class BaseModeView extends BaseView {
     protected initEvent(): void {
         console.log("initEvent");
         CCUtil.onTouch(this.btn_close.node, this.closeView, this);
-        this._getResultEveId = EventManager.on(InterfacePath.Adventure_Result, this.onUpResult.bind(this));
-        this._wordDetailEveId = EventManager.on(InterfacePath.Adventure_Word, this.onClassificationWord.bind(this));
-        this._getReviewResultEveId = EventMgr.on(InterfacePath.c2sReviewPlanSubmit, this.onRepReviewSubmit.bind(this));
+
         CCUtil.onBtnClick(this.btn_collect, () => {
             this.onClickCollectEvent();
         });
     }
     protected removeEvent(): void {
         CCUtil.offTouch(this.btn_close.node, this.closeView, this);
-        EventManager.off(InterfacePath.Adventure_Result, this._getResultEveId);
-        EventManager.off(InterfacePath.Adventure_Word, this._wordDetailEveId);
-        EventMgr.off(InterfacePath.c2sReviewPlanSubmit, this._getReviewResultEveId);
         this.unschedule(this.onTimer);
     }
 
@@ -606,7 +634,6 @@ export class BaseModeView extends BaseView {
         let wordData = this._wordsData[this._wordIndex];
         console.log('word', wordData);
         if (WordSourceType.classification == this._sourceType) { //教材关卡
-            let levelData = this._levelData as BookLevelConfig;
             let reqParam: ReqCollectWord = {
                 w_id: wordData.w_id,
                 action: this._detailData.collect_flag ? 0 : 1,
@@ -614,7 +641,6 @@ export class BaseModeView extends BaseView {
             TBServer.reqCollectWord(reqParam);
         } else if (WordSourceType.word_game == this._sourceType) {
             //大冒险关卡
-            // let levelData = this._levelData as AdvLevelConfig;
             let reqParam: AdventureCollectWordModel = {
                 w_id: wordData.w_id,
                 action: this._detailData.collect_flag ? 0 : 1,
