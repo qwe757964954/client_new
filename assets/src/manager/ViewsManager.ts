@@ -129,7 +129,6 @@ export class ViewsManager {
             console.log("显示界面 已存在", viewConfig.path);
             return;
         }
-        console.log("显示界面 load", viewConfig.path);
         let parent = this.getParentNode(viewConfig.zindex);
         if (this._loadingPrefabMap.hasOwnProperty(viewConfig.path)) {
             this._loadingPrefabMap[viewConfig.path]++;

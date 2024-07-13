@@ -21,6 +21,9 @@ export class WeekAchievementItem extends ListItem {
     @property(Label)
     title_text: Label = null;
 
+    @property(Label)
+    desc_text:Label = null;
+
     @property(List)
     award_list: List = null;
 

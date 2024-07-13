@@ -21,6 +21,7 @@ import { TBServer } from '../../../service/TextbookService';
 import CCUtil from '../../../util/CCUtil';
 import EventManager, { EventMgr } from '../../../util/EventManager';
 import FileUtil from '../../../util/FileUtil';
+import ImgUtil from '../../../util/ImgUtil';
 import { ToolUtil } from '../../../util/ToolUtil';
 import { SmallMonsterModel } from '../../common/SmallMonsterModel';
 import { MonsterModel } from '../common/MonsterModel';
@@ -110,21 +111,39 @@ export class BaseModeView extends BaseView {
         this._rightAniNode.parent = this.node;
         this._rightAniNode.active = false;
     }
-    updateTextbookWords(wordsdata: UnitWordModel[], levelData: any) {
-        this._levelData = levelData;
-        if (null != this._levelData.source_type) {
-            this._sourceType = this._levelData.source_type;
-        } else {
-            let isAdventure = this._levelData.hasOwnProperty('bigId'); //是否是大冒险关卡
-            this._sourceType = isAdventure ? WordSourceType.word_game : WordSourceType.classification;
+    
+    async addTransitionView(){
+        
+        if(!isValid(this.node.getChildByName("dark"))){
+            await ImgUtil.create_PureNode(this.node);
+            let dark = this.node.getChildByName("dark");
+            dark.addComponent(UIOpacity);
+            dark.active = false;
         }
+    }
 
-        /** 从关卡数据中获取单词学习到哪个单词*/
-        if (WordSourceType.classification == this._sourceType) {
+    showTransitionView(callback:()=>void){
+        let dark = this.node.getChildByName("dark");
+        dark.active = true;
+        let uiOpacity = dark.getComponent(UIOpacity);
+        uiOpacity.opacity = 0;
+        tween(uiOpacity).to(0.5, { opacity: 255 }).call(() => {
+            // callback?.();
+        }).to(0.5, { opacity: 0 }).call(() => {
+            callback?.();
+        }).start();
+    }
+
+    updateTextbookWords(wordsdata: UnitWordModel[], levelData: any) {
+        this.addTransitionView();
+        this._levelData = levelData;
+        this._sourceType = this._levelData.source_type || (this._levelData.hasOwnProperty('bigId') ? WordSourceType.word_game : WordSourceType.classification);
+
+        if (WordSourceType.classification === this._sourceType) {
             let levelData = this._levelData as BookLevelConfig;
             this._wordIndex = levelData.word_num - 1;
             this._remainTime = Math.round(levelData.time_remaining);
-            /**如果当前关卡有错词，自动放到最后 */
+
             if (isValid(levelData.error_word)) {
                 if (levelData.cur_game_mode === this.gameMode) {
                     this._errorWords = levelData.error_word;
@@ -138,20 +157,20 @@ export class BaseModeView extends BaseView {
                     }
                 } else {
                     this._wordIndex = 0;
-                    const uniqueWordList: UnitWordModel[] = Object["values"](wordsdata.reduce((acc, curr) => {
+                    const uniqueWordList: UnitWordModel[] = Object.values(wordsdata.reduce((acc, curr) => {
                         acc[curr.word] = curr;
                         return acc;
-                    }, {} as Record<string, UnitWordModel>));
+                    }, {}));
                     wordsdata = uniqueWordList;
                 }
             }
             this._rightNum = this._wordIndex;
-        } else if (WordSourceType.word_game == this._sourceType) {
+
+        } else if (WordSourceType.word_game === this._sourceType) {
             let levelData = this._levelData as AdvLevelConfig;
             let progressData = levelData.progressData;
-            let costTime = progressData.cost_time;
-            this._remainTime = Math.round((this._totalTime - costTime) / 1000);
-            /**如果当前关卡有错词，自动放到最后 */
+            this._remainTime = Math.round((this._totalTime - progressData.cost_time) / 1000);
+
             if (progressData.game_mode === this.gameMode) {
                 this._wordIndex = progressData.word_num - 1;
                 this._rightNum = progressData.pass_num;
@@ -170,14 +189,14 @@ export class BaseModeView extends BaseView {
                 this._wordIndex = 0;
                 levelData.mapLevelData.current_mode = this.gameMode;
                 levelData.progressData.error_word = null;
-                const uniqueWordList: UnitWordModel[] = Object["values"](wordsdata.reduce((acc, curr) => {
+                const uniqueWordList: UnitWordModel[] = Object.values(wordsdata.reduce((acc, curr) => {
                     acc[curr.word] = curr;
                     return acc;
-                }, {} as Record<string, UnitWordModel>));
+                }, {}));
                 wordsdata = uniqueWordList;
             }
-            console.log("progressData", progressData);
-        } else if (WordSourceType.review == this._sourceType) {
+
+        } else if (WordSourceType.review === this._sourceType) {
             this._wordIndex = this._levelData.word_num;
             this._rightNum = this._levelData.pass_num;
             this._errorNum = this._levelData.error_num;
@@ -187,16 +206,18 @@ export class BaseModeView extends BaseView {
             LoadManager.loadSprite("adventure/sixModes/study/img_bg2/spriteFrame", bg.getComponent(Sprite)).then(() => {
                 CCUtil.fillNodeScale(bg, GlobalConfig.WIN_SIZE.width, GlobalConfig.WIN_SIZE.height);
             });
-            console.log("updateTextbookWords", this._levelData.ws_id, this._levelData);
         }
+
         this.timeLabel.string = "剩余时间:" + ToolUtil.secondsToTimeFormat(this._remainTime);
-        if (this._remainTime > 0 && this.gameMode != GameMode.Exam) {
+        if (this._remainTime > 0 && this.gameMode !== GameMode.Exam) {
             this.schedule(this.onTimer, 1);
         }
         this._errorNum = levelData.error_num;
         this.errorNumLabel.string = "错误次数:" + this._errorNum;
         return wordsdata;
     }
+
+
 
     updateConstTime() {
         this._costTime = Date.now();
@@ -430,11 +451,11 @@ export class BaseModeView extends BaseView {
     petAttackShow(target: Node) {
         return new Promise((resolve, reject) => {
             let petPos = new Vec3(this._pet.position);
-            let targetTranform = target.parent.getComponent(UITransform);
+            let targetTransform = target.parent.getComponent(UITransform);
             let petTransform = this.petContainer.getComponent(UITransform);
-            let targetpos = petTransform.convertToNodeSpaceAR(targetTranform.convertToWorldSpaceAR(new Vec3(0, 0, 0)));
-            let startPosx = targetpos.x - petPos.x > 600 ? (targetpos.x - 600) : petPos.x;
-            tween(this._pet).to(0.5, { position: new Vec3(startPosx, targetpos.y, targetpos.z) }).call(() => {
+            let targetPos = petTransform.convertToNodeSpaceAR(targetTransform.convertToWorldSpaceAR(new Vec3(0, 0, 0)));
+            let startPosX = targetPos.x - petPos.x > 600 ? (targetPos.x - 600) : petPos.x;
+            tween(this._pet).to(0.5, { position: new Vec3(startPosX, targetPos.y, targetPos.z) }).call(() => {
                 this._pet.getComponent(PetModel).hit().then(() => {
                     tween(this._pet).to(0.5, { position: petPos }).start();
                     resolve(true);
@@ -452,12 +473,12 @@ export class BaseModeView extends BaseView {
             }
             let target = this._pet;
             let monsterPos = new Vec3(this._monster.position);
-            let targetTranform = target.parent.getComponent(UITransform);
+            let targetTransform = target.parent.getComponent(UITransform);
             let transform = this.monster.getComponent(UITransform);
-            let targetpos = transform.convertToNodeSpaceAR(targetTranform.convertToWorldSpaceAR(new Vec3(0, 0, 0)));
-            let startPosx = targetpos.x + 100;
-            tween(this._monster).to(0.5, { position: new Vec3(startPosx, targetpos.y, targetpos.z) }).call(() => {
-                let action = (WordSourceType.word_game == this._sourceType) ? "attack" : "atk1";
+            let targetPos = transform.convertToNodeSpaceAR(targetTransform.convertToWorldSpaceAR(new Vec3(0, 0, 0)));
+            let startPosX = targetPos.x + 100;
+            tween(this._monster).to(0.5, { position: new Vec3(startPosX, targetPos.y, targetPos.z) }).call(() => {
+                let action = (WordSourceType.word_game === this._sourceType) ? "attack" : "atk1";
                 this._monster.getComponent(MonsterModel).hit(action).then(() => {
                     tween(this._monster).to(0.5, { position: monsterPos }).start();
                     this._pet.getComponent(PetModel).inHit().then(() => {

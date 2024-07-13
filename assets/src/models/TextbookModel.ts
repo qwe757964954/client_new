@@ -380,6 +380,7 @@ export interface CheckWordItem {
     symbol: string;
     symbolus: string;
     unit_name: string;
+    w_id:string;
     word: string;
 }
 
