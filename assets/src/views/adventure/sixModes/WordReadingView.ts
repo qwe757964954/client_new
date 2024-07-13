@@ -249,16 +249,7 @@ export class WordReadingView extends BaseModeView {
             let nodeScript = node.getComponent(WordReportView);
             console.log('朗读模式完成', this._currentSubmitResponse);
             nodeScript.initData(this._currentSubmitResponse, this.gameMode);
-            ViewsManager.instance.closeView(PrefabType.WordReadingView);
-            //跳转到下一场景
-            /*
-            node.getComponent(TransitionView).setTransitionCallback(() => {
-                ViewsManager.instance.showView(PrefabType.WordPracticeView, (node: Node) => {
-                    node.getComponent(WordPracticeView).initData(wordData, levelData);
-                    ViewsManager.instance.closeView(PrefabType.WordMeaningView);
-                });
-            });
-            */
+            this.node.parent.destroy();
         });
     }
     onDestroy(): void {

@@ -8,7 +8,6 @@ import { GameMode } from '../../../models/AdventureModel';
 import { UnitWordModel } from '../../../models/TextbookModel';
 import CCUtil from '../../../util/CCUtil';
 import List from '../../../util/list/List';
-import { TransitionView } from '../common/TransitionView';
 import { BaseModeView } from './BaseModeView';
 import { LetterItem } from './items/LetterItem';
 import { SelectLetterItem } from './items/SelectLetterItem';
@@ -145,18 +144,14 @@ export class WordPracticeView extends BaseModeView {
     protected modeOver(): void {
         super.modeOver();
         console.log('练习模式完成');
-        ViewsManager.instance.showView(PrefabType.TransitionView, (node: Node) => {
+        this.showTransitionView(async () =>{
             let wordData = JSON.parse(JSON.stringify(this._wordsData));
             let levelData = JSON.parse(JSON.stringify(this._levelData));
-            //跳转到下一场景
-            node.getComponent(TransitionView).setTransitionCallback(() => {
-                console.log("过渡界面回调_________________________");
-                ViewsManager.instance.showView(PrefabType.WordSpellView, (node: Node) => {
-                    node.getComponent(WordSpellView).initData(wordData, levelData);
-                    ViewsManager.instance.closeView(PrefabType.WordPracticeView);
-                });
-            });
-        });
+            console.log("过渡界面回调_________________________");
+            let node = await ViewsManager.instance.showLearnView(PrefabType.WordSpellView);
+            node.getComponent(WordSpellView).initData(wordData, levelData);
+            this.node.parent.destroy();
+        })
     }
 
     playWordSound() {

@@ -378,11 +378,13 @@ export interface CheckWordResponse extends BaseRepPacket {
 
 export interface CheckWordItem {
     cn: string;
+    collect:number;
     phonic: string;
     syllable: string;
     symbol: string;
     symbolus: string;
     unit_name: string;
+    w_id:string;
     word: string;
 }
 

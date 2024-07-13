@@ -69,7 +69,14 @@ export class WordCheckView extends BaseView {
     /** 初始化模块事件 */
 	protected onInitModuleEvent() {
 		this.addModelListener(NetNotify.Classification_CheckWord,this.onCheckWord);
+        this.addModelListener(NetNotify.Classification_CollectWord,this.onCollectWord);
 	}
+
+    onCollectWord(data:any) {
+        console.log("收藏单词", data);
+        this.onRequestCheckWord();
+    }
+
     onCheckWord(response:CheckWordResponse) {
         this._wordUnits = {};
         response.data.forEach(word => {

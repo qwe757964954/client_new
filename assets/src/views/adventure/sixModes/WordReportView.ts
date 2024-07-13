@@ -185,7 +185,6 @@ export class WordReportView extends BaseView {
         console.log("关卡列表")
         EventMgr.dispatch(EventType.Exit_Island_Level);
         this.node.destroy();
-        // ViewsManager.instance.closeView(PrefabType.WordReportView);
     }
     onInitModuleEvent() {
 
