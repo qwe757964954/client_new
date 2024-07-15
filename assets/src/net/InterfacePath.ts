@@ -15,6 +15,7 @@ export const InterfacePath = {
     c2sBuildingEditBatch: "2006",//建筑批量操作
     c2sLandUpdate: "2007",//地块更新
     c2sSpeedWordsGet: "2008",//加速单词获取
+    c2sBuildingInfoGet: "2009",//建筑信息获取
     c2sBuildingSell: "2010",//建筑出售
     c2sBuildingRecycle: "2011-",//建筑回收
     c2sBuildingBuilt: "2011",//建筑建造

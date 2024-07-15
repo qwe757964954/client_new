@@ -4,12 +4,13 @@ import { TextConfig } from '../../config/TextConfig';
 import GlobalConfig from '../../GlobalConfig';
 import { BuildProduceInfo, DataMgr } from '../../manager/DataMgr';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
-import { BuildingModel } from '../../models/BuildingModel';
-import { s2cBuildingProduceAdd, s2cBuildingProduceDelete, s2cBuildingProduceGet, s2cBuildingUpgrade } from '../../models/NetModel';
+import { BuildingModel, BuildingState } from '../../models/BuildingModel';
+import { s2cBuildingProduceAdd, s2cBuildingProduceDelete, s2cBuildingProduceGet, s2cBuildingUpgrade, s2cBuildingUpgradeReward } from '../../models/NetModel';
 import { InterfacePath } from '../../net/InterfacePath';
 import { BaseComponent } from '../../script/BaseComponent';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
+import { TimerMgr } from '../../util/TimerMgr';
 import { ToolUtil } from '../../util/ToolUtil';
 import { BuildingProduceItem } from './BuildingProduceItem';
 import { BuildingUpgradeView } from './BuildingUpgradeView';
@@ -37,7 +38,15 @@ export class BuildingProduceView extends BaseComponent {
     @property(Label)
     public labelLevel: Label = null;//等级
     @property(Node)
-    public btnUpgrade: Node = null;//升级按钮
+    public btnUpgrade: Node = null;//升级节点
+    @property(Node)
+    public btnUpgrade2: Node = null;//升级节点
+    @property(Node)
+    public btnUpgrade3: Node = null;//升级节点
+    @property(Node)
+    public btnUpgradeSpeed: Node = null;//升级加速
+    @property(Label)
+    public labelSpeed: Label = null;//升级加速时间
     @property(Node)
     public plLeft: Node = null;//左边层
     @property(Label)
@@ -49,8 +58,10 @@ export class BuildingProduceView extends BaseComponent {
     private _nextCallBack: Function = null;
 
     // private _produceData: ProduceInfo[] = null;
-    private _produceInfo: BuildProduceInfo = null;
-    private _remainingNum: number = 0;
+    private _produceInfo: BuildProduceInfo = null;//生产信息
+    private _remainingNum: number = 0;//剩余数量
+    private _timer: number = 0;//计时器
+    private _upgradeTime: number = 0;//升级时间
 
     onLoad() {
         this.adaptUI();
@@ -58,6 +69,7 @@ export class BuildingProduceView extends BaseComponent {
     }
     // 销毁
     onDestroy() {
+        this.clearTimer();
         this.removeEvent();
     }
     /**适配UI */
@@ -76,8 +88,10 @@ export class BuildingProduceView extends BaseComponent {
         CCUtil.onTouch(this.btnLeft, this.onClickLeft, this);
         CCUtil.onTouch(this.btnRight, this.onClickRight, this);
         CCUtil.onTouch(this.btnUpgrade, this.onClickUpgrade, this);
+        CCUtil.onTouch(this.btnUpgradeSpeed, this.onClickUpgradeSpeed, this);
 
         this.addEvent(InterfacePath.c2sBuildingUpgrade, this.onBuildingUpgrade.bind(this));
+        this.addEvent(InterfacePath.c2sBuildingUpgradeReward, this.onBuildingUpgradeReward.bind(this));
         this.addEvent(InterfacePath.c2sBuildingProduceAdd, this.onBuildingProduceAdd.bind(this));
         this.addEvent(InterfacePath.c2sBuildingProduceDelete, this.onBuildingProduceDelete.bind(this));
         this.addEvent(InterfacePath.c2sBuildingProduceGet, this.onBuildingProduceGet.bind(this));
@@ -88,6 +102,7 @@ export class BuildingProduceView extends BaseComponent {
         CCUtil.offTouch(this.btnLeft, this.onClickLeft, this);
         CCUtil.offTouch(this.btnRight, this.onClickRight, this);
         CCUtil.offTouch(this.btnUpgrade, this.onClickUpgrade, this);
+        CCUtil.offTouch(this.btnUpgradeSpeed, this.onClickUpgradeSpeed, this);
 
         this.clearEvent();
     }
@@ -115,6 +130,7 @@ export class BuildingProduceView extends BaseComponent {
         this._produceInfo = produceInfo;
         this.onUpdateQueue();
         this.onUpdateLevelProduce();
+        this.onUpdateBtnState();
     }
     /**设置回调 */
     setCallBack(closeCallBack: Function) {
@@ -162,13 +178,17 @@ export class BuildingProduceView extends BaseComponent {
             node.getComponent(BuildingUpgradeView).init(this._building);
         });
     }
+    /**升级加速 */
+    onClickUpgradeSpeed() {
+        ViewsMgr.showTip(TextConfig.Function_Tip);
+    }
     /**list加载 */
     onLoadProduceInfoList(item: Node, idx: number) {
         let data = this._produceInfo.data[idx + 1];
         let produceItem = item.getComponent(BuildingProduceItem);
-        produceItem.initData(data, this._building.buildingData.level, this._building.buildingID);
-        console.log("onLoadProduceInfoList", this._remainingNum);
+        produceItem.initData(data, this._building.buildingLevel, this._building.buildingID);
         produceItem.setNum(this._remainingNum);
+        produceItem.setCanProduce(BuildingState.normal == this._building.buildingState);
     }
     onLoadLeftList(item: Node, idx: number) {
         let queue = this._building.buildingData.queue;
@@ -192,12 +212,27 @@ export class BuildingProduceView extends BaseComponent {
         if (200 != data.code) return;
         if (data.id != this._building.buildingID) return;
         ViewsMgr.showTip(TextConfig.Building_Upgrade_Success);
-        this._building.buildingData.level = data.level;
+        this._building.buildingState = data.status;
+        this._building.setUpgradeData(data.upgrade_infos.remaining_seconds);
+        this.onUpdateQueueState();
+        this.onUpdateBtnState();
+        this.setUpgradeTime(data.upgrade_infos.remaining_seconds);
+
+        this.onClickClose();//关闭面板
+    }
+    /**建筑升级奖励 */
+    onBuildingUpgradeReward(data: s2cBuildingUpgradeReward) {
+        if (200 != data.code) return;
+        if (data.id != this._building.buildingID) return;
+        this._building.buildingLevel = data.level;
+        this._building.buildingState = data.status;
+        ViewsMgr.showRewards(data.award);
         this.onUpdateLevelProduce();
+        this.onUpdateBtnState();
     }
     /**建筑生产队列添加 */
     onBuildingProduceAdd(data: s2cBuildingProduceAdd) {
-        console.log("onBuildingProduceAdd", this._building.buildingID);
+        // console.log("onBuildingProduceAdd", this._building.buildingID);
         if (data.id != this._building.buildingID) return;
         this._building.setProducts(data.remaining_infos);
         this.onUpdateQueue();
@@ -213,8 +248,6 @@ export class BuildingProduceView extends BaseComponent {
         if (data.id != this._building.buildingID) return;
         this._building.setProducts(data.remaining_infos);
         this.onUpdateQueue();
-
-        // let list = ToolUtil.itemMapToList(data.product_items);
         ViewsMgr.showRewards(data.product_items);
     }
     /**更新队列 */
@@ -222,19 +255,71 @@ export class BuildingProduceView extends BaseComponent {
         let buildingData = this._building.buildingData;
         this.labelQueue.string = ToolUtil.replace(TextConfig.Queue_Text, buildingData.queue.length, buildingData.queueMaxCount);
         this._remainingNum = buildingData.queueMaxCount - buildingData.queue.length;
-        console.log("onUpdateQueue", this._remainingNum, buildingData.queueMaxCount, buildingData.queue.length);
+        // console.log("onUpdateQueue", this._remainingNum, buildingData.queueMaxCount, buildingData.queue.length);
         this.leftListView.numItems = buildingData.queueMaxCount;
         this.listView.content.children.forEach((item: Node) => {
-            item.getComponent(BuildingProduceItem)?.setNum(this._remainingNum);
+            let produceItem = item.getComponent(BuildingProduceItem);
+            if (produceItem) {
+                produceItem.setNum(this._remainingNum);
+                produceItem.setCanProduce(BuildingState.normal == this._building.buildingState);
+            }
         });
     }
     /**更新等级生产 */
     onUpdateLevelProduce() {
-        let level = this._building.buildingData.level;
+        let level = this._building.buildingLevel;
         this.labelLevel.string = ToolUtil.replace(TextConfig.Level_Text, level);
         let count = this._produceInfo ? this._produceInfo.count : 0;
         this.listView.numItems = count;
-        this.btnUpgrade.active = level < count;
+    }
+    /**更新队列状态 */
+    onUpdateQueueState() {
+        this.listView.content.children.forEach((item: Node) => {
+            let produceItem = item.getComponent(BuildingProduceItem);
+            if (produceItem) {
+                produceItem.setCanProduce(BuildingState.normal == this._building.buildingState);
+            }
+        });
+    }
+    /**更新按钮状态 */
+    onUpdateBtnState() {
+        let state = this._building.buildingState;
+        if (BuildingState.upgrade == state) {
+            this.btnUpgrade.active = false;
+            this.btnUpgrade2.active = false;
+            this.btnUpgrade3.active = true;
+        } else {
+            let level = this._building.buildingLevel;
+            let count = this._produceInfo ? this._produceInfo.count : 0;
+            this.btnUpgrade.active = level < count;
+            this.btnUpgrade2.active = level >= count;
+            this.btnUpgrade3.active = false;
+        }
+    }
+    /**设置升级时间 */
+    setUpgradeTime(time: number) {
+        this.clearTimer();
+        this._upgradeTime = time;
+        this._timer = TimerMgr.loop(() => {
+            this._upgradeTime--;
+            this.refreshUpgradeTime();
+            if (this._upgradeTime <= 0) {
+                this._upgradeTime = 0;
+                this.clearTimer();
+            };
+        }, 1000);
+        this.refreshUpgradeTime();
+    }
+    /**清理定时器 */
+    clearTimer() {
+        if (this._timer) {
+            TimerMgr.stopLoop(this._timer);
+            this._timer = null;
+        }
+    }
+    /**刷新升级时间 */
+    refreshUpgradeTime() {
+        this.labelSpeed.string = "剩余" + ToolUtil.getSecFormatStr(this._upgradeTime);
     }
 }
 

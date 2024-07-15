@@ -10,6 +10,7 @@ import { BuildingIDType, BuildingModel, BuildingOperationData, BuildingState } f
 import { CloudModel } from '../../models/CloudModel';
 import { RoleType } from '../../models/RoleBaseModel';
 import { RoleDataModel } from '../../models/RoleDataModel';
+import { ServiceMgr } from '../../net/ServiceManager';
 import { BaseComponent } from '../../script/BaseComponent';
 import CCUtil from '../../util/CCUtil';
 import EventManager from '../../util/EventManager';
@@ -231,16 +232,27 @@ export class MainScene extends BaseComponent {
         SoundMgr.click();
         console.log("onBuildingClick", building);
         if (MapStatus.DEFAULT == this._mapStatus) {// 普通点击 展示建筑建造界面
-            if (BuildingState.unBuilding == building.buildingState) {
+            let buildingState = building.buildingState;
+            if (BuildingState.unBuilding == buildingState) {
                 this.showBuildingBuiltView(building);
                 return;
             }
-            let editInfo = building.editInfo;
-            if (EditType.Null == editInfo.type) {
-                this.showCastleView(building);
-            } else if (DataMgr.instance.buildProduceInfo[editInfo.id]) {
-                if (!building.getProduce()) {
-                    this.showBuildingProduceView(building);
+            if (BuildingState.buildingOver == buildingState) {
+                ServiceMgr.buildingService.reqBuildingBuiltReward(building.buildingID);
+                return;
+            }
+            if (BuildingState.upgradeOver == buildingState) {
+                ServiceMgr.buildingService.reqBuildingUpgradeReward(building.buildingID);
+                return;
+            }
+            if (BuildingState.normal == buildingState) {
+                let editInfo = building.editInfo;
+                if (EditType.Null == editInfo.type) {
+                    this.showCastleView(building);
+                } else if (DataMgr.instance.buildProduceInfo[editInfo.id]) {
+                    if (!building.getProduce()) {
+                        this.showBuildingProduceView(building);
+                    }
                 }
             }
         }
@@ -388,7 +400,7 @@ export class MainScene extends BaseComponent {
             });
         }
         this._mapUICtl.roleIsShow = MapStatus.DEFAULT == status;
-        this._mapUICtl.countdownFrameIsShow = MapStatus.DEFAULT == status;
+        this._mapUICtl.buildingUIIsShow = MapStatus.DEFAULT == status;
         // let ctl = this.getMapCtl();
         // ctl.clearData();
         // this._mapStatus = status;

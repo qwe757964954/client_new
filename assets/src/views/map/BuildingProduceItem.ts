@@ -40,6 +40,7 @@ export class BuildingProduceItem extends ListItem {
     private _num: number = 0;
     private _buildingID: number = 0;
     private _level: number = 0;
+    private _canProduce: boolean = false;
 
     start() {
         this.initEvent();
@@ -91,6 +92,10 @@ export class BuildingProduceItem extends ListItem {
     }
     /**生产按钮点击 */
     onClickProduce() {
+        if (!this._canProduce) {
+            ViewsMgr.showTip(TextConfig.Building_Product_Error);
+            return;
+        }
         if (this._num <= 0) {
             ViewsMgr.showTip(TextConfig.Building_Product_Full);
             return;
@@ -99,6 +104,10 @@ export class BuildingProduceItem extends ListItem {
     }
     /**次数按钮点击 */
     onClickTimes() {
+        if (!this._canProduce) {
+            ViewsMgr.showTip(TextConfig.Building_Product_Error);
+            return;
+        }
         if (this._num <= 0) {
             ViewsMgr.showTip(TextConfig.Building_Product_Full);
             return;
@@ -110,6 +119,10 @@ export class BuildingProduceItem extends ListItem {
     setNum(num: number) {
         this._num = num;
         this.labelNum.string = ToolUtil.replace(TextConfig.Prop_Show, num.toString());
+    }
+    /**设置是否可以生产 */
+    setCanProduce(b: boolean) {
+        this._canProduce = b;
     }
 }
 

@@ -213,6 +213,18 @@ export class s2cBuildingUpgradeReward extends BaseRepPacket {
     level: number;//建筑等级
     award: ItemData[];//奖励
 }
+/**建筑信息获取 */
+export class c2sBuildingInfoGet {
+    command_id: string = InterfacePath.c2sBuildingInfoGet;
+    id: number;//建筑唯一索引id
+}
+/**建筑信息获取返回 */
+export class s2cBuildingInfoGet extends BaseRepPacket {
+    id: number;//建筑唯一索引id
+    status: number;//建筑状态 0:普通、1:建造中、2:建造完成、3:升级中、4:升级完成
+    construct_infos: s2cBuildingBuiltInfo;//建造信息
+    upgrade_infos: s2cBuildingUpgradeInfo;//升级信息
+}
 /**加速单词获取 */
 export class c2sSpeedWordsGet {
     command_id: string = InterfacePath.c2sSpeedWordsGet;

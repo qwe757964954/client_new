@@ -61,11 +61,10 @@ export class BuildingUpgradeView extends BaseComponent {
         this._building = building;
         let editInfo = building.editInfo;
         let produceInfo = DataMgr.instance.buildProduceInfo[editInfo.id];
-        let buildingData = building.buildingData;
 
         this.labelName.string = editInfo.name;
-        if (buildingData.level >= produceInfo.count) return;
-        let level = buildingData.level;
+        let level = building.buildingLevel;
+        if (level >= produceInfo.count) return;
         this.labelLevel1.string = ToolUtil.replace(TextConfig.Level_Text, level);
         this.labelLevel2.string = ToolUtil.replace(TextConfig.Level_Text, level + 1);
         let data = produceInfo.data[level + 1];
@@ -80,7 +79,7 @@ export class BuildingUpgradeView extends BaseComponent {
         if (!User.checkItems(this._upgradeNeed, TextConfig.Upgrade_Condition_Error)) {
             return;
         }
-        ServiceMgr.buildingService.reqBuildingUpgrade(this._building.buildingID, this._building.buildingData.level);
+        ServiceMgr.buildingService.reqBuildingUpgrade(this._building.buildingID, this._building.buildingLevel);
     }
     /**关闭按钮 */
     public onClickClose() {
