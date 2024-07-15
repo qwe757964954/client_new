@@ -27,6 +27,7 @@ export class SubjectView extends BasePopup {
             this.initUI();
             resolve();
         });
+
     }
 
     protected initEvent(): void {
