@@ -357,10 +357,14 @@ export class BuildEditCtl extends MapBaseCtl {
     }
     /**建筑保存事件 */
     onBuildingSave(building: BuildingModel): void {
-        this.cacheBuildingOperationData(BuildingOperationType.edit, building);
-        building.saveData();
-        this.nextStep();
-        this._mainScene.newBuildingFromBuilding(building);
+        if (building.isDataChange()) {
+            this.cacheBuildingOperationData(BuildingOperationType.edit, building);
+            building.saveData();
+            this.nextStep();
+            this._mainScene.newBuildingFromBuilding(building);
+        } else {
+            building.saveData();
+        }
     }
     /**建筑回收事件 */
     onBuildingRecycle(building: BuildingModel): void {

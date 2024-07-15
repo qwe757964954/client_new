@@ -445,6 +445,15 @@ export class BuildingModel extends BaseModel {
             node.getComponent(BuildingInfoView).initData(this._editInfo);
         });
     }
+    /**数据是否变化 */
+    public isDataChange(): boolean {
+        if (this._isFlip != this._dataIsFlip) return true;
+        if (this._isShowEx != this._dataIsShow) return true;
+        for (let i = 0; i < this._grids.length; i++) {
+            if (this._grids[i] != this._dataGrids[i]) return true;
+        }
+        return false;
+    }
     // 保存数据
     public saveData(status: boolean = true): void {
         if (!status) {
