@@ -192,6 +192,7 @@ export class BuildingModel extends BaseModel {
         this.buildingData.state = state;
 
         this.refreshUIView();
+        this.refreshBuildingShow();
     }
     get buildingState(): BuildingState {
         return this.buildingData.state;
@@ -694,14 +695,11 @@ export class BuildingModel extends BaseModel {
                 this._graphics = this._node.getComponentInChildren(Graphics);
                 this._graphics.node.active = false;
                 this._fence = this._node.getChildByName("Fence");
-                if (BuildingState.unBuilding == this.buildingState || BuildingState.building == this.buildingState) {
-                    this.showFence(true);
-                    this._building.node.active = false;
-                }
                 this._uiNode = this._node.getChildByName("UI");
                 this._builtSuccessView = this._uiNode.getChildByName("Label1");
                 this._upgradeSuccessView = this._uiNode.getChildByName("Label2");
                 this.refreshUIView();
+                this.refreshBuildingShow();
 
                 LoadManager.loadSprite(DataMgr.getEditPng(this._editInfo), this._building, true).then(() => {
                     this._isLoadOver = true;
@@ -868,6 +866,20 @@ export class BuildingModel extends BaseModel {
             this.closeCountDownView();
             this.hideBuiltSuccessUI();
             this.hideUpgradeSuccessUI();
+        }
+    }
+    /**更新建筑显示 */
+    public refreshBuildingShow() {
+        if (BuildingState.unBuilding == this.buildingState || BuildingState.building == this.buildingState) {
+            this.showFence(true);
+            if (this._building) {
+                this._building.node.active = false;
+            }
+        } else {
+            this.showFence(false);
+            if (this._building) {
+                this._building.node.active = true;
+            }
         }
     }
     /**隐藏UI */

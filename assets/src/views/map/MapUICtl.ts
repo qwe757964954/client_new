@@ -1018,7 +1018,7 @@ export class MapUICtl extends MainBaseCtl {
         console.time("onBuildingList");
         this.initBuilding(data.build_list);
         this.initLand(data.land_dict);
-        // this.initRole();
+        this.initRole();
         this.initCloud(data.cloud_dict);
 
         // this.updateCameraVisible();
