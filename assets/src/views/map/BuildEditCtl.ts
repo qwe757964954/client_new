@@ -376,7 +376,7 @@ export class BuildEditCtl extends MapBaseCtl {
     }
     /**建筑卖出事件 */
     onBuildingSell(building: BuildingModel): void {
-        if (building.isNew) {
+        if (building.isNew && !building.buildingID) {
             building.sell(true);
             return;
         }
