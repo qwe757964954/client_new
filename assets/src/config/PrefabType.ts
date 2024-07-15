@@ -52,13 +52,14 @@ export const PrefabType = {
     WordBossView: { path: "studyModes/WordBossView", zindex: Hierarchy.POPUPLAYER, tips: "Boss关卡" },
     LevelUpView: { path: "common/LevelUpView", zindex: Hierarchy.POPUPLAYER, tips: "升级界面" },
     MapProcessRewardView: { path: "adventure/common/MapProcessRewardView", componentName: "MapProcessRewardView", zindex: Hierarchy.POPUPLAYER, tips: "岛屿进度奖励展示" },
+    SubjectView: { path: "theme/SubjectView", componentName: "SubjectView", zindex: Hierarchy.POPUPLAYER, tips: "主题界面" },
     //**学习模式相关 end*/
     /*********************************************公共相关start***********************************************************/
     TopAmoutView: { path: "common/TopAmoutView", zindex: Hierarchy.POPUPLAYER, tips: "数值公共模块" },
     NavTitleView: { path: "common/NavTitleView", zindex: Hierarchy.POPUPLAYER, tips: "导航公共模块" },
     PopView: { path: "common/PopView", zindex: Hierarchy.TIPLAYER, tips: "提示弹窗" },
     TipView: { path: "common/TipView", zindex: Hierarchy.TIPLAYER, tips: "提示界面" },
-    ConfirmView: { path: "common/ConfirmView", componentName: "ConfirmView",zindex: Hierarchy.TIPLAYER, tips: "确定弹窗" },
+    ConfirmView: { path: "common/ConfirmView", componentName: "ConfirmView", zindex: Hierarchy.TIPLAYER, tips: "确定弹窗" },
     RewardItem: { path: "common/RewardItem", zindex: Hierarchy.SCENELAYER, tips: "奖励道具" },
     RewardView: { path: "common/RewardView", zindex: Hierarchy.POPUPLAYER, tips: "奖励弹窗" },
     WaitingView: { path: "common/WaittingView", zindex: Hierarchy.LOADINGLAYER, tips: "等待弹窗" },
@@ -109,7 +110,7 @@ export const PrefabType = {
     ShopStoreView: { path: "shop/ShopStoreView", zindex: Hierarchy.POPUPLAYER, tips: "形象商店模块" },
     ShopDecorationView: { path: "shop/ShopDecorationView", zindex: Hierarchy.POPUPLAYER, tips: "装饰模块" },
     DebrisAreaView: { path: "shop/DebrisAreaView", zindex: Hierarchy.POPUPLAYER, tips: "碎片区模块" },
-    GoodsDetailView: { path: "shop/GoodsDetailView", componentName: "GoodsDetailView",zindex: Hierarchy.POPUPLAYER, tips: "商品详情" },
+    GoodsDetailView: { path: "shop/GoodsDetailView", componentName: "GoodsDetailView", zindex: Hierarchy.POPUPLAYER, tips: "商品详情" },
     /*********************************************商城相关end*************************************************************/
     /*********************************************语法训练start***********************************************************/
     GrammarTrainingView: { path: "grammar/GrammarTrainingView", zindex: Hierarchy.POPUPLAYER, tips: "语法训练" },

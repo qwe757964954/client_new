@@ -3,23 +3,30 @@ import { BasePopup } from '../../script/BasePopup';
 import List from '../../util/list/List';
 import { ThemeWordItem } from './ThemeWordItem';
 import CCUtil from '../../util/CCUtil';
+import { WordGameSubjectReply } from '../../models/AdventureModel';
 const { ccclass, property } = _decorator;
 
-@ccclass('SentencePatternView')
-export class SentencePatternView extends BasePopup {
+@ccclass('SubjectView')
+export class SubjectView extends BasePopup {
     @property(Node)
     public closeBtn: Node;
     @property(Label)
     public title: Label;
     @property(List)
     public wordList: List;
-    private _data: any;
+    private _data: WordGameSubjectReply;
 
-    public setData(data: any) {
+    public setData(data: WordGameSubjectReply) {
         this._data = data;
-        this._data.words = [1, 2, 3, 4];
-        this.title.string = data.title;
-        this.wordList.numItems = this._data.words.length;
+        this.title.string = data.subject.subject_name;
+        this.wordList.numItems = this._data.word_list.length;
+    }
+
+    showAnim(): Promise<void> {
+        return new Promise<void>((resolve) => {
+            this.initUI();
+            resolve();
+        });
     }
 
     protected initEvent(): void {
@@ -32,7 +39,7 @@ export class SentencePatternView extends BasePopup {
 
     onWordItemRender(item: Node, idx: number) {
         let word = item.getComponent(ThemeWordItem);
-        word.initData(this._data.words[idx]);
+        word.initData(this._data.word_list[idx]);
     }
 }
 

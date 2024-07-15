@@ -1,4 +1,5 @@
 import { _decorator, Component, Label, Node, Sprite } from 'cc';
+import { UnitWord } from '../../models/AdventureModel';
 const { ccclass, property } = _decorator;
 
 @ccclass('ThemeWordItem')
@@ -14,7 +15,7 @@ export class ThemeWordItem extends Component {
 
     }
 
-    initData(data: any) {
+    initData(data: UnitWord) {
         this._data = data;
     }
 }

@@ -413,5 +413,12 @@ export class ArticleExercisesListReply extends BaseRepPacket {
 }
 export class ArticleExercise {
     se_id: string;
-    content: string;
+    content: string; //题目
+    answer: string; //答案
+    options: string[]; //错误选项
+    kind: number; //练习题目类型 1 选择题 2 填空题 3 判断题 4排序题
+    source: number; //来源
+    article_id: number; //文章id
+    subject_id: number; //主题id
+    create_time: string;
 }
