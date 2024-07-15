@@ -721,6 +721,7 @@ export class MapUICtl extends MainBaseCtl {
                 this._buyBuildingCacheAry.splice(index, 1);
                 this.addRecycleBuilding(tmpData);
                 User.addBuilding(tmpData.bid);
+                EventMgr.emit(EventType.EditUIView_Refresh);
             }
         });
     }

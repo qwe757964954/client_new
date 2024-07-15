@@ -49,7 +49,6 @@ export class EditUIView extends BaseComponent {
     public labelBaseColor: Label = null;//底格颜色
 
     private _mainScene: MainScene = null;//主场景
-    private _isFirst: boolean = true;//是否是第一次
     private _editType: EditType = null;//编辑类型
     private _lastSelect: Sprite = null;//上次选中
     private _itemsData: EditInfo[] = null;//编辑数据
@@ -152,6 +151,7 @@ export class EditUIView extends BaseComponent {
     // 初始化数据
     initData() {
         this._isBaseColor = false;
+        this._editType = null;
         this.selectBtn(this.btnAll);
         this.showEditType(EditType.Null);
     }
@@ -162,8 +162,7 @@ export class EditUIView extends BaseComponent {
     }
     /**显示对应编辑类型 */
     showEditType(editType: EditType) {
-        if (!this._mainScene) return;
-        if (editType == this._editType) return;
+        if (!this._mainScene || editType == this._editType) return;
         this._editType = editType;
 
         let editConfig = DataMgr.instance.editInfo;
