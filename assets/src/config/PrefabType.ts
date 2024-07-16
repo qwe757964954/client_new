@@ -1,5 +1,4 @@
 import { MapProcessRewardView } from "../views/adventure/common/MapProcessRewardView";
-import { PracticeView } from "../views/theme/PracticeView";
 
 // 场景类型
 export const SceneType = {
