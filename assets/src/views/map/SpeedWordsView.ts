@@ -148,7 +148,8 @@ export class SpeedWordsView extends BaseComponent {
     }
     /**显示正确次数 */
     showRightCount() {
-        this.timesLabel.string = ToolUtil.replace(TextConfig.Queue_Text, this._rightCount, this._word_list.length);
+        // this.timesLabel.string = ToolUtil.replace(TextConfig.Queue_Text, this._rightCount, this._word_list.length);
+        this.timesLabel.string = ToolUtil.replace(TextConfig.Queue_Text, this._curWordIndex + 1, this._word_list.length);
     }
     /**显示时间 */
     showTime() {
@@ -170,16 +171,26 @@ export class SpeedWordsView extends BaseComponent {
         this.showRightCount();
         this.showCurrentWord();
     }
-    /**下一题 */
-    goToNext() {
+    /**寻找下一题 */
+    findNext() {
         let nextID = null;
         let wordCount = this._word_list.length;
-        for (let i = 0; i < wordCount; i++) {
-            let index = (this._curWordIndex + i + 1) % wordCount;
-            if (this._rightStatus[index]) continue;
-            nextID = index;
-            break;
+        // for (let i = 0; i < wordCount; i++) {
+        //     let index = (this._curWordIndex + i + 1) % wordCount;
+        //     if (this._rightStatus[index]) continue;
+        //     nextID = index;
+        //     break;
+        // }
+        // return nextID;
+        nextID = this._curWordIndex + 1;
+        if (nextID >= wordCount) {
+            return null;
         }
+        return nextID;
+    }
+    /**下一题 */
+    goToNext() {
+        let nextID = this.findNext();
         if (null == nextID) {
             this.endAnswer();
             return;
@@ -244,6 +255,9 @@ export class SpeedWordsView extends BaseComponent {
             this._curAnswerList.push(tmpData);
             count--;
         }
+        this._curAnswerList.sort(() => {
+            return 0.5 - Math.random();
+        });
 
         for (let i = 0; i < this._answerUIList.length; i++) {
             const element = this._answerUIList[i];
