@@ -24,7 +24,11 @@ export enum TaskTabIds {
   Decoration,
   VocabularyRanking,
   KingdomRanking,
-  CombatPowerRanking
+  CombatPowerRanking,
+  NewbieGift,
+  WeekendCarousel,
+  InvitationEvent,
+  ActivityOther
 }
 
 export enum TabTypeIds {

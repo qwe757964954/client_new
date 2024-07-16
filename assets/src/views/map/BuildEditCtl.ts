@@ -102,14 +102,26 @@ export class BuildEditCtl extends MapBaseCtl {
     }
     /**建筑批量修改返回 */
     onRepBuildingEditBatch(data: s2cBuildingEditBatch) {
+        if (1 == data.type) {
+            return;
+        }
         if (200 != data.code) {
             ViewsManager.showAlert(data.msg);
             return;
         }
         data.insert_result.forEach((item) => {
             let building = this._mainScene.findBuildingByIdx(item.idx);
-            building.buildingID = item.id;
-            User.addBuilding(building.editInfo.id);
+            if (building) {
+                building.buildingID = item.id;
+                User.addBuilding(building.editInfo.id);
+            } else {
+                let recycleData = this._mainScene.findRecycleData(item.idx);
+                if (recycleData) {
+                    recycleData.data.id = item.id;
+                    recycleData.data.state = item.status;
+                    User.addBuilding(recycleData.bid);
+                }
+            }
         });
         this._step = 0;
         this._operationCacheAry = [];
@@ -258,6 +270,15 @@ export class BuildEditCtl extends MapBaseCtl {
                         obj.direction = data.isFlip ? 1 : 0;
                         obj.hide = 1;
                         updateAry.push(obj);
+                    } else {
+                        let obj = new c2sBuildingCreate();
+                        obj.idx = data.idx;
+                        obj.bid = data.editInfo.id;
+                        obj.x = data.x;
+                        obj.y = data.y;
+                        obj.direction = data.isFlip ? 1 : 0;
+                        obj.hide = 1;
+                        createAry.push(obj);
                     }
                 } else if (BuildingOperationType.sell == data.type) {
                     if (data.buildingID) {
@@ -265,6 +286,9 @@ export class BuildEditCtl extends MapBaseCtl {
                     }
                 }
                 processedAry.push(data.idx);
+                if (undefined == data.idx) {
+                    console.error("BuildEditCtl confirmEvent data.idx is undefined");
+                }
             });
         }
         if (0 == createAry.length && 0 == updateAry.length && 0 == deleteAry.length) {
@@ -321,6 +345,7 @@ export class BuildEditCtl extends MapBaseCtl {
         this._selectBuilding = null;
         this.clearData();
         EventMgr.emit(EventType.Building_Step_Update);
+        // console.log("nextStep", this._step, this._operationCacheAry);
     }
     /**当前步数 */
     getStep(): number {
@@ -336,10 +361,14 @@ export class BuildEditCtl extends MapBaseCtl {
     }
     /**建筑保存事件 */
     onBuildingSave(building: BuildingModel): void {
-        this.cacheBuildingOperationData(BuildingOperationType.edit, building);
-        building.saveData();
-        this.nextStep();
-        this._mainScene.newBuildingFromBuilding(building);
+        if (building.isDataChange()) {
+            this.cacheBuildingOperationData(BuildingOperationType.edit, building);
+            building.saveData();
+            this.nextStep();
+            this._mainScene.newBuildingFromBuilding(building);
+        } else {
+            building.saveData();
+        }
     }
     /**建筑回收事件 */
     onBuildingRecycle(building: BuildingModel): void {
@@ -355,7 +384,7 @@ export class BuildEditCtl extends MapBaseCtl {
     }
     /**建筑卖出事件 */
     onBuildingSell(building: BuildingModel): void {
-        if (building.isNew) {
+        if (building.isNew && !building.buildingID) {
             building.sell(true);
             return;
         }

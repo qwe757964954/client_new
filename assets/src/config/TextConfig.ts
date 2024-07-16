@@ -29,8 +29,9 @@ export const TextConfig = {
     Building_New_Error: "该位置建筑不能放置!",
     Building_Product_Full: "生产队列已满",
     Building_Product_Delete: "是否删除此生产",
+    Building_Product_Error: "建筑正在升级中，等升级完成后再制作吧～",
     Building_Upgrade_Error: "建筑正在制作中，等制作完成后再升级吧～",
-    Building_Upgrade_Success: "升级成功",
+    Building_Upgrade_Success: "开始升级建筑",
     Building_Flipx_Failed: "翻转失败",
     Building_Recycle_Error1: "这个建筑正在制作中，请稍后完成后，再回收吧～",
     Building_Recycle_Error2: "这个建筑正在升级中，请稍后完成后，再回收吧～",
@@ -38,6 +39,7 @@ export const TextConfig = {
     Castle_Condition2: "精灵等级达到{0}级",
     Castle_Condition3: "人物等级达到{0}",
     Upgrade_Condition_Error: "你的{0}不足，暂时还不能升级哦～",
+    Building_Shop_Buy_Success: "购买建筑成功",
 
     Role_Text1: "点我做啥",
     Role_Text2: "不能移动的位置",

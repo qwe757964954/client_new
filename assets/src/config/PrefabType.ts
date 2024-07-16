@@ -147,7 +147,7 @@ export const PrefabType = {
     CountdownFrame: { path: "map/CountdownFrame", zindex: Hierarchy.SCENELAYER, tips: "倒计时框加速" },
     BuildingSuccessView: { path: "map/BuildingSuccessView", zindex: Hierarchy.POPUPLAYER, tips: "建筑成功界面" },
     ProduceItemView: { path: "map/ProduceItemView", zindex: Hierarchy.POPUPLAYER, tips: "生产物品界面" },
-
+    BuildBuiltView: { path: "map/BuildBuiltView", zindex: Hierarchy.POPUPLAYER, tips: "建筑建造界面" },
     /*********************************************地图相关end*************************************************************/
     /*********************************************宠物相关start*************************************************************/
     PetInteractionView: { path: "map/PetInteractionView", zindex: Hierarchy.POPUPLAYER, tips: "宠物交互界面" },
@@ -226,6 +226,9 @@ export const PrefabType = {
     /*********************************************排行 end***********************************************************/
 
     /*********************************************活动 start***********************************************************/
-    ActivityView: { path: "activities/ActivityView", zindex: Hierarchy.POPUPLAYER, tips: "新人豪礼" },
+    ActivityView: { path: "activities/ActivityView", zindex: Hierarchy.POPUPLAYER, tips: "活动" },
+    ActivityNewPeople: { path: "activities/ActivityNewPeople", zindex: Hierarchy.POPUPLAYER, tips: "新人豪礼" },
+    WeekendCarouselView: { path: "activities/WeekendCarouselView", zindex: Hierarchy.POPUPLAYER, tips: "周末转盘" },
+    Carouseltem: { path: "activities/Carouseltem", zindex: Hierarchy.POPUPLAYER, tips: "转盘元素" },
     /*********************************************活动 end***********************************************************/
 }

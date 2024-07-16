@@ -186,7 +186,7 @@ export class TextbookChallengeView extends BaseView {
     
     // 显示 BreakThroughView
     private async showBreakThroughView() {
-        const node = await ViewsManager.instance.showViewAsync(PrefabType.BreakThroughView);
+        const node = await ViewsManager.instance.showLearnView(PrefabType.BreakThroughView);
         const itemScript = node.getComponent(BreakThroughView);
         itemScript.initData(this._bookData, this._unitListArr);
         ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);

@@ -12,24 +12,25 @@ export const InterfacePath = {
     c2sBuildingList: "2005",//建筑列表
     c2sBuildingCreate: "2006",//新建建筑
     c2sBuildingEdit: "2007",//建筑修改
-    // c2sLandUpdate: "2008",//地块更新
-    // c2sBuildingUpgrade: "2009",//建筑升级
-    c2sBuildingSell: "2010",//建筑出售
-    c2sBuildingRecycle: "2011",//建筑回收
-    // c2sBuildingProduceAdd: "2012",//建筑生产队列添加
-    // c2sBuildingProduceDelete: "2013",//建筑生产队列移除
-    // c2sBuildingProduceGet: "2014",//建筑生产领取
-    // c2sCloudUnlock: "2015",//乌云解锁
-    // c2sCloudUnlockGet: "2016",//乌云解锁领取
-
     c2sBuildingEditBatch: "2006",//建筑批量操作
     c2sLandUpdate: "2007",//地块更新
+    c2sSpeedWordsGet: "2008",//加速单词获取
+    c2sBuildingInfoGet: "2009",//建筑信息获取
+    c2sBuildingSell: "2010",//建筑出售
+    c2sBuildingRecycle: "2011-",//建筑回收
+    c2sBuildingBuilt: "2011",//建筑建造
+    c2sBuildingBuiltSpeed: "2012",//建筑建造加速
     c2sBuildingUpgrade: "2013",//建筑升级
+    c2sBuildingUpgradeSpeed: "2014",//建筑升级加速
+    c2sBuildingBuiltReward: "2015",//建筑建造奖励
+    c2sBuildingUpgradeReward: "2016",//建筑升级奖励
     c2sBuildingProduceAdd: "2021",//建筑生产队列添加
     c2sBuildingProduceDelete: "2022",//建筑生产队列移除
     c2sBuildingProduceGet: "2023",//建筑生产领取
+    c2sBuildingProduceSpeed: "2024",//建筑生产加速
     c2sCloudUnlock: "2031",//乌云解锁
     c2sCloudUnlockGet: "2032",//乌云解锁领取
+    c2sCloudUnlockSpeed: "2033",//乌云解锁加速
 
     s2cAccountLogout: "10001",//登录被顶号返回
     s2cItemUpdate: "10002",//物品更新

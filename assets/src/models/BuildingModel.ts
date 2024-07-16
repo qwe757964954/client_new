@@ -79,8 +79,8 @@ export class RecycleData {
     public bid: number;//建筑id
     public data: BuildingData;//建筑数据
 }
-/**建筑数据(服务端为准) */
-class BuildingProduceData {
+/**建筑生产数据(服务端为准) */
+class BuildingTimeData {
     type: number;//生产类型
     sec: number;//剩余时间(s)
     time: number;//生产完成时间(s)
@@ -94,7 +94,9 @@ export class BuildingData {
     public time: number = 0;//建筑时间
     public queueMaxCount: number = 5;//队列最大数量
     // 正在建造的队列（id，时间）
-    public queue: BuildingProduceData[] = [];
+    public queue: BuildingTimeData[] = [];
+    public builtData: BuildingTimeData = null;//建造数据
+    public upgradeData: BuildingTimeData = null;//升级数据
 }
 
 const defaultSpAnim = ["animation", "idle", "click"];
@@ -135,9 +137,14 @@ export class BuildingModel extends BaseModel {
     private _longView: EditAnimView = null;//长按界面
     private _longViewShow: boolean = false;//长按界面是否显示
     private _countdownFrame: CountdownFrame = null;//倒计时界面
+    private _countdownFrameLoad: boolean = false;//倒计时界面是否加载
     private _countdownFrameShow: boolean = false;//倒计时界面是否显示
     private _produceItemView: ProduceItemView = null;//生产物品界面
     private _produceItemViewShow: boolean = false;//生产物品界面是否显示
+    private _uiNode: Node = null;//ui节点
+    private _uiNodeShow: boolean = true;//ui节点是否显示
+    private _builtSuccessView: Node = null;//建造完成界面
+    private _upgradeSuccessView: Node = null;//升级完成界面
 
     private _isFixImgPos: boolean = false;//是否固定图片位置
     private _isLoadOver: boolean = false;//图片是否加载完成
@@ -180,6 +187,21 @@ export class BuildingModel extends BaseModel {
         if (EditType.Buiding == editInfo.type || EditType.LandmarkBuiding == editInfo.type) {
             this._timer = TimerMgr.loop(this.updateBySec.bind(this), 1000);
         }
+    }
+    set buildingState(state: BuildingState) {
+        this.buildingData.state = state;
+
+        this.refreshUIView();
+        this.refreshBuildingShow();
+    }
+    get buildingState(): BuildingState {
+        return this.buildingData.state;
+    }
+    set buildingLevel(level: number) {
+        this.buildingData.level = level;
+    }
+    get buildingLevel(): number {
+        return this.buildingData.level;
     }
     set buildingID(id: number) {
         if (this._buildingID) return;
@@ -277,6 +299,9 @@ export class BuildingModel extends BaseModel {
     }
     get isNew(): boolean {
         return this._isNew;
+    }
+    get isRecycle(): boolean {
+        return this._isRecycle;
     }
     public get pos(): Readonly<Vec3> {
         return this._pos;
@@ -420,6 +445,18 @@ export class BuildingModel extends BaseModel {
             node.getComponent(BuildingInfoView).initData(this._editInfo);
         });
     }
+    /**数据是否变化 */
+    public isDataChange(): boolean {
+        if (this.isNew) return true;
+        if (this._isFlip != this._dataIsFlip) return true;
+        if (this._isShowEx != this._dataIsShow) return true;
+        if (this._grids && this._dataGrids) {
+            for (let i = 0; i < this._grids.length; i++) {
+                if (this._grids[i] != this._dataGrids[i]) return true;
+            }
+        }
+        return false;
+    }
     // 保存数据
     public saveData(status: boolean = true): void {
         if (!status) {
@@ -484,25 +521,20 @@ export class BuildingModel extends BaseModel {
     }
     // 回收按钮点击
     public recycleBtnClick() {
-        if (!this._isRecycle && this._buildingID) {
-            if (this.buildingData.queue.length > 0) {
-                ViewsMgr.showTip(TextConfig.Building_Recycle_Error1);
-                return;
-            }
-            // TODO 建筑升级显示
-            // if (this.buildingData.queue.length > 0) {
-            //     ViewsMgr.showTip(TextConfig.Building_Recycle_Error2);
-            //     return;
-            // }
-            EventMgr.emit(EventType.Building_Recycle, this);
-            // ServiceMgr.buildingService.reqBuildingRecycle(this._buildingID);
-        } else {
-            EventMgr.emit(EventType.Building_Recycle, this);
-            // this.recycle();
+        if (this.buildingData.queue.length > 0) {
+            ViewsMgr.showTip(TextConfig.Building_Recycle_Error1);
+            return;
         }
+        // TODO 建筑升级显示
+        // if (this.buildingData.queue.length > 0) {
+        //     ViewsMgr.showTip(TextConfig.Building_Recycle_Error2);
+        //     return;
+        // }
+        EventMgr.emit(EventType.Building_Recycle, this);
     }
     // 回收
     public recycle() {
+        this._isRecycle = true;
         EventMgr.emit(EventType.Building_RecycleEx, this);
         this.resetGrids();
         this.isShowEx = false;
@@ -675,10 +707,11 @@ export class BuildingModel extends BaseModel {
                 this._graphics = this._node.getComponentInChildren(Graphics);
                 this._graphics.node.active = false;
                 this._fence = this._node.getChildByName("Fence");
-                // if (this._editInfo.id == 0) {
-                //     this.showFence(true);
-                //     this._building.node.active = false;
-                // }
+                this._uiNode = this._node.getChildByName("UI");
+                this._builtSuccessView = this._uiNode.getChildByName("Label1");
+                this._upgradeSuccessView = this._uiNode.getChildByName("Label2");
+                this.refreshUIView();
+                this.refreshBuildingShow();
 
                 LoadManager.loadSprite(DataMgr.getEditPng(this._editInfo), this._building, true).then(() => {
                     this._isLoadOver = true;
@@ -755,32 +788,120 @@ export class BuildingModel extends BaseModel {
     }
     /**显示倒计时 */
     public showCountDownView() {
-        if (true) return;
-        // TODO 判断本建筑是否需要显示逻辑
         this._countdownFrameShow = true;
+        // console.log("showCountDownView", this.editInfo.id, this.buildingState);
+        if (BuildingState.building != this.buildingState && BuildingState.upgrade != this.buildingState) {
+            this.closeCountDownView();
+            return;
+        }
         if (this._countdownFrame) {
             this._countdownFrame.node.active = true;
             return;
         }
+        if (!this._node || this._countdownFrameLoad) return;
+        this._countdownFrameLoad = true;
         LoadManager.loadPrefab(PrefabType.CountdownFrame.path, this._node).then((node: Node) => {
             let height = this._grids ? this._grids[0]?.height : 0;
             node.position = new Vec3(0, -0.5 * this._width * height, 0);
             node.active = this._countdownFrameShow;
             this._countdownFrame = node.getComponent(CountdownFrame);
-            this._countdownFrame.init(200);
+            this.setCountDown();
         });
     }
     /**关闭倒计时 */
     public closeCountDownView() {
         this._countdownFrameShow = false;
+        // console.log("closeCountDownView", this.editInfo.id, this.buildingState);
         if (!this._countdownFrame) {
             return;
         }
         this._countdownFrame.node.active = this._countdownFrameShow;
     }
+    /**设置倒计时 */
+    public setCountDown() {
+        if (BuildingState.building != this.buildingState && BuildingState.upgrade != this.buildingState) {
+            return;
+        }
+        let time = (BuildingState.building == this.buildingState) ? this.buildingData.builtData.time : this.buildingData.upgradeData.time;
+        let sec = time - ToolUtil.now();
+        if (sec <= 0) {//如果显示时间小于0，更新建筑状态
+            ServiceMgr.buildingService.reqBuildingInfoGet(this.buildingID);
+            return;
+        }
+        if (this._countdownFrame) {
+            this._countdownFrame.init(sec, () => {
+                ServiceMgr.buildingService.reqBuildingInfoGet(this.buildingID);
+            });
+        }
+    }
+    /**显示建筑成功UI */
+    public showBuiltSuccessUI() {
+        if (BuildingState.buildingOver != this.buildingState) {
+            this.hideBuiltSuccessUI();
+            return;
+        }
+        if (!this._builtSuccessView || !this._uiNode) return;
+        this._builtSuccessView.active = true;
+    }
+    /**显示升级成功UI */
+    public showUpgradeSuccessUI() {
+        if (BuildingState.upgradeOver != this.buildingState) {
+            this.hideUpgradeSuccessUI();
+            return;
+        }
+        if (!this._upgradeSuccessView || !this._uiNode) return;
+        this._upgradeSuccessView.active = true;
+    }
+    /**隐藏建筑成功UI */
+    public hideBuiltSuccessUI() {
+        if (!this._builtSuccessView) return;
+        this._builtSuccessView.active = false;
+    }
+    /**隐藏升级成功UI */
+    public hideUpgradeSuccessUI() {
+        if (!this._upgradeSuccessView) return;
+        this._upgradeSuccessView.active = false;
+    }
+    /**显示UI */
+    public showUIView() {
+        this._uiNodeShow = true;
+        this.refreshUIView();
+    }
+    /**更新UI */
+    public refreshUIView() {
+        // console.log("refreshUIView", this.editInfo.id, this._uiNodeShow, this.buildingState);
+        if (this._uiNodeShow) {
+            this.showCountDownView();
+            this.showBuiltSuccessUI();
+            this.showUpgradeSuccessUI();
+        } else {
+            this.closeCountDownView();
+            this.hideBuiltSuccessUI();
+            this.hideUpgradeSuccessUI();
+        }
+    }
+    /**更新建筑显示 */
+    public refreshBuildingShow() {
+        if (BuildingState.unBuilding == this.buildingState || BuildingState.building == this.buildingState) {
+            this.showFence(true);
+            if (this._building) {
+                this._building.node.active = false;
+            }
+        } else {
+            this.showFence(false);
+            if (this._building) {
+                this._building.node.active = true;
+            }
+        }
+    }
+    /**隐藏UI */
+    public hideUIView() {
+        this._uiNodeShow = false;
+        this.refreshUIView();
+    }
     /**添加生产队列 */
     public addProduct(type: number, sec: number) {
-        let data = new BuildingProduceData;
+        let data = new BuildingTimeData;
         data.type = type;
         data.sec = sec;
         data.time = ToolUtil.now() + sec;
@@ -800,6 +921,30 @@ export class BuildingModel extends BaseModel {
     /**清理生产队列 */
     public clearProduct() {
         this.buildingData.queue = [];
+    }
+    /**设置建造数据 */
+    public setBuiltData(remaining_seconds: number) {
+        if (null == remaining_seconds) return;
+        let builtData = this.buildingData.builtData;
+        if (!builtData) {
+            builtData = new BuildingTimeData();
+            this.buildingData.builtData = builtData;
+        }
+        builtData.sec = remaining_seconds;
+        builtData.time = ToolUtil.now() + remaining_seconds;
+        // this.setCountDown();
+    }
+    /**设置升级数据 */
+    public setUpgradeData(remaining_seconds: number) {
+        if (null == remaining_seconds) return;
+        let upgradeData = this.buildingData.upgradeData;
+        if (!upgradeData) {
+            upgradeData = new BuildingTimeData();
+            this.buildingData.upgradeData = upgradeData;
+        }
+        upgradeData.sec = remaining_seconds;
+        upgradeData.time = ToolUtil.now() + remaining_seconds;
+        // this.setCountDown();
     }
     /**每秒刷新 */
     public updateBySec() {
@@ -859,6 +1004,7 @@ export class BuildingModel extends BaseModel {
             this._produceItemView.init(this.getProduceImg());
             return;
         }
+        if (!this._node) return;
         LoadManager.loadPrefab(PrefabType.ProduceItemView.path, this._node).then((node: Node) => {
             let pos = new Vec3(this._building.node.position);
             pos.y += this._building.getComponent(UITransform).height;
@@ -893,7 +1039,6 @@ export class BuildingModel extends BaseModel {
         this.buildingID = data.data.id;
         this._idx = data.data.idx;
         this.buildingData = data.data;
-        this._isRecycle = true;
         if (EditType.Buiding == this._editInfo.type || EditType.LandmarkBuiding == this._editInfo.type) {
             this.checkProduce();
         }
@@ -902,15 +1047,29 @@ export class BuildingModel extends BaseModel {
     static getBuildingDataByMsg(msg: s2cBuildingListInfo) {
         let data = new BuildingData();
         data.id = msg.id;
+        data.idx = ToolUtil.getIdx();
         data.level = msg.level;
+        data.state = msg.status;
         let now = ToolUtil.now();
         msg.product_infos.forEach(element => {
-            let tmpData = new BuildingProduceData();
+            let tmpData = new BuildingTimeData();
             tmpData.type = element.product_type;
             tmpData.sec = element.remaining_seconds;
             tmpData.time = now + element.remaining_seconds;
             data.queue.push(tmpData);
         });
+        if (msg.construct_infos) {
+            let tmpData = new BuildingTimeData();
+            tmpData.sec = msg.construct_infos.remaining_seconds;
+            tmpData.time = now + msg.construct_infos.remaining_seconds;
+            data.builtData = tmpData;
+        }
+        if (msg.upgrade_infos) {
+            let tmpData = new BuildingTimeData();
+            tmpData.sec = msg.upgrade_infos.remaining_seconds;
+            tmpData.time = now + msg.upgrade_infos.remaining_seconds;
+            data.upgradeData = tmpData;
+        }
         return data;
     }
     /**调整宽高 */

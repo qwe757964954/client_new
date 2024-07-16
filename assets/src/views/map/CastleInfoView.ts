@@ -104,23 +104,23 @@ export class CastleInfoView extends BaseComponent {
         this._building.setCameraType(Layers.Enum.UI_2D);
 
         let maxLevel = DataMgr.castleConfig.length;
-        let buildingData = this._building.buildingData;
         let editInfo = this._building.editInfo;
+        let level = building.buildingLevel;
         this.labelName1.string = editInfo.name;
-        this.labelLevel.string = ToolUtil.replace(TextConfig.Level_Text, buildingData.level);
+        this.labelLevel.string = ToolUtil.replace(TextConfig.Level_Text, level);
         this.labelMaxLevel.string = ToolUtil.replace(TextConfig.Level_Text2, maxLevel);
         this.labelName2.string = editInfo.name;
-        if (buildingData.level >= maxLevel) {
+        if (level >= maxLevel) {
             this.nodeMaxLevel.active = true;
             this.plUpgrade.active = false;
             return;
         }
         this.nodeMaxLevel.active = false;
         this.plUpgrade.active = true;
-        this.labelLevel1.string = ToolUtil.replace(TextConfig.Level_Text, buildingData.level);
-        this.labelLevel2.string = ToolUtil.replace(TextConfig.Level_Text, buildingData.level + 1);
+        this.labelLevel1.string = ToolUtil.replace(TextConfig.Level_Text, level);
+        this.labelLevel2.string = ToolUtil.replace(TextConfig.Level_Text, level + 1);
         // this.labelCoin.string = "3000";// TODO升级所需金币
-        let data = DataMgr.castleConfig[buildingData.level];
+        let data = DataMgr.castleConfig[level];
         this._data = data;
         // 升级所需条件
         for (let i = 0; i < 3; i++) {
@@ -213,14 +213,14 @@ export class CastleInfoView extends BaseComponent {
             return;
         }
         ViewsMgr.showTip(TextConfig.Building_Upgrade_Success);
-        this._building.buildingData.level = data.level;
+        // this._building.buildingLevel = data.level;
         let building = this._building;
         this.labelLevel.string = ToolUtil.replace(TextConfig.Level_Text, building.buildingData.level);;
-        if (data.level >= 5) {
-            this.nodeMaxLevel.active = true;
-            this.plUpgrade.active = false;
-            return;
-        }
+        // if (data.level >= DataMgr.castleConfig.length) {
+        //     this.nodeMaxLevel.active = true;
+        //     this.plUpgrade.active = false;
+        //     return;
+        // }
         this.nodeMaxLevel.active = false;
         this.plUpgrade.active = true;
         this.labelLevel1.string = ToolUtil.replace(TextConfig.Level_Text, building.buildingData.level);

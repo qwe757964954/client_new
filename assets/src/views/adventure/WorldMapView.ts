@@ -2,10 +2,9 @@ import { _decorator, Button, Component, instantiate, Node, Prefab, v3 } from 'cc
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import GlobalConfig from '../../GlobalConfig';
-import { AdvLevelConfig, DataMgr } from '../../manager/DataMgr';
-import { ResLoader } from '../../manager/ResLoader';
+import { DataMgr } from '../../manager/DataMgr';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
-import { GameMode, GateData, IslandProgressModel, IslandStatusData, LevelProgressData, LevelRestartData, MapLevelData } from '../../models/AdventureModel';
+import { GameMode, GateData, IslandProgressModel, IslandStatusData, LevelProgressData, LevelRestartData } from '../../models/AdventureModel';
 import { UnitWordModel } from '../../models/TextbookModel';
 import { InterfacePath } from '../../net/InterfacePath';
 import { ServiceMgr } from '../../net/ServiceManager';
@@ -333,8 +332,6 @@ export class WorldMapView extends Component {
     /**点击返回按钮 */
     onBtnBackClick() {
         // EventManager.emit(EventType.Study_Page_Switching, [0])
-        ResLoader.instance.releaseDir("adventure");
-        ResLoader.instance.releaseDir("prefab/studyModes");
         this.node.destroy();
     }
 

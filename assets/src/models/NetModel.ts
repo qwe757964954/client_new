@@ -92,6 +92,14 @@ export class s2cBuildingProduceInfo {
     product_type: number;//生产类型
     remaining_seconds: number;//剩余时间(s)
 }
+/**建筑建造信息 */
+export class s2cBuildingBuiltInfo {
+    remaining_seconds: number;//剩余时间(s)
+}
+/**建筑升级信息 */
+export class s2cBuildingUpgradeInfo {
+    remaining_seconds: number;//剩余时间(s)
+}
 /**建筑列表 */
 export class c2sBuildingList {
     command_id: string = InterfacePath.c2sBuildingList;
@@ -104,7 +112,10 @@ export class s2cBuildingListInfo {
     direction: number;//建筑方向 0:未翻转, 1: 翻转
     level: number;//建筑等级
     hide: number;//是否回收 0:未回收, 1: 已回收
+    status: number;//建筑状态 0:普通、1:建造中、2:建造完成、3:升级中、4:升级完成
+    construct_infos: s2cBuildingBuiltInfo;//建造信息
     product_infos: s2cBuildingProduceInfo[];//生产信息
+    upgrade_infos: s2cBuildingUpgradeInfo;//升级信息
 }
 /**建筑列表返回*/
 export class s2cBuildingList extends BaseRepPacket {
@@ -115,12 +126,14 @@ export class s2cBuildingList extends BaseRepPacket {
 /**建筑批量操作 */
 export class c2sBuildingEditBatch {
     command_id: string = InterfacePath.c2sBuildingEditBatch;
+    type: number = 0;//类型 0:编辑建造 1:商店购买
     insert_list: c2sBuildingCreate[] = [];
     update_list: c2sBuildingEdit[] = [];
     delete_list: number[] = [];
 }
 /**建筑批量操作返回 */
 export class s2cBuildingEditBatch extends BaseRepPacket {
+    type: number = 0;//类型 0:编辑建造 1:商店购买
     insert_result: s2cBuildingCreate[] = [];
     update_result: s2cBuildingEdit[] = [];
     delete_result: s2cBuildingSell[] = [];
@@ -154,6 +167,7 @@ export class c2sBuildingCreate {
 export class s2cBuildingCreate extends BaseRepPacket {
     idx: number;//建筑索引(前端使用)
     id: number;//建筑唯一索引id
+    status: number;//建筑状态 0:普通、1:建造中、2:建造完成、3:升级中、4:升级完成
 }
 /**地块更新 */
 export class c2sLandUpdate {
@@ -172,7 +186,60 @@ export class c2sBuildingUpgrade {
 /**建筑升级返回 */
 export class s2cBuildingUpgrade extends BaseRepPacket {
     id: number;//建筑唯一索引id
+    // level: number;//建筑等级
+    status: number;//建筑状态 0:普通、1:建造中、2:建造完成、3:升级中、4:升级完成
+    upgrade_infos: s2cBuildingUpgradeInfo;//升级信息
+}
+/**建筑升级加速 */
+export class c2sBuildingUpgradeSpeed {
+    command_id: string = InterfacePath.c2sBuildingUpgradeSpeed;
+    id: number;//建筑唯一索引id
+}
+/**建筑升级加速返回 */
+export class s2cBuildingUpgradeSpeed extends BaseRepPacket {
+    id: number;//建筑唯一索引id
+    status: number;//建筑状态 0:普通、1:建造中、2:建造完成、3:升级中、4:升级完成
+    upgrade_infos: s2cBuildingUpgradeInfo;//升级信息
+}
+/**建筑升级奖励领取 */
+export class c2sBuildingUpgradeReward {
+    command_id: string = InterfacePath.c2sBuildingUpgradeReward;
+    id: number;//建筑唯一索引id
+}
+/**建筑升级奖励领取返回 */
+export class s2cBuildingUpgradeReward extends BaseRepPacket {
+    id: number;//建筑唯一索引id
+    status: number;//建筑状态 0:普通、1:建造中、2:建造完成、3:升级中、4:升级完成
     level: number;//建筑等级
+    award: ItemData[];//奖励
+}
+/**建筑信息获取 */
+export class c2sBuildingInfoGet {
+    command_id: string = InterfacePath.c2sBuildingInfoGet;
+    id: number;//建筑唯一索引id
+}
+/**建筑信息获取返回 */
+export class s2cBuildingInfoGet extends BaseRepPacket {
+    id: number;//建筑唯一索引id
+    status: number;//建筑状态 0:普通、1:建造中、2:建造完成、3:升级中、4:升级完成
+    construct_infos: s2cBuildingBuiltInfo;//建造信息
+    upgrade_infos: s2cBuildingUpgradeInfo;//升级信息
+}
+/**加速单词获取 */
+export class c2sSpeedWordsGet {
+    command_id: string = InterfacePath.c2sSpeedWordsGet;
+}
+/**加速单词信息 */
+export class s2cSpeedWordInfo {
+    w_id: string;//单词id
+    word: string;//单词
+    cn: string;//中文解释
+    symbol: string;//音标 英标
+    symbolus: string;//音标 美标
+}
+/**加速单词获取返回 */
+export class s2cSpeedWordsGet extends BaseRepPacket {
+    word_list: s2cSpeedWordInfo[];//单词列表
 }
 /**建筑卖出 */
 export class c2sBuildingSell {
@@ -191,6 +258,38 @@ export class c2sBuildingRecycle {
 /**建筑回收返回 */
 export class s2cBuildingRecycle extends BaseRepPacket {
     id: number;//建筑唯一索引id
+}
+/**建筑建造 */
+export class c2sBuildingBuilt {
+    command_id: string = InterfacePath.c2sBuildingBuilt;
+    id: number;//建筑唯一索引id
+}
+/**建筑建造返回 */
+export class s2cBuildingBuilt extends BaseRepPacket {
+    id: number;//建筑唯一索引id
+    status: number;//建筑状态 0:普通、1:建造中、2:建造完成、3:升级中、4:升级完成
+    construct_infos: s2cBuildingBuiltInfo;//建造信息
+}
+/**建筑加速建造 */
+export class c2sBuildingBuiltSpeed {
+    command_id: string = InterfacePath.c2sBuildingBuiltSpeed;
+    id: number;//建筑唯一索引id
+}
+/**建筑加速建造返回 */
+export class s2cBuildingBuiltSpeed extends BaseRepPacket {
+    id: number;//建筑唯一索引id
+    status: number;//建筑状态 0:普通、1:建造中、2:建造完成、3:升级中、4:升级完成
+    construct_infos: s2cBuildingBuiltInfo;//建造信息
+}
+/**建筑建造领取奖励 */
+export class c2sBuildingBuiltReward {
+    command_id: string = InterfacePath.c2sBuildingBuiltReward;
+    id: number;//建筑唯一索引id
+}
+/**建筑建造领取奖励返回 */
+export class s2cBuildingBuiltReward extends BaseRepPacket {
+    id: number;//建筑唯一索引id
+    award: ItemData[];//奖励
 }
 /**建筑生产队列添加 */
 export class c2sBuildingProduceAdd {
@@ -249,6 +348,15 @@ export class c2sCloudUnlockGet {
 export class s2cCloudUnlockGet extends BaseRepPacket {
     cloud_dict: { [key: string]: number };//乌云字典
     award_items: s2cRewardItem[];//奖励物品
+}
+/**乌云解锁加速 */
+export class c2sCloudUnlockSpeed {
+    command_id: string = InterfacePath.c2sCloudUnlockSpeed;
+    unlock_cloud: string;//乌云位置x_y
+}
+/**乌云解锁加速返回 */
+export class s2cCloudUnlockSpeed extends BaseRepPacket {
+    cloud_dict: { [key: string]: number };//乌云字典
 }
 
 /**复习规划 */

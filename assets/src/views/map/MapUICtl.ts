@@ -8,12 +8,12 @@ import { DataMgr, EditInfo, EditType } from "../../manager/DataMgr";
 import { ViewsMgr } from "../../manager/ViewsManager";
 import { BaseModel } from "../../models/BaseModel";
 import { BgModel } from "../../models/BgModel";
-import { BuildingModel, BuildingOperationData, RecycleData } from "../../models/BuildingModel";
+import { BuildingModel, BuildingOperationData, BuildingState, RecycleData } from "../../models/BuildingModel";
 import { CloudModel } from "../../models/CloudModel";
 import { GridModel } from "../../models/GridModel";
 import { LandModel } from "../../models/LandModel";
 import { MapSpModel } from "../../models/MapSpModel";
-import { s2cBuildingList, s2cBuildingListInfo, s2cBuildingProduceAdd, s2cBuildingProduceDelete, s2cBuildingProduceGet, s2cCloudUnlock, s2cCloudUnlockGet, s2cPetGetReward, s2cPetInfoRep, s2cPetUpgrade } from "../../models/NetModel";
+import { s2cBuildingBuilt, s2cBuildingBuiltReward, s2cBuildingEditBatch, s2cBuildingInfoGet, s2cBuildingList, s2cBuildingListInfo, s2cBuildingProduceAdd, s2cBuildingProduceDelete, s2cBuildingProduceGet, s2cBuildingUpgrade, s2cBuildingUpgradeReward, s2cCloudUnlock, s2cCloudUnlockGet, s2cPetGetReward, s2cPetInfoRep, s2cPetUpgrade } from "../../models/NetModel";
 import { RoleType } from "../../models/RoleBaseModel";
 import { RoleDataModel } from "../../models/RoleDataModel";
 import { User } from "../../models/User";
@@ -46,10 +46,11 @@ export class MapUICtl extends MainBaseCtl {
     private _cloudModelAry: CloudModel[] = [];//乌云模型数组
     private _mapSpModeAry: MapSpModel[] = [];//地图动画模型数组
     private _recycleBuildingAry: RecycleData[] = [];//回收建筑信息
+    private _buyBuildingCacheAry: RecycleData[] = [];//购买建筑缓存信息
     private _isNeedUpdateVisible: boolean = false;//是否需要更新可视区域
     private _isNeedSort: boolean = false;//是否需要重新排序
     private _roleIsShow: boolean = true;//角色是否显示
-    private _countdownFrameIsShow: boolean = true;//建筑倒计时框是否显示
+    private _buildingUIIsShow: boolean = true;//建筑UI是否显示
 
     private _callBack: Function = null;//加载完成回调
     private _loadCount: number = 0;//加载计数
@@ -129,6 +130,13 @@ export class MapUICtl extends MainBaseCtl {
         this.addEvent(EventType.Mood_Score_Update, this.onMoodUpdate.bind(this));
         this.addEvent(EventType.BuidingModel_Remove, this.onBuildingRemove.bind(this));
         this.addEvent(EventType.Building_Flipx, this.onBuildingFlipX.bind(this));
+        this.addEvent(EventType.Building_Shop_Buy, this.onShopBuyBuilding.bind(this));
+        this.addEvent(InterfacePath.c2sBuildingEditBatch, this.onRepShopBuyBuilding.bind(this));
+        this.addEvent(InterfacePath.c2sBuildingBuilt, this.onRepBuildingBuilt.bind(this));
+        this.addEvent(InterfacePath.c2sBuildingBuiltReward, this.onRepBuildingBuiltReward.bind(this));
+        this.addEvent(InterfacePath.c2sBuildingUpgrade, this.onRepBuildingUpgrade.bind(this));
+        this.addEvent(InterfacePath.c2sBuildingUpgradeReward, this.onRepBuildingUpgradeReward.bind(this));
+        this.addEvent(InterfacePath.c2sBuildingInfoGet, this.onRepBuildingInfoGet.bind(this));
     }
     // 移除事件
     removeEvent() {
@@ -293,9 +301,11 @@ export class MapUICtl extends MainBaseCtl {
             let editInfo = DataMgr.instance.editInfo[element.bid];
             let building = this.newBuilding(editInfo, element.x, element.y, 1 == element.direction, false);
             building.buildingID = element.id;
-            building.buildingData.level = element.level;
+            building.buildingLevel = element.level;
             building.setProducts(element.product_infos);
-            building.showCountDownView();
+            building.setBuiltData(element.construct_infos.remaining_seconds);
+            building.setUpgradeData(element.upgrade_infos.remaining_seconds);
+            building.buildingState = element.status;
 
             // if (BuildingIDType.castle == element.bid) {
             //     let pos = building.node.position;
@@ -623,8 +633,21 @@ export class MapUICtl extends MainBaseCtl {
     }
     /**回收建筑 */
     addRecycleBuilding(data: RecycleData) {
+        if (!data) return;
         // console.log("addRecycleBuilding", data);
         this._recycleBuildingAry.push(data);
+    }
+    /**获取回收数据 */
+    findRecycleData(idx: number) {
+        let data: RecycleData = null;
+        for (let i = 0; i < this._recycleBuildingAry.length; i++) {
+            let element = this._recycleBuildingAry[i];
+            if (element.data.idx == idx) {
+                data = element;
+                break;
+            }
+        }
+        return data;
     }
     /**获取回收建筑 */
     getRecycleBuilding(bid: number) {
@@ -667,6 +690,40 @@ export class MapUICtl extends MainBaseCtl {
     /**回收建筑是否包含指定建筑 */
     isRecycleBuildingContain(bid: number) {
         return undefined != this._recycleBuildingAry.find(element => element.bid == bid);
+    }
+    /**商店购买建筑 */
+    onShopBuyBuilding(data: RecycleData) {
+        this._buyBuildingCacheAry.push(data);
+    }
+    /**商店购买建筑返回 */
+    onRepShopBuyBuilding(data: s2cBuildingEditBatch) {
+        if (0 == data.type) {
+            return;
+        }
+        if (200 != data.code) {
+            return;
+        }
+        ViewsMgr.showTip(TextConfig.Building_Shop_Buy_Success);
+        data.insert_result.forEach((item) => {
+            let index = -1;
+            let tmpData = null;
+            for (let i = 0; i < this._buyBuildingCacheAry.length; i++) {
+                let element = this._buyBuildingCacheAry[i];
+                if (element.data.idx == item.idx) {
+                    index = i;
+                    tmpData = element;
+                    tmpData.data.id = item.id;
+                    tmpData.data.state = item.status;
+                    break;
+                }
+            }
+            if (index > -1) {
+                this._buyBuildingCacheAry.splice(index, 1);
+                this.addRecycleBuilding(tmpData);
+                User.addBuilding(tmpData.bid);
+                EventMgr.emit(EventType.EditUIView_Refresh);
+            }
+        });
     }
     /**移除建筑 */
     removeBuilding(building: BuildingModel) {
@@ -915,15 +972,15 @@ export class MapUICtl extends MainBaseCtl {
             element.isActive = isShow;
         });
     }
-    /** 是否显示所有建筑计时框 */
-    public set countdownFrameIsShow(isShow: boolean) {
-        if (this._countdownFrameIsShow == isShow) return;
-        this._countdownFrameIsShow = isShow;
+    /** 是否显示所有建筑UI */
+    public set buildingUIIsShow(isShow: boolean) {
+        if (this._buildingUIIsShow == isShow) return;
+        this._buildingUIIsShow = isShow;
         this._buidingModelAry.forEach(building => {
             if (isShow) {
-                building.showCountDownView();
+                building.showUIView();
             } else {
-                building.closeCountDownView();
+                building.hideUIView();
             }
         });
     }
@@ -1141,7 +1198,7 @@ export class MapUICtl extends MainBaseCtl {
     }
     /**建筑移除事件 */
     onBuildingRemove(building: BuildingModel): void {
-        if (building.buildingID && !building.isSell) {
+        if (building.isRecycle || (building.buildingID && !building.isSell)) {
             this.addRecycleBuilding(building.getRecycleData());
         }
         if (building.parent == this._mainScene.buildingLayer) {
@@ -1229,5 +1286,60 @@ export class MapUICtl extends MainBaseCtl {
         this._buidingModelAry.forEach(element => {
             element.isShowBaseColor = isBaseColor;
         });
+    }
+    /**建筑建造返回 */
+    onRepBuildingBuilt(data: s2cBuildingBuilt) {
+        if (200 != data.code) {
+            return;
+        }
+        let building = this.findBuilding(data.id);
+        if (!building) return;
+        building.setBuiltData(data.construct_infos.remaining_seconds);
+        building.buildingState = data.status;
+    }
+    /**建筑建筑奖励返回 */
+    onRepBuildingBuiltReward(data: s2cBuildingBuiltReward) {
+        if (200 != data.code) {
+            ViewsMgr.showTip(data.msg);
+            return;
+        }
+        let building = this.findBuilding(data.id);
+        if (!building) return;
+        // building.buildingState = data.status;
+        ViewsMgr.showRewards(data.award);
+        building.buildingState = BuildingState.normal;
+    }
+    /**建筑升级返回 */
+    onRepBuildingUpgrade(data: s2cBuildingUpgrade) {
+        if (200 != data.code) {
+            return;
+        }
+        let building = this.findBuilding(data.id);
+        if (!building) return;
+        building.setUpgradeData(data.upgrade_infos.remaining_seconds);
+        building.buildingState = data.status;
+    }
+    /**建筑升级奖励返回 */
+    onRepBuildingUpgradeReward(data: s2cBuildingUpgradeReward) {
+        if (200 != data.code) {
+            ViewsMgr.showTip(data.msg);
+            return;
+        }
+        let building = this.findBuilding(data.id);
+        if (!building) return;
+        building.buildingLevel = data.level;
+        building.buildingState = data.status;
+        ViewsMgr.showRewards(data.award);
+    }
+    /**建筑信息获取返回 */
+    onRepBuildingInfoGet(data: s2cBuildingInfoGet) {
+        if (200 != data.code) {
+            return;
+        }
+        let building = this.findBuilding(data.id);
+        if (!building) return;
+        building.setBuiltData(data.construct_infos.remaining_seconds);
+        building.setUpgradeData(data.upgrade_infos.remaining_seconds);
+        building.buildingState = data.status;
     }
 }
