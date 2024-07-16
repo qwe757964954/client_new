@@ -95,7 +95,7 @@ export class CollectView extends BaseView {
     }
 
     private async initViewComponent(prefabType: PrefabTypeEntry, onComponentInit: (node: Node) => void, alignOptions?: object) {
-        let node = await this.loadAndInitPrefab(prefabType, this.node, alignOptions);
+        let node = await this.loadAndInitPrefab(prefabType, this.content_layout, alignOptions);
         onComponentInit(node);
     }
 
