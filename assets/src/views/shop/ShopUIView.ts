@@ -5,7 +5,7 @@ import { ViewsManager } from '../../manager/ViewsManager';
 import { User } from '../../models/User';
 import { BaseView } from '../../script/BaseView';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
-import { TabItemDataInfo, TaskTabIds, TaskTabInfo } from '../task/TaskInfo';
+import { TabItemDataInfo, TabTypeIds, TaskTabIds, TaskTabInfo } from '../task/TaskInfo';
 import { TaskTabView } from '../task/TaskTabView';
 import { DebrisAreaView } from './DebrisAreaView';
 import { ShopBuildView } from './ShopBuildView';
@@ -29,6 +29,8 @@ export class ShopUIView extends BaseView {
     private _shopStoreView: ShopStoreView = null;
     private _shopDecorationView: ShopDecorationView = null;
     private _debrisAreaView: DebrisAreaView = null;
+
+    private _currentTabId:TabTypeIds = TabTypeIds.BuildAll;
     async initUI() {
         this.viewAdaptSize();
         this.initAmout();
@@ -44,8 +46,12 @@ export class ShopUIView extends BaseView {
 
     protected onInitModuleEvent() {
         this.addModelListener(EventType.Sub_Tab_Item_Click,this.subTabItemClick);
-	}
+        this.addModelListener(EventType.EditUIView_Refresh, this.onRepShopBuyBuilding.bind(this));
 
+	}
+    onRepShopBuyBuilding() {
+        this._shopBuildView.updateData(this._currentTabId);
+    }
     private async initViews() {
         await Promise.all([
             this.initViewComponent(PrefabType.ShopBuildView, (node) => this._shopBuildView = node.getComponent(ShopBuildView)),
@@ -72,6 +78,7 @@ export class ShopUIView extends BaseView {
     }
 
     subTabItemClick(data:TabItemDataInfo){
+        this._currentTabId = data.id;
         this._shopBuildView.updateData(data.id);
     }
     private onTabSelect(info: TaskTabInfo) {
