@@ -196,6 +196,7 @@ export interface UnitWordModel {
     big_id: number;
     small_id: number;
     subject_id: number;
+    collect: number; //是否收藏
 }
 
 export class c2sBookAwardList {
@@ -378,13 +379,13 @@ export interface CheckWordResponse extends BaseRepPacket {
 
 export interface CheckWordItem {
     cn: string;
-    collect:number;
+    collect: number;
     phonic: string;
     syllable: string;
     symbol: string;
     symbolus: string;
     unit_name: string;
-    w_id:string;
+    w_id: string;
     word: string;
 }
 

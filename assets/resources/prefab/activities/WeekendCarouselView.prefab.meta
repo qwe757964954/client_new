@@ -2,12 +2,12 @@
   "ver": "1.1.50",
   "importer": "prefab",
   "imported": true,
-  "uuid": "96d06eb8-28a8-4c34-8cd8-6d4b54fd0113",
+  "uuid": "9bf614f4-9a82-41f5-9cd6-7cbfa3fbe1af",
   "files": [
     ".json"
   ],
   "subMetas": {},
   "userData": {
-    "syncNodeName": "SentencePatternView"
+    "syncNodeName": "WeekendCarouselView"
   }
 }

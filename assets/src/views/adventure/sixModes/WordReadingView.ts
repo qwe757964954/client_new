@@ -37,7 +37,6 @@ export class WordReadingView extends BaseModeView {
     img_corrugation: Node = null;
 
     private _wrongMode: boolean = false; //错误重答模式
-    private _rightWordData: UnitWordModel = null; //正确单词数据
     private _wrongWordList: any[] = []; //错误单词列表
 
     private _turnIsBegin: boolean = false;

@@ -7,7 +7,7 @@ import { inf_SpineAniCreate } from '../../../manager/InterfaceDefines';
 import { LoadManager } from '../../../manager/LoadManager';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { SoundMgr } from '../../../manager/SoundMgr';
-import { ViewsMgr } from '../../../manager/ViewsManager';
+import { ViewsManager, ViewsMgr } from '../../../manager/ViewsManager';
 import { AdventureCollectWordModel, AdventureResult, AdventureResultModel, GameMode, GateData, WordsDetailData } from '../../../models/AdventureModel';
 import { s2cReviewPlanSubmit } from '../../../models/NetModel';
 import { PetModel } from '../../../models/PetModel';
@@ -95,6 +95,7 @@ export class BaseModeView extends BaseView {
     protected _totalTime: number = 5 * 60 * 1000;
 
     protected _comboNum: number = 0; //连击次数
+    protected _rightWordData: UnitWordModel = null; //正确单词数据
     start() {
         super.start();
         this.node.getChildByName("img_bg").addComponent(BlockInputEvents);
@@ -146,7 +147,7 @@ export class BaseModeView extends BaseView {
                     this._errorWords = levelData.error_word;
                     for (const key in levelData.error_word) {
                         if (levelData.error_word.hasOwnProperty(key)) {
-                            const found = wordsdata.find(item => item.word === key);
+                            const found = wordsdata.find(item => item.w_id === key);
                             if (found) {
                                 wordsdata.push(found);
                             }
@@ -155,7 +156,7 @@ export class BaseModeView extends BaseView {
                 } else {
                     this._wordIndex = 0;
                     const uniqueWordList: UnitWordModel[] = Object.values(wordsdata.reduce((acc, curr) => {
-                        acc[curr.word] = curr;
+                        acc[curr.w_id] = curr;
                         return acc;
                     }, {}));
                     wordsdata = uniqueWordList;
@@ -174,7 +175,7 @@ export class BaseModeView extends BaseView {
                     this._errorWords = progressData.error_word;
                     for (const key in progressData.error_word) {
                         if (progressData.error_word.hasOwnProperty(key)) {
-                            const found = wordsdata.find(item => item.word === key);
+                            const found = wordsdata.find(item => item.w_id === key);
                             if (found) {
                                 wordsdata.push(found);
                             }
@@ -565,6 +566,7 @@ export class BaseModeView extends BaseView {
         } else if (WordSourceType.review == this._sourceType) {
             // TBServer.reqWordDetail(word.w_id);
         }
+        this.setCollect(word.collect == 1 ? true : false);
     }
 
     protected onClassificationWord(data: WordsDetailData) {
@@ -575,19 +577,19 @@ export class BaseModeView extends BaseView {
         }
         console.log("获取单词详情", data);
         this._detailData = data;
-        this.setCollect(data.collect_flag ? true : false);
     }
 
     protected onCollectWord(data: any) {
         console.log("onCollectWord", data);
-        this._detailData.collect_flag = this._detailData.collect_flag ? 0 : 1;
-        this.setCollect(this._detailData.collect_flag ? true : false);
+        this.setCollect(this._rightWordData.collect == 1 ? true : false);
     }
 
     protected onAdventureCollectWord(data: any) {
-        console.log("onAdventureCollectWord", data);
-        this._detailData.collect_flag = this._detailData.collect_flag ? 0 : 1;
-        this.setCollect(this._detailData.collect_flag ? true : false);
+        if (data.code != 200) {
+            ViewsManager.showTip(data.msg);
+            return;
+        }
+        this.setCollect(this._rightWordData.collect == 1 ? true : false);
     }
 
     protected initEvent(): void {
@@ -630,20 +632,21 @@ export class BaseModeView extends BaseView {
     }
     /**收藏单词 */
     onClickCollectEvent() {
-        console.log("onClickCollectEvent.....");
-        let wordData = this._wordsData[this._wordIndex];
+        if (!this._rightWordData) return;
+        let wordData = this._rightWordData;
+        wordData.collect = wordData.collect == 1 ? 0 : 1;
         console.log('word', wordData);
         if (WordSourceType.classification == this._sourceType) { //教材关卡
             let reqParam: ReqCollectWord = {
                 w_id: wordData.w_id,
-                action: this._detailData.collect_flag ? 0 : 1,
+                action: wordData.collect,
             }
             TBServer.reqCollectWord(reqParam);
         } else if (WordSourceType.word_game == this._sourceType) {
             //大冒险关卡
             let reqParam: AdventureCollectWordModel = {
                 w_id: wordData.w_id,
-                action: this._detailData.collect_flag ? 0 : 1,
+                action: wordData.collect,
             }
             ServiceMgr.studyService.reqAdventureCollectWord(reqParam);
         }

@@ -186,13 +186,15 @@ export class WorldMapView extends Component {
         }
         if (this._levelProgressData.pass_num != 0) {
             ViewsMgr.showConfirm("是否继续上次闯关进度?", () => {
-                ServiceMgr.studyService.getWordGameWords(this._currentLevelData.big_id, this._currentLevelData.small_id);
+                // ServiceMgr.studyService.getWordGameWords(this._currentLevelData.big_id, this._currentLevelData.small_id);
+                this.onWordGameWords(data.word_list);
             }, () => {
                 // this._getingWords = false;
                 ServiceMgr.studyService.wordGameLevelRestart(this._currentLevelData.big_id, this._currentLevelData.small_id);
             }, "延续上次", "重新开始", false);
         } else {
-            ServiceMgr.studyService.getWordGameWords(this._currentLevelData.big_id, this._currentLevelData.small_id);
+            // ServiceMgr.studyService.getWordGameWords(this._currentLevelData.big_id, this._currentLevelData.small_id);
+            this.onWordGameWords(data.word_list);
         }
     }
 
@@ -296,7 +298,7 @@ export class WorldMapView extends Component {
         // }
         this._exitIslandEveId = EventManager.on(EventType.Exit_World_Island, this.hideIsland.bind(this));
         this._enterLevelEveId = EventManager.on(EventType.Enter_Island_Level, this.enterLevel.bind(this));
-        this._getWordsEveId = EventManager.on(EventType.WordGame_Words, this.onWordGameWords.bind(this));
+        // this._getWordsEveId = EventManager.on(EventType.WordGame_Words, this.onWordGameWords.bind(this));
         this._islandStatusId = EventManager.on(InterfacePath.Island_Status, this.onGetIslandStatus.bind(this));
         this._islandProgressId = EventManager.on(InterfacePath.Island_Progress, this.onGetIslandProgress.bind(this));
         this._getLevelProgressEveId = EventManager.on(InterfacePath.Adventure_LevelProgress, this.onGetLevelProgress.bind(this));
@@ -315,7 +317,7 @@ export class WorldMapView extends Component {
         // }
         EventManager.off(EventType.Exit_World_Island, this._exitIslandEveId);
         EventManager.off(EventType.Enter_Island_Level, this._enterLevelEveId);
-        EventManager.off(EventType.WordGame_Words, this._getWordsEveId);
+        // EventManager.off(EventType.WordGame_Words, this._getWordsEveId);
         EventManager.off(InterfacePath.Island_Status, this._islandStatusId);
         EventManager.off(InterfacePath.Island_Progress, this._islandProgressId);
         EventManager.off(InterfacePath.Adventure_LevelProgress, this._getLevelProgressEveId);

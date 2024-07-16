@@ -340,10 +340,10 @@
     "__prefab": {
       "__id__": 14
     },
-    "_alignFlags": 41,
+    "_alignFlags": 1,
     "_target": null,
-    "_left": 0,
-    "_right": 0,
+    "_left": 839,
+    "_right": 839,
     "_top": 0,
     "_bottom": 0,
     "_horizontalCenter": 0,
@@ -467,7 +467,7 @@
     "__prefab": {
       "__id__": 20
     },
-    "_alignFlags": 45,
+    "_alignFlags": 5,
     "_target": null,
     "_left": 0,
     "_right": 0,
@@ -482,7 +482,7 @@
     "_isAbsHorizontalCenter": true,
     "_isAbsVerticalCenter": true,
     "_originalWidth": 100,
-    "_originalHeight": 100,
+    "_originalHeight": 1000,
     "_alignMode": 2,
     "_lockFlags": 45,
     "_id": ""

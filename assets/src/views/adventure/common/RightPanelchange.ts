@@ -3,7 +3,7 @@ import { EventType } from '../../../config/EventType';
 import { GameRes } from '../../../GameRes';
 import { DataMgr, ItemData } from '../../../manager/DataMgr';
 import { ViewsMgr } from '../../../manager/ViewsManager';
-import { BossLevelData, GateData, MapLevelData } from '../../../models/AdventureModel';
+import { BossLevelData, GateData, MapLevelData, WordGameSubjectReply } from '../../../models/AdventureModel';
 import CCUtil from '../../../util/CCUtil';
 import EventManager, { EventMgr } from '../../../util/EventManager';
 import FileUtil from '../../../util/FileUtil';
@@ -12,6 +12,10 @@ import { ObjectUtil } from '../../../util/ObjectUtil';
 import { BaseItem } from '../../common/BaseItem';
 import { MonsterModel } from './MonsterModel';
 import { ReportItem } from '../sixModes/ReportItem';
+import { ServiceMgr } from '../../../net/ServiceManager';
+import { InterfacePath } from '../../../net/InterfacePath';
+import { PrefabType } from '../../../config/PrefabType';
+import { SubjectView } from '../../theme/SubjectView';
 const { ccclass, property } = _decorator;
 
 export interface LevelConfig {
@@ -41,6 +45,8 @@ export class rightPanelchange extends Component {
     public monsterPrefab: Prefab = null;
     @property({ type: List, tooltip: "奖励列表" })
     public rewardList: List = null;
+    @property({ type: Node, tooltip: "主题按钮" })
+    public subjectBtn: Node = null;
 
     private _data: MapLevelData | GateData = null;
     private _eveId: string;
@@ -50,6 +56,8 @@ export class rightPanelchange extends Component {
     private _isTweening: boolean = false;
     private _isBossPanel: boolean = false; //是否是boss关
     private _bossLevelData: BossLevelData = null;
+    private _isWordGame: boolean = false; //是否是大冒险关卡
+    private _isGetSubject: boolean = false; //是否正在获取主题内容
 
     /** 更新 */
     update(deltaTime: number) {
@@ -89,13 +97,16 @@ export class rightPanelchange extends Component {
             this.startTest();
         });
         this._eveId = EventManager.on(EventType.Expand_the_level_page, this.openView.bind(this));
+        EventMgr.addListener(InterfacePath.WordGame_Subject, this.onWordGameSubject, this);
 
     }
     /** 打开界面 */
     openView(param: MapLevelData | GateData = null) {
         console.log('接收到的参数=', param);
         this._data = param;
+        this._isWordGame = false;
         if (!this._data.game_modes || this._data.game_modes != "word") {
+            this._isWordGame = true;
             let awardInfo = this._data as GateData;
             this._rewardData = [];
             if (awardInfo.star_one_reward) { //一星奖励
@@ -129,6 +140,7 @@ export class rightPanelchange extends Component {
                 this._rewardData = [...this._rewardData, ...awardInfo.random_reward];
             }
         }
+        this.subjectBtn.active = this._isWordGame;
         this._isBossPanel = false;
         this.updateView();
         this.node.active = true;
@@ -221,6 +233,21 @@ export class rightPanelchange extends Component {
         // this.btn_test.getComponent(Sprite).grayscale = true;
         // this.btn_test.getComponent(Button).enabled = false;
         // LoadManager.loadSprite("adventure/monster/" + this._data.bigId + "-" + this._data.smallId + "/spriteFrame", this.monster.getComponent(Sprite));
+    }
+
+    onSubjectBtnClick() {
+        if (this._isGetSubject) return;
+        this._isGetSubject = true;
+        let gateData = this._data as GateData;
+        ServiceMgr.studyService.getWordGameSubject(gateData.subject_id);
+    }
+
+    onWordGameSubject(data: WordGameSubjectReply) {
+        this._isGetSubject = false;
+        console.log("WordGameSubjectReply", data);
+        ViewsMgr.showPopup(PrefabType.SubjectView).then((node) => {
+            node.getComponent(SubjectView).setData(data);
+        })
     }
 
     onRewardItemRender(item: Node, idx: number) {

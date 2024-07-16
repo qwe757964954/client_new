@@ -2,6 +2,7 @@ import { assetManager, ImageAsset, Sprite, SpriteFrame, Texture2D } from "cc";
 
 export default class RemoteImageManager {
     private static _instance: RemoteImageManager = null;
+    private _cacheAsset: Map<string, ImageAsset> = new Map();
 
     public static get i(): RemoteImageManager {
         if (this._instance == null) {
@@ -18,6 +19,7 @@ export default class RemoteImageManager {
                     resolve(false);
                     return;
                 }
+                this._cacheAsset.set(url, imageAsset);
                 if (sprite) {
                     const spriteFrame = new SpriteFrame();
                     const texture = new Texture2D();
@@ -28,5 +30,13 @@ export default class RemoteImageManager {
                 resolve(true);
             });
         });
+    }
+
+    /**清理音频资源 */
+    clearImageAsset() {
+        this._cacheAsset.forEach(asset => {
+            assetManager.releaseAsset(asset);
+        });
+        this._cacheAsset.clear();
     }
 }

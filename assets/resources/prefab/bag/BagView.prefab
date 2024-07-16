@@ -619,10 +619,10 @@
     "__prefab": {
       "__id__": 26
     },
-    "_alignFlags": 41,
+    "_alignFlags": 1,
     "_target": null,
-    "_left": 0,
-    "_right": 0,
+    "_left": 839,
+    "_right": 839,
     "_top": 0,
     "_bottom": 0,
     "_horizontalCenter": 0,
@@ -4706,7 +4706,7 @@
     "__prefab": {
       "__id__": 217
     },
-    "_alignFlags": 45,
+    "_alignFlags": 5,
     "_target": null,
     "_left": 73,
     "_right": 73,

@@ -47,7 +47,6 @@ export class WordSpellView extends BaseModeView {
     private _sentenceData: SentenceData = null; //句子数据
     private _wrongWordList: any[] = []; //错误单词列表
     private _wrongMode: boolean = false; //错误重答模式
-    private _rightWordData: UnitWordModel = null; //正确单词数据
     private _selectLock: boolean = false; //选择锁
     private _wordGroup: WordGroupModel[];
 
