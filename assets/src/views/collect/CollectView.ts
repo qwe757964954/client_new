@@ -43,10 +43,22 @@ export class CollectView extends BaseView {
 
     private async initViews() {
         await Promise.all([
-            this.initViewComponent(PrefabType.AchievementMedalsView, (node) => this._achievementMedalsView = node.getComponent(AchievementMedalsView)),
-            this.initViewComponent(PrefabType.MonsterCardView, (node) => this._monsterCardView = node.getComponent(MonsterCardView)),
-            this.initViewComponent(PrefabType.BuildingAtlasView, (node) => this._buildAtlasView = node.getComponent(BuildingAtlasView)),
-            this.initViewComponent(PrefabType.ClothingIllustratedView, (node) => this._clothingIllustratedView = node.getComponent(ClothingIllustratedView)),
+            this.initViewComponent(PrefabType.AchievementMedalsView, (node) => {
+                this._achievementMedalsView = node.getComponent(AchievementMedalsView);
+                node.active = false;
+            }),
+            this.initViewComponent(PrefabType.MonsterCardView, (node) => {
+                this._monsterCardView = node.getComponent(MonsterCardView);
+                node.active = false;
+            }),
+            this.initViewComponent(PrefabType.BuildingAtlasView, (node) => {
+                this._buildAtlasView = node.getComponent(BuildingAtlasView);
+                node.active = false;
+            }),
+            this.initViewComponent(PrefabType.ClothingIllustratedView, (node) => {
+                this._clothingIllustratedView = node.getComponent(ClothingIllustratedView);
+                node.active = false;
+            }),
         ]);
     }
     initTabs(){

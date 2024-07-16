@@ -36,8 +36,14 @@ export class RankView extends BaseView {
     async initViews(){
         
         await Promise.all([
-            this.initViewComponent(PrefabType.ActivityNewPeople, (node) => this._activityNewPeople = node.getComponent(ActivityNewPeople)),
-            this.initViewComponent(PrefabType.WeekendCarouselView, (node) => this._weekendCarouselView = node.getComponent(WeekendCarouselView)),
+            this.initViewComponent(PrefabType.ActivityNewPeople, (node) => {
+                this._activityNewPeople = node.getComponent(ActivityNewPeople);
+                this._activityNewPeople.node.active = false;
+            }),
+            this.initViewComponent(PrefabType.WeekendCarouselView, (node) => {
+                this._weekendCarouselView = node.getComponent(WeekendCarouselView);
+                this._weekendCarouselView.node.active = false;
+            }),
         ]);
     }
     initTabs(){
