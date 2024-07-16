@@ -1047,6 +1047,7 @@ export class BuildingModel extends BaseModel {
     static getBuildingDataByMsg(msg: s2cBuildingListInfo) {
         let data = new BuildingData();
         data.id = msg.id;
+        data.idx = ToolUtil.getIdx();
         data.level = msg.level;
         data.state = msg.status;
         let now = ToolUtil.now();

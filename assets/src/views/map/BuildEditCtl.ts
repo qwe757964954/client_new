@@ -286,6 +286,9 @@ export class BuildEditCtl extends MapBaseCtl {
                     }
                 }
                 processedAry.push(data.idx);
+                if (undefined == data.idx) {
+                    console.error("BuildEditCtl confirmEvent data.idx is undefined");
+                }
             });
         }
         if (0 == createAry.length && 0 == updateAry.length && 0 == deleteAry.length) {
@@ -342,6 +345,7 @@ export class BuildEditCtl extends MapBaseCtl {
         this._selectBuilding = null;
         this.clearData();
         EventMgr.emit(EventType.Building_Step_Update);
+        // console.log("nextStep", this._step, this._operationCacheAry);
     }
     /**当前步数 */
     getStep(): number {
