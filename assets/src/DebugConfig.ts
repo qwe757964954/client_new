@@ -4,7 +4,7 @@ const DebugConfig = {
     WRITE_LOG: false,//是否打印写入log
     UPLOAD_ERROR: true,//是否上传错误
     SHOW_FPS: false,//是否显示FPS
-    TEST_SERVER: false,//是否测试服
+    TEST_SERVER: true,//是否测试服
 };
 
 export default DebugConfig;

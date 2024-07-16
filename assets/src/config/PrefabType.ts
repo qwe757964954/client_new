@@ -224,5 +224,7 @@ export const PrefabType = {
     /*********************************************活动 start***********************************************************/
     ActivityView: { path: "activities/ActivityView", zindex: Hierarchy.POPUPLAYER, tips: "活动" },
     ActivityNewPeople: { path: "activities/ActivityNewPeople", zindex: Hierarchy.POPUPLAYER, tips: "新人豪礼" },
+    WeekendCarouselView: { path: "activities/WeekendCarouselView", zindex: Hierarchy.POPUPLAYER, tips: "周末转盘" },
+    Carouseltem: { path: "activities/Carouseltem", zindex: Hierarchy.POPUPLAYER, tips: "转盘元素" },
     /*********************************************活动 end***********************************************************/
 }

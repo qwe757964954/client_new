@@ -8,6 +8,7 @@ import { TaskTabIds, TaskTabInfo } from '../task/TaskInfo';
 import { TaskTabView } from '../task/TaskTabView';
 import { ActivityNewPeople } from './ActivityNewPeople';
 import { ActivityTabInfos } from './ActvityInfo';
+import { WeekendCarouselView } from './WeekendCarouselView';
 const { ccclass, property } = _decorator;
 
 @ccclass('RankView')
@@ -19,6 +20,7 @@ export class RankView extends BaseView {
     public content_layout: Node = null;
     private _tabView: TaskTabView = null;
     private _activityNewPeople: ActivityNewPeople = null;
+    private _weekendCarouselView: WeekendCarouselView = null;
     protected async initUI() {
         this.initNavTitle();
         this.initAmout();
@@ -32,8 +34,10 @@ export class RankView extends BaseView {
         }
     }
     async initViews(){
+        
         await Promise.all([
             this.initViewComponent(PrefabType.ActivityNewPeople, (node) => this._activityNewPeople = node.getComponent(ActivityNewPeople)),
+            this.initViewComponent(PrefabType.WeekendCarouselView, (node) => this._weekendCarouselView = node.getComponent(WeekendCarouselView)),
         ]);
     }
     initTabs(){
@@ -56,6 +60,7 @@ export class RankView extends BaseView {
     }
     hideAllContent(){
         this._activityNewPeople.node.active = false;
+        this._weekendCarouselView.node.active = false;
     }
     selectMenuType(info: TaskTabInfo){
         switch (info.id) {
@@ -63,7 +68,7 @@ export class RankView extends BaseView {
                 this._activityNewPeople.node.active = true;
                 break;
             case TaskTabIds.WeekendCarousel:
-                // this._monsterCardView.node.active = true;
+                this._weekendCarouselView.node.active = true;
                 // this._weekTask.showTask();
                 break;
             case TaskTabIds.InvitationEvent:
