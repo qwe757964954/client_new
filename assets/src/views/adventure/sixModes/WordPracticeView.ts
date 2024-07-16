@@ -58,6 +58,7 @@ export class WordPracticeView extends BaseModeView {
         this.clearItems();
         this._currentLetterIdx = 0;
         this._currentWord = this._wordsData[this._wordIndex];
+        this._rightWordData = this._currentWord;
         let word = this._currentWord.word;
         for (let i = 0; i < word.length; i++) {
             this._selectLetterList.push({ letter: word[i], color: 0 });
@@ -144,7 +145,7 @@ export class WordPracticeView extends BaseModeView {
     protected modeOver(): void {
         super.modeOver();
         console.log('练习模式完成');
-        this.showTransitionView(async () =>{
+        this.showTransitionView(async () => {
             let wordData = JSON.parse(JSON.stringify(this._wordsData));
             let levelData = JSON.parse(JSON.stringify(this._levelData));
             console.log("过渡界面回调_________________________");

@@ -90,7 +90,8 @@ export class StudyModeView extends BaseModeView {
     showCurrentWord() {
         super.updateConstTime();
         this._isCombine = false;
-        const wordData = this._wordsData[this._wordIndex];
+        let wordData = this._wordsData[this._wordIndex];
+        this._rightWordData = wordData;
         this.wordLabel.string = this.wholeWordLabel.string = wordData.word;
         this.symbolLabel.string = wordData.symbol;
         this.cnLabel.string = wordData.cn;

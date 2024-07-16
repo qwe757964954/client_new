@@ -270,6 +270,7 @@ export class LevelProgressData extends BaseRepPacket {
     time_remaining: number;
     cost_time: number;
     err_num: number;
+    word_list: UnitWordModel[];
 }
 
 export class c2sBossLevelTopic {

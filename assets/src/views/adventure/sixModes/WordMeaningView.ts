@@ -57,7 +57,6 @@ export class WordMeaningView extends BaseModeView {
     private _wrongWordList: any[] = []; //错误单词列表
 
     private _wrongMode: boolean = false; //错误重答模式
-    private _rightWordData: UnitWordModel = null; //正确单词数据
     private _sentenceData: SentenceData = null; //例句数据
 
     private _selectLock: boolean = false; //选择锁
@@ -256,7 +255,7 @@ export class WordMeaningView extends BaseModeView {
             });
             return;
         }
-        this.showTransitionView(async () =>{
+        this.showTransitionView(async () => {
             let wordData = JSON.parse(JSON.stringify(this._wordsData));
             let levelData = JSON.parse(JSON.stringify(this._levelData));
             console.log("过渡界面回调_________________________");
