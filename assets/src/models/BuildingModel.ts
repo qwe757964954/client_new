@@ -796,6 +796,7 @@ export class BuildingModel extends BaseModel {
         }
         if (this._countdownFrame) {
             this._countdownFrame.node.active = true;
+            this.setCountDown();
             return;
         }
         if (!this._node || this._countdownFrameLoad) return;
@@ -817,6 +818,15 @@ export class BuildingModel extends BaseModel {
         }
         this._countdownFrame.node.active = this._countdownFrameShow;
     }
+    /**获取倒计时时间 */
+    public getCountDownTime() {
+        if (BuildingState.building != this.buildingState && BuildingState.upgrade != this.buildingState) {
+            return 0;
+        }
+        let time = (BuildingState.building == this.buildingState) ? this.buildingData.builtData.time : this.buildingData.upgradeData.time;
+        let sec = time - ToolUtil.now();
+        return sec < 0 ? 0 : sec;
+    }
     /**设置倒计时 */
     public setCountDown() {
         if (BuildingState.building != this.buildingState && BuildingState.upgrade != this.buildingState) {
@@ -830,6 +840,8 @@ export class BuildingModel extends BaseModel {
         }
         if (this._countdownFrame) {
             this._countdownFrame.init(sec, () => {
+                ServiceMgr.buildingService.reqSpeedWordsGet(this.buildingID);
+            }, () => {
                 ServiceMgr.buildingService.reqBuildingInfoGet(this.buildingID);
             });
         }
@@ -969,6 +981,15 @@ export class BuildingModel extends BaseModel {
             this.showProduces();
         }
     }
+    /**检测生产物品是否在生产中 */
+    public checkIsProducing(product_num: number) {
+        if (product_num >= this.buildingData.queue.length) return false;
+        let data = this.buildingData.queue[product_num];
+        if (data.time <= ToolUtil.now()) {
+            return false;
+        }
+        return true;
+    }
     /**领取生产物品 */
     public getProduce() {
         if (this.buildingData.queue.length == 0) return false;
@@ -1024,6 +1045,13 @@ export class BuildingModel extends BaseModel {
             return;
         }
         this._produceItemView.node.active = this._produceItemViewShow;
+    }
+    /**获取生产物品时间 */
+    public getProduceLeftTime(product_num: number) {
+        if (product_num >= this.buildingData.queue.length) return 0;
+        let data = this.buildingData.queue[product_num];
+        let sec = data.time - ToolUtil.now();
+        return sec > 0 ? sec : 0;
     }
     /**获取回收数据 */
     public getRecycleData() {

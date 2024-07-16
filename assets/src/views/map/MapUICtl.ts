@@ -1,8 +1,9 @@
-import { Color, Graphics, Rect, Vec3, instantiate, screen } from "cc";
+import { Color, Graphics, Node, Rect, Vec3, instantiate, screen } from "cc";
 import GlobalConfig from "../../GlobalConfig";
 import { EventType } from "../../config/EventType";
 import { MapConfig } from "../../config/MapConfig";
 import { PetMoodType } from "../../config/PetConfig";
+import { PrefabType } from "../../config/PrefabType";
 import { TextConfig } from "../../config/TextConfig";
 import { DataMgr, EditInfo, EditType } from "../../manager/DataMgr";
 import { ViewsMgr } from "../../manager/ViewsManager";
@@ -13,7 +14,7 @@ import { CloudModel } from "../../models/CloudModel";
 import { GridModel } from "../../models/GridModel";
 import { LandModel } from "../../models/LandModel";
 import { MapSpModel } from "../../models/MapSpModel";
-import { s2cBuildingBuilt, s2cBuildingBuiltReward, s2cBuildingEditBatch, s2cBuildingInfoGet, s2cBuildingList, s2cBuildingListInfo, s2cBuildingProduceAdd, s2cBuildingProduceDelete, s2cBuildingProduceGet, s2cBuildingUpgrade, s2cBuildingUpgradeReward, s2cCloudUnlock, s2cCloudUnlockGet, s2cPetGetReward, s2cPetInfoRep, s2cPetUpgrade } from "../../models/NetModel";
+import { s2cBuildingBuilt, s2cBuildingBuiltReward, s2cBuildingBuiltSpeed, s2cBuildingEditBatch, s2cBuildingInfoGet, s2cBuildingList, s2cBuildingListInfo, s2cBuildingProduceAdd, s2cBuildingProduceDelete, s2cBuildingProduceGet, s2cBuildingProduceSpeed, s2cBuildingUpgrade, s2cBuildingUpgradeReward, s2cBuildingUpgradeSpeed, s2cCloudUnlock, s2cCloudUnlockGet, s2cCloudUnlockSpeed, s2cPetGetReward, s2cPetInfoRep, s2cPetUpgrade, s2cSpeedWordsGet } from "../../models/NetModel";
 import { RoleType } from "../../models/RoleBaseModel";
 import { RoleDataModel } from "../../models/RoleDataModel";
 import { User } from "../../models/User";
@@ -24,6 +25,7 @@ import { TimerMgr } from "../../util/TimerMgr";
 import { ToolUtil } from "../../util/ToolUtil";
 import { MainBaseCtl } from "../main/MainBaseCtl";
 import { MainScene } from "../main/MainScene";
+import { SpeedWordsView } from "./SpeedWordsView";
 
 // 地图UI控制器
 export class MapUICtl extends MainBaseCtl {
@@ -137,6 +139,11 @@ export class MapUICtl extends MainBaseCtl {
         this.addEvent(InterfacePath.c2sBuildingUpgrade, this.onRepBuildingUpgrade.bind(this));
         this.addEvent(InterfacePath.c2sBuildingUpgradeReward, this.onRepBuildingUpgradeReward.bind(this));
         this.addEvent(InterfacePath.c2sBuildingInfoGet, this.onRepBuildingInfoGet.bind(this));
+        this.addEvent(InterfacePath.c2sSpeedWordsGet, this.onRepSpeedWordGet.bind(this));
+        this.addEvent(InterfacePath.c2sBuildingBuiltSpeed, this.onRepBuildingBuiltSpeed.bind(this));
+        this.addEvent(InterfacePath.c2sBuildingUpgradeSpeed, this.onRepBuildingUpgradeSpeed.bind(this));
+        this.addEvent(InterfacePath.c2sBuildingProduceSpeed, this.onRepBuildingProduceSpeed.bind(this));
+        this.addEvent(InterfacePath.c2sCloudUnlockSpeed, this.onRepCloudUnlockSpeed.bind(this));
     }
     // 移除事件
     removeEvent() {
@@ -1341,5 +1348,92 @@ export class MapUICtl extends MainBaseCtl {
         building.setBuiltData(data.construct_infos.remaining_seconds);
         building.setUpgradeData(data.upgrade_infos.remaining_seconds);
         building.buildingState = data.status;
+    }
+    /**获取加速单词回调 */
+    onRepSpeedWordGet(data: s2cSpeedWordsGet) {
+        if (200 != data.code) {
+            return;
+        }
+        if (data.id) {
+            let building = this.findBuilding(data.id);
+            if (!building) return;
+            let product_num = data.product_num;
+            let sec = 0;
+            if (null != data.product_num) {
+                sec = building.getProduceLeftTime(product_num);
+            } else {
+                sec = building.getCountDownTime();
+            }
+            if (sec <= 0) return;
+            ViewsMgr.showView(PrefabType.SpeedWordsView, (node: Node) => {
+                let view = node.getComponent(SpeedWordsView);
+                view.initData(data.id, data.word_list, building.buildingState, data.product_num);
+                view.setRemainTime(sec);
+            });
+        } else if (data.unlock_cloud) {
+            let ary = data.unlock_cloud.split("_");
+            let x = Number(ary[0]);
+            let y = Number(ary[1]);
+            let gridInfo = this.getGridInfo(x, y);
+            if (!gridInfo) return;
+            let cloud = gridInfo.cloud;
+            if (!cloud) return;
+            if (cloud.isUnlock || null == cloud.unlockTime) return;
+            ViewsMgr.showView(PrefabType.SpeedWordsView, (node: Node) => {
+                let view = node.getComponent(SpeedWordsView);
+                view.initDataEx(data.unlock_cloud, data.word_list);
+                view.setRemainTime(cloud.getLeftTime());
+            });
+        }
+    }
+    /**乌云解锁加速回调 */
+    onRepCloudUnlockSpeed(data: s2cCloudUnlockSpeed) {
+        if (200 != data.code) {
+            return;
+        }
+        let unlock_cloud: string = null;
+        let time: number = null;
+        for (const key in data.cloud_dict) {
+            unlock_cloud = key;
+            time = data.cloud_dict[key];
+        }
+        if (null == unlock_cloud) return;
+        let ary = unlock_cloud.split("_");
+        let x = Number(ary[0]);
+        let y = Number(ary[1]);
+        let gridInfo = this.getGridInfo(x, y);
+        if (!gridInfo) return;
+        let cloud = gridInfo.cloud;
+        if (!cloud) return;
+        cloud.unlockTime = time;
+    }
+    /**建筑建造加速回调 */
+    onRepBuildingBuiltSpeed(data: s2cBuildingBuiltSpeed) {
+        if (200 != data.code) {
+            return;
+        }
+        let building = this.findBuilding(data.id);
+        if (!building) return;
+        building.setBuiltData(data.construct_infos.remaining_seconds);
+        building.buildingState = data.status;
+    }
+    /**建筑升级加速回调 */
+    onRepBuildingUpgradeSpeed(data: s2cBuildingUpgradeSpeed) {
+        if (200 != data.code) {
+            return;
+        }
+        let building = this.findBuilding(data.id);
+        if (!building) return;
+        building.setUpgradeData(data.upgrade_infos.remaining_seconds);
+        building.buildingState = data.status;
+    }
+    /**建筑生产加速回调 */
+    onRepBuildingProduceSpeed(data: s2cBuildingProduceSpeed) {
+        if (200 != data.code) {
+            return;
+        }
+        let building = this.findBuilding(data.id);
+        if (!building) return;
+        building.setProducts(data.product_infos);
     }
 }

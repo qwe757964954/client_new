@@ -58,7 +58,7 @@ class RemoteSoundManager {
     }
     /**播放单词音频 */
     playWord(word: String): Promise<any> {
-        let url = NetConfig.assertUrl + "/sounds/glossary/words/en/" + this.getSoundType() + ".wav";
+        let url = NetConfig.assertUrl + "/sounds/glossary/words/" + this.getSoundType() + "/" + word + ".wav";
         return RemoteSoundMgr.playSound(url);
     }
 }

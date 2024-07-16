@@ -1,9 +1,8 @@
-import { Game, ResolutionPolicy, Size, View, game, macro, profiler, screen, sys, view } from "cc";
+import { Game, Size, View, game, macro, profiler, screen, sys, view } from "cc";
 import { APP_VERSION } from "./AppConfig";
 import DebugConfig from "./DebugConfig";
 import { TextConfig } from "./config/TextConfig";
 import { DataMgr } from "./manager/DataMgr";
-import { SpineAniManager } from "./manager/SpineAniManager";
 import { ErrorUtil } from "./util/ErrorUtil";
 import { ToolUtil } from "./util/ToolUtil";
 
@@ -55,7 +54,7 @@ export default class GlobalConfig {
         view.setOrientation(macro.ORIENTATION_LANDSCAPE);//横屏
         GlobalConfig.setSize();
         let tmplog = console.log;
-        SpineAniManager.getInstance().preLoadSkinAniDir("resources", "Spine");
+        // SpineAniManager.getInstance().preLoadSkinAniDir("resources", "Spine");
         if (DebugConfig.NO_PRINT) {
             console.log = function () { };
         }
@@ -102,23 +101,23 @@ export default class GlobalConfig {
     }
     // 屏幕适配规则
     public static initResolutionRules() {
-        var _desWidth = view.getDesignResolutionSize().width;
-        var _desHeight = view.getDesignResolutionSize().height;
+        // var _desWidth = view.getDesignResolutionSize().width;
+        // var _desHeight = view.getDesignResolutionSize().height;
 
-        var _realWidth = view.getVisibleSize().width;
-        var _realHeight = view.getVisibleSize().height;
+        // var _realWidth = view.getVisibleSize().width;
+        // var _realHeight = view.getVisibleSize().height;
 
-        var _ratioDes = _desWidth / _desHeight;
-        var _ratioReal = _realWidth / _realHeight;
+        // var _ratioDes = _desWidth / _desHeight;
+        // var _ratioReal = _realWidth / _realHeight;
 
-        if (_ratioReal >= _ratioDes) {
-            view.setResolutionPolicy(ResolutionPolicy.FIXED_HEIGHT);
-        } else {
-            view.setResolutionPolicy(ResolutionPolicy.FIXED_WIDTH);
-        }
+        // if (_ratioReal >= _ratioDes) {
+        //     view.setResolutionPolicy(ResolutionPolicy.FIXED_HEIGHT);
+        // } else {
+        //     view.setResolutionPolicy(ResolutionPolicy.FIXED_WIDTH);
+        // }
     }
     public static initRessolutionHeight() {
-        view.setResolutionPolicy(ResolutionPolicy.FIXED_HEIGHT);
+        // view.setResolutionPolicy(ResolutionPolicy.FIXED_HEIGHT);
     }
 }
 // 游戏初始化

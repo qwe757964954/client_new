@@ -1,6 +1,4 @@
 import { _decorator, Component, Label, Node } from 'cc';
-import { TextConfig } from '../../config/TextConfig';
-import { ViewsMgr } from '../../manager/ViewsManager';
 import CCUtil from '../../util/CCUtil';
 import { TimerMgr } from '../../util/TimerMgr';
 import { ToolUtil } from '../../util/ToolUtil';
@@ -16,11 +14,13 @@ export class CountdownFrame extends Component {
     private _timer: number = 0;//定时器
     private _time: number = 0;//剩余时间
     private _totalTime: number = 0;//总时间
+    private _reqCall: Function = null;//请求回调
 
     start() {
         this.initEvent();
     }
     protected onDestroy(): void {
+        this.clearTimer();
         this.removeEvent();
     }
     /**初始化事件 */
@@ -32,9 +32,10 @@ export class CountdownFrame extends Component {
         CCUtil.offTouch(this.btnSpeed, this.onBtnSpeedClick, this);
     }
     /**初始化 */
-    init(time: number, callBack?: Function) {
+    init(time: number, reqCall?: Function, callBack?: Function) {
         this._time = Math.floor(time);
         this._totalTime = Math.floor(time);
+        this._reqCall = reqCall;
 
         this.showTime();
         this.clearTimer();
@@ -50,8 +51,7 @@ export class CountdownFrame extends Component {
     }
     /**加速按钮点击 */
     onBtnSpeedClick() {
-        // TODO 弹框加速
-        ViewsMgr.showTip(TextConfig.Function_Tip);
+        if (this._reqCall) this._reqCall();
     }
     /**清理定时器 */
     clearTimer() {

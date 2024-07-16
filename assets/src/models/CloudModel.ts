@@ -27,6 +27,13 @@ export class CloudModel extends BaseModel {
     private _isLoadOver: boolean = false;//图片是否加载完成
     private _timer: number = null;//定时器
 
+    public get unlockTime(): number {
+        return this._unlockTime;
+    }
+    public get isUnlock(): boolean {
+        return this._isUnlock;
+    }
+
     public dispose(): void {
         this.clearTimer();
         if (this._node && this._node.isValid) {
@@ -109,6 +116,11 @@ export class CloudModel extends BaseModel {
     /**每秒刷新 */
     public updateBySec() {
         this.refreshTime();
+    }
+    /**获得剩余时间 */
+    public getLeftTime(): number {
+        let sec = this._unlockTime - ToolUtil.now();
+        return sec > 0 ? sec : 0;
     }
     /**刷新时间显示 */
     public refreshTime() {

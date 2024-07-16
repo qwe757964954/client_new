@@ -1,6 +1,6 @@
 import { EventType } from "../config/EventType";
 import { BuildingData, RecycleData } from "../models/BuildingModel";
-import { c2sBuildingBuilt, c2sBuildingBuiltReward, c2sBuildingCreate, c2sBuildingEdit, c2sBuildingEditBatch, c2sBuildingInfoGet, c2sBuildingList, c2sBuildingProduceAdd, c2sBuildingProduceDelete, c2sBuildingProduceGet, c2sBuildingRecycle, c2sBuildingSell, c2sBuildingUpgrade, c2sBuildingUpgradeReward, c2sCloudUnlock, c2sCloudUnlockGet, c2sLandUpdate, c2sPetGetReward, c2sPetInfo, c2sPetInteraction, c2sPetUpgrade } from "../models/NetModel";
+import { c2sBuildingBuilt, c2sBuildingBuiltReward, c2sBuildingBuiltSpeed, c2sBuildingCreate, c2sBuildingEdit, c2sBuildingEditBatch, c2sBuildingInfoGet, c2sBuildingList, c2sBuildingProduceAdd, c2sBuildingProduceDelete, c2sBuildingProduceGet, c2sBuildingProduceSpeed, c2sBuildingRecycle, c2sBuildingSell, c2sBuildingUpgrade, c2sBuildingUpgradeReward, c2sBuildingUpgradeSpeed, c2sCloudUnlock, c2sCloudUnlockGet, c2sCloudUnlockSpeed, c2sLandUpdate, c2sPetGetReward, c2sPetInfo, c2sPetInteraction, c2sPetUpgrade, c2sSpeedWordsGet } from "../models/NetModel";
 import { NetMgr } from "../net/NetManager";
 import { BaseControll } from "../script/BaseControll";
 import { EventMgr } from "../util/EventManager";
@@ -191,6 +191,57 @@ export class BuildingService extends BaseControll {
         console.log("repBuildingInfo", buildingID);
         let para = new c2sBuildingInfoGet();
         para.id = buildingID;
+        NetMgr.sendMsg(para);
+    }
+    /**获取加速单词 */
+    reqSpeedWordsGet(buildingID: number, product_num: number = null) {
+        console.log("reqSpeedWordsGet", buildingID);
+        let para = new c2sSpeedWordsGet();
+        para.id = buildingID;
+        para.product_num = product_num;
+        NetMgr.sendMsg(para);
+    }
+    reqSpeedWordsGetEx(unlock_cloud: string) {
+        console.log("reqSpeedWordsGetEx", unlock_cloud);
+        let para = new c2sSpeedWordsGet();
+        para.unlock_cloud = unlock_cloud;
+        NetMgr.sendMsg(para);
+    }
+    /**乌云加速 */
+    reqCloudUnlockSpeed(unlock_cloud: string, word: string, answer: string) {
+        console.log("reqCloudUnlockSpeed", unlock_cloud);
+        let para = new c2sCloudUnlockSpeed();
+        para.unlock_cloud = unlock_cloud;
+        para.word = word;
+        para.answer = answer;
+        NetMgr.sendMsg(para);
+    }
+    /**建筑建造加速 */
+    reqBuildingBuiltSpeed(buildingID: number, word: string, answer: string) {
+        console.log("reqBuildingBuiltSpeed", buildingID);
+        let para = new c2sBuildingBuiltSpeed();
+        para.id = buildingID;
+        para.word = word;
+        para.answer = answer;
+        NetMgr.sendMsg(para);
+    }
+    /**建筑升级加速 */
+    reqBuildingUpgradeSpeed(buildingID: number, word: string, answer: string) {
+        console.log("reqBuildingUpgradeSpeed", buildingID);
+        let para = new c2sBuildingUpgradeSpeed();
+        para.id = buildingID;
+        para.word = word;
+        para.answer = answer;
+        NetMgr.sendMsg(para);
+    }
+    /**建筑生产加速 */
+    reqBuildingProduceSpeed(buildingID: number, word: string, answer: string, product_num: number) {
+        console.log("reqBuildingProduceSpeed", buildingID);
+        let para = new c2sBuildingProduceSpeed();
+        para.id = buildingID;
+        para.word = word;
+        para.answer = answer;
+        para.product_num = product_num;
         NetMgr.sendMsg(para);
     }
 }
