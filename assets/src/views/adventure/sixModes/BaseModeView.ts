@@ -147,7 +147,7 @@ export class BaseModeView extends BaseView {
                     this._errorWords = levelData.error_word;
                     for (const key in levelData.error_word) {
                         if (levelData.error_word.hasOwnProperty(key)) {
-                            const found = wordsdata.find(item => item.word === key);
+                            const found = wordsdata.find(item => item.w_id === key);
                             if (found) {
                                 wordsdata.push(found);
                             }
@@ -156,7 +156,7 @@ export class BaseModeView extends BaseView {
                 } else {
                     this._wordIndex = 0;
                     const uniqueWordList: UnitWordModel[] = Object.values(wordsdata.reduce((acc, curr) => {
-                        acc[curr.word] = curr;
+                        acc[curr.w_id] = curr;
                         return acc;
                     }, {}));
                     wordsdata = uniqueWordList;
