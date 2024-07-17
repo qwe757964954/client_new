@@ -1,11 +1,11 @@
-import { _decorator, EventTouch, Label, Layers, Node, Sprite, Vec3, Widget } from 'cc';
+import { _decorator, Label, Layers, Node, Sprite, Vec3, Widget } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import GlobalConfig from '../../GlobalConfig';
 import { BuildProduceInfo, DataMgr } from '../../manager/DataMgr';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { BuildingModel, BuildingState } from '../../models/BuildingModel';
-import { s2cBuildingProduceAdd, s2cBuildingProduceDelete, s2cBuildingProduceGet, s2cBuildingUpgrade, s2cBuildingUpgradeReward } from '../../models/NetModel';
+import { s2cBuildingProduceAdd, s2cBuildingProduceDelete, s2cBuildingProduceGet, s2cBuildingProduceSpeed, s2cBuildingUpgrade, s2cBuildingUpgradeReward } from '../../models/NetModel';
 import { InterfacePath } from '../../net/InterfacePath';
 import { BaseComponent } from '../../script/BaseComponent';
 import CCUtil from '../../util/CCUtil';
@@ -95,6 +95,7 @@ export class BuildingProduceView extends BaseComponent {
         this.addEvent(InterfacePath.c2sBuildingProduceAdd, this.onBuildingProduceAdd.bind(this));
         this.addEvent(InterfacePath.c2sBuildingProduceDelete, this.onBuildingProduceDelete.bind(this));
         this.addEvent(InterfacePath.c2sBuildingProduceGet, this.onBuildingProduceGet.bind(this));
+        this.addEvent(InterfacePath.c2sBuildingProduceSpeed, this.onProduceSpeed.bind(this));
     }
     // 移除事件
     removeEvent() {
@@ -193,19 +194,12 @@ export class BuildingProduceView extends BaseComponent {
     onLoadLeftList(item: Node, idx: number) {
         let queue = this._building.buildingData.queue;
         let data = queue[idx];
-        console.log("onLoadLeftList", idx, data);
         if (!data) {
             item.getComponent(ProduceQueueItem)?.init(null);
             return;
         }
         let produceData = this._produceInfo.data[data.type];
         item.getComponent(ProduceQueueItem)?.init(data.time, produceData.res_png, this._building.buildingID, idx, produceData.res_time);
-    }
-    /**list点击 */
-    onLeftListClick(event: EventTouch) {
-        // console.log("onLeftListClick", event);
-        // event.target.active = false;
-        ViewsManager.showTip(TextConfig.Function_Tip);
     }
     /**建筑升级 */
     onBuildingUpgrade(data: s2cBuildingUpgrade) {
@@ -249,6 +243,12 @@ export class BuildingProduceView extends BaseComponent {
         this._building.setProducts(data.remaining_infos);
         this.onUpdateQueue();
         ViewsMgr.showRewards(data.product_items);
+    }
+    /**生产加速 */
+    onProduceSpeed(data: s2cBuildingProduceSpeed) {
+        if (data.id != this._building.buildingID) return;
+        this._building.setProducts(data.product_infos);
+        this.onUpdateQueue();
     }
     /**更新队列 */
     onUpdateQueue() {

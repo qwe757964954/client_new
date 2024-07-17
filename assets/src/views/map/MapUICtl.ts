@@ -1352,6 +1352,9 @@ export class MapUICtl extends MainBaseCtl {
     /**获取加速单词回调 */
     onRepSpeedWordGet(data: s2cSpeedWordsGet) {
         if (200 != data.code) {
+            if (1600 == data.code) {
+                ViewsMgr.showTip(data.msg);
+            }
             return;
         }
         if (data.id) {

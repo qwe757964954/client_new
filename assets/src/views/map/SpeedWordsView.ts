@@ -357,7 +357,7 @@ export class SpeedWordsView extends BaseComponent {
             this.endAnswer();
             return;
         }
-        if (data.id != this._buildingID || data.product_infos.length >= data.product_infos.length) {
+        if (data.id != this._buildingID || data.product_num != this._product_num || data.product_num >= data.product_infos.length) {
             this.endAnswer();
             return;
         }

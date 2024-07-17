@@ -195,7 +195,7 @@ export class BuildingService extends BaseControll {
     }
     /**获取加速单词 */
     reqSpeedWordsGet(buildingID: number, product_num: number = null) {
-        console.log("reqSpeedWordsGet", buildingID);
+        console.log("reqSpeedWordsGet", buildingID, product_num);
         let para = new c2sSpeedWordsGet();
         para.id = buildingID;
         para.product_num = product_num;
@@ -236,7 +236,7 @@ export class BuildingService extends BaseControll {
     }
     /**建筑生产加速 */
     reqBuildingProduceSpeed(buildingID: number, word: string, answer: string, product_num: number) {
-        console.log("reqBuildingProduceSpeed", buildingID);
+        console.log("reqBuildingProduceSpeed", buildingID, product_num);
         let para = new c2sBuildingProduceSpeed();
         para.id = buildingID;
         para.word = word;
