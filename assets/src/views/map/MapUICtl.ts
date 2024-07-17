@@ -943,7 +943,9 @@ export class MapUICtl extends MainBaseCtl {
         let children: BaseModel[] = [];
         let tmpAry: BaseModel[] = [].concat(this._buidingModelAry, this._roleModelAry, this._cloudModelAry);
         tmpAry.forEach(element => {
-            if (element.isShow && element.node) children.push(element);
+            if (element.isShow && element.node && this._mainScene.buildingLayer == element.node.parent) {
+                children.push(element);
+            }
         });
         children.sort((a, b) => {
             if (a.topZIndex) return -1;
@@ -1372,6 +1374,7 @@ export class MapUICtl extends MainBaseCtl {
                 let view = node.getComponent(SpeedWordsView);
                 view.initData(data.id, data.word_list, building.buildingState, data.product_num);
                 view.setRemainTime(sec);
+                view.buildingName = building.editInfo.name;
             });
         } else if (data.unlock_cloud) {
             let ary = data.unlock_cloud.split("_");

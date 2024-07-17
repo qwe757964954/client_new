@@ -205,7 +205,7 @@ export class BuildingProduceView extends BaseComponent {
     onBuildingUpgrade(data: s2cBuildingUpgrade) {
         if (200 != data.code) return;
         if (data.id != this._building.buildingID) return;
-        ViewsMgr.showTip(TextConfig.Building_Upgrade_Success);
+        ViewsMgr.showTip(TextConfig.Building_Upgrade_Start);
         this._building.buildingState = data.status;
         this._building.setUpgradeData(data.upgrade_infos.remaining_seconds);
         this.onUpdateQueueState();

@@ -575,7 +575,7 @@ export class MainScene extends BaseComponent {
         let self = this;
         ViewsMgr.showView(PrefabType.BuildBuiltView, (node: Node) => {
             let view = node.getComponent(BuildBuiltView);
-            view.init(building.buildingID, () => {
+            view.init(building.buildingID, building.editInfo.id, () => {
                 self._mainUIView.node.active = true;
             });
             self._mainUIView.node.active = false;

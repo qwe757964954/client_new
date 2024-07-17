@@ -152,6 +152,13 @@ export class CastleConfig {
     unlock3: number;//解锁条件(精灵等级)
     unlock4: number;//解锁条件(人物等级)
 }
+/**建造配置 */
+export class BuiltInfo {
+    id: number;//id
+    construct_need: ItemData[];//建造消耗
+    construct_time: number;//建造时间
+    construct_award: ItemData[];//建造奖励
+}
 
 //岛屿信息
 export class IslandData {
@@ -188,6 +195,7 @@ export class DataManager {
     public roleSlotConfig: RoleSlotConfig[] = [];//角色插槽配置
     public editInfo: EditInfo[] = [];//编辑信息
     public castleConfig: CastleConfig[] = [];//城堡配置
+    public builtConfig: BuiltInfo[] = [];//建造配置
     public buildProduceInfo: BuildProduceInfo[] = [];//建筑生产信息
     public wordSplitConfig: any = null;
     public adventureLevelConfig: AdvLevelConfig[] = null;
@@ -293,6 +301,14 @@ export class DataManager {
             let obj = castle_info[k];
             obj.upgrade_need = this.converAryToReward(obj.upgrade_need);
             this.castleConfig.push(obj);
+        }
+        /**建造配置 */
+        let construct_info = json.construct_info;
+        for (let k in construct_info) {
+            let obj = construct_info[k];
+            obj.construct_need = this.converAryToReward(obj.construct_need);
+            obj.construct_award = this.converAryToReward(obj.construct_award);
+            this.builtConfig[obj.id] = obj;
         }
     }
     public converAryToReward(ary: number[]): ItemData[] {

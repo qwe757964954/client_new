@@ -1,10 +1,12 @@
 import { _decorator, Label, Node } from 'cc';
+import { DataMgr } from '../../manager/DataMgr';
 import { ViewsMgr } from '../../manager/ViewsManager';
 import { s2cBuildingBuilt } from '../../models/NetModel';
 import { InterfacePath } from '../../net/InterfacePath';
 import { ServiceMgr } from '../../net/ServiceManager';
 import { BaseComponent } from '../../script/BaseComponent';
 import CCUtil from '../../util/CCUtil';
+import { ToolUtil } from '../../util/ToolUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('BuildBuiltView')
@@ -20,6 +22,7 @@ export class BuildBuiltView extends BaseComponent {
 
     private _buildingID: number = null;
     private _removeCall: Function = null;
+    private _bid: number = null;
 
     protected onLoad(): void {
         this.initEvent();
@@ -42,9 +45,11 @@ export class BuildBuiltView extends BaseComponent {
         this.clearEvent();
     }
 
-    init(buildingID: number, removeCall?: Function) {
+    init(buildingID: number, bid: number, removeCall?: Function) {
         this._buildingID = buildingID;
         this._removeCall = removeCall;
+        this._bid = bid;
+        this.label.string = ToolUtil.getSecFormatStr(DataMgr.builtConfig[this._bid].construct_time);
     }
     /**回调并移除自己 */
     remove() {

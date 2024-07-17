@@ -840,7 +840,10 @@ export class BuildingModel extends BaseModel {
         }
         if (this._countdownFrame) {
             this._countdownFrame.init(sec, () => {
-                ServiceMgr.buildingService.reqSpeedWordsGet(this.buildingID);
+                let str = BuildingState.building == this.buildingState ? TextConfig.Speed_Words_Tip1 : TextConfig.Speed_Words_Tip2;
+                ViewsMgr.showConfirm(str, () => {
+                    ServiceMgr.buildingService.reqSpeedWordsGet(this.buildingID);
+                });
             }, () => {
                 ServiceMgr.buildingService.reqBuildingInfoGet(this.buildingID);
             });

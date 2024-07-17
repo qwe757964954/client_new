@@ -273,7 +273,9 @@ class UserModel {
         this._staminaLimit = limit;
         this._staminaTime = ToolUtil.now() + time;
         this.clearStaminaTimer();
-        this._staminaTimer = TimerMgr.once(this.onStaminaTimer.bind(this), time * 1000);
+        if (this._stamina < this._staminaLimit) {
+            this._staminaTimer = TimerMgr.once(this.onStaminaTimer.bind(this), time * 1000);
+        }
         EventMgr.emit(EventType.Stamina_Timer_Update, time);
     }
     /**判断物品条件是否满足 */

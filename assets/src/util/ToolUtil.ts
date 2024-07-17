@@ -75,6 +75,7 @@ export class ToolUtil {
      * 获取 分秒 字符串
      */
     static getSecFormatStr(sec: number): string {
+        if (null == sec) return "";
         let minute = Math.floor(sec / 60);
         let second = sec % 60;
         if (minute <= 0) {

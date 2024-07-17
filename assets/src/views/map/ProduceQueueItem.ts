@@ -115,6 +115,8 @@ export class ProduceQueueItem extends Component {
         if (null == this._time) {
             return;
         }
-        ServiceMgr.buildingService.reqSpeedWordsGet(this._buildingID, this._product_num);
+        ViewsMgr.showConfirm(TextConfig.Speed_Words_Tip1, () => {
+            ServiceMgr.buildingService.reqSpeedWordsGet(this._buildingID, this._product_num);
+        });
     }
 }

@@ -49,6 +49,7 @@ export class SpeedWordsView extends BaseComponent {
     private _answerUIList: AnswerUI[] = [];//答案UI列表
     private _buildingID: number = null;//建筑ID
     private _buildingState: BuildingState = null;//建筑状态
+    private _buildingName: string = null;//建筑名称
     private _product_num: number = null;//生产索引
     private _unlock_cloud: string = null;//解锁乌云
     private _word_list: s2cSpeedWordInfo[] = null;//单词列表
@@ -61,6 +62,10 @@ export class SpeedWordsView extends BaseComponent {
     private _curAnswerList: s2cSpeedWordInfo[] = null;//当前答案列表
     private _canSelectAnswer: boolean = false;//是否可以选择答案
     private _selectAnswerIndex: number = null;//选中答案索引
+
+    set buildingName(name: string) {
+        this._buildingName = name;
+    }
 
     protected onLoad(): void {
         this.initUI();
@@ -190,6 +195,21 @@ export class SpeedWordsView extends BaseComponent {
     }
     /**下一题 */
     goToNext() {
+        if (this._remainTime <= 0) {
+            if (this._unlock_cloud) {
+                ViewsMgr.showTip(TextConfig.Cloud_Unlock_Success);
+            } else {
+                if (BuildingState.building == this._buildingState) {
+                    ViewsMgr.showTip(ToolUtil.replace(TextConfig.Building_Built_Success, this._buildingName));
+                } else if (BuildingState.upgrade == this._buildingState) {
+                    ViewsMgr.showTip(ToolUtil.replace(TextConfig.Building_Upgrade_Success, this._buildingName));
+                } else if (null != this._product_num) {
+                    ViewsMgr.showTip(TextConfig.Building_Product_Success);
+                }
+            }
+            this.endAnswer();
+            return;
+        }
         let nextID = this.findNext();
         if (null == nextID) {
             this.endAnswer();

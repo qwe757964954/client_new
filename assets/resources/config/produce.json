@@ -16,7 +16,8 @@
                 2
             ],
             "upgrade_need": [],
-            "upgrade_time": 0,
+            "upgrade_award": [],
+            "upgrade_time": 500,
             "upgrade_tips": ""
         },
         {
@@ -40,7 +41,11 @@
                 10003,
                 50
             ],
-            "upgrade_time": 0,
+            "upgrade_award": [
+                10001,
+                50
+            ],
+            "upgrade_time": 500,
             "upgrade_tips": "升级可解锁xx"
         },
         {
@@ -64,7 +69,11 @@
                 10003,
                 80
             ],
-            "upgrade_time": 0,
+            "upgrade_award": [
+                10001,
+                50
+            ],
+            "upgrade_time": 500,
             "upgrade_tips": "升级可解锁xx"
         },
         {
@@ -83,7 +92,8 @@
                 2
             ],
             "upgrade_need": [],
-            "upgrade_time": 0,
+            "upgrade_award": [],
+            "upgrade_time": 500,
             "upgrade_tips": ""
         },
         {
@@ -109,7 +119,11 @@
                 10003,
                 50
             ],
-            "upgrade_time": 0,
+            "upgrade_award": [
+                10001,
+                50
+            ],
+            "upgrade_time": 500,
             "upgrade_tips": "升级可解锁xx"
         },
         {
@@ -135,7 +149,11 @@
                 10003,
                 80
             ],
-            "upgrade_time": 0,
+            "upgrade_award": [
+                10001,
+                50
+            ],
+            "upgrade_time": 500,
             "upgrade_tips": "升级可解锁xx"
         },
         {
@@ -156,7 +174,8 @@
                 6
             ],
             "upgrade_need": [],
-            "upgrade_time": 0,
+            "upgrade_award": [],
+            "upgrade_time": 500,
             "upgrade_tips": ""
         },
         {
@@ -182,7 +201,11 @@
                 10003,
                 50
             ],
-            "upgrade_time": 0,
+            "upgrade_award": [
+                10001,
+                50
+            ],
+            "upgrade_time": 500,
             "upgrade_tips": "升级可解锁xx"
         },
         {
@@ -208,7 +231,11 @@
                 10003,
                 80
             ],
-            "upgrade_time": 0,
+            "upgrade_award": [
+                10001,
+                50
+            ],
+            "upgrade_time": 500,
             "upgrade_tips": "升级可解锁xx"
         },
         {
@@ -227,7 +254,8 @@
                 2
             ],
             "upgrade_need": [],
-            "upgrade_time": 0,
+            "upgrade_award": [],
+            "upgrade_time": 500,
             "upgrade_tips": ""
         },
         {
@@ -251,7 +279,11 @@
                 10003,
                 50
             ],
-            "upgrade_time": 0,
+            "upgrade_award": [
+                10001,
+                50
+            ],
+            "upgrade_time": 500,
             "upgrade_tips": "升级可解锁xx"
         },
         {
@@ -275,7 +307,11 @@
                 10003,
                 80
             ],
-            "upgrade_time": 0,
+            "upgrade_award": [
+                10001,
+                50
+            ],
+            "upgrade_time": 500,
             "upgrade_tips": "升级可解锁xx"
         },
         {
@@ -294,7 +330,8 @@
                 2
             ],
             "upgrade_need": [],
-            "upgrade_time": 0,
+            "upgrade_award": [],
+            "upgrade_time": 500,
             "upgrade_tips": ""
         },
         {
@@ -318,7 +355,11 @@
                 10003,
                 50
             ],
-            "upgrade_time": 0,
+            "upgrade_award": [
+                10001,
+                50
+            ],
+            "upgrade_time": 500,
             "upgrade_tips": "升级可解锁xx"
         },
         {
@@ -342,7 +383,11 @@
                 10003,
                 80
             ],
-            "upgrade_time": 0,
+            "upgrade_award": [
+                10001,
+                50
+            ],
+            "upgrade_time": 500,
             "upgrade_tips": "升级可解锁xx"
         }
     ]
