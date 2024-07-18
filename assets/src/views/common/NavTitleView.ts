@@ -14,11 +14,7 @@ export class NavTitleView extends Component {
         this.initEvent();
     }
     initEvent() {
-        CCUtil.onTouch(this.btn_returnbtn, this.onClickReture, this);
-    }
-    /**移除监听 */
-    removeEvent() {
-        CCUtil.offTouch(this.btn_returnbtn, this.onClickReture, this);
+        CCUtil.onBtnClick(this.btn_returnbtn, this.onClickReture.bind(this));
     }
     updateNavigationProps(title_name: string,returnCb:Function) {
         this.setTitleName(title_name);
@@ -35,7 +31,7 @@ export class NavTitleView extends Component {
         }
     }
     onDestroy(): void{
-        this.removeEvent();
+        
     }
 }
 

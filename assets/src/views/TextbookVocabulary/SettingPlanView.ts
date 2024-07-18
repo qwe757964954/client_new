@@ -47,15 +47,10 @@ export class SettingPlanView extends BasePopup {
         });
     }
     initEvent() {
-        CCUtil.onTouch(this.saveBtn, this.onClickSave, this);
-        CCUtil.onTouch(this.cancelBtn, this.onClickCancel, this);
+        CCUtil.onBtnClick(this.saveBtn, this.onClickSave.bind(this));
+        CCUtil.onBtnClick(this.cancelBtn, this.onClickCancel.bind(this));
     }
 
-    /**移除监听 */
-    removeEvent() {
-        CCUtil.offTouch(this.saveBtn, this.onClickSave, this);
-        CCUtil.offTouch(this.cancelBtn, this.onClickCancel, this);
-    }
     setLeftRightDatePick() {
         this.levelScroll.initSelectCallFunc((selectedLevel: number) => {
             this.handleLevelSelect(selectedLevel);
