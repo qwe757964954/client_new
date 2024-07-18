@@ -168,7 +168,8 @@ export class ReviewPlanView extends BaseComponent {
         this.plRight.active = isShow;
     }
     /**返回按钮 */
-    onBtnBackClick() {
+    async onBtnBackClick() {
+        // await ViewsManager.instance.showViewAsync(PrefabType.TextbookChallengeView);
         this.node.destroy();
     }
     /**抽奖按钮 */
