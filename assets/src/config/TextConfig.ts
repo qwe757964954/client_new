@@ -16,7 +16,7 @@ export const TextConfig = {
     Ver_Text: "ver:{0}.{1}.{2}.{3}",
     Queue_Text: "{0}/{1}",
 
-    Function_Tip: "功能暂未开放，敬请期待",
+    Function_Tip: "开发中，敬请期待",
     Function_Tip2: "暂时没有该功能",
 
     Update_New: "发现新版本，需要更新",
