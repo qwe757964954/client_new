@@ -90,7 +90,7 @@ public class STUtil implements SDKWrapper.SDKInterface {
     public void onRecord(String word){
         RecordSetting recordSetting = new RecordSetting();
         recordSetting.setCoreProvideType(EngineType.ENGINE_CLOUD);
-        recordSetting.setCoreType(CoreType.EN_WORD_EVAL);
+        recordSetting.setCoreType(CoreType.EN_SENT_EVAL);
         recordSetting.setRefText(word);
         _skMgr.startRecord(recordSetting, _onRecorderListener);
 //        _skMgr.startRecord(CoreType.EN_WORD_EVAL, word, QType.QTYPE_EMPTY, _onRecorderListener);
