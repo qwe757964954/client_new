@@ -328,6 +328,7 @@ export class ReviewPlanView extends BaseComponent {
                     source_type: WordSourceType.review,
                     ws_id: data.ws_id, pass_num: data.pass_num, word_num: wordNum, error_num: errorNum, souceType: this._souceType, wordCount: wordCount
                 });
+                this.node.destroy();
             });
         };
         showView();
