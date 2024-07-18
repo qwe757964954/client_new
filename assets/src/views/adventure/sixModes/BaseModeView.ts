@@ -1,5 +1,6 @@
 import { _decorator, BlockInputEvents, Button, Color, instantiate, isValid, Label, Node, Prefab, Sprite, tween, UIOpacity, UITransform, Vec3, view } from 'cc';
 import { EventType } from '../../../config/EventType';
+import { PrefabType } from '../../../config/PrefabType';
 import { GameRes } from '../../../GameRes';
 import GlobalConfig from '../../../GlobalConfig';
 import { BookLevelConfig, DataMgr } from '../../../manager/DataMgr';
@@ -614,6 +615,8 @@ export class BaseModeView extends BaseView {
             if (!this.node) return;
             if (WordSourceType.classification == this._sourceType) {
                 EventMgr.dispatch(EventType.Exit_Island_Level);
+            }else if(WordSourceType.review == this._sourceType){
+                ViewsManager.instance.showViewAsync(PrefabType.ReviewPlanView);
             }
             this.node.destroy();
         });

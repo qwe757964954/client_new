@@ -193,10 +193,10 @@ export interface UnitWordModel {
     unit_id: string;
     w_id: string;
     word: string;
-    big_id: number;
-    small_id: number;
-    subject_id: number;
-    collect: number; //是否收藏
+    big_id?: number;
+    small_id?: number;
+    subject_id?: number;
+    collect?: number; //是否收藏
 }
 
 export class c2sBookAwardList {
