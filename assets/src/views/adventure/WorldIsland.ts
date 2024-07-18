@@ -358,7 +358,7 @@ export class WorldIsland extends Component {
     }
 
     onUnitClick(data: UnitData) {
-        ViewsMgr.showTip("功能暂未开放");
+        ViewsMgr.showTip("开发中，敬请期待");
         return;
         if (this._isGetUnitWords) return;
         this._isGetUnitWords = true;
