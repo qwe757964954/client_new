@@ -300,6 +300,7 @@ export class c2sBuildingBuiltReward {
 export class s2cBuildingBuiltReward extends BaseRepPacket {
     id: number;//建筑唯一索引id
     award: ItemData[];//奖励
+    status: number;//建筑状态 0:普通、1:建造中、2:建造完成、3:升级中、4:升级完成
 }
 /**建筑生产队列添加 */
 export class c2sBuildingProduceAdd {

@@ -91,7 +91,7 @@ export class MainUIView extends BaseView {
         CCUtil.onTouch(this.btnStudy, this.onClickStudy, this);
         CCUtil.onBtnClick(this.btn_friend, this.onClickFriend.bind(this));
         CCUtil.onBtnClick(this.operational_activities, this.onClickOperationalActivities.bind(this));
-        CCUtil.onBtnClick(this.node.getChildByName('mask_node'),this.onMaskClick.bind(this));
+        CCUtil.onBtnClick(this.node.getChildByName('mask_node'), this.onMaskClick.bind(this));
     }
     //移除事件
     public removeEvent() {
@@ -157,7 +157,7 @@ export class MainUIView extends BaseView {
     public onClickShop() {
         ViewsMgr.showView(PrefabType.ShopUIView);
     }
-    onMaskClick(){
+    onMaskClick() {
         this.node.getChildByName('mask_node').active = false;
         this._mainRightActivity.onHidenClick();
     }
