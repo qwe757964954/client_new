@@ -2335,7 +2335,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "btn_yellow_long",
+    "_name": " sign_now",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -2810,6 +2810,9 @@
     },
     "day_scroll": {
       "__id__": 46
+    },
+    "sign_now": {
+      "__id__": 98
     },
     "_id": ""
   },

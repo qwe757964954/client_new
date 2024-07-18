@@ -1,6 +1,7 @@
 import { _decorator, Color, instantiate, isValid, Layers, Node, Prefab, UITransform, v3 } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
+import { TextConfig } from '../../config/TextConfig';
 import { ItemID } from '../../export/ItemConfig';
 import { ItemData } from '../../manager/DataMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
@@ -39,6 +40,9 @@ export class BagDialogView extends BaseView {
     @property({ type: Node, tooltip: "角色容器" })
     public roleContainer: Node = null;
 
+    @property(Node)
+    public btnDicomposeSell:Node = null;
+
     @property(List)
     @property tabList:List = null;
     @property(List)
@@ -49,6 +53,7 @@ export class BagDialogView extends BaseView {
 
     initEvent() {
         CCUtil.onBtnClick(this.btn_close, this.onCloseView.bind(this));
+        CCUtil.onBtnClick(this.btnDicomposeSell, this.onDicomposeSell.bind(this));
     }
     protected onInitModuleEvent() {
         this.addModelListeners([
@@ -111,7 +116,9 @@ export class BagDialogView extends BaseView {
     onCloseView() {
         ViewsManager.instance.closeView(PrefabType.BagView);
     }
-
+    onDicomposeSell(){
+        ViewsManager.instance.showTip(TextConfig.Function_Tip);
+    }
     /**显示角色的骨骼动画 */
     private showRoleDress() {
         this.roleContainer.removeAllChildren();

@@ -4857,6 +4857,9 @@
     "roleContainer": {
       "__id__": 191
     },
+    "btnDicomposeSell": {
+      "__id__": 115
+    },
     "tabList": {
       "__id__": 148
     },
