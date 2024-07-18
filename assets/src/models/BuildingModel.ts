@@ -316,11 +316,19 @@ export class BuildingModel extends BaseModel {
         if (this._graphics) {
             this._graphics.node.active = isShow;
         }
-        if (this._building) {
-            if (!this._btnView || !this._btnView.active) {
-                this._building.node.active = !isShow;
+        if (!this._btnView || !this._btnView.active) {
+            if (isShow) {
+                if (this._fence) {
+                    this._fence.active = false;
+                }
+                if (this._building) {
+                    this._building.node.active = false;
+                }
+            } else {
+                this.refreshBuildingShow();
             }
         }
+
         this.drawGridRect();
     }
     // 格子数据还原
@@ -707,8 +715,8 @@ export class BuildingModel extends BaseModel {
                 this._graphics.node.active = false;
                 this._fence = this._node.getChildByName("Fence");
                 this._uiNode = this._node.getChildByName("UI");
-                this._builtSuccessView = this._uiNode.getChildByName("Label1");
-                this._upgradeSuccessView = this._uiNode.getChildByName("Label2");
+                this._builtSuccessView = this._uiNode.getChildByName("img_right1");
+                this._upgradeSuccessView = this._uiNode.getChildByName("img_right2");
                 this.refreshUIView();
                 this.refreshBuildingShow();
 
@@ -888,10 +896,12 @@ export class BuildingModel extends BaseModel {
             this.showCountDownView();
             this.showBuiltSuccessUI();
             this.showUpgradeSuccessUI();
+            this.showProduces();
         } else {
             this.closeCountDownView();
             this.hideBuiltSuccessUI();
             this.hideUpgradeSuccessUI();
+            this.hideProduces();
         }
     }
     /**更新建筑显示 */
@@ -1022,12 +1032,13 @@ export class BuildingModel extends BaseModel {
     /**显示生产物品 */
     public showProduces() {
         this._produceItemViewShow = true;
+        if (this._produceItemAry.length <= 0) return;
         if (this._produceItemView) {
             this._produceItemView.node.active = true;
             this._produceItemView.init(this.getProduceImg());
             return;
         }
-        if (!this._node) return;
+        if (!this._isLoadOver) return;
         LoadManager.loadPrefab(PrefabType.ProduceItemView.path, this._node).then((node: Node) => {
             let pos = new Vec3(this._building.node.position);
             pos.y += this._building.getComponent(UITransform).height;
@@ -1159,6 +1170,7 @@ export class BuildingModel extends BaseModel {
         let maxj = this._height - 1;
         let node1 = this._fence.getChildByName("Node1");
         let node2 = this._fence.getChildByName("Node2");
+        let fenceConfig = MapConfig.fence;
         for (let i = 0; i <= maxi; i++) {
             for (let j = 0; j <= maxj; j++) {
                 if (i != 0 && i != maxi && j != 0 && j != maxj) continue;
@@ -1169,24 +1181,28 @@ export class BuildingModel extends BaseModel {
 
                 let sprite = ImgUtil.create_Sprite();
                 let node = sprite.node;
-                // node.getComponent(UITransform).anchorPoint = new Vec2(0.5, 0.0);
                 node.position = new Vec3(x, y, 0);
                 node2.addChild(node);
-                LoadManager.loadSprite("map/img_build_pillar/spriteFrame", sprite);
+                LoadManager.loadSprite(fenceConfig.pillar, sprite);
 
-                if (i == maxi && j == maxj) continue;
+                // if (i == maxi && j == maxj) continue;
 
                 let line = ImgUtil.create_Sprite();
                 node = line.node;
-                if (((0 == j || maxj == j) && (0 != i && maxi != i)) || (0 == i && j == maxj)) {
+                node1.addChild(node);
+                LoadManager.loadSprite(fenceConfig.line, line);
+
+                if (0 == i && j != maxj) {
+                    node.position = new Vec3(x + grid.width * 0.25, y - grid.height * 0.25, 0);
+                } else if (0 == j && 0 != i) {
+                    node.scale = new Vec3(-1, 1, 1);
+                    node.position = new Vec3(x + grid.width * 0.25, y + grid.height * 0.25, 0);
+                } else if (i == maxi && 0 != j) {
+                    node.position = new Vec3(x - grid.width * 0.25, y + grid.height * 0.25, 0);
+                } else if (maxj == j && i != maxi) {
                     node.scale = new Vec3(-1, 1, 1);
                     node.position = new Vec3(x - grid.width * 0.25, y - grid.height * 0.25, 0);
-                } else {
-                    node.position = new Vec3(x + grid.width * 0.25, y - grid.height * 0.25, 0);
                 }
-                // node.position = new Vec3(x, y, 0);
-                node1.addChild(node);
-                LoadManager.loadSprite("map/img_build_line/spriteFrame", line);
             }
         }
     }

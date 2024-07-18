@@ -588,7 +588,7 @@ export class MainScene extends BaseComponent {
             });
             self._mainUIView.node.active = false;
         });
-        this._mapUICtl.moveCameraToBuilding(building, Vec3.ZERO, 1.0);
+        this._mapUICtl.moveCameraToBuilding(building, Vec3.ZERO, 1.5);
     }
     /**显示城堡升级界面 */
     showCastleView(selectBuilding: BuildingModel) {
