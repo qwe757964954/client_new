@@ -210,6 +210,10 @@ export class CloudModel extends BaseModel {
             ViewsMgr.showConfirm(TextConfig.Cloud_Unlock_Tip, () => {
                 ServiceMgr.buildingService.reqCloudUnlock([ToolUtil.replace(TextConfig.Land_Key, this._x, this._y)]);
             });
+        } else {
+            ViewsMgr.showConfirm(TextConfig.Speed_Words_Tip4, () => {
+                ServiceMgr.buildingService.reqSpeedWordsGetEx(ToolUtil.replace(TextConfig.Land_Key, this._x, this._y));
+            });
         }
     }
     /**乌云散开 */
