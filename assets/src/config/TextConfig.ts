@@ -48,6 +48,7 @@ export const TextConfig = {
     Speed_Words_Tip1: "是否想要通过背单词加速？\n（每次建造可用1次单词加速，每次背10个单词，每个单词加速20秒）",
     Speed_Words_Tip2: "是否想要通过背单词加速？\n（每次升级可用1次单词加速，每次背10个单词，每个单词加速20秒）",
     Speed_Words_Tip3: "是否想要通过背单词加速？\n（每次制作可用1次单词加速，每次背10个单词，每个单词加速20秒）",
+    Speed_Words_Tip4: "是否想要通过背单词加速？\n（每次扩张可用1次单词加速，每次背10个单词，每个单词加速20秒）",
     Building_Success_Type1: "建造成功",
     Building_Success_Type2: "升级成功",
 
