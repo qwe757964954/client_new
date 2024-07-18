@@ -358,6 +358,8 @@ export class WorldIsland extends Component {
     }
 
     onUnitClick(data: UnitData) {
+        ViewsMgr.showTip("功能暂未开放");
+        return;
         if (this._isGetUnitWords) return;
         this._isGetUnitWords = true;
         console.log("UnitData", data);
