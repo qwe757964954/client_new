@@ -17,7 +17,7 @@ export enum BuildingSuccessType {
 
 const spConfig = {
     path: "spine/reward/qingzhurenwu",
-    anim: ["people01", "people03", "people03"],
+    anim: ["people01", "people02", "people03"],
 }
 const spConfig2 = {
     path: "spine/reward/yanhua",
