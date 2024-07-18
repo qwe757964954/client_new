@@ -525,11 +525,10 @@ export class BuildingModel extends BaseModel {
             ViewsMgr.showTip(TextConfig.Building_Recycle_Error1);
             return;
         }
-        // TODO 建筑升级显示
-        // if (this.buildingData.queue.length > 0) {
-        //     ViewsMgr.showTip(TextConfig.Building_Recycle_Error2);
-        //     return;
-        // }
+        if (this.buildingData.queue.length > 0) {
+            ViewsMgr.showTip(TextConfig.Building_Recycle_Error2);
+            return;
+        }
         EventMgr.emit(EventType.Building_Recycle, this);
     }
     // 回收

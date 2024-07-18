@@ -61,7 +61,7 @@ export class CountdownFrame extends Component {
     }
     /**显示时间 */
     showTime() {
-        this.labelTime.string = "剩余" + ToolUtil.getSecFormatStr(this._time);
+        this.labelTime.string = ToolUtil.getSecFormatStr(this._time);
     }
 }
 

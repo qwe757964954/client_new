@@ -135,8 +135,8 @@ export class c2sBuildingEditBatch {
 export class s2cBuildingEditBatch extends BaseRepPacket {
     type: number = 0;//类型 0:编辑建造 1:商店购买
     insert_result: s2cBuildingCreate[] = [];
-    update_result: s2cBuildingEdit[] = [];
-    delete_result: s2cBuildingSell[] = [];
+    update_result: number[] = [];
+    delete_result: number[] = [];
 }
 
 /**建筑修改（地块修改） */

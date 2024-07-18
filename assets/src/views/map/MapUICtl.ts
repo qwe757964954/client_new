@@ -40,6 +40,9 @@ export class MapUICtl extends MainBaseCtl {
     private _mapMaxHeight: number = screen.windowSize.height;//地图最大高度
     private _mapMaxWidth: number = screen.windowSize.width;//地图最大宽度
 
+    private _cameraRateRecord: number = 0;//地图摄像机与UI的比例记录
+    private _cameraPosRecord: Vec3;//地图摄像机位置记录
+
     private _gridAry: GridModel[][] = [];//格子数组(y从上往下，x从右往左)
     private _bgModelAry: BgModel[] = [];//背景模型数组
     private _landModelAry: LandModel[] = [];//地块模型数组
@@ -133,7 +136,7 @@ export class MapUICtl extends MainBaseCtl {
         this.addEvent(EventType.BuidingModel_Remove, this.onBuildingRemove.bind(this));
         this.addEvent(EventType.Building_Flipx, this.onBuildingFlipX.bind(this));
         this.addEvent(EventType.Building_Shop_Buy, this.onShopBuyBuilding.bind(this));
-        this.addEvent(InterfacePath.c2sBuildingEditBatch, this.onRepShopBuyBuilding.bind(this));
+        this.addEvent(InterfacePath.c2sBuildingEditBatch, this.onRepBuildingEditBatch.bind(this));
         this.addEvent(InterfacePath.c2sBuildingBuilt, this.onRepBuildingBuilt.bind(this));
         this.addEvent(InterfacePath.c2sBuildingBuiltReward, this.onRepBuildingBuiltReward.bind(this));
         this.addEvent(InterfacePath.c2sBuildingUpgrade, this.onRepBuildingUpgrade.bind(this));
@@ -432,6 +435,10 @@ export class MapUICtl extends MainBaseCtl {
     get cameraRate(): number {
         return this._cameraRate;
     }
+    /**摄像头位置 */
+    get cameraPos(): Vec3 {
+        return this._cameraPos;
+    }
     // 缩放地图
     mapZoom(scale: number) {//变化缩放
         this.mapZoomTo(Math.floor(this._cameraHeight * scale));
@@ -702,35 +709,40 @@ export class MapUICtl extends MainBaseCtl {
     onShopBuyBuilding(data: RecycleData) {
         this._buyBuildingCacheAry.push(data);
     }
-    /**商店购买建筑返回 */
-    onRepShopBuyBuilding(data: s2cBuildingEditBatch) {
-        if (0 == data.type) {
-            return;
-        }
+    /**建筑批量修改返回 */
+    onRepBuildingEditBatch(data: s2cBuildingEditBatch) {
         if (200 != data.code) {
             return;
         }
-        ViewsMgr.showTip(TextConfig.Building_Shop_Buy_Success);
-        data.insert_result.forEach((item) => {
-            let index = -1;
-            let tmpData = null;
-            for (let i = 0; i < this._buyBuildingCacheAry.length; i++) {
-                let element = this._buyBuildingCacheAry[i];
-                if (element.data.idx == item.idx) {
-                    index = i;
-                    tmpData = element;
-                    tmpData.data.id = item.id;
-                    tmpData.data.state = item.status;
-                    break;
+        if (1 == data.type) {
+            ViewsMgr.showTip(TextConfig.Building_Shop_Buy_Success);
+            data.insert_result.forEach((item) => {
+                let index = -1;
+                let tmpData = null;
+                for (let i = 0; i < this._buyBuildingCacheAry.length; i++) {
+                    let element = this._buyBuildingCacheAry[i];
+                    if (element.data.idx == item.idx) {
+                        index = i;
+                        tmpData = element;
+                        tmpData.data.id = item.id;
+                        tmpData.data.state = item.status;
+                        break;
+                    }
                 }
-            }
-            if (index > -1) {
-                this._buyBuildingCacheAry.splice(index, 1);
-                this.addRecycleBuilding(tmpData);
-                User.addBuilding(tmpData.bid);
-                EventMgr.emit(EventType.EditUIView_Refresh);
-            }
-        });
+                if (index > -1) {
+                    this._buyBuildingCacheAry.splice(index, 1);
+                    this.addRecycleBuilding(tmpData);
+                    User.addBuilding(tmpData.bid);
+                    EventMgr.emit(EventType.EditUIView_Refresh);
+                }
+            });
+        } else if (2 == data.type) {
+            data.delete_result.forEach((id) => {
+                let building = this.findBuilding(id);
+                if (!building) return;
+                building.sell(true);
+            });
+        }
     }
     /**移除建筑 */
     removeBuilding(building: BuildingModel) {
@@ -814,12 +826,27 @@ export class MapUICtl extends MainBaseCtl {
         }
         return this.newBuildingEx(editInfo, gridInfo.x + xAry[0], gridInfo.y + yAry[0], isFlip);
     }
+    /**记录当前摄像头 */
+    recordCamera() {
+        this._cameraPosRecord = this._cameraPos.clone();
+        this._cameraRateRecord = this._cameraRate;
+    }
+    /**还原摄像头到上次记录位置 */
+    restoreCamera() {
+        this.mapMoveToPos(this._cameraPosRecord, 1 / this._cameraRateRecord);
+    }
     // 摄像头移动到指定建筑
     moveCameraToBuilding(building: BuildingModel, plPos: Vec3, scale: number = 1) {
         let pos = building.pos;
         // let winSize = GlobalConfig.WIN_SIZE;
         // console.log("moveCameraToBuilding",pos.x, pos.y, plPos.x, plPos.y);
         this.mapMoveTo(pos.x - plPos.x / scale, pos.y - plPos.y / scale);
+        this.mapZoomTo(this._uiCameraHeight / scale);
+        this.updateCameraVisible(true);
+    }
+    /** 摄像头移动到指定位置 */
+    mapMoveToPos(pos: Vec3, scale: number = 1) {
+        this.mapMoveTo(pos.x, pos.y);
         this.mapZoomTo(this._uiCameraHeight / scale);
         this.updateCameraVisible(true);
     }

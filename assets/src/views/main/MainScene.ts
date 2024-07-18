@@ -452,6 +452,10 @@ export class MainScene extends BaseComponent {
     get cameraRate(): number {
         return this._mapUICtl.cameraRate;
     }
+    /** 摄像头位置 */
+    get cameraPos(): Vec3 {
+        return this._mapUICtl.cameraPos;
+    }
     // 点击到格子
     getTouchGrid(x: number, y: number) {
         return this._mapUICtl.getTouchGrid(x, y);
@@ -536,6 +540,7 @@ export class MainScene extends BaseComponent {
             let pos = null;
             let self = this;
             let scale = 1.5;
+            this._mapUICtl.recordCamera();
             let showBuilding = function (building: BuildingModel) {
                 self._mapUICtl.moveCameraToBuilding(building, buildingProduceView.getBuildingPos(), scale);
                 pos = building.pos;
@@ -554,6 +559,7 @@ export class MainScene extends BaseComponent {
                 backBuilding(building);
                 self._mainUIView.node.active = true;
                 self._mapUICtl.buildingSort();
+                self._mapUICtl.restoreCamera();
             });
             if (count > 1) {
                 buildingProduceView.setPreNextCallBack(
@@ -573,10 +579,12 @@ export class MainScene extends BaseComponent {
     /**展示建筑建造界面 */
     showBuildingBuiltView(building: BuildingModel) {
         let self = this;
+        this._mapUICtl.recordCamera();
         ViewsMgr.showView(PrefabType.BuildBuiltView, (node: Node) => {
             let view = node.getComponent(BuildBuiltView);
             view.init(building.buildingID, building.editInfo.id, () => {
                 self._mainUIView.node.active = true;
+                self._mapUICtl.restoreCamera();
             });
             self._mainUIView.node.active = false;
         });
@@ -589,12 +597,14 @@ export class MainScene extends BaseComponent {
             let view = node.getComponent(CastleInfoView);
             let pos = selectBuilding.pos;
             let self = this;
+            this._mapUICtl.recordCamera();
             view.setCallBack((building: BuildingModel) => {
                 building.addToParent(self.buildingLayer);
                 building.pos = pos;
                 building.setCameraType(Layers.Enum.DEFAULT);
                 self._mainUIView.node.active = true;
                 self._mapUICtl.buildingSort();
+                self._mapUICtl.restoreCamera();
             });
             this._mapUICtl.moveCameraToBuilding(selectBuilding, view.getBuildingPos());
             selectBuilding.removeFromParent();
