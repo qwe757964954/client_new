@@ -136,6 +136,7 @@ export const EventType = {
     Box_Challenge_Reward: "Box_Challenge_Reward",  //领取宝箱奖励
 
     Friend_Talk_Event: "Friend_Talk_Event",
+    Show_TextBook_Monster: "Show_TextBook_Monster",
 }
 
 export function itemEventKey(id: ItemID) {

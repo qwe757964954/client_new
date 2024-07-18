@@ -1,5 +1,4 @@
 import { _decorator, Label, Node, sp, Vec3 } from 'cc';
-import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { ItemData } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
@@ -12,8 +11,6 @@ import { BaseComponent } from '../../script/BaseComponent';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
 import { ToolUtil } from '../../util/ToolUtil';
-import { WordSourceType } from '../adventure/sixModes/BaseModeView';
-import { WordMeaningView } from '../adventure/sixModes/WordMeaningView';
 import { RewardItem } from '../common/RewardItem';
 import { ReviewWordModel } from './ReviewPlanView';
 import { ReviewSourceType } from './ReviewWordListView';
@@ -147,6 +144,7 @@ export class ReviewEndView extends BaseComponent {
         }
         let wordCount = data.review_wp_list.length;
         let wordNum = Math.min(wordCount, data.word_num);
+        /*
         ViewsMgr.showView(PrefabType.WordMeaningView, (node: Node) => {
             node.getComponent(WordMeaningView).initData(wordsdata, {
                 source_type: WordSourceType.review,
@@ -154,6 +152,7 @@ export class ReviewEndView extends BaseComponent {
             });
             this.node.destroy();
         });
+        */
     }
 }
 

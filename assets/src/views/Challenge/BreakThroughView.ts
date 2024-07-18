@@ -188,21 +188,10 @@ export class BreakThroughView extends BaseView {
             default:
                 break;
         }
-        this.removeTopAmoutView();
         this._scrollMap.removePointEvent();
     }
 
-    removeTopAmoutView() {
-        for (let index = 0; index < this.top_layout.children.length; index++) {
-            const item = this.top_layout.children[index] as Node;
-            if (item.name === "TopAmoutView") {
-                item.removeFromParent();
-            }
-        }
-    }
-
     onExitIsland() {
-        this.initAmout();
         this.hideRightPanelchangeView();
         this.getUnitListStatus();
     }
@@ -293,9 +282,7 @@ export class BreakThroughView extends BaseView {
 
     async initNavTitle() {
         this.createNavigation(`${this._bookData.book_name} ${this._bookData.grade}`, this.top_layout, () => {
-            ViewsManager.instance.showView(PrefabType.TextbookChallengeView, () => {
-                ViewsManager.instance.closeView(PrefabType.BreakThroughView);
-            });
+            ViewsManager.instance.closeView(PrefabType.BreakThroughView);
         });
     }
 

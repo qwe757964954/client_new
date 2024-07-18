@@ -9,7 +9,7 @@ import { DataMgr, EditInfo, EditType } from "../../manager/DataMgr";
 import { ViewsMgr } from "../../manager/ViewsManager";
 import { BaseModel } from "../../models/BaseModel";
 import { BgModel } from "../../models/BgModel";
-import { BuildingModel, BuildingOperationData, BuildingState, RecycleData } from "../../models/BuildingModel";
+import { BuildingModel, BuildingOperationData, RecycleData } from "../../models/BuildingModel";
 import { CloudModel } from "../../models/CloudModel";
 import { GridModel } from "../../models/GridModel";
 import { LandModel } from "../../models/LandModel";
@@ -25,6 +25,7 @@ import { TimerMgr } from "../../util/TimerMgr";
 import { ToolUtil } from "../../util/ToolUtil";
 import { MainBaseCtl } from "../main/MainBaseCtl";
 import { MainScene } from "../main/MainScene";
+import { BuildingSuccessType, BuildingSuccessView } from "./BuildingSuccessView";
 import { SpeedWordsView } from "./SpeedWordsView";
 
 // 地图UI控制器
@@ -1341,9 +1342,11 @@ export class MapUICtl extends MainBaseCtl {
         }
         let building = this.findBuilding(data.id);
         if (!building) return;
-        // building.buildingState = data.status;
-        ViewsMgr.showRewards(data.award);
-        building.buildingState = BuildingState.normal;
+        building.buildingState = data.status;
+        ViewsMgr.showView(PrefabType.BuildingSuccessView, (node: Node) => {
+            let view = node.getComponent(BuildingSuccessView);
+            view.initData(data.award, BuildingSuccessType.built);
+        });
     }
     /**建筑升级返回 */
     onRepBuildingUpgrade(data: s2cBuildingUpgrade) {
@@ -1365,7 +1368,10 @@ export class MapUICtl extends MainBaseCtl {
         if (!building) return;
         building.buildingLevel = data.level;
         building.buildingState = data.status;
-        ViewsMgr.showRewards(data.award);
+        ViewsMgr.showView(PrefabType.BuildingSuccessView, (node: Node) => {
+            let view = node.getComponent(BuildingSuccessView);
+            view.initData(data.award, BuildingSuccessType.upgrade);
+        });
     }
     /**建筑信息获取返回 */
     onRepBuildingInfoGet(data: s2cBuildingInfoGet) {
