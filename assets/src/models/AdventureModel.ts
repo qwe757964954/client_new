@@ -13,6 +13,13 @@ export enum GameMode {
     WordBoss = 5, //BOSS关卡
 }
 
+export enum QuestionKind {
+    Choice = 1, //选择题
+    FillInBlank = 2, //填空题
+    JudgeAnswer = 3, //判断题
+    SortAnswer = 4, //排序题
+}
+
 export class SentenceData {
     id: string;
     cn: string;
@@ -385,7 +392,8 @@ export class Subject {
     big_id: number;
     subject_id: number;
     subject_name: string;
-    sentence_knowledge: string;
+    sentence_knowledge: string[];
+    dialogue_content: string[];
 }
 
 //大冒险主题ai文章列表
@@ -407,7 +415,7 @@ export class Article {
 export class c2sArticleExercisesList {
     command_id: string = InterfacePath.Article_ExercisesList;
     subject_id: number;
-    article_id: number;
+    article_id?: number;
 }
 export class ArticleExercisesListReply extends BaseRepPacket {
     exercises_list: ArticleExercise[];

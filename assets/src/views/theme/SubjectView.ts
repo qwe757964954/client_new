@@ -11,6 +11,7 @@ import { InterfacePath } from '../../net/InterfacePath';
 import { ViewsMgr } from '../../manager/ViewsManager';
 import { PrefabType } from '../../config/PrefabType';
 import { PracticeView } from './PracticeView';
+import { KnowlegeItem } from './item/KnowlegeItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('SubjectView')
@@ -21,10 +22,10 @@ export class SubjectView extends BasePopup {
     public title: Label;
     @property(List)
     public wordList: List;
-    @property(Label)
-    public detailLabel: Label = null;
     @property(Node)
     public practiceBtn: Node = null; //练习按钮
+    @property(List)
+    knowledgeList: List = null;
     private _data: WordGameSubjectReply;
 
     private _isRequesting: boolean = false; //是否正在请求数据
@@ -33,7 +34,7 @@ export class SubjectView extends BasePopup {
         this._data = data;
         this.title.string = data.subject.subject_name;
         this.wordList.numItems = this._data.word_list.length;
-        this.detailLabel.string = data.subject.sentence_knowledge;
+        this.knowledgeList.numItems = data.subject.sentence_knowledge.length;
     }
 
     showAnim(): Promise<void> {
@@ -46,17 +47,14 @@ export class SubjectView extends BasePopup {
     goPractice() {
         if (this._isRequesting) return;
         this._isRequesting = true;
-        ServiceMgr.studyService.getSubjectArticleList(this._data.subject.subject_id);
+        // ServiceMgr.studyService.getSubjectArticleList(this._data.subject.subject_id);
+        this.onGetPractice();
     }
 
-    onGetPractice(data: SubjectArticleListReply) {
-        this._isRequesting = false;
-        if (data.code != 200) {
-            ViewsMgr.showTip(data.msg);
-            return;
-        }
+    onGetPractice() {
         ViewsMgr.showPopup(PrefabType.PracticeView).then((node: Node) => {
-            node.getComponent(PracticeView).setData(data);
+            this._isRequesting = false;
+            node.getComponent(PracticeView).setData(this._data);
         })
     }
 
@@ -75,6 +73,11 @@ export class SubjectView extends BasePopup {
     onWordItemRender(item: Node, idx: number) {
         let word = item.getComponent(ThemeWordItem);
         word.initData(this._data.word_list[idx]);
+    }
+
+    onKonwlegeItemRender(item: Node, idx: number) {
+        let konwlege = item.getComponent(KnowlegeItem);
+        konwlege.setData(this._data.subject.sentence_knowledge[idx]);
     }
 
     onDestroy(): void {

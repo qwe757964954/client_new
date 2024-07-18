@@ -1,7 +1,7 @@
 import { isValid } from "cc";
 import { EventType } from "../config/EventType";
 import { ViewsManager } from "../manager/ViewsManager";
-import { AdventureCollectWordModel, AdventureResultModel, c2sAdventureCollectWord, c2sAdventureResult, c2sAdventureWord, c2sAdventureWordSentence, c2sAdvLevelProgress, c2sBossLevelSubmit, c2sBossLevelTopic, c2sGetProgressReward, c2sGetUnitList, c2sIslandProgress, c2sIslandStatus, c2sSubjectArticleList, c2sTextbookWordGroup, c2sWordGameLevelRestart, c2sWordGameSubject, c2sWordGameUnitWords, c2sWordGameWords, c2sWordGroup, WordGameWordsData } from "../models/AdventureModel";
+import { AdventureCollectWordModel, AdventureResultModel, c2sAdventureCollectWord, c2sAdventureResult, c2sAdventureWord, c2sAdventureWordSentence, c2sAdvLevelProgress, c2sArticleExercisesList, c2sBossLevelSubmit, c2sBossLevelTopic, c2sGetProgressReward, c2sGetUnitList, c2sIslandProgress, c2sIslandStatus, c2sSubjectArticleList, c2sTextbookWordGroup, c2sWordGameLevelRestart, c2sWordGameSubject, c2sWordGameUnitWords, c2sWordGameWords, c2sWordGroup, WordGameWordsData } from "../models/AdventureModel";
 import { c2sReviewPlan, c2sReviewPlanDraw, c2sReviewPlanList, c2sReviewPlanStatus, c2sReviewPlanSubmit, c2sReviewPlanUpdate } from "../models/NetModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
@@ -233,6 +233,15 @@ export default class StudyService extends BaseControll {
     getSubjectArticleList(subject_id: number) {
         let para: c2sSubjectArticleList = new c2sSubjectArticleList();
         para.subject_id = subject_id;
+        NetMgr.sendMsg(para);
+    }
+
+    //获取大冒险文章题目列表
+    getArticleExercisesList(subject_id: number, article_id?: number) {
+        let para: c2sArticleExercisesList = new c2sArticleExercisesList();
+        para.subject_id = subject_id;
+        if (article_id)
+            para.article_id = article_id;
         NetMgr.sendMsg(para);
     }
 }

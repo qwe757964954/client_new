@@ -9,8 +9,8 @@ export class ArticleItem extends Component {
     @property(Label)
     articleLabel: Label = null;
 
-    setData(data: Article) {
-        this.articleLabel.string = data.article;
+    setData(data: string) {
+        this.articleLabel.string = data;
         this.getComponent(UITransform).height = this.articleLabel.getComponent(UITransform).height + 10;
     }
 }
