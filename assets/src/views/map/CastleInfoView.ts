@@ -207,11 +207,11 @@ export class CastleInfoView extends BaseComponent {
     }
     /**建筑升级回调 */
     onBuildingUpgrade(data: s2cBuildingUpgrade) {
-        if (data.id != this._building.buildingID) return;
         if (200 != data.code) {
             ViewsMgr.showTip(data.msg);
             return;
         }
+        if (data.id != this._building.buildingID) return;
         ViewsMgr.showTip(TextConfig.Building_Upgrade_Start);
         // this._building.buildingLevel = data.level;
         let building = this._building;
@@ -225,6 +225,8 @@ export class CastleInfoView extends BaseComponent {
         this.plUpgrade.active = true;
         this.labelLevel1.string = ToolUtil.replace(TextConfig.Level_Text, building.buildingData.level);
         this.labelLevel2.string = ToolUtil.replace(TextConfig.Level_Text, building.buildingData.level + 1);
+
+        this.onBtnCloseClick();
     }
 }
 
