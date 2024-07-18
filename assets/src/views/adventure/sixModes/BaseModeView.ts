@@ -615,6 +615,7 @@ export class BaseModeView extends BaseView {
             if (WordSourceType.classification == this._sourceType) {
                 EventMgr.dispatch(EventType.Exit_Island_Level);
             }
+            EventMgr.dispatch(EventType.Show_TextBook_Monster);
             this.node.destroy();
         });
     }
