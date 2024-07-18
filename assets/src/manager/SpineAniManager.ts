@@ -5,6 +5,7 @@ import FileUtil from '../util/FileUtil';
 import ImgUtil from '../util/ImgUtil';
 import { ObjectUtil } from '../util/ObjectUtil';
 import { inf_SpineAniCreate, inf_UIConfig } from './InterfaceDefines';
+import { LoadManager } from './LoadManager';
 import { ResLoader } from './ResLoader';
 
 const { ccclass } = _decorator;
@@ -271,6 +272,11 @@ export class SpineAniManager extends BaseControll {
         this.loadSkeletonData(node, resData, (skinData) => {
             const skeleton = node.getComponent(sp.Skeleton)!;
             skeleton.skeletonData = skinData;
+            skinData.addRef();
+            // 多次设置会多次增加监听
+            node.once(Node.EventType.NODE_DESTROYED, () => {
+                LoadManager.releaseAsset(skinData);
+            });
             this.configureSkeleton(node, skeleton, trackIndex, name, loop, premultipliedAlpha, skin, startCallFunc, endCallFunc, oneLoopEndCallFunc, processCallFunc, frameNum);
         });
     }
@@ -318,6 +324,11 @@ export class SpineAniManager extends BaseControll {
         if (!node || !node.isValid) return;
         const skeleton = node.getComponent(sp.Skeleton)!;
         skeleton.skeletonData = skinData;
+        skinData.addRef();
+        // 多次设置会多次增加监听
+        node.once(Node.EventType.NODE_DESTROYED, () => {
+            LoadManager.releaseAsset(skinData);
+        });
         this.configureSkeleton(node, skeleton, trackIndex, name, loop, premultipliedAlpha, skin, startCallFunc, endCallFunc, oneLoopEndCallFunc, processCallFunc, frameNum);
     }
 

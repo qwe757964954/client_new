@@ -26,7 +26,7 @@ export class ChallengeLeftView extends BaseView {
     }
 
     protected onInitModuleEvent() {
-        this.addModelListener(EventType.Show_TextBook_Monster,this.loadMonsterSkelton);
+        // this.addModelListener(EventType.Show_TextBook_Monster,this.loadMonsterSkelton);
 	}
 
     loadMonsterSkelton(){

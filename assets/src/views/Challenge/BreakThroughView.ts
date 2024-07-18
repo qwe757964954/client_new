@@ -11,7 +11,6 @@ import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
 import CCUtil from '../../util/CCUtil';
-import { EventMgr } from '../../util/EventManager';
 import { NodeUtil } from '../../util/NodeUtil';
 import { rightPanelchange } from '../adventure/common/RightPanelchange';
 import { StudyModeView } from '../adventure/sixModes/StudyModeView';
@@ -294,7 +293,6 @@ export class BreakThroughView extends BaseView {
 
     async initNavTitle() {
         this.createNavigation(`${this._bookData.book_name} ${this._bookData.grade}`, this.top_layout, () => {
-            EventMgr.dispatch(EventType.Show_TextBook_Monster);
             ViewsManager.instance.closeView(PrefabType.BreakThroughView);
         });
     }
