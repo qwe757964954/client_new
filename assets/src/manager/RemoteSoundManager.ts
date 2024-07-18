@@ -54,7 +54,7 @@ class RemoteSoundManager {
 
     /**中美音类型字符串 */
     getSoundType() {
-        return GlobalConfig.USE_US ? "us" : "en";
+        return GlobalConfig.USE_US ? "en" : "uk";
     }
     /**播放单词音频 */
     playWord(word: String): Promise<any> {
