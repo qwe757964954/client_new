@@ -162,9 +162,8 @@ export class WorldMapView extends Component {
             console.log('正在获取单词中');
             return;
         }
-        if (!this._currentLevelData) {
-            this._currentLevelData = data;
-        }
+        this._currentLevelData = data;
+
         this._currentLevelData.current_mode = GameMode.Exam;
         this._getingWords = true;
         // if (this._levelProgressData) { //已有当前关数据
@@ -181,6 +180,7 @@ export class WorldMapView extends Component {
             return;
         }
         this._levelProgressData = data;
+        this._currentLevelData.current_mode = data.game_mode;
         if (this._currentLevelData.current_mode != GameMode.Exam) { //不是测试模式
             this._currentLevelData.current_mode = this._levelProgressData.game_mode;
         }
