@@ -212,7 +212,7 @@ export class CastleInfoView extends BaseComponent {
             ViewsMgr.showTip(data.msg);
             return;
         }
-        ViewsMgr.showTip(TextConfig.Building_Upgrade_Success);
+        ViewsMgr.showTip(TextConfig.Building_Upgrade_Start);
         // this._building.buildingLevel = data.level;
         let building = this._building;
         this.labelLevel.string = ToolUtil.replace(TextConfig.Level_Text, building.buildingData.level);;

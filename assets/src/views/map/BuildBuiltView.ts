@@ -1,10 +1,12 @@
 import { _decorator, Label, Node } from 'cc';
+import { DataMgr } from '../../manager/DataMgr';
 import { ViewsMgr } from '../../manager/ViewsManager';
-import { s2cBuildingBuilt } from '../../models/NetModel';
+import { s2cBuildingBuilt, s2cBuildingEditBatch } from '../../models/NetModel';
 import { InterfacePath } from '../../net/InterfacePath';
 import { ServiceMgr } from '../../net/ServiceManager';
 import { BaseComponent } from '../../script/BaseComponent';
 import CCUtil from '../../util/CCUtil';
+import { ToolUtil } from '../../util/ToolUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('BuildBuiltView')
@@ -20,6 +22,7 @@ export class BuildBuiltView extends BaseComponent {
 
     private _buildingID: number = null;
     private _removeCall: Function = null;
+    private _bid: number = null;
 
     protected onLoad(): void {
         this.initEvent();
@@ -33,6 +36,7 @@ export class BuildBuiltView extends BaseComponent {
         CCUtil.onTouch(this.btnBuilt, this.onBtnBuiltClick, this);
 
         this.addEvent(InterfacePath.c2sBuildingBuilt, this.onRepBuildingBuilt.bind(this));
+        this.addEvent(InterfacePath.c2sBuildingEditBatch, this.onRepBuildingEditBatch.bind(this));
     }
     removeEvent() {
         CCUtil.offTouch(this, this.onBgClick, this);
@@ -42,9 +46,11 @@ export class BuildBuiltView extends BaseComponent {
         this.clearEvent();
     }
 
-    init(buildingID: number, removeCall?: Function) {
+    init(buildingID: number, bid: number, removeCall?: Function) {
         this._buildingID = buildingID;
         this._removeCall = removeCall;
+        this._bid = bid;
+        this.label.string = ToolUtil.getSecFormatStr(DataMgr.builtConfig[this._bid].construct_time);
     }
     /**回调并移除自己 */
     remove() {
@@ -57,6 +63,7 @@ export class BuildBuiltView extends BaseComponent {
     }
     /**删除按钮点击 */
     onBtnDeleteClick() {
+        ServiceMgr.buildingService.reqBuildingEditBatch([], [], [this._buildingID], 2);
     }
     /**建造按钮点击 */
     onBtnBuiltClick() {
@@ -69,6 +76,18 @@ export class BuildBuiltView extends BaseComponent {
             return;
         }
         this.remove();
+    }
+    /**建筑批量修改返回 */
+    onRepBuildingEditBatch(data: s2cBuildingEditBatch) {
+        if (200 != data.code) {
+            ViewsMgr.showAlert(data.msg);
+            return;
+        }
+        data.delete_result.forEach(id => {
+            if (id == this._buildingID) {
+                this.remove();
+            }
+        });
     }
 }
 

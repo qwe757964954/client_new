@@ -12,10 +12,10 @@ export class ProduceItemView extends Component {
             let sprite = this.imgList[i];
             let pngPath = pngAry[i];
             if (!pngPath) {
-                sprite.node.active = false;
+                sprite.node.parent.active = false;
                 continue;
             }
-            sprite.node.active = true;
+            sprite.node.parent.active = true;
             LoadManager.loadSprite(pngPath, sprite);
         }
     }

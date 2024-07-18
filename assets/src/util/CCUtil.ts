@@ -41,6 +41,9 @@ export default class CCUtil {
     static onBtnClick(node: Node, cb: Function, clean: boolean = true) {
         if (node.getComponent && !node.getComponent(Button)) {
             node.addComponent(Button).target = node;
+            node.addComponent(Button).transition = Button.Transition.SCALE;
+            node.addComponent(Button).zoomScale = 1.2;
+            node.addComponent(Button).duration = 0.1;
         }
         if (clean) {
             node.off("click");

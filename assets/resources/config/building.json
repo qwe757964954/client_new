@@ -928,6 +928,7 @@
             "id": 0,
             "level": 1,
             "upgrade_need": [],
+            "upgrade_award": [],
             "upgrade_time": 0,
             "unlock1": 0,
             "unlock2": 0,
@@ -945,6 +946,7 @@
                 20003,
                 30
             ],
+            "upgrade_award": [],
             "upgrade_time": 0,
             "unlock1": 1,
             "unlock2": 2,
@@ -962,6 +964,7 @@
                 20003,
                 30
             ],
+            "upgrade_award": [],
             "upgrade_time": 0,
             "unlock1": 2,
             "unlock2": 3,
@@ -979,6 +982,7 @@
                 20003,
                 30
             ],
+            "upgrade_award": [],
             "upgrade_time": 0,
             "unlock1": 3,
             "unlock2": 4,
@@ -996,11 +1000,92 @@
                 20003,
                 30
             ],
+            "upgrade_award": [],
             "upgrade_time": 0,
             "unlock1": 4,
             "unlock2": 5,
             "unlock3": 4,
             "unlock4": 4
+        }
+    ],
+    "construct_info": [
+        {
+            "id": 1,
+            "name": "密林伐木场",
+            "construct_need": [
+                10001,
+                20
+            ],
+            "construct_time": 300,
+            "construct_award": [
+                10001,
+                50
+            ]
+        },
+        {
+            "id": 2,
+            "name": "奇幻工具铺",
+            "construct_need": [
+                10001,
+                20
+            ],
+            "construct_time": 300,
+            "construct_award": [
+                10001,
+                50
+            ]
+        },
+        {
+            "id": 3,
+            "name": "紫晶矿山",
+            "construct_need": [
+                10001,
+                20
+            ],
+            "construct_time": 300,
+            "construct_award": [
+                10001,
+                50
+            ]
+        },
+        {
+            "id": 4,
+            "name": "魔法编织坊",
+            "construct_need": [
+                10001,
+                20
+            ],
+            "construct_time": 300,
+            "construct_award": [
+                10001,
+                50
+            ]
+        },
+        {
+            "id": 5,
+            "name": "果汁魔法屋",
+            "construct_need": [
+                10001,
+                20
+            ],
+            "construct_time": 300,
+            "construct_award": [
+                10001,
+                50
+            ]
+        },
+        {
+            "id": 6,
+            "name": "梦幻玩具城",
+            "construct_need": [
+                10001,
+                20
+            ],
+            "construct_time": 300,
+            "construct_award": [
+                10001,
+                50
+            ]
         }
     ]
 }

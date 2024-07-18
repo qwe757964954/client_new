@@ -135,8 +135,8 @@ export class c2sBuildingEditBatch {
 export class s2cBuildingEditBatch extends BaseRepPacket {
     type: number = 0;//类型 0:编辑建造 1:商店购买
     insert_result: s2cBuildingCreate[] = [];
-    update_result: s2cBuildingEdit[] = [];
-    delete_result: s2cBuildingSell[] = [];
+    update_result: number[] = [];
+    delete_result: number[] = [];
 }
 
 /**建筑修改（地块修改） */
@@ -194,6 +194,8 @@ export class s2cBuildingUpgrade extends BaseRepPacket {
 export class c2sBuildingUpgradeSpeed {
     command_id: string = InterfacePath.c2sBuildingUpgradeSpeed;
     id: number;//建筑唯一索引id
+    word: string;//单词
+    answer: string;//答案
 }
 /**建筑升级加速返回 */
 export class s2cBuildingUpgradeSpeed extends BaseRepPacket {
@@ -228,6 +230,9 @@ export class s2cBuildingInfoGet extends BaseRepPacket {
 /**加速单词获取 */
 export class c2sSpeedWordsGet {
     command_id: string = InterfacePath.c2sSpeedWordsGet;
+    id: number;//建筑唯一索引id
+    unlock_cloud: string;//乌云
+    product_num: number;//生产索引
 }
 /**加速单词信息 */
 export class s2cSpeedWordInfo {
@@ -240,6 +245,9 @@ export class s2cSpeedWordInfo {
 /**加速单词获取返回 */
 export class s2cSpeedWordsGet extends BaseRepPacket {
     word_list: s2cSpeedWordInfo[];//单词列表
+    id: number;//建筑唯一索引id
+    unlock_cloud: string;//乌云
+    product_num: number;//生产索引
 }
 /**建筑卖出 */
 export class c2sBuildingSell {
@@ -274,6 +282,8 @@ export class s2cBuildingBuilt extends BaseRepPacket {
 export class c2sBuildingBuiltSpeed {
     command_id: string = InterfacePath.c2sBuildingBuiltSpeed;
     id: number;//建筑唯一索引id
+    word: string;//单词
+    answer: string;//答案
 }
 /**建筑加速建造返回 */
 export class s2cBuildingBuiltSpeed extends BaseRepPacket {
@@ -330,6 +340,20 @@ export class s2cBuildingProduceGet extends BaseRepPacket {
     product_items: ItemData[];//生产物品
     remaining_infos: s2cBuildingProduceInfo[];//生产信息
 }
+/**建筑生产加速 */
+export class c2sBuildingProduceSpeed {
+    command_id: string = InterfacePath.c2sBuildingProduceSpeed;
+    id: number;//建筑唯一索引id
+    word: string;//单词
+    answer: string;//答案
+    product_num: number;//生产索引
+}
+/**建筑生产加速返回 */
+export class s2cBuildingProduceSpeed extends BaseRepPacket {
+    id: number;//建筑唯一索引id
+    product_infos: s2cBuildingProduceInfo[];//生产信息
+    product_num: number;//生产索引
+}
 /**乌云解锁 */
 export class c2sCloudUnlock {
     command_id: string = InterfacePath.c2sCloudUnlock;
@@ -353,6 +377,8 @@ export class s2cCloudUnlockGet extends BaseRepPacket {
 export class c2sCloudUnlockSpeed {
     command_id: string = InterfacePath.c2sCloudUnlockSpeed;
     unlock_cloud: string;//乌云位置x_y
+    word: string;//单词
+    answer: string;//答案
 }
 /**乌云解锁加速返回 */
 export class s2cCloudUnlockSpeed extends BaseRepPacket {

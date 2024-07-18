@@ -136,8 +136,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 118,
-      "height": 21
+      "width": 137,
+      "height": 25
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -173,7 +173,7 @@
       "a": 255
     },
     "_spriteFrame": {
-      "__uuid__": "aab9628a-3477-4ea7-90ad-becfc0944621@f9941",
+      "__uuid__": "6722af33-99ed-414d-9fc3-e61b88b53987@f9941",
       "__expectedType__": "cc.SpriteFrame"
     },
     "_type": 0,
@@ -231,7 +231,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -103.717,
+      "x": -91.717,
       "y": 0,
       "z": 0
     },
@@ -272,8 +272,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 36,
-      "height": 38
+      "width": 30,
+      "height": 30
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -371,7 +371,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 77.878,
+      "x": 86.341,
       "y": 0,
       "z": 0
     },
@@ -384,8 +384,8 @@
     },
     "_lscale": {
       "__type__": "cc.Vec3",
-      "x": 0.5,
-      "y": 0.5,
+      "x": 1,
+      "y": 1,
       "z": 1
     },
     "_mobility": 0,
@@ -462,7 +462,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 84,
+      "width": 64,
       "height": 67
     },
     "_anchorPoint": {
@@ -501,8 +501,8 @@
     "_string": "加速",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 40,
-    "_fontSize": 40,
+    "_actualFontSize": 30,
+    "_fontSize": 30,
     "_fontFamily": "Arial",
     "_lineHeight": 50,
     "_overflow": 0,
@@ -571,8 +571,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 183,
-      "height": 71
+      "width": 93,
+      "height": 43
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -608,7 +608,7 @@
       "a": 255
     },
     "_spriteFrame": {
-      "__uuid__": "59f675d6-0781-4cb0-8d9b-2fdc62569a83@f9941",
+      "__uuid__": "f5513c88-f067-4fb4-a39f-eddef33d0721@f9941",
       "__expectedType__": "cc.SpriteFrame"
     },
     "_type": 0,
@@ -666,7 +666,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -85.46,
+      "x": -70.46,
       "y": 0,
       "z": 0
     },
@@ -707,7 +707,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 99.59375,
+      "width": 67.59375,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -743,7 +743,7 @@
       "b": 255,
       "a": 255
     },
-    "_string": "剩余29分59秒",
+    "_string": "29分59秒",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 16,

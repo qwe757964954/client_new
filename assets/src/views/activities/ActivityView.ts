@@ -36,8 +36,14 @@ export class RankView extends BaseView {
     async initViews(){
         
         await Promise.all([
-            this.initViewComponent(PrefabType.ActivityNewPeople, (node) => this._activityNewPeople = node.getComponent(ActivityNewPeople)),
-            this.initViewComponent(PrefabType.WeekendCarouselView, (node) => this._weekendCarouselView = node.getComponent(WeekendCarouselView)),
+            this.initViewComponent(PrefabType.ActivityNewPeople, (node) => {
+                this._activityNewPeople = node.getComponent(ActivityNewPeople);
+                this._activityNewPeople.node.active = false;
+            }),
+            this.initViewComponent(PrefabType.WeekendCarouselView, (node) => {
+                this._weekendCarouselView = node.getComponent(WeekendCarouselView);
+                this._weekendCarouselView.node.active = false;
+            }),
         ]);
     }
     initTabs(){
@@ -84,7 +90,7 @@ export class RankView extends BaseView {
         }
     }
     private async initViewComponent(prefabType: PrefabTypeEntry, onComponentInit: (node: Node) => void, alignOptions?: object) {
-        let node = await this.loadAndInitPrefab(prefabType, this.node, alignOptions);
+        let node = await this.loadAndInitPrefab(prefabType, this.content_layout, alignOptions);
         onComponentInit(node);
     }
     private initNavTitle() {

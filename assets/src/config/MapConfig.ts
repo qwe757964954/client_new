@@ -188,4 +188,8 @@ export const MapConfig = {
         { id: 7, path: "spine/map/bh", names: ["forward", "backward", "anger"], pos: new Vec3(-3360, -1620, 10), rect: new Rect(-100, -20, 200, 120), scale: new Vec3(-1, 1, 1) },
         { id: 8, path: "spine/map/fenghuang", names: ["idle", "idle2"], pos: new Vec3(2750, -1850, 10), rect: new Rect(-200, 0, 400, 300) },
     ],
+    fence: {
+        pillar: "map/img_build_pillar/spriteFrame",
+        line: "map/img_build_line/spriteFrame",
+    },
 }
