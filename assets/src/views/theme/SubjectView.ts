@@ -47,7 +47,6 @@ export class SubjectView extends BasePopup {
     goPractice() {
         if (this._isRequesting) return;
         this._isRequesting = true;
-        // ServiceMgr.studyService.getSubjectArticleList(this._data.subject.subject_id);
         this.onGetPractice();
     }
 
@@ -61,13 +60,11 @@ export class SubjectView extends BasePopup {
     protected initEvent(): void {
         CCUtil.onTouch(this.closeBtn, this.closePop, this);
         CCUtil.onTouch(this.practiceBtn, this.goPractice, this);
-        EventMgr.addListener(InterfacePath.Subject_ArticleList, this.onGetPractice, this);
     }
 
     protected removeEvent(): void {
         CCUtil.offTouch(this.closeBtn, this.closePop, this);
         CCUtil.offTouch(this.practiceBtn, this.goPractice, this);
-        EventMgr.removeListener(InterfacePath.Subject_ArticleList, this);
     }
 
     onWordItemRender(item: Node, idx: number) {

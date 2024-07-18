@@ -1,30 +1,24 @@
 import { _decorator, Component, instantiate, Label, Node, Prefab, Sprite, tween, UITransform, Vec3 } from 'cc';
 import { BasePopup } from '../../script/BasePopup';
 import List from '../../util/list/List';
-import { ArticleItem } from './item/ArticleItem';
-import { ArticleExercise, ArticleExercisesListReply, QuestionKind, SubjectArticleListReply, WordGameSubjectReply } from '../../models/AdventureModel';
-import CCUtil from '../../util/CCUtil';
+import { Article, ArticleExercise, ArticleExercisesListReply, QuestionKind, Subject, SubjectArticleListReply } from '../../models/AdventureModel';
 import { ServiceMgr } from '../../net/ServiceManager';
-import { EventMgr } from '../../util/EventManager';
-import { InterfacePath } from '../../net/InterfacePath';
 import { ViewsMgr } from '../../manager/ViewsManager';
 import { ChoiceQuestion } from './ChoiceQuestion';
-import { PrefabType } from '../../config/PrefabType';
-import { ArticleView } from './ArticleView';
+import CCUtil from '../../util/CCUtil';
+import { EventMgr } from '../../util/EventManager';
+import { InterfacePath } from '../../net/InterfacePath';
+import { ArticleItem } from './item/ArticleItem';
 const { ccclass, property } = _decorator;
 
-@ccclass('PracticeView')
-export class PracticeView extends BasePopup {
+@ccclass('ArticleView')
+export class ArticleView extends BasePopup {
     @property(Node)
     public closeBtn: Node;
     @property(Label)
     public title: Label;
     @property(Sprite)
     public comicImg: Sprite;
-    @property(List)
-    public articleList: List;
-    @property(Node)
-    public readBtn: Node;
     @property(Node)
     public practiceBtn: Node;
     @property(Label)
@@ -39,32 +33,40 @@ export class PracticeView extends BasePopup {
     @property(Prefab)
     public choiceQuestionPrefab: Prefab; // 选择题
     @property(Node)
-    public preBtn: Node;
+    public preArticleBtn: Node;
     @property(Node)
-    public nextBtn: Node;
+    public nextArticleBtn: Node;
     @property(Label)
     public pageLabel: Label;
+    @property(Node)
+    public preQuestionBtn: Node;
+    @property(Node)
+    public nextQuestionBtn: Node;
+    @property(Label)
+    public questionPageLabel: Label;
+    @property(Label)
+    public articleLabel: Label;
+
     private _questionView: Node;
 
-    private _data: WordGameSubjectReply;
     private _isTweening: boolean = false;
     private _isShowPractice: boolean = false;
     private _isGettingPractice: boolean = false;
     private _questionList: ArticleExercise[] = [];
     private _currentQuestionIdx: number = 0; //当前题目索引
 
-    private _isGettingArticle: boolean = false;
+    private _currentArticleIdx: number = 0; //当前文章索引
 
-    public setData(data: WordGameSubjectReply) {
-        this._data = data;
-        this.title.string = data.subject.subject_name;
-        this.articleList.numItems = this._data.subject.dialogue_content.length;
-        console.log("ddddddddddd", data);
-        this.scheduleOnce(() => {
-            this.articleList.updateAll();
-        }, 0.05);
+    private _subjectData: Subject;
+    private _articleDatas: Article[];
+
+    public setData(subjectData: Subject, data: SubjectArticleListReply) {
+        this._articleDatas = data.article_list;
+        this._subjectData = subjectData;
+        this.title.string = subjectData.subject_name;
         this._isGettingPractice = true;
-        ServiceMgr.studyService.getArticleExercisesList(data.subject.subject_id);
+        this.showArticle();
+        ServiceMgr.studyService.getArticleExercisesList(subjectData.subject_id, this._articleDatas[this._currentArticleIdx].article_id);
     }
 
     showAnim(): Promise<void> {
@@ -74,26 +76,9 @@ export class PracticeView extends BasePopup {
         });
     }
 
-    gotoRead() {
-        if (this._isGettingArticle) return;
-        this._isGettingArticle = true;
-        ServiceMgr.studyService.getSubjectArticleList(this._data.subject.subject_id);
-    }
-
-    onGetArticle(data: SubjectArticleListReply) {
-        ViewsMgr.showPopup(PrefabType.ArticleView).then((node: Node) => {
-            this._isGettingArticle = false;
-            node.getComponent(ArticleView).setData(this._data.subject, data);
-        })
-    }
-
     gotoPractice() {
         if (this._isGettingPractice) {
             ViewsMgr.showTip("题目获取中,请稍后");
-            return;
-        }
-        if (this._questionList.length == 0) {
-            ViewsMgr.showTip("没有对应的练习题");
             return;
         }
         if (this._isTweening) return;
@@ -106,7 +91,7 @@ export class PracticeView extends BasePopup {
             tween(this.mainFrame).to(0.3, { position: new Vec3(-startPosX - frameTrans.width / 2 + 75, targetPos.y, targetPos.z) }).call(() => {
                 this._isTweening = false;
                 this._isShowPractice = true;
-                this.practiceLabel.string = "<< 看漫画";
+                this.practiceLabel.string = "<< 去阅读";
             }).start();
         } else {
             tween(this.mainFrame).to(0.3, { position: new Vec3(-frameTrans.width / 2, targetPos.y, targetPos.z) }).call(() => {
@@ -119,13 +104,13 @@ export class PracticeView extends BasePopup {
 
     onGetExerciseList(data: ArticleExercisesListReply) {
         console.log("ArticleExercisesListReply", data);
-        EventMgr.removeListener(InterfacePath.Article_ExercisesList, this);
         this._isGettingPractice = false;
         this._questionList = data.exercises_list;
         this._currentQuestionIdx = 0;
         if (this._questionList.length == 0) {
             this.practiceBtn.active = false;
         } else {
+            this.practiceBtn.active = true;
             this.showQuestion();
         }
     }
@@ -135,13 +120,16 @@ export class PracticeView extends BasePopup {
             this._questionView.destroy();
         }
         let question = this._questionList[this._currentQuestionIdx];
-        if (!question) return;
+        if (!question) {
+            ViewsMgr.showTip("没有对应的练习题");
+            return;
+        }
         if (question.kind == QuestionKind.Choice) { //选择题
             this._questionView = instantiate(this.choiceQuestionPrefab);
             this._questionView.parent = this.questionNode;
             this._questionView.getComponent(ChoiceQuestion).setData(question, this._currentQuestionIdx);
         }
-        this.pageLabel.string = (this._currentQuestionIdx + 1) + "/" + this._questionList.length;
+        this.questionPageLabel.string = (this._currentQuestionIdx + 1) + "/" + this._questionList.length;
     }
 
     preQuestion() {
@@ -159,29 +147,46 @@ export class PracticeView extends BasePopup {
         this.showQuestion();
     }
 
+    preArticle() {
+        this._currentArticleIdx--;
+        if (this._currentArticleIdx < 0) {
+            this._currentArticleIdx = this._articleDatas.length - 1;
+        }
+        this.showArticle();
+    }
+    nextArticle() {
+        this._currentArticleIdx++;
+        if (this._currentArticleIdx >= this._articleDatas.length) {
+            this._currentArticleIdx = 0;
+        }
+        this.showArticle();
+    }
+
+    showArticle() {
+        this.articleLabel.string = this._articleDatas[this._currentArticleIdx].article;
+        this.pageLabel.string = (this._currentArticleIdx + 1) + "/" + this._articleDatas.length;
+        ServiceMgr.studyService.getArticleExercisesList(this._subjectData.subject_id, this._articleDatas[this._currentArticleIdx].article_id);
+        this._isGettingPractice = true;
+    }
+
     protected initEvent(): void {
         CCUtil.onTouch(this.closeBtn, this.closePop, this);
-        CCUtil.onTouch(this.readBtn, this.gotoRead, this);
         CCUtil.onTouch(this.practiceBtn, this.gotoPractice, this);
-        CCUtil.onTouch(this.preBtn, this.preQuestion, this);
-        CCUtil.onTouch(this.nextBtn, this.nextQuestion, this);
+        CCUtil.onTouch(this.preQuestionBtn, this.preQuestion, this);
+        CCUtil.onTouch(this.nextQuestionBtn, this.nextQuestion, this);
+        CCUtil.onTouch(this.preArticleBtn, this.preArticle, this);
+        CCUtil.onTouch(this.nextArticleBtn, this.nextArticle, this);
         EventMgr.addListener(InterfacePath.Article_ExercisesList, this.onGetExerciseList, this);
-        EventMgr.addListener(InterfacePath.Subject_ArticleList, this.onGetArticle, this);
     }
 
     protected removeEvent(): void {
         CCUtil.offTouch(this.closeBtn, this.closePop, this);
-        CCUtil.offTouch(this.readBtn, this.gotoRead, this);
         CCUtil.offTouch(this.practiceBtn, this.gotoPractice, this);
-        CCUtil.offTouch(this.preBtn, this.preQuestion, this);
-        CCUtil.offTouch(this.nextBtn, this.nextQuestion, this);
+        CCUtil.offTouch(this.preQuestionBtn, this.preQuestion, this);
+        CCUtil.offTouch(this.nextQuestionBtn, this.nextQuestion, this);
+        CCUtil.offTouch(this.preArticleBtn, this.preArticle, this);
+        CCUtil.offTouch(this.nextArticleBtn, this.nextArticle, this);
         EventMgr.removeListener(InterfacePath.Article_ExercisesList, this);
-        EventMgr.removeListener(InterfacePath.Subject_ArticleList, this);
-    }
-
-    onArticleListRender(item: Node, idx: number) {
-        let itemSp = item.getComponent(ArticleItem);
-        itemSp.setData(this._data.subject.dialogue_content[idx]);
     }
 }
 
