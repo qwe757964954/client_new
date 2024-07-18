@@ -1,4 +1,5 @@
 import { _decorator, error, Label, Node, Sprite, SpriteFrame, UITransform } from 'cc';
+import { LoadManager } from '../../manager/LoadManager';
 import { ResLoader } from '../../manager/ResLoader';
 import ListItem from '../../util/list/ListItem';
 import { AmoutItemData, AmoutType } from './TopAmoutView';
@@ -65,6 +66,11 @@ export class AmoutItem extends ListItem {
             if (err) {
                 error && console.error(err);
             }
+            spriteFrame.addRef();
+            // 多次设置会多次增加监听
+            node.once(Node.EventType.NODE_DESTROYED, () => {
+                LoadManager.releaseAsset(spriteFrame);
+            });
             node.getComponent(Sprite).spriteFrame = spriteFrame;
         });
     }
