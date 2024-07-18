@@ -12,10 +12,11 @@ import { ViewsMgr } from '../../manager/ViewsManager';
 import { PrefabType } from '../../config/PrefabType';
 import { PracticeView } from './PracticeView';
 import { KnowlegeItem } from './item/KnowlegeItem';
+import { BaseView } from '../../script/BaseView';
 const { ccclass, property } = _decorator;
 
 @ccclass('SubjectView')
-export class SubjectView extends BasePopup {
+export class SubjectView extends BaseView {
     @property(Node)
     public closeBtn: Node;
     @property(Label)
@@ -37,13 +38,6 @@ export class SubjectView extends BasePopup {
         this.knowledgeList.numItems = data.subject.sentence_knowledge.length;
     }
 
-    showAnim(): Promise<void> {
-        return new Promise<void>((resolve) => {
-            this.initUI();
-            resolve();
-        });
-    }
-
     goPractice() {
         if (this._isRequesting) return;
         this._isRequesting = true;
@@ -51,19 +45,22 @@ export class SubjectView extends BasePopup {
     }
 
     onGetPractice() {
-        ViewsMgr.showPopup(PrefabType.PracticeView).then((node: Node) => {
+        ViewsMgr.showView(PrefabType.PracticeView, (node) => {
             this._isRequesting = false;
             node.getComponent(PracticeView).setData(this._data);
         })
     }
 
+    closeView() {
+        ViewsMgr.closeView(PrefabType.SubjectView);
+    }
     protected initEvent(): void {
-        CCUtil.onTouch(this.closeBtn, this.closePop, this);
+        CCUtil.onTouch(this.closeBtn, this.closeView, this);
         CCUtil.onTouch(this.practiceBtn, this.goPractice, this);
     }
 
     protected removeEvent(): void {
-        CCUtil.offTouch(this.closeBtn, this.closePop, this);
+        CCUtil.offTouch(this.closeBtn, this.closeView, this);
         CCUtil.offTouch(this.practiceBtn, this.goPractice, this);
     }
 

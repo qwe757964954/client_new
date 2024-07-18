@@ -245,7 +245,7 @@ export class rightPanelchange extends Component {
     onWordGameSubject(data: WordGameSubjectReply) {
         this._isGetSubject = false;
         console.log("WordGameSubjectReply", data);
-        ViewsMgr.showPopup(PrefabType.SubjectView).then((node) => {
+        ViewsMgr.showView(PrefabType.SubjectView, (node) => {
             node.getComponent(SubjectView).setData(data);
         })
     }

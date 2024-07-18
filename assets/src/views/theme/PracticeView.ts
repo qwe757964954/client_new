@@ -11,10 +11,11 @@ import { ViewsMgr } from '../../manager/ViewsManager';
 import { ChoiceQuestion } from './ChoiceQuestion';
 import { PrefabType } from '../../config/PrefabType';
 import { ArticleView } from './ArticleView';
+import { BaseView } from '../../script/BaseView';
 const { ccclass, property } = _decorator;
 
 @ccclass('PracticeView')
-export class PracticeView extends BasePopup {
+export class PracticeView extends BaseView {
     @property(Node)
     public closeBtn: Node;
     @property(Label)
@@ -67,13 +68,6 @@ export class PracticeView extends BasePopup {
         ServiceMgr.studyService.getArticleExercisesList(data.subject.subject_id);
     }
 
-    showAnim(): Promise<void> {
-        return new Promise<void>((resolve) => {
-            this.initUI();
-            resolve();
-        });
-    }
-
     gotoRead() {
         if (this._isGettingArticle) return;
         this._isGettingArticle = true;
@@ -81,7 +75,7 @@ export class PracticeView extends BasePopup {
     }
 
     onGetArticle(data: SubjectArticleListReply) {
-        ViewsMgr.showPopup(PrefabType.ArticleView).then((node: Node) => {
+        ViewsMgr.showView(PrefabType.ArticleView, (node) => {
             this._isGettingArticle = false;
             node.getComponent(ArticleView).setData(this._data.subject, data);
         })
@@ -157,6 +151,10 @@ export class PracticeView extends BasePopup {
             this._currentQuestionIdx = 0;
         }
         this.showQuestion();
+    }
+
+    closePop() {
+        this.node.destroy();
     }
 
     protected initEvent(): void {

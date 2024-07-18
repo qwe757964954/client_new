@@ -9,10 +9,11 @@ import CCUtil from '../../util/CCUtil';
 import { EventMgr } from '../../util/EventManager';
 import { InterfacePath } from '../../net/InterfacePath';
 import { ArticleItem } from './item/ArticleItem';
+import { BaseView } from '../../script/BaseView';
 const { ccclass, property } = _decorator;
 
 @ccclass('ArticleView')
-export class ArticleView extends BasePopup {
+export class ArticleView extends BaseView {
     @property(Node)
     public closeBtn: Node;
     @property(Label)
@@ -67,13 +68,6 @@ export class ArticleView extends BasePopup {
         this._isGettingPractice = true;
         this.showArticle();
         ServiceMgr.studyService.getArticleExercisesList(subjectData.subject_id, this._articleDatas[this._currentArticleIdx].article_id);
-    }
-
-    showAnim(): Promise<void> {
-        return new Promise<void>((resolve) => {
-            this.initUI();
-            resolve();
-        });
     }
 
     gotoPractice() {
@@ -167,6 +161,10 @@ export class ArticleView extends BasePopup {
         this.pageLabel.string = (this._currentArticleIdx + 1) + "/" + this._articleDatas.length;
         ServiceMgr.studyService.getArticleExercisesList(this._subjectData.subject_id, this._articleDatas[this._currentArticleIdx].article_id);
         this._isGettingPractice = true;
+    }
+
+    closePop() {
+        this.node.destroy();
     }
 
     protected initEvent(): void {
