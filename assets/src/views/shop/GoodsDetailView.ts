@@ -1,4 +1,5 @@
 import { _decorator, Label, Node, Sprite, SpriteFrame } from 'cc';
+import { EventType } from '../../config/EventType';
 import { TextConfig } from '../../config/TextConfig';
 import { EditInfo } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
@@ -53,6 +54,12 @@ export class GoodsDetailView extends BasePopup {
         });
     }
 
+    protected onInitModuleEvent(): void {
+        this.addModelListener(EventType.EditUIView_Refresh, this.onRepShopBuyBuilding.bind(this));
+    }
+    onRepShopBuyBuilding(){
+        this.onClickClose();
+    }
     /** 初始化事件 */
     public initEvent() {
         CCUtil.onTouch(this.btnClose, this.onClickClose, this);
@@ -85,7 +92,7 @@ export class GoodsDetailView extends BasePopup {
         ViewsManager.showConfirm(content_str, () => {
             ServiceMgr.buildingService.reqBuyBuilding(this._data.id);
         })
-        this.onClickClose();
+        
         // ServiceMgr.shopService.buyGood(this._data.id);
         // EventMgr.emit(EventType.New_Building, this._data);
         // ViewsMgr.closeView(PrefabType.ShopUIView);
