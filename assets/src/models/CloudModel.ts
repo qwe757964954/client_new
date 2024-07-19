@@ -14,6 +14,7 @@ const { ccclass, property } = _decorator;
 export class CloudModel extends BaseModel {
     private _img: Sprite = null;//图片
     private _label: Label = null;//文字
+    private _unlockNode: Node = null;//解锁节点
 
     // y从上往下，x从右往左
     private _x: number;//x格子坐标
@@ -128,6 +129,7 @@ export class CloudModel extends BaseModel {
         this.refreshTimeEx();
     }
     public refreshTimeEx() {
+        if (null == this._unlockTime) return;
         let leftTime = this._unlockTime - ToolUtil.now();
         if (leftTime > 0) {
             if (this._label)
@@ -136,6 +138,21 @@ export class CloudModel extends BaseModel {
             if (this._label)
                 this._label.string = "已解锁";
             this._isUnlock = true;
+        }
+    }
+    /**刷新UI显示 */
+    public refreshUIView() {
+        if (null != this._unlockTime) {
+            if (this._unlockTime >= ToolUtil.now()) {
+                if (this._label) this._label.node.active = false;
+                if (this._unlockNode) this._unlockNode.active = true;
+            } else {
+                if (this._label) this._label.node.active = true;
+                if (this._unlockNode) this._unlockNode.active = false;
+            }
+        } else {
+            if (this._label) this._label.node.active = false;
+            if (this._unlockNode) this._unlockNode.active = false;
         }
     }
     //显示图片
@@ -173,14 +190,11 @@ export class CloudModel extends BaseModel {
                 this._node = node;
                 this._node.active = this._isShow;
                 this._node.position = this._pos;
-                this._img = this._node.getComponentInChildren(Sprite);
-                this._label = this._node.getComponentInChildren(Label);
-                if (null != this._unlockTime) {
-                    this._label.node.active = true;
-                    this.refreshTimeEx();
-                } else {
-                    this._label.node.active = false;
-                }
+                this._img = this._node.getChildByName("Sprite").getComponent(Sprite);
+                this._label = this._node.getChildByName("Label").getComponent(Label);
+                this._unlockNode = this._node.getChildByName("img_right");
+                this.refreshUIView();
+                this.refreshTimeEx();
 
                 if (this._isLoad) {
                     this.showImg(callBack);

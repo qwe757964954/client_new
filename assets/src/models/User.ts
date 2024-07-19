@@ -206,6 +206,11 @@ class UserModel {
         if (this._buildingList.find(item => item === id)) return;
         this._buildingList.push(id);
     }
+    public deleteBuilding(id: number) {
+        let index = this._buildingList.indexOf(id);
+        if (-1 == index) return;
+        this._buildingList.splice(index, 1);
+    }
     public get buildingList(): readonly number[] {
         return this._buildingList;
     }

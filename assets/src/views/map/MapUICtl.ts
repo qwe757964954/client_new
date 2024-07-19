@@ -742,6 +742,7 @@ export class MapUICtl extends MainBaseCtl {
                 let building = this.findBuilding(id);
                 if (!building) return;
                 building.sell(true);
+                User.deleteBuilding(building.editInfo.id);
             });
         }
     }
