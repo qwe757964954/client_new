@@ -189,6 +189,7 @@ export class TextbookChallengeView extends BaseView {
         const node = await ViewsManager.instance.showLearnView(PrefabType.BreakThroughView);
         const itemScript = node.getComponent(BreakThroughView);
         itemScript.initData(this._bookData, this._unitListArr);
+        ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);
     }
     
     // 显示 ChangeBookView

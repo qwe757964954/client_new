@@ -281,7 +281,8 @@ export class BreakThroughView extends BaseView {
     }
 
     async initNavTitle() {
-        this.createNavigation(`${this._bookData.book_name} ${this._bookData.grade}`, this.top_layout, () => {
+        this.createNavigation(`${this._bookData.book_name} ${this._bookData.grade}`, this.top_layout, async () =>  {
+            const node = await ViewsManager.instance.showLearnView(PrefabType.TextbookChallengeView); 
             ViewsManager.instance.closeView(PrefabType.BreakThroughView);
         });
     }
