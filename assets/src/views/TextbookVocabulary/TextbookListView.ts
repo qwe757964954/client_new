@@ -31,13 +31,9 @@ export class TextbookListView extends BaseView {
 
     private _curBookData: CurrentBookStatus = null;
     initEvent() {
-        CCUtil.onTouch(this.add_textbook_bg, this.onClickAddTextbook, this);
+        CCUtil.onBtnClick(this.add_textbook_bg, this.onClickAddTextbook.bind(this));
     }
 
-    /**移除监听 */
-    removeEvent() {
-        CCUtil.offTouch(this.add_textbook_bg, this.onClickAddTextbook, this);
-    }
     protected initUI() {
         this.viewAdaptSize();
         this.initNavTitle();
