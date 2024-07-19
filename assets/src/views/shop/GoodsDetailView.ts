@@ -85,6 +85,7 @@ export class GoodsDetailView extends BasePopup {
         ViewsManager.showConfirm(content_str, () => {
             ServiceMgr.buildingService.reqBuyBuilding(this._data.id);
         })
+        this.onClickClose();
         // ServiceMgr.shopService.buyGood(this._data.id);
         // EventMgr.emit(EventType.New_Building, this._data);
         // ViewsMgr.closeView(PrefabType.ShopUIView);
