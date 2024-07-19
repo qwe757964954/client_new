@@ -161,7 +161,7 @@ export class TextbookListView extends BaseView {
     onClickAddTextbook() {
         console.log("onClickAddTextbook");
         ViewsManager.instance.showView(PrefabType.SelectWordView, (node: Node) => {
-            ViewsManager.instance.closeView(PrefabType.TextbookListView);
+            // ViewsManager.instance.closeView(PrefabType.TextbookListView);
         });
     }
 }
