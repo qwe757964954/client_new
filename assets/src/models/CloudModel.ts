@@ -27,7 +27,7 @@ export class CloudModel extends BaseModel {
     private _showID: number = 0;//显示id
     private _isLoadOver: boolean = false;//图片是否加载完成
     private _timer: number = null;//定时器
-
+    private _uiNodeShow: boolean = true;//是否显示
     public get unlockTime(): number {
         return this._unlockTime;
     }
@@ -79,7 +79,8 @@ export class CloudModel extends BaseModel {
         this._pos = pos;
         if (this._node)
             this._node.position = pos;
-        this._zIndex = -pos.y;
+        // this._zIndex = -pos.y;
+        this._zIndex = -(gridPos.y - this._width * gridInfo.height * 0.5);//描点
     }
     public set showID(showID: number) {
         this._showID = showID;
@@ -140,14 +141,29 @@ export class CloudModel extends BaseModel {
             this._isUnlock = true;
         }
     }
+    /**显示UI */
+    public showUIView() {
+        this._uiNodeShow = true;
+        this.refreshUIView();
+    }
+    /**隐藏UI */
+    public hideUIView() {
+        this._uiNodeShow = false;
+        this.refreshUIView();
+    }
     /**刷新UI显示 */
     public refreshUIView() {
-        if (null != this._unlockTime) {
-            if (this._unlockTime >= ToolUtil.now()) {
-                if (this._label) this._label.node.active = false;
-                if (this._unlockNode) this._unlockNode.active = true;
+        if (this._uiNodeShow) {
+            if (null != this._unlockTime) {
+                if (this._unlockTime <= ToolUtil.now()) {
+                    if (this._label) this._label.node.active = false;
+                    if (this._unlockNode) this._unlockNode.active = true;
+                } else {
+                    if (this._label) this._label.node.active = true;
+                    if (this._unlockNode) this._unlockNode.active = false;
+                }
             } else {
-                if (this._label) this._label.node.active = true;
+                if (this._label) this._label.node.active = false;
                 if (this._unlockNode) this._unlockNode.active = false;
             }
         } else {

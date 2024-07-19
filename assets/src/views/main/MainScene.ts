@@ -315,7 +315,7 @@ export class MainScene extends BaseComponent {
     /** 角色拖动结束 */
     onRoleDragEnd(role: RoleDataModel) {
         if (!role) return;
-        console.log("onRoleDragEnd", role);
+        // console.log("onRoleDragEnd", role);
         let pos = role.pos;
         let grid = this._mapUICtl.getGridByPos(pos.x, pos.y);
         if (grid && !grid.cloud) {

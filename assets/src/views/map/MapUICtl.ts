@@ -1013,6 +1013,7 @@ export class MapUICtl extends MainBaseCtl {
     /** 是否显示所有建筑UI */
     public set buildingUIIsShow(isShow: boolean) {
         if (this._buildingUIIsShow == isShow) return;
+        // this._mainScene.mapUICamera.node.active = isShow;
         this._buildingUIIsShow = isShow;
         this._buidingModelAry.forEach(building => {
             if (isShow) {
@@ -1021,6 +1022,13 @@ export class MapUICtl extends MainBaseCtl {
                 building.hideUIView();
             }
         });
+        this._cloudModelAry.forEach(cloud => {
+            if (isShow) {
+                cloud.showUIView();
+            } else {
+                cloud.hideUIView();
+            }
+        })
     }
     /**每帧更新 */
     update(dt: number): void {
