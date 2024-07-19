@@ -28,6 +28,7 @@ export const TextConfig = {
     // Building_Edit_Error: "该建筑不能编辑!",
     Building_New_Error: "该位置建筑不能放置!",
     Building_Product_Full: "当前生产队列已满，请稍后再加入制作",
+    Building_Product_Start: "开始制作",
     Building_Product_Delete: "是否删除此生产",
     Building_Product_Get_Error: "还未生产完成，请稍后再来领取",
     Building_Product_Error: "建筑正在升级中，等升级完成后再制作吧～",

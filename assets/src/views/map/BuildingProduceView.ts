@@ -233,6 +233,11 @@ export class BuildingProduceView extends BaseComponent {
     onBuildingProduceAdd(data: s2cBuildingProduceAdd) {
         // console.log("onBuildingProduceAdd", this._building.buildingID);
         if (data.id != this._building.buildingID) return;
+        if (200 != data.code) {
+            ViewsMgr.showTip(data.msg);
+            return;
+        }
+        ViewsMgr.showTip(TextConfig.Building_Product_Start);
         this._building.setProducts(data.remaining_infos);
         this.onUpdateQueue();
     }
