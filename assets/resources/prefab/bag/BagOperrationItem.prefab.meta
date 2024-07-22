@@ -2,12 +2,12 @@
   "ver": "1.1.50",
   "importer": "prefab",
   "imported": true,
-  "uuid": "bedd9f48-c96a-4252-bb3a-0d76024ea514",
+  "uuid": "765991ea-51e4-49d5-9a1a-0e6ee0d97aed",
   "files": [
     ".json"
   ],
   "subMetas": {},
   "userData": {
-    "syncNodeName": "TextbookRemindView"
+    "syncNodeName": "BagOperrationItem"
   }
 }

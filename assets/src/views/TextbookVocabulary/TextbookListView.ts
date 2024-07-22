@@ -1,7 +1,7 @@
 import { _decorator, isValid, Node } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
-import { ViewsManager } from '../../manager/ViewsManager';
+import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { CurrentBookStatus, MyTextbookListStatus, MyTextbookStatus } from '../../models/TextbookModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
@@ -9,7 +9,6 @@ import { TBServer } from '../../service/TextbookService';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
 import { MyContentItem } from './MyContentItem';
-import { ITextbookRemindData, TextbookRemindView } from './TextbookRemindView';
 const { ccclass, property } = _decorator;
 
 @ccclass('TextbookListView')
@@ -95,28 +94,13 @@ export class TextbookListView extends BaseView {
         let itemInfo: MyTextbookStatus = this._myTextbookDataArr[idx];
         myTextbookItemScript.updateMyContentItemProps(idx, itemInfo);
         myTextbookItemScript.setDeleteClickCallback((delIdx: number, bookStatus: MyTextbookStatus) => {
-            let data: ITextbookRemindData = {
-                sure_text: TextConfig.Sure_Tip,
-                cancel_text: TextConfig.Cancel_Tip,
-                content_text: TextConfig.Textbook_Delete_Tip.replace("s%",`${itemInfo.book_name}(${itemInfo.grade})`),
-                callFunc: (isSure: boolean) => {
-                    if (isSure) {
-                        this.myScrollView.aniDelItem(delIdx, () => {
-                            TBServer.reqBookDel(bookStatus)
-                        }, -1)
-                    }
-                }
-            }
-            this.showRemainCalL(data);
+            ViewsMgr.showConfirm(TextConfig.Textbook_Delete_Tip.replace("s%",`${itemInfo.book_name}(${itemInfo.grade})`), () => {
+                this.myScrollView.aniDelItem(delIdx, () => {
+                    TBServer.reqBookDel(bookStatus)
+                }, -1)
+            });
         });
     }
-    showRemainCalL(data: ITextbookRemindData) {
-        ViewsManager.instance.showPopup(PrefabType.TextbookRemindView).then((node: Node)=>{
-            let remindScript: TextbookRemindView = node.getComponent(TextbookRemindView);
-            remindScript.initRemind(data);
-        });
-    }
-
     onMyTextBookVerticalSelected(item: any, selectedId: number, lastSelectedId: number, val: number) {
         /**
          * -1主要是用于重置scrollview selectid ,需过滤
@@ -125,22 +109,14 @@ export class TextbookListView extends BaseView {
             return;
         }
         let itemInfo: MyTextbookStatus = this._myTextbookDataArr[selectedId];
-        let data: ITextbookRemindData = {
-            sure_text: TextConfig.Sure_Tip,
-            cancel_text: TextConfig.Cancel_Tip,
-            content_text:TextConfig.Textbook_Change_Tip.replace("s%",`《${itemInfo.book_name}${itemInfo.grade}》`),
-            callFunc: (isSure: boolean) => {
-                if (isSure) {
-                    ViewsManager.showTip(TextConfig.Success_Change_Book.replace("s%",`《${itemInfo.book_name}${itemInfo.grade}》`));
-                    TBServer.reqChangeTextbook(itemInfo.book_id);
-                }else{
-                    let select_id = this.getSelectDataIndex()
-                    this.myScrollView.selectedId = select_id;
-                }
-            }
-        }
         if (itemInfo.book_id !== this._curBookData.book_id) {
-            this.showRemainCalL(data);
+            ViewsMgr.showConfirm(TextConfig.Textbook_Change_Tip.replace("s%",`《${itemInfo.book_name}${itemInfo.grade}》`), () => {
+                ViewsManager.showTip(TextConfig.Success_Change_Book.replace("s%",`《${itemInfo.book_name}${itemInfo.grade}》`));
+                    TBServer.reqChangeTextbook(itemInfo.book_id);
+            },() => {
+                let select_id = this.getSelectDataIndex()
+                this.myScrollView.selectedId = select_id;
+            });
         }
     }
 

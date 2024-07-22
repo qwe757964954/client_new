@@ -76,6 +76,7 @@ export class SelectWordView extends BaseView {
     }
     onAddPlanBook(data){
         ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
+            ViewsManager.instance.closeView(PrefabType.TextbookListView);
             ViewsManager.instance.closeView(PrefabType.SelectWordView);
         });
     }
@@ -120,7 +121,7 @@ export class SelectWordView extends BaseView {
 
     /**初始化导航栏 */
     initNavTitle(){
-        this.createNavigation("添加词书",this.top_layout, () => {
+        this.createNavigation("添加词书",this.top_layout, async () => {
             ViewsManager.instance.closeView(PrefabType.SelectWordView);
         });
     }

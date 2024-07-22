@@ -1,7 +1,6 @@
 import { _decorator, Color, instantiate, isValid, Layers, Node, Prefab, UITransform, v3 } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
-import { TextConfig } from '../../config/TextConfig';
 import { ItemID } from '../../export/ItemConfig';
 import { ItemData } from '../../manager/DataMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
@@ -15,8 +14,11 @@ import { NodeUtil } from '../../util/NodeUtil';
 import { RewardItem } from '../common/RewardItem';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { BagDressItem } from './BagDressItem';
-import { BagGressItems, BagTabNames } from './BagInfo';
+import { BagGressItems, BagOperationData, BagOperationIds, BagOperationNames, BagTabNames } from './BagInfo';
+import { BagOperrationItem } from './BagOperrationItem';
 import { BagTabItem } from './BagTabItem';
+import { BreakdownView } from './BreakdownView';
+import { CompositeBagView } from './CompositeBagView';
 const { ccclass, property } = _decorator;
 
 @ccclass('BagDialogView')
@@ -40,20 +42,21 @@ export class BagDialogView extends BaseView {
     @property({ type: Node, tooltip: "角色容器" })
     public roleContainer: Node = null;
 
-    @property(Node)
-    public btnDicomposeSell:Node = null;
+    @property(List)
+    public tabList:List = null;
+    @property(List)
+    public dress_list:List = null;
 
     @property(List)
-    @property tabList:List = null;
-    @property(List)
-    @property dress_list:List = null;
+    public op_list:List = null;
+
     private _currentTab: string = "1"; //当前tab页
 
     private _role: Node = null;
 
     initEvent() {
         CCUtil.onBtnClick(this.btn_close, this.onCloseView.bind(this));
-        CCUtil.onBtnClick(this.btnDicomposeSell, this.onDicomposeSell.bind(this));
+        // CCUtil.onBtnClick(this.btnDicomposeSell, this.onDicomposeSell.bind(this));
     }
     protected onInitModuleEvent() {
         this.addModelListeners([
@@ -69,7 +72,8 @@ export class BagDialogView extends BaseView {
         this.tabList.selectedId = 0;
         this.dress_list.numItems = BagGressItems.length;
         this.propList.numItems = 40;
-
+        this.op_list.numItems = BagOperationNames.length;
+        this.op_list.selectedId = 0;
     }
     onClickTab() {
         let curTabIndex: number = +this._currentTab;
@@ -117,14 +121,14 @@ export class BagDialogView extends BaseView {
         ViewsManager.instance.closeView(PrefabType.BagView);
     }
     onDicomposeSell(){
-        ViewsManager.instance.showTip(TextConfig.Function_Tip);
+        // ViewsManager.instance.showTip(TextConfig.Function_Tip);
     }
     /**显示角色的骨骼动画 */
     private showRoleDress() {
         this.roleContainer.removeAllChildren();
         this._role = null;
         this._role = instantiate(this.roleModel);
-        this._role.setScale(v3(1.5, 1.5, 1));
+        this._role.setScale(v3(2, 2, 1));
         this.roleContainer.addChild(this._role);
         NodeUtil.setLayerRecursively(this._role, Layers.Enum.UI_2D);
         let roleModel = this._role.getComponent(RoleBaseModel);
@@ -189,6 +193,46 @@ export class BagDialogView extends BaseView {
             item_script.tab_name.color = new Color("#CAC4B7");
             
         }
+    }
+
+    onOperationHorizontal(item:Node, idx:number){
+        let item_script = item.getComponent(BagOperrationItem);
+        item_script.updateOperationProps(BagOperationNames[idx]);
+    }
+
+    onOperationHorizontalSelected(item: any, selectedId: number, lastSelectedId: number, val: number) {
+        if(!isValid(selectedId) || selectedId < 0 || !isValid(item)){return;}
+        console.log("onTabHorizontalSelected",selectedId);
+        this.onOperationClick(BagOperationNames[selectedId]);
+    }
+
+    onOperationClick(data:BagOperationData){
+        switch (data.id) {
+            case BagOperationIds.Outfit:
+                
+                break;
+            case BagOperationIds.UnOutfit:
+                
+                break;
+            case BagOperationIds.Disassemble:
+                this.onDisassemble();
+                break;
+            case BagOperationIds.Combine:
+                this.onComposite();
+                break;
+            default:
+                break;
+        }
+    }
+    async onDisassemble(){
+        console.log("onDisassemble��解");
+        let node = await ViewsManager.instance.showPopup(PrefabType.BreakdownView);
+        let nodeScript = node.getComponent(BreakdownView)
+    }
+    async onComposite(){
+        console.log("onComposite....");
+        let node = await ViewsManager.instance.showPopup(PrefabType.CompositeBagView);
+        let nodeScript = node.getComponent(CompositeBagView)
     }
 }
 

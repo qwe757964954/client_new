@@ -14,6 +14,32 @@ export const BagTabNames = [
     { id: BagTabIds.Others, title: "其他" }
 ];
 
+export enum BagOperationIds {
+    Outfit = 1,
+    UnOutfit,
+    Disassemble,
+    Combine
+}
+
+export enum BagOperationType {
+    Orange,
+    Gray
+} 
+
+
+export interface BagOperationData {
+    id: BagOperationIds;
+    title: string;
+    btnType: BagOperationType;
+}
+
+// 使用枚举值来定义 BagTabNames 数组
+export const BagOperationNames:BagOperationData[] = [
+    { id: BagOperationIds.Outfit, title: "穿戴",btnType: BagOperationType.Orange },
+    { id: BagOperationIds.UnOutfit, title: "卸下",btnType: BagOperationType.Gray },
+    { id: BagOperationIds.Disassemble, title: "分解",btnType: BagOperationType.Orange },
+    { id: BagOperationIds.Combine, title: "合成",btnType: BagOperationType.Gray }
+];
 
 // 定义枚举
 export enum BagGressItemIds {

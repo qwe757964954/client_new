@@ -1,9 +1,13 @@
 import { Label, Node, _decorator } from 'cc';
 import { BasePopup } from '../../script/BasePopup';
 import CCUtil from '../../util/CCUtil';
-import { ITextbookRemindData } from './TextbookRemindView';
 const { ccclass, property } = _decorator;
-
+export interface ITextbookRemindData {
+    sure_text?: string;
+    cancel_text?: string;
+    content_text?: string;
+    callFunc?:(isSure:boolean)=>void;
+}
 @ccclass('BreakThroughRemindView')
 export class BreakThroughRemindView extends BasePopup {
     @property(Label)

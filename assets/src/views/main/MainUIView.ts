@@ -111,8 +111,8 @@ export class MainUIView extends BaseView {
     }
     /**运营活动 */
     async onClickOperationalActivities() {
-        ViewsManager.instance.showTip(TextConfig.Function_Tip);
-        return
+        // ViewsManager.instance.showTip(TextConfig.Function_Tip);
+        // return
         await ViewsManager.instance.showViewAsync(PrefabType.ActivityView);
     }
 
@@ -123,8 +123,8 @@ export class MainUIView extends BaseView {
     }
     //菜单点击
     public onClickMenu() {
-        ViewsManager.instance.showTip(TextConfig.Function_Tip);
-        return
+        // ViewsManager.instance.showTip(TextConfig.Function_Tip);
+        // return
         this.node.getChildByName('mask_node').active = true;
         this._mainRightActivity.onHidenClick();
         // User.isAutoLogin = false;
