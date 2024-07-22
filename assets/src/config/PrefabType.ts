@@ -98,7 +98,6 @@ export const PrefabType = {
     SettingPlanView: { path: "textbook/SettingPlanView", componentName: "SettingPlanView", zindex: Hierarchy.POPUPLAYER, tips: "计划设置dialog模块" },
     ScrollMapView: { path: "textbook/ScrollMapView", zindex: Hierarchy.POPUPLAYER, tips: "滑动地图模块" },
     BreakThroughView: { path: "textbook/BreakThroughView", zindex: Hierarchy.POPUPLAYER, tips: "单词大冒险挑战模块" },
-    TextbookRemindView: { path: "textbook/TextbookRemindView", componentName: "TextbookRemindView", zindex: Hierarchy.POPUPLAYER, tips: "二级确认弹窗" },
     BreakThroughRemindView: { path: "textbook/BreakThroughRemindView", componentName: "BreakThroughRemindView", zindex: Hierarchy.POPUPLAYER, tips: "二级确认弹窗" },
     ChallengeRemindView: { path: "textbook/ChallengeRemindView", componentName: "ChallengeRemindView", zindex: Hierarchy.POPUPLAYER, tips: "首次故事背景引导" },
     SearchWorldView: { path: "textbook/SearchWordView", zindex: Hierarchy.POPUPLAYER, tips: "查找单词弹窗" },

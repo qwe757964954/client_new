@@ -20,8 +20,7 @@ import { WordPracticeView } from '../adventure/sixModes/WordPracticeView';
 import { WordReadingView } from '../adventure/sixModes/WordReadingView';
 import { WordSpellView } from '../adventure/sixModes/WordSpellView';
 import { AmoutItemData, AmoutType } from '../common/TopAmoutView';
-import { BreakThroughRemindView } from '../TextbookVocabulary/BreakThroughRemindView';
-import { ITextbookRemindData } from '../TextbookVocabulary/TextbookRemindView';
+import { BreakThroughRemindView, ITextbookRemindData } from '../TextbookVocabulary/BreakThroughRemindView';
 import { ScrollMapView } from './ScrollMapView';
 
 const { ccclass, property } = _decorator;
