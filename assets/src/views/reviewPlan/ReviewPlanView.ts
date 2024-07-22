@@ -5,14 +5,16 @@ import GlobalConfig from '../../GlobalConfig';
 import { ItemData } from '../../manager/DataMgr';
 import { ViewsMgr } from '../../manager/ViewsManager';
 import { s2cReviewPlan, s2cReviewPlanDraw, s2cReviewPlanStatus } from '../../models/NetModel';
-import { UnitWordModel } from '../../models/TextbookModel';
+import { CurrentBookStatus, UnitWordModel } from '../../models/TextbookModel';
 import { InterfacePath } from '../../net/InterfacePath';
 import { ServiceMgr } from '../../net/ServiceManager';
 import { BaseComponent } from '../../script/BaseComponent';
+import { TBServer } from '../../service/TextbookService';
 import CCUtil from '../../util/CCUtil';
 import { ToolUtil } from '../../util/ToolUtil';
 import { WordSourceType } from '../adventure/sixModes/BaseModeView';
 import { WordMeaningView } from '../adventure/sixModes/WordMeaningView';
+import { TextbookListView } from '../TextbookVocabulary/TextbookListView';
 import { ReviewSourceType, ReviewWordListView } from './ReviewWordListView';
 const { ccclass, property } = _decorator;
 
@@ -87,6 +89,10 @@ export class ReviewPlanView extends BaseComponent {
     public labelTip2: Label = null;//复习规划提示
     @property(ProgressBar)
     public progressBar2: ProgressBar = null;//复习进度
+    @property(Label)
+    public labelBook: Label = null;//书名
+    @property(Node)
+    public btnChangeBook: Node = null;//更换教材按钮
 
     private _canDraw: boolean = true;//是否可以抽奖
     private _drawType: ReviewPlanDrawType = null;//抽奖类型
@@ -94,6 +100,7 @@ export class ReviewPlanView extends BaseComponent {
     private _drawRewards: ItemData[] = null;//抽奖奖励
     private _souceType: ReviewSourceType = null;//来源类型
     private _closeCall: Function = null;//关闭回调
+    private _bookData: CurrentBookStatus = null;
 
     onLoad() {
         this.init();
@@ -102,6 +109,7 @@ export class ReviewPlanView extends BaseComponent {
     protected onEnable(): void {
         ServiceMgr.studyService.reqReviewPlanUpdate();
         ServiceMgr.studyService.reqReviewPlan();
+        TBServer.reqCurrentBook();
     }
     protected onDestroy(): void {
         this.removeEvent();
@@ -120,10 +128,12 @@ export class ReviewPlanView extends BaseComponent {
         CCUtil.onTouch(this.btnTodayReview2, this.onBtnTodayReview2Click, this);
         CCUtil.onTouch(this.btnReview2, this.onBtnReview2Click, this);
         CCUtil.onTouch(this.labelTip2, this.onLabelTip2Click, this);
+        CCUtil.onTouch(this.btnChangeBook, this.onBtnChangeBookClick, this);
 
         this.addEvent(InterfacePath.c2sReviewPlan, this.onRepReviewPlan.bind(this));
         this.addEvent(InterfacePath.c2sReviewPlanDraw, this.onRepReviewPlanDraw.bind(this));
         this.addEvent(InterfacePath.c2sReviewPlanStatus, this.onRepReviewPlanStatus.bind(this));
+        this.addEvent(InterfacePath.Classification_CurrentBook, this.onCurrentBookStatus.bind(this));
     }
     /**移除事件 */
     removeEvent() {
@@ -136,6 +146,7 @@ export class ReviewPlanView extends BaseComponent {
         CCUtil.offTouch(this.btnTodayReview2, this.onBtnTodayReview2Click, this);
         CCUtil.offTouch(this.btnReview2, this.onBtnReview2Click, this);
         CCUtil.offTouch(this.labelTip2, this.onLabelTip2Click, this);
+        CCUtil.offTouch(this.btnChangeBook, this.onBtnChangeBookClick, this);
 
         this.clearEvent();
     }
@@ -143,6 +154,8 @@ export class ReviewPlanView extends BaseComponent {
     init() {
         this.labelTip1.node.active = false;
         this.labelTip2.node.active = false;
+        this.labelBook.node.active = false;
+        this.btnChangeBook.active = false;
         let scale = ToolUtil.getValue(GlobalConfig.WIN_DESIGN_RATE, 0.78, 1.5);
         CCUtil.setNodeScale(this.plAnim, scale);
         if (scale < 1.0) CCUtil.setNodeScale(this.plRight, scale);
@@ -221,6 +234,13 @@ export class ReviewPlanView extends BaseComponent {
     onLabelTip2Click() {
         ViewsMgr.showView(PrefabType.ReviewAdjustPlanView);
     }
+    /**教材单词 更换教材 */
+    onBtnChangeBookClick() {
+        ViewsMgr.showViewAsync(PrefabType.TextbookListView).then((node: Node) => {
+            const itemScript = node.getComponent(TextbookListView);
+            itemScript.initData(this._bookData);
+        });
+    }
     /**动画结束回调 */
     onAnimationComplete(trackEntry: sp.spine.TrackEntry) {
         let name = trackEntry.animation.name;
@@ -278,7 +298,7 @@ export class ReviewPlanView extends BaseComponent {
             return;
         }
 
-        this._drawRewards = ToolUtil.itemMapToList(data.data);
+        this._drawRewards = data.award_info;
         if (ReviewPlanDrawType.One == this._drawType) {
             this.sp.setAnimation(0, spAnimNames[1], false);
             this.egg.node.active = false;
@@ -337,6 +357,13 @@ export class ReviewPlanView extends BaseComponent {
         // } else {
         //     director.loadScene(SceneType.WorldMapScene, showView);
         // }
+    }
+    /**教材单词 当前词书 */
+    onCurrentBookStatus(data: CurrentBookStatus) {
+        this._bookData = data;
+        this.labelBook.node.active = true;
+        this.btnChangeBook.active = true;
+        this.labelBook.string = data.book_name;
     }
 }
 

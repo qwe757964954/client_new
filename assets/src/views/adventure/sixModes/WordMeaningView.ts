@@ -249,7 +249,7 @@ export class WordMeaningView extends BaseModeView {
                 return;
             }
             ViewsMgr.showView(PrefabType.ReviewEndView, (node: Node) => {
-                let rewardList = ToolUtil.itemMapToList(data.award);
+                let rewardList = data.reward_list;
                 node.getComponent(ReviewEndView).init(this._levelData.souceType, rewardList);
                 this.node.destroy();
             });

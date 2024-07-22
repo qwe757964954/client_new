@@ -126,6 +126,8 @@ export const TextConfig = {
     ReviewPlan_End: "完成本组复习,当前还剩余{0}词未复习\n继续加油吧~",
     ReviewPlan_End2: "恭喜完成今日所有教材单词的复习规划\n继续加油吧~",
     ReviewPlan_End3: "恭喜完成今日所有单词大冒险的复习规划\n继续加油吧~",
+    ReviewPlan_Select: "已选：{0}个",
+    ReviewPlan_Tip: "最多只能选择10个",
 
     PetInteraction_Tip: "互动次数不足",
     PetUpgrade_Tip: "升级成功",

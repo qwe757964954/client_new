@@ -425,7 +425,7 @@ export class c2sReviewPlanDraw {
 }
 /**复习规划抽奖返回 */
 export class s2cReviewPlanDraw extends BaseRepPacket {
-    data: { [key: number]: number }[];//奖励
+    award_info: ItemData[];//奖励物品
 }
 /**复习规划状态与单词列表 */
 export class c2sReviewPlanStatus {
@@ -465,7 +465,7 @@ export class c2sReviewPlanSubmit {
 export class s2cReviewPlanSubmit extends BaseRepPacket {
     pass_flag: number;//是否通过 1表示通过 0表示未通过
     pass_num: number;//已通过单词数
-    award: s2cRewardItem[];//奖励
+    reward_list: ItemData[];//奖励
 }
 /**复习规划更新 */
 export class c2sReviewPlanUpdate {
