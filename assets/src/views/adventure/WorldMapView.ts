@@ -184,7 +184,7 @@ export class WorldMapView extends Component {
         if (this._currentLevelData.current_mode != GameMode.Exam) { //不是测试模式
             this._currentLevelData.current_mode = this._levelProgressData.game_mode;
         }
-        if (this._levelProgressData.pass_num != 0) {
+        if (data.game_mode != GameMode.Study || this._levelProgressData.pass_num != 0) {
             ViewsMgr.showConfirm("是否继续上次闯关进度?", () => {
                 // ServiceMgr.studyService.getWordGameWords(this._currentLevelData.big_id, this._currentLevelData.small_id);
                 this.onWordGameWords(data.word_list);
