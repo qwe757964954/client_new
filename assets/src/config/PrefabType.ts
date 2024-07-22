@@ -1,4 +1,3 @@
-import { MapProcessRewardView } from "../views/adventure/common/MapProcessRewardView";
 
 // 场景类型
 export const SceneType = {
@@ -177,6 +176,7 @@ export const PrefabType = {
     ReviewAdjustPlanView: { path: "reviewPlan/ReviewAdjustPlanView", zindex: Hierarchy.POPUPLAYER, tips: "复习规划调整框" },
     ReviewWordListView: { path: "reviewPlan/ReviewWordListView", zindex: Hierarchy.POPUPLAYER, tips: "复习单词列表" },
     ReviewEndView: { path: "reviewPlan/ReviewEndView", zindex: Hierarchy.POPUPLAYER, tips: "复习结束" },
+    ReviewRewardView: { path: "reviewPlan/ReviewRewardView", zindex: Hierarchy.POPUPLAYER, tips: "复习抽奖奖励" },
     /*********************************************复习规划end***********************************************************/
     /*********************************************社交 start***********************************************************/
     FriendsDialogView: { path: "social/FriendsDialogView", componentName: "FriendsDialogView", zindex: Hierarchy.POPUPLAYER, tips: "好友界面" },
