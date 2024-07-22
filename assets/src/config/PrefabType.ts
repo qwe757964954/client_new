@@ -107,6 +107,7 @@ export const PrefabType = {
     /*********************************************商城相关start***********************************************************/
     ShopUIView: { path: "shop/ShopUIView", zindex: Hierarchy.POPUPLAYER, tips: "商城模块" },
     ShopBuildView: { path: "shop/ShopBuildView", zindex: Hierarchy.POPUPLAYER, tips: "商城建筑模块" },
+    ShopPlayerView: { path: "shop/ShopPlayerView", zindex: Hierarchy.POPUPLAYER, tips: "商店玩家" },
     ShopStoreView: { path: "shop/ShopStoreView", zindex: Hierarchy.POPUPLAYER, tips: "形象商店模块" },
     ShopDecorationView: { path: "shop/ShopDecorationView", zindex: Hierarchy.POPUPLAYER, tips: "装饰模块" },
     DebrisAreaView: { path: "shop/DebrisAreaView", zindex: Hierarchy.POPUPLAYER, tips: "碎片区模块" },
@@ -129,7 +130,7 @@ export const PrefabType = {
     CloudModel: { path: "map/model/CloudModel", zindex: Hierarchy.SCENELAYER, tips: "乌云模型" },
     BuildingModel: { path: "map/model/BuildingModel", zindex: Hierarchy.SCENELAYER, tips: "建筑模型" },
     SpModel: { path: "map/model/SpModel", zindex: Hierarchy.SCENELAYER, tips: "特效模型" },
-    // RoleModel: { path: "map/model/RoleModel", zindex: Hierarchy.SCENELAYER, tips: "角色模型" },
+    RoleModel: { path: "map/model/RoleModel", zindex: Hierarchy.SCENELAYER, tips: "角色模型" },
     // PetMode: { path: "map/model/PetMode", zindex: Hierarchy.SCENELAYER, tips: "宠物模型" },
     RoleBaseModel: { path: "map/model/RoleBaseModel", zindex: Hierarchy.SCENELAYER, tips: "角色模型" },
     MainUIView: { path: "map/MainUIView", zindex: Hierarchy.SCENELAYER, tips: "地图UI界面", isCache: true },
