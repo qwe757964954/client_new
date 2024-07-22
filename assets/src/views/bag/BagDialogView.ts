@@ -155,8 +155,6 @@ export class BagDialogView extends BaseView {
             num: 999,
         }
         itemScript.init(data);
-        // let item_script = item.getComponent(BagDressItem);
-        // item_script.updateTabProps(BagGressItems[idx]);
     }
 
     onLoadDressGrid(item:Node, idx:number){

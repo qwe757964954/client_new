@@ -1,11 +1,13 @@
 import { _decorator, Label, Node, ProgressBar, sp } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
+import { ItemID } from '../../export/ItemConfig';
 import GlobalConfig from '../../GlobalConfig';
 import { ItemData } from '../../manager/DataMgr';
 import { ViewsMgr } from '../../manager/ViewsManager';
 import { s2cReviewPlan, s2cReviewPlanDraw, s2cReviewPlanStatus } from '../../models/NetModel';
 import { CurrentBookStatus, UnitWordModel } from '../../models/TextbookModel';
+import { User } from '../../models/User';
 import { InterfacePath } from '../../net/InterfacePath';
 import { ServiceMgr } from '../../net/ServiceManager';
 import { BaseComponent } from '../../script/BaseComponent';
@@ -15,6 +17,7 @@ import { ToolUtil } from '../../util/ToolUtil';
 import { WordSourceType } from '../adventure/sixModes/BaseModeView';
 import { WordMeaningView } from '../adventure/sixModes/WordMeaningView';
 import { TextbookListView } from '../TextbookVocabulary/TextbookListView';
+import { ReviewRewardView } from './ReviewRewardView';
 import { ReviewSourceType, ReviewWordListView } from './ReviewWordListView';
 const { ccclass, property } = _decorator;
 
@@ -188,6 +191,10 @@ export class ReviewPlanView extends BaseComponent {
     /**抽奖按钮 */
     onBtnDrawClick() {
         if (!this._canDraw) return;
+        if (!User.checkItems([{ id: ItemID.ticket, num: 10 }])) {
+            ViewsMgr.showAlert(TextConfig.ReviewPlan_Draw_Tip);
+            return;
+        }
         this._canDraw = false;
         this._drawType = ReviewPlanDrawType.One;
         ServiceMgr.studyService.reqReviewPlanDraw(this._drawType);
@@ -195,6 +202,10 @@ export class ReviewPlanView extends BaseComponent {
     /**抽奖10次按钮 */
     onBtnDrawTimesClick() {
         if (!this._canDraw) return;
+        if (!User.checkItems([{ id: ItemID.ticket, num: 100 }])) {
+            ViewsMgr.showAlert(TextConfig.ReviewPlan_Draw_Tip);
+            return;
+        }
         this._canDraw = false;
         this._drawType = ReviewPlanDrawType.Ten;
         ServiceMgr.studyService.reqReviewPlanDraw(this._drawType);
@@ -251,16 +262,28 @@ export class ReviewPlanView extends BaseComponent {
             this.egg.setAnimation(0, eggAnimNames[this._eggID * 2 + 1], false);
         } else if (name == spAnimNames[2]) {
             console.log("十连抽动画结束");
-            ViewsMgr.showRewards(this._drawRewards, () => {
+            let callBack = () => {
                 this.sp.setAnimation(0, spAnimNames[0], false);
                 this.setUIVisible(true);
                 this._canDraw = true;
                 this._drawType = null;
+            };
+            ViewsMgr.showView(PrefabType.ReviewRewardView, (node: Node) => {
+                node.getComponent(ReviewRewardView).init(this._drawRewards, this._drawType, () => {
+                    callBack();
+                    this.onBtnDrawTimesClick();
+                }, callBack);
             });
         } else if (name == eggAnimNames[this._eggID * 2 + 1]) {
-            ViewsMgr.showRewards(this._drawRewards, () => {
+            let callBack = () => {
                 this._canDraw = true;
                 this._drawType = null;
+            };
+            ViewsMgr.showView(PrefabType.ReviewRewardView, (node: Node) => {
+                node.getComponent(ReviewRewardView).init(this._drawRewards, this._drawType, () => {
+                    callBack();
+                    this.onBtnDrawClick();
+                }, callBack);
             });
         }
     }

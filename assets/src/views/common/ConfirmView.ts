@@ -17,6 +17,8 @@ export class ConfirmView extends BasePopup {
     public labelSure: Label = null;//确认文字
     @property(Label)
     public labelCancel: Label = null;//取消文字
+    @property(Node)
+    public btnClose: Node = null;//关闭
 
     private _sureCall: Function = null;
     private _cancelCall: Function = null;
@@ -29,11 +31,13 @@ export class ConfirmView extends BasePopup {
     initEvent() {
         CCUtil.onTouch(this.btnSure, this.onSureClick, this);
         CCUtil.onTouch(this.btnCancel, this.onCancelClick, this);
+        CCUtil.onTouch(this.btnClose, this.onCancelClick, this);
     }
 
     removeEvent() {
         CCUtil.offTouch(this.btnSure, this.onSureClick, this);
         CCUtil.offTouch(this.btnCancel, this.onCancelClick, this);
+        CCUtil.offTouch(this.btnClose, this.onCancelClick, this);
     }
 
     init(content: string, sureCall?: Function, cancelCall?: Function, sureStr?: string, cancelStr?: string, canClose: boolean = true) {
