@@ -21,7 +21,6 @@ export class ShopStoreView extends BaseView {
     }
 
     private async initViews() {
-        console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
         await Promise.all([
             this.initViewComponent(PrefabType.ShopPlayerView, (node) => this._shopPlayerView = node.getComponent(ShopPlayerView), 
             {
