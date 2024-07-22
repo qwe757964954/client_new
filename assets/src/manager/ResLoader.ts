@@ -25,6 +25,7 @@ export class ResLoader {
     defaultBundleName: string = "resources";
     //单例
     private static _instance: ResLoader = null;
+    static ResLoader: any;
     public static get instance(): ResLoader {
         if (!this._instance) {
             this._instance = new ResLoader();

@@ -1,4 +1,3 @@
-import { MapProcessRewardView } from "../views/adventure/common/MapProcessRewardView";
 
 // 场景类型
 export const SceneType = {
@@ -190,6 +189,8 @@ export const PrefabType = {
     /*********************************************社交 End*************************************************************/
     /*********************************************背包 start***********************************************************/
     BagView: { path: "bag/BagView", zindex: Hierarchy.POPUPLAYER, tips: "背包界面" },
+    BreakdownView: { path: "bag/BreakdownView", zindex: Hierarchy.POPUPLAYER, componentName: "BreakdownView",tips: "分解栏" },
+    CompositeBagView: { path: "bag/CompositeBagView", zindex: Hierarchy.POPUPLAYER, componentName: "CompositeBagView",tips: "合成栏" },
     /*********************************************背包 end***********************************************************/
 
     /*********************************************角色 start***********************************************************/
