@@ -46,7 +46,7 @@ export class EditItem extends Component {
         this._data = info;
         // TODO 国王分显示
         LoadManager.loadSprite(DataMgr.getEditPng(info), this.img).then((spriteFrame: SpriteFrame) => {
-            this.fixPos();
+            // this.fixPos();
             this.fixImg();
         });
     }
