@@ -25,6 +25,7 @@ import FileUtil from '../../../util/FileUtil';
 import ImgUtil from '../../../util/ImgUtil';
 import { ToolUtil } from '../../../util/ToolUtil';
 import { SmallMonsterModel } from '../../common/SmallMonsterModel';
+import { EducationDataInfos } from '../../TextbookVocabulary/TextbookInfo';
 import { MonsterModel } from '../common/MonsterModel';
 import { TopLabel } from '../common/TopLabel';
 const { ccclass, property } = _decorator;
@@ -330,9 +331,10 @@ export class BaseModeView extends BaseView {
             this.monster.addChild(this._monster);
             let sp = this._monster.getChildByName("sp");
             let scale = sp.getScale();
-            sp.scale = new Vec3(-scale.x, scale.y, 1);
+            sp.scale = new Vec3(-scale.x * 0.4, scale.y * 0.4, 1);
+            sp.setPosition(sp.getPosition().x, sp.getPosition().y - 20)
             let monsterModel = this._monster.getComponent(MonsterModel);
-            monsterModel.init(FileUtil.removeFileExtension(GameRes.Spine_Stitches.path), true);
+            monsterModel.init(FileUtil.removeFileExtension(EducationDataInfos[0].monster), true);
             if (this.gameMode == GameMode.Exam) {
                 this.monster.getComponent(UIOpacity).opacity = 125;
             }
@@ -348,9 +350,9 @@ export class BaseModeView extends BaseView {
             this._monster = instantiate(this.monsterModel);
             this.monster.addChild(this._monster);
             let scale = this._monster.getScale();
-            this._monster.scale = new Vec3(-scale.x, scale.y, 1);
+            this._monster.scale = new Vec3(-scale.x * 0.4, scale.y * 0.4, 1);
             let monsterModel = this._monster.getComponent(MonsterModel);
-            monsterModel.init(FileUtil.removeFileExtension(GameRes.Spine_Stitches.path), true);
+            monsterModel.init(FileUtil.removeFileExtension(EducationDataInfos[0].monster), true);
             monsterModel.setHp(this._rightNum, this._levelData.wordCount);
         }
     }

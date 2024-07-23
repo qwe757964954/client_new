@@ -1,0 +1,118 @@
+
+xsg_13_tx.png
+size: 2048,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+tx/action-action1_00
+  rotate: true
+  xy: 1249, 736
+  size: 280, 290
+  orig: 556, 596
+  offset: 136, 138
+  index: -1
+tx/action-action1_02
+  rotate: false
+  xy: 2, 52
+  size: 278, 321
+  orig: 556, 596
+  offset: 134, 142
+  index: -1
+tx/action-action1_04
+  rotate: false
+  xy: 2, 691
+  size: 308, 325
+  orig: 556, 596
+  offset: 114, 145
+  index: -1
+tx/action-action1_06
+  rotate: true
+  xy: 2, 375
+  size: 314, 306
+  orig: 556, 596
+  offset: 110, 145
+  index: -1
+tx/action-action1_08
+  rotate: false
+  xy: 312, 707
+  size: 305, 309
+  orig: 556, 596
+  offset: 104, 145
+  index: -1
+tx/action-action1_10
+  rotate: true
+  xy: 619, 738
+  size: 278, 312
+  orig: 556, 596
+  offset: 131, 145
+  index: -1
+tx/action-action1_12
+  rotate: true
+  xy: 933, 755
+  size: 261, 314
+  orig: 556, 596
+  offset: 148, 145
+  index: -1
+tx/action-action1_14
+  rotate: true
+  xy: 1541, 755
+  size: 261, 285
+  orig: 556, 596
+  offset: 148, 145
+  index: -1
+tx/action-action1_16
+  rotate: true
+  xy: 619, 475
+  size: 261, 262
+  orig: 556, 596
+  offset: 148, 146
+  index: -1
+tx/action-action1_18
+  rotate: true
+  xy: 883, 477
+  size: 259, 258
+  orig: 556, 596
+  offset: 150, 148
+  index: -1
+tx/action-action1_20
+  rotate: false
+  xy: 1143, 477
+  size: 257, 257
+  orig: 556, 596
+  offset: 150, 149
+  index: -1
+tx/action-action1_22
+  rotate: false
+  xy: 1402, 478
+  size: 256, 256
+  orig: 556, 596
+  offset: 151, 149
+  index: -1
+tx/action-action1_24
+  rotate: false
+  xy: 1660, 502
+  size: 250, 251
+  orig: 556, 596
+  offset: 153, 152
+  index: -1
+tx/action-action1_26
+  rotate: false
+  xy: 282, 153
+  size: 220, 220
+  orig: 556, 596
+  offset: 169, 167
+  index: -1
+tx/action-action1_28
+  rotate: true
+  xy: 2, 2
+  size: 48, 56
+  orig: 556, 596
+  offset: 252, 258
+  index: -1
+tx/action-action1_30
+  rotate: false
+  xy: 1828, 964
+  size: 44, 52
+  orig: 556, 596
+  offset: 256, 259
+  index: -1
