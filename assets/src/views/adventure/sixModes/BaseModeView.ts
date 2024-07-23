@@ -34,6 +34,13 @@ export enum WordSourceType {
     word_game = 2,//单词大冒险
     review = 3,//复习规划
 }
+/**单词提交数据 */
+class WordSubmitData {
+    word: string;
+    isRight: boolean;
+    wordData?: any;
+    answer?: string;
+}
 
 /**学习模式公共部分 */
 @ccclass('BaseModeView')
@@ -97,6 +104,7 @@ export class BaseModeView extends BaseView {
 
     protected _comboNum: number = 0; //连击次数
     protected _rightWordData: UnitWordModel = null; //正确单词数据
+    protected _curWordSubmitData: WordSubmitData = null; //当前单词提交数据
     start() {
         super.start();
         this.node.getChildByName("img_bg").addComponent(BlockInputEvents);
@@ -378,6 +386,13 @@ export class BaseModeView extends BaseView {
 
     //单个单词学习情况上报
     onGameSubmit(word: string, isRight: boolean, wordData?: any, answer?: string) {
+        let submitData = new WordSubmitData();
+        submitData.word = word;
+        submitData.isRight = isRight;
+        submitData.wordData = wordData;
+        submitData.answer = answer;
+        this._curWordSubmitData = submitData;
+
         /**单词上报仅限教材单词 */
         if (WordSourceType.word_game == this._sourceType) {
             let levelData = this._levelData as GateData;
@@ -519,6 +534,7 @@ export class BaseModeView extends BaseView {
                 EventManager.emit(EventType.Update_MapPoint, pointData);
             }
             // this.checkResult();
+            this.netReqOver();
         }
     }
     /**获取复习规划上报结果 */
@@ -526,6 +542,13 @@ export class BaseModeView extends BaseView {
         console.log("onRepReviewSubmit", data);
         this._currentSubmitResponse = data;
         this._upResultSucce = true;
+        this.netReqOver();
+    }
+    /**ui显示结束 */
+    uiShowOver() {
+    }
+    /**网络请求结束 */
+    netReqOver() {
     }
 
     //检测上报结果是否失败
@@ -615,7 +638,7 @@ export class BaseModeView extends BaseView {
             if (!this.node) return;
             if (WordSourceType.classification == this._sourceType) {
                 EventMgr.dispatch(EventType.Exit_Island_Level);
-            }else if(WordSourceType.review == this._sourceType){
+            } else if (WordSourceType.review == this._sourceType) {
                 ViewsManager.instance.showViewAsync(PrefabType.ReviewPlanView);
             }
             this.node.destroy();

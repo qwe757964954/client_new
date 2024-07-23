@@ -60,6 +60,8 @@ export class WordMeaningView extends BaseModeView {
     private _sentenceData: SentenceData = null; //例句数据
 
     private _selectLock: boolean = false; //选择锁
+    private _isUIShowOver: boolean = false; //UI显示结束
+    private _isNetOver: boolean = false; //网络请求结束
 
     async initData(wordsdata: UnitWordModel[], levelData: any) {
         this.gameMode = GameMode.WordMeaning;
@@ -170,6 +172,33 @@ export class WordMeaningView extends BaseModeView {
         let pos = this.mainNode.position;
         tween(this.mainNode).to(0.2, { position: new Vec3(pos.x, -360, 0) }).start();
     }
+    /**显示下一题目 */
+    showNextWord() {
+        if (!this._isUIShowOver || !this._isNetOver) return;
+        this._isUIShowOver = false;
+        this._isNetOver = false;
+        this.showCurrentWord();
+    }
+    /**ui显示结束 */
+    uiShowOver() {
+        this._isUIShowOver = true;
+        this.showNextWord();
+    }
+    /**网络请求结束 */
+    netReqOver() {
+        this._isNetOver = true;
+        this.unscheduleAllCallbacks();
+        this.showNextWord();
+    }
+    /**网络超时回调 */
+    netTimeOut() {
+        this.scheduleOnce(() => {
+            if (!this._isNetOver && this._curWordSubmitData) {
+                this.onGameSubmit(this._curWordSubmitData.word, this._curWordSubmitData.isRight, this._curWordSubmitData.wordData, this._curWordSubmitData.answer);
+                this.netTimeOut();
+            }
+        }, 3.0);
+    }
 
     onAnswerClick(index: number) {
         if (this._selectLock) return;
@@ -185,6 +214,7 @@ export class WordMeaningView extends BaseModeView {
 
         let word = this._rightWordData.word;
         this.onGameSubmit(word, isRight, this._rightWordData, this._optionList[index].cn);
+        this.netTimeOut();
 
         if (isRight) {
             this._comboNum++;
@@ -205,12 +235,12 @@ export class WordMeaningView extends BaseModeView {
                 if (this._wordIndex >= this._wordsData.length) {
                     if (this._wrongWordList.length > 0) {
                         this._wrongMode = true;
-                        this.showCurrentWord();
+                        this.uiShowOver();
                     } else {
                         this.monsterEscape();
                     }
                 } else {
-                    this.showCurrentWord();
+                    this.uiShowOver();
                 }
             });
 
@@ -234,7 +264,7 @@ export class WordMeaningView extends BaseModeView {
                 }
             }
             this.scheduleOnce(() => {
-                this.showCurrentWord();
+                this.uiShowOver();
             }, 1);
         }
 

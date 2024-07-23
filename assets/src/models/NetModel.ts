@@ -471,6 +471,33 @@ export class s2cReviewPlanSubmit extends BaseRepPacket {
 export class c2sReviewPlanUpdate {
     command_id: string = InterfacePath.c2sReviewPlanUpdate;
 }
+/**复习规划选项 */
+export class c2sReviewPlanOption {
+    command_id: string = InterfacePath.c2sReviewPlanOption;
+    source: number;//来源 2表示单词大冒险 1表示教材单词
+    w_id: string;//单词id
+    book_id: string;//教材id
+    unit_id: string;//单元id
+    big_id: number;//大单元id
+    subject_id: number;//主题id
+}
+/**复习规划选项返回 */
+export class s2cReviewPlanOptionWord {
+    cn: string;//中文释义
+}
+export class s2cReviewPlanOption extends BaseRepPacket {
+    word_cn_list: s2cReviewPlanOptionWord[];//单词中文释义
+}
+/**复习规划长时间未复习单词 */
+export class c2sReviewPlanLongTimeWords {
+    command_id: string = InterfacePath.c2sReviewPlanLongTimeWords;
+    source: number;//来源 2表示单词大冒险 1表示教材单词
+    book_id: string;//教材id
+}
+/**复习规划长时间未复习单词返回 */
+export class s2cReviewPlanLongTimeWords extends BaseRepPacket {
+    not_planned_list: s2cReviewPlanWordInfo[];
+}
 /**宠物信息 */
 export class c2sPetInfo {
     command_id: string = InterfacePath.c2sPetInfo;
