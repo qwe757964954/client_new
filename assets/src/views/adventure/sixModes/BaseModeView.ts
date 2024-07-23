@@ -275,6 +275,7 @@ export class BaseModeView extends BaseView {
         this._currentSubmitResponse = data;
         this._currentSubmitResponse as GameSubmitResponse;
         this.checkResult();
+        this.netReqOver();
     }
 
     async initRole() {
