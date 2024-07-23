@@ -338,7 +338,7 @@ export class BaseModeView extends BaseView {
             let sp = this._monster.getChildByName("sp");
             let scale = sp.getScale();
             sp.scale = new Vec3(-scale.x * 0.4, scale.y * 0.4, 1);
-            sp.setPosition(sp.getPosition().x, sp.getPosition().y - 20)
+            // sp.setPosition(sp.getPosition().x, sp.getPosition().y - 20)
             let monsterModel = this._monster.getComponent(MonsterModel);
             monsterModel.init(FileUtil.removeFileExtension(EducationDataInfos[0].monster), true);
             if (this.gameMode == GameMode.Exam) {
@@ -525,8 +525,8 @@ export class BaseModeView extends BaseView {
             let targetPos = transform.convertToNodeSpaceAR(targetTransform.convertToWorldSpaceAR(new Vec3(0, 0, 0)));
             let startPosX = targetPos.x + 100;
             tween(this._monster).to(0.5, { position: new Vec3(startPosX, targetPos.y, targetPos.z) }).call(() => {
-                let action = (WordSourceType.word_game === this._sourceType) ? "attack" : "atk1";
-                this._monster.getComponent(MonsterModel).hit(action).then(() => {
+                // let action = (WordSourceType.word_game === this._sourceType) ? "attack" : "atk1";
+                this._monster.getComponent(MonsterModel).hit().then(() => {
                     tween(this._monster).to(0.5, { position: monsterPos }).start();
                     this._pet.getComponent(PetModel).inHit().then(() => {
                         resolve(true);
