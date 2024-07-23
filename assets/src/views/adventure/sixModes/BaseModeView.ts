@@ -278,7 +278,7 @@ export class BaseModeView extends BaseView {
         console.log("onGameSubmitResponse....", data);
         this._currentSubmitResponse = data;
         this._currentSubmitResponse as GameSubmitResponse;
-        this.checkResult();
+        // this.checkResult();
         this.netReqOver();
     }
 

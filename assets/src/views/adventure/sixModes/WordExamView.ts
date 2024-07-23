@@ -172,7 +172,7 @@ export class WordExamView extends BaseModeView {
         if (this._currentSubmitResponse.pass_flag == 1 || this._currentSubmitResponse.pass_flag == 2) { //成功或失败
             ViewsManager.instance.showView(PrefabType.ExamReportView, (node: Node) => {
                 let nodeScript = node.getComponent(ExamReportView);
-                nodeScript.initData(this._currentSubmitResponse);
+                nodeScript.initData(this._currentSubmitResponse,this._sourceType);
                 this.node.parent.destroy();
             });
         }
