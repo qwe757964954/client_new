@@ -13,6 +13,7 @@ import CCUtil from '../../../util/CCUtil';
 import { EventMgr } from '../../../util/EventManager';
 import List from '../../../util/list/List';
 import { ObjectUtil } from '../../../util/ObjectUtil';
+import { WordSourceType } from './BaseModeView';
 import { ReportItem } from './ReportItem';
 const { ccclass, property } = _decorator;
 
@@ -51,14 +52,14 @@ export class ExamReportView extends BaseView {
     private _bossLevelResult: BossLevelSubmitData = null;
 
 
-    initData(data: any) {
+    initData(data: any,sourceType:WordSourceType) {
         this._resultSubmitResponse = data;
         console.log("resultData", data);
         this.next_level_btn.active = this._resultSubmitResponse.pass_flag == 1;
         if (this._resultSubmitResponse.pass_flag == 1) {
             this.result_spine.setAnimation(0, "vic", true);
-            if (this._resultSubmitResponse) {
-                this._propsData = this._resultSubmitResponse.award_info.pass_reward; //ObjectUtil.convertAwardsToItemData(this._resultSubmitResponse.award_info.pass_reward);
+            if (sourceType === WordSourceType.classification && this._resultSubmitResponse) {
+                this._propsData = ObjectUtil.convertAwardsToItemData(this._resultSubmitResponse.award_info);
             } else {
                 this._propsData = ObjectUtil.convertAwardsToItemData(this._bossLevelResult.award.pass_reward);
             }
