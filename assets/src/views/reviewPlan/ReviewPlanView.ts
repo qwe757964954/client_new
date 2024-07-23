@@ -4,6 +4,7 @@ import { TextConfig } from '../../config/TextConfig';
 import { ItemID } from '../../export/ItemConfig';
 import GlobalConfig from '../../GlobalConfig';
 import { ItemData } from '../../manager/DataMgr';
+import { LoadManager } from '../../manager/LoadManager';
 import { ViewsMgr } from '../../manager/ViewsManager';
 import { s2cReviewPlan, s2cReviewPlanDraw, s2cReviewPlanStatus } from '../../models/NetModel';
 import { CurrentBookStatus, UnitWordModel } from '../../models/TextbookModel';
@@ -16,6 +17,7 @@ import { ToolUtil } from '../../util/ToolUtil';
 import { WordSourceType } from '../adventure/sixModes/BaseModeView';
 import { WordMeaningView } from '../adventure/sixModes/WordMeaningView';
 import { TextbookListView } from '../TextbookVocabulary/TextbookListView';
+import { ReviewAdjustPlanView } from './ReviewAdjustPlanView';
 import { ReviewRewardView } from './ReviewRewardView';
 import { ReviewSourceType, ReviewWordListView } from './ReviewWordListView';
 const { ccclass, property } = _decorator;
@@ -29,16 +31,19 @@ enum ReviewPlanDrawType {
 }
 
 export class ReviewWordModel implements UnitWordModel {
-    book_id: string = "";
-    cn: string = "";
-    phonic: string = "";
-    syllable: string = "";
-    symbol: string = "";
-    symbolus: string = "";
-    unit_id: string = "";
-    w_id: string = "";
-    word: string = "";
-    wp_id: string = "";
+    book_id: string = null;
+    cn: string = null;
+    phonic: string = null;
+    syllable: string = null;
+    symbol: string = null;
+    symbolus: string = null;
+    unit_id: string = null;
+    w_id: string = null;
+    word: string = null;
+    wp_id: string = null;
+    big_id: number = null;
+    small_id: number = null;
+    subject_id: number = null;
 }
 
 @ccclass('ReviewPlanView')
@@ -105,8 +110,8 @@ export class ReviewPlanView extends BaseComponent {
     private _bookData: CurrentBookStatus = null;
 
     onLoad() {
-        this.init();
         this.initEvent();
+        this.init();
     }
     protected onEnable(): void {
         ServiceMgr.studyService.reqReviewPlanUpdate();
@@ -138,6 +143,9 @@ export class ReviewPlanView extends BaseComponent {
         this.addEvent(InterfacePath.Classification_CurrentBook, this.onCurrentBookStatus.bind(this));
         this.addEvent(InterfacePath.Classification_ChangeTextbook, this.onRepChangeTextbook.bind(this));
         this.addEvent(InterfacePath.Classification_AddPlanBook, this.onRepChangeTextbook.bind(this));
+
+        this.sp.setCompleteListener(this.onAnimationComplete.bind(this));
+        this.egg.setCompleteListener(this.onAnimationComplete.bind(this));
     }
     /**移除事件 */
     removeEvent() {
@@ -170,8 +178,7 @@ export class ReviewPlanView extends BaseComponent {
         this.progressBar1.progress = 0;
         this.progressBar2.progress = 0;
 
-        this.sp.setCompleteListener(this.onAnimationComplete.bind(this));
-        this.egg.setCompleteListener(this.onAnimationComplete.bind(this));
+        LoadManager.preloadPrefab(PrefabType.WordMeaningView.path);
     }
     /**设置关闭回调 */
     setCloseCall(closeCall: Function) {
@@ -224,7 +231,9 @@ export class ReviewPlanView extends BaseComponent {
     }
     /**单词大冒险  复习规划提示*/
     onLabelTip1Click() {
-        ViewsMgr.showView(PrefabType.ReviewAdjustPlanView);
+        ViewsMgr.showView(PrefabType.ReviewAdjustPlanView, (node: Node) => {
+            node.getComponent(ReviewAdjustPlanView).init(ReviewSourceType.word_game);
+        });
     }
     /**教材单词 今日复习按钮 */
     onBtnTodayReview2Click() {
@@ -244,7 +253,9 @@ export class ReviewPlanView extends BaseComponent {
     }
     /**教材单词  复习规划提示*/
     onLabelTip2Click() {
-        ViewsMgr.showView(PrefabType.ReviewAdjustPlanView);
+        ViewsMgr.showView(PrefabType.ReviewAdjustPlanView, (node: Node) => {
+            node.getComponent(ReviewAdjustPlanView).init(ReviewSourceType.classification, this._bookData.book_id);
+        });
     }
     /**教材单词 更换教材 */
     onBtnChangeBookClick() {
@@ -377,6 +388,10 @@ export class ReviewPlanView extends BaseComponent {
             word.wp_id = value.wp_id;
             word.symbol = value.symbol;
             word.symbolus = value.symbolus;
+            word.book_id = value.book_id;
+            word.unit_id = value.unit_id;
+            word.big_id = value.big_id;
+            word.subject_id = value.subject_id;
             wordsdata.push(word);
         });
         let errorNum = 0;
@@ -396,7 +411,6 @@ export class ReviewPlanView extends BaseComponent {
                     source_type: WordSourceType.review,
                     ws_id: data.ws_id, pass_num: data.pass_num, word_num: wordNum, error_num: errorNum, souceType: this._souceType, wordCount: wordCount
                 });
-                this.node.destroy();
             });
         };
         showView();

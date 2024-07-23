@@ -2,11 +2,12 @@ import { isValid } from "cc";
 import { EventType } from "../config/EventType";
 import { ViewsManager } from "../manager/ViewsManager";
 import { AdventureCollectWordModel, AdventureResultModel, c2sAdventureCollectWord, c2sAdventureResult, c2sAdventureWord, c2sAdventureWordSentence, c2sAdvLevelProgress, c2sArticleExercisesList, c2sBossLevelSubmit, c2sBossLevelTopic, c2sGetProgressReward, c2sGetUnitList, c2sIslandProgress, c2sIslandStatus, c2sSubjectArticleList, c2sTextbookWordGroup, c2sWordGameLevelRestart, c2sWordGameSubject, c2sWordGameUnitWords, c2sWordGameWords, c2sWordGroup, WordGameWordsData } from "../models/AdventureModel";
-import { c2sReviewPlan, c2sReviewPlanDraw, c2sReviewPlanList, c2sReviewPlanLongTimeWords, c2sReviewPlanOption, c2sReviewPlanStatus, c2sReviewPlanSubmit, c2sReviewPlanUpdate } from "../models/NetModel";
+import { c2sReviewPlan, c2sReviewPlanDraw, c2sReviewPlanList, c2sReviewPlanLongTimeWords, c2sReviewPlanLongTimeWordSubmit, c2sReviewPlanOption, c2sReviewPlanStatus, c2sReviewPlanSubmit, c2sReviewPlanUpdate } from "../models/NetModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
 import { BaseControll } from "../script/BaseControll";
 import EventManager from "../util/EventManager";
+import { ReviewSourceType } from "../views/reviewPlan/ReviewWordListView";
 
 export default class StudyService extends BaseControll {
     constructor() {
@@ -173,16 +174,18 @@ export default class StudyService extends BaseControll {
     }
     /**复习规划选项 */
     reqReviewPlanOption(w_id: string, big_id: number, subject_id: number) {
+        console.log("reqReviewPlanOption", w_id, big_id, subject_id);
         let para: c2sReviewPlanOption = new c2sReviewPlanOption();
-        para.source = 1;
+        para.source = ReviewSourceType.word_game;
         para.w_id = w_id;
         para.big_id = big_id;
         para.subject_id = subject_id;
         NetMgr.sendMsg(para);
     }
     reqReviewPlanOptionEx(w_id: string, book_id: string, unit_id: string) {
+        console.log("reqReviewPlanOptionEx", w_id, book_id, unit_id);
         let para: c2sReviewPlanOption = new c2sReviewPlanOption();
-        para.source = 2;
+        para.source = ReviewSourceType.classification;
         para.w_id = w_id;
         para.book_id = book_id;
         para.unit_id = unit_id;
@@ -190,9 +193,21 @@ export default class StudyService extends BaseControll {
     }
     /**复习规划长时间未复习单词 */
     reqReviewPlanLongTimeWords(source: number, book_id?: string) {
+        console.log("reqReviewPlanLongTimeWords", source, book_id);
         let para: c2sReviewPlanLongTimeWords = new c2sReviewPlanLongTimeWords();
         para.source = source;
         para.book_id = book_id;
+        NetMgr.sendMsg(para);
+    }
+    /**复习规划长时间未复习单词提交 */
+    reqReviewPlanLongTimeWordSubmit(wp_id: string, word: string, answer: string, status: number, cost_time: number) {
+        console.log("reqReviewPlanLongTimeWordSubmit", wp_id, word, answer, status, cost_time);
+        let para: c2sReviewPlanLongTimeWordSubmit = new c2sReviewPlanLongTimeWordSubmit();
+        para.wp_id = wp_id;
+        para.word = word;
+        para.answer = answer;
+        para.status = status;
+        para.cost_time = cost_time;
         NetMgr.sendMsg(para);
     }
 

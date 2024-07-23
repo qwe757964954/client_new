@@ -2,17 +2,21 @@ import { _decorator, Label, Node, Sprite, SpriteFrame, tween, Vec3 } from 'cc';
 import { NetConfig } from '../../../config/NetConfig';
 import { PrefabType } from '../../../config/PrefabType';
 import GlobalConfig from '../../../GlobalConfig';
+import { ItemData } from '../../../manager/DataMgr';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { SoundMgr } from '../../../manager/SoundMgr';
 import { ViewsManager, ViewsMgr } from '../../../manager/ViewsManager';
 import { GameMode, SentenceData, WordsDetailData } from '../../../models/AdventureModel';
-import { s2cReviewPlanSubmit } from '../../../models/NetModel';
+import { s2cReviewPlanLongTimeWordSubmit, s2cReviewPlanOption, s2cReviewPlanOptionWord, s2cReviewPlanSubmit } from '../../../models/NetModel';
 import { UnitWordModel } from '../../../models/TextbookModel';
+import { InterfacePath } from '../../../net/InterfacePath';
+import { ServiceMgr } from '../../../net/ServiceManager';
 import CCUtil from '../../../util/CCUtil';
 import { Shake } from '../../../util/Shake';
 import { ToolUtil } from '../../../util/ToolUtil';
 import { WordDetailView } from '../../common/WordDetailView';
 import { ReviewEndView } from '../../reviewPlan/ReviewEndView';
+import { ReviewSourceType } from '../../reviewPlan/ReviewWordListView';
 import { BaseModeView, WordSourceType } from './BaseModeView';
 import { WordPracticeView } from './WordPracticeView';
 const { ccclass, property } = _decorator;
@@ -62,7 +66,10 @@ export class WordMeaningView extends BaseModeView {
     private _selectLock: boolean = false; //选择锁
     private _isUIShowOver: boolean = false; //UI显示结束
     private _isNetOver: boolean = false; //网络请求结束
-    private _netHandler:Function = null; 
+    private _netHandler: Function = null;
+
+    private _rewardList: ItemData[] = [];
+
     async initData(wordsdata: UnitWordModel[], levelData: any) {
         this.gameMode = GameMode.WordMeaning;
         wordsdata = this.updateTextbookWords(wordsdata, levelData);
@@ -84,19 +91,28 @@ export class WordMeaningView extends BaseModeView {
     //显示当前单词
     showCurrentWord() {
         super.updateConstTime();
+        if (WordSourceType.review == this._sourceType || WordSourceType.reviewSpecial === this._sourceType) {
+            this.sentenceLabel.node.parent.active = false;
+        }
         this._selectLock = false;
         this._rightWordData = this._wrongMode ? this._wrongWordList.shift() : this._wordsData[this._wordIndex];
-        console.log('word', this._rightWordData);
         let word = this._rightWordData.word;
         this.wordLabel.string = word;
         this.symbolLabel.string = this._rightWordData.symbol;
         this.initWordDetail(this._rightWordData);
-        this.randomOption(this._rightWordData);
-        this.playWordSound();
-
-        if (WordSourceType.review == this._sourceType) {
-            this.sentenceLabel.node.parent.active = false;
+        if (WordSourceType.reviewSpecial === this._sourceType) {
+            for (let i = 0; i < 3; i++) {
+                this.answerList[i].active = false;
+            }
+            if (ReviewSourceType.word_game == this._levelData.souceType) {
+                ServiceMgr.studyService.reqReviewPlanOption(this._rightWordData.w_id, this._rightWordData.big_id, this._rightWordData.subject_id);
+            } else if (ReviewSourceType.classification == this._levelData.souceType) {
+                ServiceMgr.studyService.reqReviewPlanOptionEx(this._rightWordData.w_id, this._rightWordData.book_id, this._rightWordData.unit_id);
+            }
+        } else {
+            this.randomOption(this._rightWordData);
         }
+        this.playWordSound();
     }
 
     randomOption(rightWordData: any) {
@@ -131,7 +147,33 @@ export class WordMeaningView extends BaseModeView {
             }
         }
     }
-
+    randomOptionEx(rightWordData: UnitWordModel, words: s2cReviewPlanOptionWord[]) {
+        this._optionList = [];
+        this._optionList.push({ cn: rightWordData.cn, en: rightWordData.word });
+        let needCount = Math.min(2, words.length);
+        if (needCount > 0) {
+            let tmpList = words.concat();
+            for (let i = 0; i < needCount; i++) {
+                let idx = ToolUtil.getRandomInt(0, tmpList.length - 1);
+                let value = tmpList[idx];
+                this._optionList.push({ cn: value.cn, en: value.word });
+                tmpList.splice(idx, 1);
+            }
+        }
+        this._optionList.sort((a, b) => {
+            return Math.random() > 0.5 ? 1 : -1;
+        })
+        for (let i = 0; i < 3; i++) {
+            if (i < this._optionList.length) {
+                this.answerList[i].active = true;
+                this.answerList[i].getChildByName("wordLabel").getComponent(Label).string = this._optionList[i].cn;
+                this.answerList[i].getComponent(Sprite).spriteFrame = this.normalBg;
+                this.answerList[i].getChildByName("resSymbol").active = false;
+            } else {
+                this.answerList[i].active = false;
+            }
+        }
+    }
 
     playWordSound() {
         let word = this._rightWordData.word;
@@ -181,6 +223,7 @@ export class WordMeaningView extends BaseModeView {
     }
     /**ui显示结束 */
     uiShowOver() {
+        console.log("uiShowOver");
         this._isUIShowOver = true;
         this.showNextWord();
     }
@@ -188,22 +231,33 @@ export class WordMeaningView extends BaseModeView {
 
     /**网络请求结束 */
     netReqOver() {
+        console.log("netReqOver");
+        if (WordSourceType.reviewSpecial == this._sourceType) {
+            let data = this._currentSubmitResponse as s2cReviewPlanLongTimeWordSubmit;
+            if (data && data.reward_list) {
+                this._rewardList.push(...data.reward_list);
+            }
+        }
         this._isNetOver = true;
         this.unschedule(this._netHandler);
         this._netHandler = null;
         this.showNextWord();
+        /**以下方法也可以放到基类中去调用 */
+        if (this._isModeOver && !this._isDoModeOver) {
+            this.modeOver();
+        }
     }
     /**网络超时回调 */
     netTimeOut() {
-        if(this._netHandler){
+        if (this._netHandler) {
             return;
         }
-        this._netHandler = () =>{
+        this._netHandler = () => {
             if (!this._isNetOver && this._curWordSubmitData) {
                 this.onGameSubmit(this._curWordSubmitData.word, this._curWordSubmitData.isRight, this._curWordSubmitData.wordData, this._curWordSubmitData.answer);
             }
         }
-        this.schedule(this._netHandler,3);
+        this.schedule(this._netHandler, 3);
     }
 
     onAnswerClick(index: number) {
@@ -262,12 +316,16 @@ export class WordMeaningView extends BaseModeView {
             this.errorNumLabel.string = "错误次数：" + this._errorNum;
 
             // }
-            this._wrongWordList.push(this._rightWordData);
-            if (!this._wrongMode) {
-                this._wordIndex++;
-                if (this._wordIndex >= this._wordsData.length) {
-                    this._wrongMode = true;
+            if (WordSourceType.reviewSpecial != this._sourceType) {//复习规划 长时间未复习题目没有错题模式
+                this._wrongWordList.push(this._rightWordData);
+                if (!this._wrongMode) {
+                    this._wordIndex++;
+                    if (this._wordIndex >= this._wordsData.length) {
+                        this._wrongMode = true;
+                    }
                 }
+            } else {
+                this._wordIndex++;
             }
             this.scheduleOnce(() => {
                 this.uiShowOver();
@@ -287,6 +345,13 @@ export class WordMeaningView extends BaseModeView {
             ViewsMgr.showView(PrefabType.ReviewEndView, (node: Node) => {
                 let rewardList = data.reward_list;
                 node.getComponent(ReviewEndView).init(this._levelData.souceType, rewardList);
+                this.node.destroy();
+            });
+            return;
+        }
+        if (WordSourceType.reviewSpecial === this._sourceType) {
+            ViewsMgr.showRewards(this._rewardList, () => {
+                ServiceMgr.studyService.reqReviewPlan();//刷新复习规划
                 this.node.destroy();
             });
             return;
@@ -319,6 +384,8 @@ export class WordMeaningView extends BaseModeView {
         for (let i = 0; i < this.answerList.length; i++) {
             CCUtil.onTouch(this.answerList[i], this.onAnswerClick.bind(this, i), this);
         }
+
+        this.addModelListener(InterfacePath.c2sReviewPlanOption, this.onRepReviewPlanOption.bind(this));
     }
     protected removeEvent(): void {
         super.removeEvent();
@@ -329,6 +396,16 @@ export class WordMeaningView extends BaseModeView {
         for (let i = 0; i < this.answerList.length; i++) {
             CCUtil.offTouch(this.answerList[i], this.onAnswerClick.bind(this, i), this);
         }
+
+        this.removeModelListener(InterfacePath.c2sReviewPlanOption);
+    }
+    /**复习规划 题目选项 */
+    onRepReviewPlanOption(data: s2cReviewPlanOption) {
+        if (200 != data.code) {
+            ViewsMgr.showAlert(data.msg);
+            return;
+        }
+        this.randomOptionEx(this._rightWordData, data.word_cn_list);
     }
 }
 

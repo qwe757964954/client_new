@@ -3,7 +3,7 @@ import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { ItemData } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
-import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
+import { ViewsMgr } from '../../manager/ViewsManager';
 import { s2cReviewPlanStatus } from '../../models/NetModel';
 import { PetModel } from '../../models/PetModel';
 import { InterfacePath } from '../../net/InterfacePath';
@@ -109,10 +109,7 @@ export class ReviewEndView extends BaseComponent {
     }
     /**完成复习 */
     onBtnEndClick() {
-        ViewsManager.instance.showViewAsync(PrefabType.ReviewPlanView).then(()=>{
-            this.node.destroy();
-        });
-        
+        this.node.destroy();
     }
     /**列表加载 */
     onListRewardLoad(node: Node, idx: number) {
@@ -150,7 +147,7 @@ export class ReviewEndView extends BaseComponent {
         }
         let wordCount = data.review_wp_list.length;
         let wordNum = Math.min(wordCount, data.word_num);
-        
+
         ViewsMgr.showView(PrefabType.WordMeaningView, (node: Node) => {
             node.getComponent(WordMeaningView).initData(wordsdata, {
                 source_type: WordSourceType.review,
@@ -158,7 +155,7 @@ export class ReviewEndView extends BaseComponent {
             });
             this.node.destroy();
         });
-        
+
     }
 }
 

@@ -143,4 +143,7 @@ export const TextConfig = {
     Begin_Break_Through_Tip: "是否延续上一次闯关进度",
     Continue_From_Last_Time_Tip: "延续上次",
     Restart_Tip: "重新开始",
+
+    WordMeaning_Exit_Tip1: "确定退出学习吗?",
+    WordMeaning_Exit_Tip2: "确定结束复习吗?\n完成复习可参与扭蛋机抽奖哦",
 }

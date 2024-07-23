@@ -1,6 +1,6 @@
 import { _decorator, BlockInputEvents, Button, Color, instantiate, isValid, Label, Node, Prefab, Sprite, tween, UIOpacity, UITransform, Vec3, view } from 'cc';
 import { EventType } from '../../../config/EventType';
-import { PrefabType } from '../../../config/PrefabType';
+import { TextConfig } from '../../../config/TextConfig';
 import { GameRes } from '../../../GameRes';
 import GlobalConfig from '../../../GlobalConfig';
 import { BookLevelConfig, DataMgr } from '../../../manager/DataMgr';
@@ -10,7 +10,7 @@ import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { SoundMgr } from '../../../manager/SoundMgr';
 import { ViewsManager, ViewsMgr } from '../../../manager/ViewsManager';
 import { AdventureCollectWordModel, AdventureResult, AdventureResultModel, GameMode, GateData, WordsDetailData } from '../../../models/AdventureModel';
-import { s2cReviewPlanSubmit } from '../../../models/NetModel';
+import { s2cReviewPlanLongTimeWordSubmit, s2cReviewPlanSubmit } from '../../../models/NetModel';
 import { PetModel } from '../../../models/PetModel';
 import { RoleBaseModel } from '../../../models/RoleBaseModel';
 import { GameSubmitModel, GameSubmitResponse, ReqCollectWord, UnitWordModel } from '../../../models/TextbookModel';
@@ -34,6 +34,7 @@ export enum WordSourceType {
     classification = 1,//教材单词
     word_game = 2,//单词大冒险
     review = 3,//复习规划
+    reviewSpecial = 4,//复习规划（长时间未复习单词）
 }
 /**单词提交数据 */
 class WordSubmitData {
@@ -93,6 +94,8 @@ export class BaseModeView extends BaseView {
     protected _costTime: number = 0; //花费时间
 
     private _upResultSucce: boolean = false; //上报结果成功
+    protected _isModeOver: boolean = false; //是否模式结束
+    protected _isDoModeOver: boolean = false; //是否执行模式结束
     // protected _currentSubmitResponse: GameSubmitResponse | AdventureResult = null;
     protected _currentSubmitResponse: any = null;
 
@@ -203,7 +206,7 @@ export class BaseModeView extends BaseView {
                 wordsdata = uniqueWordList;
             }
 
-        } else if (WordSourceType.review === this._sourceType) {
+        } else if (WordSourceType.review === this._sourceType || WordSourceType.reviewSpecial === this._sourceType) {
             this._wordIndex = this._levelData.word_num;
             this._rightNum = this._levelData.pass_num;
             this._errorNum = this._levelData.error_num;
@@ -269,6 +272,7 @@ export class BaseModeView extends BaseView {
         this.addModelListener(InterfacePath.Adventure_Result, this.onUpResult);
         this.addModelListener(InterfacePath.Adventure_Word, this.onClassificationWord);
         this.addModelListener(InterfacePath.c2sReviewPlanSubmit, this.onRepReviewSubmit);
+        this.addModelListener(InterfacePath.c2sReviewPlanLongTimeWordSubmit, this.onRepReviewPlanLongTimeWordSubmit);
     }
     onGameSubmitResponse(data: GameSubmitResponse) {
         console.log("onGameSubmitResponse....", data);
@@ -279,7 +283,7 @@ export class BaseModeView extends BaseView {
     }
 
     async initRole() {
-        if (WordSourceType.review == this._sourceType) return;
+        if (WordSourceType.review == this._sourceType || WordSourceType.reviewSpecial === this._sourceType) return;
         this._role = instantiate(this.roleModel);
         this.roleContainer.addChild(this._role);
         let roleModel = this._role.getComponent(RoleBaseModel);
@@ -292,6 +296,7 @@ export class BaseModeView extends BaseView {
         let roleModel = this._pet.getComponent(RoleBaseModel);
         roleModel.init(101, 1);
         roleModel.show(true);
+        CCUtil.setNodeCamera2DUI(this._pet);
     }
     async initMonster() {
         //单词大冒险关卡
@@ -347,7 +352,7 @@ export class BaseModeView extends BaseView {
             monsterModel.setHp(this._wordsData.length * this._hpLevels[this.gameMode] + pass, totalHp);
             // let hp_scale = monsterModel.hpNode.getScale();
             // monsterModel.hpNode.scale = new Vec3(-hp_scale.x, hp_scale.y, 1);
-        } else if (WordSourceType.review == this._sourceType) { //复习规划
+        } else if (WordSourceType.review == this._sourceType || WordSourceType.reviewSpecial === this._sourceType) { //复习规划
             this._monster = instantiate(this.monsterModel);
             this.monster.addChild(this._monster);
             let scale = this._monster.getScale();
@@ -355,6 +360,7 @@ export class BaseModeView extends BaseView {
             let monsterModel = this._monster.getComponent(MonsterModel);
             monsterModel.init(FileUtil.removeFileExtension(EducationDataInfos[0].monster), true);
             monsterModel.setHp(this._rightNum, this._levelData.wordCount);
+            CCUtil.setNodeCamera2DUI(this._monster);
         }
     }
 
@@ -365,6 +371,7 @@ export class BaseModeView extends BaseView {
         let scale = this.monster.getScale();
         this.monster.scale = new Vec3(-scale.x, scale.y, 1);
         tween(this.monster).to(1, { position: new Vec3(pos.x + 1000, pos.y, pos.z) }).call(() => {
+            this._isModeOver = true;
             if (this._upResultSucce) {
                 this.modeOver();
             }
@@ -380,6 +387,7 @@ export class BaseModeView extends BaseView {
     }
     //当前模式结束,跳转下一模式或结算
     protected modeOver() {
+        this._isDoModeOver = true;
         if (WordSourceType.classification == this._sourceType) {
             let levelData = this._levelData as BookLevelConfig;
             levelData.word_num = 1;
@@ -424,13 +432,18 @@ export class BaseModeView extends BaseView {
                 small_id: levelData.small_id,
                 status: isRight ? 1 : 0
             }
-            console.log("reqGameSubmit.....",data);
+            console.log("reqGameSubmit.....", data);
             TBServer.reqGameSubmit(data);
             return;
         }
         if (WordSourceType.review == this._sourceType) {
             let costTime = Date.now() - this._costTime;
             ServiceMgr.studyService.reqReviewPlanSubmit(this._levelData.ws_id, wordData["wp_id"], word, answer, isRight ? 1 : 0, costTime);
+            return;
+        }
+        if (WordSourceType.reviewSpecial === this._sourceType) {
+            let costTime = Date.now() - this._costTime;
+            ServiceMgr.studyService.reqReviewPlanLongTimeWordSubmit(wordData["wp_id"], word, answer, isRight ? 1 : 0, costTime);
             return;
         }
     }
@@ -471,7 +484,7 @@ export class BaseModeView extends BaseView {
                     monsterModel.inHit().then(() => {
                         resolve(true);
                     });
-                } else if (WordSourceType.review == this._sourceType) {
+                } else if (WordSourceType.review == this._sourceType || WordSourceType.reviewSpecial === this._sourceType) {
                     monsterModel.setHp(this._rightNum, this._levelData.wordCount);
                     monsterModel.inHit().then(() => {
                         resolve(true);
@@ -548,6 +561,11 @@ export class BaseModeView extends BaseView {
         this._upResultSucce = true;
         this.netReqOver();
     }
+    onRepReviewPlanLongTimeWordSubmit(data: s2cReviewPlanLongTimeWordSubmit) {
+        this._currentSubmitResponse = data;
+        this._upResultSucce = true;
+        this.netReqOver();
+    }
     /**ui显示结束 */
     uiShowOver() {
     }
@@ -591,7 +609,7 @@ export class BaseModeView extends BaseView {
             ServiceMgr.studyService.getAdventureWord(word.w_id);
         } else if (WordSourceType.classification == this._sourceType) { //教材单词关卡
             TBServer.reqWordDetail(word.w_id);
-        } else if (WordSourceType.review == this._sourceType) {
+        } else if (WordSourceType.review == this._sourceType || WordSourceType.reviewSpecial === this._sourceType) {
             // TBServer.reqWordDetail(word.w_id);
         }
         this.setCollect(word.collect == 1 ? true : false);
@@ -634,16 +652,16 @@ export class BaseModeView extends BaseView {
     }
 
     protected closeView() {
-        let str = "确定退出学习吗?";
-        if (WordSourceType.review == this._sourceType) {
-            str = "确定结束复习吗?\n完成复习可参与扭蛋机抽奖哦";
+        let str = TextConfig.WordMeaning_Exit_Tip1;
+        if (WordSourceType.review == this._sourceType || WordSourceType.reviewSpecial === this._sourceType) {
+            str = TextConfig.WordMeaning_Exit_Tip2;
         }
         ViewsMgr.showConfirm(str, () => {
             if (!this.node) return;
             if (WordSourceType.classification == this._sourceType) {
                 EventMgr.dispatch(EventType.Exit_Island_Level);
-            } else if (WordSourceType.review == this._sourceType) {
-                ViewsManager.instance.showViewAsync(PrefabType.ReviewPlanView);
+            } else if (WordSourceType.review == this._sourceType || WordSourceType.reviewSpecial === this._sourceType) {
+                ServiceMgr.studyService.reqReviewPlan();//刷新复习规划
             }
             this.node.destroy();
         });
