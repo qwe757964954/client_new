@@ -1,4 +1,5 @@
 import { _decorator, isValid, Node } from 'cc';
+import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
@@ -7,6 +8,7 @@ import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
 import CCUtil from '../../util/CCUtil';
+import { EventMgr } from '../../util/EventManager';
 import List from '../../util/list/List';
 import { MyContentItem } from './MyContentItem';
 const { ccclass, property } = _decorator;
@@ -84,9 +86,9 @@ export class TextbookListView extends BaseView {
     /**初始化导航栏 */
     initNavTitle() {
         this.createNavigation("词书列表",this.top_layout, () => {
-            ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
+            // ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
                 ViewsManager.instance.closeView(PrefabType.TextbookListView);
-            });
+            // });
         });
     }
     onLoadMyTextBookVerticalList(item: Node, idx: number) {
@@ -125,9 +127,11 @@ export class TextbookListView extends BaseView {
         // this.myScrollView.node.active = this._myTextbookDataArr.length !== 0;
     }
     onChangeTextbook(){
-        ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
-            ViewsManager.instance.closeView(PrefabType.TextbookListView);
-        });
+        // ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
+        //     ViewsManager.instance.closeView(PrefabType.TextbookListView);
+        // });
+        EventMgr.dispatch(EventType.Update_Textbook_Challenge);
+        ViewsManager.instance.closeView(PrefabType.TextbookListView);
     }
     onClickHelp() {
         console.log("onClickHelp");

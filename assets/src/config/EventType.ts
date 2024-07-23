@@ -74,6 +74,8 @@ export const EventType = {
 
     /**选择词书模块相关事件 */
     Select_Word_Plan: "Select_Word_Plan",//选择计划
+    Update_Textbook_Challenge: "Update_Textbook_Challenge",//选择计划
+
 
     /**查找单词相关事件 */
     Search_Word: "SearchWord", //查找单词

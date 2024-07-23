@@ -6,6 +6,7 @@ import { BookListItemData, SchoolBookGradeItemData, SchoolBookListGradeItemData,
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
+import { EventMgr } from '../../util/EventManager';
 import List from '../../util/list/List';
 import { RightNavView } from './RightNavView';
 import { PlanSaveData, SettingPlanView } from './SettingPlanView';
@@ -75,10 +76,13 @@ export class SelectWordView extends BaseView {
         })
     }
     onAddPlanBook(data){
-        ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
-            ViewsManager.instance.closeView(PrefabType.TextbookListView);
-            ViewsManager.instance.closeView(PrefabType.SelectWordView);
-        });
+        // ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
+        //     ViewsManager.instance.closeView(PrefabType.TextbookListView);
+        //     ViewsManager.instance.closeView(PrefabType.SelectWordView);
+        // });
+        EventMgr.dispatch(EventType.Update_Textbook_Challenge);
+        ViewsManager.instance.closeView(PrefabType.TextbookListView);
+        ViewsManager.instance.closeView(PrefabType.SelectWordView);
     }
 
     onSchoolGradeList(data:SchoolBookListGradeItemData){

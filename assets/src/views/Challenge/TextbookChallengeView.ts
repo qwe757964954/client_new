@@ -59,6 +59,8 @@ export class TextbookChallengeView extends BaseView {
         }
     }
 
+
+
     protected showFirstEnter(){
         let rick_str = "<color=#864d42>亲爱的闯词同学：\n欢迎来到教材词汇挑战之旅！这里充满着无尽的知识和奖励的神秘宝箱，它包含了能够富裕探险者智慧和能力的奖励。很久以前，这个宝箱是由勇敢的学者们守护的，他们用智慧和勇气保护着它。但是有一天夜晚，一群贪婪的怪兽悄悄闯入王国，偷走了宝箱的钥匙，并将其分散在各个教材单元深处。这些怪兽用不同的单词作为保护钥匙的魔法屏障，试图阻止任何人发现它们。</color><color=#466cc9>你的任务是击败这些“钥匙怪”，并夺取它们手中的“怪物钥匙”，开启神秘宝箱。</color>"
         let data: IChallengeRemindData = {
@@ -85,7 +87,13 @@ export class TextbookChallengeView extends BaseView {
         this.addModelListener(NetNotify.Classification_PlanModify,this.onPlanModify);
         this.addModelListener(NetNotify.Classification_BookPlanDetail,this.onBookPlanDetail);
         this.addModelListener(NetNotify.Classification_BookAwardList,this.onBookAwardList);
+        this.addModelListener(EventType.Update_Textbook_Challenge,this.onUpdateTextbookChallenge);
     }
+
+    onUpdateTextbookChallenge(){
+        TBServer.reqCurrentBook();
+    }
+
     onCurrentBookStatus(data:CurrentBookStatus){
         console.log("onCurrentBookStatus",data);
         this._bookData = data;
@@ -197,7 +205,7 @@ export class TextbookChallengeView extends BaseView {
         const node = await ViewsManager.instance.showViewAsync(PrefabType.TextbookListView);
         const itemScript = node.getComponent(TextbookListView);
         itemScript.initData(this._bookData);
-        ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);
+        // ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);
     }
     
     // 显示 CheckWordView
