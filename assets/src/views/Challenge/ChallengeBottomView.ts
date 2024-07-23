@@ -1,6 +1,8 @@
-import { _decorator, Component, Label, Node, Sprite, UITransform } from 'cc';
+import { _decorator, Component, error, Label, Node, Sprite, SpriteFrame, UITransform } from 'cc';
+import { ResLoader } from '../../manager/ResLoader';
 import { CurrentBookStatus } from '../../models/TextbookModel';
 import List from '../../util/list/List';
+import { EducationDataInfos } from '../TextbookVocabulary/TextbookInfo';
 import { UnitNumItem } from './UnitNumItem';
 const { ccclass, property } = _decorator;
 
@@ -25,6 +27,7 @@ export class ChallengeBottomView extends Component {
     }
 
     updateItemList(data:CurrentBookStatus){
+        this.loadRewardBox();
         this._totalUnit = data.unit_total_num;
         this._currentUnitIndex = data.unit_pass_num;
         this.collectScroll.numItems = data.unit_total_num;
@@ -36,6 +39,16 @@ export class ChallengeBottomView extends Component {
         let scroll_width = this.collectScroll.scrollView.getComponent(UITransform).width;
         let content_width = this.collectScroll.scrollView.content.getComponent(UITransform).width;
         this.more_text.node.active = content_width > scroll_width;
+    }
+
+    loadRewardBox(){
+        let key_str = EducationDataInfos[0].box;
+        ResLoader.instance.load(key_str, SpriteFrame, (err: Error | null, spriteFrame: SpriteFrame) => {
+            if (err) {
+                error && console.error(err);
+            }
+            this.chest_box.getComponent(Sprite).spriteFrame = spriteFrame;
+        });
     }
 
     onLoadCollectHorizontal(item:Node, idx:number){

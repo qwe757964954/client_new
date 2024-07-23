@@ -1,0 +1,118 @@
+
+xsg_09_tx.png
+size: 2048,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+tx/102 MYNSZD E53254_00
+  rotate: false
+  xy: 2, 2
+  size: 90, 75
+  orig: 960, 540
+  offset: 293, 351
+  index: -1
+tx/102 MYNSZD E53254_02
+  rotate: false
+  xy: 1549, 209
+  size: 205, 173
+  orig: 960, 540
+  offset: 234, 301
+  index: -1
+tx/102 MYNSZD E53254_04
+  rotate: true
+  xy: 1549, 384
+  size: 233, 199
+  orig: 960, 540
+  offset: 220, 288
+  index: -1
+tx/102 MYNSZD E53254_06
+  rotate: true
+  xy: 1750, 395
+  size: 233, 199
+  orig: 960, 540
+  offset: 220, 288
+  index: -1
+tx/102 MYNSZD E53254_08
+  rotate: false
+  xy: 1756, 194
+  size: 233, 199
+  orig: 960, 540
+  offset: 220, 288
+  index: -1
+tx/102 MYNSZD E53254_10
+  rotate: false
+  xy: 433, 326
+  size: 233, 199
+  orig: 960, 540
+  offset: 220, 288
+  index: -1
+tx/102 MYNSZD E53254_12
+  rotate: false
+  xy: 668, 326
+  size: 233, 199
+  orig: 960, 540
+  offset: 220, 288
+  index: -1
+tx/102 MYNSZD E53254_14
+  rotate: false
+  xy: 662, 125
+  size: 233, 199
+  orig: 960, 540
+  offset: 220, 288
+  index: -1
+tx/102 MYNSZD E53254_16
+  rotate: false
+  xy: 427, 110
+  size: 233, 214
+  orig: 960, 540
+  offset: 220, 273
+  index: -1
+tx/102 MYNSZD E53254_18
+  rotate: false
+  xy: 1256, 328
+  size: 291, 289
+  orig: 960, 540
+  offset: 220, 198
+  index: -1
+tx/102 MYNSZD E53254_20
+  rotate: false
+  xy: 2, 514
+  size: 429, 439
+  orig: 960, 540
+  offset: 220, 48
+  index: -1
+tx/102 MYNSZD E53254_22
+  rotate: false
+  xy: 2, 79
+  size: 423, 433
+  orig: 960, 540
+  offset: 220, 54
+  index: -1
+tx/102 MYNSZD E53254_24
+  rotate: false
+  xy: 433, 527
+  size: 412, 426
+  orig: 960, 540
+  offset: 227, 59
+  index: -1
+tx/102 MYNSZD E53254_26
+  rotate: false
+  xy: 847, 534
+  size: 407, 419
+  orig: 960, 540
+  offset: 234, 59
+  index: -1
+tx/102 MYNSZD E53254_28
+  rotate: false
+  xy: 1256, 619
+  size: 335, 334
+  orig: 960, 540
+  offset: 303, 61
+  index: -1
+tx/102 MYNSZD E53254_30
+  rotate: false
+  xy: 1593, 630
+  size: 331, 323
+  orig: 960, 540
+  offset: 306, 68
+  index: -1

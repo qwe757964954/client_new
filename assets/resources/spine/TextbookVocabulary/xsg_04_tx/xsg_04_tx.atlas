@@ -1,0 +1,153 @@
+
+xsg_04_tx.png
+size: 2048,2048
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+tx/tx_08
+  rotate: false
+  xy: 1995, 2001
+  size: 32, 33
+  orig: 640, 673
+  offset: 289, 179
+  index: -1
+tx/tx_09
+  rotate: false
+  xy: 992, 1008
+  size: 67, 69
+  orig: 640, 673
+  offset: 272, 161
+  index: -1
+tx/tx_10
+  rotate: false
+  xy: 878, 161
+  size: 101, 105
+  orig: 640, 673
+  offset: 255, 143
+  index: -1
+tx/tx_11
+  rotate: false
+  xy: 746, 158
+  size: 130, 108
+  orig: 640, 673
+  offset: 246, 141
+  index: -1
+tx/tx_12
+  rotate: false
+  xy: 2, 1521
+  size: 592, 513
+  orig: 640, 673
+  offset: 15, 39
+  index: -1
+tx/tx_13
+  rotate: false
+  xy: 2, 1006
+  size: 592, 513
+  orig: 640, 673
+  offset: 15, 39
+  index: -1
+tx/tx_14
+  rotate: false
+  xy: 1372, 1551
+  size: 371, 483
+  orig: 640, 673
+  offset: 125, 85
+  index: -1
+tx/tx_15
+  rotate: false
+  xy: 394, 540
+  size: 352, 464
+  orig: 640, 673
+  offset: 124, 104
+  index: -1
+tx/tx_16
+  rotate: false
+  xy: 1378, 1077
+  size: 352, 472
+  orig: 640, 673
+  offset: 124, 96
+  index: -1
+tx/tx_17
+  rotate: false
+  xy: 988, 1537
+  size: 382, 497
+  orig: 640, 673
+  offset: 119, 88
+  index: -1
+tx/tx_18
+  rotate: false
+  xy: 2, 459
+  size: 390, 545
+  orig: 640, 673
+  offset: 117, 86
+  index: -1
+tx/tx_19
+  rotate: false
+  xy: 596, 1465
+  size: 390, 569
+  orig: 640, 673
+  offset: 117, 80
+  index: -1
+tx/tx_20
+  rotate: false
+  xy: 596, 1007
+  size: 394, 456
+  orig: 640, 673
+  offset: 115, 112
+  index: -1
+tx/tx_21
+  rotate: false
+  xy: 992, 1079
+  size: 384, 456
+  orig: 640, 673
+  offset: 128, 112
+  index: -1
+tx/tx_22
+  rotate: false
+  xy: 2, 2
+  size: 396, 455
+  orig: 640, 673
+  offset: 116, 112
+  index: -1
+tx/tx_23
+  rotate: false
+  xy: 748, 637
+  size: 338, 368
+  orig: 640, 673
+  offset: 117, 112
+  index: -1
+tx/tx_24
+  rotate: false
+  xy: 748, 268
+  size: 339, 367
+  orig: 640, 673
+  offset: 170, 112
+  index: -1
+tx/tx_25
+  rotate: false
+  xy: 400, 172
+  size: 344, 366
+  orig: 640, 673
+  offset: 165, 113
+  index: -1
+tx/tx_26
+  rotate: false
+  xy: 1745, 1713
+  size: 248, 321
+  orig: 640, 673
+  offset: 163, 157
+  index: -1
+tx/tx_27
+  rotate: false
+  xy: 400, 11
+  size: 259, 159
+  orig: 640, 673
+  offset: 152, 158
+  index: -1
+tx/tx_28
+  rotate: false
+  xy: 1745, 1632
+  size: 200, 79
+  orig: 640, 673
+  offset: 211, 158
+  index: -1

@@ -1,0 +1,139 @@
+
+xsg_12_tx.png
+size: 2048,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+tx/424 ZCYXWY eff_valarhold_01
+  rotate: false
+  xy: 2, 640
+  size: 369, 351
+  orig: 593, 593
+  offset: 109, 116
+  index: -1
+tx/424 ZCYXWY eff_valarhold_02
+  rotate: false
+  xy: 2, 318
+  size: 299, 320
+  orig: 593, 593
+  offset: 138, 135
+  index: -1
+tx/424 ZCYXWY eff_valarhold_03
+  rotate: false
+  xy: 1238, 713
+  size: 271, 278
+  orig: 593, 593
+  offset: 158, 159
+  index: -1
+tx/424 ZCYXWY eff_valarhold_04
+  rotate: true
+  xy: 547, 441
+  size: 234, 229
+  orig: 593, 593
+  offset: 181, 185
+  index: -1
+tx/424 ZCYXWY eff_valarhold_05
+  rotate: false
+  xy: 1001, 516
+  size: 191, 190
+  orig: 593, 593
+  offset: 205, 201
+  index: -1
+tx/424 ZCYXWY eff_valarhold_06
+  rotate: true
+  xy: 303, 227
+  size: 154, 170
+  orig: 593, 593
+  offset: 225, 212
+  index: -1
+tx/424 ZCYXWY eff_valarhold_07
+  rotate: false
+  xy: 1792, 741
+  size: 252, 250
+  orig: 593, 593
+  offset: 167, 174
+  index: -1
+tx/424 ZCYXWY eff_valarhold_08
+  rotate: true
+  xy: 778, 464
+  size: 223, 221
+  orig: 593, 593
+  offset: 182, 188
+  index: -1
+tx/424 ZCYXWY eff_valarhold_09
+  rotate: false
+  xy: 303, 383
+  size: 242, 255
+  orig: 593, 593
+  offset: 170, 169
+  index: -1
+tx/424 ZCYXWY eff_valarhold_10
+  rotate: false
+  xy: 967, 708
+  size: 269, 283
+  orig: 593, 593
+  offset: 156, 154
+  index: -1
+tx/424 ZCYXWY eff_valarhold_11
+  rotate: false
+  xy: 678, 689
+  size: 287, 302
+  orig: 593, 593
+  offset: 146, 145
+  index: -1
+tx/424 ZCYXWY eff_valarhold_12
+  rotate: true
+  xy: 1511, 723
+  size: 268, 279
+  orig: 593, 593
+  offset: 160, 160
+  index: -1
+tx/424 ZCYXWY eff_valarhold_13
+  rotate: false
+  xy: 373, 677
+  size: 303, 314
+  orig: 593, 593
+  offset: 142, 143
+  index: -1
+tx/424 ZCYXWY eff_valarhold_14
+  rotate: false
+  xy: 2, 2
+  size: 298, 314
+  orig: 593, 593
+  offset: 146, 143
+  index: -1
+tx/424 ZCYXWY eff_valarhold_15
+  rotate: true
+  xy: 641, 183
+  size: 125, 126
+  orig: 593, 593
+  offset: 231, 233
+  index: -1
+tx/424 ZCYXWY eff_valarhold_16
+  rotate: false
+  xy: 641, 310
+  size: 129, 129
+  orig: 593, 593
+  offset: 229, 232
+  index: -1
+tx/424 ZCYXWY eff_valarhold_17
+  rotate: false
+  xy: 470, 68
+  size: 146, 147
+  orig: 593, 593
+  offset: 220, 223
+  index: -1
+tx/424 ZCYXWY eff_valarhold_19
+  rotate: false
+  xy: 302, 60
+  size: 166, 165
+  orig: 593, 593
+  offset: 210, 215
+  index: -1
+tx/424 ZCYXWY eff_valarhold_20
+  rotate: false
+  xy: 475, 217
+  size: 164, 164
+  orig: 593, 593
+  offset: 211, 215
+  index: -1
