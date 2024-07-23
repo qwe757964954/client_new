@@ -61,7 +61,8 @@ export class ExamReportView extends BaseView {
             if (sourceType === WordSourceType.classification && this._resultSubmitResponse) {
                 this._propsData = ObjectUtil.convertAwardsToItemData(this._resultSubmitResponse.award_info);
             } else {
-                this._propsData = ObjectUtil.convertAwardsToItemData(this._bossLevelResult.award.pass_reward);
+                this._bossLevelResult = data;
+                this._propsData = this._bossLevelResult.award_info.pass_reward
             }
 
             this.reward_scroll.numItems = this._propsData.length;
