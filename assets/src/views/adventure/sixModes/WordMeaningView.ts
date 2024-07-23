@@ -62,7 +62,7 @@ export class WordMeaningView extends BaseModeView {
     private _selectLock: boolean = false; //选择锁
     private _isUIShowOver: boolean = false; //UI显示结束
     private _isNetOver: boolean = false; //网络请求结束
-
+    private _netHandler:Function = null; 
     async initData(wordsdata: UnitWordModel[], levelData: any) {
         this.gameMode = GameMode.WordMeaning;
         wordsdata = this.updateTextbookWords(wordsdata, levelData);
@@ -184,20 +184,26 @@ export class WordMeaningView extends BaseModeView {
         this._isUIShowOver = true;
         this.showNextWord();
     }
+
+
     /**网络请求结束 */
     netReqOver() {
         this._isNetOver = true;
-        this.unscheduleAllCallbacks();
+        this.unschedule(this._netHandler);
+        this._netHandler = null;
         this.showNextWord();
     }
     /**网络超时回调 */
     netTimeOut() {
-        this.scheduleOnce(() => {
+        if(this._netHandler){
+            return;
+        }
+        this._netHandler = () =>{
             if (!this._isNetOver && this._curWordSubmitData) {
                 this.onGameSubmit(this._curWordSubmitData.word, this._curWordSubmitData.isRight, this._curWordSubmitData.wordData, this._curWordSubmitData.answer);
-                this.netTimeOut();
             }
-        }, 3.0);
+        }
+        this.schedule(this._netHandler,3);
     }
 
     onAnswerClick(index: number) {

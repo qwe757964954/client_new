@@ -424,6 +424,7 @@ export class BaseModeView extends BaseView {
                 small_id: levelData.small_id,
                 status: isRight ? 1 : 0
             }
+            console.log("reqGameSubmit.....",data);
             TBServer.reqGameSubmit(data);
             return;
         }

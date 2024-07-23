@@ -1,7 +1,7 @@
 
 
 export enum EducationLevel {
-    ElementaryGrade1 = 1,
+    ElementaryGrade1 = 3001,
     ElementaryGrade2,
     ElementaryGrade3,
     ElementaryGrade4,
