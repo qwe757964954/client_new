@@ -622,6 +622,9 @@ export class MainScene extends BaseComponent {
     findRecycleData(idx: number) {
         return this._mapUICtl.findRecycleData(idx);
     }
+    findRecycleDataByBid(bid: number) {
+        return this._mapUICtl.findRecycleDataByBid(bid);
+    }
     /**回收建筑是否包含指定建筑 */
     isRecycleBuildingContain(bid: number) {
         return this._mapUICtl.isRecycleBuildingContain(bid);
