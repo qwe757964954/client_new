@@ -2,6 +2,7 @@
 
 import { ItemData } from "../manager/DataMgr";
 import { InterfacePath } from "../net/InterfacePath";
+import { CurrentBookStatus } from "./TextbookModel";
 
 
 /**********************************SOCKET*************************************/
@@ -396,10 +397,23 @@ export class s2cReviewPlanInfo {
     review_num: number;//复习单词数
     today_need_review_num: number;//今日需要复习单词数
     today_review_num: number;//今日已复习单词数
+    not_planned_num: number;//未按规划复习的单词数
 }
-export class s2cReviewPlan extends BaseRepPacket {
+class s2cReviewWordData {
     classification: s2cReviewPlanInfo;//教材单词
     word_game: s2cReviewPlanInfo;//单词大冒险
+}
+export class s2cReviewBookInfo {
+    user_id: number;//用户id
+    book_id: number;//教材id
+    book_name: string;//教材名称
+    phase_id: number;//教材阶段id
+    grade: string;//教材年级
+}
+export class s2cReviewPlan extends BaseRepPacket {
+    word_num_data: s2cReviewWordData;
+    // book_info: s2cReviewBookInfo;
+    book_info: CurrentBookStatus;
 }
 /**复习规划列表 */
 export class c2sReviewPlanList {

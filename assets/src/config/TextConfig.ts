@@ -128,6 +128,8 @@ export const TextConfig = {
     ReviewPlan_End3: "恭喜完成今日所有单词大冒险的复习规划\n继续加油吧~",
     ReviewPlan_Select: "已选：{0}个",
     ReviewPlan_Tip: "最多只能选择10个",
+    ReviewPlan_Tip2: "长时间未复习（{0}）",
+    ReviewPlan_Tip3: "长时间未复习（99+）",
     ReviewPlan_Draw_Tip: "你的抽奖分不足了哦，赶紧去复习吧~",
 
     PetInteraction_Tip: "互动次数不足",
