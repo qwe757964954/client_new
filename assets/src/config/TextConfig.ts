@@ -151,4 +151,7 @@ export const TextConfig = {
 
     WordMeaning_Exit_Tip1: "确定退出学习吗?",
     WordMeaning_Exit_Tip2: "确定结束复习吗?\n完成复习可参与扭蛋机抽奖哦",
+
+    Insufficient_Gold_Synthesize:"合成金币不足",
+    Insufficient_Goods_Synthesize:"合成物品不足",
 }

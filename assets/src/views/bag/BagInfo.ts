@@ -68,3 +68,36 @@ export const BagGressItems: BagGressItem[] = [
     { id: BagGressItemIds.Shoes, title: "鞋子", spriteFrame: "Bag/icon_arms/spriteFrame" }
 ];
 
+export enum BagItemType {
+    Costume = 1,
+    Consumable = 2,
+    Other = 3
+}
+
+
+export interface BagItemInfo {
+    id: number;
+    name: string;
+    png: string;
+    frame: string;
+}
+
+export interface BackpackItemInfo {
+    id: number;
+    name: string;
+    type: number;
+    merge_item: number[];
+    decompose_item: number[];
+}
+
+export interface GoodsItemInfo {
+    id: number;
+    name: string;
+    price: [number, number];
+}
+
+export interface GameBagData {
+    item_info: BagItemInfo[];
+    backpack_item_info: BackpackItemInfo[];
+    goods_item_info: GoodsItemInfo[];
+}

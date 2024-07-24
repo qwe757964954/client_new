@@ -4,6 +4,7 @@ import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
 import { NetNotify } from "../net/NetNotify";
 import { BaseControll } from "../script/BaseControll";
+import { BackpackItemInfo } from "../views/bag/BagInfo";
 
 
 export default class _BagService extends BaseControll {
@@ -33,10 +34,9 @@ export default class _BagService extends BaseControll {
         NetMgr.sendMsg(param);
     }
 
-    reqBackpackItemSynthesis(data:ItemData){
+    reqBackpackItemSynthesis(data:BackpackItemInfo){
         let param: c2sBackpackItemSynthesis = new c2sBackpackItemSynthesis();
         param.id = data.id;
-        param.num = data.num;
         NetMgr.sendMsg(param);
     }
     onBreakdownBackpackItems(data: any) {
