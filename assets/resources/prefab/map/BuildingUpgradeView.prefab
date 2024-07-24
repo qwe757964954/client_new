@@ -1354,7 +1354,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 183.369140625,
+      "width": 159.990234375,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -1390,7 +1390,7 @@
       "b": 0,
       "a": 255
     },
-    "_string": "升级可解锁xx",
+    "_string": "升级可解锁:",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 30,
