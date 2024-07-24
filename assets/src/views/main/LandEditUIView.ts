@@ -1,4 +1,4 @@
-import { _decorator, Component, Sprite } from 'cc';
+import { _decorator, Component, Label, Node, Sprite } from 'cc';
 import { DataMgr, EditInfo } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
 import CCUtil from '../../util/CCUtil';
@@ -13,8 +13,13 @@ export class LandEditUIView extends Component {
     public btnClose: Sprite = null;//关闭按钮
     @property(Sprite)
     public img: Sprite = null;//图片
+    @property(Node)
+    public plBaseColor: Node = null;//底格颜色开关
+    @property(Label)
+    public labelBaseColor: Label = null;//底格颜色
 
     private _mainScene: MainScene = null;//主场景
+    private _isBaseColor: boolean = false;//底格颜色开关
 
     start() {
         this.initEvent();
@@ -26,13 +31,15 @@ export class LandEditUIView extends Component {
     //销毁
     onDestroy() {
         this.removeEvent();
-        this.clearLoadAsset();
+    }
+    protected onEnable(): void {
+        this._isBaseColor = false;
+        this.showBtnBaseColor();
     }
     protected onDisable(): void {
-        this.clearLoadAsset();
-    }
-    //清理资源
-    clearLoadAsset() {
+        if (this._isBaseColor) {
+            this._mainScene?.changeBaseColor(false);
+        }
     }
     //初始化数据
     initData(landInfo: EditInfo) {
@@ -42,11 +49,13 @@ export class LandEditUIView extends Component {
     initEvent() {
         CCUtil.onTouch(this.btnSure, this.onBtnSureClick, this);
         CCUtil.onTouch(this.btnClose, this.onBtnCloseClick, this);
+        CCUtil.onTouch(this.plBaseColor, this.onBaseColorClick, this);
     }
     //移除事件
     removeEvent() {
         CCUtil.offTouch(this.btnSure, this.onBtnSureClick, this);
         CCUtil.offTouch(this.btnClose, this.onBtnCloseClick, this);
+        CCUtil.offTouch(this.plBaseColor, this.onBaseColorClick, this);
     }
     //点击确定
     onBtnSureClick() {
@@ -55,6 +64,16 @@ export class LandEditUIView extends Component {
     //点击关闭
     onBtnCloseClick() {
         this._mainScene.cancelEvent();
+    }
+    /**底格颜色开关点击 */
+    onBaseColorClick() {
+        this._isBaseColor = !this._isBaseColor;
+        this.showBtnBaseColor();
+        this._mainScene?.changeBaseColor(this._isBaseColor);
+    }
+    /**底格颜色开关显示 */
+    showBtnBaseColor() {
+        this.labelBaseColor.string = this._isBaseColor ? "开" : "关";
     }
 }
 
