@@ -528,6 +528,7 @@ export class MainScene extends BaseComponent {
                 let editInfo = building.editInfo;
                 if (!DataMgr.instance.buildProduceInfo[editInfo.id]) continue;
                 if (BuildingIDType.castle == editInfo.id) continue;
+                if (BuildingState.normal != building.buildingState) continue;
                 buildAry.push(building);
                 if (building == selectBuilding) {
                     idx = buildAry.length - 1;
