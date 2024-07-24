@@ -76,6 +76,7 @@ export class CompositeBagView extends BasePopup {
         }
 
         BagServer.reqBackpackItemSynthesis(this._selectedItemInfo);
+        this.closePop();
     }
 
     private canMergeItems(): boolean {
