@@ -1,7 +1,7 @@
 import { _decorator, BlockInputEvents, Button, Color, instantiate, isValid, Label, Node, Prefab, Sprite, tween, UIOpacity, UITransform, Vec3, view } from 'cc';
 import { EventType } from '../../../config/EventType';
 import { TextConfig } from '../../../config/TextConfig';
-import { GameRes } from '../../../GameRes';
+import { GameBundle, GameRes } from '../../../GameRes';
 import GlobalConfig from '../../../GlobalConfig';
 import { BookLevelConfig, DataMgr } from '../../../manager/DataMgr';
 import { inf_SpineAniCreate } from '../../../manager/InterfaceDefines';
@@ -80,6 +80,7 @@ export class BaseModeView extends BaseView {
     private _rightAniNode: Node = null;
 
     protected _pet: Node = null; //精灵
+    protected _petAttackView: Node = null; //精灵攻击
     protected _role: Node = null; //人物
     protected _smallMonsters: Node[] = []; //小怪物
 
@@ -114,7 +115,7 @@ export class BaseModeView extends BaseView {
         this.node.getChildByName("img_bg").addComponent(BlockInputEvents);
         this.initRole(); //初始化角色
         this.initPet(); //初始化精灵
-
+        this.initPetAttack();//攻击被攻击特效view
         let scaleNum = view.getVisibleSize().width / view.getDesignResolutionSize().width;
         this.topNode.setScale(scaleNum, scaleNum, 1);
 
@@ -298,6 +299,13 @@ export class BaseModeView extends BaseView {
         roleModel.show(true);
         CCUtil.setNodeCamera2DUI(this._pet);
     }
+
+    initPetAttack(){
+        this._petAttackView = ImgUtil.create_2DNode("petAttackView");
+        this._petAttackView.setScale(-0.5,0.5,0.5);
+        this.petContainer.addChild(this._petAttackView);
+    }
+
     async initMonster() {
         //单词大冒险关卡
         if (WordSourceType.word_game == this._sourceType) {
@@ -340,7 +348,7 @@ export class BaseModeView extends BaseView {
             sp.scale = new Vec3(-scale.x * 0.4, scale.y * 0.4, 1);
             // sp.setPosition(sp.getPosition().x, sp.getPosition().y - 20)
             let monsterModel = this._monster.getComponent(MonsterModel);
-            monsterModel.init(FileUtil.removeFileExtension(EducationDataInfos[0].monster), true);
+            monsterModel.init(FileUtil.removeFileExtension(EducationDataInfos[12].monster), true);
             if (this.gameMode == GameMode.Exam) {
                 this.monster.getComponent(UIOpacity).opacity = 125;
             }
@@ -358,7 +366,7 @@ export class BaseModeView extends BaseView {
             let scale = this._monster.getScale();
             this._monster.scale = new Vec3(-scale.x * 0.4, scale.y * 0.4, 1);
             let monsterModel = this._monster.getComponent(MonsterModel);
-            monsterModel.init(FileUtil.removeFileExtension(EducationDataInfos[0].monster), true);
+            monsterModel.init(FileUtil.removeFileExtension(EducationDataInfos[12].monster), true);
             monsterModel.setHp(this._rightNum, this._levelData.wordCount);
             CCUtil.setNodeCamera2DUI(this._monster);
         }
@@ -532,8 +540,31 @@ export class BaseModeView extends BaseView {
                         resolve(true);
                     });
                 });
+                this.showMonsterEffect(()=>{
+                        
+                });
             }).start();
         });
+    }
+
+    showMonsterEffect(callback: () => void){
+        if(this._sourceType === WordSourceType.word_game){
+            callback?.();
+            return;
+        }
+        let resConf = {bundle:GameBundle.NORMAL,path:EducationDataInfos[11].monster_effect}
+        let spinePrams:inf_SpineAniCreate = {
+            resConf:resConf,
+            aniName:"attack",
+            trackIndex:0,
+            parentNode:this._petAttackView,
+            isLoop:false,
+            callEndFunc:()=>{
+                callback?.();
+                this._petAttackView.removeAllChildren();
+            } 
+        }
+        EventMgr.dispatch(EventType.Sys_Ani_Play,spinePrams);
     }
 
     //获取大冒险上报结果

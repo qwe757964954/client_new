@@ -76,6 +76,8 @@ class UserModel {
     private _buildingList: number[] = [];// 建筑列表（已有）
     private _landList: number[] = [];// 地块列表（已有）
 
+    public item_list: ItemData[] = []; 
+
     private constructor() {
     }
 

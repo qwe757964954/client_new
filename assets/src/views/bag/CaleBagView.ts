@@ -14,6 +14,8 @@ export class CaleBagView extends BaseView {
     @property(Label)
     public cale_text: Label = null;
 
+    private _can_cale:boolean = true;
+
     protected initUI(): void {
         
     }
@@ -25,6 +27,9 @@ export class CaleBagView extends BaseView {
 
     reduceClickEvent(){
         console.log("reduceClickEvent");
+        if(!this._can_cale){
+            return;
+        }
         let num = parseInt(this.cale_text.string);
         if(num > 0){
             num--;
@@ -35,6 +40,9 @@ export class CaleBagView extends BaseView {
 
     addClickEvent(){
         console.log("addClickEvent");
+        if(!this._can_cale){
+            return;
+        }
         let num = parseInt(this.cale_text.string);
         num++;
         this.cale_text.string = num.toString();
@@ -44,5 +52,8 @@ export class CaleBagView extends BaseView {
         return parseInt(this.cale_text.string);
     }
 
+    disableCale(){
+        this._can_cale = false;
+    }
 }
 

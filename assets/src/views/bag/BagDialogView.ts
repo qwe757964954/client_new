@@ -1,12 +1,11 @@
 import { _decorator, Color, instantiate, isValid, Layers, Node, Prefab, UITransform, v3 } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
-import { ItemID } from '../../export/ItemConfig';
 import { ItemData } from '../../manager/DataMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
 import { User } from '../../models/User';
-import { ServiceMgr } from '../../net/ServiceManager';
+import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
@@ -50,17 +49,16 @@ export class BagDialogView extends BaseView {
     @property(List)
     public op_list:List = null;
 
-    private _currentTab: string = "1"; //当前tab页
-
     private _role: Node = null;
 
     initEvent() {
         CCUtil.onBtnClick(this.btn_close, this.onCloseView.bind(this));
-        // CCUtil.onBtnClick(this.btnDicomposeSell, this.onDicomposeSell.bind(this));
     }
     protected onInitModuleEvent() {
         this.addModelListeners([
             [EventType.Bag_PropList, this.onPropList.bind(this)],
+            [NetNotify.Classification_BreakdownBackpackItems, this.onBreakdownBackpackItems.bind(this)],
+            [NetNotify.Classification_BackpackItemSynthesis, this.onBackpackItemSynthesis.bind(this)],
         ]);
     }
     initUI() {
@@ -71,41 +69,21 @@ export class BagDialogView extends BaseView {
         this.tabList.numItems = BagTabNames.length;
         this.tabList.selectedId = 0;
         this.dress_list.numItems = BagGressItems.length;
-        this.propList.numItems = 40;
+        this.propList.numItems = User.item_list.length;
         this.op_list.numItems = BagOperationNames.length;
         this.op_list.selectedId = 0;
-    }
-    onClickTab() {
-        let curTabIndex: number = +this._currentTab;
-
-        this.propList.content.removeAllChildren();
-        switch (curTabIndex) {
-            case 1:// 所有的物品
-                ServiceMgr.propService.propList(1);
-                break;
-            case 2: //装扮
-                ServiceMgr.propService.propList(2);
-                break;
-            case 3: //消耗品
-                ServiceMgr.propService.propList(3);
-                break;
-            case 4: //其他
-                ServiceMgr.propService.propList(4);
-                break;
-        }
     }
 
     onPropList(propDatas: ItemData[]) {
 
     }
 
-    private addPropItem(propData: ItemData) {
-        let propItem: Node = instantiate(this.propPrefab);
-        this.propList.content.addChild(propItem);
-        propItem.getComponent(RewardItem).init(propData);
+    onBreakdownBackpackItems(data:any){
+        console.log("onBreakdownBackpackItems", data);
     }
-
-
+    onBackpackItemSynthesis(data:any){
+        console.log("onBackpackItemSynthesis", data);
+    }
 
     /**初始化游戏数值 */
     initAmout() {
@@ -120,9 +98,6 @@ export class BagDialogView extends BaseView {
     onCloseView() {
         ViewsManager.instance.closeView(PrefabType.BagView);
     }
-    onDicomposeSell(){
-        // ViewsManager.instance.showTip(TextConfig.Function_Tip);
-    }
     /**显示角色的骨骼动画 */
     private showRoleDress() {
         this.roleContainer.removeAllChildren();
@@ -136,25 +111,21 @@ export class BagDialogView extends BaseView {
         roleModel.init(modelId, 1, [9500, 9700, 9701, 9702, 9703]);
         roleModel.show(true);
     }
-
-    // 随机选择一个枚举值的函数
-    getRandomEnumValue(enumObject: typeof ItemID): ItemID {
-        const enumValues = Object.values(enumObject).filter(value => typeof value === 'number') as number[];
-        const randomIndex = Math.floor(Math.random() * enumValues.length);
-        return enumValues[randomIndex] as ItemID;
-    }
-
     onLoadPropsGrid(item:Node, idx:number){
         let itemScript: RewardItem = item.getComponent(RewardItem);
         let node_trans = item.getComponent(UITransform);
         let scale = 125 / node_trans.height;
         item.setScale(scale, scale, scale)
-        const randomItemID = this.getRandomEnumValue(ItemID);
         let data:ItemData = {
-            id: randomItemID,
-            num: 999,
+            id: User.item_list[idx].id,
+            num: User.item_list[idx].num,
         }
         itemScript.init(data);
+    }
+
+    onPropsGridSelected(item: any, selectedId: number, lastSelectedId: number, val: number) {
+        if(!isValid(selectedId) || selectedId < 0 || !isValid(item)){return;}
+        console.log("onPropsGridSelected",selectedId);
     }
 
     onLoadDressGrid(item:Node, idx:number){

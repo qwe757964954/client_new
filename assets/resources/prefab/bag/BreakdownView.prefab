@@ -2372,6 +2372,10 @@
     "sure_btn": {
       "__id__": 23
     },
+    "caleBagView": null,
+    "source_node": {
+      "__id__": 62
+    },
     "_id": ""
   },
   {
@@ -2388,11 +2392,37 @@
     },
     "fileId": "c46/YsCPVOJYA4mWEpNYRx",
     "instance": null,
-    "targetOverrides": null,
+    "targetOverrides": [
+      {
+        "__id__": 116
+      }
+    ],
     "nestedPrefabInstanceRoots": [
       {
         "__id__": 35
       }
+    ]
+  },
+  {
+    "__type__": "cc.TargetOverrideInfo",
+    "source": {
+      "__id__": 113
+    },
+    "sourceInfo": null,
+    "propertyPath": [
+      "caleBagView"
+    ],
+    "target": {
+      "__id__": 35
+    },
+    "targetInfo": {
+      "__id__": 117
+    }
+  },
+  {
+    "__type__": "cc.TargetInfo",
+    "localID": [
+      "46TEfu2qREzIBcJ1faMRZ4"
     ]
   }
 ]
