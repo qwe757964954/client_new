@@ -109,6 +109,7 @@ export class ReviewEndView extends BaseComponent {
     }
     /**完成复习 */
     onBtnEndClick() {
+        ServiceMgr.studyService.reqReviewPlan();//刷新复习规划
         this.node.destroy();
     }
     /**列表加载 */
