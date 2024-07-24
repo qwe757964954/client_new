@@ -322,7 +322,7 @@ export class c2sBossLevelSubmit {
 
 export class BossLevelSubmitData extends BaseRepPacket {
     flag: number;
-    award: any;
+    award_info: any;
 }
 
 //获取岛屿进度奖励

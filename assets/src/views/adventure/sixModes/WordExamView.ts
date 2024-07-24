@@ -5,7 +5,7 @@ import { ViewsManager } from '../../../manager/ViewsManager';
 import { GameMode } from '../../../models/AdventureModel';
 import { UnitWordModel } from '../../../models/TextbookModel';
 import List from '../../../util/list/List';
-import { BaseModeView, WordSourceType } from './BaseModeView';
+import { BaseModeView } from './BaseModeView';
 import { ExamReportView } from './ExamReportView';
 import { ExamItem } from './items/ExamItem';
 const { ccclass, property } = _decorator;
@@ -139,9 +139,10 @@ export class WordExamView extends BaseModeView {
                 }
                 this.monsterAttack().then(() => {
                     this.showCurrentWord();
-                    if (WordSourceType.word_game == this._sourceType) {
-                        this.checkResult();
-                    }
+                    this.checkResult();
+                    // if (WordSourceType.word_game == this._sourceType) {
+                        
+                    // }
                 });
             }
             this.resultIcon.node.active = true;
@@ -172,7 +173,7 @@ export class WordExamView extends BaseModeView {
         if (this._currentSubmitResponse.pass_flag == 1 || this._currentSubmitResponse.pass_flag == 2) { //成功或失败
             ViewsManager.instance.showView(PrefabType.ExamReportView, (node: Node) => {
                 let nodeScript = node.getComponent(ExamReportView);
-                nodeScript.initData(this._currentSubmitResponse);
+                nodeScript.initData(this._currentSubmitResponse,this._sourceType);
                 this.node.parent.destroy();
             });
         }

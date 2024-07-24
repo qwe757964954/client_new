@@ -1,8 +1,9 @@
-import { _decorator, CCInteger, Component, Enum, Label, Sprite } from 'cc';
+import { _decorator, CCInteger, Enum, Label, Sprite } from 'cc';
 import { DEV } from 'cc/env';
 import { ItemID } from '../../export/ItemConfig';
 import { DataMgr, ItemData } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
+import ListItem from '../../util/list/ListItem';
 const { ccclass, property, executeInEditMode } = _decorator;
 
 export enum RewardItemType {
@@ -15,7 +16,7 @@ const defaultFramePath = "common/img_bg_item1/spriteFrame";
 
 @ccclass('RewardItem')
 @executeInEditMode(true)
-export class RewardItem extends Component {
+export class RewardItem extends ListItem {
     @property(Sprite)
     public frame: Sprite = null;//框
     @property(Sprite)

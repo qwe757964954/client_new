@@ -2,6 +2,7 @@
 
 import { ItemData } from "../manager/DataMgr";
 import { InterfacePath } from "../net/InterfacePath";
+import { CurrentBookStatus } from "./TextbookModel";
 
 
 /**********************************SOCKET*************************************/
@@ -396,10 +397,23 @@ export class s2cReviewPlanInfo {
     review_num: number;//复习单词数
     today_need_review_num: number;//今日需要复习单词数
     today_review_num: number;//今日已复习单词数
+    not_planned_num: number;//未按规划复习的单词数
 }
-export class s2cReviewPlan extends BaseRepPacket {
+class s2cReviewWordData {
     classification: s2cReviewPlanInfo;//教材单词
     word_game: s2cReviewPlanInfo;//单词大冒险
+}
+export class s2cReviewBookInfo {
+    user_id: number;//用户id
+    book_id: number;//教材id
+    book_name: string;//教材名称
+    phase_id: number;//教材阶段id
+    grade: string;//教材年级
+}
+export class s2cReviewPlan extends BaseRepPacket {
+    word_num_data: s2cReviewWordData;
+    // book_info: s2cReviewBookInfo;
+    book_info: CurrentBookStatus;
 }
 /**复习规划列表 */
 export class c2sReviewPlanList {
@@ -440,6 +454,11 @@ export class s2cReviewPlanWordInfo {
     cn: string;//中文解释
     symbol: string;//音标 英标
     symbolus: string;//音标 美标
+    big_id: number;//教材id
+    subject_id: number;//主题id
+    small_id: number;//小关卡
+    book_id: string;//教材id
+    unit_id: string;//单元id
 }
 /**复习规划状态与单词列表返回 */
 export class s2cReviewPlanStatus extends BaseRepPacket {
@@ -484,6 +503,7 @@ export class c2sReviewPlanOption {
 /**复习规划选项返回 */
 export class s2cReviewPlanOptionWord {
     cn: string;//中文释义
+    word: string;//单词
 }
 export class s2cReviewPlanOption extends BaseRepPacket {
     word_cn_list: s2cReviewPlanOptionWord[];//单词中文释义
@@ -497,6 +517,19 @@ export class c2sReviewPlanLongTimeWords {
 /**复习规划长时间未复习单词返回 */
 export class s2cReviewPlanLongTimeWords extends BaseRepPacket {
     not_planned_list: s2cReviewPlanWordInfo[];
+}
+/**复习规划长时间未复习单词提交 */
+export class c2sReviewPlanLongTimeWordSubmit {
+    command_id: string = InterfacePath.c2sReviewPlanLongTimeWordSubmit;
+    wp_id: string;//复习计划id
+    word: string;//单词
+    answer: string;//答案
+    status: number;//1表示正确 2表示错误
+    cost_time: number;//耗时毫秒
+}
+/**复习规划长时间未复习单词提交返回 */
+export class s2cReviewPlanLongTimeWordSubmit extends BaseRepPacket {
+    reward_list: ItemData[];//奖励
 }
 /**宠物信息 */
 export class c2sPetInfo {

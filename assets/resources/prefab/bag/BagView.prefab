@@ -1542,7 +1542,7 @@
     "renderEvent": {
       "__id__": 66
     },
-    "selectedMode": 0,
+    "selectedMode": 1,
     "selectedEvent": {
       "__id__": 67
     },
@@ -1573,9 +1573,11 @@
   },
   {
     "__type__": "cc.ClickEvent",
-    "target": null,
+    "target": {
+      "__id__": 1
+    },
     "component": "",
-    "_componentId": "",
+    "_componentId": "e73241vHNpNHIM6vYqPPZTO",
     "handler": "",
     "customEventData": ""
   },
@@ -3531,7 +3533,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -383.798,
+      "x": -393.798,
       "y": -350.75,
       "z": 0
     },
@@ -3679,7 +3681,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 842,
+      "width": 852,
       "height": 75
     },
     "_anchorPoint": {
@@ -3713,7 +3715,7 @@
       "height": 40
     },
     "_startAxis": 0,
-    "_paddingLeft": 0,
+    "_paddingLeft": 10,
     "_paddingRight": 0,
     "_paddingTop": 0,
     "_paddingBottom": 0,
@@ -3758,7 +3760,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 842,
+      "width": 852,
       "height": 75
     },
     "_anchorPoint": {
@@ -3867,7 +3869,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 842,
+      "width": 852,
       "height": 75
     },
     "_anchorPoint": {

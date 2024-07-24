@@ -45,6 +45,8 @@ export class SpeedWordsView extends BaseComponent {
     timeLabel: Label = null;
     @property(Label)
     timesLabel: Label = null;
+    @property(Node)
+    btnClose: Node = null;
 
     private _answerUIList: AnswerUI[] = [];//答案UI列表
     private _buildingID: number = null;//建筑ID
@@ -76,6 +78,7 @@ export class SpeedWordsView extends BaseComponent {
         this.removeEvent();
     }
     initEvent() {
+        CCUtil.onTouch(this.btnClose, this.onCloseClick, this);
         CCUtil.onTouch(this.wordSound, this.playWordSound, this);
         for (let i = 0; i < this.answerList.length; i++) {
             CCUtil.onTouch(this.answerList[i], this.onAnswerClick.bind(this, i), this);
@@ -87,6 +90,7 @@ export class SpeedWordsView extends BaseComponent {
         this.addEvent(InterfacePath.c2sCloudUnlockSpeed, this.onRepCloudUnlockSpeed.bind(this));
     }
     removeEvent() {
+        CCUtil.offTouch(this.btnClose, this.onCloseClick, this);
         CCUtil.offTouch(this.wordSound, this.playWordSound, this);
         for (let i = 0; i < this.answerList.length; i++) {
             CCUtil.offTouch(this.answerList[i]);
@@ -145,6 +149,8 @@ export class SpeedWordsView extends BaseComponent {
             this._remainTime--;
             if (this._remainTime < 0) {
                 this.clearTimer();
+                this.showCompleteTip();
+                this.endAnswer();
                 return;
             }
             this.showTime();
@@ -193,20 +199,31 @@ export class SpeedWordsView extends BaseComponent {
         }
         return nextID;
     }
+    /**显示完成提示 */
+    showCompleteTip() {
+        if (this._unlock_cloud) {
+            ViewsMgr.showTip(TextConfig.Cloud_Unlock_Success);
+        } else {
+            if (BuildingState.building == this._buildingState) {
+                ViewsMgr.showTip(ToolUtil.replace(TextConfig.Building_Built_Success, this._buildingName));
+            } else if (BuildingState.upgrade == this._buildingState) {
+                ViewsMgr.showTip(ToolUtil.replace(TextConfig.Building_Upgrade_Success, this._buildingName));
+            } else if (null != this._product_num) {
+                ViewsMgr.showTip(TextConfig.Building_Product_Success);
+            }
+        }
+    }
+    /**检测是否时间结束 */
+    checkTimeOver() {
+        if (this._remainTime <= 0) {
+            this.showCompleteTip();
+            return true;
+        }
+        return false;
+    }
     /**下一题 */
     goToNext() {
-        if (this._remainTime <= 0) {
-            if (this._unlock_cloud) {
-                ViewsMgr.showTip(TextConfig.Cloud_Unlock_Success);
-            } else {
-                if (BuildingState.building == this._buildingState) {
-                    ViewsMgr.showTip(ToolUtil.replace(TextConfig.Building_Built_Success, this._buildingName));
-                } else if (BuildingState.upgrade == this._buildingState) {
-                    ViewsMgr.showTip(ToolUtil.replace(TextConfig.Building_Upgrade_Success, this._buildingName));
-                } else if (null != this._product_num) {
-                    ViewsMgr.showTip(TextConfig.Building_Product_Success);
-                }
-            }
+        if (this.checkTimeOver()) {
             this.endAnswer();
             return;
         }
@@ -294,6 +311,24 @@ export class SpeedWordsView extends BaseComponent {
 
         this._canSelectAnswer = true;
         this._selectAnswerIndex = null;
+    }
+    /**关闭点击 */
+    onCloseClick() {
+        let str = "";
+        if (this._unlock_cloud) {
+            str = TextConfig.Speed_Words_Exit_Tip4;
+        } else {
+            if (BuildingState.building == this._buildingState) {
+                str = TextConfig.Speed_Words_Exit_Tip1;
+            } else if (BuildingState.upgrade == this._buildingState) {
+                str = TextConfig.Speed_Words_Exit_Tip2;
+            } else if (null != this._product_num) {
+                str = TextConfig.Speed_Words_Exit_Tip3;
+            }
+        }
+        ViewsMgr.showConfirm(str, () => {
+            this.endAnswer();
+        });
     }
     /**播放单词音频 */
     playWordSound() {

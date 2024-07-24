@@ -132,6 +132,7 @@ export default class AccountService {
         data.forEach(item => {
             User.setItem(item.id, item.num);
         });
+        User.item_list = data;
     }
     /**手机号验证码登录 */
     reqPhoneCodeLogin(phone: string, code: string) {

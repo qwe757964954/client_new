@@ -4,6 +4,7 @@ import { TextConfig } from '../../config/TextConfig';
 import { ItemID } from '../../export/ItemConfig';
 import GlobalConfig from '../../GlobalConfig';
 import { ItemData } from '../../manager/DataMgr';
+import { LoadManager } from '../../manager/LoadManager';
 import { ViewsMgr } from '../../manager/ViewsManager';
 import { s2cReviewPlan, s2cReviewPlanDraw, s2cReviewPlanStatus } from '../../models/NetModel';
 import { CurrentBookStatus, UnitWordModel } from '../../models/TextbookModel';
@@ -11,12 +12,12 @@ import { User } from '../../models/User';
 import { InterfacePath } from '../../net/InterfacePath';
 import { ServiceMgr } from '../../net/ServiceManager';
 import { BaseComponent } from '../../script/BaseComponent';
-import { TBServer } from '../../service/TextbookService';
 import CCUtil from '../../util/CCUtil';
 import { ToolUtil } from '../../util/ToolUtil';
 import { WordSourceType } from '../adventure/sixModes/BaseModeView';
 import { WordMeaningView } from '../adventure/sixModes/WordMeaningView';
 import { TextbookListView } from '../TextbookVocabulary/TextbookListView';
+import { ReviewAdjustPlanView } from './ReviewAdjustPlanView';
 import { ReviewRewardView } from './ReviewRewardView';
 import { ReviewSourceType, ReviewWordListView } from './ReviewWordListView';
 const { ccclass, property } = _decorator;
@@ -30,16 +31,19 @@ enum ReviewPlanDrawType {
 }
 
 export class ReviewWordModel implements UnitWordModel {
-    book_id: string = "";
-    cn: string = "";
-    phonic: string = "";
-    syllable: string = "";
-    symbol: string = "";
-    symbolus: string = "";
-    unit_id: string = "";
-    w_id: string = "";
-    word: string = "";
-    wp_id: string = "";
+    book_id: string = null;
+    cn: string = null;
+    phonic: string = null;
+    syllable: string = null;
+    symbol: string = null;
+    symbolus: string = null;
+    unit_id: string = null;
+    w_id: string = null;
+    word: string = null;
+    wp_id: string = null;
+    big_id: number = null;
+    small_id: number = null;
+    subject_id: number = null;
 }
 
 @ccclass('ReviewPlanView')
@@ -106,13 +110,13 @@ export class ReviewPlanView extends BaseComponent {
     private _bookData: CurrentBookStatus = null;
 
     onLoad() {
-        this.init();
         this.initEvent();
+        this.init();
     }
     protected onEnable(): void {
         ServiceMgr.studyService.reqReviewPlanUpdate();
         ServiceMgr.studyService.reqReviewPlan();
-        TBServer.reqCurrentBook();
+        // TBServer.reqCurrentBook();
     }
     protected onDestroy(): void {
         this.removeEvent();
@@ -137,6 +141,11 @@ export class ReviewPlanView extends BaseComponent {
         this.addEvent(InterfacePath.c2sReviewPlanDraw, this.onRepReviewPlanDraw.bind(this));
         this.addEvent(InterfacePath.c2sReviewPlanStatus, this.onRepReviewPlanStatus.bind(this));
         this.addEvent(InterfacePath.Classification_CurrentBook, this.onCurrentBookStatus.bind(this));
+        this.addEvent(InterfacePath.Classification_ChangeTextbook, this.onRepChangeTextbook.bind(this));
+        this.addEvent(InterfacePath.Classification_AddPlanBook, this.onRepChangeTextbook.bind(this));
+
+        this.sp.setCompleteListener(this.onAnimationComplete.bind(this));
+        this.egg.setCompleteListener(this.onAnimationComplete.bind(this));
     }
     /**移除事件 */
     removeEvent() {
@@ -169,8 +178,7 @@ export class ReviewPlanView extends BaseComponent {
         this.progressBar1.progress = 0;
         this.progressBar2.progress = 0;
 
-        this.sp.setCompleteListener(this.onAnimationComplete.bind(this));
-        this.egg.setCompleteListener(this.onAnimationComplete.bind(this));
+        LoadManager.preloadPrefab(PrefabType.WordMeaningView.path);
     }
     /**设置关闭回调 */
     setCloseCall(closeCall: Function) {
@@ -223,7 +231,9 @@ export class ReviewPlanView extends BaseComponent {
     }
     /**单词大冒险  复习规划提示*/
     onLabelTip1Click() {
-        ViewsMgr.showView(PrefabType.ReviewAdjustPlanView);
+        ViewsMgr.showView(PrefabType.ReviewAdjustPlanView, (node: Node) => {
+            node.getComponent(ReviewAdjustPlanView).init(ReviewSourceType.word_game);
+        });
     }
     /**教材单词 今日复习按钮 */
     onBtnTodayReview2Click() {
@@ -243,7 +253,9 @@ export class ReviewPlanView extends BaseComponent {
     }
     /**教材单词  复习规划提示*/
     onLabelTip2Click() {
-        ViewsMgr.showView(PrefabType.ReviewAdjustPlanView);
+        ViewsMgr.showView(PrefabType.ReviewAdjustPlanView, (node: Node) => {
+            node.getComponent(ReviewAdjustPlanView).init(ReviewSourceType.classification, this._bookData.book_id);
+        });
     }
     /**教材单词 更换教材 */
     onBtnChangeBookClick() {
@@ -293,7 +305,8 @@ export class ReviewPlanView extends BaseComponent {
             ViewsMgr.showAlert(data.msg);
             return;
         }
-        let info = data.word_game;
+        let wordData = data.word_num_data;
+        let info = wordData.word_game;
         if (info) {
             this.labelStudy1.string = ToolUtil.replace(TextConfig.ReviewPlan_Study, info.study_num);
             this.labelReview1.string = ToolUtil.replace(TextConfig.ReviewPlan_Review, info.review_num);
@@ -301,8 +314,16 @@ export class ReviewPlanView extends BaseComponent {
             if (info.study_num > 0) {
                 this.progressBar1.progress = info.review_num / info.study_num * 100;
             }
+            if (info.not_planned_num > 0) {
+                if (info.not_planned_num >= 99) {
+                    this.labelTip1.string = TextConfig.ReviewPlan_Tip3;
+                } else {
+                    this.labelTip1.string = ToolUtil.replace(TextConfig.ReviewPlan_Tip2, info.not_planned_num);
+                }
+                this.labelTip1.node.active = true;
+            }
         }
-        info = data.classification;
+        info = wordData.classification;
         if (info) {
             this.labelStudy2.string = ToolUtil.replace(TextConfig.ReviewPlan_Study, info.study_num);
             this.labelReview2.string = ToolUtil.replace(TextConfig.ReviewPlan_Review, info.review_num);
@@ -310,6 +331,21 @@ export class ReviewPlanView extends BaseComponent {
             if (info.study_num > 0) {
                 this.progressBar1.progress = info.review_num / info.study_num * 100;
             }
+            if (info.not_planned_num > 0) {
+                if (info.not_planned_num >= 99) {
+                    this.labelTip2.string = TextConfig.ReviewPlan_Tip3;
+                } else {
+                    this.labelTip2.string = ToolUtil.replace(TextConfig.ReviewPlan_Tip2, info.not_planned_num);
+                }
+                this.labelTip2.node.active = true;
+            }
+        }
+        let bookInfo = data.book_info;
+        if (bookInfo) {
+            this._bookData = bookInfo;
+            this.labelBook.node.active = true;
+            this.btnChangeBook.active = true;
+            this.labelBook.string = bookInfo.book_name;
         }
     }
     /**复习规划抽奖返回 */
@@ -352,6 +388,10 @@ export class ReviewPlanView extends BaseComponent {
             word.wp_id = value.wp_id;
             word.symbol = value.symbol;
             word.symbolus = value.symbolus;
+            word.book_id = value.book_id;
+            word.unit_id = value.unit_id;
+            word.big_id = value.big_id;
+            word.subject_id = value.subject_id;
             wordsdata.push(word);
         });
         let errorNum = 0;
@@ -371,7 +411,6 @@ export class ReviewPlanView extends BaseComponent {
                     source_type: WordSourceType.review,
                     ws_id: data.ws_id, pass_num: data.pass_num, word_num: wordNum, error_num: errorNum, souceType: this._souceType, wordCount: wordCount
                 });
-                this.node.destroy();
             });
         };
         showView();
@@ -387,6 +426,10 @@ export class ReviewPlanView extends BaseComponent {
         this.labelBook.node.active = true;
         this.btnChangeBook.active = true;
         this.labelBook.string = data.book_name;
+    }
+    /**教材档次 切换教材 */
+    onRepChangeTextbook() {
+        ServiceMgr.studyService.reqReviewPlan();
     }
 }
 

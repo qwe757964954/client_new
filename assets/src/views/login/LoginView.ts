@@ -285,7 +285,7 @@ export class LoginView extends BaseView {
             });
             return;
         }
-        console.log("登录成功");
+        console.log("登录成功",data);
         director.loadScene(SceneType.MainScene);
     }
     /**连接断开 */

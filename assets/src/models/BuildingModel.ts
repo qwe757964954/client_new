@@ -394,6 +394,7 @@ export class BuildingModel extends BaseModel {
         }
         LoadManager.loadPrefab(PrefabType.BuildingBtnView.path, this._node).then((node: Node) => {
             this._btnView = node;
+            console.log("showBtnView", this._btnView);
             this._btnView.position = new Vec3(0, 0.5 * this._width * this._grids[0].height, 0);
             let buildingBtnView = this._btnView.getComponent(BuildingBtnView);
             let funcs = [//信息、保存、卖出、反转、回收、还原
@@ -481,6 +482,7 @@ export class BuildingModel extends BaseModel {
         this._isRecycle = false;
         this.closeBtnView();
         this.closeLongView();
+        this.refreshBuildingShow();
     }
     /**请求保存 */
     public reqSaveData(status: boolean = true) {
@@ -907,9 +909,16 @@ export class BuildingModel extends BaseModel {
     /**更新建筑显示 */
     public refreshBuildingShow() {
         if (BuildingState.unBuilding == this.buildingState || BuildingState.building == this.buildingState) {
-            this.showFence(true);
-            if (this._building) {
-                this._building.node.active = false;
+            if (this.isNew) {
+                this.showFence(false);
+                if (this._building) {
+                    this._building.node.active = true;
+                }
+            } else {
+                this.showFence(true);
+                if (this._building) {
+                    this._building.node.active = false;
+                }
             }
         } else {
             this.showFence(false);

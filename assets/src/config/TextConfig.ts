@@ -15,6 +15,7 @@ export const TextConfig = {
     Level_Text2: "/{0}",
     Ver_Text: "ver:{0}.{1}.{2}.{3}",
     Queue_Text: "{0}/{1}",
+    Width_Height_Text: "{0}x{1}",
 
     Function_Tip: "开发中，敬请期待",
     Function_Tip2: "暂时没有该功能",
@@ -50,6 +51,10 @@ export const TextConfig = {
     Speed_Words_Tip2: "是否想要通过背单词加速？\n（每次升级可用1次单词加速，每次背10个单词，每个单词加速20秒）",
     Speed_Words_Tip3: "是否想要通过背单词加速？\n（每次制作可用1次单词加速，每次背10个单词，每个单词加速20秒）",
     Speed_Words_Tip4: "是否想要通过背单词加速？\n（每次扩张可用1次单词加速，每次背10个单词，每个单词加速20秒）",
+    Speed_Words_Exit_Tip1: "是否退出单词加速？\n（中途退出后，本次建造不能再用单词加速哦）",
+    Speed_Words_Exit_Tip2: "是否退出单词加速？\n（中途退出后，本次升级不能再用单词加速哦）",
+    Speed_Words_Exit_Tip3: "是否退出单词加速？\n（中途退出后，本次制作不能再用单词加速哦）",
+    Speed_Words_Exit_Tip4: "是否退出单词加速？\n（中途退出后，本次扩张不能再用单词加速哦）",
     Building_Success_Type1: "建造成功",
     Building_Success_Type2: "升级成功",
 
@@ -128,6 +133,8 @@ export const TextConfig = {
     ReviewPlan_End3: "恭喜完成今日所有单词大冒险的复习规划\n继续加油吧~",
     ReviewPlan_Select: "已选：{0}个",
     ReviewPlan_Tip: "最多只能选择10个",
+    ReviewPlan_Tip2: "长时间未复习（{0}）",
+    ReviewPlan_Tip3: "长时间未复习（99+）",
     ReviewPlan_Draw_Tip: "你的抽奖分不足了哦，赶紧去复习吧~",
 
     PetInteraction_Tip: "互动次数不足",
@@ -141,4 +148,7 @@ export const TextConfig = {
     Begin_Break_Through_Tip: "是否延续上一次闯关进度",
     Continue_From_Last_Time_Tip: "延续上次",
     Restart_Tip: "重新开始",
+
+    WordMeaning_Exit_Tip1: "确定退出学习吗?",
+    WordMeaning_Exit_Tip2: "确定结束复习吗?\n完成复习可参与扭蛋机抽奖哦",
 }

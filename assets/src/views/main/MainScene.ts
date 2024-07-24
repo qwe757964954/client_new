@@ -528,6 +528,7 @@ export class MainScene extends BaseComponent {
                 let editInfo = building.editInfo;
                 if (!DataMgr.instance.buildProduceInfo[editInfo.id]) continue;
                 if (BuildingIDType.castle == editInfo.id) continue;
+                if (BuildingState.normal != building.buildingState) continue;
                 buildAry.push(building);
                 if (building == selectBuilding) {
                     idx = buildAry.length - 1;
@@ -621,6 +622,9 @@ export class MainScene extends BaseComponent {
     /**获取回收数据 */
     findRecycleData(idx: number) {
         return this._mapUICtl.findRecycleData(idx);
+    }
+    findRecycleDataByBid(bid: number) {
+        return this._mapUICtl.findRecycleDataByBid(bid);
     }
     /**回收建筑是否包含指定建筑 */
     isRecycleBuildingContain(bid: number) {

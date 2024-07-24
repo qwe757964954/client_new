@@ -664,6 +664,17 @@ export class MapUICtl extends MainBaseCtl {
         }
         return data;
     }
+    findRecycleDataByBid(bid: number) {
+        let data: RecycleData = null;
+        for (let i = 0; i < this._recycleBuildingAry.length; i++) {
+            let element = this._recycleBuildingAry[i];
+            if (element.bid == bid) {
+                data = element;
+                break;
+            }
+        }
+        return data;
+    }
     /**获取回收建筑 */
     getRecycleBuilding(bid: number) {
         // console.log("getRecycleBuilding", bid, this._recycleBuildingAry);

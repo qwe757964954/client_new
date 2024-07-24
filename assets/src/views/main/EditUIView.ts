@@ -1,13 +1,13 @@
 import { _decorator, color, Label, Node, Prefab, ScrollView, Sprite, SpriteFrame } from 'cc';
 import { EventType } from '../../config/EventType';
 import { TextConfig } from '../../config/TextConfig';
-import { DataMgr, EditInfo, EditType } from '../../manager/DataMgr';
-import { BuildingIDType } from '../../models/BuildingModel';
+import { DataMgr, EditType } from '../../manager/DataMgr';
+import { BuildingIDType, BuildingState } from '../../models/BuildingModel';
 import { BaseComponent } from '../../script/BaseComponent';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
 import { ToolUtil } from '../../util/ToolUtil';
-import { EditItem } from '../map/EditItem';
+import { EditItem, EditItemInfo } from '../map/EditItem';
 import { MainScene } from './MainScene';
 const { ccclass, property } = _decorator;
 
@@ -51,7 +51,7 @@ export class EditUIView extends BaseComponent {
     private _mainScene: MainScene = null;//主场景
     private _editType: EditType = null;//编辑类型
     private _lastSelect: Sprite = null;//上次选中
-    private _itemsData: EditInfo[] = null;//编辑数据
+    private _itemsData: EditItemInfo[] = null;//编辑数据
     private _isBaseColor: boolean = false;//底格颜色开关
     //设置主场景
     public set mainScene(mainScene: MainScene) {
@@ -171,10 +171,13 @@ export class EditUIView extends BaseComponent {
             if (editType != EditType.Null && editType != info.type) return;
             if (BuildingIDType.mine == info.id) return;//矿山，需特殊处理
             if (EditType.Land == info.type) {
-                this._itemsData.push(info);
+                this._itemsData.push(new EditItemInfo(info));
             } else {
-                if (this._mainScene.isRecycleBuildingContain(info.id)) {
-                    this._itemsData.push(info);
+                let recycleData = this._mainScene.findRecycleDataByBid(info.id)
+                if (recycleData) {
+                    let itemInfo = new EditItemInfo(info);
+                    itemInfo.needBuilt = BuildingState.unBuilding == recycleData.data.state;
+                    this._itemsData.push(itemInfo);
                 }
             }
         });
