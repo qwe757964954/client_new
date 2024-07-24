@@ -1,20 +1,23 @@
 import { _decorator, instantiate, isValid, Layers, Node, Prefab, UITransform, v3 } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
+import { ItemID } from '../../export/ItemConfig';
 import { ItemData } from '../../manager/DataMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
 import { User } from '../../models/User';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
+import { BagServer } from '../../service/BagService';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
 import { NodeUtil } from '../../util/NodeUtil';
 import { RewardItem } from '../common/RewardItem';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
+import { TKConfig } from '../task/TaskConfig';
 import { BagConfig } from './BagConfig';
 import { BagDressItem } from './BagDressItem';
-import { BagGressItems, BagItemType, BagOperationData, BagOperationIds, BagTabIds, BagTabNames } from './BagInfo';
+import { BackpackItemInfo, BagGressItems, BagItemType, BagOperationData, BagOperationIds, BagTabIds, BagTabNames } from './BagInfo';
 import { BagOperrationItem } from './BagOperrationItem';
 import { BagTabItem } from './BagTabItem';
 import { BreakdownView } from './BreakdownView';
@@ -55,15 +58,28 @@ export class BagDialogView extends BaseView {
     private _propsDatas:ItemData[] = [];
     private _opDatas:BagOperationData[] = [];
     private _selectedItem:ItemData = null;
+
+    private _compositeInfo:BackpackItemInfo = null;
+    private _breakdownInfo:ItemData = null;
     initEvent() {
         CCUtil.onBtnClick(this.btn_close, this.onCloseView.bind(this));
     }
     protected onInitModuleEvent() {
         this.addModelListeners([
             [EventType.Bag_PropList, this.onPropList.bind(this)],
+            [EventType.Bag_Composite_Event,this.onCompositeRequest.bind(this)],
+            [EventType.Bag_Breakdown_Event,this.onBreakdownRequest.bind(this)],
             [NetNotify.Classification_BreakdownBackpackItems, this.onBreakdownBackpackItems.bind(this)],
             [NetNotify.Classification_BackpackItemSynthesis, this.onBackpackItemSynthesis.bind(this)],
         ]);
+    }
+    onCompositeRequest(itemInfo:BackpackItemInfo){
+        this._compositeInfo = itemInfo;
+        BagServer.reqBackpackItemSynthesis(this._compositeInfo);
+    }
+    onBreakdownRequest(item:ItemData){
+        this._breakdownInfo = item;
+        BagServer.reqBreakdownBackpackItems(this._breakdownInfo);
     }
     async initUI() {
         await BagConfig.loadBagConfigInfo();
@@ -83,8 +99,32 @@ export class BagDialogView extends BaseView {
 
     onBreakdownBackpackItems(data:any){
         console.log("onBreakdownBackpackItems", data);
+        // toast("你成功把xx个xx分解了，获得xx个xx")
+        let item_info = BagConfig.findItemInfo(this._breakdownInfo);
+        const datas = BagConfig.findBreakdownItems(this._breakdownInfo);
+        let decompose_items = TKConfig.convertRewardData(datas);
+        let tip_msg = `你成功把${this._breakdownInfo.num}个${item_info.name}分解了，获得`;
+        decompose_items.forEach((itemData, index) => {
+            let item_info = BagConfig.findItemInfo(itemData);
+            let item_quantity = itemData.num * this._breakdownInfo.num;
+            tip_msg += `${item_quantity}个${item_info.name}`;
+            
+            // Add a comma separator for all items except the last one
+            if (index < decompose_items.length - 1) {
+                tip_msg += '，';
+            }
+        });
+        ViewsManager.showTip(tip_msg);
+        console.log("onBreakdownBackpackItems", datas);
+
     }
     onBackpackItemSynthesis(data:any){
+        const datas = BagConfig.findMergeItems(this._compositeInfo);
+        let merge_items = TKConfig.convertRewardData(datas);
+        merge_items= merge_items.filter(item => item.id !== ItemID.coin);
+        let item_info = BagConfig.findItemInfo(merge_items[0]);
+        let tip_msg = `你成功把${merge_items[0].num}个${item_info.name}合成了${this._compositeInfo.name}`;
+        ViewsManager.showTip(tip_msg);
         console.log("onBackpackItemSynthesis", data);
     }
 

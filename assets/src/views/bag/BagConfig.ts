@@ -70,8 +70,8 @@ export default class _BagConfig {
         }
         // 查找 dataItem 对应的背包物品
         const backpackItem = this._BagConfigInfo.backpack_item_info.find(item => item.id === itemInfo.id);
-        const merge_items = backpackItem.decompose_item;
-        return merge_items;
+        const decompose_items = backpackItem.decompose_item;
+        return decompose_items;
     }
 
     findItemInfo(itemInfo:ItemData){

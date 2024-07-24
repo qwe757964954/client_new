@@ -1,10 +1,11 @@
 import { _decorator, instantiate, isValid, Label, Layout, Node, Prefab, UITransform, Widget } from 'cc';
+import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { ItemData } from '../../manager/DataMgr';
 import { ResLoader } from '../../manager/ResLoader';
 import { BasePopup } from '../../script/BasePopup';
-import { BagServer } from '../../service/BagService';
 import CCUtil from '../../util/CCUtil';
+import { EventMgr } from '../../util/EventManager';
 import List from '../../util/list/List';
 import { RewardItem } from '../common/RewardItem';
 import { TKConfig } from '../task/TaskConfig';
@@ -66,7 +67,8 @@ export class BreakdownView extends BasePopup {
     }
 
     private onClickSure(): void {
-        BagServer.reqBreakdownBackpackItems(this._sourceItem);
+        const data: ItemData = { id: this._sourceItem.id, num: this.caleBagView.getCaleNumber() }; 
+        EventMgr.dispatch(EventType.Bag_Breakdown_Event,data);
         this.closePop();
     }
 

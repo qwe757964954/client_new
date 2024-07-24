@@ -1,4 +1,5 @@
 import { _decorator, instantiate, isValid, Label, Node, Prefab, UITransform, Widget } from 'cc';
+import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { ItemID } from '../../export/ItemConfig';
@@ -7,8 +8,8 @@ import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { User } from '../../models/User';
 import { BasePopup } from '../../script/BasePopup';
-import { BagServer } from '../../service/BagService';
 import CCUtil from '../../util/CCUtil';
+import { EventMgr } from '../../util/EventManager';
 import List from '../../util/list/List';
 import { RewardItem } from '../common/RewardItem';
 import { TKConfig } from '../task/TaskConfig';
@@ -74,8 +75,7 @@ export class CompositeBagView extends BasePopup {
             ViewsManager.showTip(TextConfig.Insufficient_Goods_Synthesize);
             return;
         }
-
-        BagServer.reqBackpackItemSynthesis(this._selectedItemInfo);
+        EventMgr.dispatch(EventType.Bag_Composite_Event,this._selectedItemInfo);
         this.closePop();
     }
 

@@ -139,6 +139,9 @@ export const EventType = {
 
     Friend_Talk_Event: "Friend_Talk_Event",
     Show_TextBook_Monster: "Show_TextBook_Monster",
+
+    Bag_Composite_Event: "Bag_Composite_Event",
+    Bag_Breakdown_Event: "Bag_Breakdown_Event",
 }
 
 export function itemEventKey(id: ItemID) {
