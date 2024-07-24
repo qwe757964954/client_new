@@ -394,6 +394,8 @@ export class Subject {
     subject_name: string;
     sentence_knowledge: string[];
     dialogue_content: string[];
+    is_unit?: boolean = false;
+    status?: number;
 }
 
 //大冒险主题ai文章列表
@@ -430,4 +432,28 @@ export class ArticleExercise {
     article_id: number; //文章id
     subject_id: number; //主题id
     create_time: string;
+}
+
+//大冒险跳级题目列表
+export class c2sGradeSkipExercisesList {
+    command_id: string = InterfacePath.GradeSkip_ExercisesList;
+    big_id: number;
+    unit: string;
+}
+export class GradeSkipExercisesListReply extends BaseRepPacket {
+    unit_word_list: UnitWord[];
+    unit_group_list: UnitGroup[];
+    unit_exercises_list: ArticleExercise[];
+}
+export class UnitGroup {
+    word: string;
+    opt1: string;
+    opt2: string;
+    opt3: string;
+    opt4: string;
+    opt_num: number;
+    sentence: string;
+    cn: string;
+    speech: string;
+    gs_id: number;
 }

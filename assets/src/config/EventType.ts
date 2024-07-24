@@ -71,6 +71,7 @@ export const EventType = {
     Update_MapPoint: "Update_MapPoint",//更新地图点数据
     WordGame_Unit_Click: "WordGame_Unit_Click", //大冒险点击单元
     Subject_ItemChoice: "Subject_ItemChoice",//主题题目选择
+    GradeSkip_Challenge: "GradeSkip_Challenge",//跳过关卡
 
     /**选择词书模块相关事件 */
     Select_Word_Plan: "Select_Word_Plan",//选择计划

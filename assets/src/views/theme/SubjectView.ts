@@ -13,6 +13,7 @@ import { PrefabType } from '../../config/PrefabType';
 import { PracticeView } from './PracticeView';
 import { KnowlegeItem } from './item/KnowlegeItem';
 import { BaseView } from '../../script/BaseView';
+import { EventType } from '../../config/EventType';
 const { ccclass, property } = _decorator;
 
 @ccclass('SubjectView')
@@ -27,6 +28,8 @@ export class SubjectView extends BaseView {
     public practiceBtn: Node = null; //练习按钮
     @property(List)
     knowledgeList: List = null;
+    @property(Label)
+    public btnLabel: Label;
     private _data: WordGameSubjectReply;
 
     private _isRequesting: boolean = false; //是否正在请求数据
@@ -36,6 +39,10 @@ export class SubjectView extends BaseView {
         this.title.string = data.subject.subject_name;
         this.wordList.numItems = this._data.word_list.length;
         this.knowledgeList.numItems = data.subject.sentence_knowledge.length;
+        if (data.subject.is_unit) {
+            this.practiceBtn.active = data.subject.status != 1;
+            this.btnLabel.string = "开始挑战";
+        }
     }
 
     goPractice() {
@@ -45,10 +52,14 @@ export class SubjectView extends BaseView {
     }
 
     onGetPractice() {
-        ViewsMgr.showView(PrefabType.PracticeView, (node) => {
-            this._isRequesting = false;
-            node.getComponent(PracticeView).setData(this._data);
-        })
+        if (this._data.subject.is_unit) {
+            EventMgr.dispatch(EventType.GradeSkip_Challenge, this._data.subject);
+        } else {
+            ViewsMgr.showView(PrefabType.PracticeView, (node) => {
+                this._isRequesting = false;
+                node.getComponent(PracticeView).setData(this._data);
+            })
+        }
     }
 
     closeView() {

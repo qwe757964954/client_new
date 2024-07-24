@@ -1,6 +1,6 @@
 import { _decorator, Button, Component, director, instantiate, Label, Node, Prefab, UITransform, Vec2, Vec3 } from 'cc';
 import { EventType } from '../../config/EventType';
-import { BossLevelData, BossLevelTopicData, GateData, IslandProgressModel, MapLevelData, MicroListItem, ProgressRewardData, UnitData, UnitListData, WordGameUnitWordReply } from '../../models/AdventureModel';
+import { BossLevelData, BossLevelTopicData, GateData, GradeSkipExercisesListReply, IslandProgressModel, MapLevelData, MicroListItem, ProgressRewardData, Subject, UnitData, UnitListData, WordGameSubjectReply, WordGameUnitWordReply } from '../../models/AdventureModel';
 import CCUtil from '../../util/CCUtil';
 import EventManager, { EventMgr } from '../../util/EventManager';
 import List from '../../util/list/List';
@@ -16,6 +16,7 @@ import { WordBossView } from './sixModes/WordBossView';
 import { MonsterModel } from './common/MonsterModel';
 import { MapRewardBoxItem } from './levelmap/MapRewardBoxItem';
 import { UnitItem } from './common/UnitItem';
+import { SubjectView } from '../theme/SubjectView';
 const { ccclass, property } = _decorator;
 
 /**魔法森林 何存发 2024年4月9日17:51:36 */
@@ -85,6 +86,7 @@ export class WorldIsland extends Component {
     @property(List)
     rewardBoxList: List = null;
     private _progressRewards: ProgressRewardData[] = [];
+    private _selectUnit: UnitData = null;
     start() {
         this.initUI();
         this.initEvent();
@@ -358,11 +360,10 @@ export class WorldIsland extends Component {
     }
 
     onUnitClick(data: UnitData) {
-        ViewsMgr.showTip("开发中，敬请期待");
-        return;
         if (this._isGetUnitWords) return;
         this._isGetUnitWords = true;
         console.log("UnitData", data);
+        this._selectUnit = data;
         ServiceMgr.studyService.getUnitWords(data.big_id, data.unit);
     }
 
@@ -373,6 +374,39 @@ export class WorldIsland extends Component {
             return;
         }
         console.log("WordGameUnitWordReply", data);
+        let subjectData: WordGameSubjectReply = new WordGameSubjectReply();
+        subjectData.word_list = data.word_list;
+        subjectData.subject = new Subject();
+        subjectData.subject.big_id = this._selectUnit.big_id;
+        subjectData.subject.subject_name = this._selectUnit.unit;
+        subjectData.subject.sentence_knowledge = [];
+        subjectData.subject.is_unit = true;
+        subjectData.subject.status = this._selectUnit.status;
+        ViewsMgr.showView(PrefabType.SubjectView, (node: Node) => {
+            node.getComponent(SubjectView).setData(subjectData);
+        })
+    }
+
+    onGradeSkipChallenge(data: Subject) {
+        let unitIdx: number = -1;
+        for (let i = 0; i < this._unitDatas.length; i++) {
+            if (this._unitDatas[i].unit == data.subject_name) {
+                unitIdx = i;
+                break;
+            }
+        }
+        if (unitIdx > 0) {
+            let challengeUnit = this._unitDatas[unitIdx - 1];
+            ServiceMgr.studyService.getGradeSkipExercisesList(challengeUnit.big_id, challengeUnit.unit);
+        }
+    }
+
+    onGradeSkipExercises(data: GradeSkipExercisesListReply) {
+        if (data.code != 200) {
+            ViewsManager.showTip(data.msg);
+            return;
+        }
+        console.log("onGradeSkipExercises", data);
     }
 
     /**初始化监听事件 */
@@ -389,6 +423,8 @@ export class WorldIsland extends Component {
         EventMgr.addListener(InterfacePath.WordGame_UnitList, this.onGetUnits, this);
         EventMgr.addListener(EventType.WordGame_Unit_Click, this.onUnitClick, this);
         EventMgr.addListener(InterfacePath.WordGame_UnitWords, this.onGetUnitWords, this);
+        EventMgr.addListener(EventType.GradeSkip_Challenge, this.onGradeSkipChallenge, this);
+        EventMgr.addListener(InterfacePath.GradeSkip_ExercisesList, this.onGradeSkipExercises, this);
     }
     /**移除监听 */
     private removeEvent() {
@@ -404,6 +440,8 @@ export class WorldIsland extends Component {
         EventMgr.removeListener(InterfacePath.WordGame_UnitList, this);
         EventMgr.removeListener(EventType.WordGame_Unit_Click, this);
         EventMgr.removeListener(InterfacePath.WordGame_UnitWords, this);
+        EventMgr.removeListener(EventType.GradeSkip_Challenge, this);
+        EventMgr.removeListener(InterfacePath.GradeSkip_ExercisesList, this);
     }
 
     onBtnDetailsClick() {
