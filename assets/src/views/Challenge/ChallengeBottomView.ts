@@ -28,9 +28,9 @@ export class ChallengeBottomView extends Component {
 
     updateItemList(data:CurrentBookStatus){
         this.loadRewardBox();
-        this._totalUnit = data.unit_total_num;
-        this._currentUnitIndex = data.unit_pass_num;
-        this.collectScroll.numItems = data.unit_total_num;
+        this._totalUnit = data.gate_total_num;
+        this._currentUnitIndex = data.gate_pass_num;
+        this.collectScroll.numItems = data.gate_total_num;
         this.collectScroll.update();
         let isComplete = this._currentUnitIndex >= this._totalUnit;/**当前收集的进度 */
         this.chest_box.getComponent(Sprite).grayscale = !isComplete;
