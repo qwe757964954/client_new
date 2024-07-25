@@ -2,6 +2,7 @@ import { JsonAsset } from "cc";
 import { ItemData } from "../../manager/DataMgr";
 import { ResLoader } from "../../manager/ResLoader";
 import { User } from "../../models/User";
+import { TKConfig } from "../task/TaskConfig";
 import { BackpackItemInfo, BagItemType, BagOperationData, BagOperationIds, BagOperationNames, GameBagData } from "./BagInfo";
 
 //用户信息服务
@@ -54,15 +55,23 @@ export default class _BagConfig {
         return filteredDatas;
     }
 
-    filterCanMergeItems(){
+    filterCanMergeItems(): BackpackItemInfo[] {
         if (!this._BagConfigInfo) {
             console.error("BagConfigInfo is not loaded.");
             return [];
         }
-        // 找到所有可以合成的背包物品
-        const filteredBackpackItems = this._BagConfigInfo.backpack_item_info.filter(item => item.merge_item.length > 0);
-        return filteredBackpackItems;
+        const arrayData = BagConfig.convertItemArrayData(User.itemAry);
+        return this._BagConfigInfo.backpack_item_info
+            .filter(item => item.merge_item.length > 0)
+            .filter(item => {
+                const requiredItems = TKConfig.convertRewardData(item.merge_item);
+                return requiredItems.every(requiredItem => {
+                    const userItem = arrayData.find(userItem => userItem.id === requiredItem.id);
+                    return userItem && userItem.num >= requiredItem.num;
+                });
+            });
     }
+    
 
     findMergeItems(itemInfo:BackpackItemInfo){
         if (!this._BagConfigInfo) {
@@ -101,18 +110,18 @@ export default class _BagConfig {
             console.error("BagConfigInfo is not loaded.");
             return [];
         }
-
-        // 查找 dataItem 对应的背包物品
+    
+        // Find the corresponding backpack item
         const backpackItem = this._BagConfigInfo.backpack_item_info.find(item => item.id === dataItem.id);
         if (!backpackItem) {
             return [];
         }
-
+    
         const isCostume = backpackItem.type === BagItemType.Costume;
-        const hasMergeItems = backpackItem.merge_item.length > 0;
+        const hasMergeItems = backpackItem.merge_item.length > 0 && this.canMergeItem(backpackItem);
         const hasDecomposeItems = backpackItem.decompose_item.length > 0;
-
-        // 根据物品属性过滤操作列表
+    
+        // Filter the operation list based on item attributes
         return BagOperationNames.filter(operation => {
             if (operation.id === BagOperationIds.Outfit || operation.id === BagOperationIds.UnOutfit) {
                 return isCostume;
@@ -126,6 +135,20 @@ export default class _BagConfig {
             return false;
         });
     }
+    
+    private canMergeItem(item: BackpackItemInfo): boolean {
+        let arrayData = BagConfig.convertItemArrayData(User.itemAry);
+        let requiredItems = TKConfig.convertRewardData(item.merge_item);
+    
+        for (let requiredItem of requiredItems) {
+            const userItem = arrayData.find(userItem => userItem.id === requiredItem.id);
+            if (!userItem || userItem.num < requiredItem.num) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
     public convertItemArrayData(itemAry:{ [key: number]: number } ){
         const arrayData: ItemData[] = Object.keys(User.itemAry).map(key => ({
             id: parseInt(key),

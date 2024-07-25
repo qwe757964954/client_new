@@ -56,8 +56,6 @@ export class CompositeBagView extends BasePopup {
 
     protected initUI(): void {
         this.enableClickBlankToClose([this.node.getChildByName("frame")]);
-        this._backpackItemInfos = BagConfig.filterCanMergeItems();
-        this.goods_list.numItems = this._backpackItemInfos.length;
         this.caleBagView.setCaleMax(1);
     }
 
@@ -96,6 +94,8 @@ export class CompositeBagView extends BasePopup {
     }
 
     public updateMergeItem(item: ItemData): void {
+        this._backpackItemInfos = BagConfig.filterCanMergeItems();
+        this.goods_list.numItems = this._backpackItemInfos.length;
         this.goods_list.selectedId = this.getMergeItemIndex(item);
     }
 
