@@ -119,7 +119,7 @@ export default class _BagConfig {
     
         const isCostume = backpackItem.type === BagItemType.Costume;
         const hasMergeItems = backpackItem.merge_item.length > 0 && this.canMergeItem(backpackItem);
-        const hasDecomposeItems = backpackItem.decompose_item.length > 0;
+        const hasDecomposeItems = backpackItem.decompose_item.length > 0 && dataItem.num > 0;
     
         // Filter the operation list based on item attributes
         return BagOperationNames.filter(operation => {
