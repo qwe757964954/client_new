@@ -61,6 +61,7 @@ export class BagDialogView extends BaseView {
 
     private _compositeInfo:BackpackItemInfo = null;
     private _breakdownInfo:ItemData = null;
+    private _tabSelected:number = 0;
     initEvent() {
         CCUtil.onBtnClick(this.btn_close, this.onCloseView.bind(this));
     }
@@ -69,6 +70,7 @@ export class BagDialogView extends BaseView {
             [EventType.Bag_PropList, this.onPropList.bind(this)],
             [EventType.Bag_Composite_Event,this.onCompositeRequest.bind(this)],
             [EventType.Bag_Breakdown_Event,this.onBreakdownRequest.bind(this)],
+            [EventType.Item_Props_Refresh,this.onItemPropsRefresh.bind(this)],
             [NetNotify.Classification_BreakdownBackpackItems, this.onBreakdownBackpackItems.bind(this)],
             [NetNotify.Classification_BackpackItemSynthesis, this.onBackpackItemSynthesis.bind(this)],
         ]);
@@ -81,9 +83,12 @@ export class BagDialogView extends BaseView {
         this._breakdownInfo = item;
         BagServer.reqBreakdownBackpackItems(this._breakdownInfo);
     }
+    onItemPropsRefresh(data:any){
+        this.tabList.selectedId = -1;
+        this.tabList.selectedId = this._tabSelected;
+    }
     async initUI() {
         await BagConfig.loadBagConfigInfo();
-        console.log("User.item_list",User.item_list);
         this.viewAdaptSize();
         this.initAmout();
         //显示角色动画
@@ -200,21 +205,25 @@ export class BagDialogView extends BaseView {
     onTabHorizontalSelected(item: any, selectedId: number, lastSelectedId: number, val: number) {
         if(!isValid(selectedId) || selectedId < 0 || !isValid(item)){return;}
         console.log("onTabHorizontalSelected",selectedId);
+        this._tabSelected = selectedId;
         this.selectTabInfo(BagTabNames[selectedId]);
     }
     selectTabInfo(tabInfo:any){
+        console.log("selectTabInfo",User.itemAry);
+        let arrayData = BagConfig.convertItemArrayData(User.itemAry);
+        const filteredBackpackItems = BagConfig.filterBagItems(arrayData);
         switch (tabInfo.id) {
             case BagTabIds.All:
-                this._propsDatas = User.item_list;
+                this._propsDatas = filteredBackpackItems;
                 break;
             case BagTabIds.DressUp:
-                this._propsDatas = BagConfig.filterItemsByType(User.item_list,BagItemType.Costume);
+                this._propsDatas = BagConfig.filterItemsByType(filteredBackpackItems,BagItemType.Costume);
                 break;
             case BagTabIds.Consumables:
-                this._propsDatas = BagConfig.filterItemsByType(User.item_list,BagItemType.Consumable);
+                this._propsDatas = BagConfig.filterItemsByType(filteredBackpackItems,BagItemType.Consumable);
                 break;
             case BagTabIds.Others:
-                this._propsDatas = BagConfig.filterItemsByType(User.item_list,BagItemType.Other);
+                this._propsDatas = BagConfig.filterItemsByType(filteredBackpackItems,BagItemType.Other);
                 break;
             default:
                 break;

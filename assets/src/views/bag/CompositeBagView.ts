@@ -81,7 +81,8 @@ export class CompositeBagView extends BasePopup {
 
     private canMergeItems(): boolean {
         return this._mergeItems.every(mergeItem => {
-            const userItem = User.item_list.find(userItem => userItem.id === mergeItem.id);
+            let arrayData = BagConfig.convertItemArrayData(User.itemAry);
+            const userItem =  arrayData.find(userItem => userItem.id === mergeItem.id);
             return userItem && userItem.num >= mergeItem.num;
         });
     }

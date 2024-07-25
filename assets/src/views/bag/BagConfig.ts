@@ -1,6 +1,7 @@
 import { JsonAsset } from "cc";
 import { ItemData } from "../../manager/DataMgr";
 import { ResLoader } from "../../manager/ResLoader";
+import { User } from "../../models/User";
 import { BackpackItemInfo, BagItemType, BagOperationData, BagOperationIds, BagOperationNames, GameBagData } from "./BagInfo";
 
 //用户信息服务
@@ -25,6 +26,17 @@ export default class _BagConfig {
             console.error("Failed to load task configuration:", err);
             throw err;
         }
+    }
+
+    public filterBagItems(datas: ItemData[]): ItemData[]{
+        if (!this._BagConfigInfo) {
+            console.error("BagConfigInfo is not loaded.");
+            return [];
+        }
+        const filteredDatas = datas.filter(dataItem => 
+            this._BagConfigInfo.backpack_item_info.some(backpackItem => backpackItem.id === dataItem.id)
+        );
+        return filteredDatas;
     }
 
     public filterItemsByType(datas: ItemData[], type: BagItemType): ItemData[] {
@@ -113,6 +125,13 @@ export default class _BagConfig {
             }
             return false;
         });
+    }
+    public convertItemArrayData(itemAry:{ [key: number]: number } ){
+        const arrayData: ItemData[] = Object.keys(User.itemAry).map(key => ({
+            id: parseInt(key),
+            num: User.itemAry[parseInt(key) as keyof typeof User.itemAry]
+        }));
+        return arrayData;
     }
 }
 

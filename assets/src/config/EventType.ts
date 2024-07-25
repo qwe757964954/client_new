@@ -142,6 +142,8 @@ export const EventType = {
 
     Bag_Composite_Event: "Bag_Composite_Event",
     Bag_Breakdown_Event: "Bag_Breakdown_Event",
+
+    Item_Props_Refresh: "Item_Props_Refresh",
 }
 
 export function itemEventKey(id: ItemID) {

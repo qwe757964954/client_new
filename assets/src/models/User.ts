@@ -76,8 +76,6 @@ class UserModel {
     private _buildingList: number[] = [];// 建筑列表（已有）
     private _landList: number[] = [];// 地块列表（已有）
 
-    public item_list: ItemData[] = []; 
-
     private constructor() {
     }
 
@@ -107,6 +105,13 @@ class UserModel {
     get account(): string {
         return this._account;
     }
+
+    
+    public get itemAry() : { [key: number]: number } {
+        return this._itemAry;
+    }
+    
+
     set password(password: string) {
         this._password = password;
     }
