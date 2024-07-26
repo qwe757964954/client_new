@@ -209,7 +209,6 @@ export class BagDialogView extends BaseView {
         this.selectTabInfo(BagTabNames[selectedId]);
     }
     selectTabInfo(tabInfo:any){
-        console.log("selectTabInfo",User.itemAry);
         let arrayData = BagConfig.convertItemArrayData(User.itemAry);
         const filteredBackpackItems = BagConfig.filterBagItems(arrayData);
         switch (tabInfo.id) {

@@ -41,3 +41,8 @@ export interface SignRewardDrawAward {
 export interface SignRewardDrawResponse extends BaseRepPacket {
     award: ItemData[];
 }
+
+export interface CarouseRewardDrawResponse extends BaseRepPacket {
+    award: ItemData[];
+    id:number;
+}

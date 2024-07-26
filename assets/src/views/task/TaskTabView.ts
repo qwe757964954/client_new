@@ -1,4 +1,4 @@
-import { _decorator, isValid, Node } from 'cc';
+import { _decorator, Color, color, isValid, Node } from 'cc';
 import { BaseView } from '../../script/BaseView';
 import List from '../../util/list/List';
 import { TaskTabInfo } from './TaskInfo';
@@ -34,6 +34,7 @@ export class TaskTabView extends BaseView {
         let item_sript:TaskTabItem = item.getComponent(TaskTabItem);
         this.clearAllTabContent();
         item_sript.showSubItem = true;
+        item_sript.name_lab.color = Color.WHITE;
         item_sript.updateSelectTabContent();
         if(this.callSelectCallback){
             this.callSelectCallback(this.tab_datas[selectedId]);
@@ -44,6 +45,7 @@ export class TaskTabView extends BaseView {
         for (let index = 0; index < this.tab_scroll.numItems; index++) {
             let item = this.tab_scroll.getItemByListId(index);
             let item_script = item.getComponent(TaskTabItem);
+            item_script.name_lab.color = color("#d2c1a8");
             item_script.clearTabContent();
         }
     }

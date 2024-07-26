@@ -156,4 +156,5 @@ export const TextConfig = {
     Insufficient_Goods_Synthesize:"合成物品不足",
 
     Insufficient_Day_Sign:"隔天登录可领取",
+    Insufficient_Draw_Carousel:"今日抽奖机会用完啦",
 }

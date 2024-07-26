@@ -1,7 +1,12 @@
 import { _decorator, Component, instantiate, Label, misc, Node, Prefab, Tween, tween } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
+import { TextConfig } from '../../config/TextConfig';
 import { ResLoader } from '../../manager/ResLoader';
+import { ViewsManager } from '../../manager/ViewsManager';
+import { ActServer } from '../../service/ActivityService';
 import CCUtil from '../../util/CCUtil';
+import { ActConfig } from './ActivityConfig';
+import { MaxCarouseCount } from './ActvityInfo';
 const { ccclass, property } = _decorator;
 
 @ccclass('CarouselView')
@@ -18,9 +23,15 @@ export class CarouselView extends Component {
 
     private isSpinning: boolean = false; // 用于防止多次点击
 
+    private _finishListener:() => void = null; 
+
     start() {
         this.createAndArrangeItems();
         this.initEvent();
+    }
+
+    setFinishListener(finishListener:()=>void) {
+        this._finishListener = finishListener;
     }
 
     initEvent() {
@@ -48,11 +59,15 @@ export class CarouselView extends Component {
     }
 
     onStartWheel() {
+        if(ActConfig.activityInfoResponse.draw_status_list.length >= MaxCarouseCount){
+            ViewsManager.instance.showTip(TextConfig.Insufficient_Draw_Carousel);
+            return;
+        }
         if (this.isSpinning) return; // 如果正在旋转，直接返回
-        
-        const targetIndex = 6; // 假设点击了第六个元素
-        this.rotateToTarget(targetIndex);
+        ActServer.reqWeekendCarouselDraw();
     }
+
+
 
     rotateToTarget(targetIndex: number) {
         this.isSpinning = true; // 设置旋转标志
@@ -102,5 +117,6 @@ export class CarouselView extends Component {
         Tween.stopAllByTarget(this.point_node);
         // 重置指针角度
         this.point_node.angle = 0;
+        this._finishListener?.();
     }
 }

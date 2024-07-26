@@ -1004,7 +1004,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Label-002",
+    "_name": "has_draw_label",
     "_objFlags": 512,
     "__editorExtras__": {},
     "_parent": {
@@ -1322,7 +1322,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Label-003",
+    "_name": "max_draw_label",
     "_objFlags": 512,
     "__editorExtras__": {},
     "_parent": {
@@ -2126,6 +2126,18 @@
       "__id__": 91
     },
     "carouselView": null,
+    "has_draw_label": {
+      "__id__": 41
+    },
+    "max_draw_label": {
+      "__id__": 53
+    },
+    "no_reward": {
+      "__id__": 24
+    },
+    "has_reward": {
+      "__id__": 64
+    },
     "_id": ""
   },
   {

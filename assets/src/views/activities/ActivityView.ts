@@ -48,6 +48,7 @@ export class RankView extends BaseView {
     onGetActivityInfo(data: ActivityInfoResponse){
         ActConfig.updateActivityInfoResponse(data);
         this._activityNewPeople.updateData();
+        this._weekendCarouselView.updateData();
     }
 
     async initViews(){
@@ -102,6 +103,7 @@ export class RankView extends BaseView {
                 break;
             case TaskTabIds.WeekendCarousel:
                 this._weekendCarouselView.node.active = true;
+                this._weekendCarouselView.updateData();
                 // this._weekTask.showTask();
                 break;
             case TaskTabIds.InvitationEvent:
