@@ -78,5 +78,11 @@ export const NetNotify = {
     Classification_BackpackItemSynthesis: "Classification_BackpackItemSynthesis", //背包物品合成
     /***********************************************背包 end*********************************************/
 
+
+    /***********************************************运营活动start*********************************************/
+    Classification_GetActivityInfo: "Classification_GetActivityInfo", //获取运营活动信息
+    Classification_SignRewardDraw: "Classification_SignRewardDraw", //签到奖励领取
+    Classification_WeekendCarouselDraw: "Classification_WeekendCarouselDraw", //周末大转盘抽奖
+    /***********************************************运营活动end*********************************************/
     /***********************************************选择词书 end*********************************************/
 }

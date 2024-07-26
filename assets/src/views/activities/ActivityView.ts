@@ -1,11 +1,14 @@
 import { _decorator, Node } from 'cc';
 import { PrefabType, PrefabTypeEntry } from '../../config/PrefabType';
 import { ViewsManager } from '../../manager/ViewsManager';
+import { ActivityInfoResponse } from '../../models/ActivityModel';
 import { User } from '../../models/User';
+import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { TaskTabIds, TaskTabInfo } from '../task/TaskInfo';
 import { TaskTabView } from '../task/TaskTabView';
+import { ActConfig } from './ActivityConfig';
 import { ActivityNewPeople } from './ActivityNewPeople';
 import { ActivityTabInfos } from './ActvityInfo';
 import { WeekendCarouselView } from './WeekendCarouselView';
@@ -25,6 +28,9 @@ export class RankView extends BaseView {
         this.initNavTitle();
         this.initAmout();
         this.viewAdaptScreen();
+
+        console.log("activityInfoResponse.....",ActConfig.activityInfoResponse);
+
         try {
             await this.initViews();
             this.initTabs();
@@ -33,6 +39,17 @@ export class RankView extends BaseView {
             console.error("Failed to initialize UI:", err);
         }
     }
+
+    protected onInitModuleEvent(): void {
+        this.addModelListeners([
+            [NetNotify.Classification_GetActivityInfo, this.onGetActivityInfo.bind(this)],
+        ]);
+    }
+    onGetActivityInfo(data: ActivityInfoResponse){
+        ActConfig.updateActivityInfoResponse(data);
+        this._activityNewPeople.updateData();
+    }
+
     async initViews(){
         
         await Promise.all([
@@ -47,10 +64,19 @@ export class RankView extends BaseView {
         ]);
     }
     initTabs(){
+        const filteredActivityTabInfos = ActivityTabInfos.filter(tab => {
+            if (!ActConfig.activityInfoResponse.sign_activity && tab.id === TaskTabIds.NewbieGift) {
+                return false;
+            }
+            if (!ActConfig.activityInfoResponse.draw_activity && tab.id === TaskTabIds.WeekendCarousel) {
+                return false;
+            }
+            return true;
+        });
         this.initViewComponent(PrefabType.TaskTabView, (node) => {
             this._tabView = node.getComponent(TaskTabView);
             this._tabView.setTabSelectClick(this.onTabSelect.bind(this));
-            this._tabView.updateData(ActivityTabInfos);
+            this._tabView.updateData(filteredActivityTabInfos);
         }, {
             isAlignTop: true,
             isAlignLeft: true,
@@ -72,6 +98,7 @@ export class RankView extends BaseView {
         switch (info.id) {
             case TaskTabIds.NewbieGift:
                 this._activityNewPeople.node.active = true;
+                this._activityNewPeople.updateData();
                 break;
             case TaskTabIds.WeekendCarousel:
                 this._weekendCarouselView.node.active = true;
