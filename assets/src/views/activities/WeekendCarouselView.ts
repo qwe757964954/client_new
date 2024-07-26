@@ -51,7 +51,7 @@ export class WeekendCarouselView extends BaseView {
     async onWeekendCarouselDraw(response: CarouseRewardDrawResponse) {
         console.log("onWeekendCarouselDraw data = ", response);
         this._signRewardDrawResponse = response;
-        this.carouselView.rotateToTarget(response.id)
+        this.carouselView.rotateToTarget(response.id - 1);
         // this.updateWeekendCarousel(data); // 假设 updateWeekendCarousel是更新转盘的函数
     }
 
