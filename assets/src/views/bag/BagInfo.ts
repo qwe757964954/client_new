@@ -43,7 +43,9 @@ export const BagOperationNames:BagOperationData[] = [
 
 // 定义枚举
 export enum BagGressItemIds {
-    Head = 1,
+    Face =1,
+    Hair,
+    Head,
     UpperBody,
     Hat,
     Pants,
@@ -60,6 +62,8 @@ export interface BagGressItem {
 
 // 使用接口来定义 BagGressItems 数组
 export const BagGressItems: BagGressItem[] = [
+    { id: BagGressItemIds.Face, title: "脸部", spriteFrame: "Bag/icon_face/spriteFrame" },
+    { id: BagGressItemIds.Hair, title: "头发", spriteFrame: "Bag/icon_hair_boy/spriteFrame" },
     { id: BagGressItemIds.Head, title: "头部", spriteFrame: "Bag/icon_hat/spriteFrame" },
     { id: BagGressItemIds.UpperBody, title: "上身", spriteFrame: "Bag/icon_clothes/spriteFrame" },
     { id: BagGressItemIds.Hat, title: "帽子", spriteFrame: "Bag/icon_ring/spriteFrame" },
