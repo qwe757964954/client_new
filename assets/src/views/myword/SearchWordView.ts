@@ -1,17 +1,17 @@
-import { _decorator, Component, EditBox, instantiate, Node, Prefab, ScrollView } from 'cc';
-import { WordHistoryItem } from './WordHistoryItem';
-import { ServiceMgr } from '../../net/ServiceManager';
-import EventManager from '../../util/EventManager';
+import { _decorator, EditBox, instantiate, isValid, JsonAsset, Node, Prefab } from 'cc';
 import { EventType } from '../../config/EventType';
-import { ViewsManager } from '../../manager/ViewsManager';
 import { PrefabType } from '../../config/PrefabType';
-import CCUtil from '../../util/CCUtil';
-import { WordSearchView } from './WordSearchView';
-import { InterfacePath } from '../../net/InterfacePath';
-import { WordsDetailData } from '../../models/AdventureModel';
+import { ResLoader } from '../../manager/ResLoader';
 import { SoundMgr } from '../../manager/SoundMgr';
-import { TipView } from '../common/TipView';
-import { TextConfig } from '../../config/TextConfig';
+import { ViewsManager } from '../../manager/ViewsManager';
+import { WordsDetailData } from '../../models/AdventureModel';
+import { InterfacePath } from '../../net/InterfacePath';
+import { ServiceMgr } from '../../net/ServiceManager';
+import { BaseView } from '../../script/BaseView';
+import CCUtil from '../../util/CCUtil';
+import List from '../../util/list/List';
+import { WordHistoryItem } from './WordHistoryItem';
+import { WordSearchView } from './WordSearchView';
 const { ccclass, property } = _decorator;
 
 /**单词简单结构 */
@@ -90,15 +90,15 @@ export interface SearchWordDetail {
 }
 
 @ccclass('SearchWordView')
-export class SearchWordView extends Component {
+export class SearchWordView extends BaseView {
     @property(EditBox)
     private edtSearchWord: EditBox = null;
 
-    @property(ScrollView)
-    private historyList: ScrollView = null;
+    @property(List)
+    private historyList: List = null;
 
-    @property({ type: Node, tooltip: "返回按钮" })
-    public btn_back: Node = null;
+    @property({ type: Node, tooltip: "顶不layout" })
+    public top_layout: Node = null;
 
     @property({ type: Node, tooltip: "查找按钮" })
     public btn_search: Node = null;
@@ -113,73 +113,56 @@ export class SearchWordView extends Component {
     _historyObj = {}; //JSON组织的查找历史
     protected _detailData: WordsDetailData = null; //当前单词详情数据
 
-
-    private _wordDetailNetEveId: string = ""; //网络单词详情响应
-    private _searchWordDetailItemEveId: string = ""; // 测试点击历史列表项时弹出单词详情事件响应
-    private _delOneSearchWordEveId: string = ""; //删除一个单词历史纪录
-
-    private _isSearching: boolean = false; //是否正在查找单词
+    protected initUI(): void {
+        SoundMgr.stopBgm();
+        this.initNavTitle();
+        this.initData();
+        this.historyList.numItems = 10;
+    }
 
     initData() {
-        this._isSearching = false;
-        this.historyList.content.removeAllChildren();
-
         this._historys = [];
         this._historyObj = {};
         if (localStorage.getItem("searchHistory")) {
             this._historyObj = JSON.parse(localStorage.getItem("searchHistory"));
             for (let k in this._historyObj) {
-
                 let data: WordSimpleData = { word: k, cn: this._historyObj[k] };
                 this._historys.push(data);
             }
         }
+    }
 
-        for (let i = 0; i < this._historys.length; i++) {
-            let data = this._historys[i];
-            this.addHitstoryListItem(data);
+    private initNavTitle() {
+        this.createNavigation("翻译查询",this.top_layout, () => {
+            ViewsManager.instance.closeView(PrefabType.SearchWorldView);
+        });
+    }
+
+    protected onInitModuleEvent(): void {
+        this.addModelListeners([
+            [EventType.Search_Word_Item, this.onSearchWordItem.bind(this)],
+            [EventType.Search_Word_Del_OneWord,this.onDelOneSearchWord.bind(this)],
+            [EventType.Search_Word_Edt_Began,this.onEditBoxBeganEdit.bind(this)],
+            [InterfacePath.Adventure_Word, this.onClassificationWord.bind(this)]
+        ]);
+    }
+    protected async onClassificationWord(data: WordsDetailData) {
+        if (data.code != 200) {
+            console.error("获取单词详情失败", data.msg);
+            this._detailData = null;
+            return;
         }
-        this.historyList.scrollToTop();
+        console.log("获取单词详情", data);
+        const jsonData = await ResLoader.instance.loadAsyncPromise<JsonAsset>('myword/word_detail', JsonAsset);
+        console.log("获取单词详情", jsonData);
+        this._detailData = jsonData.json as WordsDetailData;
+        let node = await ViewsManager.instance.showViewAsync(PrefabType.WordSearchView);
+        node.getComponent(WordSearchView).updateData(this._detailData);
     }
 
     initEvent(): void {
-        CCUtil.onTouch(this.btn_back, this.closeView, this);
-        CCUtil.onTouch(this.btn_search, this.onSearch, this);
-        CCUtil.onTouch(this.btn_clearHistoryAll, this.onClearHistory, this);
-        //this._wordDetailEveId = EventManager.on(EventType.Classification_Word, this.onWordDetail.bind(this));
-        //this._testWordDetailEveId = EventManager.on(EventType.Search_Word, this.onTestSearchWord.bind(this));
-        this._searchWordDetailItemEveId = EventManager.on(EventType.Search_Word_Item, this.onSearchWordItem.bind(this));
-        this._delOneSearchWordEveId = EventManager.on(EventType.Search_Word_Del_OneWord, this.onDelOneSearchWord.bind(this));
-
-        this._wordDetailNetEveId = EventManager.on(InterfacePath.Adventure_Word, this.onClassificationWord.bind(this));
-
-        this.edtSearchWord.node.on(EventType.Search_Word_Edt_Began, this.onEditBoxBeganEdit, this);
-    }
-
-    /**移除监听 */
-    removeEvent() {
-        CCUtil.offTouch(this.btn_back, this.closeView, this);
-        CCUtil.offTouch(this.btn_search, this.onSearch, this);
-        CCUtil.offTouch(this.btn_clearHistoryAll, this.onClearHistory, this);
-        //EventManager.off(EventType.Classification_Word, this._wordDetailEveId);
-        //EventManager.off(EventType.Search_Word, this._testWordDetailEveId);
-        EventManager.off(EventType.Search_Word_Item, this._searchWordDetailItemEveId);
-        EventManager.off(EventType.Search_Word_Del_OneWord, this._delOneSearchWordEveId);
-
-        EventManager.off(InterfacePath.Adventure_Word, this._wordDetailNetEveId);
-
-        //this.edtSearchWord.node.off("editing-did-began", this.onEditBoxBeganEdit, this);
-    }
-
-    protected onLoad(): void {
-        this.initData();
-        this.initEvent();
-    }
-
-    /**关闭页面 TODO*/
-    private closeView() {
-        //director.loadScene(SceneType.MainScene);
-        ViewsManager.instance.closeView(PrefabType.SearchWorldView);
+        CCUtil.onBtnClick(this.btn_search, this.onSearch.bind(this));
+        CCUtil.onBtnClick(this.btn_clearHistoryAll, this.onClearHistory.bind(this));
     }
 
     private onEditBoxBeganEdit(edtBox: EditBox) {
@@ -200,26 +183,12 @@ export class SearchWordView extends Component {
         this.historyList.content.addChild(itemHistory);
     }
 
-    start() {
-        SoundMgr.stopBgm();
-    }
-
-    protected onDestroy(): void {
-        //EventManager.off(EventType.Classification_Word, this._wordDetailEveId);
+    onDestroy(): void {
+        super.onDestroy();
         SoundMgr.mainBgm();
-        this.removeEvent();
     }
 
-    /**获取单词详情*/
-    onWordDetail(data) { // { Word: data.Word, Cn: data.Cn }
-        if (data.Code != 200) {
-            console.error("获取单词详情失败", data);
-            return;
-        }
-        this._detailData = data.Data;
-        console.log("获取单词详情:", data);
-    }
-
+    /*
     onClassificationWord(data: WordsDetailData) {
         console.log(data);
         if (data.code != 200) {
@@ -232,9 +201,7 @@ export class SearchWordView extends Component {
 
         if (this._detailData.word !== "") {
             //打开单词详情
-            ViewsManager.instance.showView(PrefabType.WordSearchView, (node: Node) => {
-                node.getComponent(WordSearchView).initData(this._detailData);
-            });
+            
 
             if (!this._historyObj[this._detailData.word]) {
                 //this.clearBtn();
@@ -247,15 +214,13 @@ export class SearchWordView extends Component {
                 this.addHitstoryListItem(wordSimpleData);
             }
         }
-        this._isSearching = false;
     }
-
+    */
     onTestSearchWord(data: NetSearchWordData) {
         console.log("查找单词测试:", data);
         this._detailData = data.data;
         if (data.code != 200) {
             console.error("获取单词详情失败", data);
-            this._isSearching = false;
             return;
         }
 
@@ -265,6 +230,7 @@ export class SearchWordView extends Component {
             //let searchView = new WordSearchView(data);
             //searchView.popup();
             //打开单词详情
+            /*
             ViewsManager.instance.showView(PrefabType.WordSearchView, (node: Node) => {
                 let wordData: WordsDetailData = {
                     word: this._detailData.word,//"congrantulationcongrantu",//data.Word,//"Daidai",
@@ -310,9 +276,8 @@ export class SearchWordView extends Component {
                 localStorage.setItem("searchHistory", historyObjStr);
                 this.addHitstoryListItem(this._detailData);
             }
+                */
         }
-
-        this._isSearching = false;
     }
 
     onSearchWordItem(data: WordSimpleData) {
@@ -320,8 +285,6 @@ export class SearchWordView extends Component {
         if (!word) {
             return;
         }
-        if (this._isSearching) return;
-        this._isSearching = true;
         //word = word.trim();
         console.log("查找单词详情");
         // 这句代码暂时无效，服务器接口没准备好
@@ -353,8 +316,6 @@ export class SearchWordView extends Component {
         if (!word) {
             return;
         }
-        if (this._isSearching) return;
-        this._isSearching = true;
         //word = word.trim();
         console.log("查找单词详情");
         // 这句代码暂时无效，服务器接口没准备好
@@ -368,13 +329,17 @@ export class SearchWordView extends Component {
     onClearHistory() {
         this._historyObj = {};
         localStorage.removeItem("searchHistory");
-        this._historys = [];
-        this.historyList.content.removeAllChildren();
+        
     }
 
-
-
-    update(deltaTime: number) {
+    onLoadSearchWordList(item:Node, idx:number){
+        
+    }
+    onSearchWordListSelected(item: any, selectedId: number, lastSelectedId: number, val: number) {
+        if(!isValid(selectedId) || selectedId < 0 || !isValid(item)){return;}
+        console.log("onSearchWordListSelected.....",selectedId);
+        // TBServer.reqWordDetail("0055a6e7e0fa064c446d284826ab5151");
+        ServiceMgr.studyService.getAdventureWord("34e4cd05005de4303ee70902a61701c0");
 
     }
 }

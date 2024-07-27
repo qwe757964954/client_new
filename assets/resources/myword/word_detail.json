@@ -1,0 +1,53 @@
+{
+    "w_id": "477e56990f950c06a665648e38f347f8",
+    "big_id": 0,
+    "small_id": 0,
+    "subject_id": 0,
+    "word": "tongue",
+    "cn": "n.舌;舌头；语言",
+    "symbol": "[tʌŋ]",
+    "symbolus": "[tʌŋ]",
+    "syllable": "t-ongue",
+    "phonic": "t·ongue",
+    "sentence_list": [
+        {
+            "id": 3013854,
+            "cn": "我咬了我的舌头。",
+            "sentence": "I bit my tongue."
+        },
+        {
+            "id": 1144783,
+            "cn": "英语是她的母语。",
+            "sentence": " English is her mother tongue."
+        },
+        {
+            "id": 21765,
+            "cn": "我的母语是西班牙语。",
+            "sentence": "My mother tongue is Spanish."
+        },
+        {
+            "id": 21764,
+            "cn": "她说话刻薄。",
+            "sentence": "She has a bitter tongue."
+        }
+    ],
+    "similar_list": [],
+    "collect": 0,
+    "variant": {
+        "word": "tongue",
+        "spellvar": null,
+        "threeps": "",
+        "regpast": "tongued",
+        "irregpast": null,
+        "reging": "tonguing",
+        "irreging": null,
+        "regperfect": "tongued",
+        "irregperfect": null,
+        "plural": "tongues",
+        "comparative": null,
+        "superlative": null
+    },
+    "structure": {},
+    "code": 200,
+    "msg": "请求成功"
+}

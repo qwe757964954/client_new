@@ -163,8 +163,8 @@ export class MainUIView extends BaseView {
     }
     //翻译查词点击
     public onClickTranslate() {
-        // ViewsManager.instance.showView(PrefabType.SearchWorldView);
-        ViewsManager.showTip(TextConfig.Function_Tip);
+        ViewsManager.instance.showView(PrefabType.SearchWorldView);
+        // ViewsManager.showTip(TextConfig.Function_Tip);
     }
     //编辑点击
     public onClickEdit() {
