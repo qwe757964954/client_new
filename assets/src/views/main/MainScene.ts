@@ -108,6 +108,7 @@ export class MainScene extends BaseComponent {
     /**加载回调 */
     loadOverCall() {
         this._loadCount--;
+        console.log("loadOverCall", this._loadCount);
         // 等动画完成后再移除加载层
         if (this._loadCount <= 0) {
             this._loadCount = 0;
