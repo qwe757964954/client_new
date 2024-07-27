@@ -15,7 +15,7 @@ import { EventMgr } from '../../../util/EventManager';
 import List from '../../../util/list/List';
 import { NodeUtil } from '../../../util/NodeUtil';
 import { ObjectUtil } from '../../../util/ObjectUtil';
-import { RewardItem } from '../../common/RewardItem';
+import { WordSourceType } from './BaseModeView';
 import { ConditionItem } from './ConditionItem';
 import { ReportItem } from './ReportItem';
 const { ccclass, property } = _decorator;
@@ -68,7 +68,7 @@ export class WordReportView extends BaseView {
         this.initRolePlayer();
     }
 
-    initData(data: GameSubmitResponse, gameModel: number) {
+    initData(data: GameSubmitResponse, gameModel: number,source_type: number) {
         this.evaluation_btn.active = gameModel !== 2;
         this._resultSubmitResponse = data;
         if (this._resultSubmitResponse.pass_flag == 1) {
@@ -108,6 +108,9 @@ export class WordReportView extends BaseView {
                     awardInfo.random_reward[i].from = "random_reward";
                 }
                 this._propsData = [...this._propsData, ...awardInfo.random_reward];
+            }
+            if(source_type === WordSourceType.classification){
+                this._propsData = ObjectUtil.convertAwardsToItemData(this._resultSubmitResponse.award_info);
             }
             this.reward_scroll.numItems = this._propsData.length;
             this.condition_scroll.numItems = ket_length;
