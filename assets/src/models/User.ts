@@ -53,6 +53,7 @@ class UserModel {
     public petID: number = null;     // 宠物id
     public petLevel: number = null;  // 宠物等级
     public petHasReward: boolean = false; // 宠物是否有奖励
+    public gender:number = 1; //性别
 
     public castleLevel: number = 1;    // 城堡等级
 
