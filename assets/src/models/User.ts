@@ -13,6 +13,17 @@ export enum LoginType {
     wechat = 4,//微信登录
     token = 5,//token登录
 }
+/**用户服装 */
+export class UserClothes {
+    hair: number = null;//头发
+    jewelry: number = null;//饰品
+    coat: number = null;//上衣
+    pants: number = null;//裤子
+    shoes: number = null;//鞋子
+    wings: number = null;//翅膀
+    hat: number = null;//帽子
+    face: number = null;//脸
+}
 
 // 用户
 class UserModel {
@@ -43,6 +54,7 @@ class UserModel {
     private _ticket: number = 0;      // 奖券
     private _moodScore: number = 0;   // 心情值
     private _itemAry: { [key: number]: number } = {};// 物品列表
+    public userClothes: UserClothes = new UserClothes();
 
     public userID: number;   // 用户id
     public nick: string;     // 昵称
@@ -92,6 +104,7 @@ class UserModel {
         this.petLevel = null;
         this.petHasReward = false;
         this._itemAry = [];
+        this.userClothes = new UserClothes();
         this._buildingList = [];
         this._landList = [];
         this._staminaLimit = 0;
@@ -106,11 +119,11 @@ class UserModel {
         return this._account;
     }
 
-    
-    public get itemAry() : { [key: number]: number } {
+
+    public get itemAry(): { [key: number]: number } {
         return this._itemAry;
     }
-    
+
 
     set password(password: string) {
         this._password = password;

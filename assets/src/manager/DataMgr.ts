@@ -19,6 +19,7 @@ const ConfigPath = {
     ProduceConfig: "produce",
     ItemInfoConfig: "item_info",
     WordGameConfig: "word_game",
+    RoleConfig: "role",
 }
 
 //角色插槽
@@ -188,11 +189,51 @@ export class IslandGateData {
     monster_id: number;
 }
 
+/**角色信息 */
+export class RoleInfo {
+    id: number;//id
+    name: string;//名字
+    path: string;//sp动画
+    actNames: string[];//动作名
+}
+/**插槽信息 */
+export class SlotInfo {
+    id: number;//id
+    name: string;//名字
+    slot: number;//插槽
+}
+/**插槽图片信息 */
+export class SlotPngInfo {
+    id: number;//id
+    png: string;//图片
+}
+/**服装类型 */
+export enum ClothingType {
+    toufa = 1,//头发
+    shipin = 2,//饰品
+    shangyi = 3,//上衣
+    kuzi = 4,//裤子
+    xiezi = 5,//鞋子
+    chibang = 6,//翅膀
+    maozi = 7,//帽子
+    lian = 8,//脸
+}
+/**服装信息 */
+export class ClothingInfo {
+    id: number;//id
+    name: string;//名字
+    type: ClothingType;//服装类型
+    slots: SlotPngInfo[];//插槽
+}
+
 //数据管理器
 export class DataManager {
 
-    public roleSlot: RoleSlot[] = [];//角色插槽
-    public roleSlotConfig: RoleSlotConfig[] = [];//角色插槽配置
+    public roleConfig: RoleInfo[] = [];//角色信息
+    public slotConfig: SlotInfo[] = [];//插槽信息
+    public clothingConfig: ClothingInfo[] = [];//服装信息
+    public roleSlot: RoleSlot[] = [];//角色插槽（老的，会废弃）
+    public roleSlotConfig: RoleSlotConfig[] = [];//角色插槽配置（老的，会废弃）
     public editInfo: EditInfo[] = [];//编辑信息
     public castleConfig: CastleConfig[] = [];//城堡配置
     public builtConfig: BuiltInfo[] = [];//建造配置
@@ -243,6 +284,7 @@ export class DataManager {
         await this.initMedalConfig();
         await this.initHelpConfig();
         await this.initWordGameConfig();
+        await this.initRoleConfig();
         console.timeEnd("DataMgr initData");
     }
     /** 初始化角色插槽 */
@@ -440,6 +482,45 @@ export class DataManager {
         this.islandConfig = json.island_data;
         this.monsterConfig = json.monster_data;
         this.islandGateConfig = json.island_gate;
+    }
+
+    /**初始化角色数据 */
+    public async initRoleConfig() {
+        let json = await LoadManager.loadJson(ConfigPath.RoleConfig);
+        let roleInfo = json.role_info;
+        if (roleInfo) {
+            for (let k in roleInfo) {
+                let obj: RoleInfo = roleInfo[k];
+                this.roleConfig[obj.id] = obj;
+            }
+        }
+        let slotInfo = json.slot_info;
+        if (slotInfo) {
+            for (let k in slotInfo) {
+                let obj: SlotInfo = slotInfo[k];
+                this.slotConfig[obj.id] = obj;
+            }
+        }
+        let clothingInfo = json.clothing_info;
+        if (clothingInfo) {
+            for (let k in clothingInfo) {
+                let obj: ClothingInfo = clothingInfo[k];
+                obj.slots = [];
+                for (let i = 1; i < 4; i++) {
+                    let key = "slotPng" + i;
+                    if (obj[key]) {
+                        let tempSlot = new SlotPngInfo();
+                        tempSlot.png = obj[key];
+                        let key2 = "slotID" + i;
+                        if (obj[key2]) {
+                            tempSlot.id = obj[key2];
+                        }
+                        obj.slots.push(tempSlot);
+                    }
+                }
+                this.clothingConfig[obj.id] = obj;
+            }
+        }
     }
 
     //获取导学模式单词拆分配置
