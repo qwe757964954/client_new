@@ -25,7 +25,9 @@ export class TaskTabItem extends ListItem {
 
     @property(Node)
     tab_focus:Node = null;
-    
+
+    @property(Node)
+    red_point:Node = null;
     private _showSubItem:boolean = false;
     private _start_height:number = 0;
     private _tab_info:TaskTabInfo = null;
@@ -54,6 +56,7 @@ export class TaskTabItem extends ListItem {
     initPropsItem(info:TaskTabInfo) {
         this._tab_info = info;
         this.name_lab.string = this._tab_info.title;
+        this.red_point.active = this._tab_info.red_point || false;
         this._start_height = this.node.getChildByName("btn_ash").getComponent(UITransform).height;
     }
 

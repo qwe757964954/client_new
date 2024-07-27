@@ -1,9 +1,15 @@
 import { _decorator, isValid, Node } from 'cc';
+import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { ViewsManager } from '../../manager/ViewsManager';
+import { SignRewardDrawResponse } from '../../models/ActivityModel';
+import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
+import { ActServer } from '../../service/ActivityService';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
+import { CongratulationsView } from '../task/CongratulationsView';
+import { ActConfig } from './ActivityConfig';
 import { NewPeopleItem } from './NewPeopleItem';
 const { ccclass, property } = _decorator;
 
@@ -16,25 +22,65 @@ export class ActivityNewPeople extends BaseView {
     @property(Node)
     public sign_now:Node = null;
 
+    @property(NewPeopleItem)
+    public seven_item:NewPeopleItem = null;
+
     protected initUI(): void {
-        this.day_scroll.numItems = 6;
     }
 
+    protected onInitModuleEvent(): void {
+        this.addModelListeners([
+            [NetNotify.Classification_SignRewardDraw, this.onSignRewardDraw.bind(this)],
+        ]);
+    }
+
+    updateData(){
+        this.day_scroll.numItems = 6;
+        this.seven_item.updatePeopleItemProps(6);
+    }
+
+    async onSignRewardDraw(response:SignRewardDrawResponse){
+        let node:Node = await ViewsManager.instance.showPopup(PrefabType.CongratulationsView);
+        let nodeScript: CongratulationsView = node.getComponent(CongratulationsView);
+        nodeScript.updateRewardScroll(response.award);
+        ActServer.reqGetActivityInfo();
+    }
     protected initEvent(): void {
         CCUtil.onBtnClick(this.sign_now,this.onSignNowClick.bind(this));
+        CCUtil.onTouch(this.seven_item.node,this.onSevenItemClick.bind(this));
     }
+    protected removeEvent(): void {
+        CCUtil.offTouch(this.seven_item.node, this.onSevenItemClick.bind(this))
+    }
+
+    onSevenItemClick(){
+        let draw_length = ActConfig.activityInfoResponse.sign_status_list.length;
+        let can_draw = 6 === draw_length;
+        if(can_draw) {
+            this.onSignNowClick();
+        }
+    }
+
     onSignNowClick(){
-        ViewsManager.instance.showTip(TextConfig.Function_Tip);
+        if(!ActConfig.isTodayDayGreaterThanGivenDateDay()){
+            ViewsManager.instance.showTip(TextConfig.Insufficient_Day_Sign);
+            return;
+        }
+        ActServer.reqSignRewardDraw(); 
     }
     onLoadDayGrid(item:Node, idx:number){
         let item_sript:NewPeopleItem = item.getComponent(NewPeopleItem);
-        // let data = this._weekTask[idx];
-        // item_sript.initPropsItem(data);
+        item_sript.updatePeopleItemProps(idx);
     }
 
     onDayListGridSelected(item: any, selectedId: number, lastSelectedId: number, val: number) {
         if(!isValid(selectedId) || selectedId < 0 || !isValid(item)){return;}
         console.log("onDayListGridSelected",selectedId);
+        let draw_length = ActConfig.activityInfoResponse.sign_status_list.length;
+        let can_draw = selectedId === draw_length;
+        if(can_draw) {
+            this.onSignNowClick();
+        }
     }
 
 }

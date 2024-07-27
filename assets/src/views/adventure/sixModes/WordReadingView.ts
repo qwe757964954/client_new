@@ -169,6 +169,8 @@ export class WordReadingView extends BaseModeView {
 
     //显示当前单词
     showCurrentWord() {
+        this.img_corrugation.active = false;
+        this.btn_sound_recording.active = true;
         super.updateConstTime();
         this._rightWordData = this._wrongMode ? this._wrongWordList.shift() : this._wordsData[this._wordIndex];
         console.log('word', this._rightWordData);
@@ -219,7 +221,7 @@ export class WordReadingView extends BaseModeView {
     corrugationEvent() {
         console.log('corrugationEvent');
         this.img_corrugation.active = false;
-        this.btn_sound_recording.active = true;
+        this.btn_sound_recording.active = false;
         if (!sys.isNative) {
             ResLoader.instance.load(`adventure/sixModes/study/ReadData`, JsonAsset, async (err: Error | null, jsonData: JsonAsset) => {
                 if (err) {

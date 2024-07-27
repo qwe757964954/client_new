@@ -3,9 +3,13 @@ import { MapStatus } from '../../config/MapConfig';
 import { PrefabType, PrefabTypeEntry, SceneType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
+import { ActivityInfoResponse } from '../../models/ActivityModel';
 import { User } from '../../models/User';
+import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
+import { ActServer } from '../../service/ActivityService';
 import CCUtil from '../../util/CCUtil';
+import { ActConfig } from '../activities/ActivityConfig';
 import { ReviewPlanView } from '../reviewPlan/ReviewPlanView';
 import { MainRightActivity } from './MainRightActivity';
 import { MainScene } from './MainScene';
@@ -48,7 +52,9 @@ export class MainUIView extends BaseView {
         this.labelNick.string = User.nick;
         this.initViews();
         this.viewAdaptSize();
+        ActServer.reqGetActivityInfo();
     }
+
     private async initViews() {
         await Promise.all([
             this.initViewComponent(PrefabType.MainRightActivity, (node) => {
@@ -77,6 +83,18 @@ export class MainUIView extends BaseView {
     public set mainScene(mainScene: MainScene) {
         this._mainScene = mainScene;
     }
+    protected onInitModuleEvent() {
+        this.addModelListeners([
+            [NetNotify.Classification_GetActivityInfo, this.onGetActivityInfo.bind(this)],
+        ]);
+    }
+
+    onGetActivityInfo(data: ActivityInfoResponse) {
+        ActConfig.updateActivityInfoResponse(data);
+        const { draw_activity, sign_activity } = ActConfig.activityInfoResponse;
+        this.operational_activities.active = draw_activity || sign_activity;
+    }
+
     //初始化事件
     public initEvent() {
         CCUtil.onTouch(this.btnHead, this.onClickHead, this);
