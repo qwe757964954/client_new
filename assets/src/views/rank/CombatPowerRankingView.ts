@@ -7,11 +7,11 @@ const { ccclass, property } = _decorator;
 export class CombatPowerRankingView extends BaseView {
     @property(List)
     public rank_list:List = null;
-    start() {
-
+    protected initUI(): void {
+        this.rank_list.numItems = 20;
     }
 
-    updateData(){
+    onLoadCombatPowerRanking(item:Node, idx:number){
         
     }
 }

@@ -2,14 +2,13 @@ import { _decorator, Node } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType, PrefabTypeEntry } from '../../config/PrefabType';
 import { ItemData } from '../../manager/DataMgr';
-import { ViewsManager } from '../../manager/ViewsManager';
+import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { ChallengeBoxRewardData, ChallengeTaskReward, TaskBaseData, UserMainTaskData, UserWeekTaskData } from '../../models/TaskModel';
 import { User } from '../../models/User';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TkServer } from '../../service/TaskService';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
-import { CongratulationsView } from './CongratulationsView';
 import { DailyTaskView } from './DailyTaskView';
 import { MainTaskView } from './MainTaskView';
 import { TaskAchievementView } from './TaskAchievementView';
@@ -149,7 +148,6 @@ export class WeekTaskView extends BaseView {
         this.showRewardPopup(
             TKConfig.taskConfigInfo.task_week,
             taskData.task_id,
-            PrefabType.CongratulationsView
         );
         TkServer.reqUserWeekTask();
     }
@@ -159,7 +157,6 @@ export class WeekTaskView extends BaseView {
         this.showRewardPopup(
             TKConfig.taskConfigInfo.task_main,
             taskData.task_id,
-            PrefabType.CongratulationsView
         );
         TkServer.reqUserMainTask();
     }
@@ -169,18 +166,15 @@ export class WeekTaskView extends BaseView {
         this.showRewardPopup(
             TKConfig.taskConfigInfo.task_week_box,
             rewardData.box_id,
-            PrefabType.CongratulationsView
         );
         TkServer.reqUserWeekTask();
     }
 
-    private async showRewardPopup<T extends { id: number, reward: any }>(taskList: T[], id: number, popupType: PrefabTypeEntry) {
+    private async showRewardPopup<T extends { id: number, reward: any }>(taskList: T[], id: number) {
         let taskInfo = taskList.find(item => item.id === id);
         if (taskInfo) {
             let rewardArr: ItemData[] = TKConfig.convertRewardData(taskInfo.reward);
-            let node:Node = await ViewsManager.instance.showPopup(popupType);
-            let nodeScript: CongratulationsView = node.getComponent(CongratulationsView);
-            nodeScript.updateRewardScroll(rewardArr);
+            ViewsMgr.showRewards(rewardArr);
         }
     }
 

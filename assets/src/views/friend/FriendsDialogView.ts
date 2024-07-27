@@ -2,14 +2,13 @@ import { _decorator, Label, Node, Prefab } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType, PrefabTypeEntry } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
-import { ViewsManager } from '../../manager/ViewsManager';
+import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { DataFriendApplyListResponse, DataFriendListResponse, FriendListItemModel, SystemMailItem, SystemMailListResponse, UserFriendData, UserSystemAwardResponse } from '../../models/FriendModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BasePopup } from '../../script/BasePopup';
 import { FdServer } from '../../service/FriendService';
 import CCUtil from '../../util/CCUtil';
 import { ObjectUtil } from '../../util/ObjectUtil';
-import { CongratulationsView } from '../task/CongratulationsView';
 import { FriendAddView } from './FriendAddView';
 import { FriendEmailView } from './FriendEmailView';
 import { FriendTabType } from './FriendInfo';
@@ -160,10 +159,8 @@ export class FriendsDialogView extends BasePopup {
     }
     private async onUserSystemAwardGet(response:UserSystemAwardResponse){
         console.log("onUserSystemAwardGet...",response);
-        let propsDta = ObjectUtil.convertAwardsToItemData(response.awards);
-        let node:Node = await ViewsManager.instance.showPopup(PrefabType.CongratulationsView);
-        let nodeScript: CongratulationsView = node.getComponent(CongratulationsView);
-        nodeScript.updateRewardScroll(propsDta);
+        let propsData = ObjectUtil.convertAwardsToItemData(response.awards);
+        ViewsMgr.showRewards(propsData);
         FdServer.reqUserSystemMailLis();
     }
     private async onUserSystemMailDetail(data:SystemMailItem){

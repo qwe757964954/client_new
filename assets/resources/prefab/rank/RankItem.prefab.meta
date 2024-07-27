@@ -2,12 +2,12 @@
   "ver": "1.1.50",
   "importer": "prefab",
   "imported": true,
-  "uuid": "d44d1f01-6a73-4ca9-8d62-7ecb35e349d0",
+  "uuid": "eebcd70a-406a-418e-ba41-be4b6bf2b2c6",
   "files": [
     ".json"
   ],
   "subMetas": {},
   "userData": {
-    "syncNodeName": "CongratulationsView"
+    "syncNodeName": "RankItem"
   }
 }
