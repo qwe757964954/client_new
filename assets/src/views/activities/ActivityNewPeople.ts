@@ -1,14 +1,12 @@
 import { _decorator, isValid, Node } from 'cc';
-import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
-import { ViewsManager } from '../../manager/ViewsManager';
+import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { SignRewardDrawResponse } from '../../models/ActivityModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { ActServer } from '../../service/ActivityService';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
-import { CongratulationsView } from '../task/CongratulationsView';
 import { ActConfig } from './ActivityConfig';
 import { NewPeopleItem } from './NewPeopleItem';
 const { ccclass, property } = _decorator;
@@ -40,9 +38,7 @@ export class ActivityNewPeople extends BaseView {
     }
 
     async onSignRewardDraw(response:SignRewardDrawResponse){
-        let node:Node = await ViewsManager.instance.showPopup(PrefabType.CongratulationsView);
-        let nodeScript: CongratulationsView = node.getComponent(CongratulationsView);
-        nodeScript.updateRewardScroll(response.award);
+        ViewsMgr.showRewards(response.award);
         ActServer.reqGetActivityInfo();
     }
     protected initEvent(): void {

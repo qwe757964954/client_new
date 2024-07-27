@@ -1,11 +1,9 @@
 import { _decorator, Label, Node } from 'cc';
-import { PrefabType } from '../../config/PrefabType';
-import { ViewsManager } from '../../manager/ViewsManager';
+import { ViewsMgr } from '../../manager/ViewsManager';
 import { CarouseRewardDrawResponse, SignRewardDrawResponse } from '../../models/ActivityModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { ActServer } from '../../service/ActivityService';
-import { CongratulationsView } from '../task/CongratulationsView';
 import { ActConfig } from './ActivityConfig';
 import { MaxCarouseCount } from './ActvityInfo';
 import { CarouselView } from './CarouselView';
@@ -58,9 +56,7 @@ export class WeekendCarouselView extends BaseView {
     async onFinishListener(){
         this.no_reward.active = false;
         this.has_reward.active = true;
-        let node:Node = await ViewsManager.instance.showPopup(PrefabType.CongratulationsView);
-        let nodeScript: CongratulationsView = node.getComponent(CongratulationsView);
-        nodeScript.updateRewardScroll(this._signRewardDrawResponse.award);
+        ViewsMgr.showRewards(this._signRewardDrawResponse.award);
         this.scheduleOnce(()=>{
             ActServer.reqGetActivityInfo();
         },3)
