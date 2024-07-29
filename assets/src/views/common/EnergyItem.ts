@@ -71,7 +71,7 @@ export class EnergyItem extends Component {
         }
         // this.nodeTime.active = true;
         // this.labelTime.string = ToolUtil.secondsToTimeFormat(leftTime);
-        this.progress.progress = leftTime / User.staminaInterval;
+        this.progress.progress = 1 - leftTime / User.staminaInterval;
     }
 }
 
