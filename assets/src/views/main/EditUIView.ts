@@ -1,7 +1,7 @@
-import { _decorator, color, Label, Node, Prefab, ScrollView, Sprite, SpriteFrame } from 'cc';
+import { _decorator, color, EventTouch, Label, Node, Sprite, SpriteFrame, tween } from 'cc';
 import { EventType } from '../../config/EventType';
 import { TextConfig } from '../../config/TextConfig';
-import { DataMgr, EditType } from '../../manager/DataMgr';
+import { DataMgr, EditType, EditTypeInfo, ThemeInfo } from '../../manager/DataMgr';
 import { BuildingIDType, BuildingState } from '../../models/BuildingModel';
 import { BaseComponent } from '../../script/BaseComponent';
 import CCUtil from '../../util/CCUtil';
@@ -11,30 +11,28 @@ import { EditItem, EditItemInfo } from '../map/EditItem';
 import { MainScene } from './MainScene';
 const { ccclass, property } = _decorator;
 
+const ThemeType_ALL = 0;
+
 @ccclass('EditUIView')
 export class EditUIView extends BaseComponent {
     @property(Sprite)
-    public btnAll: Sprite = null;//标题所有按钮
-    @property(Sprite)
-    public btnSpecial: Sprite = null;//标题特殊按钮
-    @property(Sprite)
-    public btnBuiding: Sprite = null;//标题建筑按钮
-    @property(Sprite)
-    public btnDecoration: Sprite = null;//标题装饰按钮
-    @property(Sprite)
-    public btnLand: Sprite = null;//标题地块按钮
-    @property(Sprite)
     public btnClose: Sprite = null;//关闭按钮
-    @property(Prefab)
-    public editItem: Prefab = null;//编辑元素预制体
-    @property(Node)
-    public scrollContent: Node = null;//滚动视图容器
-    @property(ScrollView)
-    public scrollView: ScrollView = null;//滚动视图
     @property([SpriteFrame])
     public spriteFrames: SpriteFrame[] = [];//图片资源
     @property(List)
-    public listView: List = null;//列表
+    public typeList: List = null;//类型列表
+    @property(List)
+    public listView: List = null;//编辑列表
+    @property(List)
+    public themeList: List = null;//主题列表
+    @property(Node)
+    public plTouch: Node = null;//触摸层
+    @property(Node)
+    public btnTheme: Node = null;//主题按钮
+    @property(Label)
+    public labelTheme: Label = null;//主题名称
+    @property(Node)
+    public imgArrow: Node = null;//箭头
     @property(Node)
     public btnSave: Node = null;//保存按钮
     @property(Node)
@@ -54,26 +52,30 @@ export class EditUIView extends BaseComponent {
 
     private _mainScene: MainScene = null;//主场景
     private _editType: EditType = null;//编辑类型
-    private _lastSelect: Sprite = null;//上次选中
+    private _themeType: number = ThemeType_ALL;//主题类型
+    private _lastSelect: Node = null;//上次选中
+    private _lastTheme: Node = null;//上次主题
     private _itemsData: EditItemInfo[] = null;//编辑数据
     private _isBaseColor: boolean = false;//底格颜色开关
+    private _typesData: EditTypeInfo[] = null;//类型数据
+    private _themesData: ThemeInfo[] = null;//主题数据
+
     //设置主场景
     public set mainScene(mainScene: MainScene) {
         this._mainScene = mainScene;
+        this.initEditType();
         this.showEditType(EditType.Null);
+        this.initTheme();
     }
     // 初始化事件
     initEvent() {
-        CCUtil.onTouch(this.btnAll, this.onBtnAllClick, this);
-        CCUtil.onTouch(this.btnSpecial, this.onBtnSpecialClick, this);
-        CCUtil.onTouch(this.btnBuiding, this.onBtnBuidingClick, this);
-        CCUtil.onTouch(this.btnDecoration, this.onBtnDecorationClick, this);
-        CCUtil.onTouch(this.btnLand, this.onBtnLandClick, this);
         CCUtil.onTouch(this.btnClose, this.onBtnCloseClick, this);
         CCUtil.onTouch(this.btnLast, this.onBtnLastClick, this);
         CCUtil.onTouch(this.btnNext, this.onBtnNextClick, this);
         CCUtil.onTouch(this.btnSave, this.onBtnSaveClick, this);
         CCUtil.onTouch(this.plBaseColor, this.onBaseColorClick, this);
+        CCUtil.onTouch(this.btnTheme, this.onBtnThemeClick, this);
+        CCUtil.onTouch(this.plTouch, this.onTouchLayerClick, this);
 
         this.addEvent(EventType.EditUIView_Refresh, this.onRefresh.bind(this));
         this.addEvent(EventType.Building_Step_Update, this.updateStep.bind(this));
@@ -81,46 +83,18 @@ export class EditUIView extends BaseComponent {
 
     // 移除监听
     removeEvent() {
-        CCUtil.offTouch(this.btnAll, this.onBtnAllClick, this);
-        CCUtil.offTouch(this.btnSpecial, this.onBtnSpecialClick, this);
-        CCUtil.offTouch(this.btnBuiding, this.onBtnBuidingClick, this);
-        CCUtil.offTouch(this.btnDecoration, this.onBtnDecorationClick, this);
-        CCUtil.offTouch(this.btnLand, this.onBtnLandClick, this);
         CCUtil.offTouch(this.btnClose, this.onBtnCloseClick, this);
         CCUtil.offTouch(this.btnLast, this.onBtnLastClick, this);
         CCUtil.offTouch(this.btnNext, this.onBtnNextClick, this);
         CCUtil.offTouch(this.btnSave, this.onBtnSaveClick, this);
         CCUtil.offTouch(this.plBaseColor, this.onBaseColorClick, this);
+        CCUtil.offTouch(this.btnTheme, this.onBtnThemeClick, this);
+        CCUtil.offTouch(this.plTouch, this.onTouchLayerClick, this);
 
         this.clearEvent();
     }
     //销毁
     onDestroy() {
-    }
-    // 标题所有按钮点击 
-    onBtnAllClick() {
-        this.selectBtn(this.btnAll);
-        this.showEditType(EditType.Null);
-    }
-    // 标题特殊按钮点击 
-    onBtnSpecialClick() {
-        this.selectBtn(this.btnSpecial);
-        this.showEditType(EditType.Buiding);
-    }
-    // 标题建筑按钮点击 
-    onBtnBuidingClick() {
-        this.selectBtn(this.btnBuiding);
-        this.showEditType(EditType.LandmarkBuiding);
-    }
-    // 标题装饰按钮点击 
-    onBtnDecorationClick() {
-        this.selectBtn(this.btnDecoration);
-        this.showEditType(EditType.Decoration);
-    }
-    // 标题地块按钮点击 
-    onBtnLandClick() {
-        this.selectBtn(this.btnLand);
-        this.showEditType(EditType.Land);
     }
     // 关闭按钮点击 
     onBtnCloseClick() {
@@ -156,8 +130,28 @@ export class EditUIView extends BaseComponent {
     initData() {
         this._isBaseColor = false;
         this._editType = null;
-        this.selectBtn(this.btnAll);
-        this.showEditType(EditType.Null);
+        this.onBtnTypeClickEx(this.typeList.getItemByListId(0));
+    }
+    /**初始化类型 */
+    initEditType() {
+        let tempTypeInfo = new EditTypeInfo();
+        tempTypeInfo.id = EditType.Null;
+        tempTypeInfo.name = "全部";
+        this._typesData = [tempTypeInfo];
+        DataMgr.editTypeConfig.forEach(info => {
+            this._typesData.push(info);
+        });
+        this.typeList.numItems = this._typesData.length;
+    }
+    /**初始化主题 */
+    initTheme() {
+        let tempThemeInfo = new ThemeInfo();
+        tempThemeInfo.id = 0;
+        tempThemeInfo.name = "所有主题";
+        this._themesData = [tempThemeInfo];
+        DataMgr.themeConfig.forEach(info => {
+            this._themesData.push(info);
+        });
     }
     // 编辑元素点击
     onEditItemClick(editItem: EditItem) {
@@ -169,10 +163,15 @@ export class EditUIView extends BaseComponent {
         if (!this._mainScene || editType == this._editType) return;
         this._editType = editType;
 
+        this.showEditBuild();
+    }
+    /**显示编辑建筑 */
+    showEditBuild() {
         let editConfig = DataMgr.instance.editInfo;
         this._itemsData = [];
         editConfig.forEach(info => {
-            if (editType != EditType.Null && editType != info.type) return;
+            if (this._editType != EditType.Null && this._editType != info.type) return;
+            if (this._themeType != ThemeType_ALL && this._themeType != info.theme) return;
             if (BuildingIDType.mine == info.id) return;//矿山，需特殊处理
             if (EditType.Land == info.type) {
                 this._itemsData.push(new EditItemInfo(info));
@@ -186,18 +185,6 @@ export class EditUIView extends BaseComponent {
             }
         });
         this.listView.numItems = this._itemsData.length;
-        // this.listView.scrollTo(0, 0);
-    }
-    /**选中按钮 */
-    selectBtn(btn: Sprite) {
-        if (btn == this._lastSelect) return;
-        if (this._lastSelect) {
-            this._lastSelect.getComponentInChildren(Label).color = color("#FFFFFF");
-            this._lastSelect.spriteFrame = this.spriteFrames[1];
-        }
-        btn.getComponentInChildren(Label).color = color("#72320F");
-        btn.spriteFrame = this.spriteFrames[0];
-        this._lastSelect = btn;
     }
     /**加载显示 */
     onLoadItem(item: Node, idx: number) {
@@ -239,6 +226,76 @@ export class EditUIView extends BaseComponent {
             this.imgBaseColor.spriteFrame = this.spriteFramesBaseColor[2];
             this.imgBaseColor2.spriteFrame = this.spriteFramesBaseColor[3];
         }
+    }
+    /**类型加载 */
+    onLoadTypeList(node: Node, idx: number) {
+        node["idx"] = idx;
+        node.getComponentInChildren(Label).string = this._typesData[idx].name;
+        CCUtil.offTouch(node, this.onBtnTypeClick, this);
+        CCUtil.onTouch(node, this.onBtnTypeClick, this);
+    }
+    /**主题加载 */
+    onLoadThemeList(node: Node, idx: number) {
+        console.log("onLoadThemeList", idx);
+        node["idx"] = idx;
+        node.getComponentInChildren(Label).string = this._themesData[idx].name;
+        CCUtil.offTouch(node, this.onThemeClick, this);
+        CCUtil.onTouch(node, this.onThemeClick, this);
+    }
+    /**主题按钮点击 */
+    onBtnThemeClick() {
+        if (this.plTouch.active) {
+            this.onTouchLayerClick();
+        } else {
+            this.plTouch.active = true;
+            this.themeList.node.active = true;
+            this.themeList.numItems = this._themesData.length;
+            // this.themeList.scrollTo(0, 0);
+            tween(this.imgArrow).to(0.1, { angle: 180 }).start();
+        }
+    }
+    /**类型按钮点击 */
+    onBtnTypeClick(event: EventTouch) {
+        let node = event.currentTarget;
+        this.onBtnTypeClickEx(node);
+    }
+    onBtnTypeClickEx(node: Node) {
+        if (!node || node == this._lastSelect) return;
+        if (this._lastSelect) {
+            this._lastSelect.getComponentInChildren(Label).color = color("#FFFFFF");
+            this._lastSelect.getComponent(Sprite).spriteFrame = this.spriteFrames[1];
+        }
+        node.getComponentInChildren(Label).color = color("#72320F");
+        node.getComponent(Sprite).spriteFrame = this.spriteFrames[0];
+        this._lastSelect = node;
+
+        let idx = node["idx"];
+        this.showEditType(this._typesData[idx].id);
+    }
+    /**主题点击 */
+    onThemeClick(event: EventTouch) {
+        let node = event.currentTarget;
+        this.onThemeClickEx(node);
+    }
+    onThemeClickEx(node: Node) {
+        if (!node || node == this._lastTheme) return;
+        this._lastTheme = node;
+
+        let idx = node["idx"];
+        this.showTheme(this._themesData[idx].id);
+    }
+    /**点击层点击 */
+    onTouchLayerClick() {
+        this.plTouch.active = false;
+        this.themeList.node.active = false;
+        tween(this.imgArrow).to(0.1, { angle: 0 }).start();
+    }
+    /**显示主题 */
+    showTheme(themeType: number) {
+        if (!this._mainScene || themeType == this._themeType) return;
+        this._themeType = themeType;
+        this.labelTheme.string = this._themesData[themeType].name;
+        this.showEditBuild();
     }
 }
 

@@ -36,7 +36,7 @@ export class RoleSlotConfig {
     Ass: string[];//资源
     Remark: string;//备注
 }
-// 建筑、装饰、地板信息
+/**类型 */
 export enum EditType {//编辑元素类型
     Null = 0,//城堡
     Buiding = 1,//功能性建筑
@@ -44,6 +44,12 @@ export enum EditType {//编辑元素类型
     Decoration = 3,//装饰
     Land = 4,//地块
 }
+/**类型信息 */
+export class EditTypeInfo {
+    id: number;//id
+    name: string;//名字
+}
+/**建筑、装饰、地板信息 */
 export class EditInfo {
     id: number;//id
     name: string;//名字
@@ -225,6 +231,11 @@ export class ClothingInfo {
     type: ClothingType;//服装类型
     slots: SlotPngInfo[];//插槽
 }
+/**主题信息 */
+export class ThemeInfo {
+    id: number;//id
+    name: string;//名字
+}
 
 //数据管理器
 export class DataManager {
@@ -238,6 +249,8 @@ export class DataManager {
     public castleConfig: CastleConfig[] = [];//城堡配置
     public builtConfig: BuiltInfo[] = [];//建造配置
     public buildProduceInfo: BuildProduceInfo[] = [];//建筑生产信息
+    public editTypeConfig: EditTypeInfo[] = [];//编辑类型配置
+    public themeConfig: ThemeInfo[] = [];//主题信息
     public wordSplitConfig: any = null;
     public adventureLevelConfig: AdvLevelConfig[] = null;
     public itemConfig: { [key: number]: ItemInfo } = {};//道具信息
@@ -351,6 +364,18 @@ export class DataManager {
             obj.construct_need = this.converAryToReward(obj.construct_need);
             obj.construct_award = this.converAryToReward(obj.construct_award);
             this.builtConfig[obj.id] = obj;
+        }
+        /**主题配置 */
+        let theme_info = json.theme_info;
+        for (let k in theme_info) {
+            let obj = theme_info[k];
+            this.themeConfig[obj.id] = obj;
+        }
+        /**编辑类型信息 */
+        let type_info = json.type_info;
+        for (let k in type_info) {
+            let obj = type_info[k];
+            this.editTypeConfig[obj.id] = obj;
         }
     }
     public converAryToReward(ary: number[]): ItemData[] {
