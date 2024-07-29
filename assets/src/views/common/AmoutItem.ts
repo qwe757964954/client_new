@@ -29,7 +29,7 @@ export class AmoutItem extends ListItem {
         this.updateIcons(itemInfo);
     }
 
-    private updateAmount(amount: number) {
+    public updateAmount(amount: number) {
         this.amoutText.string = amount.toString();
     }
 
