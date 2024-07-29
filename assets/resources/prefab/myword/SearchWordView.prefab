@@ -2979,10 +2979,6 @@
     "btn_clearHistoryAll": {
       "__id__": 85
     },
-    "preWordHistoryItem": {
-      "__uuid__": "a09836dc-48b3-4110-88d0-6d4ca34bd805",
-      "__expectedType__": "cc.Prefab"
-    },
     "_id": ""
   },
   {

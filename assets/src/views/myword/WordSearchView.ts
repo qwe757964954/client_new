@@ -4,7 +4,6 @@ import { ViewsManager } from '../../manager/ViewsManager';
 import { WordsDetailData } from '../../models/AdventureModel';
 import { BaseView } from '../../script/BaseView';
 import { WordDetailPanel } from '../TextbookVocabulary/WordDetailPanel';
-import { WordSentence } from './SearchWordView';
 import { WordPanel } from './WordPanel';
 const { ccclass, property } = _decorator;
 
@@ -21,7 +20,6 @@ export class WordSearchView extends BaseView {
     _word: string = ""; //单词名字
     _imgShow: boolean = true; //是否显示图片
 
-    _sentenceData: WordSentence = null; //例句信息
     _sentenceId: string = ""; //例句ID
 
     _tabIdx: number = 1; //显示更多的tab页

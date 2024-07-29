@@ -13,8 +13,8 @@ export class BaseDataPacket {
 }
 /**基础返回接口类 */
 export class BaseRepPacket {
-    code: number;//返回码
-    msg: string;//返回信息
+    code?: number;//返回码
+    msg?: string;//返回信息
     // command_id?: number;
     // seq?: number;
 }
