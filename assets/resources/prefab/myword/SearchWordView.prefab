@@ -2970,13 +2970,13 @@
     "historyList": {
       "__id__": 119
     },
-    "top_layout": {
+    "topLayout": {
       "__id__": 12
     },
-    "btn_search": {
+    "btnSearch": {
       "__id__": 55
     },
-    "btn_clearHistoryAll": {
+    "btnClearHistoryAll": {
       "__id__": 85
     },
     "_id": ""
