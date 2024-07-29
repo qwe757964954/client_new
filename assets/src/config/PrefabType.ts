@@ -100,8 +100,6 @@ export const PrefabType = {
     BreakThroughView: { path: "textbook/BreakThroughView", zindex: Hierarchy.POPUPLAYER, tips: "单词大冒险挑战模块" },
     BreakThroughRemindView: { path: "textbook/BreakThroughRemindView", componentName: "BreakThroughRemindView", zindex: Hierarchy.POPUPLAYER, tips: "二级确认弹窗" },
     ChallengeRemindView: { path: "textbook/ChallengeRemindView", componentName: "ChallengeRemindView", zindex: Hierarchy.POPUPLAYER, tips: "首次故事背景引导" },
-    SearchWorldView: { path: "textbook/SearchWordView", zindex: Hierarchy.POPUPLAYER, tips: "查找单词弹窗" },
-    WordSearchView: { path: "textbook/WordSearchView", zindex: Hierarchy.POPUPLAYER, tips: "查找单词详情弹窗" },
     WordCheckView: { path: "textbook/WordCheckView", zindex: Hierarchy.POPUPLAYER, tips: "单词列表" },
     /*********************************************教材单词相关end*************************************************************/
     /*********************************************商城相关start***********************************************************/
@@ -233,4 +231,11 @@ export const PrefabType = {
     WeekendCarouselView: { path: "activities/WeekendCarouselView", zindex: Hierarchy.POPUPLAYER, tips: "周末转盘" },
     Carouseltem: { path: "activities/Carouseltem", zindex: Hierarchy.POPUPLAYER, tips: "转盘元素" },
     /*********************************************活动 end***********************************************************/
+
+    /*********************************************myword start***********************************************************/
+    WordSearchView: { path: "myword/WordSearchView", zindex: Hierarchy.POPUPLAYER, tips: "查找单词详情弹窗" },
+    SearchWorldView: { path: "myword/SearchWordView", zindex: Hierarchy.POPUPLAYER, tips: "查找单词弹窗" },
+    WordPanel: { path: "myword/WordPanel", zindex: Hierarchy.POPUPLAYER, tips: "单词弹窗" },
+    /*********************************************myword End*************************************************************/
+
 }
