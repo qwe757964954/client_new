@@ -223,6 +223,7 @@ export const PrefabType = {
     VocabularyRankingView: { path: "rank/VocabularyRankingView", zindex: Hierarchy.POPUPLAYER, tips: "词汇量排名" },
     KingdomRankingView: { path: "rank/KingdomRankingView", zindex: Hierarchy.POPUPLAYER, tips: "王国分排名" },
     CombatPowerRankingView: { path: "rank/CombatPowerRankingView", zindex: Hierarchy.POPUPLAYER, tips: "战力排名" },
+    MyRank: { path: "rank/MyRank", zindex: Hierarchy.POPUPLAYER, tips: "我的排名" },
     /*********************************************排行 end***********************************************************/
 
     /*********************************************活动 start***********************************************************/
