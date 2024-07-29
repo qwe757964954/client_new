@@ -1,5 +1,6 @@
-import { _decorator, Component, Label, Node } from 'cc';
+import { _decorator, Component, Label, Node, ProgressBar } from 'cc';
 import { EventType } from '../../config/EventType';
+import { TextConfig } from '../../config/TextConfig';
 import { User } from '../../models/User';
 import CCUtil from '../../util/CCUtil';
 import EventManager from '../../util/EventManager';
@@ -15,6 +16,8 @@ export class EnergyItem extends Component {
     public labelTime: Label = null;
     @property(Node)
     public nodeTime: Node = null;
+    @property(ProgressBar)
+    public progress: ProgressBar = null;
 
     private _energyUpdateHandle: string = null;//体力更新事件句柄
     private _timeUpdateHandle: string = null;//体力时间更新事件句柄
@@ -56,17 +59,19 @@ export class EnergyItem extends Component {
     }
     //体力更新
     public onEnergyUpdate() {
-        this.label.string = User.stamina.toString();
+        this.label.string = ToolUtil.replace(TextConfig.Queue_Text, User.stamina, User.staminaLimit);
     }
     /**体力时间更新 */
     public onStaminaTimeUpdate() {
         let leftTime = User.getStaminaLeftTime();
         if (null == leftTime) {
-            this.nodeTime.active = false;
+            // this.nodeTime.active = false;
+            this.progress.progress = 0;
             return;
         }
-        this.nodeTime.active = true;
-        this.labelTime.string = ToolUtil.secondsToTimeFormat(leftTime);
+        // this.nodeTime.active = true;
+        // this.labelTime.string = ToolUtil.secondsToTimeFormat(leftTime);
+        this.progress.progress = leftTime / User.staminaInterval;
     }
 }
 

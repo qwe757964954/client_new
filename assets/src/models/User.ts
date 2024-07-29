@@ -65,13 +65,14 @@ class UserModel {
     public petID: number = null;     // 宠物id
     public petLevel: number = null;  // 宠物等级
     public petHasReward: boolean = false; // 宠物是否有奖励
-    public gender:number = 1; //性别
+    public gender: number = 1; //性别
 
     public castleLevel: number = 1;    // 城堡等级
 
     private _staminaLimit: number = 0;    // 体力上限
     private _staminaTime: number = 0;     // 体力恢复时间
     private _staminaTimer: number = null;  // 体力恢复定时器
+    private _staminaInterval: number = 180;  // 体力恢复间隔
 
 
     // 测试数据
@@ -221,6 +222,9 @@ class UserModel {
     }
     get staminaLimit(): number {
         return this._staminaLimit;
+    }
+    get staminaInterval(): number {
+        return this._staminaInterval;
     }
 
     public addBuilding(id: number) {
