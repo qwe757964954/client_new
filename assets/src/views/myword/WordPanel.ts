@@ -1,4 +1,4 @@
-import { _decorator, Label, Node } from 'cc';
+import { _decorator, Label, Node, Sprite } from 'cc';
 import { NetConfig } from '../../config/NetConfig';
 import { TextConfig } from '../../config/TextConfig';
 import { RemoteSoundMgr } from '../../manager/RemoteSoundManager';
@@ -32,6 +32,9 @@ export class WordPanel extends BaseView {
     @property(Node)
     public horn:Node = null;
 
+    @property(Node)
+    public star:Node = null;
+
     private _detailData:WordsDetailData = null;
 
     protected initEvent(): void {
@@ -56,6 +59,7 @@ export class WordPanel extends BaseView {
         let wordImgUrl: string = NetConfig.assertUrl + "/imgs/words/" + data.word + ".jpg";
         ImgUtil.loadRemoteImage(wordImgUrl, this.wordImg, 416, 246);
         this.wordDetailView.init(data.word, this._detailData);
+        this.star.getComponent(Sprite).grayscale = data.collect_flag ? false : true;
     }
 }
 

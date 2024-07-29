@@ -30,7 +30,7 @@ export class SearchWordView extends BaseView {
 
     @property({ type: Node, tooltip: "清除所有的单词查找历史" })
     public btn_clearHistoryAll: Node = null;
-
+    
     private _historys: SearchWordItem[] = []; //查找的历史
     protected _detailData: WordsDetailData = null; //当前单词详情数据
 
