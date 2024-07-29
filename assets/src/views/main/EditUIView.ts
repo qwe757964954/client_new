@@ -45,8 +45,12 @@ export class EditUIView extends BaseComponent {
     public labelStep: Label = null;//步骤
     @property(Node)
     public plBaseColor: Node = null;//底格颜色开关
-    @property(Label)
-    public labelBaseColor: Label = null;//底格颜色
+    @property(Sprite)
+    public imgBaseColor: Sprite = null;//底格颜色图片
+    @property(Sprite)
+    public imgBaseColor2: Sprite = null;//底格颜色图片2
+    @property([SpriteFrame])
+    public spriteFramesBaseColor: SpriteFrame[] = [];//底格颜色图片资源
 
     private _mainScene: MainScene = null;//主场景
     private _editType: EditType = null;//编辑类型
@@ -228,7 +232,13 @@ export class EditUIView extends BaseComponent {
     }
     /**底格颜色开关显示 */
     showBtnBaseColor() {
-        this.labelBaseColor.string = this._isBaseColor ? "开" : "关";
+        if (this._isBaseColor) {
+            this.imgBaseColor.spriteFrame = this.spriteFramesBaseColor[0];
+            this.imgBaseColor2.spriteFrame = this.spriteFramesBaseColor[1];
+        } else {
+            this.imgBaseColor.spriteFrame = this.spriteFramesBaseColor[2];
+            this.imgBaseColor2.spriteFrame = this.spriteFramesBaseColor[3];
+        }
     }
 }
 

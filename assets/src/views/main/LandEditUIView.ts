@@ -1,4 +1,4 @@
-import { _decorator, Component, Label, Node, Sprite } from 'cc';
+import { _decorator, Component, Node, Sprite, SpriteFrame } from 'cc';
 import { DataMgr, EditInfo } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
 import CCUtil from '../../util/CCUtil';
@@ -15,8 +15,12 @@ export class LandEditUIView extends Component {
     public img: Sprite = null;//图片
     @property(Node)
     public plBaseColor: Node = null;//底格颜色开关
-    @property(Label)
-    public labelBaseColor: Label = null;//底格颜色
+    @property(Sprite)
+    public imgBaseColor: Sprite = null;//底格颜色图片
+    @property(Sprite)
+    public imgBaseColor2: Sprite = null;//底格颜色图片2
+    @property([SpriteFrame])
+    public spriteFramesBaseColor: SpriteFrame[] = [];//底格颜色图片资源
 
     private _mainScene: MainScene = null;//主场景
     private _isBaseColor: boolean = false;//底格颜色开关
@@ -73,7 +77,13 @@ export class LandEditUIView extends Component {
     }
     /**底格颜色开关显示 */
     showBtnBaseColor() {
-        this.labelBaseColor.string = this._isBaseColor ? "开" : "关";
+        if (this._isBaseColor) {
+            this.imgBaseColor.spriteFrame = this.spriteFramesBaseColor[0];
+            this.imgBaseColor2.spriteFrame = this.spriteFramesBaseColor[1];
+        } else {
+            this.imgBaseColor.spriteFrame = this.spriteFramesBaseColor[2];
+            this.imgBaseColor2.spriteFrame = this.spriteFramesBaseColor[3];
+        }
     }
 }
 
