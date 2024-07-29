@@ -79,7 +79,7 @@ export const EventType = {
 
     /**查找单词相关事件 */
     Search_Word: "SearchWord", //查找单词
-    Search_Word_Del_OneWord: "DelOneSearchWord",//删除某个查找项
+    Search_Collect_Work: "Search_Collect_Work",//单词查询，收藏单词
 
     /**学习计划相关事件 */
     StudyRecord_MonthPrice: "Account_MonthPrize", //每个月的得分情况

@@ -1,4 +1,5 @@
 import { _decorator, EditBox, isValid, Node } from 'cc';
+import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { SoundMgr } from '../../manager/SoundMgr';
@@ -34,6 +35,8 @@ export class SearchWordView extends BaseView {
     private _historys: SearchWordItem[] = []; // 查找的历史
     protected _detailData: WordsDetailData = null; // 当前单词详情数据
 
+    private _collectWoldInfo:SearchWordItem = null;
+
     protected initUI(): void {
         SoundMgr.stopBgm();
         this.initNavTitle();
@@ -55,9 +58,35 @@ export class SearchWordView extends BaseView {
     protected onInitModuleEvent(): void {
         this.addModelListeners([
             [InterfacePath.More_Word_Detail, this.onMoreWordDetail.bind(this)],
-            [InterfacePath.Search_Word, this.onSearchWord.bind(this)]
+            [InterfacePath.Search_Word, this.onSearchWord.bind(this)],
+            [InterfacePath.Total_Collect_Word, this.onTotalCollectWord.bind(this)],
+            [EventType.Search_Collect_Work,this.onSearchCollectWork.bind(this)],
         ]);
     }
+
+    private async onSearchCollectWork(data:SearchWordItem){
+        this._collectWoldInfo = data;
+        let status = this._collectWoldInfo.is_collect ? 0:1;
+        ServiceMgr.studyService.totalCollectWord(this._collectWoldInfo.word,status);
+    }
+
+    private async onTotalCollectWord(data: any) {
+        console.log(data);
+        
+        const historyItem = this._historys.find(item => item.word === this._collectWoldInfo.word);
+        
+        if (historyItem) {
+            historyItem.is_collect = this._collectWoldInfo.is_collect ? 0 : 1;
+            
+            this.saveHistory();
+            
+            this.updateHistoryList();
+        } else {
+            console.error(`History item with word ${this._collectWoldInfo.word} not found.`);
+        }
+    }
+
+    
 
     private async onSearchWord(data: SearchWordResponse) {
         console.log(data);

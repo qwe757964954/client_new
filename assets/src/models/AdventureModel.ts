@@ -157,6 +157,13 @@ export class c2sSearchWord {
     word: string;
 }
 
+//总词收藏与取消收藏单词
+export class c2sTotalCollectWord {
+    command_id: string = InterfacePath.Total_Collect_Word;
+    word: string;
+    status:number;
+}
+
 //单词更多详情消息
 export class c2sMoreWordDetail {
     command_id: string = InterfacePath.More_Word_Detail;

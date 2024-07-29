@@ -1,9 +1,11 @@
 import { _decorator, Label, Node, Sprite } from 'cc';
+import { EventType } from '../../config/EventType';
 import { NetConfig } from '../../config/NetConfig';
 import { TextConfig } from '../../config/TextConfig';
 import { RemoteSoundMgr } from '../../manager/RemoteSoundManager';
 import { ServiceMgr } from '../../net/ServiceManager';
 import CCUtil from '../../util/CCUtil';
+import { EventMgr } from '../../util/EventManager';
 import ListItem from '../../util/list/ListItem';
 import { SearchWordItem } from './MyWordInfo';
 const { ccclass, property } = _decorator;
@@ -60,7 +62,7 @@ export class WordHistoryItem extends ListItem {
         RemoteSoundMgr.playSound(NetConfig.assertUrl + wordSoundUrl);
     }
     onCollect(){
-
+        EventMgr.dispatch(EventType.Search_Collect_Work,this._data);
     }
 }
 
