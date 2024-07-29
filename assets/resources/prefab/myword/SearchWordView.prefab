@@ -2608,7 +2608,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 1189,
-      "height": -8
+      "height": 0
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -2643,10 +2643,10 @@
     "_startAxis": 0,
     "_paddingLeft": 0,
     "_paddingRight": 0,
-    "_paddingTop": 0,
+    "_paddingTop": 10,
     "_paddingBottom": 0,
     "_spacingX": 0,
-    "_spacingY": 8,
+    "_spacingY": 10,
     "_verticalDirection": 1,
     "_horizontalDirection": 0,
     "_constraint": 0,
@@ -2970,18 +2970,14 @@
     "historyList": {
       "__id__": 119
     },
-    "top_layout": {
+    "topLayout": {
       "__id__": 12
     },
-    "btn_search": {
+    "btnSearch": {
       "__id__": 55
     },
-    "btn_clearHistoryAll": {
+    "btnClearHistoryAll": {
       "__id__": 85
-    },
-    "preWordHistoryItem": {
-      "__uuid__": "a09836dc-48b3-4110-88d0-6d4ca34bd805",
-      "__expectedType__": "cc.Prefab"
     },
     "_id": ""
   },

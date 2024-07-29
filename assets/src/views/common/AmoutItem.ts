@@ -1,4 +1,4 @@
-import { _decorator, error, Label, Node, Sprite, SpriteFrame, UITransform } from 'cc';
+import { _decorator, Label, Node, Sprite, SpriteFrame, UITransform } from 'cc';
 import { LoadManager } from '../../manager/LoadManager';
 import { ResLoader } from '../../manager/ResLoader';
 import ListItem from '../../util/list/ListItem';
@@ -8,72 +8,89 @@ const { ccclass, property } = _decorator;
 @ccclass('AmoutItem')
 export class AmoutItem extends ListItem {
     @property({ type: Label, tooltip: "数值" })
-    public amout_text: Label = null;
-    @property({ type: Node, tooltip: "iocn节点" })
+    public amoutText: Label = null;
+
+    @property({ type: Node, tooltip: "图标节点" })
     public aliveIcon: Node = null;
-    @property({ type: Node, tooltip: "add iocn节点" })
+
+    @property({ type: Node, tooltip: "添加图标节点" })
     public addIcon: Node = null;
-    public amount_info:AmoutItemData = null;        
-    start() {
 
+    @property({ type: Node, tooltip: "背景节点" })
+    public bg: Node = null;
+
+    public amountInfo: AmoutItemData = null;        
+
+    start() {}
+
+    updateItemProps(idx: number, itemInfo: AmoutItemData) {
+        this.amountInfo = itemInfo;
+        this.updateAmount(itemInfo.num);
+        this.updateIcons(itemInfo);
     }
 
-    updateItemProps(idx: number,itemInfo:AmoutItemData){
-        this.amount_info = itemInfo;
-        this.updateAmout(itemInfo.num);
-        this.updateIcon(idx,itemInfo);
+    public updateAmount(amount: number) {
+        this.amoutText.string = amount.toString();
     }
 
-    updateAmout(amout:number){
-        this.amout_text.string = amout.toString();
-    }
-
-    updateIcon(idx: number,itemInfo:AmoutItemData){
-        let addUrl = "";
-        let activeUrl = "";
-        switch (itemInfo.type) {
-            case AmoutType.Coin:
-                this.aliveIcon.getComponent(UITransform).width = 56;
-                this.aliveIcon.getComponent(UITransform).height = 57;
-                addUrl = "common/word_0022_icon/spriteFrame";
-                activeUrl = "common/img_coin/spriteFrame";
-                break;
-            case AmoutType.Diamond:
-                this.aliveIcon.getComponent(UITransform).width = 50;
-                this.aliveIcon.getComponent(UITransform).height = 53;
-                addUrl = "common/add/spriteFrame";
-                activeUrl = "common/img_diamond/spriteFrame";
-                break;
-            case AmoutType.Energy:
-                this.aliveIcon.getComponent(UITransform).width = 39;
-                this.aliveIcon.getComponent(UITransform).height = 58;
-                addUrl = "common/word_0023_icon/spriteFrame";
-                activeUrl = "common/img_energy/spriteFrame";
-                break;
-            default:
-                break;
+    private updateIcons(itemInfo: AmoutItemData) {
+        let iconData = this.getIconData(itemInfo.type);
+        if (iconData) {
+            this.updateIconSize(iconData.size);
+            this.updateIconSprite(this.addIcon, iconData.addUrl);
+            this.updateIconSprite(this.aliveIcon, iconData.activeUrl);
+            this.updateIconSprite(this.bg, iconData.bgUrl);
         }
-        this.updateStatic(addUrl,this.addIcon);
-        this.updateStatic(activeUrl,this.aliveIcon);
     }
-    /**
-     * 
-     * @param url 静态资源路径
-     * @param node 节点
-     */
-    updateStatic(url:string,node:Node){
+
+    private getIconData(type: AmoutType) {
+        switch (type) {
+            case AmoutType.Coin:
+                return {
+                    size: { width: 56, height: 57 },
+                    addUrl: "common/word_0022_icon/spriteFrame",
+                    activeUrl: "common/img_coin/spriteFrame",
+                    bgUrl: "common/normal_bg/spriteFrame"
+                };
+            case AmoutType.Diamond:
+                return {
+                    size: { width: 50, height: 53 },
+                    addUrl: "common/add/spriteFrame",
+                    activeUrl: "common/img_diamond/spriteFrame",
+                    bgUrl: "common/normal_bg/spriteFrame"
+                };
+            case AmoutType.Energy:
+                return {
+                    size: { width: 39, height: 58 },
+                    addUrl: "common/word_0023_icon/spriteFrame",
+                    activeUrl: "common/img_energy/spriteFrame",
+                    bgUrl: "common/energy_bg/spriteFrame"
+                };
+            default:
+                return null;
+        }
+    }
+
+    private updateIconSize(size: { width: number; height: number }) {
+        const transform = this.aliveIcon.getComponent(UITransform);
+        transform.width = size.width;
+        transform.height = size.height;
+    }
+
+    private updateIconSprite(node: Node, url: string) {
         ResLoader.instance.load(url, SpriteFrame, (err: Error | null, spriteFrame: SpriteFrame) => {
             if (err) {
-                error && console.error(err);
+                console.error(err);
+                return;
             }
             spriteFrame.addRef();
-            // 多次设置会多次增加监听
             node.once(Node.EventType.NODE_DESTROYED, () => {
                 LoadManager.releaseAsset(spriteFrame);
             });
-            node.getComponent(Sprite).spriteFrame = spriteFrame;
+            const sprite = node.getComponent(Sprite);
+            if (sprite) {
+                sprite.spriteFrame = spriteFrame;
+            }
         });
     }
 }
-
-

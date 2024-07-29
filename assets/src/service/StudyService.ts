@@ -1,7 +1,7 @@
 import { isValid } from "cc";
 import { EventType } from "../config/EventType";
 import { ViewsManager } from "../manager/ViewsManager";
-import { AdventureCollectWordModel, AdventureResultModel, c2sAdventureCollectWord, c2sAdventureResult, c2sAdventureWord, c2sAdventureWordSentence, c2sAdvLevelProgress, c2sArticleExercisesList, c2sBossLevelSubmit, c2sBossLevelTopic, c2sGetProgressReward, c2sGetUnitList, c2sIslandProgress, c2sIslandStatus, c2sSubjectArticleList, c2sTextbookWordGroup, c2sWordGameLevelRestart, c2sWordGameSubject, c2sWordGameUnitWords, c2sWordGameWords, c2sWordGroup, WordGameWordsData } from "../models/AdventureModel";
+import { AdventureCollectWordModel, AdventureResultModel, c2sAdventureCollectWord, c2sAdventureResult, c2sAdventureWord, c2sAdventureWordSentence, c2sAdvLevelProgress, c2sArticleExercisesList, c2sBossLevelSubmit, c2sBossLevelTopic, c2sGetProgressReward, c2sGetUnitList, c2sIslandProgress, c2sIslandStatus, c2sMoreWordDetail, c2sSearchWord, c2sSubjectArticleList, c2sTextbookWordGroup, c2sTotalCollectWord, c2sWordGameLevelRestart, c2sWordGameSubject, c2sWordGameUnitWords, c2sWordGameWords, c2sWordGroup, WordGameWordsData } from "../models/AdventureModel";
 import { c2sReviewPlan, c2sReviewPlanDraw, c2sReviewPlanList, c2sReviewPlanLongTimeWords, c2sReviewPlanLongTimeWordSubmit, c2sReviewPlanOption, c2sReviewPlanStatus, c2sReviewPlanSubmit, c2sReviewPlanUpdate } from "../models/NetModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
@@ -26,6 +26,24 @@ export default class StudyService extends BaseControll {
         NetMgr.sendMsg(para);
     }
 
+    searchWord(word:string){
+        let para: c2sSearchWord = new c2sSearchWord();
+        para.word = word;
+        NetMgr.sendMsg(para);
+    }
+
+    moreWordDetail(word:string){
+        let para: c2sMoreWordDetail = new c2sMoreWordDetail();
+        para.word = word;
+        NetMgr.sendMsg(para);
+    }
+
+    totalCollectWord(word:string,status:number){
+        let para: c2sTotalCollectWord = new c2sTotalCollectWord();
+        para.word = word;
+        para.status = status;
+        NetMgr.sendMsg(para);
+    }
     //获取大冒险岛屿状态
     getIslandStatus() {
         let para: c2sIslandStatus = new c2sIslandStatus();

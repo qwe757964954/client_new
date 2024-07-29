@@ -1,11 +1,13 @@
 import { _decorator, Label, Node, Sprite } from 'cc';
 import { EventType } from '../../config/EventType';
-import { InterfacePath } from '../../net/InterfacePath';
+import { NetConfig } from '../../config/NetConfig';
+import { TextConfig } from '../../config/TextConfig';
+import { RemoteSoundMgr } from '../../manager/RemoteSoundManager';
 import { ServiceMgr } from '../../net/ServiceManager';
 import CCUtil from '../../util/CCUtil';
-import EventManager from '../../util/EventManager';
+import { EventMgr } from '../../util/EventManager';
 import ListItem from '../../util/list/ListItem';
-import { WordSimpleData } from './SearchWordView';
+import { SearchWordItem } from './MyWordInfo';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordHistoryItem')
@@ -17,49 +19,50 @@ export class WordHistoryItem extends ListItem {
     private lblWord: Label = null;
 
     @property(Label)
-    private lblContent: Label = null;
+    private cnTxt: Label = null;
 
+    @property(Label)
+    private symbolLabel: Label = null;
+    
     @property({ type: Node })
     public btn_more: Node = null;
 
-    data: WordSimpleData = null;
+    @property({ type: Node })
+    public btn_horn: Node = null;
+    
+    @property({ type: Node })
+    public btn_collect: Node = null;
+
+    private _data: SearchWordItem = null;
 
     onLoad(): void {
-        //this.lblWord.string = "";
-        //this.lblContent.string = "";
         this.initEvent();
     }
 
-    public init(data: WordSimpleData) { //{Word:'teacher', Cn:'老师'}
-        if (!data) {
-            console.log("search word data is null!");
-            return;
-        }
-        this.data = data;
+    public updateWordProps(data: SearchWordItem) {
+        console.log(data);
+        this._data = data;
         this.lblWord.string = data.word;
-        this.lblContent.string = data.cn;
+        this.cnTxt.string = data.cn;
+        this.symbolLabel.string = TextConfig.US + data.symbolus + "";
+        this.btn_collect.getComponent(Sprite).grayscale = data.is_collect ? false : true;
     }
 
     initEvent() {
-        CCUtil.onBtnClick(this.btn_more, this.onClearWord.bind(this));
+        CCUtil.onBtnClick(this.btn_more, this.onShowMore.bind(this));
+        CCUtil.onBtnClick(this.btn_collect, this.onCollect.bind(this));
+        CCUtil.onBtnClick(this.btn_horn, this.onPlaySound.bind(this));
     }
 
-    /**点击清除一个单词历史 */
-    onClearWord() {
-        ServiceMgr.studyService.getAdventureWord("34e4cd05005de4303ee70902a61701c0");
-        // EventManager.emit(EventType.Search_Word_Del_OneWord, this.data.word);
-        // this.node.destroy();
+    onShowMore() {
+        ServiceMgr.studyService.moreWordDetail(this._data.word);
     }
-
-    /**
-     * 
-     */
-    onSearchDetail() {
-        EventManager.emit(EventType.Search_Word_Item, this.data);
+    onPlaySound(){
+        let wordSoundUrl = "/sounds/glossary/words/uk/" + this._data.word + ".wav";
+        RemoteSoundMgr.playSound(NetConfig.assertUrl + wordSoundUrl);
     }
-
-    onClickClearItem() {
-        EventManager.emit(InterfacePath.SearchWord_DelSingle, this.data);
+    onCollect(){
+        EventMgr.dispatch(EventType.Search_Collect_Work,this._data);
     }
 }
 

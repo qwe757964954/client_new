@@ -68,6 +68,9 @@ export const InterfacePath = {
     WordGame_Subject: "3117", //大冒险主题信息
     Subject_ArticleList: "3118", //主题ai文章列表
     Article_ExercisesList: "3119", //文章题目列表
+    Search_Word: "3300",//查询单词
+    More_Word_Detail: "3301",//单词更多详情消息
+    Total_Collect_Word:"3302", //总词收藏与取消收藏单词
 
     /***********************************************选择词书 begin*********************************************/
     Classification_BookStatus: "3011", //我的词书-列表

@@ -400,7 +400,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "star",
+    "_name": "btn_collect",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -599,7 +599,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 160,
-      "height": 50.4
+      "height": 65
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -640,7 +640,7 @@
     "_actualFontSize": 50,
     "_fontSize": 50,
     "_fontFamily": "Arial",
-    "_lineHeight": 50,
+    "_lineHeight": 65,
     "_overflow": 1,
     "_enableWrapText": false,
     "_font": null,
@@ -990,7 +990,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "horn",
+    "_name": "btn_horn",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -1336,11 +1336,20 @@
     "lblWord": {
       "__id__": 25
     },
-    "lblContent": {
+    "cnTxt": {
       "__id__": 31
+    },
+    "symbolLabel": {
+      "__id__": 49
     },
     "btn_more": {
       "__id__": 34
+    },
+    "btn_horn": {
+      "__id__": 40
+    },
+    "btn_collect": {
+      "__id__": 16
     },
     "_id": ""
   },

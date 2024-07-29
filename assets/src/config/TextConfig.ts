@@ -157,4 +157,6 @@ export const TextConfig = {
 
     Insufficient_Day_Sign:"隔天登录可领取",
     Insufficient_Draw_Carousel:"今日抽奖机会用完啦",
+    Word_Empty_Tips:"单词查询结果为空",
+    Word_Error_Tips:"获取单词详情失败",
 }
