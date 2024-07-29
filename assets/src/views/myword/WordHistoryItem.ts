@@ -1,6 +1,7 @@
 import { _decorator, Label, Node, Sprite } from 'cc';
 import { EventType } from '../../config/EventType';
 import { InterfacePath } from '../../net/InterfacePath';
+import { ServiceMgr } from '../../net/ServiceManager';
 import CCUtil from '../../util/CCUtil';
 import EventManager from '../../util/EventManager';
 import ListItem from '../../util/list/ListItem';
@@ -18,17 +19,15 @@ export class WordHistoryItem extends ListItem {
     @property(Label)
     private lblContent: Label = null;
 
-    @property({ type: Node, tooltip: "删除一条纪录按钮" })
-    public btn_ClearWord: Node = null;
+    @property({ type: Node })
+    public btn_more: Node = null;
 
     data: WordSimpleData = null;
-
-    private _delOneSearchWordEveId: string = "";
 
     onLoad(): void {
         //this.lblWord.string = "";
         //this.lblContent.string = "";
-        // this.initEvent();
+        this.initEvent();
     }
 
     public init(data: WordSimpleData) { //{Word:'teacher', Cn:'老师'}
@@ -42,12 +41,13 @@ export class WordHistoryItem extends ListItem {
     }
 
     initEvent() {
-        CCUtil.onBtnClick(this.btn_ClearWord, this.onClearWord.bind(this));
+        CCUtil.onBtnClick(this.btn_more, this.onClearWord.bind(this));
     }
 
     /**点击清除一个单词历史 */
     onClearWord() {
-        EventManager.emit(EventType.Search_Word_Del_OneWord, this.data.word);
+        ServiceMgr.studyService.getAdventureWord("34e4cd05005de4303ee70902a61701c0");
+        // EventManager.emit(EventType.Search_Word_Del_OneWord, this.data.word);
         // this.node.destroy();
     }
 
