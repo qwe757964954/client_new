@@ -1324,7 +1324,9 @@
       "__id__": 55
     },
     "selectedMode": 1,
-    "selectedFlag": null,
+    "selectedFlag": {
+      "__id__": 10
+    },
     "selectedFlag2": null,
     "selectedSpriteFrame": null,
     "adaptiveSize": false,
@@ -1337,7 +1339,9 @@
     "lblContent": {
       "__id__": 31
     },
-    "btn_ClearWord": null,
+    "btn_more": {
+      "__id__": 34
+    },
     "_id": ""
   },
   {

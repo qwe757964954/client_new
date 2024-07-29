@@ -339,8 +339,6 @@ export class SearchWordView extends BaseView {
         if(!isValid(selectedId) || selectedId < 0 || !isValid(item)){return;}
         console.log("onSearchWordListSelected.....",selectedId);
         // TBServer.reqWordDetail("0055a6e7e0fa064c446d284826ab5151");
-        ServiceMgr.studyService.getAdventureWord("34e4cd05005de4303ee70902a61701c0");
-
     }
 }
 
