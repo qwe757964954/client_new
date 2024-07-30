@@ -136,6 +136,8 @@ export const TextConfig = {
     ReviewPlan_Tip2: "长时间未复习（{0}）",
     ReviewPlan_Tip3: "长时间未复习（99+）",
     ReviewPlan_Draw_Tip: "你的抽奖分不足了哦，赶紧去复习吧~",
+    ReviewPlan_book_text1: "选择教材",
+    ReviewPlan_book_text2: "切换教材",
 
     PetInteraction_Tip: "互动次数不足",
     PetUpgrade_Tip: "升级成功",
@@ -152,11 +154,11 @@ export const TextConfig = {
     WordMeaning_Exit_Tip1: "确定退出学习吗?",
     WordMeaning_Exit_Tip2: "确定结束复习吗?\n完成复习可参与扭蛋机抽奖哦",
 
-    Insufficient_Gold_Synthesize:"合成金币不足",
-    Insufficient_Goods_Synthesize:"合成物品不足",
+    Insufficient_Gold_Synthesize: "合成金币不足",
+    Insufficient_Goods_Synthesize: "合成物品不足",
 
-    Insufficient_Day_Sign:"隔天登录可领取",
-    Insufficient_Draw_Carousel:"今日抽奖机会用完啦",
-    Word_Empty_Tips:"单词查询结果为空",
-    Word_Error_Tips:"获取单词详情失败",
+    Insufficient_Day_Sign: "隔天登录可领取",
+    Insufficient_Draw_Carousel: "今日抽奖机会用完啦",
+    Word_Empty_Tips: "单词查询结果为空",
+    Word_Error_Tips: "获取单词详情失败",
 }

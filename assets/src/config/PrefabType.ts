@@ -175,6 +175,7 @@ export const PrefabType = {
     ReviewWordListView: { path: "reviewPlan/ReviewWordListView", zindex: Hierarchy.POPUPLAYER, tips: "复习单词列表" },
     ReviewEndView: { path: "reviewPlan/ReviewEndView", zindex: Hierarchy.POPUPLAYER, tips: "复习结束" },
     ReviewRewardView: { path: "reviewPlan/ReviewRewardView", zindex: Hierarchy.POPUPLAYER, tips: "复习抽奖奖励" },
+    ReviewPlanRuleView: { path: "reviewPlan/ReviewPlanRuleView", zindex: Hierarchy.POPUPLAYER, tips: "复习规则" },
     /*********************************************复习规划end***********************************************************/
     /*********************************************社交 start***********************************************************/
     FriendsDialogView: { path: "social/FriendsDialogView", componentName: "FriendsDialogView", zindex: Hierarchy.POPUPLAYER, tips: "好友界面" },
@@ -188,8 +189,8 @@ export const PrefabType = {
     /*********************************************社交 End*************************************************************/
     /*********************************************背包 start***********************************************************/
     BagView: { path: "bag/BagView", zindex: Hierarchy.POPUPLAYER, tips: "背包界面" },
-    BreakdownView: { path: "bag/BreakdownView", zindex: Hierarchy.POPUPLAYER, componentName: "BreakdownView",tips: "分解栏" },
-    CompositeBagView: { path: "bag/CompositeBagView", zindex: Hierarchy.POPUPLAYER, componentName: "CompositeBagView",tips: "合成栏" },
+    BreakdownView: { path: "bag/BreakdownView", zindex: Hierarchy.POPUPLAYER, componentName: "BreakdownView", tips: "分解栏" },
+    CompositeBagView: { path: "bag/CompositeBagView", zindex: Hierarchy.POPUPLAYER, componentName: "CompositeBagView", tips: "合成栏" },
     /*********************************************背包 end***********************************************************/
 
     /*********************************************角色 start***********************************************************/
