@@ -16,8 +16,14 @@ export class CaleBagView extends BaseView {
 
     private _max_value:number = 1;
 
+    private _selectListener:(num:number)=>void = null;
+
     protected initUI(): void {
         
+    }
+
+    setSelectListener(listener:(num:number)=>void){
+        this._selectListener = listener;
     }
 
     protected initEvent(): void {
@@ -32,7 +38,7 @@ export class CaleBagView extends BaseView {
             num--;
             this.cale_text.string = num.toString();
         }
-        
+        this._selectListener?.(this.getCaleNumber());
     }
 
     addClickEvent(){
@@ -43,6 +49,7 @@ export class CaleBagView extends BaseView {
             num = this._max_value;
         }
         this.cale_text.string = num.toString();
+        this._selectListener?.(this.getCaleNumber());
     }
 
     getCaleNumber(){
