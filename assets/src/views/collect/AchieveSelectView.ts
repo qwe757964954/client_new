@@ -1,14 +1,19 @@
-import { _decorator, Component, Node } from 'cc';
+import { _decorator, Node } from 'cc';
+import { BaseView } from '../../script/BaseView';
+import List from '../../util/list/List';
 const { ccclass, property } = _decorator;
 
 @ccclass('AchieveSelectView')
-export class AchieveSelectView extends Component {
-    start() {
+export class AchieveSelectView extends BaseView {
+    
+    @property(Node)
+    saveBtn: Node = null;
 
-    }
+    @property(List)
+    achieveList: List = null;
 
-    update(deltaTime: number) {
-        
+    protected initUI(): void {
+        this.achieveList.numItems = 5;
     }
 }
 
