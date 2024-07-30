@@ -50,7 +50,7 @@ export class TaskTabItem extends ListItem {
         this.clearTabContent();
         this.updateSelectTabContent();    
         let to_angles = this._showSubItem ? 0 : 180;
-        tween(this.tab_focus).to(0.3, {eulerAngles: v3(0, 0, to_angles)}).start();
+        this.animateRotation(this.tab_focus,to_angles);
     }
 
     initPropsItem(info:TaskTabInfo) {
@@ -61,21 +61,37 @@ export class TaskTabItem extends ListItem {
     }
 
     clearTabContent(){
-        this.sub_scroll.scrollView.getComponent(UITransform).height = 0;
-        this.sub_scroll.scrollView.view.getComponent(UITransform).height = 0;
-        this.node.getComponent(UITransform).height = this._start_height;
+        this.animateHeightChange(this.sub_scroll.scrollView, 0);
+        this.animateHeightChange(this.sub_scroll.scrollView.view, 0);
+        this.animateHeightChange(this.node, this._start_height);
     }
 
     updateSelectTabContent(){
         let to_numItems = this._showSubItem ? this._tab_info.subTabItems.length : 0;
         this.sub_scroll.numItems = to_numItems;
         let calculate_height = to_numItems * sub_item_height;
-        this.sub_scroll.scrollView.getComponent(UITransform).height = calculate_height;
-        this.sub_scroll.scrollView.view.getComponent(UITransform).height = calculate_height;
-        this.node.getComponent(UITransform).height = calculate_height + this._start_height;
+        this.animateHeightChange(this.sub_scroll.scrollView, calculate_height);
+        this.animateHeightChange(this.sub_scroll.scrollView.view, calculate_height);
+        this.animateHeightChange(this.node, calculate_height + this._start_height);
         this.sub_scroll.selectedId = 0;
         this.tab_focus.active = this._tab_info.subTabItems.length > 0;
-        tween(this.tab_focus).to(0.3, {eulerAngles: v3(0, 0, 0)}).start();
+        this.animateRotation(this.tab_focus,0);
+    }
+
+    animateHeightChange(node: any, height: number) {
+        if (node && node.isValid) {
+            tween(node.getComponent(UITransform))
+                .to(0.1, { height: height })
+                .start();
+        }
+    }
+
+    animateRotation(node: Node, toAngles: number) {
+        if (node && node.isValid) {
+            tween(node)
+                .to(0.1, { eulerAngles: v3(0, 0, toAngles) })
+                .start();
+        }
     }
 
     onLoadSubItemVertical(item:Node, idx:number){
