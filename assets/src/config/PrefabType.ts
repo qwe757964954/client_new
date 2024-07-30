@@ -146,6 +146,7 @@ export const PrefabType = {
     ProduceItemView: { path: "map/ProduceItemView", zindex: Hierarchy.POPUPLAYER, tips: "生产物品界面" },
     BuildBuiltView: { path: "map/BuildBuiltView", zindex: Hierarchy.POPUPLAYER, tips: "建筑建造界面" },
     SpeedWordsView: { path: "map/SpeedWordsView", zindex: Hierarchy.POPUPLAYER, tips: "加速单词界面" },
+    CloudConditionView: { path: "map/CloudConditionView", zindex: Hierarchy.POPUPLAYER, tips: "乌云解锁条件界面" },
     /*********************************************地图相关end*************************************************************/
     /*********************************************宠物相关start*************************************************************/
     PetInteractionView: { path: "map/PetInteractionView", zindex: Hierarchy.POPUPLAYER, tips: "宠物交互界面" },
