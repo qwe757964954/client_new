@@ -1,5 +1,5 @@
 import { _decorator, Node } from 'cc';
-import { PrefabType, PrefabTypeEntry } from '../../config/PrefabType';
+import { PrefabType } from '../../config/PrefabType';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { User } from '../../models/User';
 import { BaseView } from '../../script/BaseView';
@@ -46,19 +46,19 @@ export class CollectView extends BaseView {
             this.initViewComponent(PrefabType.AchievementMedalsView, (node) => {
                 this._achievementMedalsView = node.getComponent(AchievementMedalsView);
                 node.active = false;
-            }),
+            },this.content_layout),
             this.initViewComponent(PrefabType.MonsterCardView, (node) => {
                 this._monsterCardView = node.getComponent(MonsterCardView);
                 node.active = false;
-            }),
+            },this.content_layout),
             this.initViewComponent(PrefabType.BuildingAtlasView, (node) => {
                 this._buildAtlasView = node.getComponent(BuildingAtlasView);
                 node.active = false;
-            }),
+            },this.content_layout),
             this.initViewComponent(PrefabType.ClothingIllustratedView, (node) => {
                 this._clothingIllustratedView = node.getComponent(ClothingIllustratedView);
                 node.active = false;
-            }),
+            },this.content_layout),
         ]);
     }
     initTabs(){
@@ -71,7 +71,7 @@ export class CollectView extends BaseView {
             isAlignLeft: true,
             top: 129,
             left: 50
-        })
+        },this.content_layout)
     }
     private onTabSelect(info: TaskTabInfo) {
         this.hideAllContent();
@@ -104,11 +104,6 @@ export class CollectView extends BaseView {
             default:
                 break;
         }
-    }
-
-    private async initViewComponent(prefabType: PrefabTypeEntry, onComponentInit: (node: Node) => void, alignOptions?: object) {
-        let node = await this.loadAndInitPrefab(prefabType, this.content_layout, alignOptions);
-        onComponentInit(node);
     }
 
     protected onInitModuleEvent() {

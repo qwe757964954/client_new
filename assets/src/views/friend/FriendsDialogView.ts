@@ -1,6 +1,6 @@
 import { _decorator, Label, Node, Prefab } from 'cc';
 import { EventType } from '../../config/EventType';
-import { PrefabType, PrefabTypeEntry } from '../../config/PrefabType';
+import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { DataFriendApplyListResponse, DataFriendListResponse, FriendListItemModel, SystemMailItem, SystemMailListResponse, UserFriendData, UserSystemAwardResponse } from '../../models/FriendModel';
@@ -166,11 +166,6 @@ export class FriendsDialogView extends BasePopup {
     private async onUserSystemMailDetail(data:SystemMailItem){
         console.log("onUserSystemMailDetail...",data);
         this._rightPlayerInfo.updateMessageData(data);
-    }
-
-    private async initViewComponent(prefabType: PrefabTypeEntry, onComponentInit: (node: Node) => void, alignOptions?: object,defaultParent:Node = this.node) {
-        let node = await this.loadAndInitPrefab(prefabType, defaultParent, alignOptions);
-        onComponentInit(node);
     }
     hidenAllFriendView(){
         this._fListView.node.active = false;

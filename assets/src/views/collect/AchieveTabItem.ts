@@ -3,8 +3,8 @@ import ListItem from '../../util/list/ListItem';
 import { MonsterCardTabInfo } from './CollectInfo';
 const { ccclass, property } = _decorator;
 
-@ccclass('MonsterTabItem')
-export class MonsterTabItem extends ListItem {
+@ccclass('AchieveTabItem')
+export class AchieveTabItem extends ListItem {
     @property(Label)
     public tab_name: Label = null;
     start() {
