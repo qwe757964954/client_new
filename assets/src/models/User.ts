@@ -13,6 +13,17 @@ export enum LoginType {
     wechat = 4,//微信登录
     token = 5,//token登录
 }
+/**用户服装 */
+export class UserClothes {
+    hair: number = null;//头发
+    jewelry: number = null;//饰品
+    coat: number = null;//上衣
+    pants: number = null;//裤子
+    shoes: number = null;//鞋子
+    wings: number = null;//翅膀
+    hat: number = null;//帽子
+    face: number = null;//脸
+}
 
 // 用户
 class UserModel {
@@ -43,6 +54,7 @@ class UserModel {
     private _ticket: number = 0;      // 奖券
     private _moodScore: number = 0;   // 心情值
     private _itemAry: { [key: number]: number } = {};// 物品列表
+    public userClothes: UserClothes = new UserClothes();
 
     public userID: number;   // 用户id
     public nick: string;     // 昵称
@@ -53,12 +65,14 @@ class UserModel {
     public petID: number = null;     // 宠物id
     public petLevel: number = null;  // 宠物等级
     public petHasReward: boolean = false; // 宠物是否有奖励
+    public gender: number = 1; //性别
 
     public castleLevel: number = 1;    // 城堡等级
 
     private _staminaLimit: number = 0;    // 体力上限
     private _staminaTime: number = 0;     // 体力恢复时间
     private _staminaTimer: number = null;  // 体力恢复定时器
+    private _staminaInterval: number = 180;  // 体力恢复间隔
 
 
     // 测试数据
@@ -76,8 +90,6 @@ class UserModel {
     private _buildingList: number[] = [];// 建筑列表（已有）
     private _landList: number[] = [];// 地块列表（已有）
 
-    public item_list: ItemData[] = []; 
-
     private constructor() {
     }
 
@@ -94,6 +106,7 @@ class UserModel {
         this.petLevel = null;
         this.petHasReward = false;
         this._itemAry = [];
+        this.userClothes = new UserClothes();
         this._buildingList = [];
         this._landList = [];
         this._staminaLimit = 0;
@@ -107,6 +120,13 @@ class UserModel {
     get account(): string {
         return this._account;
     }
+
+
+    public get itemAry(): { [key: number]: number } {
+        return this._itemAry;
+    }
+
+
     set password(password: string) {
         this._password = password;
     }
@@ -202,6 +222,9 @@ class UserModel {
     }
     get staminaLimit(): number {
         return this._staminaLimit;
+    }
+    get staminaInterval(): number {
+        return this._staminaInterval;
     }
 
     public addBuilding(id: number) {

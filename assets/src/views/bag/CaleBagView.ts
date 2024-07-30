@@ -14,10 +14,16 @@ export class CaleBagView extends BaseView {
     @property(Label)
     public cale_text: Label = null;
 
-    private _can_cale:boolean = true;
+    private _max_value:number = 1;
+
+    private _selectListener:(num:number)=>void = null;
 
     protected initUI(): void {
         
+    }
+
+    setSelectListener(listener:(num:number)=>void){
+        this._selectListener = listener;
     }
 
     protected initEvent(): void {
@@ -27,33 +33,31 @@ export class CaleBagView extends BaseView {
 
     reduceClickEvent(){
         console.log("reduceClickEvent");
-        if(!this._can_cale){
-            return;
-        }
         let num = parseInt(this.cale_text.string);
-        if(num > 0){
+        if(num > 1){
             num--;
             this.cale_text.string = num.toString();
         }
-        
+        this._selectListener?.(this.getCaleNumber());
     }
 
     addClickEvent(){
         console.log("addClickEvent");
-        if(!this._can_cale){
-            return;
-        }
         let num = parseInt(this.cale_text.string);
         num++;
+        if(num >= this._max_value){
+            num = this._max_value;
+        }
         this.cale_text.string = num.toString();
+        this._selectListener?.(this.getCaleNumber());
     }
 
     getCaleNumber(){
         return parseInt(this.cale_text.string);
     }
 
-    disableCale(){
-        this._can_cale = false;
+    setCaleMax(max:number){
+        this._max_value = max;
     }
 }
 

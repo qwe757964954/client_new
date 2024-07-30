@@ -72,6 +72,7 @@ export interface TabItemDataInfo {
 export interface TaskTabInfo {
   id: TaskTabIds;
   title: string;
+  red_point?: boolean;
   subTabItems?: TabItemDataInfo[];
 }
 

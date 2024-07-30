@@ -13,8 +13,8 @@ export class BaseDataPacket {
 }
 /**基础返回接口类 */
 export class BaseRepPacket {
-    code: number;//返回码
-    msg: string;//返回信息
+    code?: number;//返回码
+    msg?: string;//返回信息
     // command_id?: number;
     // seq?: number;
 }
@@ -38,6 +38,7 @@ export class s2cAccountLoginDetailExtra {
     role_id: number;//角色id
     level: number;//等级
     exp: number;//经验
+    gender: number;//性别
     nick_name: string;//昵称
     avatar: string;//头像
     phone: string;//手机号

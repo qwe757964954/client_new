@@ -60,8 +60,8 @@ export class TopAmoutView extends BaseView {
             let amountItem: Node = this.amountScroll.getItemByListId(index);
             if (amountItem) {
                 let amountItemScript: AmoutItem = amountItem.getComponent(AmoutItem);
-                if (amountItemScript.amount_info.type === type) {
-                    amountItemScript.updateAmout(newValue);
+                if (amountItemScript.amountInfo.type === type) {
+                    amountItemScript.updateAmount(newValue);
                 }
             } else {
                 console.warn(`No amount item found at index ${index}`);

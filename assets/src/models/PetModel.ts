@@ -36,6 +36,7 @@ export class PetModel extends RoleBaseModel {
                 this.role.setAnimation(0, 'idle', true);
                 resolve(true);
             })
+            console.log("this.role........",this.role);
             this.role.setAnimation(0, 'skill', false);
         });
     }

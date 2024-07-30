@@ -70,6 +70,9 @@ export const InterfacePath = {
     Article_ExercisesList: "3119", //文章题目列表
     GradeSkip_ExercisesList: "3120", //大冒险跳级题目列表
     GradeSkip_ExercisesSubmit: "3121", //跳级题目提交
+    Search_Word: "3300",//查询单词
+    More_Word_Detail: "3301",//单词更多详情消息
+    Total_Collect_Word: "3302", //总词收藏与取消收藏单词
 
     /***********************************************选择词书 begin*********************************************/
     Classification_BookStatus: "3011", //我的词书-列表
@@ -161,5 +164,12 @@ export const InterfacePath = {
     Classification_BreakdownBackpackItems: "1401", //背包物品分解
     Classification_BackpackItemSynthesis: "1402", //背包物品合成
     /***********************************************背包相关 end*********************************************/
+
+    /***********************************************运营活动相关start*********************************************/
+    Classification_GetActivityInfo: "1411", //获取运营活动信息
+    Classification_SignRewardDraw: "1412", //签到奖励领取
+    Classification_WeekendCarouselDraw: "1413", //周末大转盘抽奖
+    /***********************************************运营活动相关 end*********************************************/
+
     /************************************socket消息类型end*********************************************/
 }

@@ -151,12 +151,32 @@ export class c2sAdventureWord {
     w_id: string;
 }
 
+//查询单词
+export class c2sSearchWord {
+    command_id: string = InterfacePath.Search_Word;
+    word: string;
+}
+
+//总词收藏与取消收藏单词
+export class c2sTotalCollectWord {
+    command_id: string = InterfacePath.Total_Collect_Word;
+    word: string;
+    status: number;
+}
+
+//单词更多详情消息
+export class c2sMoreWordDetail {
+    command_id: string = InterfacePath.More_Word_Detail;
+    word: string;
+}
+
+
 export class WordsDetailData extends BaseRepPacket {
-    w_id: string; //单词id
+    w_id?: string; //单词id
     word: string;
     cn: string; //单词释义
     c_id?: string;
-    collect_flag: number;
+    collect_flag?: number;
     symbol: string;    //音标
     symbolus: string;  //美式音标
     syllable: string;  //音素拆分
@@ -166,10 +186,10 @@ export class WordsDetailData extends BaseRepPacket {
     etyma: string;      //词根
     ancillary: string;  //助记
     speech: string;
-    sentence_list: SentenceData[];
-    similar_list: { word: string, cn: string }[];
-    variant: any;
-    structure: any;
+    sentence_list?: SentenceData[];
+    similar_list?: { word: string, cn: string }[];
+    variant?: any;
+    structure?: any;
 }
 
 //大冒险结果提交
@@ -475,3 +495,4 @@ export class c2sGradeSkipExercisesSubmit {
 export class GradeSkipExercisesSubmitReply extends BaseRepPacket {
     small_id_list: number[];
 }
+

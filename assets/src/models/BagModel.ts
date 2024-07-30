@@ -11,6 +11,5 @@ export class c2sBreakdownBackpackItems{
 export class c2sBackpackItemSynthesis{
     command_id: string = InterfacePath.Classification_BackpackItemSynthesis;
     id:number;
-    num:number;
 }
 

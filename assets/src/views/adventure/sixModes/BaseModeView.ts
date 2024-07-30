@@ -348,7 +348,7 @@ export class BaseModeView extends BaseView {
             sp.scale = new Vec3(-scale.x * 0.4, scale.y * 0.4, 1);
             // sp.setPosition(sp.getPosition().x, sp.getPosition().y - 20)
             let monsterModel = this._monster.getComponent(MonsterModel);
-            monsterModel.init(FileUtil.removeFileExtension(EducationDataInfos[12].monster), true);
+            monsterModel.init(FileUtil.removeFileExtension(EducationDataInfos[0].monster), true);
             if (this.gameMode == GameMode.Exam) {
                 this.monster.getComponent(UIOpacity).opacity = 125;
             }
@@ -366,7 +366,7 @@ export class BaseModeView extends BaseView {
             let scale = this._monster.getScale();
             this._monster.scale = new Vec3(-scale.x * 0.4, scale.y * 0.4, 1);
             let monsterModel = this._monster.getComponent(MonsterModel);
-            monsterModel.init(FileUtil.removeFileExtension(EducationDataInfos[12].monster), true);
+            monsterModel.init(FileUtil.removeFileExtension(EducationDataInfos[0].monster), true);
             monsterModel.setHp(this._rightNum, this._levelData.wordCount);
             CCUtil.setNodeCamera2DUI(this._monster);
         }
@@ -552,7 +552,7 @@ export class BaseModeView extends BaseView {
             callback?.();
             return;
         }
-        let resConf = { bundle: GameBundle.NORMAL, path: EducationDataInfos[11].monster_effect }
+        let resConf = { bundle: GameBundle.NORMAL, path: EducationDataInfos[0].monster_effect }
         let spinePrams: inf_SpineAniCreate = {
             resConf: resConf,
             aniName: "attack",
@@ -654,11 +654,12 @@ export class BaseModeView extends BaseView {
         }
         console.log("获取单词详情", data);
         this._detailData = data;
+        this.setCollect(this._detailData.collect_flag === 1);
     }
 
     protected onCollectWord(data: any) {
         console.log("onCollectWord", data);
-        this.setCollect(this._rightWordData.collect == 1 ? true : false);
+        this.setCollect(this._rightWordData.collect === 1);
     }
 
     protected onAdventureCollectWord(data: any) {
@@ -666,7 +667,7 @@ export class BaseModeView extends BaseView {
             ViewsManager.showTip(data.msg);
             return;
         }
-        this.setCollect(this._rightWordData.collect == 1 ? true : false);
+        this.setCollect(this._rightWordData.collect === 1);
     }
 
     protected initEvent(): void {

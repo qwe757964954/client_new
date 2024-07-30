@@ -33,13 +33,11 @@ export class TextbookChallengeView extends BaseView {
     @property(Node)
     public content_layout:Node = null;          // 内容
 
-    private unitArr:any[] = [];
     private _unitDetailView:RightUnitView = null;
     private _bottomView:ChallengeBottomView = null;
 
     private _bookData:CurrentBookStatus = null;
     private _unitListArr:UnitListItemStatus = null;
-    private _currentUnitIndex:number = 0;
     private _planData:BookPlanDetail = null;
     // EventMgr.dispatch(NetNotify.Classification_UnitListStatus,dataArr);
     start() {

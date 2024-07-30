@@ -81,9 +81,7 @@ export const EventType = {
 
     /**查找单词相关事件 */
     Search_Word: "SearchWord", //查找单词
-    Search_Word_Item: "SearchWordItem", //查找某个单词项
-    Search_Word_Del_OneWord: "DelOneSearchWord",//删除某个查找项
-    Search_Word_Edt_Began: "editing-did-began", //输入框编辑开始
+    Search_Collect_Work: "Search_Collect_Work",//单词查询，收藏单词
 
     /**学习计划相关事件 */
     StudyRecord_MonthPrice: "Account_MonthPrize", //每个月的得分情况
@@ -141,6 +139,11 @@ export const EventType = {
 
     Friend_Talk_Event: "Friend_Talk_Event",
     Show_TextBook_Monster: "Show_TextBook_Monster",
+
+    Bag_Composite_Event: "Bag_Composite_Event",
+    Bag_Breakdown_Event: "Bag_Breakdown_Event",
+
+    Item_Props_Refresh: "Item_Props_Refresh",
 }
 
 export function itemEventKey(id: ItemID) {

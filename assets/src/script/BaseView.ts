@@ -9,29 +9,29 @@
  */
 
 import { Component, Node, Prefab, Widget, instantiate, view } from "cc";
-import { PrefabTypeEntry } from "../config/PrefabType";
 import GlobalConfig from "../GlobalConfig";
+import { PrefabTypeEntry } from "../config/PrefabType";
 import { ResLoader } from "../manager/ResLoader";
 import { ViewsManager } from "../manager/ViewsManager";
 import CCUtil from "../util/CCUtil";
 import { EventMgr } from "../util/EventManager";
 import { ToolUtil } from "../util/ToolUtil";
 import { NavTitleView } from "../views/common/NavTitleView";
-export class BaseView extends Component{
+export class BaseView extends Component {
 	protected _className = "BaseView";
-    /**子类继承的onload函数 */
+	/**子类继承的onload函数 */
 	private extent_onLoad = null;
 	/**子类继承的销毁函数 */
 	private extent_onDestroy = null;
 	protected _Eventlistener = {};
 	protected _schedulerHandler = {};
 	protected _schedulerHandlerOnce = {};
-	protected _navTitleView:NavTitleView = null;
+	protected _navTitleView: NavTitleView = null;
 	//实例化
 	constructor(name: string) {
-        super();
-		this._className = name ? name: this._className;
-		console.log(`${this._className}初始化...`)
+		super();
+		this._className = name ? name : this._className;
+		console.log(`${this.name}初始化...`)
 		/**重载onLoad */
 		this.extent_onLoad = this.onLoad;
 		this.onLoad = function () {
@@ -46,46 +46,46 @@ export class BaseView extends Component{
 			this.extent_onDestroy()
 		}
 	};
-    /**
-     * 在onload之前调用
-     */
-    private onLoadBefore() {
-        this.removeAllModelListener();
-        this.onInitModuleEvent();
-    }
-    onLoad() {
+	/**
+	 * 在onload之前调用
+	 */
+	private onLoadBefore() {
+		this.removeAllModelListener();
+		this.onInitModuleEvent();
+	}
+	onLoad() {
 		// this.onLoadBefore()
 	}
 	start() {
 		this.initUI();
-        this.initEvent();
-		
+		this.initEvent();
+
 	}
 
 	viewAdaptScreen() {
 		let scale = ToolUtil.getValue(GlobalConfig.WIN_DESIGN_RATE, 0.1, 1.0);
-        CCUtil.setNodeScale(this.node, scale);
+		CCUtil.setNodeScale(this.node, scale);
 	}
-	
+
 	viewAdaptSize() {
 		let realSize = view.getVisibleSize();
-        var minscale = 1;
-        var maxscale = 1;
-		minscale =  Number(Math.min(realSize.height / 1000, realSize.width / 1778).toFixed(3));
-        maxscale =  Number(Math.max(realSize.height / 1000, realSize.width / 1778).toFixed(3));
+		var minscale = 1;
+		var maxscale = 1;
+		minscale = Number(Math.min(realSize.height / 1000, realSize.width / 1778).toFixed(3));
+		maxscale = Number(Math.max(realSize.height / 1000, realSize.width / 1778).toFixed(3));
 		var scaleNum = this.node.getScale();
-        this.node.setScale(scaleNum.x * minscale, scaleNum.y * minscale, scaleNum.z * minscale);
+		this.node.setScale(scaleNum.x * minscale, scaleNum.y * minscale, scaleNum.z * minscale);
 	}
 
-	protected initUI(){
+	protected initUI() {
 
-    }
-	protected initEvent(){
+	}
+	protected initEvent() {
 
-    }
-    protected removeEvent(){
-        
-    }
+	}
+	protected removeEvent() {
+
+	}
 	/**override 定时器的回调更新，子类需重写该方法 */
 	protected onSchedulerUpdate(dt?: number) {
 
@@ -95,10 +95,10 @@ export class BaseView extends Component{
 
 	}
 	protected addModelListeners(listeners: [string, (data: any) => void][]): void {
-        for (const [path, handler] of listeners) {
-            this.addModelListener(path, handler.bind(this));
-        }
-    }
+		for (const [path, handler] of listeners) {
+			this.addModelListener(path, handler.bind(this));
+		}
+	}
 	/**
 	 * 添加事件绑定
 	 * @param name 事件名称
@@ -109,7 +109,7 @@ export class BaseView extends Component{
 		this._Eventlistener[name] = name
 		EventMgr.addListener(name, callback, this)
 	}
-    /**
+	/**
 	 * 发送事件
 	 * @param name 事件名称
 	 * @param callback 回调函数
@@ -148,35 +148,35 @@ export class BaseView extends Component{
 		this.removeAllModelListener()
 	}
 
-    //销毁
+	//销毁
 	onDestroy() {
 		this.onDestroyBefore()
 		this.removeEvent();
 	};
-	protected async createNavigation(title: string, top_layout: Node,onBack: () => void) {
-        this._navTitleView = await ViewsManager.addNavigation(top_layout, 0, 0);
-        this._navTitleView.updateNavigationProps(title, onBack);
-    }
+	protected async createNavigation(title: string, top_layout: Node, onBack: () => void) {
+		this._navTitleView = await ViewsManager.addNavigation(top_layout, 0, 0);
+		this._navTitleView.updateNavigationProps(title, onBack);
+	}
 
 
 	/**从prefab加载预制体 */
 	protected async loadAndInitPrefab(prefabType: PrefabTypeEntry, parentNode: Node, widgetOptions?: Partial<Widget>): Promise<Node> {
-        try {
-            const prefab = await ResLoader.instance.loadAsyncPromise<Prefab>("resources", `prefab/${prefabType.path}`, Prefab) as Prefab;
-            const node = instantiate(prefab);
-            parentNode.addChild(node);
+		try {
+			const prefab = await ResLoader.instance.loadAsyncPromise<Prefab>("resources", `prefab/${prefabType.path}`, Prefab) as Prefab;
+			const node = instantiate(prefab);
+			parentNode.addChild(node);
 
-            let widgetCom = node.getComponent(Widget);
-            if (widgetOptions) {
-                widgetCom = widgetCom || node.addComponent(Widget);
-                Object.assign(widgetCom, widgetOptions);
-                widgetCom.updateAlignment();
-            }
-            return node
-        } catch (err) {
-            console.error(`Failed to load component from ${prefabType.path}:`, err);
-            throw err;
-        }
-    }
+			let widgetCom = node.getComponent(Widget);
+			if (widgetOptions) {
+				widgetCom = widgetCom || node.addComponent(Widget);
+				Object.assign(widgetCom, widgetOptions);
+				widgetCom.updateAlignment();
+			}
+			return node
+		} catch (err) {
+			console.error(`Failed to load component from ${prefabType.path}:`, err);
+			throw err;
+		}
+	}
 }
 

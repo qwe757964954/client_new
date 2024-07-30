@@ -1578,7 +1578,7 @@
     },
     "component": "",
     "_componentId": "e73241vHNpNHIM6vYqPPZTO",
-    "handler": "",
+    "handler": "onPropsGridSelected",
     "customEventData": ""
   },
   {

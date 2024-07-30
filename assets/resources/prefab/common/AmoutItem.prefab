@@ -125,7 +125,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "word_0025_status_bg",
+    "_name": "bg",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -809,7 +809,7 @@
     "selectedFlag2": null,
     "selectedSpriteFrame": null,
     "adaptiveSize": false,
-    "amout_text": {
+    "amoutText": {
       "__id__": 18
     },
     "aliveIcon": {
@@ -817,6 +817,9 @@
     },
     "addIcon": {
       "__id__": 9
+    },
+    "bg": {
+      "__id__": 3
     },
     "_id": ""
   },

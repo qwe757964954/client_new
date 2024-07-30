@@ -18,6 +18,10 @@ export class ProduceQueueItem extends Component {
     public imgAdd: Node = null;//加号
     @property(Node)
     public btnSpeed: Node = null;//加速
+    @property(Node)
+    public plTime: Node = null;//时间层
+    @property(Node)
+    public btnGet: Node = null;//领取
 
     private _time: number = null;//时间
     private _buildingID: number = 0;//建筑唯一索引id
@@ -35,16 +39,20 @@ export class ProduceQueueItem extends Component {
     /**初始化事件 */
     initEvent() {
         CCUtil.onTouch(this.node, this.onClick, this);
+        CCUtil.onTouch(this.btnGet, this.onGetClick, this);
         CCUtil.onTouch(this.btnSpeed, this.onSpeedClick, this);
     }
     /**移除事件 */
     removeEvent() {
         CCUtil.offTouch(this.node, this.onClick, this);
+        CCUtil.offTouch(this.btnGet, this.onGetClick, this);
         CCUtil.offTouch(this.btnSpeed, this.onSpeedClick, this);
     }
     /**初始化 */
     init(time: number, pngPath?: string, buildingID?: number, product_num?: number, res_time?: number) {
+        this.plTime.active = false;
         this.btnSpeed.active = false;
+        this.btnGet.active = false;
         this.clearTimer();
         if (null == pngPath) {
             this._time = null;
@@ -76,7 +84,8 @@ export class ProduceQueueItem extends Component {
     updateBySec() {
         let now = ToolUtil.now();
         if (this._time <= now) {
-            this.label.string = "可以领取";//TODO
+            this.btnGet.active = true;
+            this.plTime.active = false;
             this.btnSpeed.active = false;
             this.clearTimer();
             return;
@@ -85,9 +94,13 @@ export class ProduceQueueItem extends Component {
         // this.label.string = ToolUtil.getSecFormatStr(left);
         if (left <= this._res_time) {
             this.label.string = ToolUtil.getSecFormatStr(left);
+            this.btnGet.active = false;
+            this.plTime.active = true;
             this.btnSpeed.active = true;
         } else {
             this.label.string = "等待生产";//TODO
+            this.btnGet.active = false;
+            this.plTime.active = true;
             this.btnSpeed.active = false;
         }
     }
@@ -118,5 +131,17 @@ export class ProduceQueueItem extends Component {
         ViewsMgr.showConfirm(TextConfig.Speed_Words_Tip3, () => {
             ServiceMgr.buildingService.reqSpeedWordsGet(this._buildingID, this._product_num);
         });
+    }
+    /**领取点击事件 */
+    onGetClick() {
+        if (null == this._time) {
+            return;
+        }
+        let now = ToolUtil.now();
+        let left = this._time - now;
+        if (left > 0) {
+            return;
+        }
+        ServiceMgr.buildingService.reqBuildingProduceGet(this._buildingID);
     }
 }

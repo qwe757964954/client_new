@@ -7,7 +7,7 @@ export class MainBaseCtl {
     protected _mainScene: MainScene;//主场景
     constructor(mainScene: MainScene, callBack?: Function) {
         this._mainScene = mainScene;
-
+        console.log(this.constructor.name + " constructor");
         if (callBack) callBack();
     }
     // 摄像机缩放

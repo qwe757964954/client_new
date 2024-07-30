@@ -101,8 +101,6 @@ export const PrefabType = {
     BreakThroughView: { path: "textbook/BreakThroughView", zindex: Hierarchy.POPUPLAYER, tips: "单词大冒险挑战模块" },
     BreakThroughRemindView: { path: "textbook/BreakThroughRemindView", componentName: "BreakThroughRemindView", zindex: Hierarchy.POPUPLAYER, tips: "二级确认弹窗" },
     ChallengeRemindView: { path: "textbook/ChallengeRemindView", componentName: "ChallengeRemindView", zindex: Hierarchy.POPUPLAYER, tips: "首次故事背景引导" },
-    SearchWorldView: { path: "textbook/SearchWordView", zindex: Hierarchy.POPUPLAYER, tips: "查找单词弹窗" },
-    WordSearchView: { path: "textbook/WordSearchView", zindex: Hierarchy.POPUPLAYER, tips: "查找单词详情弹窗" },
     WordCheckView: { path: "textbook/WordCheckView", zindex: Hierarchy.POPUPLAYER, tips: "单词列表" },
     /*********************************************教材单词相关end*************************************************************/
     /*********************************************商城相关start***********************************************************/
@@ -149,6 +147,7 @@ export const PrefabType = {
     ProduceItemView: { path: "map/ProduceItemView", zindex: Hierarchy.POPUPLAYER, tips: "生产物品界面" },
     BuildBuiltView: { path: "map/BuildBuiltView", zindex: Hierarchy.POPUPLAYER, tips: "建筑建造界面" },
     SpeedWordsView: { path: "map/SpeedWordsView", zindex: Hierarchy.POPUPLAYER, tips: "加速单词界面" },
+    CloudConditionView: { path: "map/CloudConditionView", zindex: Hierarchy.POPUPLAYER, tips: "乌云解锁条件界面" },
     /*********************************************地图相关end*************************************************************/
     /*********************************************宠物相关start*************************************************************/
     PetInteractionView: { path: "map/PetInteractionView", zindex: Hierarchy.POPUPLAYER, tips: "宠物交互界面" },
@@ -178,6 +177,7 @@ export const PrefabType = {
     ReviewWordListView: { path: "reviewPlan/ReviewWordListView", zindex: Hierarchy.POPUPLAYER, tips: "复习单词列表" },
     ReviewEndView: { path: "reviewPlan/ReviewEndView", zindex: Hierarchy.POPUPLAYER, tips: "复习结束" },
     ReviewRewardView: { path: "reviewPlan/ReviewRewardView", zindex: Hierarchy.POPUPLAYER, tips: "复习抽奖奖励" },
+    ReviewPlanRuleView: { path: "reviewPlan/ReviewPlanRuleView", zindex: Hierarchy.POPUPLAYER, tips: "复习规则" },
     /*********************************************复习规划end***********************************************************/
     /*********************************************社交 start***********************************************************/
     FriendsDialogView: { path: "social/FriendsDialogView", componentName: "FriendsDialogView", zindex: Hierarchy.POPUPLAYER, tips: "好友界面" },
@@ -209,7 +209,6 @@ export const PrefabType = {
     DailyTaskView: { path: "task/DailyTaskView", zindex: Hierarchy.POPUPLAYER, tips: "每日任务界面" },
     TaskAchievementView: { path: "task/TaskAchievementView", zindex: Hierarchy.POPUPLAYER, tips: "每周任务界面" },
     TaskTabView: { path: "task/TaskTabView", zindex: Hierarchy.POPUPLAYER, tips: "每周任务界面" },
-    CongratulationsView: { path: "task/CongratulationsView", componentName: "CongratulationsView", zindex: Hierarchy.POPUPLAYER, tips: "任务奖励界面" },
     /*********************************************每周任务 End*************************************************************/
 
     MainNotifyView: { path: "map/MainNotifyView", componentName: "MainNotifyView", zindex: Hierarchy.POPUPLAYER, tips: "任务奖励界面" },
@@ -217,6 +216,7 @@ export const PrefabType = {
     /*********************************************收集 start***********************************************************/
     CollectView: { path: "collect/CollectView", zindex: Hierarchy.POPUPLAYER, tips: "成就徽章" },
     AchievementMedalsView: { path: "collect/AchievementMedalsView", zindex: Hierarchy.POPUPLAYER, tips: "成就徽章" },
+    AchieveSelectView: { path: "collect/AchieveSelectView", zindex: Hierarchy.POPUPLAYER, tips: "徽章选择" },
     MonsterCardView: { path: "collect/MonsterCardView", zindex: Hierarchy.POPUPLAYER, tips: "单词怪兽卡" },
     BuildingAtlasView: { path: "collect/BuildingAtlasView", zindex: Hierarchy.POPUPLAYER, tips: "建筑图鉴" },
     ClothingIllustratedView: { path: "collect/ClothingIllustratedView", zindex: Hierarchy.POPUPLAYER, tips: "服装图鉴" },
@@ -227,6 +227,7 @@ export const PrefabType = {
     VocabularyRankingView: { path: "rank/VocabularyRankingView", zindex: Hierarchy.POPUPLAYER, tips: "词汇量排名" },
     KingdomRankingView: { path: "rank/KingdomRankingView", zindex: Hierarchy.POPUPLAYER, tips: "王国分排名" },
     CombatPowerRankingView: { path: "rank/CombatPowerRankingView", zindex: Hierarchy.POPUPLAYER, tips: "战力排名" },
+    MyRank: { path: "rank/MyRank", zindex: Hierarchy.POPUPLAYER, tips: "我的排名" },
     /*********************************************排行 end***********************************************************/
 
     /*********************************************活动 start***********************************************************/
@@ -235,4 +236,11 @@ export const PrefabType = {
     WeekendCarouselView: { path: "activities/WeekendCarouselView", zindex: Hierarchy.POPUPLAYER, tips: "周末转盘" },
     Carouseltem: { path: "activities/Carouseltem", zindex: Hierarchy.POPUPLAYER, tips: "转盘元素" },
     /*********************************************活动 end***********************************************************/
+
+    /*********************************************myword start***********************************************************/
+    WordSearchView: { path: "myword/WordSearchView", zindex: Hierarchy.POPUPLAYER, tips: "查找单词详情弹窗" },
+    SearchWorldView: { path: "myword/SearchWordView", zindex: Hierarchy.POPUPLAYER, tips: "查找单词弹窗" },
+    WordPanel: { path: "myword/WordPanel", zindex: Hierarchy.POPUPLAYER, tips: "单词弹窗" },
+    /*********************************************myword End*************************************************************/
+
 }

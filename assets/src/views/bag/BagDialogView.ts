@@ -1,19 +1,23 @@
-import { _decorator, Color, instantiate, isValid, Layers, Node, Prefab, UITransform, v3 } from 'cc';
+import { _decorator, instantiate, isValid, Layers, Node, Prefab, UITransform, v3 } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
+import { ItemID } from '../../export/ItemConfig';
 import { ItemData } from '../../manager/DataMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
 import { User } from '../../models/User';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
+import { BagServer } from '../../service/BagService';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
 import { NodeUtil } from '../../util/NodeUtil';
 import { RewardItem } from '../common/RewardItem';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
+import { TKConfig } from '../task/TaskConfig';
+import { BagConfig } from './BagConfig';
 import { BagDressItem } from './BagDressItem';
-import { BagGressItems, BagOperationData, BagOperationIds, BagOperationNames, BagTabNames } from './BagInfo';
+import { BackpackItemInfo, BagGressItems, BagItemType, BagOperationData, BagOperationIds, BagTabIds, BagTabNames } from './BagInfo';
 import { BagOperrationItem } from './BagOperrationItem';
 import { BagTabItem } from './BagTabItem';
 import { BreakdownView } from './BreakdownView';
@@ -51,17 +55,40 @@ export class BagDialogView extends BaseView {
 
     private _role: Node = null;
 
+    private _propsDatas:ItemData[] = [];
+    private _opDatas:BagOperationData[] = [];
+    private _selectedItem:ItemData = null;
+
+    private _compositeInfo:BackpackItemInfo = null;
+    private _breakdownInfo:ItemData = null;
+    private _tabSelected:number = 0;
     initEvent() {
         CCUtil.onBtnClick(this.btn_close, this.onCloseView.bind(this));
     }
     protected onInitModuleEvent() {
         this.addModelListeners([
             [EventType.Bag_PropList, this.onPropList.bind(this)],
+            [EventType.Bag_Composite_Event,this.onCompositeRequest.bind(this)],
+            [EventType.Bag_Breakdown_Event,this.onBreakdownRequest.bind(this)],
+            [EventType.Item_Props_Refresh,this.onItemPropsRefresh.bind(this)],
             [NetNotify.Classification_BreakdownBackpackItems, this.onBreakdownBackpackItems.bind(this)],
             [NetNotify.Classification_BackpackItemSynthesis, this.onBackpackItemSynthesis.bind(this)],
         ]);
     }
-    initUI() {
+    onCompositeRequest(itemInfo:BackpackItemInfo){
+        this._compositeInfo = itemInfo;
+        BagServer.reqBackpackItemSynthesis(this._compositeInfo);
+    }
+    onBreakdownRequest(item:ItemData){
+        this._breakdownInfo = item;
+        BagServer.reqBreakdownBackpackItems(this._breakdownInfo);
+    }
+    onItemPropsRefresh(data:any){
+        this.tabList.selectedId = -1;
+        this.tabList.selectedId = this._tabSelected;
+    }
+    async initUI() {
+        await BagConfig.loadBagConfigInfo();
         this.viewAdaptSize();
         this.initAmout();
         //显示角色动画
@@ -69,9 +96,6 @@ export class BagDialogView extends BaseView {
         this.tabList.numItems = BagTabNames.length;
         this.tabList.selectedId = 0;
         this.dress_list.numItems = BagGressItems.length;
-        this.propList.numItems = User.item_list.length;
-        this.op_list.numItems = BagOperationNames.length;
-        this.op_list.selectedId = 0;
     }
 
     onPropList(propDatas: ItemData[]) {
@@ -80,8 +104,32 @@ export class BagDialogView extends BaseView {
 
     onBreakdownBackpackItems(data:any){
         console.log("onBreakdownBackpackItems", data);
+        // toast("你成功把xx个xx分解了，获得xx个xx")
+        let item_info = BagConfig.findItemInfo(this._breakdownInfo);
+        const datas = BagConfig.findBreakdownItems(this._breakdownInfo);
+        let decompose_items = TKConfig.convertRewardData(datas);
+        let tip_msg = `你成功把${this._breakdownInfo.num}个${item_info.name}分解了，获得`;
+        decompose_items.forEach((itemData, index) => {
+            let item_info = BagConfig.findItemInfo(itemData);
+            let item_quantity = itemData.num * this._breakdownInfo.num;
+            tip_msg += `${item_quantity}个${item_info.name}`;
+            
+            // Add a comma separator for all items except the last one
+            if (index < decompose_items.length - 1) {
+                tip_msg += '，';
+            }
+        });
+        ViewsManager.showTip(tip_msg);
+        console.log("onBreakdownBackpackItems", datas);
+
     }
     onBackpackItemSynthesis(data:any){
+        const datas = BagConfig.findMergeItems(this._compositeInfo);
+        let merge_items = TKConfig.convertRewardData(datas);
+        merge_items= merge_items.filter(item => item.id !== ItemID.coin);
+        let item_info = BagConfig.findItemInfo(merge_items[0]);
+        let tip_msg = `你成功把${merge_items[0].num}个${item_info.name}合成了${this._compositeInfo.name}`;
+        ViewsManager.showTip(tip_msg);
         console.log("onBackpackItemSynthesis", data);
     }
 
@@ -117,15 +165,21 @@ export class BagDialogView extends BaseView {
         let scale = 125 / node_trans.height;
         item.setScale(scale, scale, scale)
         let data:ItemData = {
-            id: User.item_list[idx].id,
-            num: User.item_list[idx].num,
+            id: this._propsDatas[idx].id,
+            num: this._propsDatas[idx].num,
         }
         itemScript.init(data);
     }
 
     onPropsGridSelected(item: any, selectedId: number, lastSelectedId: number, val: number) {
         if(!isValid(selectedId) || selectedId < 0 || !isValid(item)){return;}
-        console.log("onPropsGridSelected",selectedId);
+        this.onPropsSelected(this._propsDatas[selectedId]);
+    }
+
+    onPropsSelected(selData:ItemData){
+        this._selectedItem = selData;
+        this._opDatas = BagConfig.getItemCanOperations(selData);
+        this.op_list.numItems = this._opDatas.length;
     }
 
     onLoadDressGrid(item:Node, idx:number){
@@ -141,6 +195,7 @@ export class BagDialogView extends BaseView {
         // item_script.tab_name.color = new Color("#FFFFFF");
     }
 
+    
 
     onLoadTabHorizontal(item:Node, idx:number){
         let item_script = item.getComponent(BagTabItem);
@@ -150,29 +205,41 @@ export class BagDialogView extends BaseView {
     onTabHorizontalSelected(item: any, selectedId: number, lastSelectedId: number, val: number) {
         if(!isValid(selectedId) || selectedId < 0 || !isValid(item)){return;}
         console.log("onTabHorizontalSelected",selectedId);
-        this.clearAllTabLabelColors();
-        let item_script = item.getComponent(BagTabItem);
-        item_script.tab_name.color = new Color("#FFFFFF");
+        this._tabSelected = selectedId;
+        this.selectTabInfo(BagTabNames[selectedId]);
     }
-
-    clearAllTabLabelColors() {
-        for (let index = 0; index < this.tabList.numItems; index++) {
-            const item = this.tabList.getItemByListId(index);
-            let item_script = item.getComponent(BagTabItem);
-            item_script.tab_name.color = new Color("#CAC4B7");
-            
+    selectTabInfo(tabInfo:any){
+        let arrayData = BagConfig.convertItemArrayData(User.itemAry);
+        const filteredBackpackItems = BagConfig.filterBagItems(arrayData);
+        switch (tabInfo.id) {
+            case BagTabIds.All:
+                this._propsDatas = filteredBackpackItems;
+                break;
+            case BagTabIds.DressUp:
+                this._propsDatas = BagConfig.filterItemsByType(filteredBackpackItems,BagItemType.Costume);
+                break;
+            case BagTabIds.Consumables:
+                this._propsDatas = BagConfig.filterItemsByType(filteredBackpackItems,BagItemType.Consumable);
+                break;
+            case BagTabIds.Others:
+                this._propsDatas = BagConfig.filterItemsByType(filteredBackpackItems,BagItemType.Other);
+                break;
+            default:
+                break;
         }
+        this.propList.numItems = this._propsDatas.length;
+        this.propList.selectedId = 0;
     }
 
     onOperationHorizontal(item:Node, idx:number){
         let item_script = item.getComponent(BagOperrationItem);
-        item_script.updateOperationProps(BagOperationNames[idx]);
+        item_script.updateOperationProps(this._opDatas[idx]);
     }
 
     onOperationHorizontalSelected(item: any, selectedId: number, lastSelectedId: number, val: number) {
         if(!isValid(selectedId) || selectedId < 0 || !isValid(item)){return;}
         console.log("onTabHorizontalSelected",selectedId);
-        this.onOperationClick(BagOperationNames[selectedId]);
+        this.onOperationClick(this._opDatas[selectedId]);
     }
 
     onOperationClick(data:BagOperationData){
@@ -197,11 +264,13 @@ export class BagDialogView extends BaseView {
         console.log("onDisassemble��解");
         let node = await ViewsManager.instance.showPopup(PrefabType.BreakdownView);
         let nodeScript = node.getComponent(BreakdownView)
+        nodeScript.updateBreakDownItem(this._selectedItem);
     }
     async onComposite(){
         console.log("onComposite....");
         let node = await ViewsManager.instance.showPopup(PrefabType.CompositeBagView);
-        let nodeScript = node.getComponent(CompositeBagView)
+        let nodeScript = node.getComponent(CompositeBagView);
+        nodeScript.updateMergeItem(this._selectedItem);
     }
 }
 

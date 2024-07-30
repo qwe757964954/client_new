@@ -7,6 +7,7 @@ import { ViewsMgr } from '../manager/ViewsManager';
 import { ServiceMgr } from '../net/ServiceManager';
 import { TimerMgr } from '../util/TimerMgr';
 import { ToolUtil } from '../util/ToolUtil';
+import { CloudConditionView } from '../views/map/CloudConditionView';
 import { BaseModel } from './BaseModel';
 import { GridModel } from './GridModel';
 const { ccclass, property } = _decorator;
@@ -237,9 +238,14 @@ export class CloudModel extends BaseModel {
             return;
         }
         if (null == this._unlockTime) {
-            ViewsMgr.showConfirm(TextConfig.Cloud_Unlock_Tip, () => {
-                ServiceMgr.buildingService.reqCloudUnlock([ToolUtil.replace(TextConfig.Land_Key, this._x, this._y)]);
+            ViewsMgr.showView(PrefabType.CloudConditionView, (node: Node) => {
+                node.getComponent(CloudConditionView).init(() => {
+                    ServiceMgr.buildingService.reqCloudUnlock([ToolUtil.replace(TextConfig.Land_Key, this._x, this._y)]);
+                });
             });
+            // ViewsMgr.showConfirm(TextConfig.Cloud_Unlock_Tip, () => {
+            //     ServiceMgr.buildingService.reqCloudUnlock([ToolUtil.replace(TextConfig.Land_Key, this._x, this._y)]);
+            // });
         } else {
             ViewsMgr.showConfirm(TextConfig.Speed_Words_Tip4, () => {
                 ServiceMgr.buildingService.reqSpeedWordsGetEx(ToolUtil.replace(TextConfig.Land_Key, this._x, this._y));
