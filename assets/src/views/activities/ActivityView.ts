@@ -57,11 +57,11 @@ export class RankView extends BaseView {
             this.initViewComponent(PrefabType.ActivityNewPeople, (node) => {
                 this._activityNewPeople = node.getComponent(ActivityNewPeople);
                 this._activityNewPeople.node.active = false;
-            },this.content_layout),
+            },null,this.content_layout),
             this.initViewComponent(PrefabType.WeekendCarouselView, (node) => {
                 this._weekendCarouselView = node.getComponent(WeekendCarouselView);
                 this._weekendCarouselView.node.active = false;
-            },this.content_layout),
+            },null,this.content_layout),
         ]);
     }
     initTabs(){

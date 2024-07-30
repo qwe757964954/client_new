@@ -54,10 +54,10 @@ export class ShopUIView extends BaseView {
     }
     private async initViews() {
         await Promise.all([
-            this.initViewComponent(PrefabType.ShopBuildView, (node) => this._shopBuildView = node.getComponent(ShopBuildView),this.content_layout),
-            this.initViewComponent(PrefabType.ShopStoreView, (node) => this._shopStoreView = node.getComponent(ShopStoreView),this.content_layout),
-            this.initViewComponent(PrefabType.ShopDecorationView, (node) => this._shopDecorationView = node.getComponent(ShopDecorationView),this.content_layout),
-            this.initViewComponent(PrefabType.DebrisAreaView, (node) => this._debrisAreaView = node.getComponent(DebrisAreaView),this.content_layout),
+            this.initViewComponent(PrefabType.ShopBuildView, (node) => this._shopBuildView = node.getComponent(ShopBuildView),null,this.content_layout),
+            this.initViewComponent(PrefabType.ShopStoreView, (node) => this._shopStoreView = node.getComponent(ShopStoreView),null,this.content_layout),
+            this.initViewComponent(PrefabType.ShopDecorationView, (node) => this._shopDecorationView = node.getComponent(ShopDecorationView),null,this.content_layout),
+            this.initViewComponent(PrefabType.DebrisAreaView, (node) => this._debrisAreaView = node.getComponent(DebrisAreaView),null,this.content_layout),
         ]);
     }
     initTabs(){

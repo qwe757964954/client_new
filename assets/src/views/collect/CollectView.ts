@@ -46,19 +46,19 @@ export class CollectView extends BaseView {
             this.initViewComponent(PrefabType.AchievementMedalsView, (node) => {
                 this._achievementMedalsView = node.getComponent(AchievementMedalsView);
                 node.active = false;
-            },this.content_layout),
+            },null,this.content_layout),
             this.initViewComponent(PrefabType.MonsterCardView, (node) => {
                 this._monsterCardView = node.getComponent(MonsterCardView);
                 node.active = false;
-            },this.content_layout),
+            },null,this.content_layout),
             this.initViewComponent(PrefabType.BuildingAtlasView, (node) => {
                 this._buildAtlasView = node.getComponent(BuildingAtlasView);
                 node.active = false;
-            },this.content_layout),
+            },null,this.content_layout),
             this.initViewComponent(PrefabType.ClothingIllustratedView, (node) => {
                 this._clothingIllustratedView = node.getComponent(ClothingIllustratedView);
                 node.active = false;
-            },this.content_layout),
+            },null,this.content_layout),
         ]);
     }
     initTabs(){

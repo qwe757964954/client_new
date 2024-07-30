@@ -39,9 +39,9 @@ export class RankView extends BaseView {
 
     private async initViews() {
         await Promise.all([
-            this.initViewComponent(PrefabType.VocabularyRankingView, (node) => this._vocabularyRankingView = node.getComponent(VocabularyRankingView),this.content_layout),
-            this.initViewComponent(PrefabType.KingdomRankingView, (node) => this._kingdomRankingView = node.getComponent(KingdomRankingView),this.content_layout),
-            this.initViewComponent(PrefabType.CombatPowerRankingView, (node) => this._combatPowerRankingView = node.getComponent(CombatPowerRankingView),this.content_layout),
+            this.initViewComponent(PrefabType.VocabularyRankingView, (node) => this._vocabularyRankingView = node.getComponent(VocabularyRankingView),null,this.content_layout),
+            this.initViewComponent(PrefabType.KingdomRankingView, (node) => this._kingdomRankingView = node.getComponent(KingdomRankingView),null,this.content_layout),
+            this.initViewComponent(PrefabType.CombatPowerRankingView, (node) => this._combatPowerRankingView = node.getComponent(CombatPowerRankingView),null,this.content_layout),
         ]);
     }
     initTabs(){

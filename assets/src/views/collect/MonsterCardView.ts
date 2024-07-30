@@ -25,11 +25,7 @@ export class MonsterCardView extends BaseView {
     }
     private async initViews() {
         await Promise.all([
-            this.initViewComponent(PrefabType.AchieveTabView, (node) => {
-                
-                this._achieveTabView = node.getComponent(AchieveTabView);
-                // 
-            }, {
+            this.initViewComponent(PrefabType.AchieveTabView, (node) => this._achieveTabView = node.getComponent(AchieveTabView), {
                 isAlignTop: true,
                 isAlignLeft: true,
                 top: 116.538,

@@ -27,17 +27,13 @@ export class BuildingAtlasView extends BaseView {
     }
     private async initViews() {
         await Promise.all([
-            this.initViewComponent(PrefabType.AchieveTabView, (node) => {
-                this._achieveTabView = node.getComponent(AchieveTabView);
-            }, {
+            this.initViewComponent(PrefabType.AchieveTabView, (node) => this._achieveTabView = node.getComponent(AchieveTabView), {
                 isAlignTop: true,
                 isAlignLeft: true,
                 top: 116.538,
                 left: 719.241
             }),
-            this.initViewComponent(PrefabType.AchieveThemeView, (node) => {
-                this._themeView = node.getComponent(ThemeView);
-            }, {
+            this.initViewComponent(PrefabType.AchieveThemeView, (node) => this._themeView = node.getComponent(ThemeView), {
                 isAlignTop: true,
                 isAlignLeft: true,
                 top: 137.37,
