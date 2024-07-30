@@ -1,7 +1,10 @@
 import { _decorator, Label, Node, Sprite, SpriteFrame, UITransform } from 'cc';
+import { TextConfig } from '../../config/TextConfig';
 import { LoadManager } from '../../manager/LoadManager';
 import { ResLoader } from '../../manager/ResLoader';
+import { User } from '../../models/User';
 import ListItem from '../../util/list/ListItem';
+import { ToolUtil } from '../../util/ToolUtil';
 import { AmoutItemData, AmoutType } from './TopAmoutView';
 const { ccclass, property } = _decorator;
 
@@ -27,6 +30,9 @@ export class AmoutItem extends ListItem {
         this.amountInfo = itemInfo;
         this.updateAmount(itemInfo.num);
         this.updateIcons(itemInfo);
+        if (itemInfo.type === AmoutType.Energy) {
+            this.amoutText.string = ToolUtil.replace(TextConfig.Queue_Text, User.stamina, User.staminaLimit)
+        }
     }
 
     public updateAmount(amount: number) {
