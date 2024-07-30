@@ -1,14 +1,20 @@
 import { _decorator, Component, Label, Node, Sprite, SpriteFrame, UITransform, Vec3 } from 'cc';
+import { EventType } from '../../config/EventType';
 import { MapConfig } from '../../config/MapConfig';
+import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { DataMgr, EditInfo, EditType } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
+import { ViewsMgr } from '../../manager/ViewsManager';
 import CCUtil from '../../util/CCUtil';
+import { EventMgr } from '../../util/EventManager';
 import { ToolUtil } from '../../util/ToolUtil';
+import { BuildingSellView } from './BuildingSellView';
 const { ccclass, property } = _decorator;
 
 export class EditItemInfo extends EditInfo {
     needBuilt: boolean = false;
+    count: number = 0;
 
     public constructor(data: EditInfo) {
         super();
@@ -42,6 +48,8 @@ export class EditItem extends Component {
     public labelSize: Label = null;//大小
     @property(Node)
     public tipToBuilt: Node = null;//去建造提示
+    @property(Node)
+    public btnSell: Node = null;//出售按钮
 
     private _data: EditItemInfo = null;//数据
     private _clickCall: Function = null;//点击回调
@@ -59,10 +67,12 @@ export class EditItem extends Component {
     // 初始化事件
     initEvent() {
         CCUtil.onTouch(this.node, this.onItemClick, this);
+        CCUtil.onTouch(this.btnSell, this.onBtnSellClick, this);
     }
     // 移除监听
     removeEvent() {
         CCUtil.offTouch(this.node, this.onItemClick, this);
+        CCUtil.offTouch(this.btnSell, this.onBtnSellClick, this);
     }
     // 销毁
     protected onDestroy(): void {
@@ -81,6 +91,7 @@ export class EditItem extends Component {
             // this.fixPos();
             this.fixImg();
         });
+        this.btnSell.active = info.sell > 0;
     }
     // 点击
     public onItemClick(): void {
@@ -112,6 +123,18 @@ export class EditItem extends Component {
             pos.y = 50;
         }
         this.img.node.position = pos;
+    }
+    /**卖出点击 */
+    public onBtnSellClick(): void {
+        ViewsMgr.showView(PrefabType.BuildingSellView, (node: Node) => {
+            node.getComponent(BuildingSellView).init(this._data, this._data.count, (count: number) => {
+                // let data = new EditItemInfo(this._data);
+                // data.needBuilt = this._data.needBuilt;
+                // data.count = count;
+                this._data.count = count;
+                EventMgr.emit(EventType.Building_Batch_Sell, this._data);
+            });
+        });
     }
 }
 

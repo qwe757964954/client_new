@@ -28,6 +28,7 @@ export const EventType = {
     Building_RecycleEx: "Building_RecycleEx",//建筑回收
     Building_Step_Update: "BuildingStepUpdate",//建筑步数更新
     Building_Shop_Buy: "BuildingShopBuy",//建筑商店购买
+    Building_Batch_Sell: "BuildingBatchSell",//建筑批量出售
 
     Stamina_Update: "StaminaUpdate",//体力更新
     Coin_Update: "CoinUpdate",//金币更新

@@ -9,7 +9,7 @@ import { DataMgr, EditInfo, EditType } from "../../manager/DataMgr";
 import { ViewsMgr } from "../../manager/ViewsManager";
 import { BaseModel } from "../../models/BaseModel";
 import { BgModel } from "../../models/BgModel";
-import { BuildingModel, BuildingOperationData, RecycleData } from "../../models/BuildingModel";
+import { BuildingModel, BuildingOperationData, BuildingOperationType, BuildingState, RecycleData } from "../../models/BuildingModel";
 import { CloudModel } from "../../models/CloudModel";
 import { GridModel } from "../../models/GridModel";
 import { LandModel } from "../../models/LandModel";
@@ -665,15 +665,29 @@ export class MapUICtl extends MainBaseCtl {
         return data;
     }
     findRecycleDataByBid(bid: number) {
-        let data: RecycleData = null;
+        let ary: RecycleData[] = [];
         for (let i = 0; i < this._recycleBuildingAry.length; i++) {
             let element = this._recycleBuildingAry[i];
             if (element.bid == bid) {
-                data = element;
-                break;
+                ary.push(element);
             }
         }
-        return data;
+        ary.sort((a, b) => {
+            if (BuildingState.unBuilding == a.data.state) return -1;
+            if (BuildingState.unBuilding == b.data.state) return 1;
+            return a.data.state - b.data.state;
+        });
+        return ary;
+    }
+    /**移除回收数据 */
+    removeRecycleData(data: RecycleData) {
+        for (let i = 0; i < this._recycleBuildingAry.length; i++) {
+            if (data == this._recycleBuildingAry[i]) {
+                this._recycleBuildingAry.splice(i, 1);
+                return true;
+            }
+        }
+        return false;
     }
     /**获取回收建筑 */
     getRecycleBuilding(bid: number) {
@@ -716,6 +730,17 @@ export class MapUICtl extends MainBaseCtl {
     /**回收建筑是否包含指定建筑 */
     isRecycleBuildingContain(bid: number) {
         return undefined != this._recycleBuildingAry.find(element => element.bid == bid);
+    }
+    /**还原数据转换操作数据 */
+    recycleDataToOperationData(recycleData: RecycleData, type: BuildingOperationType, editInfo: EditInfo) {
+        let data = new BuildingOperationData();
+        data.reset();
+        data.type = type;
+        data.buildingID = recycleData.data.id;
+        data.idx = recycleData.data.idx;
+        data.editInfo = editInfo;
+        data.recycleData = recycleData;
+        return data;
     }
     /**商店购买建筑 */
     onShopBuyBuilding(data: RecycleData) {
@@ -1095,6 +1120,7 @@ export class MapUICtl extends MainBaseCtl {
         return null;
     }
     findBuildingByIdx(idx: number) {
+        if (null == idx) return null;
         let children = this._buidingModelAry;
         for (let i = 0; i < children.length; i++) {
             const building = children[i];
@@ -1321,6 +1347,14 @@ export class MapUICtl extends MainBaseCtl {
     }
     /**还原建筑通过操作数据 */
     recoverByOperationData(data: BuildingOperationData) {
+        if (BuildingOperationType.recycleSell == data.type) {
+            if (data.toLast) {
+                this.addRecycleBuilding(data.recycleData);
+            } else {
+                this.removeRecycleData(data.recycleData);
+            }
+            return;
+        }
         let building = this.findBuildingByIdx(data.idx);
         console.log("recoverByOperationData", data, building);
         if (!building) {

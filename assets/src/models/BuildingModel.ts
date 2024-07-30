@@ -31,6 +31,7 @@ export enum BuildingOperationType {
     edit = 1,//编辑
     sell = 2,//卖出
     recycle = 3,//回收
+    recycleSell = 4,//回收中卖出
 }
 export enum BuildingState {
     // preBuilding = -1,//预建造
@@ -47,6 +48,8 @@ export class BuildingOperationData {
     public buildingID: number;//建筑唯一索引id
     public idx: number;//索引(前端使用)
     public editInfo: EditInfo;//编辑数据
+    public toLast: boolean = false;//是否回退
+    public recycleData: RecycleData = null;//回收数据
 
     public x: number;//x坐标
     public y: number;//y坐标
