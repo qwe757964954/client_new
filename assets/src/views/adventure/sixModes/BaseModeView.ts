@@ -654,11 +654,12 @@ export class BaseModeView extends BaseView {
         }
         console.log("获取单词详情", data);
         this._detailData = data;
+        this.setCollect(this._detailData.collect_flag === 1);
     }
 
     protected onCollectWord(data: any) {
         console.log("onCollectWord", data);
-        this.setCollect(this._rightWordData.collect == 1 ? true : false);
+        this.setCollect(this._rightWordData.collect === 1);
     }
 
     protected onAdventureCollectWord(data: any) {
@@ -666,7 +667,7 @@ export class BaseModeView extends BaseView {
             ViewsManager.showTip(data.msg);
             return;
         }
-        this.setCollect(this._rightWordData.collect == 1 ? true : false);
+        this.setCollect(this._rightWordData.collect === 1);
     }
 
     protected initEvent(): void {
