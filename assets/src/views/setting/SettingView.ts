@@ -1,5 +1,5 @@
 import { _decorator, Node } from 'cc';
-import { PrefabType, PrefabTypeEntry } from '../../config/PrefabType';
+import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { UserPlayerDetail } from '../../models/SettingModel';
@@ -75,12 +75,6 @@ export class SettingView extends BaseView {
                 horizontalCenter: 0
             }),
         ]);
-    }
-
-
-    private async initViewComponent(prefabType: PrefabTypeEntry, onComponentInit: (node: Node) => void, alignOptions?: object,defaultParent:Node = this.node) {
-        let node = await this.loadAndInitPrefab(prefabType, defaultParent, alignOptions);
-        onComponentInit(node);
     }
 
     // //设置主场景

@@ -1,6 +1,6 @@
 import { _decorator, director, Label, Node, Sprite } from 'cc';
 import { MapStatus } from '../../config/MapConfig';
-import { PrefabType, PrefabTypeEntry, SceneType } from '../../config/PrefabType';
+import { PrefabType, SceneType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { ActivityInfoResponse } from '../../models/ActivityModel';
@@ -74,11 +74,6 @@ export class MainUIView extends BaseView {
             }, this.node.getChildByName("RightUp"))
         ]);
     }
-    private async initViewComponent(prefabType: PrefabTypeEntry, onComponentInit: (node: Node) => void, alignOptions?: object, defaultParent: Node = this.node) {
-        let node = await this.loadAndInitPrefab(prefabType, defaultParent, alignOptions);
-        onComponentInit(node);
-    }
-
     //设置主场景
     public set mainScene(mainScene: MainScene) {
         this._mainScene = mainScene;

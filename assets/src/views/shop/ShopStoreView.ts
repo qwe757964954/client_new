@@ -1,5 +1,5 @@
-import { _decorator, Node } from 'cc';
-import { PrefabType, PrefabTypeEntry } from '../../config/PrefabType';
+import { _decorator } from 'cc';
+import { PrefabType } from '../../config/PrefabType';
 import { BaseView } from '../../script/BaseView';
 import List from '../../util/list/List';
 import { ShopPlayerView } from './ShopPlayerView';
@@ -30,11 +30,6 @@ export class ShopStoreView extends BaseView {
                 right: 72.5
             }),
         ]);
-    }
-
-    private async initViewComponent(prefabType: PrefabTypeEntry, onComponentInit: (node: Node) => void, alignOptions?: object) {
-        let node = await this.loadAndInitPrefab(prefabType, this.node, alignOptions);
-        onComponentInit(node);
     }
 }
 

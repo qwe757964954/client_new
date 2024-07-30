@@ -161,7 +161,7 @@ export class c2sSearchWord {
 export class c2sTotalCollectWord {
     command_id: string = InterfacePath.Total_Collect_Word;
     word: string;
-    status:number;
+    status: number;
 }
 
 //单词更多详情消息
@@ -305,13 +305,19 @@ export class c2sBossLevelTopic {
     big_id: number;
 }
 
-export class TopicData {
-    be_id: string;
-    content: string;
-    answer: string;
+export class BossTopicData {
+    w_id: string;
+    word: string;
+    cn: string;
     opt1: string;
     opt2: string;
-    cn: string;
+    opt3: string;
+    opt4: string;
+    opt_num: number;
+    sentence: string;
+    speech: string;
+    gs_id: string;
+    symbol: string;
 }
 
 export class ChallengeInfo {
@@ -322,11 +328,12 @@ export class ChallengeInfo {
     err_num: number;
     challenge_num: number
     cost_time: number;
+    w_id_list: string[];
+    word_list: BossTopicData[];
 }
 
 export class BossLevelTopicData extends BaseRepPacket {
     big_id: number;
-    exercises_list: TopicData[];
     challenge_info: ChallengeInfo;
 }
 
@@ -334,7 +341,7 @@ export class c2sBossLevelSubmit {
     command_id: string = InterfacePath.BossLevel_Submit;
     big_id: number;
     bl_id: string; //挑战id
-    be_id: string; //题目id
+    w_id: string; //题目id
     status: number; //状态 1 成功 2 错误 3 超时
     option: string; //选择的内容 如果3，则为空字符串
     cost_time: number; //耗时
@@ -414,6 +421,8 @@ export class Subject {
     subject_name: string;
     sentence_knowledge: string[];
     dialogue_content: string[];
+    is_unit?: boolean = false;
+    status?: number;
 }
 
 //大冒险主题ai文章列表
@@ -452,4 +461,38 @@ export class ArticleExercise {
     create_time: string;
 }
 
+//大冒险跳级题目列表
+export class c2sGradeSkipExercisesList {
+    command_id: string = InterfacePath.GradeSkip_ExercisesList;
+    big_id: number;
+    unit: string;
+}
+export class GradeSkipExercisesListReply extends BaseRepPacket {
+    unit_word_list: UnitWord[];
+    unit_group_list: UnitGroup[];
+    unit_exercises_list: ArticleExercise[];
+}
+export class UnitGroup {
+    word: string;
+    opt1: string;
+    opt2: string;
+    opt3: string;
+    opt4: string;
+    opt_num: number;
+    sentence: string;
+    cn: string;
+    speech: string;
+    gs_id: number;
+}
+
+//跳级练习结果提交
+export class c2sGradeSkipExercisesSubmit {
+    command_id: string = InterfacePath.GradeSkip_ExercisesSubmit;
+    big_id: number;
+    unit: string;
+    status: number;
+}
+export class GradeSkipExercisesSubmitReply extends BaseRepPacket {
+    small_id_list: number[];
+}
 

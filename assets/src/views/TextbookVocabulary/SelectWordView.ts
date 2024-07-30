@@ -2,7 +2,7 @@ import { _decorator, Node } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { BookListItemData, SchoolBookGradeItemData, SchoolBookListGradeItemData, SchoolBookListItemData, UnitListItemStatus } from '../../models/TextbookModel';
+import { BookListItemData, SchoolBookGradeItemData, SchoolBookItemData, SchoolBookListGradeItemData, SchoolBookListItemData, UnitListItemStatus } from '../../models/TextbookModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
@@ -24,7 +24,7 @@ export class SelectWordView extends BaseView {
     public vocabularyLayout:Node = null;          // 选择词库
     private _schoolGradeListData:SchoolBookListGradeItemData = null;
     private _bookLiskData:BookListItemData = null;/**tab数据 */
-    private _schoolBookListDataArr:SchoolBookListItemData = null;/**词书左侧导航数据 */
+    private _schoolBookListDataArr:SchoolBookItemData[] = null;/**词书左侧导航数据 */
     private _tabTop:TabTopView = null;/**tabview */
     private _rightNav:RightNavView = null;/**左侧导航 */
     // private _tabIndex:number = 0;
@@ -43,8 +43,9 @@ export class SelectWordView extends BaseView {
     protected async initUI(){
         this.viewAdaptSize();
         this.initNavTitle();
+        await this.loadRightNav();
         await this.initTabContent();
-        this.loadRightNav();
+        
     }
     /** 初始化模块事件 */
 	protected onInitModuleEvent() {
@@ -91,11 +92,11 @@ export class SelectWordView extends BaseView {
         this.textBookScrollView.selectedId = -1;
         this.textBookScrollView.update();
     }
-    onSchoolBookList(data:SchoolBookListItemData){
-        this._schoolBookListDataArr = data;
-        this._rightNav.loadNavListData(this._schoolBookListDataArr.data,(selectId:number)=>{
+    onSchoolBookList(response:SchoolBookListItemData){
+        this._schoolBookListDataArr = response.data;
+        this._rightNav.loadNavListData(this._schoolBookListDataArr,(selectId:number)=>{
             if(selectId >= 0){
-                this._curBookName = this._schoolBookListDataArr.data[selectId].book_name;
+                this._curBookName = this._schoolBookListDataArr[selectId].book_name;
                 TBServer.reqSchoolBookGrade(this._curPhaseId,this._curBookName);
             }
         });

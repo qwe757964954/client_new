@@ -46,14 +46,20 @@ export class BreakdownView extends BasePopup {
     public updateBreakDownItem(item: ItemData): void {
         this._sourceItem = item;
         this.caleBagView.setCaleMax(item.num);
+        this.caleBagView.setSelectListener(this.onCaleValueChanged.bind(this));
         this.showSourceProps();
-        const breakdownIds = BagConfig.findBreakdownItems(item);
-        this._breakdownDatas = TKConfig.convertRewardData(breakdownIds);
         this.source_text.string = BagConfig.findItemInfo(item).name;
+        this.onCaleValueChanged(this.caleBagView.getCaleNumber());
+    }
+    onCaleValueChanged(num:number){
+        const breakdownIds = BagConfig.findBreakdownItems(this._sourceItem);
+        this._breakdownDatas = TKConfig.convertRewardData(breakdownIds);
+        for (let index = 0; index < this._breakdownDatas.length; index++) {
+            this._breakdownDatas[index].num = this._breakdownDatas[index].num * num;
+        }
         this.item_list.numItems = this._breakdownDatas.length;
         this.updateRewardScroll();
     }
-
     private updateRewardScroll(): void {
         const scrollView = this.item_list.scrollView;
         const contentTransform = scrollView.content.getComponent(UITransform);

@@ -1,50 +1,52 @@
 import { _decorator, Component, instantiate, Label, Node, NodePool, Prefab, SpriteFrame, tween, UIOpacity, UITransform, Vec3 } from 'cc';
 import { BaseModeView } from './BaseModeView';
-import { BossLevelData, BossLevelSubmitData, BossLevelTopicData, GameMode, TopicData } from '../../../models/AdventureModel';
+import { BossLevelData, BossLevelSubmitData, BossLevelTopicData, GameMode, BossTopicData } from '../../../models/AdventureModel';
 import { MonsterModel } from '../common/MonsterModel';
 import { DataMgr } from '../../../manager/DataMgr';
-import { BossWordItem } from './items/BossWordItem';
 import CCUtil from '../../../util/CCUtil';
-import { ServiceMgr } from '../../../net/ServiceManager';
 import { EventMgr } from '../../../util/EventManager';
 import { InterfacePath } from '../../../net/InterfacePath';
-import { ViewsManager } from '../../../manager/ViewsManager';
+import { ViewsManager, ViewsMgr } from '../../../manager/ViewsManager';
 import { PrefabType } from '../../../config/PrefabType';
 import { ExamReportView } from './ExamReportView';
 import { PetModel } from '../../../models/PetModel';
+import { SubjectType, UnitSubject } from '../../theme/GradeSkipSubjectManager';
+import { WordMeanSubject } from '../../theme/subject/WordMeanSubject';
+import { WordSpellSubject } from '../../theme/subject/WordSpellSubject';
+import { WordReadingSubject } from '../../theme/subject/WordReadingSubject';
+import { WordExamSubject } from '../../theme/subject/WordExamSubject';
 import { EventType } from '../../../config/EventType';
 import { SoundMgr } from '../../../manager/SoundMgr';
+import { ServiceMgr } from '../../../net/ServiceManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordBossView')
 export class WordBossView extends BaseModeView {
-    @property({ type: Prefab, tooltip: "选项item" })
-    wordItem: Prefab = null;
-    @property({ type: Node, tooltip: "选项节点" })
-    itemNode: Node = null;
-    @property({ type: Label, tooltip: "句子Label" })
-    sentenceLabel: Label = null;
-    @property({ type: Label, tooltip: "中文Label" })
-    cnLabel: Label = null;
-    @property({ type: SpriteFrame, tooltip: "正确图片" })
-    rightSprite: SpriteFrame = null;
-    @property({ type: SpriteFrame, tooltip: "错误图片" })
-    wrongSprite: SpriteFrame = null;
+    @property(Node)
+    public subjectNode: Node = null;
+    @property(Prefab)
+    public wordMeanSubject: Prefab = null;
+    @property(Prefab)
+    public wordSpellSubject: Prefab = null;
+    @property(Prefab)
+    public wordReadingSubject: Prefab = null;
+    @property(Prefab)
+    public wordExamSubject: Prefab = null;
     private _bossLevelData: BossLevelTopicData;
-    private _topicsData: TopicData[] = [];
-
-    private _selectLock: boolean = false;
-    private _items: Node[] = [];
-    protected _nodePool: NodePool = new NodePool("bossWordItem");
+    private _topicsData: BossTopicData[] = [];
     private _isRight: boolean = false; //是否回答正确
     private _resultData: BossLevelSubmitData;
+    private _w_id_list: string[];
 
-    private _currentTopic: TopicData; //当前题目
+    private _currentSubjectView: Node;
+    private _currentTopic: BossTopicData; //当前题目
     async initData(levelData: BossLevelTopicData) {
         this.gameMode = GameMode.WordBoss;
         this._bossLevelData = levelData;
+        this._w_id_list = levelData.challenge_info.w_id_list;
+        this._topicsData = levelData.challenge_info.word_list;
         this.initProgress();
-        this.initTopic(levelData.exercises_list);
+        this.initTopic();
         this.initMonster(); //初始化怪物
     }
 
@@ -66,65 +68,67 @@ export class WordBossView extends BaseModeView {
         this._errorNum = progressData.err_num;
         this.timeLabel.string = "当前进度:" + this._wordIndex + "/" + progressData.need_num;
         this.errorNumLabel.string = "错误次数:" + this._errorNum;
-
     }
 
     //初始化题目
-    initTopic(data: TopicData[]) {
-        console.log('initTopic', data);
-        this._topicsData = data;
+    initTopic() {
         this.showCurrentWord();
     }
 
     showCurrentWord() {
         super.updateConstTime();
-        this._selectLock = false;
-        this._currentTopic = this._topicsData[this._wordIndex];
-        this.sentenceLabel.string = this._currentTopic.content;
-        this.cnLabel.string = this._currentTopic.cn;
-        this.initItemNode();
-    }
-
-    //初始化拆分节点
-    initItemNode() {
-        this.clearSplitItems();
-        let opts = [this._currentTopic.answer, this._currentTopic.opt1, this._currentTopic.opt2];
-        opts.sort((a, b) => {
-            return Math.random() > 0.5 ? 1 : -1;
-        }); //乱序
-
-        for (let i = 0; i < opts.length; i++) {
-            let item = this.getSplitItem();
-            item.getComponent(BossWordItem).init(opts[i], i);
-            item.parent = this.itemNode;
-            CCUtil.onTouch(item, this.onItemClick, this);
-            this._items.push(item);
+        let currentWid = this._w_id_list[this._wordIndex];
+        this._currentTopic = this.getTopicDataByWid(currentWid);
+        if (!this._currentTopic) {
+            ViewsMgr.showTip("题目不存在");
+            return;
         }
+        if (this._currentSubjectView) {
+            this._currentSubjectView.destroy();
+        }
+        let subjetType = Math.floor(Math.random() * 4); //单词题目模式随机
+        switch (subjetType) {
+            case SubjectType.WordMeaning:
+                this._currentSubjectView = instantiate(this.wordMeanSubject);
+                this._currentSubjectView.getComponent(WordMeanSubject).setData(this._currentTopic, this._topicsData);
+                break;
+            case SubjectType.WordSpelling:
+                this._currentSubjectView = instantiate(this.wordSpellSubject);
+                this._currentSubjectView.getComponent(WordSpellSubject).setData(this._currentTopic, this._currentTopic);
+                break;
+            case SubjectType.WordReading:
+                this._currentSubjectView = instantiate(this.wordReadingSubject);
+                this._currentSubjectView.getComponent(WordReadingSubject).setData(this._currentTopic);
+                break;
+            case SubjectType.WordExam:
+                this._currentSubjectView = instantiate(this.wordExamSubject);
+                this._currentSubjectView.getComponent(WordExamSubject).setData(this._currentTopic);
+                break;
+        }
+        this._currentSubjectView.parent = this.subjectNode;
     }
 
-    onItemClick(e: any) {
-        if (this._selectLock) return;
-        this._selectLock = true;
-        let item = e.target;
-        let wordItem = item.getComponent(BossWordItem);
-        this._wordIndex++;
-        this._isRight = wordItem.word == this._currentTopic.answer;
-        let status = this._isRight ? 1 : 2;
-        let costTime = Date.now() - this._costTime;
-        ServiceMgr.studyService.submitBossLevelTopic(this._bossLevelData.big_id, this._bossLevelData.challenge_info.bl_id, this._currentTopic.be_id, status, wordItem.word, costTime);
-        if (this._isRight) { //正确
-            wordItem.showResult(true);
-            this._rightNum++;
+    getTopicDataByWid(wid: string) {
+        return this._topicsData.find(item => item.w_id == wid);
+    }
+
+    onSubjectResult(isRight: boolean) {
+        this._isRight = isRight;
+        if (isRight) {
             this._comboNum++;
             this.showRightSpAni();
         } else {
-            wordItem.showResult(false);
-            this._errorNum++;
             this._comboNum = 0;
+            this._errorNum++;
             SoundMgr.wrong();
         }
+        this._wordIndex++;
         this.timeLabel.string = "当前进度:" + this._wordIndex + "/" + this._bossLevelData.challenge_info.need_num;
         this.errorNumLabel.string = "错误次数:" + this._errorNum;
+
+        let status = this._isRight ? 1 : 2;
+        let costTime = Date.now() - this._costTime;
+        ServiceMgr.studyService.submitBossLevelTopic(this._bossLevelData.big_id, this._bossLevelData.challenge_info.bl_id, this._currentTopic.w_id, status, "", costTime);
     }
 
     onSubmit(data: BossLevelSubmitData) {
@@ -211,31 +215,15 @@ export class WordBossView extends BaseModeView {
         }
     }
 
-    getSplitItem() {
-        let item = this._nodePool.get();
-        if (!item) {
-            item = instantiate(this.wordItem);
-        }
-        return item;
-    }
-
-    clearSplitItems() {
-        for (let i = 0; i < this._items.length; i++) {
-            CCUtil.offTouch(this._items[i], this.onItemClick, this);
-            this._items[i].parent = null;
-            this._nodePool.put(this._items[i]);
-        }
-
-        this._items = [];
-    }
-
     protected initEvent(): void {
         EventMgr.addListener(InterfacePath.BossLevel_Submit, this.onSubmit, this);
+        EventMgr.addListener(EventType.GradeSkip_Subject_Result, this.onSubjectResult, this);
         CCUtil.onTouch(this.btn_close.node, this.closeView, this);
     }
 
     removeEvent() {
         EventMgr.removeListener(InterfacePath.BossLevel_Submit, this);
+        EventMgr.removeListener(EventType.GradeSkip_Subject_Result, this);
         CCUtil.offTouch(this.btn_close.node, this.closeView, this);
     }
 
@@ -243,15 +231,6 @@ export class WordBossView extends BaseModeView {
         ViewsManager.instance.showConfirm("确定退出学习吗?", () => {
             this.node.destroy();
         });
-    }
-
-    onDestroy(): void {
-        super.onDestroy();
-        for (let i = 0; i < this._items.length; i++) {
-            CCUtil.offTouch(this._items[i], this.onItemClick, this);
-        }
-        this._items = [];
-        this._nodePool.clear();
     }
 }
 

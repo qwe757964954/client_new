@@ -1,4 +1,4 @@
-import { _decorator, Component, Label, Node } from 'cc';
+import { _decorator, Component, Label, Node, Sprite } from 'cc';
 import { UnitData } from '../../../models/AdventureModel';
 import CCUtil from '../../../util/CCUtil';
 import { BaseView } from '../../../script/BaseView';
@@ -16,6 +16,7 @@ export class UnitItem extends BaseView {
     setData(data: UnitData) {
         this._data = data;
         this.unitTxt.string = data.unit;
+        this.getComponent(Sprite).grayscale = data.status == 0;
     }
 
     onClick() {
