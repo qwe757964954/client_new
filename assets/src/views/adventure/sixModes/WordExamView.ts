@@ -141,7 +141,7 @@ export class WordExamView extends BaseModeView {
                     this.showCurrentWord();
                     this.checkResult();
                     // if (WordSourceType.word_game == this._sourceType) {
-                        
+
                     // }
                 });
             }
@@ -173,7 +173,7 @@ export class WordExamView extends BaseModeView {
         if (this._currentSubmitResponse.pass_flag == 1 || this._currentSubmitResponse.pass_flag == 2) { //成功或失败
             ViewsManager.instance.showView(PrefabType.ExamReportView, (node: Node) => {
                 let nodeScript = node.getComponent(ExamReportView);
-                nodeScript.initData(this._currentSubmitResponse,this._sourceType);
+                nodeScript.initData(this._currentSubmitResponse, this._sourceType);
                 this.node.parent.destroy();
             });
         }
@@ -239,6 +239,7 @@ export class WordExamView extends BaseModeView {
 
     onDestroy(): void {
         super.onDestroy();
+        this.clearSplitItems();
         this._nodePool.clear();
     }
 }

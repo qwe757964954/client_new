@@ -54,6 +54,7 @@ export class SubjectView extends BaseView {
     onGetPractice() {
         if (this._data.subject.is_unit) {
             EventMgr.dispatch(EventType.GradeSkip_Challenge, this._data.subject);
+            this._isRequesting = false;
         } else {
             ViewsMgr.showView(PrefabType.PracticeView, (node) => {
                 this._isRequesting = false;

@@ -235,10 +235,10 @@ export class WordReadingView extends BaseModeView {
     }
 
     update(deltaTime: number) {
-        
+
     }
 
-    checkResult(){
+    checkResult() {
         console.log('checkResult');
         let isAdventure = WordSourceType.word_game == this._sourceType; //是否是大冒险关卡
         if (!isAdventure && !this._turnIsBegin && this._currentSubmitResponse && this._currentSubmitResponse.pass_flag == 1 && !this._finished) {

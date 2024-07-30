@@ -300,9 +300,9 @@ export class BaseModeView extends BaseView {
         CCUtil.setNodeCamera2DUI(this._pet);
     }
 
-    initPetAttack(){
+    initPetAttack() {
         this._petAttackView = ImgUtil.create_2DNode("petAttackView");
-        this._petAttackView.setScale(-0.5,0.5,0.5);
+        this._petAttackView.setScale(-0.5, 0.5, 0.5);
         this.petContainer.addChild(this._petAttackView);
     }
 
@@ -540,31 +540,31 @@ export class BaseModeView extends BaseView {
                         resolve(true);
                     });
                 });
-                this.showMonsterEffect(()=>{
-                        
+                this.showMonsterEffect(() => {
+
                 });
             }).start();
         });
     }
 
-    showMonsterEffect(callback: () => void){
-        if(this._sourceType === WordSourceType.word_game){
+    showMonsterEffect(callback: () => void) {
+        if (this._sourceType === WordSourceType.word_game) {
             callback?.();
             return;
         }
-        let resConf = {bundle:GameBundle.NORMAL,path:EducationDataInfos[11].monster_effect}
-        let spinePrams:inf_SpineAniCreate = {
-            resConf:resConf,
-            aniName:"attack",
-            trackIndex:0,
-            parentNode:this._petAttackView,
-            isLoop:false,
-            callEndFunc:()=>{
+        let resConf = { bundle: GameBundle.NORMAL, path: EducationDataInfos[11].monster_effect }
+        let spinePrams: inf_SpineAniCreate = {
+            resConf: resConf,
+            aniName: "attack",
+            trackIndex: 0,
+            parentNode: this._petAttackView,
+            isLoop: false,
+            callEndFunc: () => {
                 callback?.();
                 this._petAttackView.removeAllChildren();
-            } 
+            }
         }
-        EventMgr.dispatch(EventType.Sys_Ani_Play,spinePrams);
+        EventMgr.dispatch(EventType.Sys_Ani_Play, spinePrams);
     }
 
     //获取大冒险上报结果

@@ -17,6 +17,8 @@ import { MonsterModel } from './common/MonsterModel';
 import { MapRewardBoxItem } from './levelmap/MapRewardBoxItem';
 import { UnitItem } from './common/UnitItem';
 import { SubjectView } from '../theme/SubjectView';
+import { GradeSkipSubjectMgr } from '../theme/GradeSkipSubjectManager';
+import { UnitExerciseView } from '../theme/UnitExerciseView';
 const { ccclass, property } = _decorator;
 
 /**魔法森林 何存发 2024年4月9日17:51:36 */
@@ -407,6 +409,10 @@ export class WorldIsland extends Component {
             return;
         }
         console.log("onGradeSkipExercises", data);
+        GradeSkipSubjectMgr.setData(data);
+        ViewsMgr.showView(PrefabType.UnitExerciseView, (node: Node) => {
+            node.getComponent(UnitExerciseView).setData(this._selectUnit);
+        });
     }
 
     /**初始化监听事件 */
