@@ -76,64 +76,52 @@ export class FriendsDialogView extends BasePopup {
         ]);
     }
     private async initViews() {
-        await Promise.all([
-            this.initViewComponent(PrefabType.FriendLeftTabView, (node) => this._leftTab = node.getComponent(FriendLeftTabView), {
-                isAlignTop: true,
-                isAlignLeft: true,
-                top: 129,
-                left: -207
-            },this.contentNd),
-            this.initViewComponent(PrefabType.FriendPlayerInfoView, (node) => {
-                node.setSiblingIndex(0);
-                this._rightPlayerInfo = node.getComponent(FriendPlayerInfoView)
-                this._rightPlayerInfo.showPos = this._rightPlayerInfo.node.position;
-            }, {
-                isAlignVerticalCenter: true,
-                isAlignRight: true,
-                verticalCenter: 0,
-                right: -25.394
-            },this.contentNd),
-            this.initViewComponent(PrefabType.FriendListView, (node) => this._fListView = node.getComponent(FriendListView), {
-                isAlignLeft: true,
-                isAlignRight: true,
-                isAlignBottom: true,
-                isAlignTop: true,
-                left: 43.8995,
-                right: 43.8995,
-                bottom: 20.0795,
-                top: 20.0795
-            },this.innerNode),
-            this.initViewComponent(PrefabType.FriendAddView, (node) => this._fAddView = node.getComponent(FriendAddView), {
-                isAlignLeft: true,
-                isAlignRight: true,
-                isAlignBottom: true,
-                isAlignTop: true,
-                left: 43.8995,
-                right: 43.8995,
-                bottom: 20.0795,
-                top: 20.0795
-            },this.innerNode),
-            this.initViewComponent(PrefabType.FriendMessageView, (node) => this._fMsgView = node.getComponent(FriendMessageView), {
-                isAlignLeft: true,
-                isAlignRight: true,
-                isAlignBottom: true,
-                isAlignTop: true,
-                left: 43.8995,
-                right: 43.8995,
-                bottom: 20.0795,
-                top: 20.0795
-            },this.innerNode),
-            this.initViewComponent(PrefabType.FriendEmailView, (node) => this._fEmailView = node.getComponent(FriendEmailView), {
-                isAlignLeft: true,
-                isAlignRight: true,
-                isAlignBottom: true,
-                isAlignTop: true,
-                left: 43.8995,
-                right: 43.8995,
-                bottom: 20.0795,
-                top: 20.0795
-            },this.innerNode),
-        ]);
+        const viewComponents = [
+            {
+                prefabType: PrefabType.FriendLeftTabView,
+                initCallback: (node: Node) => this._leftTab = node.getComponent(FriendLeftTabView),
+                alignOptions: { isAlignTop: true, isAlignLeft: true, top: 129, left: -207 },
+                parentNode: this.contentNd
+            },
+            {
+                prefabType: PrefabType.FriendPlayerInfoView,
+                initCallback: (node: Node) => {
+                    node.setSiblingIndex(0);
+                    this._rightPlayerInfo = node.getComponent(FriendPlayerInfoView);
+                    this._rightPlayerInfo.showPos = this._rightPlayerInfo.node.position;
+                },
+                alignOptions: { isAlignVerticalCenter: true, isAlignRight: true, verticalCenter: 0, right: -25.394 },
+                parentNode: this.contentNd
+            },
+            {
+                prefabType: PrefabType.FriendListView,
+                initCallback: (node: Node) => this._fListView = node.getComponent(FriendListView),
+                alignOptions: { isAlignLeft: true, isAlignRight: true, isAlignBottom: true, isAlignTop: true, left: 43.8995, right: 43.8995, bottom: 20.0795, top: 20.0795 },
+                parentNode: this.innerNode
+            },
+            {
+                prefabType: PrefabType.FriendAddView,
+                initCallback: (node: Node) => this._fAddView = node.getComponent(FriendAddView),
+                alignOptions: { isAlignLeft: true, isAlignRight: true, isAlignBottom: true, isAlignTop: true, left: 43.8995, right: 43.8995, bottom: 20.0795, top: 20.0795 },
+                parentNode: this.innerNode
+            },
+            {
+                prefabType: PrefabType.FriendMessageView,
+                initCallback: (node: Node) => this._fMsgView = node.getComponent(FriendMessageView),
+                alignOptions: { isAlignLeft: true, isAlignRight: true, isAlignBottom: true, isAlignTop: true, left: 43.8995, right: 43.8995, bottom: 20.0795, top: 20.0795 },
+                parentNode: this.innerNode
+            },
+            {
+                prefabType: PrefabType.FriendEmailView,
+                initCallback: (node: Node) => this._fEmailView = node.getComponent(FriendEmailView),
+                alignOptions: { isAlignLeft: true, isAlignRight: true, isAlignBottom: true, isAlignTop: true, left: 43.8995, right: 43.8995, bottom: 20.0795, top: 20.0795 },
+                parentNode: this.innerNode
+            }
+        ];
+    
+        await Promise.all(viewComponents.map(config => 
+            this.initViewComponent(config.prefabType, config.initCallback, config.alignOptions, config.parentNode)
+        ));
     }
 
     private setLeftTab(){
