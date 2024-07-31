@@ -54,7 +54,7 @@ export class ShopGoodsItem extends Component {
         this.lblName.string = data.name;
         // this.lblScore.string = "+" + goodData.medal;
         this.lblPrice.string = data.buy.toString();
-        this.lblLand.string = ToolUtil.replace(TextConfig.Pet_Mood_Prop, data.width);
+        this.lblLand.string = ToolUtil.replace(TextConfig.Pet_Mood_Prop, data.width*data.height);
         this.sprFunction.spriteFrame = this.sprFuncAry[data.type - 1];
         LoadManager.loadSprite(data.png, this.sprIcon).then(() => {
             CCUtil.fixNodeScale(this.sprIcon.node, 260, 260, true);
