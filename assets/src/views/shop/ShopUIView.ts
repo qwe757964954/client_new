@@ -75,7 +75,7 @@ export class ShopUIView extends BaseView {
 
     subTabItemClick(data:TabItemDataInfo){
         this._currentTabId = data.id;
-        this._shopBuildView.updateData(data.id);
+        this._shopBuildView.updateData(this._currentTabId);
     }
     private onTabSelect(info: TaskTabInfo) {
         this.hideAllContent();
@@ -99,7 +99,6 @@ export class ShopUIView extends BaseView {
                 break;
             case TaskTabIds.BuildingShop:
                 this._shopBuildView.node.active = true;
-                this._shopBuildView.updateData(this._currentTabId);
                 break;
             case TaskTabIds.Decoration:
                 this._shopDecorationView.node.active = true;
