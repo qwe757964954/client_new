@@ -79,7 +79,7 @@ export class GoodsDetailView extends BasePopup {
         this.labelPrice.string = data.buy.toString();
 
         // this.lblScore.string = "+" + data.medal;
-        this.lblLand.string = ToolUtil.replace(TextConfig.Pet_Mood_Prop, data.width);
+        this.lblLand.string = ToolUtil.replace(TextConfig.Pet_Mood_Prop, `${data.width}*${data.height}`);
         this.imgIcon.spriteFrame = this.spriteFrames[data.type - 1];
         LoadManager.loadSprite(data.png, this.img).then(() => {
             CCUtil.fixNodeScale(this.img.node, 260, 400);
