@@ -1,5 +1,5 @@
 import { _decorator, Node } from 'cc';
-import { PrefabType, PrefabTypeEntry } from '../../config/PrefabType';
+import { PrefabType } from '../../config/PrefabType';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { User } from '../../models/User';
 import { BaseView } from '../../script/BaseView';
@@ -39,9 +39,9 @@ export class RankView extends BaseView {
 
     private async initViews() {
         await Promise.all([
-            this.initViewComponent(PrefabType.VocabularyRankingView, (node) => this._vocabularyRankingView = node.getComponent(VocabularyRankingView)),
-            this.initViewComponent(PrefabType.KingdomRankingView, (node) => this._kingdomRankingView = node.getComponent(KingdomRankingView)),
-            this.initViewComponent(PrefabType.CombatPowerRankingView, (node) => this._combatPowerRankingView = node.getComponent(CombatPowerRankingView)),
+            this.initViewComponent(PrefabType.VocabularyRankingView, (node) => this._vocabularyRankingView = node.getComponent(VocabularyRankingView),null,this.content_layout),
+            this.initViewComponent(PrefabType.KingdomRankingView, (node) => this._kingdomRankingView = node.getComponent(KingdomRankingView),null,this.content_layout),
+            this.initViewComponent(PrefabType.CombatPowerRankingView, (node) => this._combatPowerRankingView = node.getComponent(CombatPowerRankingView),null,this.content_layout),
         ]);
     }
     initTabs(){
@@ -54,11 +54,7 @@ export class RankView extends BaseView {
             isAlignLeft: true,
             top: 129,
             left: 50
-        })
-    }
-    private async initViewComponent(prefabType: PrefabTypeEntry, onComponentInit: (node: Node) => void, alignOptions?: object) {
-        let node = await this.loadAndInitPrefab(prefabType, this.content_layout, alignOptions);
-        onComponentInit(node);
+        },this.content_layout)
     }
     private initNavTitle() {
         this.createNavigation("排行",this.top_layout, () => {

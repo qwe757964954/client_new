@@ -1,5 +1,5 @@
 import { _decorator, Node } from 'cc';
-import { PrefabType, PrefabTypeEntry } from '../../config/PrefabType';
+import { PrefabType } from '../../config/PrefabType';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { ActivityInfoResponse } from '../../models/ActivityModel';
 import { User } from '../../models/User';
@@ -57,11 +57,11 @@ export class RankView extends BaseView {
             this.initViewComponent(PrefabType.ActivityNewPeople, (node) => {
                 this._activityNewPeople = node.getComponent(ActivityNewPeople);
                 this._activityNewPeople.node.active = false;
-            }),
+            },null,this.content_layout),
             this.initViewComponent(PrefabType.WeekendCarouselView, (node) => {
                 this._weekendCarouselView = node.getComponent(WeekendCarouselView);
                 this._weekendCarouselView.node.active = false;
-            }),
+            },null,this.content_layout),
         ]);
     }
     initTabs(){
@@ -83,7 +83,7 @@ export class RankView extends BaseView {
             isAlignLeft: true,
             top: 129,
             left: 50
-        })
+        },this.content_layout)
     }
 
     private onTabSelect(info: TaskTabInfo) {
@@ -117,10 +117,6 @@ export class RankView extends BaseView {
             default:
                 break;
         }
-    }
-    private async initViewComponent(prefabType: PrefabTypeEntry, onComponentInit: (node: Node) => void, alignOptions?: object) {
-        let node = await this.loadAndInitPrefab(prefabType, this.content_layout, alignOptions);
-        onComponentInit(node);
     }
     private initNavTitle() {
         this.createNavigation("新人豪礼",this.top_layout, () => {

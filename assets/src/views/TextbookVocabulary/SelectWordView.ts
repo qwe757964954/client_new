@@ -43,8 +43,9 @@ export class SelectWordView extends BaseView {
     protected async initUI(){
         this.viewAdaptSize();
         this.initNavTitle();
+        await this.loadRightNav();
         await this.initTabContent();
-        this.loadRightNav();
+        
     }
     /** 初始化模块事件 */
 	protected onInitModuleEvent() {

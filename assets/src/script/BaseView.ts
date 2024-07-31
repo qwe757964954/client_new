@@ -178,5 +178,13 @@ export class BaseView extends Component {
 			throw err;
 		}
 	}
+	protected async initViewComponent(prefabType: PrefabTypeEntry, onComponentInit: (node: Node) => void, alignOptions?: object, parent?: Node): Promise<void> {
+		try {
+			let node = await this.loadAndInitPrefab(prefabType, parent || this.node, alignOptions);
+			onComponentInit(node);
+		} catch (error) {
+			console.error(`Error loading component ${prefabType}:`, error);
+		}
+	}
 }
 

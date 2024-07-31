@@ -6,7 +6,7 @@ import { TextConfig } from '../../config/TextConfig';
 import { DataMgr, EditInfo, EditType } from '../../manager/DataMgr';
 import { SoundMgr } from '../../manager/SoundMgr';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
-import { BuildingIDType, BuildingModel, BuildingOperationData, BuildingState } from '../../models/BuildingModel';
+import { BuildingIDType, BuildingModel, BuildingOperationData, BuildingOperationType, BuildingState, RecycleData } from '../../models/BuildingModel';
 import { CloudModel } from '../../models/CloudModel';
 import { RoleType } from '../../models/RoleBaseModel';
 import { RoleDataModel } from '../../models/RoleDataModel';
@@ -627,6 +627,10 @@ export class MainScene extends BaseComponent {
     findRecycleDataByBid(bid: number) {
         return this._mapUICtl.findRecycleDataByBid(bid);
     }
+    /**移除回收数据 */
+    removeRecycleData(data: RecycleData) {
+        return this._mapUICtl.removeRecycleData(data);
+    }
     /**回收建筑是否包含指定建筑 */
     isRecycleBuildingContain(bid: number) {
         return this._mapUICtl.isRecycleBuildingContain(bid);
@@ -649,6 +653,10 @@ export class MainScene extends BaseComponent {
     /**切换底格颜色 */
     changeBaseColor(isBaseColor: boolean) {
         this._mapUICtl.changeBaseColor(isBaseColor);
+    }
+    /**还原数据转换操作数据 */
+    recycleDataToOperationData(data: RecycleData, type: BuildingOperationType, editInfo: EditInfo) {
+        return this._mapUICtl.recycleDataToOperationData(data, type, editInfo);
     }
 }
 

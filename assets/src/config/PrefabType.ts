@@ -148,6 +148,7 @@ export const PrefabType = {
     BuildBuiltView: { path: "map/BuildBuiltView", zindex: Hierarchy.POPUPLAYER, tips: "建筑建造界面" },
     SpeedWordsView: { path: "map/SpeedWordsView", zindex: Hierarchy.POPUPLAYER, tips: "加速单词界面" },
     CloudConditionView: { path: "map/CloudConditionView", zindex: Hierarchy.POPUPLAYER, tips: "乌云解锁条件界面" },
+    BuildingSellView: { path: "map/BuildingSellView", zindex: Hierarchy.POPUPLAYER, tips: "建筑出售界面" },
     /*********************************************地图相关end*************************************************************/
     /*********************************************宠物相关start*************************************************************/
     PetInteractionView: { path: "map/PetInteractionView", zindex: Hierarchy.POPUPLAYER, tips: "宠物交互界面" },
@@ -217,6 +218,8 @@ export const PrefabType = {
     CollectView: { path: "collect/CollectView", zindex: Hierarchy.POPUPLAYER, tips: "成就徽章" },
     AchievementMedalsView: { path: "collect/AchievementMedalsView", zindex: Hierarchy.POPUPLAYER, tips: "成就徽章" },
     AchieveSelectView: { path: "collect/AchieveSelectView", zindex: Hierarchy.POPUPLAYER, tips: "徽章选择" },
+    AchieveTabView: { path: "collect/AchieveTabView", zindex: Hierarchy.POPUPLAYER, tips: "tab选择" },
+    AchieveThemeView: { path: "collect/ThemeView", zindex: Hierarchy.POPUPLAYER, tips: "主题选择" },
     MonsterCardView: { path: "collect/MonsterCardView", zindex: Hierarchy.POPUPLAYER, tips: "单词怪兽卡" },
     BuildingAtlasView: { path: "collect/BuildingAtlasView", zindex: Hierarchy.POPUPLAYER, tips: "建筑图鉴" },
     ClothingIllustratedView: { path: "collect/ClothingIllustratedView", zindex: Hierarchy.POPUPLAYER, tips: "服装图鉴" },

@@ -1,6 +1,6 @@
 import { _decorator, Node } from 'cc';
 import { EventType } from '../../config/EventType';
-import { PrefabType, PrefabTypeEntry } from '../../config/PrefabType';
+import { PrefabType } from '../../config/PrefabType';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { User } from '../../models/User';
 import { BaseView } from '../../script/BaseView';
@@ -54,10 +54,10 @@ export class ShopUIView extends BaseView {
     }
     private async initViews() {
         await Promise.all([
-            this.initViewComponent(PrefabType.ShopBuildView, (node) => this._shopBuildView = node.getComponent(ShopBuildView)),
-            this.initViewComponent(PrefabType.ShopStoreView, (node) => this._shopStoreView = node.getComponent(ShopStoreView)),
-            this.initViewComponent(PrefabType.ShopDecorationView, (node) => this._shopDecorationView = node.getComponent(ShopDecorationView)),
-            this.initViewComponent(PrefabType.DebrisAreaView, (node) => this._debrisAreaView = node.getComponent(DebrisAreaView)),
+            this.initViewComponent(PrefabType.ShopBuildView, (node) => this._shopBuildView = node.getComponent(ShopBuildView),null,this.content_layout),
+            this.initViewComponent(PrefabType.ShopStoreView, (node) => this._shopStoreView = node.getComponent(ShopStoreView),null,this.content_layout),
+            this.initViewComponent(PrefabType.ShopDecorationView, (node) => this._shopDecorationView = node.getComponent(ShopDecorationView),null,this.content_layout),
+            this.initViewComponent(PrefabType.DebrisAreaView, (node) => this._debrisAreaView = node.getComponent(DebrisAreaView),null,this.content_layout),
         ]);
     }
     initTabs(){
@@ -70,11 +70,7 @@ export class ShopUIView extends BaseView {
             isAlignLeft: true,
             top: 129,
             left: 50
-        })
-    }
-    private async initViewComponent(prefabType: PrefabTypeEntry, onComponentInit: (node: Node) => void, alignOptions?: object) {
-        let node = await this.loadAndInitPrefab(prefabType, this.content_layout, alignOptions);
-        onComponentInit(node);
+        },this.content_layout)
     }
 
     subTabItemClick(data:TabItemDataInfo){

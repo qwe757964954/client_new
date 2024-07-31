@@ -1,5 +1,5 @@
 import { _decorator, Node } from 'cc';
-import { PrefabType, PrefabTypeEntry } from '../../config/PrefabType';
+import { PrefabType } from '../../config/PrefabType';
 import { BaseView } from '../../script/BaseView';
 import List from '../../util/list/List';
 import { MyRank } from './MyRank';
@@ -23,10 +23,6 @@ export class CombatPowerRankingView extends BaseView {
                 left: 465.268
             }),
         ]);
-    }
-    private async initViewComponent(prefabType: PrefabTypeEntry, onComponentInit: (node: Node) => void, alignOptions?: object) {
-        let node = await this.loadAndInitPrefab(prefabType, this.node, alignOptions);
-        onComponentInit(node);
     }
     onLoadCombatPowerRanking(item:Node, idx:number){
         

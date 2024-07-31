@@ -2,12 +2,12 @@
   "ver": "1.1.50",
   "importer": "prefab",
   "imported": true,
-  "uuid": "fded836d-c460-438c-a856-1ae1c11188dd",
+  "uuid": "991f2c3a-ebdc-4f6e-b78e-49ce4d59f024",
   "files": [
     ".json"
   ],
   "subMetas": {},
   "userData": {
-    "syncNodeName": "MonsterTabItem"
+    "syncNodeName": "BuildingSellView"
   }
 }

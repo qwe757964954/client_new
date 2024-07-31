@@ -1,6 +1,7 @@
 import { EventMouse, EventTouch, Vec3 } from "cc";
 import { EventType } from "../../config/EventType";
 import { MapStatus } from "../../config/MapConfig";
+import { DataMgr } from "../../manager/DataMgr";
 import { ViewsManager } from "../../manager/ViewsManager";
 import { BuildingModel, BuildingOperationData, BuildingOperationType } from "../../models/BuildingModel";
 import { GridModel } from "../../models/GridModel";
@@ -10,6 +11,7 @@ import { InterfacePath } from "../../net/InterfacePath";
 import { ServiceMgr } from "../../net/ServiceManager";
 import { EventMgr } from "../../util/EventManager";
 import { MainScene } from "../main/MainScene";
+import { EditItemInfo } from "./EditItem";
 import { MapBaseCtl } from "./MapBaseCtl";
 
 //建筑编辑控制器
@@ -46,6 +48,7 @@ export class BuildEditCtl extends MapBaseCtl {
         this.addEvent(EventType.Building_RecycleEx, this.onBuildingRecycleEx.bind(this));
         this.addEvent(EventType.Building_Sell, this.onBuildingSell.bind(this));
         this.addEvent(EventType.BuildingBtnView_Close, this.onBuildingBtnViewClose.bind(this));
+        this.addEvent(EventType.Building_Batch_Sell, this.onBuildingBatchSell.bind(this));
     }
     // 销毁
     public dispose(): void {
@@ -280,15 +283,17 @@ export class BuildEditCtl extends MapBaseCtl {
                         obj.hide = 1;
                         createAry.push(obj);
                     }
-                } else if (BuildingOperationType.sell == data.type) {
+                } else if (BuildingOperationType.sell == data.type || BuildingOperationType.recycleSell == data.type) {
                     if (data.buildingID) {
                         deleteAry.push(data.buildingID);
                     }
                 }
-                processedAry.push(data.idx);
-                if (undefined == data.idx) {
-                    console.error("BuildEditCtl confirmEvent data.idx is undefined");
+                if (undefined != data.idx) {
+                    processedAry.push(data.idx);
                 }
+                // if (undefined == data.idx) {
+                //     console.error("BuildEditCtl confirmEvent data.idx is undefined");
+                // }
             });
         }
         if (0 == createAry.length && 0 == updateAry.length && 0 == deleteAry.length) {
@@ -315,6 +320,7 @@ export class BuildEditCtl extends MapBaseCtl {
         this._step = 0;
         this._operationCacheAry = [];
         this._mainScene.changeMapStatus(MapStatus.DEFAULT);
+        EventMgr.emit(EventType.Building_Need_Sort);
     }
     // UI上一步
     prevStepEvent(): void {
@@ -399,6 +405,8 @@ export class BuildEditCtl extends MapBaseCtl {
         this._tmpOperationData.idx = data.idx;
         this._tmpOperationData.buildingID = data.buildingID;
         this._tmpOperationData.editInfo = data.editInfo;
+        this._tmpOperationData.toLast = toLast;
+        this._tmpOperationData.recycleData = data.recycleData;
         if (toLast) {
             this._tmpOperationData.x = data.dataX;
             this._tmpOperationData.y = data.dataY;
@@ -421,5 +429,23 @@ export class BuildEditCtl extends MapBaseCtl {
     /**建筑按钮界面关闭 */
     onBuildingBtnViewClose() {
         this.clearData();
+    }
+    /**建筑批量卖出 */
+    onBuildingBatchSell(editItemInfo: EditItemInfo) {
+        let count = editItemInfo.count;
+        let bid = editItemInfo.id;
+        let editInfo = DataMgr.editInfo[bid];
+        let ary = this._mainScene.findRecycleDataByBid(bid);
+        let size = Math.min(count, ary.length);
+        if (size <= 0) return;
+        for (let i = 0; i < size; i++) {
+            let recycleData = ary[i];
+            let data = this._mainScene.recycleDataToOperationData(recycleData, BuildingOperationType.recycleSell, editInfo);
+            if (!data) continue;
+            this._operationCache.push(data);
+            this._mainScene.removeRecycleData(recycleData);
+        }
+        this.nextStep();
+        EventMgr.emit(EventType.EditUIView_Refresh);
     }
 }

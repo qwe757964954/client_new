@@ -1,6 +1,6 @@
 import { _decorator, Node } from 'cc';
 import { EventType } from '../../config/EventType';
-import { PrefabType, PrefabTypeEntry } from '../../config/PrefabType';
+import { PrefabType } from '../../config/PrefabType';
 import { ItemData } from '../../manager/DataMgr';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { ChallengeBoxRewardData, ChallengeTaskReward, TaskBaseData, UserMainTaskData, UserWeekTaskData } from '../../models/TaskModel';
@@ -62,21 +62,21 @@ export class WeekTaskView extends BaseView {
                 isAlignRight: true,
                 top: 123,
                 right: 78
-            }),
-            this.initViewComponent(PrefabType.TaskAchievementView, (node) => this._achievementView = node.getComponent(TaskAchievementView)),
+            },this.content_layout),
+            this.initViewComponent(PrefabType.TaskAchievementView, (node) => this._achievementView = node.getComponent(TaskAchievementView),null,this.content_layout),
             this.initViewComponent(PrefabType.TaskView, (node) => {
                 this._weekTask = node.getComponent(WeeklyTaskView);
                 this._weekTask.node.active = false;
-            }),
+            },null,this.content_layout),
             this.initViewComponent(PrefabType.MainTaskView, (node) => {
                 this._mainTask = node.getComponent(MainTaskView);
                 this._mainTask.node.active = false;
-            }),
+            },null,this.content_layout),
             this.initViewComponent(PrefabType.DailyTaskView, (node) => {
                 this._dailyTask = node.getComponent(DailyTaskView);
                 this._dailyTask.updateData([]);
                 this._dailyTask.node.active = false;
-            }),
+            },null,this.content_layout),
             
         ]);
     }
@@ -90,13 +90,8 @@ export class WeekTaskView extends BaseView {
             isAlignLeft: true,
             top: 129,
             left: 50
-        })
+        },this.content_layout)
     }
-    private async initViewComponent(prefabType: PrefabTypeEntry, onComponentInit: (node: Node) => void, alignOptions?: object) {
-        let node = await this.loadAndInitPrefab(prefabType, this.content_layout, alignOptions);
-        onComponentInit(node);
-    }
-
     private fetchInitialData() {
         TkServer.reqUserMainTask();
         TkServer.reqUserWeekTask();

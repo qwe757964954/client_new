@@ -130,6 +130,7 @@ export class EditUIView extends BaseComponent {
     initData() {
         this._isBaseColor = false;
         this._editType = null;
+        this._lastSelect = null;
         this.onBtnTypeClickEx(this.typeList.getItemByListId(0));
     }
     /**初始化类型 */
@@ -176,10 +177,12 @@ export class EditUIView extends BaseComponent {
             if (EditType.Land == info.type) {
                 this._itemsData.push(new EditItemInfo(info));
             } else {
-                let recycleData = this._mainScene.findRecycleDataByBid(info.id)
-                if (recycleData) {
+                let ary = this._mainScene.findRecycleDataByBid(info.id)
+                if (ary.length > 0) {
                     let itemInfo = new EditItemInfo(info);
+                    let recycleData = ary[0];
                     itemInfo.needBuilt = BuildingState.unBuilding == recycleData.data.state;
+                    itemInfo.count = ary.length;
                     this._itemsData.push(itemInfo);
                 }
             }

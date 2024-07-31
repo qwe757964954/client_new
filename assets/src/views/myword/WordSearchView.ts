@@ -1,5 +1,5 @@
 import { _decorator, Node } from 'cc';
-import { PrefabType, PrefabTypeEntry } from '../../config/PrefabType';
+import { PrefabType } from '../../config/PrefabType';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { WordsDetailData } from '../../models/AdventureModel';
 import { BaseView } from '../../script/BaseView';
@@ -40,10 +40,6 @@ export class WordSearchView extends BaseView {
                 bottom: 0
             }),
         ]);
-    }
-    private async initViewComponent(prefabType: PrefabTypeEntry, onComponentInit: (node: Node) => void, alignOptions?: object) {
-        let node = await this.loadAndInitPrefab(prefabType, this.node, alignOptions);
-        onComponentInit(node);
     }
 }
 
