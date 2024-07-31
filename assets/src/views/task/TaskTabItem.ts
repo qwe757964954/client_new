@@ -67,22 +67,29 @@ export class TaskTabItem extends ListItem {
     }
 
     updateSelectTabContent(){
+        console.log("updateSelectTabContent___________");
         let to_numItems = this._showSubItem ? this._tab_info.subTabItems.length : 0;
         this.sub_scroll.numItems = to_numItems;
         let calculate_height = to_numItems * sub_item_height;
         this.animateHeightChange(this.sub_scroll.scrollView, calculate_height);
         this.animateHeightChange(this.sub_scroll.scrollView.view, calculate_height);
         this.animateHeightChange(this.node, calculate_height + this._start_height);
-        this.sub_scroll.selectedId = 0;
         this.tab_focus.active = this._tab_info.subTabItems.length > 0;
         this.animateRotation(this.tab_focus,0);
+        this.scheduleOnce(()=>{
+            this.sub_scroll.selectedId = -1;
+            this.sub_scroll.selectedId = 0;
+        },0.1);
     }
 
     animateHeightChange(node: any, height: number) {
         if (node && node.isValid) {
             tween(node.getComponent(UITransform))
                 .to(0.1, { height: height })
-                .start();
+                .call(() => {
+                    
+                }).start();
+                
         }
     }
 
