@@ -77,6 +77,12 @@ export default class GlobalConfig {
                 'unhandledrejection',
                 (error: PromiseRejectionEvent) => {
                     ErrorUtil.log(error.reason);
+                    if (document) {
+                        let element = document.getElementById("error");
+                        if (element) {
+                            element.style.display = 'none';
+                        }
+                    }
                     // console.log("unhandledrejection", error.reason);
                 },
                 true,
