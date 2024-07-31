@@ -74,7 +74,6 @@ export class ShopUIView extends BaseView {
     }
 
     subTabItemClick(data:TabItemDataInfo){
-        console.log("subTabItemClick....",data);
         this._currentTabId = data.id;
         this._shopBuildView.updateData(this._currentTabId);
     }
@@ -89,7 +88,6 @@ export class ShopUIView extends BaseView {
         this._debrisAreaView.node.active = false;
     }
     private selectMenuType(info: TaskTabInfo) {
-        console.log("selectMenuType");
         this._navTitleView.setTitleName(info.title);
         switch (info.id) {
             case TaskTabIds.ImageStore:

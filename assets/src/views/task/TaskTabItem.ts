@@ -67,7 +67,6 @@ export class TaskTabItem extends ListItem {
     }
 
     updateSelectTabContent(){
-        console.log("updateSelectTabContent___________");
         let to_numItems = this._showSubItem ? this._tab_info.subTabItems.length : 0;
         this.sub_scroll.numItems = to_numItems;
         let calculate_height = to_numItems * sub_item_height;
