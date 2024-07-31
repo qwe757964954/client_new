@@ -1,9 +1,10 @@
-import { _decorator, Label, Node, Sprite, SpriteFrame } from 'cc';
+import { _decorator, Button, Label, Node, Sprite, SpriteFrame } from 'cc';
 import { EventType } from '../../config/EventType';
 import { TextConfig } from '../../config/TextConfig';
-import { EditInfo } from '../../manager/DataMgr';
+import { EditInfo, EditType } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
 import { ViewsManager } from '../../manager/ViewsManager';
+import { User } from '../../models/User';
 import { ServiceMgr } from '../../net/ServiceManager';
 import { BasePopup } from '../../script/BasePopup';
 import CCUtil from '../../util/CCUtil';
@@ -63,12 +64,11 @@ export class GoodsDetailView extends BasePopup {
     /** 初始化事件 */
     public initEvent() {
         CCUtil.onTouch(this.btnClose, this.onClickClose, this);
-        CCUtil.onTouch(this.btnBuy, this.onClickBuy, this);
+        CCUtil.onBtnClick(this.btnBuy, this.onClickBuy.bind(this));
     }
     /** 销毁事件 */
     public removeEvent() {
         CCUtil.offTouch(this.btnClose, this.onClickClose, this);
-        CCUtil.offTouch(this.btnBuy, this.onClickBuy, this);
     }
     /** 初始化数据 */
     public initData(data: EditInfo) {
@@ -84,6 +84,10 @@ export class GoodsDetailView extends BasePopup {
         LoadManager.loadSprite(data.png, this.img).then(() => {
             CCUtil.fixNodeScale(this.img.node, 260, 400);
         });
+        let not_buy = (User.buildingList.includes(data.id) && (data.type === EditType.Buiding || data.type === EditType.LandmarkBuiding))
+        this.btnBuy.getComponent(Sprite).grayscale = not_buy;
+        this.btnBuy.getComponent(Button).interactable = !not_buy;
+        this.labelPrice.string = not_buy ? "售罄" :data.buy.toString();
     }
 
     onClickBuy() {

@@ -1,9 +1,10 @@
-import { _decorator, Component, Label, Node, Sprite, SpriteFrame } from 'cc';
+import { _decorator, Button, Component, Label, Node, Sprite, SpriteFrame } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
-import { EditInfo } from '../../manager/DataMgr';
+import { EditInfo, EditType } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
 import { ViewsManager } from '../../manager/ViewsManager';
+import { User } from '../../models/User';
 import { ServiceMgr } from '../../net/ServiceManager';
 import CCUtil from '../../util/CCUtil';
 import { ToolUtil } from '../../util/ToolUtil';
@@ -54,20 +55,23 @@ export class ShopGoodsItem extends Component {
         this.lblName.string = data.name;
         // this.lblScore.string = "+" + goodData.medal;
         this.lblPrice.string = data.buy.toString();
-        this.lblLand.string = ToolUtil.replace(TextConfig.Pet_Mood_Prop, data.width*data.height);
+        this.lblLand.string =  ToolUtil.replace(TextConfig.Pet_Mood_Prop, `${data.width}*${data.height}`);
         this.sprFunction.spriteFrame = this.sprFuncAry[data.type - 1];
         LoadManager.loadSprite(data.png, this.sprIcon).then(() => {
             CCUtil.fixNodeScale(this.sprIcon.node, 260, 260, true);
         });
+        let not_buy = (User.buildingList.includes(data.id) && (data.type === EditType.Buiding || data.type === EditType.LandmarkBuiding))
+        this.btnBuy.getComponent(Sprite).grayscale = not_buy;
+        this.btnBuy.getComponent(Button).interactable = !not_buy;
+        this.lblPrice.string = not_buy ? "售罄" :data.buy.toString();
     }
 
     initEvent() {
-        CCUtil.onTouch(this.btnBuy, this.onBuyClick, this);
+        CCUtil.onBtnClick(this.btnBuy, this.onBuyClick.bind(this));
         CCUtil.onTouch(this.ndGoods, this.onClickGoods, this);
     }
 
     removeEvent() {
-        CCUtil.offTouch(this.btnBuy, this.onBuyClick, this);
         CCUtil.offTouch(this.ndGoods, this.onClickGoods, this);
     }
 

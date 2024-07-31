@@ -1,6 +1,5 @@
 import { _decorator, Node } from 'cc';
 import { DataMgr, EditInfo, EditType } from '../../manager/DataMgr';
-import { User } from '../../models/User';
 import { BaseView } from '../../script/BaseView';
 import List from '../../util/list/List';
 import { TabTypeIds } from '../task/TaskInfo';
@@ -24,9 +23,8 @@ export class ShopBuildView extends BaseView {
         let editConfig = DataMgr.instance.editInfo;
         let cleanedEditConfig = editConfig.filter(item => item !== null && item !== undefined && item.type !== EditType.Null );
         // 使用 filter 方法过滤掉具有特定 id 的元素  Buiding = 1,//功能性建筑
-        cleanedEditConfig = cleanedEditConfig.filter(item => 
-            !(User.buildingList.includes(item.id) && (item.type === EditType.Buiding || item.type === EditType.LandmarkBuiding))
-        );   
+        // cleanedEditConfig = cleanedEditConfig.filter(item => 
+        // );   
         switch (id) {
             case TabTypeIds.BuildAll:
                 this._itemsData = cleanedEditConfig;
