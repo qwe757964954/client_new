@@ -811,9 +811,9 @@ export class MapUICtl extends MainBaseCtl {
         }
         return building;
     }
-    newBuildingInCamera(data: EditInfo) {
+    newBuildingInCamera(data: EditInfo, gridModel?: GridModel) {
         let winSize = GlobalConfig.SCREEN_SIZE;
-        let grid = this.getTouchGrid(winSize.width * 0.5, winSize.height * 0.5);
+        let grid = gridModel ? gridModel : this.getTouchGrid(winSize.width * 0.5, winSize.height * 0.5);
         if (grid) {
             for (let i = 0; i < data.width; i++) {
                 for (let j = 0; j < data.height; j++) {

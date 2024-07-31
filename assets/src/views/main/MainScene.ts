@@ -171,6 +171,7 @@ export class MainScene extends BaseComponent {
 
         this.addEvent(EventType.BuildingBtnView_Close, this.onBuildingBtnViewClose.bind(this));
         this.addEvent(EventType.New_Building, this.onBuildLandClick.bind(this));
+        this.addEvent(EventType.EditItem_Touch_Cancel, this.onEditItemTouchCancel.bind(this));
 
         // TimerMgr.loop(() => {
         //     console.log("加载音效开始");
@@ -364,6 +365,9 @@ export class MainScene extends BaseComponent {
         if (!building) {
             ViewsManager.showTip(TextConfig.Building_New_Error);
             return;
+        }
+        if (this._editUIView.isBaseColor) {
+            building.isShowBaseColor = true;
         }
         this._buildingEditCtl.selectBuilding = building;
         this.changeMapStatus(MapStatus.BUILD_EDIT);
@@ -657,6 +661,23 @@ export class MainScene extends BaseComponent {
     /**还原数据转换操作数据 */
     recycleDataToOperationData(data: RecycleData, type: BuildingOperationType, editInfo: EditInfo) {
         return this._mapUICtl.recycleDataToOperationData(data, type, editInfo);
+    }
+    /**编辑元素点击取消事件 */
+    onEditItemTouchCancel(data: { editInfo: EditInfo, e: EventTouch }) {
+        let pos = data.e.getLocation();
+        let gridModel = this.getTouchGrid(pos.x, pos.y);
+        if (!gridModel) return;
+
+        let building = this._mapUICtl.newBuildingInCamera(data.editInfo, gridModel);
+        if (!building) {
+            ViewsManager.showTip(TextConfig.Building_New_Error);
+            return;
+        }
+        if (this._editUIView.isBaseColor) {
+            building.isShowBaseColor = true;
+        }
+        this._buildingEditCtl.selectBuilding = building;
+        this.changeMapStatus(MapStatus.BUILD_EDIT);
     }
 }
 

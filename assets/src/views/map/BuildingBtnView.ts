@@ -24,6 +24,7 @@ export class BuildingBtnView extends Component {
 
     onLoad() {
         this.init();
+        this.btnSell.active = false;
     }
     protected onDestroy(): void {
         this.removeEvent();

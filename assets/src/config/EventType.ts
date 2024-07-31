@@ -30,6 +30,8 @@ export const EventType = {
     Building_Shop_Buy: "BuildingShopBuy",//建筑商店购买
     Building_Batch_Sell: "BuildingBatchSell",//建筑批量出售
 
+    EditItem_Touch_Cancel: "EditItemTouchCancel",//编辑物品点击事件取消
+
     Stamina_Update: "StaminaUpdate",//体力更新
     Coin_Update: "CoinUpdate",//金币更新
     Diamond_Update: "DiamondUpdate",//钻石更新

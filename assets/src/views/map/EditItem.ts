@@ -1,4 +1,4 @@
-import { _decorator, Component, Label, Node, Sprite, SpriteFrame, UITransform, Vec3 } from 'cc';
+import { _decorator, Component, EventTouch, Label, Node, Sprite, SpriteFrame, UITransform, Vec3 } from 'cc';
 import { EventType } from '../../config/EventType';
 import { MapConfig } from '../../config/MapConfig';
 import { PrefabType } from '../../config/PrefabType';
@@ -68,6 +68,8 @@ export class EditItem extends Component {
     initEvent() {
         CCUtil.onTouch(this.node, this.onItemClick, this);
         CCUtil.onTouch(this.btnSell, this.onBtnSellClick, this);
+
+
     }
     // 移除监听
     removeEvent() {
@@ -77,6 +79,19 @@ export class EditItem extends Component {
     // 销毁
     protected onDestroy(): void {
         this.removeEvent();
+        this.removeTouchEvent();
+    }
+    /**初始化点击事件 */
+    initTouchEvent() {
+        this.node.on(Node.EventType.TOUCH_START, this.onTouchStart, this);
+        this.node.on(Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
+        this.node.on(Node.EventType.TOUCH_CANCEL, this.onTouchCancel, this);
+    }
+    /**移除点击事件 */
+    removeTouchEvent() {
+        this.node.off(Node.EventType.TOUCH_START, this.onTouchStart, this);
+        this.node.off(Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
+        this.node.off(Node.EventType.TOUCH_CANCEL, this.onTouchCancel, this);
     }
 
     // 初始化
@@ -92,6 +107,9 @@ export class EditItem extends Component {
             this.fixImg();
         });
         this.btnSell.active = info.sell > 0;
+        if (EditType.Land != info.type) {
+            this.initTouchEvent();
+        }
     }
     // 点击
     public onItemClick(): void {
@@ -135,6 +153,20 @@ export class EditItem extends Component {
                 EventMgr.emit(EventType.Building_Batch_Sell, this._data);
             });
         });
+    }
+    /* 点击开始 **/
+    onTouchStart(e: EventTouch) {
+        // console.log("onTouchStart", this._data.id);
+    }
+    /* 点击移动 **/
+    onTouchMove(e: EventTouch) {
+        // console.log("onTouchMove", this._data.id);
+    }
+    /* 点击取消 **/
+    onTouchCancel(e: EventTouch) {
+        // console.log("onTouchCancel", this._data.id);
+        if (e.simulate) return;//scrollview滑动时会触发取消
+        EventMgr.emit(EventType.EditItem_Touch_Cancel, { editInfo: this._data, e: e });
     }
 }
 
