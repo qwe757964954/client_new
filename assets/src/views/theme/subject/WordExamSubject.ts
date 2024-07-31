@@ -120,6 +120,7 @@ export class WordExamSubject extends BaseView {
 
     clearSplitItems() {
         for (let i = 0; i < this._examItemList.length; i++) {
+            if (!this._examItemList[i]) continue;
             this._examItemList[i].off(Node.EventType.TOUCH_END, this.onExamItemClick, this);
             this._examItemList[i].destroy();
         }

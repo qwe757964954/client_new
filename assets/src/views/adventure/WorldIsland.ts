@@ -19,6 +19,7 @@ import { UnitItem } from './common/UnitItem';
 import { SubjectView } from '../theme/SubjectView';
 import { GradeSkipSubjectMgr } from '../theme/GradeSkipSubjectManager';
 import { UnitExerciseView } from '../theme/UnitExerciseView';
+import { BaseRepPacket } from '../../models/NetModel';
 const { ccclass, property } = _decorator;
 
 /**魔法森林 何存发 2024年4月9日17:51:36 */
@@ -321,9 +322,28 @@ export class WorldIsland extends Component {
         this._isRequest = false;
         console.log("onGetBossLevelTopic", data);
         data.big_id = this._bigId;
-        ViewsManager.instance.showView(PrefabType.WordBossView, (node: Node) => {
-            node.getComponent(WordBossView).initData(data);
-        });
+        if (data.challenge_info.word_num > 0) {
+            ViewsMgr.showConfirm("是否继续上次闯关进度?", () => {
+                ViewsManager.instance.showView(PrefabType.WordBossView, (node: Node) => {
+                    node.getComponent(WordBossView).initData(data);
+                });
+            }, () => {
+                ServiceMgr.studyService.bossLevelRestart(this._bigId, data.challenge_info.bl_id);
+            }, "延续上次", "重新开始", false);
+        } else {
+            ViewsManager.instance.showView(PrefabType.WordBossView, (node: Node) => {
+                node.getComponent(WordBossView).initData(data);
+            });
+        }
+    }
+
+    onBossGameRestart(data: BaseRepPacket) {
+        this._isRequest = false;
+        if (data.code != 200) {
+            ViewsManager.showTip(data.msg);
+            return;
+        }
+        this.enterBossLevel();
     }
 
     enterBossLevel() {
@@ -431,6 +451,7 @@ export class WorldIsland extends Component {
         EventMgr.addListener(InterfacePath.WordGame_UnitWords, this.onGetUnitWords, this);
         EventMgr.addListener(EventType.GradeSkip_Challenge, this.onGradeSkipChallenge, this);
         EventMgr.addListener(InterfacePath.GradeSkip_ExercisesList, this.onGradeSkipExercises, this);
+        EventMgr.addListener(InterfacePath.WordBossGame_Restart, this.onBossGameRestart, this);
     }
     /**移除监听 */
     private removeEvent() {

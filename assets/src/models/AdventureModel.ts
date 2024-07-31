@@ -351,6 +351,12 @@ export class BossLevelSubmitData extends BaseRepPacket {
     flag: number;
     award_info: any;
 }
+//boss关卡重新开始
+export class c2sBossLevelRestart {
+    command_id: string = InterfacePath.WordBossGame_Restart;
+    big_id: number;
+    bl_id: string;
+}
 
 //获取岛屿进度奖励
 export class c2sGetProgressReward {
