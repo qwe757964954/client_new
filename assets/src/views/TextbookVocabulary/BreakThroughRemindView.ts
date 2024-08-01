@@ -37,7 +37,11 @@ export class BreakThroughRemindView extends BasePopup {
     initEvent() {
         CCUtil.onBtnClick(this.btn_blue, this.onClickSure.bind(this));
         CCUtil.onBtnClick(this.btn_green, this.onClickCancel.bind(this));
-        CCUtil.onBtnClick(this.closeIcon, this.onClickCancel.bind(this));
+        CCUtil.onBtnClick(this.closeIcon, this.onCloseClick.bind(this));
+    }
+
+    onCloseClick(){
+        this.closePop();
     }
 
     initRemind(data:ITextbookRemindData){
