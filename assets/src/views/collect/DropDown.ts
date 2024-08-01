@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, tween, UITransform, v3 } from 'cc';
+import { _decorator, CCFloat, Component, Node, tween, UITransform, v3 } from 'cc';
 import List from '../../util/list/List';
 const { ccclass, property } = _decorator;
 
@@ -16,7 +16,7 @@ export class Dropdown extends Component {
     @property(Node)
     public contentBg: Node = null; // The content of the dropdown
 
-    @property(Number)
+    @property(CCFloat)
     public itemHeight: number = 55.3; // The height of each item
 
     private isOpen: boolean = false;
