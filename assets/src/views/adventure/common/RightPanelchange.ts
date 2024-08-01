@@ -203,20 +203,25 @@ export class rightPanelchange extends Component {
         let data = this._data;
         //有星星
         if (isValid(data.flag_info) && isValid(data.flag_info.star_one)) {
+            let starnum = 0;
             let isGet = isValid(data.flag_info.star_one);
-            this.stars[0].getComponent(Sprite).grayscale = !isGet;
+            if (isGet) starnum++;
             this.starConditions[0].getComponent(Sprite).grayscale = !isGet;
-            this.starConditions[0].getChildByName("star").getComponent(Sprite).grayscale = !isGet;
+            this.starConditions[0].getChildByName("star").active = isGet;
 
             isGet = isValid(data.flag_info.star_two);
-            this.stars[1].getComponent(Sprite).grayscale = !isGet;
+            if (isGet) starnum++;
             this.starConditions[1].getComponent(Sprite).grayscale = !isGet;
-            this.starConditions[1].getChildByName("star").getComponent(Sprite).grayscale = !isGet;
+            this.starConditions[1].getChildByName("star").active = isGet;
 
             isGet = isValid(data.flag_info.star_three);
-            this.stars[2].getComponent(Sprite).grayscale = !isGet;
+            if (isGet) starnum++;
             this.starConditions[2].getComponent(Sprite).grayscale = !isGet;
-            this.starConditions[2].getChildByName("star").getComponent(Sprite).grayscale = !isGet;
+            this.starConditions[2].getChildByName("star").active = isGet;
+
+            for (let i = 0; i < 3; i++) {
+                this.stars[i].getComponent(Sprite).grayscale = i >= starnum;
+            }
 
             this.btn_test.getComponent(Sprite).grayscale = false;
             this.btn_test.getComponent(Button).enabled = true;
@@ -224,7 +229,7 @@ export class rightPanelchange extends Component {
             for (let i = 0; i < 3; i++) {
                 this.stars[i].getComponent(Sprite).grayscale = true;
                 this.starConditions[i].getComponent(Sprite).grayscale = true;
-                this.starConditions[i].getChildByName("star").getComponent(Sprite).grayscale = true;
+                this.starConditions[i].getChildByName("star").active = false;
             }
             this.btn_test.getComponent(Sprite).grayscale = true;
             this.btn_test.getComponent(Button).enabled = false;

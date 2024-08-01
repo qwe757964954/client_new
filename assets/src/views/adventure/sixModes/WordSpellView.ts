@@ -203,7 +203,10 @@ export class WordSpellView extends BaseModeView {
                 });
             } else { //回答错误
                 this.resultSprite.getComponent(Sprite).spriteFrame = this.wrongSprite;
-                wordItem.selectWrong();
+                for (let i = 0; i < this._selectItems.length; i++) {
+                    this._selectItems[i].getComponent(SpellWordItem).selectWrong();
+                }
+                // wordItem.selectWrong();
                 this._comboNum = 0;
                 SoundMgr.wrong();
                 // if (this._wrongWordList.indexOf(this._rightWordData) == -1 && !this._wrongMode && !this._errorWords[this._rightWordData.word]) {

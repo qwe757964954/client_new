@@ -13,6 +13,8 @@ import { BaseModeView } from './BaseModeView';
 import { WordSplitItem } from './items/WordSplitItem';
 import { WordMeaningView } from './WordMeaningView';
 import { Shake } from '../../../util/Shake';
+import { SoundMgr } from '../../../manager/SoundMgr';
+import AudioUtil from '../../../util/AudioUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('StudyModeView')
@@ -66,6 +68,8 @@ export class StudyModeView extends BaseModeView {
     protected _monster: Node = null;
     protected _nodePool: NodePool = new NodePool("wordSplitItem");
     private _isTweening: boolean = false;
+
+    private _playingUrl: string = null;
 
     onLoad(): void {
         this.gameMode = GameMode.Study;
@@ -146,11 +150,13 @@ export class StudyModeView extends BaseModeView {
 
     onSplitItemClick(item: Node, idx: number) {
         if (this._isCombine) return;
-        if (this._isSplitPlaying || idx != this._currentSplitIdx) {
+        if (idx != this._currentSplitIdx) {
             item.getComponent(Shake).shakeNode();
             return;
         }
-        this._isSplitPlaying = true;
+        if (this._playingUrl)
+            RemoteSoundMgr.stopSound(this._playingUrl);
+        // this._isSplitPlaying = true;
         const wordSplitItem = item.getComponent(WordSplitItem);
         const splitWord = wordSplitItem.word;
         wordSplitItem.select();
@@ -159,10 +165,10 @@ export class StudyModeView extends BaseModeView {
         if (!this._splits[this._wordIndex].length) {
             url = `${NetConfig.assertUrl}/sounds/glossary/words/en/${this._wordsData[this._wordIndex].word}.wav`;
         }
-
+        this._playingUrl = url;
+        this._currentSplitIdx++;
         RemoteSoundMgr.playSound(url).then(() => {
-            this._isSplitPlaying = false;
-            this._currentSplitIdx++;
+            // this._isSplitPlaying = false;
             if (this._currentSplitIdx === this._splits[this._wordIndex].length) {
                 this.combineWord();
             }

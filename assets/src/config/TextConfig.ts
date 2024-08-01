@@ -161,4 +161,7 @@ export const TextConfig = {
     Insufficient_Draw_Carousel: "今日抽奖机会用完啦",
     Word_Empty_Tips: "单词查询结果为空",
     Word_Error_Tips: "获取单词详情失败",
+
+    //其他提示
+    Midway_Exit: "(中途退出，进度会保存，下次可延续当前进度)"
 }

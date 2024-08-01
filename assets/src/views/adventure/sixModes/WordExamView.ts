@@ -8,6 +8,7 @@ import List from '../../../util/list/List';
 import { BaseModeView } from './BaseModeView';
 import { ExamReportView } from './ExamReportView';
 import { ExamItem } from './items/ExamItem';
+import CCUtil from '../../../util/CCUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordExamView')
@@ -181,6 +182,7 @@ export class WordExamView extends BaseModeView {
 
     //回退键处理
     onBackKeyClick() {
+        SoundMgr.click();
         if (this._selectLock) return;
         let lastLetterIdx = -1;
         for (let i = this._fillLetters.length - 1; i >= 0; i--) {
@@ -207,7 +209,8 @@ export class WordExamView extends BaseModeView {
             let posX = 95 * (i % 12);
             examItem.position = new Vec3(posX, -115 * Math.floor(i / 12));
             examItem.parent = this.itemNode;
-            examItem.on(Node.EventType.TOUCH_END, this.onExamItemClick, this);
+            // examItem.on(Node.EventType.TOUCH_END, this.onExamItemClick, this);
+            CCUtil.onTouch(examItem, this.onExamItemClick, this);
             this._examItemList.push(examItem);
             if (maxX < posX) {
                 maxX = posX;
@@ -232,7 +235,8 @@ export class WordExamView extends BaseModeView {
         for (let i = 0; i < this._examItemList.length; i++) {
             this._examItemList[i].parent = null;
             this._nodePool.put(this._examItemList[i]);
-            this._examItemList[i].off(Node.EventType.TOUCH_END, this.onExamItemClick, this);
+            // this._examItemList[i].off(Node.EventType.TOUCH_END, this.onExamItemClick, this);
+            CCUtil.offTouch(this._examItemList[i], this.onExamItemClick, this);
         }
         this._examItemList = [];
     }

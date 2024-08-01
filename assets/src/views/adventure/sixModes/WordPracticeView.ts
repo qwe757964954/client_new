@@ -12,6 +12,7 @@ import { BaseModeView } from './BaseModeView';
 import { LetterItem } from './items/LetterItem';
 import { SelectLetterItem } from './items/SelectLetterItem';
 import { WordSpellView } from './WordSpellView';
+import { Shake } from '../../../util/Shake';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordPracticeView')
@@ -79,6 +80,7 @@ export class WordPracticeView extends BaseModeView {
         for (let i = 0; i < splits.length; i++) {
             if (this._selectLetterList[idx].letter != splits[i][0]) { //如果当前字母与拆分不对应则跳过该字母
                 idx++;
+                i--;
                 continue;
             }
             let temp = idx;
@@ -114,7 +116,10 @@ export class WordPracticeView extends BaseModeView {
     }
 
     onItemClick(item: Node, index: number) {
-        if (index != this._currentLetterIdx) return;
+        if (index != this._currentLetterIdx) {
+            item.getComponent(Shake).shakeNode();
+            return;
+        }
         item.removeFromParent();
         this._letterItems[index].getComponent(LetterItem).showLetter();
 

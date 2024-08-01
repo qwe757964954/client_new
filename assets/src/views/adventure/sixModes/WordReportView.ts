@@ -40,6 +40,8 @@ export class WordReportView extends BaseView {
 
     @property(Node)
     public next_level_btn: Node = null;
+    @property(Node)
+    public close_btn: Node = null;
 
     @property(List)
     public reward_scroll: List = null;
@@ -68,7 +70,7 @@ export class WordReportView extends BaseView {
         this.initRolePlayer();
     }
 
-    initData(data: GameSubmitResponse, gameModel: number,source_type: number) {
+    initData(data: GameSubmitResponse, gameModel: number, source_type: number) {
         this.evaluation_btn.active = gameModel !== 2;
         this._resultSubmitResponse = data;
         if (this._resultSubmitResponse.pass_flag == 1) {
@@ -109,7 +111,7 @@ export class WordReportView extends BaseView {
                 }
                 this._propsData = [...this._propsData, ...awardInfo.random_reward];
             }
-            if(source_type === WordSourceType.classification){
+            if (source_type === WordSourceType.classification) {
                 this._propsData = ObjectUtil.convertAwardsToItemData(this._resultSubmitResponse.award_info);
             }
             this.reward_scroll.numItems = this._propsData.length;
@@ -168,6 +170,9 @@ export class WordReportView extends BaseView {
         });
         CCUtil.onBtnClick(this.next_level_btn, () => {
             this.gotoNextLevel();
+        });
+        CCUtil.onBtnClick(this.close_btn, () => {
+            this.gotoLevelList();
         });
 
     }

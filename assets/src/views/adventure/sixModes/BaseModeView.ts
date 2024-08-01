@@ -28,6 +28,7 @@ import { SmallMonsterModel } from '../../common/SmallMonsterModel';
 import { EducationDataInfos } from '../../TextbookVocabulary/TextbookInfo';
 import { MonsterModel } from '../common/MonsterModel';
 import { TopLabel } from '../common/TopLabel';
+import { ConfirmView } from '../../common/ConfirmView';
 const { ccclass, property } = _decorator;
 
 export enum WordSourceType {
@@ -696,6 +697,8 @@ export class BaseModeView extends BaseView {
                 ServiceMgr.studyService.reqReviewPlan();//刷新复习规划
             }
             this.node.destroy();
+        }).then((confirmView) => {
+            confirmView.showExtraLabel(TextConfig.Midway_Exit);
         });
     }
     onDestroy(): void {

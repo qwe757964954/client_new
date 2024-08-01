@@ -6,6 +6,8 @@ import { ExamItem } from '../../adventure/sixModes/items/ExamItem';
 import { EventMgr } from '../../../util/EventManager';
 import { EventType } from '../../../config/EventType';
 import { WordBaseData } from '../../../models/SubjectModel';
+import CCUtil from '../../../util/CCUtil';
+import { SoundMgr } from '../../../manager/SoundMgr';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordExamSubject')
@@ -109,7 +111,8 @@ export class WordExamSubject extends BaseView {
             let posX = 95 * (i % 12);
             examItem.position = new Vec3(posX, -115 * Math.floor(i / 12));
             examItem.parent = this.itemNode;
-            examItem.on(Node.EventType.TOUCH_END, this.onExamItemClick, this);
+            // examItem.on(Node.EventType.TOUCH_END, this.onExamItemClick, this);
+            CCUtil.onTouch(examItem, this.onExamItemClick, this);
             this._examItemList.push(examItem);
             if (maxX < posX) {
                 maxX = posX;
@@ -121,7 +124,8 @@ export class WordExamSubject extends BaseView {
     clearSplitItems() {
         for (let i = 0; i < this._examItemList.length; i++) {
             if (!this._examItemList[i]) continue;
-            this._examItemList[i].off(Node.EventType.TOUCH_END, this.onExamItemClick, this);
+            // this._examItemList[i].off(Node.EventType.TOUCH_END, this.onExamItemClick, this);
+            CCUtil.offTouch(this._examItemList[i], this.onExamItemClick, this);
             this._examItemList[i].destroy();
         }
         this._examItemList = [];
@@ -129,6 +133,7 @@ export class WordExamSubject extends BaseView {
 
     //回退键处理
     onBackKeyClick() {
+        SoundMgr.click();
         if (this._selectLock) return;
         let lastLetterIdx = -1;
         for (let i = this._fillLetters.length - 1; i >= 0; i--) {

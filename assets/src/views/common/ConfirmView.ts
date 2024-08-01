@@ -19,9 +19,12 @@ export class ConfirmView extends BasePopup {
     public labelCancel: Label = null;//取消文字
     @property(Node)
     public btnClose: Node = null;//关闭
+    @property(Label)
+    public extraLabel: Label = null;//额外文字
 
     private _sureCall: Function = null;
     private _cancelCall: Function = null;
+    private _closeCall: Function = null;
     private _canClose: boolean = true;
 
     protected initUI(): void {
@@ -31,13 +34,13 @@ export class ConfirmView extends BasePopup {
     initEvent() {
         CCUtil.onTouch(this.btnSure, this.onSureClick, this);
         CCUtil.onTouch(this.btnCancel, this.onCancelClick, this);
-        CCUtil.onTouch(this.btnClose, this.onCancelClick, this);
+        CCUtil.onTouch(this.btnClose, this.onClose, this);
     }
 
     removeEvent() {
         CCUtil.offTouch(this.btnSure, this.onSureClick, this);
         CCUtil.offTouch(this.btnCancel, this.onCancelClick, this);
-        CCUtil.offTouch(this.btnClose, this.onCancelClick, this);
+        CCUtil.offTouch(this.btnClose, this.onClose, this);
     }
 
     init(content: string, sureCall?: Function, cancelCall?: Function, sureStr?: string, cancelStr?: string, canClose: boolean = true) {
@@ -54,14 +57,28 @@ export class ConfirmView extends BasePopup {
             });
         }
     }
+
+    showExtraLabel(content: string) {
+        this.extraLabel.string = content;
+        this.extraLabel.node.active = true;
+    }
+    // 设置关闭回调
+    setCloseCall(call: Function) {
+        this._closeCall = call;
+    }
     // 确定按钮点击
     onSureClick() {
         this._sureCall?.();
         this.closePop();
     }
-    // 关闭按钮点击
+    // 取消按钮点击
     onCancelClick() {
         this._cancelCall?.();
+        this.closePop();
+    }
+
+    onClose() {//关闭按钮
+        this._closeCall?.();
         this.closePop();
     }
 }

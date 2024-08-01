@@ -47,14 +47,18 @@ export class MapPointItem extends Component {
         bgSp.grayscale = false;
         this.clearPointStars();
         if (isValid(data.flag_info) && isValid(data.flag_info.star_one)) {
+            let starnum = 0;
             if (isValid(data.flag_info.star_one)) {
-                this.stars[0].getComponent(Sprite).grayscale = false;
+                starnum++;
             }
             if (isValid(data.flag_info.star_two)) {
-                this.stars[1].getComponent(Sprite).grayscale = false;
+                starnum++;
             }
             if (isValid(data.flag_info.star_three)) {
-                this.stars[2].getComponent(Sprite).grayscale = false;
+                starnum++;
+            }
+            for (let i = 0; i < 3; i++) {
+                this.stars[i].getComponent(Sprite).grayscale = i >= starnum;
             }
         }
     }
@@ -75,14 +79,18 @@ export class MapPointItem extends Component {
         bgSp.grayscale = false;
         this.clearPointStars();
         if (isValid(data.flag_info) && isValid(data.flag_info.star_one)) {
+            let starnum = 0;
             if (isValid(data.flag_info.star_one)) {
-                this.stars[0].getComponent(Sprite).grayscale = false;
+                starnum++;
             }
             if (isValid(data.flag_info.star_two)) {
-                this.stars[1].getComponent(Sprite).grayscale = false;
+                starnum++;
             }
             if (isValid(data.flag_info.star_three)) {
-                this.stars[2].getComponent(Sprite).grayscale = false;
+                starnum++;
+            }
+            for (let i = 0; i < 3; i++) {
+                this.stars[i].getComponent(Sprite).grayscale = i >= starnum;
             }
         }
     }

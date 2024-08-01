@@ -1,4 +1,4 @@
-import { _decorator, Label, Node, Sprite, SpriteFrame, tween, Vec3 } from 'cc';
+import { _decorator, Label, Node, Sprite, SpriteFrame, tween, UITransform, Vec3 } from 'cc';
 import { NetConfig } from '../../../config/NetConfig';
 import { PrefabType } from '../../../config/PrefabType';
 import GlobalConfig from '../../../GlobalConfig';
@@ -53,6 +53,10 @@ export class WordMeaningView extends BaseModeView {
     sentenceSound: Node = null;
     @property({ type: Label, tooltip: "例句" })
     sentenceLabel: Label = null;
+    @property(Node)
+    symbolNode: Node = null;
+    @property(Node)
+    sentenceNode: Node = null;
 
 
     private _words: string[] = []; //单词数据列表
@@ -113,6 +117,7 @@ export class WordMeaningView extends BaseModeView {
             this.randomOption(this._rightWordData);
         }
         this.playWordSound();
+
     }
 
     randomOption(rightWordData: any) {

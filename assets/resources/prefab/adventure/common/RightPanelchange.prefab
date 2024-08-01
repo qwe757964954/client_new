@@ -2886,7 +2886,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -206.522,
+      "x": -202,
       "y": 0,
       "z": 0
     },
@@ -2927,7 +2927,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 30,
+      "width": 38,
       "height": 30
     },
     "_anchorPoint": {
@@ -2964,7 +2964,7 @@
       "a": 255
     },
     "_spriteFrame": {
-      "__uuid__": "04266d40-ee6f-46f1-bd5a-0f285df77c39@f9941",
+      "__uuid__": "58719a6d-221f-4530-8bc3-6f5d6b246e9d@f9941",
       "__expectedType__": "cc.SpriteFrame"
     },
     "_type": 0,
@@ -2978,7 +2978,7 @@
     "_fillStart": 0,
     "_fillRange": 0,
     "_isTrimmedMode": true,
-    "_useGrayscale": true,
+    "_useGrayscale": false,
     "_atlas": null,
     "_id": ""
   },
@@ -3226,7 +3226,7 @@
     "_fillStart": 0,
     "_fillRange": 0,
     "_isTrimmedMode": true,
-    "_useGrayscale": true,
+    "_useGrayscale": false,
     "_atlas": null,
     "_id": ""
   },
@@ -3327,7 +3327,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -206.522,
+      "x": -202,
       "y": 0,
       "z": 0
     },
@@ -3368,7 +3368,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 30,
+      "width": 38,
       "height": 30
     },
     "_anchorPoint": {
@@ -3405,7 +3405,7 @@
       "a": 255
     },
     "_spriteFrame": {
-      "__uuid__": "04266d40-ee6f-46f1-bd5a-0f285df77c39@f9941",
+      "__uuid__": "58719a6d-221f-4530-8bc3-6f5d6b246e9d@f9941",
       "__expectedType__": "cc.SpriteFrame"
     },
     "_type": 0,
@@ -3419,7 +3419,7 @@
     "_fillStart": 0,
     "_fillRange": 0,
     "_isTrimmedMode": true,
-    "_useGrayscale": true,
+    "_useGrayscale": false,
     "_atlas": null,
     "_id": ""
   },
@@ -3768,7 +3768,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -206.522,
+      "x": -202,
       "y": 0,
       "z": 0
     },
@@ -3809,7 +3809,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 30,
+      "width": 38,
       "height": 30
     },
     "_anchorPoint": {
@@ -3846,7 +3846,7 @@
       "a": 255
     },
     "_spriteFrame": {
-      "__uuid__": "04266d40-ee6f-46f1-bd5a-0f285df77c39@f9941",
+      "__uuid__": "58719a6d-221f-4530-8bc3-6f5d6b246e9d@f9941",
       "__expectedType__": "cc.SpriteFrame"
     },
     "_type": 0,
@@ -3860,7 +3860,7 @@
     "_fillStart": 0,
     "_fillRange": 0,
     "_isTrimmedMode": true,
-    "_useGrayscale": true,
+    "_useGrayscale": false,
     "_atlas": null,
     "_id": ""
   },

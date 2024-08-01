@@ -10,8 +10,8 @@ export default class AudioUtil {
     public musicVolume: number = 1.0;//背景音乐音量
     public effectVolume: number = 1.0;//音效音量
 
-    private _musicSwich:boolean = true;
-    private _effectSwich:boolean = true;
+    private _musicSwich: boolean = true;
+    private _effectSwich: boolean = true;
 
     private static _AudioUtl: AudioUtil = null;
     public static get instance(): AudioUtil {
@@ -55,6 +55,13 @@ export default class AudioUtil {
                 this._effectSource.playOneShot(clip, volumeScale);
             })
         }
+    }
+    public static stopEffect() {
+        AudioUtil.instance.stopEffect();
+    }
+    public stopEffect() {
+        if (this._effectSource)
+            this._effectSource.stop();
     }
 
     //播放背景音乐

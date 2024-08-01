@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, sp } from 'cc';
+import { _decorator, Component, Material, Node, sp } from 'cc';
 import CCUtil from '../../../util/CCUtil';
 import { ViewsManager } from '../../../manager/ViewsManager';
 import { PrefabType } from '../../../config/PrefabType';
@@ -10,6 +10,8 @@ const { ccclass, property } = _decorator;
 export class MapRewardBoxItem extends Component {
     @property(sp.Skeleton)
     skeleton: sp.Skeleton = null;
+    @property(Material)
+    grayMaterial: Material = null;
     private _data: ProgressRewardData;
     private _passNum: number;
     start() {
@@ -26,13 +28,15 @@ export class MapRewardBoxItem extends Component {
     setData(data: ProgressRewardData, passNum: number) {
         this._data = data;
         this._passNum = passNum;
+        this.skeleton.customMaterial = null;
         if (this._data.open == 1) {
             this.skeleton.setAnimation(0, "idle_open", true);
         } else {
             if (this._passNum >= data.pass_count) {
                 this.skeleton.setAnimation(0, "idle_jump", true);
             } else {
-                this.skeleton.setAnimation(0, "idle", true);
+                this.skeleton.paused = true;
+                this.skeleton.customMaterial = this.grayMaterial;
             }
             CCUtil.onTouch(this.node, this.onClick, this);
         }

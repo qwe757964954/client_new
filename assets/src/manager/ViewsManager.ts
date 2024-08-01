@@ -120,7 +120,7 @@ export class ViewsManager {
             });
         });
     }
-    public showLearnView(viewConfig: PrefabConfig) : Promise<Node> {
+    public showLearnView(viewConfig: PrefabConfig): Promise<Node> {
         let parent = this.getParentNode(viewConfig.zindex);
         let nd_name = viewConfig.path.replace("/", "_");
         let nd: Node = ImgUtil.create_2DNode(nd_name);
@@ -281,6 +281,7 @@ export class ViewsManager {
         let node: Node = await this.showPopup(PrefabType.ConfirmView);
         let nodeScript: ConfirmView = node.getComponent(ConfirmView);
         nodeScript.getComponent(ConfirmView).init(content, sureCall, cancelCall, sureStr, cancelStr, canClose);
+        return nodeScript;
     }
     static showConfirm(content: string, sureCall?: Function, cancelCall?: Function, sureStr?: string, cancelStr?: string, canClose: boolean = true) {
         ViewsManager.instance.showConfirm(content, sureCall, cancelCall, sureStr, cancelStr, canClose);

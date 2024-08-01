@@ -162,7 +162,10 @@ export class WordSpellSubject extends BaseView {
                 }
             } else { //回答错误
                 this.resultSprite.getComponent(Sprite).spriteFrame = this.wrongSprite;
-                wordItem.selectWrong();
+                // wordItem.selectWrong();
+                for (let i = 0; i < this._selectItems.length; i++) {
+                    this._selectItems[i].getComponent(SpellWordItem).selectWrong();
+                }
             }
             EventMgr.dispatch(EventType.GradeSkip_Subject_Result, isRight);
         }

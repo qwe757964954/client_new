@@ -19,6 +19,7 @@ import { WordReadingView } from './sixModes/WordReadingView';
 import { WordSpellView } from './sixModes/WordSpellView';
 import { WorldIsland } from './WorldIsland';
 import { WorldMapItem } from './WorldMapItem';
+import { ConfirmView } from '../common/ConfirmView';
 const { ccclass, property } = _decorator;
 /**大冒险 世界地图 何存发 2024年4月8日14:45:44 */
 @ccclass('WorldMapView')
@@ -191,7 +192,11 @@ export class WorldMapView extends Component {
             }, () => {
                 // this._getingWords = false;
                 ServiceMgr.studyService.wordGameLevelRestart(this._currentLevelData.big_id, this._currentLevelData.small_id);
-            }, "延续上次", "重新开始", false);
+            }, "延续上次", "重新开始", false).then((confirmView: ConfirmView) => {
+                confirmView.setCloseCall(() => {
+                    this._getingWords = false;
+                })
+            })
         } else {
             // ServiceMgr.studyService.getWordGameWords(this._currentLevelData.big_id, this._currentLevelData.small_id);
             this.onWordGameWords(data.word_list);
