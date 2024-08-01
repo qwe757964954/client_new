@@ -30,7 +30,11 @@ export const EventType = {
     Building_Shop_Buy: "BuildingShopBuy",//建筑商店购买
     Building_Batch_Sell: "BuildingBatchSell",//建筑批量出售
 
-    EditItem_Touch_Cancel: "EditItemTouchCancel",//编辑物品点击事件取消
+    EditItem_Touch_Out_Once: "EditItemTouchOutOnce",//编辑物品点击事件移出
+    EditItem_Touch_Move: "EditItemTouchMove",//编辑物品点击事件移动
+    EditItem_Touch_End: "EditItemTouchEnd",//编辑物品点击事件结束
+    EditList_Touch_Enable: "EditListTouchEnable",//编辑列表点击事件开启
+    EditList_Touch_Disable: "EditListTouchDisable",//编辑列表点击事件禁用
 
     Stamina_Update: "StaminaUpdate",//体力更新
     Coin_Update: "CoinUpdate",//金币更新
