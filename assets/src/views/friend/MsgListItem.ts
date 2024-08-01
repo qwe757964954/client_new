@@ -29,7 +29,7 @@ export class MsgListItem extends ListItem {
         this.addEventListeners();
     }
 
-    protected onDestroy(): void {
+    onDestroy(): void {
         this.removeEventListeners();
     }
 
