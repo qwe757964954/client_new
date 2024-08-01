@@ -82,8 +82,8 @@ export class rightPanelchange extends Component {
     }
 
     private startTest() {
-        if (!isValid(this._data.flag_info)) {
-            ViewsMgr.showTip("通过本关后解锁");
+        if (this.btn_test.getComponent(Sprite).grayscale) {
+            ViewsMgr.showTipSmall("通过本关后解锁", this.btn_test, new Vec3(0, 80, 0));
             return;
         }
         EventManager.emit(EventType.Enter_Level_Test, this._data);
@@ -224,7 +224,7 @@ export class rightPanelchange extends Component {
             }
 
             this.btn_test.getComponent(Sprite).grayscale = false;
-            this.btn_test.getComponent(Button).enabled = true;
+            // this.btn_test.getComponent(Button).enabled = true;
         } else {
             for (let i = 0; i < 3; i++) {
                 this.stars[i].getComponent(Sprite).grayscale = true;
@@ -232,7 +232,7 @@ export class rightPanelchange extends Component {
                 this.starConditions[i].getChildByName("star").active = false;
             }
             this.btn_test.getComponent(Sprite).grayscale = true;
-            this.btn_test.getComponent(Button).enabled = false;
+            // this.btn_test.getComponent(Button).enabled = false;
         }
         this.rewardList.numItems = this._rewardData.length;
         // this.btn_test.getComponent(Sprite).grayscale = true;

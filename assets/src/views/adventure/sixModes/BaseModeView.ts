@@ -661,6 +661,11 @@ export class BaseModeView extends BaseView {
     protected onCollectWord(data: any) {
         console.log("onCollectWord", data);
         this.setCollect(this._rightWordData.collect === 1);
+        if (this._rightWordData.collect) {
+            ViewsMgr.showTipSmall(TextConfig.Collect_Succ, this.btn_collect, new Vec3(0, 80, 0));
+        } else {
+            ViewsMgr.showTipSmall(TextConfig.Collect_Cancel, this.btn_collect, new Vec3(0, 80, 0));
+        }
     }
 
     protected onAdventureCollectWord(data: any) {
@@ -669,6 +674,11 @@ export class BaseModeView extends BaseView {
             return;
         }
         this.setCollect(this._rightWordData.collect === 1);
+        if (this._rightWordData.collect) {
+            ViewsMgr.showTipSmall(TextConfig.Collect_Succ, this.btn_collect, new Vec3(0, 80, 0));
+        } else {
+            ViewsMgr.showTipSmall(TextConfig.Collect_Cancel, this.btn_collect, new Vec3(0, 80, 0));
+        }
     }
 
     protected initEvent(): void {

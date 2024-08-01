@@ -163,5 +163,7 @@ export const TextConfig = {
     Word_Error_Tips: "获取单词详情失败",
 
     //其他提示
-    Midway_Exit: "(中途退出，进度会保存，下次可延续当前进度)"
+    Midway_Exit: "(中途退出，进度会保存，下次可延续当前进度)",
+    Collect_Succ: "成功收藏单词",
+    Collect_Cancel: "取消收藏单词",
 }
