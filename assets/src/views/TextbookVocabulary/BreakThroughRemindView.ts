@@ -23,6 +23,9 @@ export class BreakThroughRemindView extends BasePopup {
     public btn_blue: Node = null;
 
     @property(Node)
+    public closeIcon: Node = null;
+
+    @property(Node)
     public btn_green: Node = null;
 
     public _callFunc:(isSure:boolean)=>void = null;
@@ -34,6 +37,11 @@ export class BreakThroughRemindView extends BasePopup {
     initEvent() {
         CCUtil.onBtnClick(this.btn_blue, this.onClickSure.bind(this));
         CCUtil.onBtnClick(this.btn_green, this.onClickCancel.bind(this));
+        CCUtil.onBtnClick(this.closeIcon, this.onCloseClick.bind(this));
+    }
+
+    onCloseClick(){
+        this.closePop();
     }
 
     initRemind(data:ITextbookRemindData){

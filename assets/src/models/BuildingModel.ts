@@ -270,7 +270,10 @@ export class BuildingModel extends BaseModel {
     public fixImgPos() {
         if (!this._isFixImgPos && this._building && this._grids) {
             let gridInfo = this._grids[0];
-            this._building.node.position = new Vec3(0, -0.5 * this._width * gridInfo.height, 0);
+            let i = this.width / 2;
+            let j = this.height / 2;
+            this._building.node.position = new Vec3((j - i) * 0.5 * gridInfo.width, (-i - j) * 0.5 * gridInfo.height, 0);
+            // this._building.node.position = new Vec3(0, -0.5 * this._width * gridInfo.height, 0);
             this._isFixImgPos = true;
         }
     }

@@ -1,4 +1,4 @@
-import { BlockInputEvents, Color, Node, Prefab, Widget, instantiate, isValid } from "cc";
+import { BlockInputEvents, Camera, Color, Node, Prefab, UITransform, Vec3, Widget, instantiate, isValid } from "cc";
 import { Hierarchy, PrefabConfig, PrefabType } from "../config/PrefabType";
 import { BasePopup } from "../script/BasePopup";
 import CCUtil from "../util/CCUtil";
@@ -7,6 +7,7 @@ import { ConfirmView } from "../views/common/ConfirmView";
 import { NavTitleView } from "../views/common/NavTitleView";
 import { PopView } from "../views/common/PopView";
 import { RewardView } from "../views/common/RewardView";
+import { TipSmallView } from "../views/common/TipSmallView";
 import { TipView } from "../views/common/TipView";
 import { TopAmoutView } from "../views/common/TopAmoutView";
 import { ItemData } from "./DataMgr";
@@ -273,9 +274,42 @@ export class ViewsManager {
             node.getComponent(TipView).init(content, callBack);
         });
     }
+    /** 显示局部提示
+     * @param content 提示内容
+     * @param refNode 与提示相关联的节点
+     * @param dtPos 位置的偏移
+     * @param callBack 回调
+     */
+    public showTipSmall(content: string, refNode?: Node, dtPos?: Vec3, callBack?: Function) {
+        this.showView(PrefabType.TipSmallView, (node: Node) => {
+            let pos = null;
+            if (refNode) {
+                pos = new Vec3(0, 0, 0);
+                let layer = node.layer;
+                let refLayer = refNode.layer;
+                if (layer !== refLayer) {//不同摄像机下显示
+                    let cameras = refNode.scene.getComponentsInChildren(Camera);
+                    for (let i = 0; i < cameras.length; i++) {
+                        let camera = cameras[i];
+                        if (camera.visibility & refLayer) {
+                            camera.convertToUINode(refNode.worldPosition, node.parent, pos);
+                            break;
+                        }
+                    }
+                } else {
+                    node.parent.getComponent(UITransform).convertToNodeSpaceAR(refNode.worldPosition, pos);
+                }
+                if (dtPos) {
+                    pos.add(dtPos);
+                }
+            }
+            node.getComponent(TipSmallView).init(content, pos, callBack);
+        });
+    }
     static showTip(content: string, callBack?: Function) {
         ViewsManager.instance.showTip(content, callBack);
     }
+
     // 显示确定弹窗
     public async showConfirm(content: string, sureCall?: Function, cancelCall?: Function, sureStr?: string, cancelStr?: string, canClose: boolean = true) {
         let node: Node = await this.showPopup(PrefabType.ConfirmView);

@@ -1,7 +1,7 @@
 import { EventMouse, EventTouch, Vec3 } from "cc";
 import { EventType } from "../../config/EventType";
 import { MapStatus } from "../../config/MapConfig";
-import { DataMgr } from "../../manager/DataMgr";
+import { DataMgr, EditInfo } from "../../manager/DataMgr";
 import { ViewsManager } from "../../manager/ViewsManager";
 import { BuildingModel, BuildingOperationData, BuildingOperationType } from "../../models/BuildingModel";
 import { GridModel } from "../../models/GridModel";
@@ -49,6 +49,8 @@ export class BuildEditCtl extends MapBaseCtl {
         this.addEvent(EventType.Building_Sell, this.onBuildingSell.bind(this));
         this.addEvent(EventType.BuildingBtnView_Close, this.onBuildingBtnViewClose.bind(this));
         this.addEvent(EventType.Building_Batch_Sell, this.onBuildingBatchSell.bind(this));
+        this.addEvent(EventType.EditItem_Touch_Move, this.onEditBuildingTouchMove.bind(this));
+        this.addEvent(EventType.EditItem_Touch_End, this.onEditBuildingTouchEnd.bind(this));
     }
     // 销毁
     public dispose(): void {
@@ -447,5 +449,28 @@ export class BuildEditCtl extends MapBaseCtl {
         }
         this.nextStep();
         EventMgr.emit(EventType.EditUIView_Refresh);
+    }
+    /**编辑建筑点击事件移动 */
+    onEditBuildingTouchMove(data: { editInfo: EditInfo, e: EventTouch }) {
+        if (null == this._selectBuilding) return;
+        if (this._selectBuilding.editInfo.id != data.editInfo.id) return;
+        let pos = data.e.getLocation();
+        let gridModel = this._mainScene.getTouchGrid(pos.x, pos.y);
+        if (gridModel) {
+            this._mainScene.setBuildingGrid(this._selectBuilding, gridModel.x, gridModel.y);
+        }
+    }
+    /**编辑建筑点击事件结束 */
+    onEditBuildingTouchEnd(data: { editInfo: EditInfo, e: EventTouch }) {
+        if (null == data) {
+            this.clearData();
+            return;
+        }
+        if (null == this._selectBuilding) return;
+        let pos = data.e.getLocation();
+        let gridModel = this._mainScene.getTouchGrid(pos.x, pos.y);
+        if (gridModel) {
+            this._mainScene.setBuildingGrid(this._selectBuilding, gridModel.x, gridModel.y);
+        }
     }
 }

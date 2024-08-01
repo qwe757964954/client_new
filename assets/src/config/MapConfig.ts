@@ -191,5 +191,6 @@ export const MapConfig = {
     fence: {
         pillar: "map/img_build_pillar/spriteFrame",
         line: "map/img_build_line/spriteFrame",
+        land: "map/land/dikuai_caodiyige/spriteFrame",
     },
 }

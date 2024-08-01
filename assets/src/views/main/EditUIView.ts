@@ -1,10 +1,11 @@
-import { _decorator, color, EventTouch, Label, Node, Sprite, SpriteFrame, tween } from 'cc';
+import { _decorator, color, EventTouch, Label, Node, ScrollView, Sprite, SpriteFrame, tween, UITransform, Vec2 } from 'cc';
 import { EventType } from '../../config/EventType';
 import { TextConfig } from '../../config/TextConfig';
-import { DataMgr, EditType, EditTypeInfo, ThemeInfo } from '../../manager/DataMgr';
+import { DataMgr, EditInfo, EditType, EditTypeInfo, ThemeInfo } from '../../manager/DataMgr';
 import { BuildingIDType, BuildingState } from '../../models/BuildingModel';
 import { BaseComponent } from '../../script/BaseComponent';
 import CCUtil from '../../util/CCUtil';
+import { EventMgr } from '../../util/EventManager';
 import List from '../../util/list/List';
 import { ToolUtil } from '../../util/ToolUtil';
 import { EditItem, EditItemInfo } from '../map/EditItem';
@@ -60,15 +61,22 @@ export class EditUIView extends BaseComponent {
     private _typesData: EditTypeInfo[] = null;//类型数据
     private _themesData: ThemeInfo[] = null;//主题数据
 
+    private _uiTransform: UITransform = null;
+    private _tmpPos: Vec2 = new Vec2();
+    private _longTouchEditItemData: EditInfo = null;//长按编辑项
+    private _isBuilding: boolean = false;//是否正在建造
+
     //设置主场景
     public set mainScene(mainScene: MainScene) {
         this._mainScene = mainScene;
+        this._uiTransform = this.node.getComponent(UITransform);
         this.initEditType();
         this.showEditType(EditType.Null);
         this.initTheme();
     }
     // 初始化事件
     initEvent() {
+        this.initTouchEvent();
         CCUtil.onTouch(this.btnClose, this.onBtnCloseClick, this);
         CCUtil.onTouch(this.btnLast, this.onBtnLastClick, this);
         CCUtil.onTouch(this.btnNext, this.onBtnNextClick, this);
@@ -79,10 +87,13 @@ export class EditUIView extends BaseComponent {
 
         this.addEvent(EventType.EditUIView_Refresh, this.onRefresh.bind(this));
         this.addEvent(EventType.Building_Step_Update, this.updateStep.bind(this));
+        this.addEvent(EventType.EditList_Touch_Disable, this.onListTouchDisalbe.bind(this));
+        this.addEvent(EventType.EditList_Touch_Enable, this.onListTouchEnable.bind(this));
     }
 
     // 移除监听
     removeEvent() {
+        this.removeTouchEvent();
         CCUtil.offTouch(this.btnClose, this.onBtnCloseClick, this);
         CCUtil.offTouch(this.btnLast, this.onBtnLastClick, this);
         CCUtil.offTouch(this.btnNext, this.onBtnNextClick, this);
@@ -154,11 +165,6 @@ export class EditUIView extends BaseComponent {
             this._themesData.push(info);
         });
     }
-    // 编辑元素点击
-    onEditItemClick(editItem: EditItem) {
-        this._mainScene.onBuildLandClick(editItem.data);
-        this.onRefresh();
-    }
     /**显示对应编辑类型 */
     showEditType(editType: EditType) {
         if (!this._mainScene || editType == this._editType) return;
@@ -192,7 +198,7 @@ export class EditUIView extends BaseComponent {
     /**加载显示 */
     onLoadItem(item: Node, idx: number) {
         let info = this._itemsData[idx];
-        item.getComponent(EditItem).initData(info, this.onEditItemClick.bind(this));
+        item.getComponent(EditItem).initData(info, this.onEditItemClick.bind(this), this.onEditItemLongClick.bind(this));
     }
     /**刷新 */
     onRefresh() {
@@ -299,6 +305,110 @@ export class EditUIView extends BaseComponent {
         this._themeType = themeType;
         this.labelTheme.string = this._themesData[themeType].name;
         this.showEditBuild();
+    }
+    /**列表点击禁用 */
+    onListTouchDisalbe() {
+        this.listView.node.getComponent(ScrollView)["_unregisterEvent"]();
+    }
+    /**列表点击启用 */
+    onListTouchEnable() {
+        this.listView.node.getComponent(ScrollView)["_registerEvent"]();
+    }
+    /** editItem点击事件 */
+    onEditItemClick(editItem: EditItem) {
+        // console.log("onEditItemClick", editItem.data);
+        this._mainScene.onBuildLandClick(editItem.data);
+        this.onRefresh();
+    }
+    /** editItem长按事件 */
+    onEditItemLongClick(editItem: EditItem) {
+        // console.log("onEditItemLongClick", editItem.data);
+        this._longTouchEditItemData = editItem.data;
+        EventMgr.emit(EventType.EditList_Touch_Disable);
+    }
+    /**建筑创建成功 */
+    isCreateBuildingSuccess() {
+        this._isBuilding = true;
+    }
+    /**点击事件是否在本UI上 */
+    isTouchInSelf(e: EventTouch) {
+        e.getLocation(this._tmpPos);
+        return this._uiTransform.hitTest(this._tmpPos, e.windowId);
+    }
+    /**初始化点击事件 */
+    initTouchEvent() {
+        this.node.on(Node.EventType.TOUCH_START, this.onTouchStart, this);
+        this.node.on(Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
+        this.node.on(Node.EventType.TOUCH_END, this.onTouchEnd, this);
+        this.node.on(Node.EventType.TOUCH_CANCEL, this.onTouchCancel, this);
+    }
+    /**移除点击事件 */
+    removeTouchEvent() {
+        this.node.off(Node.EventType.TOUCH_START, this.onTouchStart, this);
+        this.node.off(Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
+        this.node.off(Node.EventType.TOUCH_END, this.onTouchEnd, this);
+        this.node.off(Node.EventType.TOUCH_CANCEL, this.onTouchCancel, this);
+    }
+    /* 点击开始 **/
+    onTouchStart(e: EventTouch) {
+        // console.log("onTouchStart");
+        this._longTouchEditItemData = null;
+        this._isBuilding = false;
+    }
+    /* 点击移动 **/
+    onTouchMove(e: EventTouch) {
+        if (!this.isTouchMoveEffective(e)) {
+            return;
+        }
+        // console.log("onTouchMove");
+        if (!this._longTouchEditItemData) return;
+        if (this._isBuilding) {
+            EventMgr.emit(EventType.EditItem_Touch_Move, { editInfo: this._longTouchEditItemData, e: e });
+        } else {
+            if (!this.isTouchInSelf(e)) {
+                // this._isBuilding = true;//由创建成功对象赋值
+                EventMgr.emit(EventType.EditItem_Touch_Out_Once, { editInfo: this._longTouchEditItemData, e: e });
+            }
+        }
+    }
+    /* 点击结束 **/
+    onTouchEnd(e: EventTouch) {
+        // console.log("onTouchEnd");
+        if (!this._longTouchEditItemData) return;
+        if (this._isBuilding) {
+            if (this.isTouchInSelf(e)) {
+                EventMgr.emit(EventType.EditItem_Touch_End);
+            } else {
+                EventMgr.emit(EventType.EditItem_Touch_End, { editInfo: this._longTouchEditItemData, e: e });
+                EventMgr.emit(EventType.EditUIView_Refresh);
+            }
+        }
+        EventMgr.emit(EventType.EditList_Touch_Enable);
+    }
+    /* 点击取消 **/
+    onTouchCancel(e: EventTouch) {
+        // console.log("onTouchCancel", e.simulate);
+        if (e.simulate) return;//scrollview滑动时会触发取消
+        if (!this._longTouchEditItemData) return;
+        if (this._isBuilding) {
+            if (this.isTouchInSelf(e)) {
+                EventMgr.emit(EventType.EditItem_Touch_End);
+            } else {
+                EventMgr.emit(EventType.EditItem_Touch_End, { editInfo: this._longTouchEditItemData, e: e });
+                EventMgr.emit(EventType.EditUIView_Refresh);
+            }
+        }
+        EventMgr.emit(EventType.EditList_Touch_Enable);
+    }
+    /* 触摸移动有效**/
+    isTouchMoveEffective(e: EventTouch): boolean {
+        let touchMoveOffset = 1;
+        e.getUIDelta(this._tmpPos);
+        if (Math.abs(this._tmpPos.x) < touchMoveOffset &&
+            Math.abs(this._tmpPos.y) < touchMoveOffset) {
+            return false;
+        }
+        return true;
     }
 }
 

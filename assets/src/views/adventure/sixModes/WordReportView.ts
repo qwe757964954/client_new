@@ -40,8 +40,6 @@ export class WordReportView extends BaseView {
 
     @property(Node)
     public next_level_btn: Node = null;
-    @property(Node)
-    public close_btn: Node = null;
 
     @property(List)
     public reward_scroll: List = null;
@@ -60,6 +58,9 @@ export class WordReportView extends BaseView {
 
     @property(Node)
     public reward_sp: Node = null;
+
+    @property(Node)
+    public closeIcon: Node = null;
 
     @property(Node)
     public reward_line: Node = null;
@@ -162,24 +163,21 @@ export class WordReportView extends BaseView {
     }
 
     initEvent() {
-        CCUtil.onBtnClick(this.evaluation_btn, () => {
-            this.gotoEvaluation();
-        });
-        CCUtil.onBtnClick(this.level_list_btn, () => {
-            this.gotoLevelList();
-        });
-        CCUtil.onBtnClick(this.next_level_btn, () => {
-            this.gotoNextLevel();
-        });
-        CCUtil.onBtnClick(this.close_btn, () => {
-            this.gotoLevelList();
-        });
+        CCUtil.onBtnClick(this.evaluation_btn, this.gotoEvaluation.bind(this));
+        CCUtil.onBtnClick(this.level_list_btn, this.gotoLevelList.bind(this));
+        CCUtil.onBtnClick(this.next_level_btn, this.gotoNextLevel.bind(this));
+        CCUtil.onBtnClick(this.closeIcon, this.onCloseClick.bind(this));
 
     }
     gotoEvaluation() {
         console.log("测评模式")
         this.node.destroy();
         EventMgr.dispatch(EventType.Enter_Level_Test);
+    }
+
+    onCloseClick() {
+        EventMgr.dispatch(EventType.Exit_Island_Level);
+        this.node.destroy();
     }
 
     gotoNextLevel() {
