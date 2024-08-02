@@ -272,7 +272,9 @@ export class BuildingModel extends BaseModel {
             let gridInfo = this._grids[0];
             let i = this.width / 2;
             let j = this.height / 2;
-            this._building.node.position = new Vec3((j - i) * 0.5 * gridInfo.width, (-i - j) * 0.5 * gridInfo.height, 0);
+            // this._building.node.position = new Vec3((j - i) * 0.5 * gridInfo.width, -(i + j) * 0.5 * gridInfo.height, 0);
+            this._building.node.position = new Vec3(0, -(i + j) * 0.5 * gridInfo.height, 0);
+            // this.node.getChildByName("SpriteSplash").position = this._building.node.position;
             // this._building.node.position = new Vec3(0, -0.5 * this._width * gridInfo.height, 0);
             this._isFixImgPos = true;
         }
@@ -289,8 +291,11 @@ export class BuildingModel extends BaseModel {
     set isFlip(isFlip: boolean) {
         this._isFlip = isFlip;
         this.fixGridWidthAndHeight();
-        if (this._building)
+        if (this._building) {
             this._building.node.scale = new Vec3(isFlip ? -1 : 1, 1, 1);
+            this._isFixImgPos = false;
+            this.fixImgPos();
+        }
     }
     get isFlip(): boolean {
         return this._isFlip;
@@ -1185,17 +1190,25 @@ export class BuildingModel extends BaseModel {
         let maxj = this._height - 1;
         let node1 = this._fence.getChildByName("Node1");
         let node2 = this._fence.getChildByName("Node2");
+        let node3 = this._fence.getChildByName("Node3");
         let fenceConfig = MapConfig.fence;
         for (let i = 0; i <= maxi; i++) {
             for (let j = 0; j <= maxj; j++) {
-                if (i != 0 && i != maxi && j != 0 && j != maxj) continue;
                 let grid = grids[i * this._height + j];
                 let pos = grid.pos;
                 let x = pos.x - pos0.x;
                 let y = pos.y - pos0.y;
 
+                let land = ImgUtil.create_Sprite();
+                let node = land.node;
+                node.position = new Vec3(x, y - grid.height * 0.5, 0);
+                node3.addChild(node);
+                LoadManager.loadSprite(fenceConfig.land, land);
+
+                if (i != 0 && i != maxi && j != 0 && j != maxj) continue;
+
                 let sprite = ImgUtil.create_Sprite();
-                let node = sprite.node;
+                node = sprite.node;
                 node.position = new Vec3(x, y, 0);
                 node2.addChild(node);
                 LoadManager.loadSprite(fenceConfig.pillar, sprite);
