@@ -44,6 +44,10 @@ export class Shake extends Component {
             this.originalPosition = null;
         }
     }
+
+    public get isShaking(): boolean {
+        return this._isShaking;
+    }
 }
 
 

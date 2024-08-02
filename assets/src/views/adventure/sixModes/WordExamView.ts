@@ -231,10 +231,11 @@ export class WordExamView extends BaseModeView {
         return item;
     }
 
-    clearSplitItems() {
+    clearSplitItems(destory: boolean = false) {
         for (let i = 0; i < this._examItemList.length; i++) {
             this._examItemList[i].parent = null;
-            this._nodePool.put(this._examItemList[i]);
+            if (!destory)
+                this._nodePool.put(this._examItemList[i]);
             // this._examItemList[i].off(Node.EventType.TOUCH_END, this.onExamItemClick, this);
             CCUtil.offTouch(this._examItemList[i], this.onExamItemClick, this);
         }
@@ -243,7 +244,7 @@ export class WordExamView extends BaseModeView {
 
     onDestroy(): void {
         super.onDestroy();
-        this.clearSplitItems();
+        this.clearSplitItems(true);
         this._nodePool.clear();
     }
 }

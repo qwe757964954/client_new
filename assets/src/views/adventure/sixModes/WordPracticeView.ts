@@ -120,6 +120,12 @@ export class WordPracticeView extends BaseModeView {
             item.getComponent(Shake).shakeNode();
             return;
         }
+        this._selectLetterItems.forEach((node) => {
+            let shake = node.getComponent(Shake);
+            if (shake && shake.isShaking) {
+                shake.stopShake();
+            }
+        })
         item.removeFromParent();
         this._letterItems[index].getComponent(LetterItem).showLetter();
 
