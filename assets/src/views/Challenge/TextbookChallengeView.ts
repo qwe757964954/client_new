@@ -11,6 +11,7 @@ import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
 import StorageUtil from '../../util/StorageUtil';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
+import { ChallengeLeftView } from '../TextbookVocabulary/ChallengeLeftView';
 import { ChallengeRemindView, IChallengeRemindData } from '../TextbookVocabulary/ChallengeRemindView';
 import { SettingPlanView } from '../TextbookVocabulary/SettingPlanView';
 import { TextbookListView } from '../TextbookVocabulary/TextbookListView';
@@ -39,6 +40,7 @@ export class TextbookChallengeView extends BaseView {
     private _bookData:CurrentBookStatus = null;
     private _unitListArr:UnitListItemStatus = null;
     private _planData:BookPlanDetail = null;
+    private _monsterView:ChallengeLeftView = null;
     // EventMgr.dispatch(NetNotify.Classification_UnitListStatus,dataArr);
     start() {
         super.start();
@@ -99,6 +101,7 @@ export class TextbookChallengeView extends BaseView {
         this.getUnitListStatus();
         this.getBookPlanDetail();
         this._bottomView.updateItemList(data);
+        this._monsterView.updateMonsterInfo(this._bookData.monster_id);
     }
     onPlanModify(data:any){
         TBServer.reqBookPlanDetail(this._bookData.book_id);
@@ -235,6 +238,7 @@ export class TextbookChallengeView extends BaseView {
             verticalCenter: 78.489,
             left: 108.736 * viewSizeWidth / projectSizeWidth
         })
+        this._monsterView = node.getComponent(ChallengeLeftView);
     }
 }
 

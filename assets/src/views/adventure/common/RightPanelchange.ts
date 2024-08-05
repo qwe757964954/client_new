@@ -1,4 +1,4 @@
-import { _decorator, Button, Component, instantiate, isValid, Label, Node, Prefab, Sprite, tween, UITransform, Vec3 } from 'cc';
+import { _decorator, Component, instantiate, isValid, Label, Node, Prefab, Sprite, tween, UITransform, Vec3 } from 'cc';
 import { EventType } from '../../../config/EventType';
 import { PrefabType } from '../../../config/PrefabType';
 import { DataMgr, ItemData } from '../../../manager/DataMgr';
@@ -11,7 +11,7 @@ import EventManager, { EventMgr } from '../../../util/EventManager';
 import FileUtil from '../../../util/FileUtil';
 import List from '../../../util/list/List';
 import { ObjectUtil } from '../../../util/ObjectUtil';
-import { EducationDataInfos } from '../../TextbookVocabulary/TextbookInfo';
+import { EducationDataInfo, EducationDataInfos } from '../../TextbookVocabulary/TextbookInfo';
 import { SubjectView } from '../../theme/SubjectView';
 import { ReportItem } from '../sixModes/ReportItem';
 import { MonsterModel } from './MonsterModel';
@@ -191,7 +191,8 @@ export class rightPanelchange extends Component {
         if (this._data.game_modes && this._data.game_modes === "word") {
             let big_id = ObjectUtil.extractId(this._data.big_id);
             this.levelTxt.string = big_id + '-' + this._data.small_id;
-            monsterModel.init(FileUtil.removeFileExtension(EducationDataInfos[0].monster));
+            let educationInfo:EducationDataInfo = EducationDataInfos.find(item=> item.id===this._data.monster_id);
+            monsterModel.init(FileUtil.removeFileExtension(educationInfo.monster));
             this.monsterNameTxt.string = "宝箱怪";
             this.monsterNode.setScale(-0.8, 0.8, 1);
         } else {
