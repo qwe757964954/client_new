@@ -2,7 +2,7 @@ import { _decorator, Component, error, Label, Node, Sprite, SpriteFrame, UITrans
 import { ResLoader } from '../../manager/ResLoader';
 import { CurrentBookStatus } from '../../models/TextbookModel';
 import List from '../../util/list/List';
-import { EducationDataInfos } from '../TextbookVocabulary/TextbookInfo';
+import { EducationDataInfo, EducationDataInfos } from '../TextbookVocabulary/TextbookInfo';
 import { UnitNumItem } from './UnitNumItem';
 const { ccclass, property } = _decorator;
 
@@ -22,11 +22,13 @@ export class ChallengeBottomView extends Component {
     public chest_box:Node = null;
     private _totalUnit:number = 0;
     private _currentUnitIndex:number = 0;
+    private _educationInfo:EducationDataInfo = null;
     start() {
 
     }
 
     updateItemList(data:CurrentBookStatus){
+        this._educationInfo = EducationDataInfos.find(item=> item.id=== data.monster_id);
         this.loadRewardBox();
         this._totalUnit = data.gate_total_num;
         this._currentUnitIndex = data.gate_pass_num;
@@ -42,7 +44,7 @@ export class ChallengeBottomView extends Component {
     }
 
     loadRewardBox(){
-        let key_str = EducationDataInfos[0].box;
+        let key_str = this._educationInfo.box;
         ResLoader.instance.load(key_str, SpriteFrame, (err: Error | null, spriteFrame: SpriteFrame) => {
             if (err) {
                 error && console.error(err);
@@ -55,9 +57,7 @@ export class ChallengeBottomView extends Component {
         let item_sript:UnitNumItem = item.getComponent(UnitNumItem);
         let unit_num = idx + 1;
         let isComplete:boolean = this._currentUnitIndex>=unit_num;
-        item_sript.updateRewardStatus(isComplete);
-        // let unitStatus:UnitItemStatus = this._unitListArr[idx];
-        // item_sript.updateRewardStatus(unitStatus.studywordnum >=unitStatus.totalwordnum);
+        item_sript.updateRewardStatus(this._educationInfo,isComplete);
     }
 }
 
