@@ -1,8 +1,8 @@
-import { Node, Rect, Sprite, Tween, TweenSystem, UITransform, Vec2, Vec3, sp, tween } from "cc";
+import { Node, Rect, Sprite, SpriteFrame, Texture2D, Tween, TweenSystem, UITransform, Vec2, Vec3, sp, tween } from "cc";
 import { EventType } from "../config/EventType";
-import { MapConfig, RoleInfo } from "../config/MapConfig";
+import { MapConfig } from "../config/MapConfig";
 import { PrefabType } from "../config/PrefabType";
-import { DataMgr } from "../manager/DataMgr";
+import { DataMgr, RoleInfo, SlotPngInfo } from "../manager/DataMgr";
 import { LoadManager } from "../manager/LoadManager";
 import { ServiceMgr } from "../net/ServiceManager";
 import CCUtil from "../util/CCUtil";
@@ -13,13 +13,7 @@ import { PetMoodView } from "../views/map/PetMoodView";
 import { BaseModel } from "./BaseModel";
 import { GridModel } from "./GridModel";
 import { RoleState, RoleType } from "./RoleBaseModel";
-import { User } from "./User";
-
-const slotsAry = [
-    [9500, 9700, 9701, 9702, 9703],
-    [9550, 9800, 9801, 9802, 9803, 9805],
-    [9600, 9900, 9901, 9902, 9903]
-];
+import { User, UserClothes } from "./User";
 
 /**
  * 角色数据层
@@ -45,7 +39,7 @@ export class RoleDataModel extends BaseModel {
     private _toPos: Vec3;//目标位置
     private _roleState: RoleState = RoleState.none;//角色状态
     private _roleSpeed: number = 50;//角色速度
-    private _scale: number = 0.8;//角色缩放
+    private _scale: number = 1.0;//角色缩放
     private _isMoving: boolean = false;//是否正在移动
     private _timer: number = 0;//计时器
     // private _isActive: boolean = false;//是否激活
@@ -59,25 +53,9 @@ export class RoleDataModel extends BaseModel {
     private _level: number;//等级
     private _roleType: RoleType = RoleType.none;//角色类型
     private _roleInfo: RoleInfo;//角色信息
-    private _slots: number[] = [];//插槽
+    private _clothings: UserClothes = new UserClothes();//服装
     private _needMovePos: Vec3 = null;//需要移动的位置
 
-    /**角色独有 */
-    // 更新spine插槽
-    public updateSpineSlot() {
-        let roleSlot = DataMgr.roleSlot[this._roleID];
-        let roleSlotConfig = DataMgr.roleSlotConfig;
-        let showSlot = [];
-        this._slots.forEach(propID => {
-            showSlot = showSlot.concat(roleSlotConfig[propID].Ass);
-        });
-        roleSlot.slots.forEach(slotName => {
-            if (-1 == showSlot.indexOf(slotName)) {
-                let slot = this._role.findSlot(slotName);
-                slot?.setAttachment(null);//有些插槽是不存在的
-            }
-        });
-    }
     /**精灵独有 */
     /**显示礼物提示 */
     public showGift() {
@@ -120,6 +98,44 @@ export class RoleDataModel extends BaseModel {
         if (!this._moodNode) return;
         this._moodNode.active = false;
     }
+    /**插槽加载 */
+    private loadSlots(slots: SlotPngInfo[]) {
+        if (!slots || !this._role || !this._isSpLoad) return;
+        for (let i = 0; i < slots.length; i++) {
+            let slotInfo = slots[i];
+            LoadManager.loadSpriteFrame(slotInfo.png, this._role.node).then((asset: SpriteFrame) => {
+                let slot = this._role.findSlot(slotInfo.slot);
+                let attachment = this._role.getAttachment(slotInfo.slot, slotInfo.attachment);
+                slot.setAttachment(attachment);
+                this._role.setSlotTexture(slotInfo.slot, asset.texture as Texture2D, true);
+            });
+        }
+    }
+    public get clothings() {
+        return this._clothings;
+    }
+    public set clothings(clothings: UserClothes) {
+        this._clothings.setData(clothings);
+        this.updateClothings();
+    }
+    /**更新服装 */
+    private updateClothings() {
+        if (!this._clothings || !this._role || !this._isSpLoad) return;
+        let clothings = this._clothings.getClothings();
+        for (let i = 0; i < clothings.length; i++) {
+            let clothing = clothings[i];
+            if (null == clothing) continue;
+            let clothingInfo = DataMgr.clothingConfig[clothing];
+            this.loadSlots(clothingInfo.slots);
+        }
+    }
+    /**替换服装 */
+    public changeClothing(clothing: number) {
+        if (!clothing) return;
+        let clothingInfo = DataMgr.clothingConfig[clothing];
+        this._clothings.setClothing(clothing, clothingInfo.type);
+        this.loadSlots(clothingInfo.slots);
+    }
     public get isSelf(): boolean {
         return this._isSelf;
     }
@@ -133,24 +149,22 @@ export class RoleDataModel extends BaseModel {
         this._roleID = roleID;
         this._level = level;
         if (RoleType.role == roleType) {
-            this._roleInfo = MapConfig.roleInfo[this._roleID][level - 1];
-            let id = this._roleID;
-            if (id > 100) id -= 100;
-            this._slots = slotsAry[id - 1];
+            this._roleInfo = DataMgr.roleConfig[this._roleID];
+            this._scale = MapConfig.roleScale;
         } else {
             this._roleInfo = MapConfig.spriteInfo[this._roleID][level - 1];
+            this._scale = MapConfig.spriteScale;
         }
     }
     public initSelfRole() {
         this._isSelf = true;
         let roleID = User.roleID;
-        if (roleID < 100) roleID += 100;
         this.init(roleID, 1, RoleType.role);
+        this._clothings.setData(User.userClothes);
     }
     public initSelfPet() {
         this._isSelf = true;
         let petID = User.petID;
-        if (petID < 100) petID += 100;
         this.init(petID, User.petLevel, RoleType.sprite);
     }
 
@@ -177,11 +191,13 @@ export class RoleDataModel extends BaseModel {
     }
     /**画出碰撞区域 */
     public drawRect() {
+        if (!this._node) return;
         let sprite = this._node.getComponentInChildren(Sprite);
         if (!sprite) return;
         let node = sprite.node;
         node.active = true;
-        let rect: Rect = this._roleInfo.rect;
+        let roleRect = this._roleInfo.rect;
+        let rect: Rect = new Rect(roleRect[0], roleRect[1], roleRect[2], roleRect[3]);
         node.position = new Vec3(rect.x, rect.y, 0);
         let transform: UITransform = node.getComponent(UITransform);
         transform.width = rect.width;
@@ -217,21 +233,21 @@ export class RoleDataModel extends BaseModel {
         if (this._roleState == RoleState.idle) return;
         this._roleState = RoleState.idle;
         if (!this._isSpLoad) return;
-        this._role.setAnimation(0, this._roleInfo.spNames[0], true);
+        this._role.setAnimation(0, this._roleInfo.actNames[0], true);
     }
     // 走动动作
     public walk() {
         if (this._roleState == RoleState.walk) return;
         this._roleState = RoleState.walk;
         if (!this._isSpLoad) return;
-        this._role.setAnimation(0, this._roleInfo.spNames[1], true);
+        this._role.setAnimation(0, this._roleInfo.actNames[1], true);
     }
     // 拖拽动作
     public drag() {
         if (this._roleState == RoleState.drag) return;
         this._roleState = RoleState.drag;
         if (!this._isSpLoad) return;
-        this._role.setAnimation(0, this._roleInfo.spNames[0], true);
+        this._role.setAnimation(0, this._roleInfo.actNames[0], true);
     }
     // 设置格子
     public set grid(grid: GridModel) {
@@ -381,14 +397,15 @@ export class RoleDataModel extends BaseModel {
                     if (this._moodNode && this._moodShow) {
                         this.showMood();
                     }
-                    LoadManager.loadSpine(this._roleInfo.spPath, this._role).then((skeletonData: sp.SkeletonData) => {
+                    LoadManager.loadSpine(this._roleInfo.path, this._role).then((skeletonData: sp.SkeletonData) => {
                         this._isSpLoad = true;
                         this.initAction();
                         if (this._needMovePos) {
                             this.moveTo(this._needMovePos);
                             this._needMovePos = null;
                         }
-                        this.updateSpineSlot();
+                        // this.drawRect();
+                        this.updateClothings();
                         if (callBack) callBack();
                     });
                 });
@@ -404,8 +421,8 @@ export class RoleDataModel extends BaseModel {
     }
     /**获取显示范围 */
     public getRect() {
-        let rect: Rect = this._roleInfo.rect;
-        rect = rect.clone();
+        let roleRect = this._roleInfo.rect;
+        let rect: Rect = new Rect(roleRect[0], roleRect[1], roleRect[2], roleRect[3]);
         let pos = this.node ? this.node.position : this._pos;
         rect.x += pos.x;
         rect.y += pos.y;
@@ -415,12 +432,10 @@ export class RoleDataModel extends BaseModel {
     public updateLevel(level: number) {
         if (this._level == level) return;
         this._level = level;
-        if (RoleType.role == this._roleType) {
-            this._roleInfo = MapConfig.roleInfo[this._roleID][level - 1];
-        } else {
+        if (RoleType.sprite == this._roleType) {
             this._roleInfo = MapConfig.spriteInfo[this._roleID][level - 1];
         }
-        LoadManager.loadSpine(this._roleInfo.spPath, this._role).then((skeletonData: sp.SkeletonData) => {
+        LoadManager.loadSpine(this._roleInfo.path, this._role).then((skeletonData: sp.SkeletonData) => {
             this.initAction();
         });
     }

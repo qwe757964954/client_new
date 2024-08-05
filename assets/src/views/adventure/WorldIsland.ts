@@ -1,25 +1,25 @@
 import { _decorator, Button, Component, director, instantiate, Label, Node, Prefab, UITransform, Vec2, Vec3 } from 'cc';
 import { EventType } from '../../config/EventType';
-import { BossLevelData, BossLevelTopicData, GateData, GradeSkipExercisesListReply, IslandProgressModel, MapLevelData, MicroListItem, ProgressRewardData, Subject, UnitData, UnitListData, WordGameSubjectReply, WordGameUnitWordReply } from '../../models/AdventureModel';
+import { PrefabType, SceneType } from '../../config/PrefabType';
+import { DataMgr } from '../../manager/DataMgr';
+import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
+import { BossLevelData, BossLevelTopicData, GateData, GradeSkipExercisesListReply, IslandProgressModel, MapLevelData, ProgressRewardData, Subject, UnitData, UnitListData, WordGameSubjectReply, WordGameUnitWordReply } from '../../models/AdventureModel';
+import { BaseRepPacket } from '../../models/NetModel';
+import { RoleBaseModel } from '../../models/RoleBaseModel';
+import { InterfacePath } from '../../net/InterfacePath';
+import { ServiceMgr } from '../../net/ServiceManager';
 import CCUtil from '../../util/CCUtil';
 import EventManager, { EventMgr } from '../../util/EventManager';
 import List from '../../util/list/List';
-import { rightPanelchange } from './common/RightPanelchange';
-import { IslandMap } from './levelmap/IslandMap';
-import { RoleBaseModel } from '../../models/RoleBaseModel';
-import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
-import { PrefabType, SceneType } from '../../config/PrefabType';
-import { ServiceMgr } from '../../net/ServiceManager';
-import { InterfacePath } from '../../net/InterfacePath';
-import { DataMgr } from '../../manager/DataMgr';
-import { WordBossView } from './sixModes/WordBossView';
-import { MonsterModel } from './common/MonsterModel';
-import { MapRewardBoxItem } from './levelmap/MapRewardBoxItem';
-import { UnitItem } from './common/UnitItem';
-import { SubjectView } from '../theme/SubjectView';
 import { GradeSkipSubjectMgr } from '../theme/GradeSkipSubjectManager';
+import { SubjectView } from '../theme/SubjectView';
 import { UnitExerciseView } from '../theme/UnitExerciseView';
-import { BaseRepPacket } from '../../models/NetModel';
+import { MonsterModel } from './common/MonsterModel';
+import { rightPanelchange } from './common/RightPanelchange';
+import { UnitItem } from './common/UnitItem';
+import { IslandMap } from './levelmap/IslandMap';
+import { MapRewardBoxItem } from './levelmap/MapRewardBoxItem';
+import { WordBossView } from './sixModes/WordBossView';
 const { ccclass, property } = _decorator;
 
 /**魔法森林 何存发 2024年4月9日17:51:36 */
@@ -285,14 +285,14 @@ export class WorldIsland extends Component {
         this._role = instantiate(this.roleModel);
         this.roleContainer.addChild(this._role);
         let roleModel = this._role.getComponent(RoleBaseModel);
-        roleModel.init(101, 1, [9500, 9700, 9701, 9702, 9703]);
+        roleModel.initSelf();
         roleModel.show(true);
     }
     async initPet() {
         this._pet = instantiate(this.petModel);
         this.petContainer.addChild(this._pet);
         let roleModel = this._pet.getComponent(RoleBaseModel);
-        roleModel.init(101, 1);
+        roleModel.initSelf();
         roleModel.show(true);
     }
 

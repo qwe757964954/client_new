@@ -201,7 +201,7 @@ export class WordReportView extends BaseView {
         this.role_node.addChild(role);
         NodeUtil.setLayerRecursively(role, Layers.Enum.UI_2D);
         let roleModel = role.getComponent(RoleBaseModel);
-        await roleModel.init(101, 1, [9500, 9700, 9701, 9702, 9703]);
+        await roleModel.initSelf();
         roleModel.show(true);
         roleModel.standby();
     }

@@ -29,14 +29,14 @@ export class ChangeRoleView extends BaseView {
         [102, [9550, 9800, 9801, 9802, 9803, 9805]],
         [103, [9600, 9900, 9901, 9902, 9903]],
     ]);
-    
+
     protected initUI(): void {
         for (let index = 0; index < this.roleList.length; index++) {
             const roleItem = this.roleList[index];
             let count = 101 + index;
             roleItem.getComponent(SettingRoleItem).role_id = count;
             CCUtil.onTouch(roleItem, this.onItemClick, this);
-            
+
             // this.initRoleSkeleton(roleItem, count);
             this.initPetSkeleton(roleItem.getChildByName("correct"), count);
         }
@@ -52,7 +52,7 @@ export class ChangeRoleView extends BaseView {
         parent.addChild(role);
         NodeUtil.setLayerRecursively(role, Layers.Enum.UI_2D);
         let roleModel = role.getComponent(RoleBaseModel);
-        await roleModel.init(count, 1, this.roleConfig.get(count));
+        await roleModel.initSelf();
         role.setScale(2, 2, 2);
         roleModel.show(true);
     }
@@ -62,14 +62,14 @@ export class ChangeRoleView extends BaseView {
         parent.addChild(pet);
         NodeUtil.setLayerRecursively(pet, Layers.Enum.UI_2D);
         let petModel = pet.getComponent(RoleBaseModel);
-        petModel.init(count, 1);
+        petModel.initSelf();
         pet.setScale(1, 1, 1);
         petModel.show(true);
     }
 
     // New method to move a role to the center based on ID
     moveRoleToCenter(roleId: number) {
-        
+
         const index = roleId - 101;
         if (index < 0 || index >= this.roleList.length) {
             console.error(`Invalid roleId: ${roleId}`);

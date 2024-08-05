@@ -1,12 +1,11 @@
-import { _decorator, Component, instantiate, Label, labelAssembler, Node, Prefab, sp } from 'cc';
-import { BaseView } from '../../script/BaseView';
-import List from '../../util/list/List';
-import { ReportItem, ReportItemType } from '../adventure/sixModes/ReportItem';
-import CCUtil from '../../util/CCUtil';
-import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
+import { _decorator, instantiate, Label, Node, Prefab, sp } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
-import { NodeUtil } from '../../util/NodeUtil';
+import { ViewsMgr } from '../../manager/ViewsManager';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
+import { BaseView } from '../../script/BaseView';
+import CCUtil from '../../util/CCUtil';
+import List from '../../util/list/List';
+import { ReportItem } from '../adventure/sixModes/ReportItem';
 import { UnlockItem } from './UnlockItem';
 const { ccclass, property } = _decorator;
 
@@ -69,7 +68,7 @@ export class LevelUpView extends BaseView {
         let keys = Object.keys(this._award);
         let key: string = keys[idx];
         let item_script = item.getComponent(ReportItem);
-        item_script.updateItemProps(key, this._award[key]);
+        item_script.updateItemProps({ id: Number(key), num: this._award[key] });
     }
 
     unlockListRender(item: Node, idx: number) {
@@ -81,7 +80,7 @@ export class LevelUpView extends BaseView {
         let role = instantiate(this.roleModel);
         this.roleNode.addChild(role);
         let roleModel = role.getComponent(RoleBaseModel);
-        await roleModel.init(101, 1, [9500, 9700, 9701, 9702, 9703]);
+        await roleModel.initSelf();
         roleModel.show(true);
         roleModel.standby();
     }

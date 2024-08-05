@@ -5,6 +5,8 @@ export const TextConfig = {
     Building_Path2: "map/building/{0}/spriteFrame",
     Building_SpPath: "spine/building/{0}",
     Mood_Path: "map/pet/{0}/spriteFrame",
+    Role_Sp_Path: "animation/role/{0}",
+    Clothing_Path: "animation/clothing/{0}/spriteFrame",
 
     Land_Key: "{0}_{1}",
     Pet_Mood_Prop: "+{0}",

@@ -1,6 +1,6 @@
 import { EventType, itemEventKey } from "../config/EventType";
 import { ItemID } from "../export/ItemConfig";
-import { DataMgr, ItemData } from "../manager/DataMgr";
+import { ClothingType, DataMgr, ItemData } from "../manager/DataMgr";
 import { ViewsMgr } from "../manager/ViewsManager";
 import { EventMgr } from "../util/EventManager";
 import { TimerMgr } from "../util/TimerMgr";
@@ -23,6 +23,52 @@ export class UserClothes {
     wings: number = null;//翅膀
     hat: number = null;//帽子
     face: number = null;//脸
+
+    reset() {
+        // this.hair = null;
+        // this.jewelry = null;
+        // this.coat = null;
+        // this.pants = null;
+        // this.shoes = null;
+        // this.wings = null;
+        // this.hat = null;
+        // this.face = null;
+    }
+    setData(data: UserClothes) {
+        this.hair = data.hair;
+        this.jewelry = data.jewelry;
+        this.coat = data.coat;
+        this.pants = data.pants;
+        this.shoes = data.shoes;
+        this.wings = data.wings;
+        this.hat = data.hat;
+        this.face = data.face;
+    }
+    getClothings() {
+        return [this.hair, this.jewelry, this.coat, this.pants, this.shoes, this.wings, this.hat, this.face];
+    }
+    setClothing(clothing: number, type?: ClothingType) {
+        if (null == type) {
+            type = DataMgr.clothingConfig[clothing].type;
+        }
+        if (ClothingType.toufa == type) {
+            this.hair = clothing;
+        } else if (ClothingType.shipin == type) {
+            this.jewelry = clothing;
+        } else if (ClothingType.shangyi == type) {
+            this.coat = clothing;
+        } else if (ClothingType.kuzi == type) {
+            this.pants = clothing;
+        } else if (ClothingType.xiezi == type) {
+            this.shoes = clothing;
+        } else if (ClothingType.chibang == type) {
+            this.wings = clothing;
+        } else if (ClothingType.maozi == type) {
+            this.hat = clothing;
+        } else if (ClothingType.lian == type) {
+            this.face = clothing;
+        }
+    }
 }
 
 // 用户
@@ -61,8 +107,8 @@ class UserModel {
     public avatarID: number;   // 头像id
     public level: number;     // 等级
     public exp: number;       // 经验
-    public roleID: number;    // 角色id
-    public petID: number = null;     // 宠物id
+    private _roleID: number;    // 角色id
+    private _petID: number = null;     // 宠物id
     public petLevel: number = null;  // 宠物等级
     public petHasReward: boolean = false; // 宠物是否有奖励
     public gender: number = 1; //性别
@@ -91,6 +137,21 @@ class UserModel {
     private _landList: number[] = [];// 地块列表（已有）
 
     private constructor() {
+        // for test
+        this.userClothes.hair = 30001;
+        this.userClothes.jewelry = 30002;
+        this.userClothes.coat = 30003;
+        this.userClothes.pants = 30004;
+        this.userClothes.shoes = 30005;
+        // this.userClothes.wings = 0;
+        // this.userClothes.hat = 0;
+        // this.userClothes.face = 0;
+
+        this.userClothes.hair = 30006;
+        this.userClothes.jewelry = 30007;
+        this.userClothes.coat = 30008;
+        this.userClothes.pants = 30009;
+        this.userClothes.shoes = 30010;
     }
 
     public resetData() {
@@ -106,7 +167,7 @@ class UserModel {
         this.petLevel = null;
         this.petHasReward = false;
         this._itemAry = [];
-        this.userClothes = new UserClothes();
+        this.userClothes.reset();
         this._buildingList = [];
         this._landList = [];
         this._staminaLimit = 0;
@@ -225,6 +286,21 @@ class UserModel {
     }
     get staminaInterval(): number {
         return this._staminaInterval;
+    }
+    set roleID(roleID: number) {
+        roleID = roleID % 100;//for test 修改数据，后续删除
+        this._roleID = roleID;
+    }
+    get roleID(): number {
+        return this._roleID;
+    }
+    set petID(petID: number) {
+        // if (petID < 100) petID += 100;//for test 修改数据，后续删除
+        petID = petID % 100;//for test 修改数据，后续删除
+        this._petID = petID;
+    }
+    get petID(): number {
+        return this._petID;
     }
 
     public addBuilding(id: number) {

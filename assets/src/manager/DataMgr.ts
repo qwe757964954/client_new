@@ -201,16 +201,18 @@ export class RoleInfo {
     name: string;//名字
     path: string;//sp动画
     actNames: string[];//动作名
+    rect: number[];//显示范围
 }
 /**插槽信息 */
-export class SlotInfo {
-    id: number;//id
-    name: string;//名字
-    slot: number;//插槽
-}
+// export class SlotInfo {
+//     id: number;//id
+//     name: string;//名字
+//     slot: number;//插槽
+// }
 /**插槽图片信息 */
 export class SlotPngInfo {
-    id: number;//id
+    slot: string;//插槽名
+    attachment: string;//附件名
     png: string;//图片
 }
 /**服装类型 */
@@ -226,10 +228,11 @@ export enum ClothingType {
 }
 /**服装信息 */
 export class ClothingInfo {
-    id: number;//id
+    id: number;//物品id
     name: string;//名字
     type: ClothingType;//服装类型
     slots: SlotPngInfo[];//插槽
+    slotPng: string[];//插槽图片
 }
 /**主题信息 */
 export class ThemeInfo {
@@ -241,7 +244,7 @@ export class ThemeInfo {
 export class DataManager {
 
     public roleConfig: RoleInfo[] = [];//角色信息
-    public slotConfig: SlotInfo[] = [];//插槽信息
+    // public slotConfig: SlotInfo[] = [];//插槽信息
     public clothingConfig: ClothingInfo[] = [];//服装信息
     public roleSlot: RoleSlot[] = [];//角色插槽（老的，会废弃）
     public roleSlotConfig: RoleSlotConfig[] = [];//角色插槽配置（老的，会废弃）
@@ -516,32 +519,38 @@ export class DataManager {
         if (roleInfo) {
             for (let k in roleInfo) {
                 let obj: RoleInfo = roleInfo[k];
+                obj.path = ToolUtil.replace(TextConfig.Role_Sp_Path, obj.path);
+                obj.actNames = [];
+                for (let i = 1; i <= 6; i++) {
+                    let key = "spName" + i;
+                    if (obj[key]) {
+                        obj.actNames.push(obj[key]);
+                    }
+                }
                 this.roleConfig[obj.id] = obj;
             }
         }
-        let slotInfo = json.slot_info;
-        if (slotInfo) {
-            for (let k in slotInfo) {
-                let obj: SlotInfo = slotInfo[k];
-                this.slotConfig[obj.id] = obj;
-            }
-        }
+        // let slotInfo = json.slot_info;
+        // if (slotInfo) {
+        //     for (let k in slotInfo) {
+        //         let obj: SlotInfo = slotInfo[k];
+        //         this.slotConfig[obj.id] = obj;
+        //     }
+        // }
         let clothingInfo = json.clothing_info;
         if (clothingInfo) {
             for (let k in clothingInfo) {
                 let obj: ClothingInfo = clothingInfo[k];
                 obj.slots = [];
-                for (let i = 1; i < 4; i++) {
-                    let key = "slotPng" + i;
-                    if (obj[key]) {
-                        let tempSlot = new SlotPngInfo();
-                        tempSlot.png = obj[key];
-                        let key2 = "slotID" + i;
-                        if (obj[key2]) {
-                            tempSlot.id = obj[key2];
-                        }
-                        obj.slots.push(tempSlot);
-                    }
+                for (let i = 0; i < obj.slotPng.length; i++) {
+                    let slotPng = obj.slotPng[i];
+                    let tempSlot = new SlotPngInfo();
+                    tempSlot.attachment = slotPng;
+                    let tmpAry = slotPng.split("_");
+                    tmpAry[0] = "sk";
+                    tempSlot.slot = tmpAry.join("_");
+                    tempSlot.png = ToolUtil.replace(TextConfig.Clothing_Path, slotPng);
+                    obj.slots.push(tempSlot);
                 }
                 this.clothingConfig[obj.id] = obj;
             }

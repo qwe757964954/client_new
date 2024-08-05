@@ -3,92 +3,95 @@
         {
             "id": 1,
             "name": "男1",
-            "path": "nvren",
+            "path": "nvzhu",
             "spName1": "idle",
             "spName2": "walk",
             "spName3": "run",
             "spName4": "jump",
             "spName5": "wave",
-            "spName6": "die"
+            "spName6": "die",
+            "rect": [
+                -25,
+                0,
+                50,
+                80
+            ]
         },
         {
             "id": 2,
             "name": "男2",
-            "path": "nvren",
+            "path": "nvzhu",
             "spName1": "idle",
             "spName2": "walk",
             "spName3": "run",
             "spName4": "jump",
             "spName5": "wave",
-            "spName6": "die"
+            "spName6": "die",
+            "rect": [
+                -25,
+                0,
+                50,
+                80
+            ]
         },
         {
             "id": 3,
             "name": "女1",
-            "path": "nvren",
+            "path": "nvzhu",
             "spName1": "idle",
             "spName2": "walk",
             "spName3": "run",
             "spName4": "jump",
             "spName5": "wave",
-            "spName6": "die"
+            "spName6": "die",
+            "rect": [
+                -25,
+                0,
+                50,
+                80
+            ]
         }
     ],
     "slot_info": [
         {
             "id": 1,
-            "name": "头发_后",
-            "slot": "sk_toufa_b"
-        },
-        {
-            "id": 2,
-            "name": "饰品_后",
-            "slot": "sk_shipin_b"
-        },
-        {
-            "id": 3,
-            "name": "手_左",
-            "slot": "sk_shou_l"
-        },
-        {
-            "id": 4,
-            "name": "裤子_左",
-            "slot": "sk_kuzi_l"
-        },
-        {
-            "id": 5,
-            "name": "鞋子_左",
-            "slot": "sk_xiezi_l"
-        },
-        {
-            "id": 6,
-            "name": "裤子_右",
-            "slot": "sk_kuzi_r"
-        },
-        {
-            "id": 7,
-            "name": "鞋子_右",
-            "slot": "sk_xiezi_r"
-        },
-        {
-            "id": 8,
-            "name": "上衣",
-            "slot": "sk_shangyi"
-        },
-        {
-            "id": 9,
-            "name": "手_右",
-            "slot": "sk_shou_r"
-        },
-        {
-            "id": 10,
             "name": "头发",
             "slot": "sk_toufa"
         },
         {
-            "id": 11,
+            "id": 2,
             "name": "饰品",
             "slot": "sk_shipi"
+        },
+        {
+            "id": 3,
+            "name": "上衣",
+            "slot": "sk_shangyi"
+        },
+        {
+            "id": 4,
+            "name": "裤子",
+            "slot": "sk_kuzi_l"
+        },
+        {
+            "id": 5,
+            "name": "鞋子",
+            "slot": "sk_xiezi_l"
+        },
+        {
+            "id": 6,
+            "name": "翅膀",
+            "slot": "sk_kuzi_r"
+        },
+        {
+            "id": 7,
+            "name": "帽子",
+            "slot": "sk_xiezi_r"
+        },
+        {
+            "id": 8,
+            "name": "脸",
+            "slot": "sk_shangyi"
         }
     ],
     "clothing_info": [
@@ -96,111 +99,102 @@
             "id": 30001,
             "name": "头发1",
             "type": 1,
-            "slotPng1": "sk01_toufa",
-            "slotID1": 10,
-            "slotPng2": "sk01_toufa_b",
-            "slotID2": 1,
-            "slotPng3": "",
-            "slotID3": 0
+            "slotPng": [
+                "sk01_toufa",
+                "sk01_toufa_b"
+            ]
         },
         {
             "id": 30002,
             "name": "饰品1",
             "type": 2,
-            "slotPng1": "sk01_shipin",
-            "slotID1": 11,
-            "slotPng2": "sk01_shipin_b",
-            "slotID2": 2,
-            "slotPng3": "",
-            "slotID3": 0
+            "slotPng": [
+                "sk01_shipin",
+                "sk01_shipin_b"
+            ]
         },
         {
             "id": 30003,
             "name": "衣服1",
             "type": 3,
-            "slotPng1": "sk01_shangyi",
-            "slotID1": 8,
-            "slotPng2": "sk01_shou_l",
-            "slotID2": 3,
-            "slotPng3": "sk01_shou_r",
-            "slotID3": 9
+            "slotPng": [
+                "sk01_shangyi",
+                "sk01_dabi2_l",
+                "sk01_dabi2_r",
+                "sk01_xiaobi_l",
+                "sk01_xiaobi_r"
+            ]
         },
         {
             "id": 30004,
             "name": "裤子1",
             "type": 4,
-            "slotPng1": "sk01_kuzi_l",
-            "slotID1": 4,
-            "slotPng2": "sk01_kuzi_r",
-            "slotID2": 6,
-            "slotPng3": "",
-            "slotID3": 0
+            "slotPng": [
+                "sk01_kuzi_l",
+                "sk01_kuzi_r"
+            ]
         },
         {
             "id": 30005,
             "name": "鞋子1",
             "type": 5,
-            "slotPng1": "sk01_xiezi_l",
-            "slotID1": 5,
-            "slotPng2": "sk01_xiezi_r",
-            "slotID2": 7,
-            "slotPng3": "",
-            "slotID3": 0
+            "slotPng": [
+                "sk01_xiezi_l",
+                "sk01_xiezi_r"
+            ]
         },
         {
             "id": 30006,
             "name": "头发2",
             "type": 1,
-            "slotPng1": "sk02_toufa",
-            "slotID1": 10,
-            "slotPng2": "sk02_toufa_b",
-            "slotID2": 1,
-            "slotPng3": "",
-            "slotID3": 0
+            "slotPng": [
+                "sk02_toufa",
+                "sk02_toufa_b"
+            ]
         },
         {
             "id": 30007,
             "name": "饰品2",
             "type": 2,
-            "slotPng1": "sk02_shipin",
-            "slotID1": 11,
-            "slotPng2": "sk02_shipin_b",
-            "slotID2": 2,
-            "slotPng3": "",
-            "slotID3": 0
+            "slotPng": [
+                "sk02_shipin",
+                "sk02_shipin_b"
+            ]
         },
         {
             "id": 30008,
             "name": "衣服2",
             "type": 3,
-            "slotPng1": "sk02_shangyi",
-            "slotID1": 8,
-            "slotPng2": "sk02_shou_l",
-            "slotID2": 3,
-            "slotPng3": "sk02_shou_r",
-            "slotID3": 9
+            "slotPng": [
+                "sk02_shangyi",
+                "sk02_pifeng_b",
+                "sk02_pifeng_l",
+                "sk02_pifeng_r",
+                "sk02_dabi_l",
+                "sk02_dabi_r",
+                "sk02_dabi2_l",
+                "sk02_dabi2_r",
+                "sk02_xiaobi_l",
+                "sk02_xiaobi_r"
+            ]
         },
         {
             "id": 30009,
             "name": "裤子2",
             "type": 4,
-            "slotPng1": "sk02_kuzi_l",
-            "slotID1": 4,
-            "slotPng2": "sk02_kuzi_r",
-            "slotID2": 6,
-            "slotPng3": "",
-            "slotID3": 0
+            "slotPng": [
+                "sk02_kuzi_l",
+                "sk02_kuzi_r"
+            ]
         },
         {
             "id": 30010,
             "name": "鞋子2",
             "type": 5,
-            "slotPng1": "sk02_xiezi_l",
-            "slotID1": 5,
-            "slotPng2": "sk02_xiezi_r",
-            "slotID2": 7,
-            "slotPng3": "",
-            "slotID3": 0
+            "slotPng": [
+                "sk02_xiezi_l",
+                "sk02_xiezi_r"
+            ]
         }
     ]
 }

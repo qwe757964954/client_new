@@ -26,7 +26,7 @@ export class ShopPlayerView extends Component {
         NodeUtil.setLayerRecursively(this._role, Layers.Enum.UI_2D);
         let roleModel = this._role.getComponent(RoleBaseModel);
         let modelId: number = Number(User.curHeadPropId);
-        roleModel.init(modelId, 1, [9500, 9700, 9701, 9702, 9703]);
+        roleModel.initSelf();
         roleModel.show(true);
     }
 }

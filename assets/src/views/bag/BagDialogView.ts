@@ -46,44 +46,44 @@ export class BagDialogView extends BaseView {
     public roleContainer: Node = null;
 
     @property(List)
-    public tabList:List = null;
+    public tabList: List = null;
     @property(List)
-    public dress_list:List = null;
+    public dress_list: List = null;
 
     @property(List)
-    public op_list:List = null;
+    public op_list: List = null;
 
     private _role: Node = null;
 
-    private _propsDatas:ItemData[] = [];
-    private _opDatas:BagOperationData[] = [];
-    private _selectedItem:ItemData = null;
+    private _propsDatas: ItemData[] = [];
+    private _opDatas: BagOperationData[] = [];
+    private _selectedItem: ItemData = null;
 
-    private _compositeInfo:BackpackItemInfo = null;
-    private _breakdownInfo:ItemData = null;
-    private _tabSelected:number = 0;
+    private _compositeInfo: BackpackItemInfo = null;
+    private _breakdownInfo: ItemData = null;
+    private _tabSelected: number = 0;
     initEvent() {
         CCUtil.onBtnClick(this.btn_close, this.onCloseView.bind(this));
     }
     protected onInitModuleEvent() {
         this.addModelListeners([
             [EventType.Bag_PropList, this.onPropList.bind(this)],
-            [EventType.Bag_Composite_Event,this.onCompositeRequest.bind(this)],
-            [EventType.Bag_Breakdown_Event,this.onBreakdownRequest.bind(this)],
-            [EventType.Item_Props_Refresh,this.onItemPropsRefresh.bind(this)],
+            [EventType.Bag_Composite_Event, this.onCompositeRequest.bind(this)],
+            [EventType.Bag_Breakdown_Event, this.onBreakdownRequest.bind(this)],
+            [EventType.Item_Props_Refresh, this.onItemPropsRefresh.bind(this)],
             [NetNotify.Classification_BreakdownBackpackItems, this.onBreakdownBackpackItems.bind(this)],
             [NetNotify.Classification_BackpackItemSynthesis, this.onBackpackItemSynthesis.bind(this)],
         ]);
     }
-    onCompositeRequest(itemInfo:BackpackItemInfo){
+    onCompositeRequest(itemInfo: BackpackItemInfo) {
         this._compositeInfo = itemInfo;
         BagServer.reqBackpackItemSynthesis(this._compositeInfo);
     }
-    onBreakdownRequest(item:ItemData){
+    onBreakdownRequest(item: ItemData) {
         this._breakdownInfo = item;
         BagServer.reqBreakdownBackpackItems(this._breakdownInfo);
     }
-    onItemPropsRefresh(data:any){
+    onItemPropsRefresh(data: any) {
         this.tabList.selectedId = -1;
         this.tabList.selectedId = this._tabSelected;
     }
@@ -102,7 +102,7 @@ export class BagDialogView extends BaseView {
 
     }
 
-    onBreakdownBackpackItems(data:any){
+    onBreakdownBackpackItems(data: any) {
         console.log("onBreakdownBackpackItems", data);
         // toast("你成功把xx个xx分解了，获得xx个xx")
         let item_info = BagConfig.findItemInfo(this._breakdownInfo);
@@ -113,7 +113,7 @@ export class BagDialogView extends BaseView {
             let item_info = BagConfig.findItemInfo(itemData);
             let item_quantity = itemData.num * this._breakdownInfo.num;
             tip_msg += `${item_quantity}个${item_info.name}`;
-            
+
             // Add a comma separator for all items except the last one
             if (index < decompose_items.length - 1) {
                 tip_msg += '，';
@@ -123,10 +123,10 @@ export class BagDialogView extends BaseView {
         console.log("onBreakdownBackpackItems", datas);
 
     }
-    onBackpackItemSynthesis(data:any){
+    onBackpackItemSynthesis(data: any) {
         const datas = BagConfig.findMergeItems(this._compositeInfo);
         let merge_items = TKConfig.convertRewardData(datas);
-        merge_items= merge_items.filter(item => item.id !== ItemID.coin);
+        merge_items = merge_items.filter(item => item.id !== ItemID.coin);
         let item_info = BagConfig.findItemInfo(merge_items[0]);
         let tip_msg = `你成功把${merge_items[0].num}个${item_info.name}合成了${this._compositeInfo.name}`;
         ViewsManager.showTip(tip_msg);
@@ -156,15 +156,15 @@ export class BagDialogView extends BaseView {
         NodeUtil.setLayerRecursively(this._role, Layers.Enum.UI_2D);
         let roleModel = this._role.getComponent(RoleBaseModel);
         let modelId: number = Number(User.curHeadPropId);
-        roleModel.init(modelId, 1, [9500, 9700, 9701, 9702, 9703]);
+        roleModel.initSelf();
         roleModel.show(true);
     }
-    onLoadPropsGrid(item:Node, idx:number){
+    onLoadPropsGrid(item: Node, idx: number) {
         let itemScript: RewardItem = item.getComponent(RewardItem);
         let node_trans = item.getComponent(UITransform);
         let scale = 125 / node_trans.height;
         item.setScale(scale, scale, scale)
-        let data:ItemData = {
+        let data: ItemData = {
             id: this._propsDatas[idx].id,
             num: this._propsDatas[idx].num,
         }
@@ -172,43 +172,43 @@ export class BagDialogView extends BaseView {
     }
 
     onPropsGridSelected(item: any, selectedId: number, lastSelectedId: number, val: number) {
-        if(!isValid(selectedId) || selectedId < 0 || !isValid(item)){return;}
+        if (!isValid(selectedId) || selectedId < 0 || !isValid(item)) { return; }
         this.onPropsSelected(this._propsDatas[selectedId]);
     }
 
-    onPropsSelected(selData:ItemData){
+    onPropsSelected(selData: ItemData) {
         this._selectedItem = selData;
         this._opDatas = BagConfig.getItemCanOperations(selData);
         this.op_list.numItems = this._opDatas.length;
     }
 
-    onLoadDressGrid(item:Node, idx:number){
+    onLoadDressGrid(item: Node, idx: number) {
         let item_script = item.getComponent(BagDressItem);
         item_script.updateTabProps(BagGressItems[idx]);
     }
 
     onDressGridSelected(item: any, selectedId: number, lastSelectedId: number, val: number) {
-        if(!isValid(selectedId) || selectedId < 0 || !isValid(item)){return;}
-        console.log("onDressGridSelected",selectedId);
+        if (!isValid(selectedId) || selectedId < 0 || !isValid(item)) { return; }
+        console.log("onDressGridSelected", selectedId);
         // this.clearAllTabLabelColors();
         // let item_script = item.getComponent(BagTabItem);
         // item_script.tab_name.color = new Color("#FFFFFF");
     }
 
-    
 
-    onLoadTabHorizontal(item:Node, idx:number){
+
+    onLoadTabHorizontal(item: Node, idx: number) {
         let item_script = item.getComponent(BagTabItem);
         item_script.updateTabProps(BagTabNames[idx].title);
     }
 
     onTabHorizontalSelected(item: any, selectedId: number, lastSelectedId: number, val: number) {
-        if(!isValid(selectedId) || selectedId < 0 || !isValid(item)){return;}
-        console.log("onTabHorizontalSelected",selectedId);
+        if (!isValid(selectedId) || selectedId < 0 || !isValid(item)) { return; }
+        console.log("onTabHorizontalSelected", selectedId);
         this._tabSelected = selectedId;
         this.selectTabInfo(BagTabNames[selectedId]);
     }
-    selectTabInfo(tabInfo:any){
+    selectTabInfo(tabInfo: any) {
         let arrayData = BagConfig.convertItemArrayData(User.itemAry);
         const filteredBackpackItems = BagConfig.filterBagItems(arrayData);
         switch (tabInfo.id) {
@@ -216,13 +216,13 @@ export class BagDialogView extends BaseView {
                 this._propsDatas = filteredBackpackItems;
                 break;
             case BagTabIds.DressUp:
-                this._propsDatas = BagConfig.filterItemsByType(filteredBackpackItems,BagItemType.Costume);
+                this._propsDatas = BagConfig.filterItemsByType(filteredBackpackItems, BagItemType.Costume);
                 break;
             case BagTabIds.Consumables:
-                this._propsDatas = BagConfig.filterItemsByType(filteredBackpackItems,BagItemType.Consumable);
+                this._propsDatas = BagConfig.filterItemsByType(filteredBackpackItems, BagItemType.Consumable);
                 break;
             case BagTabIds.Others:
-                this._propsDatas = BagConfig.filterItemsByType(filteredBackpackItems,BagItemType.Other);
+                this._propsDatas = BagConfig.filterItemsByType(filteredBackpackItems, BagItemType.Other);
                 break;
             default:
                 break;
@@ -231,24 +231,24 @@ export class BagDialogView extends BaseView {
         this.propList.selectedId = 0;
     }
 
-    onOperationHorizontal(item:Node, idx:number){
+    onOperationHorizontal(item: Node, idx: number) {
         let item_script = item.getComponent(BagOperrationItem);
         item_script.updateOperationProps(this._opDatas[idx]);
     }
 
     onOperationHorizontalSelected(item: any, selectedId: number, lastSelectedId: number, val: number) {
-        if(!isValid(selectedId) || selectedId < 0 || !isValid(item)){return;}
-        console.log("onTabHorizontalSelected",selectedId);
+        if (!isValid(selectedId) || selectedId < 0 || !isValid(item)) { return; }
+        console.log("onTabHorizontalSelected", selectedId);
         this.onOperationClick(this._opDatas[selectedId]);
     }
 
-    onOperationClick(data:BagOperationData){
+    onOperationClick(data: BagOperationData) {
         switch (data.id) {
             case BagOperationIds.Outfit:
-                
+
                 break;
             case BagOperationIds.UnOutfit:
-                
+
                 break;
             case BagOperationIds.Disassemble:
                 this.onDisassemble();
@@ -260,13 +260,13 @@ export class BagDialogView extends BaseView {
                 break;
         }
     }
-    async onDisassemble(){
+    async onDisassemble() {
         console.log("onDisassemble��解");
         let node = await ViewsManager.instance.showPopup(PrefabType.BreakdownView);
         let nodeScript = node.getComponent(BreakdownView)
         nodeScript.updateBreakDownItem(this._selectedItem);
     }
-    async onComposite(){
+    async onComposite() {
         console.log("onComposite....");
         let node = await ViewsManager.instance.showPopup(PrefabType.CompositeBagView);
         let nodeScript = node.getComponent(CompositeBagView);

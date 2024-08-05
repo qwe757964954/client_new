@@ -1,7 +1,7 @@
 {
     "pet_upgrade": [
         {
-            "id": 101,
+            "id": 1,
             "name": "",
             "level": 1,
             "amethyst": 1,
@@ -11,7 +11,7 @@
             "intimacy": 4
         },
         {
-            "id": 101,
+            "id": 1,
             "name": "",
             "level": 2,
             "amethyst": 1,
@@ -21,7 +21,7 @@
             "intimacy": 4
         },
         {
-            "id": 101,
+            "id": 1,
             "name": "",
             "level": 3,
             "amethyst": 1,
@@ -31,7 +31,7 @@
             "intimacy": 4
         },
         {
-            "id": 101,
+            "id": 1,
             "name": "",
             "level": 4,
             "amethyst": 1,
@@ -41,7 +41,7 @@
             "intimacy": 4
         },
         {
-            "id": 101,
+            "id": 1,
             "name": "",
             "level": 5,
             "amethyst": 1,
@@ -51,7 +51,7 @@
             "intimacy": 4
         },
         {
-            "id": 101,
+            "id": 1,
             "name": "",
             "level": 6,
             "amethyst": 1,
@@ -61,7 +61,7 @@
             "intimacy": 4
         },
         {
-            "id": 102,
+            "id": 2,
             "name": "",
             "level": 1,
             "amethyst": 1,
@@ -71,7 +71,7 @@
             "intimacy": 4
         },
         {
-            "id": 102,
+            "id": 2,
             "name": "",
             "level": 2,
             "amethyst": 1,
@@ -81,7 +81,7 @@
             "intimacy": 4
         },
         {
-            "id": 102,
+            "id": 2,
             "name": "",
             "level": 3,
             "amethyst": 1,
@@ -91,7 +91,7 @@
             "intimacy": 4
         },
         {
-            "id": 102,
+            "id": 2,
             "name": "",
             "level": 4,
             "amethyst": 1,
@@ -101,7 +101,7 @@
             "intimacy": 4
         },
         {
-            "id": 102,
+            "id": 2,
             "name": "",
             "level": 5,
             "amethyst": 1,
@@ -111,7 +111,7 @@
             "intimacy": 4
         },
         {
-            "id": 102,
+            "id": 2,
             "name": "",
             "level": 6,
             "amethyst": 1,
@@ -121,7 +121,7 @@
             "intimacy": 4
         },
         {
-            "id": 103,
+            "id": 3,
             "name": "",
             "level": 1,
             "amethyst": 1,
@@ -131,7 +131,7 @@
             "intimacy": 4
         },
         {
-            "id": 103,
+            "id": 3,
             "name": "",
             "level": 2,
             "amethyst": 1,
@@ -141,7 +141,7 @@
             "intimacy": 4
         },
         {
-            "id": 103,
+            "id": 3,
             "name": "",
             "level": 3,
             "amethyst": 1,
@@ -151,7 +151,7 @@
             "intimacy": 4
         },
         {
-            "id": 103,
+            "id": 3,
             "name": "",
             "level": 4,
             "amethyst": 1,
@@ -161,7 +161,7 @@
             "intimacy": 4
         },
         {
-            "id": 103,
+            "id": 3,
             "name": "",
             "level": 5,
             "amethyst": 1,
@@ -171,7 +171,7 @@
             "intimacy": 4
         },
         {
-            "id": 103,
+            "id": 3,
             "name": "",
             "level": 6,
             "amethyst": 1,

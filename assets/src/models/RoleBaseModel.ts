@@ -1,11 +1,10 @@
-import { _decorator, Node, Rect, sp, Sprite, Tween, tween, TweenSystem, UITransform, Vec2, Vec3 } from 'cc';
-import { MapConfig, RoleInfo } from '../config/MapConfig';
+import { _decorator, Node, sp, SpriteFrame, Texture2D, Tween, tween } from 'cc';
+import { MapConfig } from '../config/MapConfig';
+import { DataMgr, RoleInfo, SlotPngInfo } from '../manager/DataMgr';
 import { LoadManager } from '../manager/LoadManager';
 import { BaseComponent } from '../script/BaseComponent';
 import CCUtil from '../util/CCUtil';
-import { TimerMgr } from '../util/TimerMgr';
-import { ToolUtil } from '../util/ToolUtil';
-import { GridModel } from './GridModel';
+import { UserClothes } from './User';
 const { ccclass, property } = _decorator;
 /** 角色状态 */
 export enum RoleState {
@@ -28,17 +27,18 @@ export class RoleBaseModel extends BaseComponent {
     @property(Node)
     public spNode: Node = null;//sp节点
 
-    private _x: number;//x格子坐标
-    private _y: number;//y格子坐标
-    private _lastPos: Vec3;//上一次停留位置
-    private _toPos: Vec3;//目标位置
+    private _isSelf: boolean = false;//是否是自己
+    // private _x: number;//x格子坐标
+    // private _y: number;//y格子坐标
+    // private _lastPos: Vec3;//上一次停留位置
+    // private _toPos: Vec3;//目标位置
     private _roleState: RoleState = RoleState.none;//角色状态
-    private _roleSpeed: number = 50;//角色速度
-    private _scale: number = 0.8;//角色缩放
-    private _isMoving: boolean = false;//是否正在移动
-    private _timer: number = 0;//计时器
+    // private _roleSpeed: number = 50;//角色速度
+    private _scale: number = 1.0;//角色缩放
+    // private _isMoving: boolean = false;//是否正在移动
+    // private _timer: number = 0;//计时器
     // private _isActive: boolean = false;//是否激活
-    private _dataPos: Vec3;//数据坐标
+    // private _dataPos: Vec3;//数据坐标
     private _isLoad: boolean = false;//是否加载
     private _isSpLoad: boolean = false;//是否加载动画
     private _isShowFlag1: boolean = true;//是否显示标记1(建筑层是否显示)
@@ -48,8 +48,7 @@ export class RoleBaseModel extends BaseComponent {
     protected _level: number;//等级
     protected _roleType: RoleType = RoleType.none;//角色类型
     protected _roleInfo: RoleInfo;//角色信息
-    protected _slots: number[] = [];//插槽
-    protected _loadCallBack: Function = null;//加载回调
+    private _clothings: UserClothes = new UserClothes();//服装
 
     protected start(): void {
         this.initEvent();
@@ -66,43 +65,74 @@ export class RoleBaseModel extends BaseComponent {
     get level() {
         return this._level;
     }
+    set roleScale(scale: number) {
+        this._scale = scale;
+        CCUtil.setNodeScale(this.spNode, this._scale);
+    }
     // 销毁
     public dispose() {
         this.node.destroy();
     }
     protected onDestroy(): void {
         this.removeEvent();
-        if (this._timer) {
-            TimerMgr.stopLoop(this._timer);
-            this._timer = null;
+    }
+    public get isSelf(): boolean {
+        return this._isSelf;
+    }
+    public initSelf() {
+        this._isSelf = true;
+    }
+    /**插槽加载 */
+    private loadSlots(slots: SlotPngInfo[]) {
+        if (!slots || !this.role || !this._isSpLoad) return;
+        for (let i = 0; i < slots.length; i++) {
+            let slotInfo = slots[i];
+            LoadManager.loadSpriteFrame(slotInfo.png, this.role.node).then((asset: SpriteFrame) => {
+                let slot = this.role.findSlot(slotInfo.slot);
+                let attachment = this.role.getAttachment(slotInfo.slot, slotInfo.attachment);
+                slot.setAttachment(attachment);
+                this.role.setSlotTexture(slotInfo.slot, asset.texture as Texture2D, true);
+            });
         }
     }
-    /**画出碰撞区域 */
-    public drawRect() {
-        let sprite = this.getComponentInChildren(Sprite);
-        if (!sprite) return;
-        let node = sprite.node;
-        node.active = true;
-        let rect: Rect = this._roleInfo.rect;
-        node.position = new Vec3(rect.x, rect.y, 0);
-        let transform: UITransform = node.getComponent(UITransform);
-        transform.width = rect.width;
-        transform.height = rect.height;
+    public get clothings() {
+        return this._clothings;
+    }
+    public set clothings(clothings: UserClothes) {
+        this._clothings.setData(clothings);
+        this.updateClothings();
+    }
+    /**更新服装 */
+    private updateClothings() {
+        if (!this._clothings || !this.role || !this._isSpLoad) return;
+        let clothings = this._clothings.getClothings();
+        for (let i = 0; i < clothings.length; i++) {
+            let clothing = clothings[i];
+            if (null == clothing) continue;
+            let clothingInfo = DataMgr.clothingConfig[clothing];
+            this.loadSlots(clothingInfo.slots);
+        }
+    }
+    /**替换服装 */
+    public changeClothing(clothing: number) {
+        if (!clothing) return;
+        let clothingInfo = DataMgr.clothingConfig[clothing];
+        this._clothings.setClothing(clothing, clothingInfo.type);
+        this.loadSlots(clothingInfo.slots);
     }
     // 初始化
-    public async init(roleID: number, level: number, slots: number[] = [], roleType: RoleType = RoleType.none, loadCallBack?: Function) {
+    protected async init(roleID: number, level: number, roleType: RoleType = RoleType.none) {
         this._roleID = roleID;
-        this._slots = slots;
         this._level = level;
         this._roleType = roleType;
         if (RoleType.role == roleType) {
-            this._roleInfo = MapConfig.roleInfo[this._roleID][level - 1];
+            this._roleInfo = DataMgr.roleConfig[this._roleID];
+            this._scale = MapConfig.roleGameScale;
         } else {
             this._roleInfo = MapConfig.spriteInfo[this._roleID][level - 1];
+            this._scale = MapConfig.spriteScale;
         }
-        this._loadCallBack = loadCallBack;
         this.initRole();
-        // this.drawRect();
     }
     // 初始化角色
     public initRole() {
@@ -116,9 +146,6 @@ export class RoleBaseModel extends BaseComponent {
             case RoleState.walk:
                 this.walk();
                 break;
-            case RoleState.drag:
-                this.drag();
-                break;
             default:
                 this.idle();
                 break;
@@ -131,148 +158,29 @@ export class RoleBaseModel extends BaseComponent {
     public removeEvent() {
 
     }
-    // 更新朝向
-    public updateFace() {
-        if (!this._lastPos || !this._toPos) return;
-        if (this._toPos.x > this._lastPos.x) {
-            CCUtil.setNodeScale(this.spNode, this._scale);
-            return;
-        }
-        CCUtil.setNodeScaleEx(this.spNode, -this._scale, this._scale);
-    }
     // 待机动作
     public idle() {
         if (this._roleState == RoleState.idle) return;
         this._roleState = RoleState.idle;
         if (!this._isSpLoad) return;
-        this.role.setAnimation(0, this._roleInfo.spNames[0], true);
+        this.role.setAnimation(0, this._roleInfo.actNames[0], true);
     }
     // 走动动作
     public walk() {
         if (this._roleState == RoleState.walk) return;
         this._roleState = RoleState.walk;
         if (!this._isSpLoad) return;
-        this.role.setAnimation(0, this._roleInfo.spNames[1], true);
-    }
-    // 拖拽动作
-    public drag() {
-        if (this._roleState == RoleState.drag) return;
-        this._roleState = RoleState.drag;
-        if (!this._isSpLoad) return;
-        this.role.setAnimation(0, this._roleInfo.spNames[0], true);
-    }
-    // 设置格子
-    public set grid(grid: GridModel) {
-        if (!grid) return;
-        this._x = grid.x;
-        this._y = grid.y;
-        let gridPos = grid.pos;
-        // this._zIndex = this._x * this._y;
-        // this._zIndex = -(gridPos.y - grid.height * 0.5);
-        this._zIndex = -this.pos.y;
-        if (this._lastPos) return;
-        let pos = new Vec3(gridPos.x, gridPos.y - grid.height * 0.5, 0);
-        this.node.position = pos;
-        this._lastPos = pos;
-    }
-    // 移动到指定格子
-    public moveToGrid(grid: GridModel) {
-        if (!grid) return;
-        let gridPos = grid.pos;
-        let pos = new Vec3(gridPos.x, gridPos.y - grid.height * 0.5, 0);
-        this.moveTo(pos);
-    }
-    public moveTo(pos: Vec3) {
-        if (this._isMoving) return;
-        // console.log("移动到指定位置", pos.x,pos.y);
-        this.walk();
-        Tween.stopAllByTarget(this.node);
-        this._isMoving = true;
-        this._toPos = pos;
-        if (this._timer) TimerMgr.stopLoop(this._timer);
-        this._timer = TimerMgr.loop(this.notifyZOrderUpdate.bind(this), 1000);
-        let distance = ToolUtil.vec3Sub(this._lastPos, pos).length();
-        let t = distance / this._roleSpeed;
-        tween(this.node).to(t, { position: pos }).call(() => {
-            this._lastPos = pos;
-            this._isMoving = false;
-            if (this._timer) {
-                TimerMgr.stopLoop(this._timer);
-                this._timer = null;
-            }
-            // EventManager.emit(EventType.Role_Need_Move, this);
-        }).start();
-        this.updateFace();
+        this.role.setAnimation(0, this._roleInfo.actNames[1], true);
     }
     // 原地待机
     public standby() {
         this.idle();
         Tween.stopAllByTarget(this.node);
-        this._isMoving = false;
-        this._lastPos = this.pos;
+        // this._isMoving = false;
+        // this._lastPos = this.pos;
         tween(this.node).delay(0.5).call(() => {
             // EventManager.emit(EventType.Role_Need_Move, this);
         }).start();
-    }
-    /** 原地拖拽 */
-    public dragStandby() {
-        this.drag();
-        Tween.stopAllByTarget(this.node);
-        this._isMoving = false;
-        this._lastPos = this.pos;
-    }
-    // 通知层级更新
-    public notifyZOrderUpdate() {
-        if (!this._isMoving) return;//没有移动暂时不用通知
-        // EventManager.emit(EventType.Role_Need_Sort, this);
-    }
-    // 是否点击到自己
-    public isTouchSelf(x: number, y: number): boolean {
-        let rect = this.getRect();
-        return rect.contains(new Vec2(x, y));
-    }
-    /** 是否显示在屏幕上 */
-    public set isActive(isActive: boolean) {
-        this._isShowFlag1 = isActive;
-        if (this._isShowFlag1) {
-            this.node.active = this._isShowFlag2;
-        } else {
-            this.node.active = false;
-        }
-        if (this._isShowFlag1) {
-            TweenSystem.instance.ActionManager.resumeTarget(this.node);
-        } else {
-            TweenSystem.instance.ActionManager.pauseTarget(this.node);
-        }
-    }
-    /** 点击显示 */
-    public onClickShow() {
-        this.standby();
-        //TODO 效果
-    }
-    /** 拖拽开始 */
-    public onDragStart() {
-        this.topZIndex = true;//置顶
-        this.dragStandby();
-        this._dataPos = this.node.position.clone();
-    }
-    /** 拖拽 */
-    public onDrag(x: number, y: number) {
-        let pos = this.node.position.clone();
-        pos.x += x;
-        pos.y += y;
-        this.node.position = pos;
-    }
-    /** 拖拽结束 */
-    public onDragEnd(x: number, y: number) {
-        this.node.position = new Vec3(x, y, 0);
-        this.standby();
-        this.topZIndex = false;//取消置顶
-    }
-    public onDragEndEx() {//还原回去
-        this.node.position = this._dataPos;
-        this.standby();
-        this.topZIndex = false;//取消置顶
     }
     /**显示与否 */
     public show(isShow: boolean, callBack?: Function) {
@@ -281,10 +189,10 @@ export class RoleBaseModel extends BaseComponent {
             this.node.active = this._isShowFlag1;
             if (this._isShowFlag1 && !this._isLoad) {
                 this._isLoad = true;
-                LoadManager.loadSpine(this._roleInfo.spPath, this.role).then((skeletonData: sp.SkeletonData) => {
+                LoadManager.loadSpine(this._roleInfo.path, this.role).then((skeletonData: sp.SkeletonData) => {
                     this._isSpLoad = true;
                     this.initAction();
-                    if (this._loadCallBack) this._loadCallBack();
+                    this.updateClothings();
                     if (callBack) callBack();
                 });
             } else {
@@ -295,25 +203,14 @@ export class RoleBaseModel extends BaseComponent {
             if (callBack) callBack();
         }
     }
-    /**获取显示范围 */
-    public getRect() {
-        let rect: Rect = this._roleInfo.rect;
-        rect = rect.clone();
-        let pos = this.node.position;
-        rect.x += pos.x;
-        rect.y += pos.y;
-        return rect;
-    }
     /**等级更新 */
     public updateLevel(level: number) {
         if (this._level == level) return;
         this._level = level;
-        if (RoleType.role == this._roleType) {
-            this._roleInfo = MapConfig.roleInfo[this._roleID][level - 1];
-        } else {
+        if (RoleType.sprite == this._roleType) {
             this._roleInfo = MapConfig.spriteInfo[this._roleID][level - 1];
         }
-        LoadManager.loadSpine(this._roleInfo.spPath, this.role).then((skeletonData: sp.SkeletonData) => {
+        LoadManager.loadSpine(this._roleInfo.path, this.role).then((skeletonData: sp.SkeletonData) => {
             this.initAction();
         });
     }

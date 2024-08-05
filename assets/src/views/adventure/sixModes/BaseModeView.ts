@@ -28,7 +28,6 @@ import { SmallMonsterModel } from '../../common/SmallMonsterModel';
 import { EducationDataInfos } from '../../TextbookVocabulary/TextbookInfo';
 import { MonsterModel } from '../common/MonsterModel';
 import { TopLabel } from '../common/TopLabel';
-import { ConfirmView } from '../../common/ConfirmView';
 const { ccclass, property } = _decorator;
 
 export enum WordSourceType {
@@ -289,14 +288,14 @@ export class BaseModeView extends BaseView {
         this._role = instantiate(this.roleModel);
         this.roleContainer.addChild(this._role);
         let roleModel = this._role.getComponent(RoleBaseModel);
-        roleModel.init(101, 1, [9500, 9700, 9701, 9702, 9703]);
+        roleModel.initSelf();
         roleModel.show(true);
     }
     async initPet() {
         this._pet = instantiate(this.petModel);
         this.petContainer.addChild(this._pet);
         let roleModel = this._pet.getComponent(RoleBaseModel);
-        roleModel.init(101, 1);
+        roleModel.initSelf();
         roleModel.show(true);
         CCUtil.setNodeCamera2DUI(this._pet);
     }

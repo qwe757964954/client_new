@@ -329,14 +329,6 @@ export class MapUICtl extends MainBaseCtl {
     public initRole() {
         if (!User.roleID) return;
         console.time("initRole");
-        let roleID = User.roleID;
-        let slotsAry = [
-            [9500, 9700, 9701, 9702, 9703],
-            [9550, 9800, 9801, 9802, 9803, 9805],
-            [9600, 9900, 9901, 9902, 9903]
-        ]
-        let slots = slotsAry[roleID - 1];
-        if (roleID < 100) roleID += 100;
         // 角色
         {
             let roleModel = new RoleDataModel();

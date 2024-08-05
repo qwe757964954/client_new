@@ -137,6 +137,237 @@
             "name": "抽奖券",
             "png": "img_ticket",
             "frame": "img_bg_item5"
+        },
+        {
+            "id": 20020,
+            "name": "亲密果实",
+            "png": "img_fruit",
+            "frame": "img_bg_item5"
+        },
+        {
+            "id": 30001,
+            "name": "头发1",
+            "png": "sk01_toufa",
+            "frame": "img_bg_item5"
+        },
+        {
+            "id": 30002,
+            "name": "饰品1",
+            "png": "sk01_shipin",
+            "frame": "img_bg_item5"
+        },
+        {
+            "id": 30003,
+            "name": "衣服1",
+            "png": "sk01_shangyi",
+            "frame": "img_bg_item5"
+        },
+        {
+            "id": 30004,
+            "name": "裤子1",
+            "png": "sk01_kuzi_l",
+            "frame": "img_bg_item5"
+        },
+        {
+            "id": 30005,
+            "name": "鞋子1",
+            "png": "sk01_xiezi_l",
+            "frame": "img_bg_item5"
+        },
+        {
+            "id": 30006,
+            "name": "头发2",
+            "png": "sk02_toufa",
+            "frame": "img_bg_item5"
+        },
+        {
+            "id": 30007,
+            "name": "饰品2",
+            "png": "sk02_shipin",
+            "frame": "img_bg_item5"
+        },
+        {
+            "id": 30008,
+            "name": "衣服2",
+            "png": "sk02_shangyi",
+            "frame": "img_bg_item5"
+        },
+        {
+            "id": 30009,
+            "name": "裤子2",
+            "png": "sk02_kuzi_l",
+            "frame": "img_bg_item5"
+        },
+        {
+            "id": 30010,
+            "name": "鞋子2",
+            "png": "sk02_xiezi_l",
+            "frame": "img_bg_item5"
+        }
+    ],
+    "backpack_item_info": [
+        {
+            "id": 20001,
+            "name": "木头",
+            "type": 2,
+            "merge_item": [],
+            "decompose_item": []
+        },
+        {
+            "id": 20002,
+            "name": "手套",
+            "type": 2,
+            "merge_item": [],
+            "decompose_item": []
+        },
+        {
+            "id": 20003,
+            "name": "卷轴",
+            "type": 2,
+            "merge_item": [],
+            "decompose_item": []
+        },
+        {
+            "id": 20004,
+            "name": "铁锤",
+            "type": 2,
+            "merge_item": [],
+            "decompose_item": [
+                20001,
+                50,
+                20002,
+                50
+            ]
+        },
+        {
+            "id": 20005,
+            "name": "锄头",
+            "type": 2,
+            "merge_item": [
+                20001,
+                50,
+                10001,
+                50
+            ],
+            "decompose_item": []
+        },
+        {
+            "id": 20006,
+            "name": "果汁",
+            "type": 2,
+            "merge_item": [],
+            "decompose_item": []
+        },
+        {
+            "id": 20007,
+            "name": "糯米糍",
+            "type": 3,
+            "merge_item": [],
+            "decompose_item": []
+        },
+        {
+            "id": 20008,
+            "name": "披萨",
+            "type": 3,
+            "merge_item": [],
+            "decompose_item": []
+        },
+        {
+            "id": 20009,
+            "name": "烤肉串",
+            "type": 3,
+            "merge_item": [],
+            "decompose_item": []
+        },
+        {
+            "id": 20010,
+            "name": "烤鸡",
+            "type": 3,
+            "merge_item": [],
+            "decompose_item": [
+                20001,
+                50,
+                20002,
+                50
+            ]
+        },
+        {
+            "id": 20011,
+            "name": "烤乳猪",
+            "type": 3,
+            "merge_item": [
+                20001,
+                50,
+                10001,
+                50
+            ],
+            "decompose_item": []
+        },
+        {
+            "id": 20012,
+            "name": "毛巾",
+            "type": 3,
+            "merge_item": [],
+            "decompose_item": []
+        },
+        {
+            "id": 20013,
+            "name": "香水",
+            "type": 3,
+            "merge_item": [],
+            "decompose_item": []
+        },
+        {
+            "id": 20014,
+            "name": "花洒",
+            "type": 3,
+            "merge_item": [],
+            "decompose_item": []
+        },
+        {
+            "id": 20015,
+            "name": "玩球",
+            "type": 3,
+            "merge_item": [],
+            "decompose_item": []
+        },
+        {
+            "id": 20016,
+            "name": "唱歌",
+            "type": 3,
+            "merge_item": [],
+            "decompose_item": []
+        },
+        {
+            "id": 20017,
+            "name": "烟花",
+            "type": 2,
+            "merge_item": [],
+            "decompose_item": []
+        },
+        {
+            "id": 20018,
+            "name": "精灵魂魄",
+            "type": 2,
+            "merge_item": [],
+            "decompose_item": []
+        },
+        {
+            "id": 20019,
+            "name": "抽奖券",
+            "type": 2,
+            "merge_item": [],
+            "decompose_item": []
+        }
+    ],
+    "goods_item_info": [
+        {
+            "id": 20001,
+            "name": "木头",
+            "price": [
+                10001,
+                50
+            ]
         }
     ]
 }

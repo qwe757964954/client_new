@@ -8,12 +8,12 @@ export enum MapStatus {//地图状态
     RECYCLE = 4,//回收状态
 };
 
-export class RoleInfo {//角色配置
-    level: number;//等级(从1开始)
-    spPath: string;//spine路径
-    spNames: string[];//spine名字
-    rect: Rect;//[x,y,width,height]
-}
+// export class RoleInfo {//角色配置
+//     level: number;//等级(从1开始)
+//     spPath: string;//spine路径
+//     spNames: string[];//spine名字
+//     rect: Rect;//[x,y,width,height]
+// }
 /**地图动画配置 */
 export class MapSpInfo {
     id: number;//id
@@ -109,41 +109,44 @@ export const MapConfig = {
         ]
     },
     minePos: { x: 350, y: 700 },
-    roleInfo: {//101 男孩2, 102 女孩1, 103 男孩1
-        101: [
-            { level: 1, spPath: "animtion/role/nanhai02", spNames: ["Idle", "Run"], rect: new Rect(-90, -10, 180, 280), }
-        ],
-        102: [
-            { level: 1, spPath: "animtion/role/nvhai01", spNames: ["Idle", "Run"], rect: new Rect(-70, -10, 140, 260), }
-        ],
-        103: [
-            { level: 1, spPath: "animtion/role/nanhai01", spNames: ["Idle", "Run"], rect: new Rect(-80, -10, 160, 260), }
-        ],
-    },
+    roleScale: 0.2,
+    roleGameScale: 0.6,
+    spriteScale: 0.8,
+    // roleInfo: {//101 男孩2, 102 女孩1, 103 男孩1
+    //     101: [
+    //         { level: 1, spPath: "animation/role/nanhai02", spNames: ["Idle", "Run"], rect: new Rect(-90, -10, 180, 280), }
+    //     ],
+    //     102: [
+    //         { level: 1, spPath: "animation/role/nvhai01", spNames: ["Idle", "Run"], rect: new Rect(-70, -10, 140, 260), }
+    //     ],
+    //     103: [
+    //         { level: 1, spPath: "animation/role/nanhai01", spNames: ["Idle", "Run"], rect: new Rect(-80, -10, 160, 260), }
+    //     ],
+    // },
     spriteInfo: {//101雷电 102狐狸 103龙
-        101: [
-            { level: 1, spPath: "animtion/sprite/leidian01", spNames: ["idle", "run", "action", "attack", "skill"], rect: new Rect(-54, 0, 80, 90), },
-            { level: 2, spPath: "animtion/sprite/leidian02", spNames: ["idle", "run", "action", "attack", "skill"], rect: new Rect(-94, -14, 160, 160), },
-            { level: 3, spPath: "animtion/sprite/leidian03", spNames: ["idle", "run", "action", "attack", "skill"], rect: new Rect(-100, -14, 180, 200), },
-            { level: 4, spPath: "animtion/sprite/leidian04", spNames: ["idle", "run", "action", "attack", "skill"], rect: new Rect(-130, -20, 240, 240), },
-            { level: 5, spPath: "animtion/sprite/leidian05", spNames: ["idle", "run", "action", "attack", "skill"], rect: new Rect(-160, -30, 260, 260), },
-            { level: 6, spPath: "animtion/sprite/leidian06", spNames: ["idle", "run", "action", "attack", "skill"], rect: new Rect(-90, -10, 200, 350), },
+        1: [
+            { level: 1, path: "animation/sprite/leidian01", actNames: ["idle", "run", "action", "attack", "skill"], rect: [-54, 0, 80, 90], },
+            { level: 2, path: "animation/sprite/leidian02", actNames: ["idle", "run", "action", "attack", "skill"], rect: [-94, -14, 160, 160], },
+            { level: 3, path: "animation/sprite/leidian03", actNames: ["idle", "run", "action", "attack", "skill"], rect: [-100, -14, 180, 200], },
+            { level: 4, path: "animation/sprite/leidian04", actNames: ["idle", "run", "action", "attack", "skill"], rect: [-130, -20, 240, 240], },
+            { level: 5, path: "animation/sprite/leidian05", actNames: ["idle", "run", "action", "attack", "skill"], rect: [-160, -30, 260, 260], },
+            { level: 6, path: "animation/sprite/leidian06", actNames: ["idle", "run", "action", "attack", "skill"], rect: [-90, -10, 200, 350], },
         ],
-        102: [
-            { level: 1, spPath: "animtion/sprite/huli01", spNames: ["idle", "run", "action", "attack", "skill"], rect: new Rect(-120, 0, 120, 110), },
-            { level: 2, spPath: "animtion/sprite/huli02", spNames: ["idle", "run", "action", "attack", "skill"], rect: new Rect(-90, 0, 160, 200), },
-            { level: 3, spPath: "animtion/sprite/huli03", spNames: ["idle", "run", "action", "attack", "skill"], rect: new Rect(-100, 0, 200, 260), },
-            { level: 4, spPath: "animtion/sprite/huli04", spNames: ["idle", "run", "action", "attack", "skill"], rect: new Rect(-120, 0, 200, 300), },
-            { level: 5, spPath: "animtion/sprite/huli05", spNames: ["idle", "run", "action", "attack", "skill"], rect: new Rect(-120, -10, 320, 340), },
-            { level: 6, spPath: "animtion/sprite/huli06", spNames: ["idle", "run", "action", "attack", "skill"], rect: new Rect(-190, 0, 340, 380), },
+        2: [
+            { level: 1, path: "animation/sprite/huli01", actNames: ["idle", "run", "action", "attack", "skill"], rect: [-60, 0, 120, 110], },
+            { level: 2, path: "animation/sprite/huli02", actNames: ["idle", "run", "action", "attack", "skill"], rect: [-90, 0, 160, 200], },
+            { level: 3, path: "animation/sprite/huli03", actNames: ["idle", "run", "action", "attack", "skill"], rect: [-100, 0, 200, 260], },
+            { level: 4, path: "animation/sprite/huli04", actNames: ["idle", "run", "action", "attack", "skill"], rect: [-120, 0, 200, 300], },
+            { level: 5, path: "animation/sprite/huli05", actNames: ["idle", "run", "action", "attack", "skill"], rect: [-120, -10, 320, 340], },
+            { level: 6, path: "animation/sprite/huli06", actNames: ["idle", "run", "action", "attack", "skill"], rect: [-190, 0, 340, 380], },
         ],
-        103: [
-            { level: 1, spPath: "animtion/sprite/long01", spNames: ["idle", "run", "action", "attack", "skill"], rect: new Rect(-50, 0, 100, 120), },
-            { level: 2, spPath: "animtion/sprite/long02", spNames: ["idle", "run", "action", "attack", "skill"], rect: new Rect(-60, 0, 120, 160), },
-            { level: 3, spPath: "animtion/sprite/long03", spNames: ["idle", "run", "action", "attack", "skill"], rect: new Rect(-80, -10, 160, 260), },
-            { level: 4, spPath: "animtion/sprite/long04", spNames: ["idle", "run", "action", "attack", "skill"], rect: new Rect(-100, -10, 200, 280), },
-            { level: 5, spPath: "animtion/sprite/long05", spNames: ["idle", "run", "action", "attack", "skill"], rect: new Rect(-100, 0, 200, 320), },
-            { level: 6, spPath: "animtion/sprite/long06", spNames: ["idle", "run", "action", "attack", "skill"], rect: new Rect(-110, -20, 220, 350), },
+        3: [
+            { level: 1, path: "animation/sprite/long01", actNames: ["idle", "run", "action", "attack", "skill"], rect: [-50, 0, 100, 120], },
+            { level: 2, path: "animation/sprite/long02", actNames: ["idle", "run", "action", "attack", "skill"], rect: [-60, 0, 120, 160], },
+            { level: 3, path: "animation/sprite/long03", actNames: ["idle", "run", "action", "attack", "skill"], rect: [-80, -10, 160, 260], },
+            { level: 4, path: "animation/sprite/long04", actNames: ["idle", "run", "action", "attack", "skill"], rect: [-100, -10, 200, 280], },
+            { level: 5, path: "animation/sprite/long05", actNames: ["idle", "run", "action", "attack", "skill"], rect: [-100, 0, 200, 320], },
+            { level: 6, path: "animation/sprite/long06", actNames: ["idle", "run", "action", "attack", "skill"], rect: [-110, -20, 220, 350], },
         ],
     },
     landFlowers: [

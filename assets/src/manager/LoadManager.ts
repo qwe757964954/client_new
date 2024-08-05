@@ -52,6 +52,23 @@ class LoadManagerClass {
     public preloadPrefab(path: string | string[]): Promise<any | undefined> {
         return LoadManager.preload("prefab/" + path);
     }
+    /**加载资源 */
+    public loadSpriteFrame(path: string, conNode?: Node): Promise<any | undefined> {
+        return new Promise((resolve, reject) => {
+            resources.load(path, SpriteFrame, (error: Error, assets: SpriteFrame) => {
+                if (error) {
+                    console.log("loadSpriteFrame->resource load failed:" + path + "," + error.message);
+                    reject(error);
+                    return;
+                }
+                if (!conNode || this.assetConnectNode(assets, conNode)) {
+                    resolve(assets);
+                } else {
+                    reject(new Error("loadSpriteFrame->resource load failed:" + path + " not connect node!"));
+                }
+            });
+        });
+    }
     //加载json资源
     public loadJson(name: string): Promise<any | undefined> {
         return new Promise((resolve, reject) => {
@@ -153,6 +170,20 @@ class LoadManagerClass {
         assetManager.releaseAsset(asset);
     }
 
+    private assetConnectNode(assets: Asset, conNode: Node, isCache: boolean = false) {
+        if (!assets) return false;
+        if (!conNode || !isValid(conNode, true)) {
+            this.addRefAsset(assets, isCache);
+            LoadManager.releaseAsset(assets);
+            return false;
+        }
+        // 多次设置会多次增加监听
+        conNode.once(Node.EventType.NODE_DESTROYED, () => {
+            LoadManager.releaseAsset(assets);
+        });
+        this.addRefAsset(assets, isCache);
+        return true;
+    }
     private updateObjAsset(obj: Component, assets: Asset, resolve: (value?: any) => void, reject: (value?: any) => void, isCache: boolean = false) {
         //如果父节点不存或已经被销毁则直接返回
         if (!obj || !isValid(obj, true)) {

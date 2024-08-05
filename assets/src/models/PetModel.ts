@@ -20,24 +20,23 @@ export class PetModel extends RoleBaseModel {
     private _moodView: PetMoodView = null;//心情提示view
 
     // 初始化
-    public async init(roleID: number, level: number = 1, slots: number[] = []) {
-        await super.init(roleID, level, slots, RoleType.sprite);
+    public async init(roleID: number, level: number) {
+        super.init(roleID, level, RoleType.sprite);
     }
     public initSelf() {
-        let petID = User.petID;
-        if (petID < 100) petID += 100;
-        this.init(petID, User.petLevel);
+        super.initSelf();
+        this.init(User.petID, User.petLevel);
     }
 
     public hit() {
         return new Promise((resolve) => {
             this.role.setCompleteListener(() => {
                 this.role.setCompleteListener(null);
-                this.role.setAnimation(0, 'idle', true);
+                this.role.setAnimation(0, this._roleInfo.actNames[0], true);
                 resolve(true);
             })
-            console.log("this.role........",this.role);
-            this.role.setAnimation(0, 'skill', false);
+            console.log("this.role........", this.role);
+            this.role.setAnimation(0, this._roleInfo.actNames[4], false);
         });
     }
 
@@ -45,10 +44,10 @@ export class PetModel extends RoleBaseModel {
         return new Promise((resolve) => {
             this.role.setCompleteListener(() => {
                 this.role.setCompleteListener(null);
-                this.role.setAnimation(0, 'idle', true);
+                this.role.setAnimation(0, this._roleInfo.actNames[0], true);
                 resolve(true);
             })
-            this.role.setAnimation(0, 'attack', false);
+            this.role.setAnimation(0, this._roleInfo.actNames[3], false);
         });
     }
     /**显示礼物提示 */

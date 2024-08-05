@@ -6,13 +6,13 @@ const { ccclass, property } = _decorator;
 @ccclass('FloorsAutoView')
 export class FloorsAutoView extends Component {
     @property(Node)
-    public floors1:Node = null;
+    public floors1: Node = null;
     @property(Node)
-    public floors2:Node = null;
+    public floors2: Node = null;
     @property(Node)
-    public role_node:Node = null;
-    @property({type: CCInteger})
-    private speed:number = 0;
+    public role_node: Node = null;
+    @property({ type: CCInteger })
+    private speed: number = 0;
 
     @property(Prefab)
     public roleModel: Prefab = null;//角色
@@ -21,18 +21,18 @@ export class FloorsAutoView extends Component {
         this.initRolePlayer();
     }
 
-    setFloorProps(){
+    setFloorProps() {
         let winWidth = view.getVisibleSize().width;
         this.floors2.getComponent(UITransform).width = winWidth;
         this.floors2.setPosition(winWidth, this.floors2.getPosition().y, 0);
     }
 
-    async initRolePlayer(){
+    async initRolePlayer() {
         let role = instantiate(this.roleModel);
         this.role_node.addChild(role);
-        NodeUtil.setLayerRecursively(role,Layers.Enum.UI_2D);
+        NodeUtil.setLayerRecursively(role, Layers.Enum.UI_2D);
         let roleModel = role.getComponent(RoleBaseModel);
-        await roleModel.init(101, 1, [9500, 9700, 9701, 9702, 9703]);
+        await roleModel.initSelf();
         roleModel.walk();
     }
     update(deltaTime: number) {
@@ -42,11 +42,11 @@ export class FloorsAutoView extends Component {
         this.floors2.setPosition(pos2, this.floors1.getPosition().y, 0);
         let bgWidth = this.floors2.getComponent(UITransform).width;
         let winWidth = view.getVisibleSize().width;
-        if(this.floors1.getPosition().x < -winWidth){
-            this.floors1.setPosition(bgWidth+this.floors2.getPosition().x, this.floors1.getPosition().y, 0);
+        if (this.floors1.getPosition().x < -winWidth) {
+            this.floors1.setPosition(bgWidth + this.floors2.getPosition().x, this.floors1.getPosition().y, 0);
         }
-        if(this.floors2.getPosition().x < -winWidth){
-            this.floors2.setPosition(bgWidth+this.floors1.getPosition().x, this.floors1.getPosition().y, 0);
+        if (this.floors2.getPosition().x < -winWidth) {
+            this.floors2.setPosition(bgWidth + this.floors1.getPosition().x, this.floors1.getPosition().y, 0);
         }
     }
 }

@@ -57,15 +57,15 @@ export class FriendPlayerInfoView extends BaseView {
     private _data: FriendListItemModel = null;
     private _msgData: SystemMailItem = null;
     private _propsData: ItemData[] = [];
-    private _isShow:boolean = false;
+    private _isShow: boolean = false;
 
-    private _showPos:Vec3 = null;
+    private _showPos: Vec3 = null;
 
-    set showPos(pos:Vec3) {
+    set showPos(pos: Vec3) {
         this._showPos = pos.clone();
     }
 
-    
+
 
     updateData(data: FriendListItemModel) {
         this._data = data;
@@ -121,7 +121,7 @@ export class FriendPlayerInfoView extends BaseView {
         const roleModel = roleNode.getComponent(RoleBaseModel);
         const modelId = parseInt(this._data.avatar);
         const dressConfig = [9500, 9700, 9701, 9702, 9703]; // 示例的dressConfig
-        roleModel.init(modelId, 1, dressConfig);
+        roleModel.initSelf();
         roleModel.show(true);
     }
 
@@ -171,7 +171,7 @@ export class FriendPlayerInfoView extends BaseView {
         let node_size = this.node.getComponent(UITransform);
         let temp_width = node_size.width - 200;
         let posx = this._isShow ? temp_width : 0;
-        tween(this.node).to(0.3, { position: new Vec3(this._showPos.x +posx, this._showPos.y, 0) }).call(() => {
+        tween(this.node).to(0.3, { position: new Vec3(this._showPos.x + posx, this._showPos.y, 0) }).call(() => {
         }).start();
     }
 }
