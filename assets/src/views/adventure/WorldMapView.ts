@@ -11,6 +11,7 @@ import { ServiceMgr } from '../../net/ServiceManager';
 import CCUtil from '../../util/CCUtil';
 import EventManager, { EventMgr } from '../../util/EventManager';
 import List from '../../util/list/List';
+import { ConfirmView } from '../common/ConfirmView';
 import { StudyModeView } from './sixModes/StudyModeView';
 import { WordExamView } from './sixModes/WordExamView';
 import { WordMeaningView } from './sixModes/WordMeaningView';
@@ -19,7 +20,6 @@ import { WordReadingView } from './sixModes/WordReadingView';
 import { WordSpellView } from './sixModes/WordSpellView';
 import { WorldIsland } from './WorldIsland';
 import { WorldMapItem } from './WorldMapItem';
-import { ConfirmView } from '../common/ConfirmView';
 const { ccclass, property } = _decorator;
 /**大冒险 世界地图 何存发 2024年4月8日14:45:44 */
 @ccclass('WorldMapView')
@@ -114,6 +114,7 @@ export class WorldMapView extends Component {
 
         if (this._currentIsland) {
             this._currentIsland.destroy();
+            this._currentIsland = null;
         }
         let copynode = instantiate(this.islandPref);
         this._currentIsland = copynode;
@@ -137,6 +138,7 @@ export class WorldMapView extends Component {
     hideIsland() {
         if (this._currentIsland) {
             this._currentIsland.destroy();
+            this._currentIsland = null;
         }
         this._getingIslandStatus = false;
         this._levelProgressData = null;
