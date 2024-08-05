@@ -13,7 +13,7 @@ export enum EducationLevel {
     HighSchoolGrade1,
     HighSchoolGrade2,
     HighSchoolGrade3,
-    Other
+    Other = 3015
 }
 
 export interface EducationDataInfo {

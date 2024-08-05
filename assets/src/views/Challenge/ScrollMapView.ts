@@ -183,6 +183,7 @@ export class ScrollMapView extends BaseView {
     }
 
     scrollToNormal(){
+        if (this._pointItems.length === 0) return;
         let content_script = this.contentNode.getComponent(MapTouchBetterController);
         // content_script
         let itemNode = this._pointItems[0];

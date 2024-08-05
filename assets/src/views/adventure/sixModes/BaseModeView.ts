@@ -25,7 +25,7 @@ import FileUtil from '../../../util/FileUtil';
 import ImgUtil from '../../../util/ImgUtil';
 import { ToolUtil } from '../../../util/ToolUtil';
 import { SmallMonsterModel } from '../../common/SmallMonsterModel';
-import { EducationDataInfos } from '../../TextbookVocabulary/TextbookInfo';
+import { EducationDataInfo, EducationDataInfos } from '../../TextbookVocabulary/TextbookInfo';
 import { MonsterModel } from '../common/MonsterModel';
 import { TopLabel } from '../common/TopLabel';
 const { ccclass, property } = _decorator;
@@ -341,6 +341,7 @@ export class BaseModeView extends BaseView {
                 this._smallMonsters.push(monster);
             }
         } else if (WordSourceType.classification == this._sourceType) { //教材单词关卡
+            let levelData = this._levelData as BookLevelConfig;
             this._monster = instantiate(this.monsterModel);
             this.monster.addChild(this._monster);
             let sp = this._monster.getChildByName("sp");
@@ -348,11 +349,12 @@ export class BaseModeView extends BaseView {
             sp.scale = new Vec3(-scale.x * 0.4, scale.y * 0.4, 1);
             // sp.setPosition(sp.getPosition().x, sp.getPosition().y - 20)
             let monsterModel = this._monster.getComponent(MonsterModel);
-            monsterModel.init(FileUtil.removeFileExtension(EducationDataInfos[0].monster), true);
+            let educationInfo:EducationDataInfo = EducationDataInfos.find(item=> item.id===levelData.monster_id);
+            monsterModel.init(FileUtil.removeFileExtension(educationInfo.monster), true);
             if (this.gameMode == GameMode.Exam) {
                 this.monster.getComponent(UIOpacity).opacity = 125;
             }
-            let levelData = this._levelData as BookLevelConfig;
+            
             let pass = levelData.word_num - 1;
             console.log("this.gameMode = ", this.gameMode, this._wordsData);
             let totalHp = this.gameMode == GameMode.Exam ? this._wordsData.length : this._wordsData.length * 5;
@@ -366,7 +368,8 @@ export class BaseModeView extends BaseView {
             let scale = this._monster.getScale();
             this._monster.scale = new Vec3(-scale.x * 0.4, scale.y * 0.4, 1);
             let monsterModel = this._monster.getComponent(MonsterModel);
-            monsterModel.init(FileUtil.removeFileExtension(EducationDataInfos[0].monster), true);
+            let educationInfo:EducationDataInfo = EducationDataInfos.find(item=> item.id===this._levelData.monster_id);
+            monsterModel.init(FileUtil.removeFileExtension(educationInfo.monster), true);
             monsterModel.setHp(this._rightNum, this._levelData.wordCount);
             CCUtil.setNodeCamera2DUI(this._monster);
         }

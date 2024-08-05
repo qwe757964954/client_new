@@ -1,4 +1,4 @@
-import { _decorator, Component, easing, instantiate, Node, Prefab, sp, tween, Vec3 } from 'cc';
+import { _decorator, Component, easing, instantiate, Layout, Node, Prefab, sp, tween, UITransform, Vec3 } from 'cc';
 import { ItemData } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
 import CCUtil from '../../util/CCUtil';
@@ -84,7 +84,8 @@ export class RewardView extends Component {
                 }
             }).start();
         }
-
+        this.layout.getComponent(Layout).updateLayout();
+        this.layout.getComponent(UITransform).width = (this.layout.getComponent(UITransform).height + this.layout.getComponent(Layout).spacingX) * length;
         LoadManager.loadSpine(spConfig2.path, this.spYanHua).then(() => {
             this.spYanHua.setAnimation(0, spConfig2.anim[0], true);
         });

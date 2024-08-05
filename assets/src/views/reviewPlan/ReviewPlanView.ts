@@ -436,7 +436,13 @@ export class ReviewPlanView extends BaseComponent {
             ViewsMgr.showView(PrefabType.WordMeaningView, (node: Node) => {
                 node.getComponent(WordMeaningView).initData(wordsdata, {
                     source_type: WordSourceType.review,
-                    ws_id: data.ws_id, pass_num: data.pass_num, word_num: wordNum, error_num: errorNum, souceType: this._souceType, wordCount: wordCount
+                    ws_id: data.ws_id, 
+                    pass_num: data.pass_num, 
+                    word_num: wordNum,
+                    error_num: errorNum, 
+                    souceType: this._souceType, 
+                    wordCount: wordCount,
+                    monster_id:this._bookData.monster_id
                 });
             });
         };

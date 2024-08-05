@@ -5,7 +5,7 @@ import { inf_SpineAniCreate } from '../../manager/InterfaceDefines';
 import { ResLoader } from '../../manager/ResLoader';
 import { BaseView } from '../../script/BaseView';
 import { EventMgr } from '../../util/EventManager';
-import { EducationDataInfos } from './TextbookInfo';
+import { EducationDataInfo, EducationDataInfos } from './TextbookInfo';
 const { ccclass, property } = _decorator;
 
 @ccclass('ChallengeLeftView')
@@ -24,17 +24,22 @@ export class ChallengeLeftView extends BaseView {
     }
 
     start() {
-        this.loadMonsterSkelton();
-        this.loadRewardKey();
+        
     }
 
     protected onInitModuleEvent() {
         // this.addModelListener(EventType.Show_TextBook_Monster,this.loadMonsterSkelton);
 	}
 
-    loadMonsterSkelton(){
+    updateMonsterInfo(number:number){
+        let educationInfo:EducationDataInfo = EducationDataInfos.find(item=> item.id===number);
+        this.loadMonsterSkelton(educationInfo);
+        this.loadRewardKey(educationInfo);
+    }
+
+    loadMonsterSkelton(educationInfo:EducationDataInfo ){
         this.sk_monster.removeAllChildren();
-        let sp_str = EducationDataInfos[0].monster;
+        let sp_str = educationInfo.monster;
         const resConf = { bundle: GameBundle.NORMAL, path: sp_str };
         let spinePrams:inf_SpineAniCreate = {
             resConf:resConf,
@@ -47,8 +52,8 @@ export class ChallengeLeftView extends BaseView {
         EventMgr.dispatch(EventType.Sys_Ani_Play,spinePrams);
     }
 
-    loadRewardKey(){
-        let key_str = EducationDataInfos[0].lock_opener;
+    loadRewardKey(educationInfo:EducationDataInfo ){
+        let key_str = educationInfo.lock_opener;
         ResLoader.instance.load(key_str, SpriteFrame, (err: Error | null, spriteFrame: SpriteFrame) => {
             if (err) {
                 error && console.error(err);

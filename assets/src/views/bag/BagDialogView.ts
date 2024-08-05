@@ -3,7 +3,7 @@ import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { ItemID } from '../../export/ItemConfig';
 import { ItemData } from '../../manager/DataMgr';
-import { ViewsManager } from '../../manager/ViewsManager';
+import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
 import { User } from '../../models/User';
 import { NetNotify } from '../../net/NetNotify';
@@ -112,13 +112,14 @@ export class BagDialogView extends BaseView {
         decompose_items.forEach((itemData, index) => {
             let item_info = BagConfig.findItemInfo(itemData);
             let item_quantity = itemData.num * this._breakdownInfo.num;
+            itemData.num = item_quantity;
             tip_msg += `${item_quantity}个${item_info.name}`;
-
             // Add a comma separator for all items except the last one
             if (index < decompose_items.length - 1) {
                 tip_msg += '，';
             }
         });
+        ViewsMgr.showRewards(decompose_items);
         ViewsManager.showTip(tip_msg);
         console.log("onBreakdownBackpackItems", datas);
 
@@ -129,6 +130,8 @@ export class BagDialogView extends BaseView {
         merge_items = merge_items.filter(item => item.id !== ItemID.coin);
         let item_info = BagConfig.findItemInfo(merge_items[0]);
         let tip_msg = `你成功把${merge_items[0].num}个${item_info.name}合成了${this._compositeInfo.name}`;
+        let item_data = [{ id: this._compositeInfo.id, num: 1 }];
+        ViewsMgr.showRewards(item_data);
         ViewsManager.showTip(tip_msg);
         console.log("onBackpackItemSynthesis", data);
     }

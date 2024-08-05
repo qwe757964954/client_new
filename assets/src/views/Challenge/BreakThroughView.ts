@@ -153,6 +153,7 @@ export class BreakThroughView extends BaseView {
             word_num: this._curUnitStatus.word_num,
             error_num: this._curUnitStatus.error_num,
             time_remaining: this._curUnitStatus.time_remaining,
+            monster_id:this._bookData.monster_id
         };
 
         if (isValid(this._curUnitStatus.error_word)) {
@@ -263,6 +264,7 @@ export class BreakThroughView extends BaseView {
             big_id: this._selectitemStatus.unit_name,
             micro_id: this._selectGate.small_id,
             game_modes: "word",
+            monster_id:this._bookData.monster_id,
             flag_info: this._selectGate.flag_info
         };
         this._rightChallenge.openView(param);

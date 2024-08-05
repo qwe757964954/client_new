@@ -124,6 +124,7 @@ export class BookLevelConfig {
     error_word?: any;
     error_num?: number;
     time_remaining: number;
+    monster_id:number;
 }
 //成就信息配置
 export class ArchConfig {
