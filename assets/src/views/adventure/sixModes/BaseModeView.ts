@@ -368,7 +368,7 @@ export class BaseModeView extends BaseView {
             let scale = this._monster.getScale();
             this._monster.scale = new Vec3(-scale.x * 0.4, scale.y * 0.4, 1);
             let monsterModel = this._monster.getComponent(MonsterModel);
-            let educationInfo:EducationDataInfo = EducationDataInfos.find(item=> item.id===this._levelData.wordCount.monster_id);
+            let educationInfo:EducationDataInfo = EducationDataInfos.find(item=> item.id===this._levelData.monster_id);
             monsterModel.init(FileUtil.removeFileExtension(educationInfo.monster), true);
             monsterModel.setHp(this._rightNum, this._levelData.wordCount);
             CCUtil.setNodeCamera2DUI(this._monster);
