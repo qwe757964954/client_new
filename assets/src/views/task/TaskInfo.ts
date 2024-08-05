@@ -52,11 +52,14 @@ export enum TabTypeIds {
   LandmarkBuilding,  // 地标建筑
   Decoration,        // 装饰
   ShopFlooring,      // 商店地板
-  ShopHat,           // 商店帽子
+
   ShopHairstyle,     // 商店发型
+  ShopAccessories,   //商店饰品
   ShopTop,           // 商店上衣
   ShopPants,         // 商店裤子
   ShopShoes,         // 商店鞋子
+  ShopWing,          // 商店翅膀
+  ShopHat,           // 商店帽子
   ShopFaceShape      // 商店脸型
 }
 

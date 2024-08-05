@@ -4,6 +4,7 @@ import { BaseView } from '../../script/BaseView';
 import List from '../../util/list/List';
 import { TabTypeIds } from '../task/TaskInfo';
 import { ShopGoodsItem } from './ShopGoodsItem';
+import { buildTypeMapping } from './ShopInfo';
 const { ccclass, property } = _decorator;
 
 @ccclass('ShopBuildView')
@@ -20,29 +21,20 @@ export class ShopBuildView extends BaseView {
 
     getBuildItems(id:TabTypeIds){
         this._itemsData = [];
-        let editConfig = DataMgr.instance.editInfo;
+        let editConfig = DataMgr.editInfo;
         let cleanedEditConfig = editConfig.filter(item => item !== null && item !== undefined && item.type !== EditType.Null );
         // 使用 filter 方法过滤掉具有特定 id 的元素  Buiding = 1,//功能性建筑
         // cleanedEditConfig = cleanedEditConfig.filter(item => 
         // );   
-        switch (id) {
-            case TabTypeIds.BuildAll:
-                this._itemsData = cleanedEditConfig;
-                break;
-            case TabTypeIds.FunctionalBuilding:
-                this._itemsData = cleanedEditConfig.filter(item => item.type === EditType.Buiding);
-                break;
-            case TabTypeIds.LandmarkBuilding:
-                this._itemsData = cleanedEditConfig.filter(item => item.type === EditType.LandmarkBuiding);
-                break;
-            case TabTypeIds.Decoration:
-                this._itemsData = cleanedEditConfig.filter(item => item.type === EditType.Decoration);
-                break;
-            case TabTypeIds.ShopFlooring:
-                this._itemsData = cleanedEditConfig.filter(item => item.type === EditType.Land);
-                break;
-            default:
-                break;
+        if(TabTypeIds.BuildAll){
+            this._itemsData = cleanedEditConfig;
+        }else{
+            // 获取对应的 ClothingType
+            const buildType = buildTypeMapping[id];
+            if (id !== undefined) {
+                // 过滤数据
+                this._itemsData = editConfig.filter(item => item.type === buildType);
+            }
         }
     }
 

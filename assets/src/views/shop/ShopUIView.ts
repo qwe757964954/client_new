@@ -1,6 +1,7 @@
 import { _decorator, Node } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
+import { DataMgr } from '../../manager/DataMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { User } from '../../models/User';
 import { BaseView } from '../../script/BaseView';
@@ -30,7 +31,8 @@ export class ShopUIView extends BaseView {
     private _shopDecorationView: ShopDecorationView = null;
     private _debrisAreaView: DebrisAreaView = null;
 
-    private _currentTabId:TabTypeIds = TabTypeIds.BuildAll;
+    private _currentSubId:TabTypeIds = TabTypeIds.BuildAll;
+    private _currentTabId:TaskTabIds = TaskTabIds.ImageStore;
     async initUI() {
         this.viewAdaptSize();
         this.initAmout();
@@ -42,6 +44,7 @@ export class ShopUIView extends BaseView {
         } catch (err) {
             console.error("Failed to initialize UI:", err);
         }
+        console.log("DataMgr.clothingConfig",DataMgr.clothingConfig);
     }
 
     protected onInitModuleEvent() {
@@ -50,7 +53,7 @@ export class ShopUIView extends BaseView {
 
 	}
     onRepShopBuyBuilding() {
-        this._shopBuildView.updateData(this._currentTabId);
+        this._shopBuildView.updateData(this._currentSubId);
     }
     private async initViews() {
         await Promise.all([
@@ -74,8 +77,13 @@ export class ShopUIView extends BaseView {
     }
 
     subTabItemClick(data:TabItemDataInfo){
-        this._currentTabId = data.id;
-        this._shopBuildView.updateData(this._currentTabId);
+        this._currentSubId = data.id;
+        if(this._currentTabId === TaskTabIds.BuildingShop){
+            this._shopBuildView.updateData(this._currentSubId);
+        }else if(this._currentTabId === TaskTabIds.ImageStore){
+            this._shopStoreView.updateData(this._currentSubId);
+        }
+        
     }
     private onTabSelect(info: TaskTabInfo) {
         this.hideAllContent();
@@ -89,6 +97,7 @@ export class ShopUIView extends BaseView {
     }
     private selectMenuType(info: TaskTabInfo) {
         this._navTitleView.setTitleName(info.title);
+        this._currentTabId = info.id;
         switch (info.id) {
             case TaskTabIds.ImageStore:
                 this._shopStoreView.node.active = true;
