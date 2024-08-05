@@ -327,19 +327,19 @@ export class BuildingModel extends BaseModel {
         if (this._graphics) {
             this._graphics.node.active = isShow;
         }
-        if (!this._btnView || !this._btnView.active) {
-            if (isShow) {
-                if (this._fence) {
-                    this._fence.active = false;
-                }
-                if (this._building) {
-                    this._building.node.active = false;
-                }
-            } else {
-                this.refreshBuildingShow();
-            }
-        }
-
+        // if (!this._btnView || !this._btnView.active) {
+        //     if (isShow) {
+        //         if (this._fence) {
+        //             this._fence.active = false;
+        //         }
+        //         if (this._building) {
+        //             this._building.node.active = false;
+        //         }
+        //     } else {
+        //         this.refreshBuildingShow();
+        //     }
+        // }
+        this.refreshBuildingShow();
         this.drawGridRect();
     }
     // 格子数据还原
@@ -935,6 +935,17 @@ export class BuildingModel extends BaseModel {
             this.showFence(false);
             if (this._building) {
                 this._building.node.active = true;
+            }
+        }
+
+        if (!this._btnView || !this._btnView.active) {
+            if (this._isShowBaseColor) {
+                if (this._fence) {
+                    this._fence.active = false;
+                }
+                if (this._building) {
+                    this._building.node.active = false;
+                }
             }
         }
     }
