@@ -32,10 +32,7 @@ export class ShopStoreItem extends Component {
     protected onLoad(): void {
         this.initEvent();
     }
-    transformPath(oldPath: string): string {
-        // 使用正则表达式替换旧路径的部分
-        return oldPath.replace(/^common\//, 'animation/clothing/');
-    }
+    
     initData(data: ClothingInfo) {
         this._data = data;
         this.lblName.string = data.name;
@@ -43,7 +40,7 @@ export class ShopStoreItem extends Component {
         // this.lblScore.string = "+" + goodData.medal;
         // this.lblPrice.string = data.buy.toString();
         this.lblPrice.string = "0";
-        LoadManager.loadSprite(this.transformPath(item_info.png), this.sprIcon).then(() => {
+        LoadManager.loadSprite(BagConfig.transformPath(item_info.png), this.sprIcon).then(() => {
             CCUtil.fixNodeScale(this.sprIcon.node, 260, 260, true);
         });
         // let not_buy = (User.buildingList.includes(data.id) && (data.type === EditType.Buiding || data.type === EditType.LandmarkBuiding))

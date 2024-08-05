@@ -169,6 +169,11 @@ export default class _BagConfig {
         }));
         return arrayData;
     }
+
+    public transformPath(oldPath: string): string {
+        // 使用正则表达式替换旧路径的部分
+        return oldPath.replace(/^common\//, 'animation/clothing/');
+    }
 }
 
 export const BagConfig = _BagConfig.getInstance();
