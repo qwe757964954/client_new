@@ -26,7 +26,7 @@ export class ShopBuildView extends BaseView {
         // 使用 filter 方法过滤掉具有特定 id 的元素  Buiding = 1,//功能性建筑
         // cleanedEditConfig = cleanedEditConfig.filter(item => 
         // );   
-        if(TabTypeIds.BuildAll){
+        if(id === TabTypeIds.BuildAll){
             this._itemsData = cleanedEditConfig;
         }else{
             // 获取对应的 ClothingType
