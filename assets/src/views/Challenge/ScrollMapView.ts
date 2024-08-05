@@ -178,7 +178,7 @@ export class ScrollMapView extends BaseView {
             // this.scheduleOnce(()=>{
                 this.MapLaout.setPosition(0,0,0)
                 this.scrollToNormal();
-            // });
+            // },3);
         });
     }
 
@@ -193,10 +193,11 @@ export class ScrollMapView extends BaseView {
         let grandparentNode = parentNode.parent;
         // 获取子节点相对于世界坐标系的坐标
         let worldPos = itemNode.getWorldPosition();
+        console.log("worldPos....",worldPos);
         // 将世界坐标转换为父节点的父节点的局部坐标系
         let grandparentLocalPos = grandparentNode.getComponent(UITransform).convertToNodeSpaceAR(worldPos);
         console.log("grandparentLocalPos",grandparentLocalPos);
-        content_script.moveToTargetPos(grandparentLocalPos); 
+        content_script.moveToTargetPos(worldPos); 
     }
 
     calculateMapsNeeded(totalLevels: number, levelsPerMap: number): number {
