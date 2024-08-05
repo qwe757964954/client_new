@@ -5,6 +5,7 @@ import { DataMgr } from '../../manager/DataMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { User } from '../../models/User';
 import { BaseView } from '../../script/BaseView';
+import { BagConfig } from '../bag/BagConfig';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { TabItemDataInfo, TabTypeIds, TaskTabIds, TaskTabInfo } from '../task/TaskInfo';
 import { TaskTabView } from '../task/TaskTabView';
@@ -34,6 +35,7 @@ export class ShopUIView extends BaseView {
     private _currentSubId:TabTypeIds = TabTypeIds.BuildAll;
     private _currentTabId:TaskTabIds = TaskTabIds.ImageStore;
     async initUI() {
+        await BagConfig.loadBagConfigInfo();
         this.viewAdaptSize();
         this.initAmout();
         this.initNavTitle();

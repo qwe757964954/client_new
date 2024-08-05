@@ -1,4 +1,4 @@
-import { JsonAsset } from "cc";
+import { isValid, JsonAsset } from "cc";
 import { ItemData } from "../../manager/DataMgr";
 import { ResLoader } from "../../manager/ResLoader";
 import { User } from "../../models/User";
@@ -21,8 +21,11 @@ export default class _BagConfig {
     }
     public async loadBagConfigInfo(): Promise<void> {
         try {
-            const jsonData = await ResLoader.instance.loadAsyncPromise<JsonAsset>('Bag/item_info', JsonAsset);
-            this._BagConfigInfo = jsonData.json as GameBagData;
+            if(!isValid(this._BagConfigInfo)){
+                const jsonData = await ResLoader.instance.loadAsyncPromise<JsonAsset>('config/item_info', JsonAsset);
+                this._BagConfigInfo = jsonData.json as GameBagData;
+            }
+
         } catch (err) {
             console.error("Failed to load task configuration:", err);
             throw err;
@@ -95,13 +98,23 @@ export default class _BagConfig {
         return decompose_items;
     }
 
-    findItemInfo(itemInfo:ItemData){
+    findItemInfo(id:number){
         if (!this._BagConfigInfo) {
             console.error("BagConfigInfo is not loaded.");
             return null;
         }
         // 查找 dataItem 对应的背包物品
-        const backpackItem = this._BagConfigInfo.backpack_item_info.find(item => item.id === itemInfo.id);
+        const backpackItem = this._BagConfigInfo.backpack_item_info.find(item => item.id === id);
+        return backpackItem;
+    }
+
+    findShopItemInfo(id:number){
+        if (!this._BagConfigInfo) {
+            console.error("BagConfigInfo is not loaded.");
+            return null;
+        }
+        // 查找 dataItem 对应的背包物品
+        const backpackItem = this._BagConfigInfo.item_info.find(item => item.id === id);
         return backpackItem;
     }
 

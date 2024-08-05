@@ -1,9 +1,12 @@
 import { _decorator, Component, Label, Node, Sprite } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { ClothingInfo } from '../../manager/DataMgr';
+import { LoadManager } from '../../manager/LoadManager';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { ServiceMgr } from '../../net/ServiceManager';
 import CCUtil from '../../util/CCUtil';
+import { BagConfig } from '../bag/BagConfig';
+import { BagItemInfo } from '../bag/BagInfo';
 import { GoodsDetailView } from './GoodsDetailView';
 const { ccclass, property } = _decorator;
 
@@ -29,17 +32,20 @@ export class ShopStoreItem extends Component {
     protected onLoad(): void {
         this.initEvent();
     }
-
+    transformPath(oldPath: string): string {
+        // 使用正则表达式替换旧路径的部分
+        return oldPath.replace(/^common\//, 'animation/clothing/');
+    }
     initData(data: ClothingInfo) {
         this._data = data;
-        console.log(data);
         this.lblName.string = data.name;
+        let item_info:BagItemInfo = BagConfig.findShopItemInfo(data.id);
         // this.lblScore.string = "+" + goodData.medal;
         // this.lblPrice.string = data.buy.toString();
         this.lblPrice.string = "0";
-        // LoadManager.loadSprite(data.png, this.sprIcon).then(() => {
-        //     CCUtil.fixNodeScale(this.sprIcon.node, 260, 260, true);
-        // });
+        LoadManager.loadSprite(this.transformPath(item_info.png), this.sprIcon).then(() => {
+            CCUtil.fixNodeScale(this.sprIcon.node, 260, 260, true);
+        });
         // let not_buy = (User.buildingList.includes(data.id) && (data.type === EditType.Buiding || data.type === EditType.LandmarkBuiding))
         // this.btnBuy.getComponent(Sprite).grayscale = not_buy;
         // this.btnBuy.getComponent(Button).interactable = !not_buy;
