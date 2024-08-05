@@ -103,7 +103,7 @@ export class RoleDataModel extends BaseModel {
         if (!slots || !this._role || !this._isSpLoad) return;
         for (let i = 0; i < slots.length; i++) {
             let slotInfo = slots[i];
-            LoadManager.loadSpriteFrame(slotInfo.png, this._role.node).then((asset: SpriteFrame) => {
+            LoadManager.loadSpriteFrame(slotInfo.png, this._role.node, true).then((asset: SpriteFrame) => {
                 let slot = this._role.findSlot(slotInfo.slot);
                 let attachment = this._role.getAttachment(slotInfo.slot, slotInfo.attachment);
                 slot.setAttachment(attachment);

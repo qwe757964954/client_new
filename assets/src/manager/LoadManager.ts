@@ -53,7 +53,7 @@ class LoadManagerClass {
         return LoadManager.preload("prefab/" + path);
     }
     /**加载资源 */
-    public loadSpriteFrame(path: string, conNode?: Node): Promise<any | undefined> {
+    public loadSpriteFrame(path: string, conNode?: Node, isCache: boolean = false): Promise<any | undefined> {
         return new Promise((resolve, reject) => {
             resources.load(path, SpriteFrame, (error: Error, assets: SpriteFrame) => {
                 if (error) {
@@ -61,7 +61,7 @@ class LoadManagerClass {
                     reject(error);
                     return;
                 }
-                if (!conNode || this.assetConnectNode(assets, conNode)) {
+                if (!conNode || this.assetConnectNode(assets, conNode, isCache)) {
                     resolve(assets);
                 } else {
                     reject(new Error("loadSpriteFrame->resource load failed:" + path + " not connect node!"));
