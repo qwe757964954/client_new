@@ -3,7 +3,7 @@ import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
-import { CurrentBookStatus, MyTextbookListStatus, MyTextbookStatus } from '../../models/TextbookModel';
+import { CurrentBookStatus, MyTextbookListDelete, MyTextbookListStatus, MyTextbookStatus } from '../../models/TextbookModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
@@ -51,21 +51,22 @@ export class TextbookListView extends BaseView {
         this.addModelListener(NetNotify.Classification_BookDel, this.onBookDel);
         this.addModelListener(NetNotify.Classification_ChangeTextbook, this.onChangeTextbook);
     }
-    onBookDel() {
+    onBookDel(data:MyTextbookListDelete) {
+        if(isValid(data.cu_id)){
+            this._curBookData.book_id = data.cu_id;
+        }
         TBServer.reqBookStatus();
         this.updateShowMyScrollEmpty();
     }
 
     getSelectDataIndex() {
-        let select_id = 0;
-        for (let index = 0; index < this._myTextbookDataArr.length; index++) {
-            const element = this._myTextbookDataArr[index];
-            if (element.book_id == this._curBookData.book_id) {
-                select_id = index;
-                break;
-            }
-        }
-        return select_id;
+        // Find the index of the element where book_id matches this._curBookData.book_id
+        console.log("getSelectDataIndex",this._myTextbookDataArr,this._curBookData.book_id);
+        const index = this._myTextbookDataArr.findIndex(element => element.book_id === this._curBookData.book_id);
+        
+        // Return the index, which will be -1 if no match is found
+        console.log("getSelectDataIndex",index);
+        return index;
     }
 
     onBookStatus(bookData: MyTextbookListStatus) {

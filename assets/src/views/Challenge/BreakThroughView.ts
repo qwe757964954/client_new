@@ -93,6 +93,7 @@ export class BreakThroughView extends BaseView {
         this.addModelListener(NetNotify.Classification_UnitListStatus, this.onUnitListStatus.bind(this));
         this.addModelListener(NetNotify.Classification_VocabularyWord, this.onVocabularyWord.bind(this));
         this.addModelListener(NetNotify.Classification_UnitStatus, this.onUnitStatus.bind(this));
+        this.addModelListener(NetNotify.Classification_BreakThroughStartAgain, this.onBreakThroughStartAgain.bind(this));
         this.addModelListener(EventType.Enter_Island_Level, this.onEnterIsland.bind(this));
         this.addModelListener(EventType.Exit_Island_Level, this.onExitIsland.bind(this));
         this.addModelListener(EventType.Goto_Textbook_Level, this.gotoTextbookLevel.bind(this));
@@ -202,15 +203,17 @@ export class BreakThroughView extends BaseView {
             cancel_text: TextConfig.Continue_From_Last_Time_Tip,
             content_text: TextConfig.Begin_Break_Through_Tip,
             callFunc: (isSure: boolean) => {
-                // if (isSure) {
-                    
-                // }
                 const reqParam: ReqUnitStatusParam = {
                     book_id: this._bookData.book_id,
                     unit_id: this._selectitemStatus.unit_id,
                     small_id: this._selectGate.small_id
                 };
-                TBServer.reqUnitStatus(reqParam);
+                if (isSure) {
+                    TBServer.reqBreakThroughStartAgain(reqParam);
+                }else{
+                    TBServer.reqUnitStatus(reqParam);
+                }
+                
             }
         }
         this.showRemainCalL(param);
@@ -272,8 +275,19 @@ export class BreakThroughView extends BaseView {
     }
 
     onUnitStatus(data: UnitStatusData) {
+        console.log("onUnitStatus",data);
         this._curUnitStatus = data;
         this.reqVocabularyWord();
+    }
+
+    onBreakThroughStartAgain(data:any){
+        console.log("onBreakThroughStartAgain",data);
+        const reqParam: ReqUnitStatusParam = {
+            book_id: this._bookData.book_id,
+            unit_id: this._selectitemStatus.unit_id,
+            small_id: this._selectGate.small_id
+        };
+        TBServer.reqUnitStatus(reqParam);
     }
 
     onUnitListStatus(data: UnitListItemStatus) {

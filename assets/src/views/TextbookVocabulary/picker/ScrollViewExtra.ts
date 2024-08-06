@@ -193,7 +193,8 @@ export class ScrollViewExtra extends Component {
             const scrollOffset = this.scrollView.getScrollOffset();
             let count  = index - 1;
             const targetOffset = count * this.listViewExtra.itemHeight;
-            this.scrollView.scrollToOffset(new math.Vec2(scrollOffset.x, targetOffset),0.2);
+            let time = Math.abs(count - this.selectChildIndex) * 0.08;
+            this.scrollView.scrollToOffset(new math.Vec2(scrollOffset.x, targetOffset),time);
         } else {
             console.error(`Item with number ${numberString} not found.`);
         }

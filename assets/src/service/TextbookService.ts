@@ -1,5 +1,5 @@
 import { isValid } from "cc";
-import { CheckWordModel, GameSubmitModel, ModifyPlanData, MyTextbookStatus, ReportResultModel, ReqCollectWord, ReqPlanData, ReqUnitStatusParam, ReqUnitType, c2sAddPlanBookStatus, c2sBookAwardList, c2sBookPlanDetail, c2sBookStatus, c2sChangeTextbook, c2sCheckWord, c2sCollectWord, c2sCurrentBook, c2sDelBookStatus, c2sGameSubmit, c2sModifyPlanStatus, c2sReportResult, c2sSchoolBook, c2sSchoolBookGrade, c2sSearchBookList, c2sUnitListStatus, c2sUnitStatus, c2sVocabularyWord, c2sWordDetail } from "../models/TextbookModel";
+import { CheckWordModel, GameSubmitModel, ModifyPlanData, MyTextbookStatus, ReportResultModel, ReqCollectWord, ReqPlanData, ReqUnitStatusParam, ReqUnitType, c2sAddPlanBookStatus, c2sBookAwardList, c2sBookPlanDetail, c2sBookStatus, c2sBreakThroughStartAgain, c2sChangeTextbook, c2sCheckWord, c2sCollectWord, c2sCurrentBook, c2sDelBookStatus, c2sGameSubmit, c2sModifyPlanStatus, c2sReportResult, c2sSchoolBook, c2sSchoolBookGrade, c2sSearchBookList, c2sUnitListStatus, c2sUnitStatus, c2sVocabularyWord, c2sWordDetail } from "../models/TextbookModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
 import { NetNotify } from "../net/NetNotify";
@@ -38,7 +38,8 @@ export default class _TextbookService extends BaseControll {
             [InterfacePath.Classification_GameSubmit, this.onGameSubmit],
             [InterfacePath.Classification_CheckWord, this.onCheckWord],
             [InterfacePath.Classification_CollectWord, this.onCollectWord],
-            [InterfacePath.Classification_VocabularyWord, this.onVocabularyWord]
+            [InterfacePath.Classification_VocabularyWord, this.onVocabularyWord],
+            [InterfacePath.Classification_BreakThroughStartAgain, this.onBreakThroughStartAgain]
         ]);
     }
     reqBookStatus() {
@@ -292,6 +293,25 @@ export default class _TextbookService extends BaseControll {
      */
     onCollectWord(data:any){
         this.handleResponse(data, NetNotify.Classification_CollectWord);
+    }
+    /**
+     * 闯关重新开始
+     * req
+     * @param param 
+     */
+    reqBreakThroughStartAgain(data:ReqUnitStatusParam){
+        let params:c2sBreakThroughStartAgain = new c2sBreakThroughStartAgain();
+        params.book_id = data.book_id;
+        params.unit_id = data.unit_id;
+        params.small_id = data.small_id;
+        NetMgr.sendMsg(params);
+    }
+    /**
+     * 闯关重新开始
+     * response
+     */
+    onBreakThroughStartAgain(data:any){
+        this.handleResponse(data, NetNotify.Classification_BreakThroughStartAgain);
     }
 };
 

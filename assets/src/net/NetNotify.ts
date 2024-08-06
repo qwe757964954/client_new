@@ -22,6 +22,7 @@ export const NetNotify = {
     Classification_CheckWord:"Classification_CheckWord",  //教材单词单词列表
     Classification_VocabularyWord: "Classification_VocabularyWord", //教材单词分类词汇列表接口
     Classification_CollectWord: "Classification_CollectWord", //教材单词收藏与移除
+    Classification_BreakThroughStartAgain: "Classification_BreakThroughStartAgain", //教材单词闯关重新开始
     Classification_TypeNameStatus:"Classification_TypeNameStatus", //大分类信息
     Classification_BookAwardList:"Classification_BookAwardList", // 教材单词课本奖励列表
     Classification_RecBookAward:"Classification_RecBookAward", //教材单词领取课本单词奖励

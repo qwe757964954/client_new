@@ -109,6 +109,7 @@ export class SettingPlanView extends BasePopup {
                 this.dayScroll.scrollToNumber(`${days}`)
             }else{
                 let days = TextbookUtil.calculateDays(this._totoal_level,5);
+                console.log("days",days);
                 this.dayScroll.scrollToNumber(`${days}`)
             }
         },0.2)

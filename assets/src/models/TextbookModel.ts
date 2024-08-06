@@ -412,6 +412,17 @@ export class c2sCollectWord {
     action: number;
 }
 
+export class c2sBreakThroughStartAgain{
+    command_id: string = InterfacePath.Classification_BreakThroughStartAgain;
+    book_id?: string;
+    unit_id?: string;
+    small_id: number;
+}
+
+export interface MyTextbookListDelete extends BaseRepPacket {
+    cu_id?: string;
+}
+
 export interface CollectWordData extends BaseRepPacket {
 
 }

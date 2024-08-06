@@ -95,6 +95,7 @@ export const InterfacePath = {
     Classification_ChangeTextbook: "3016", //切换教材
     Classification_CheckWord: "3008", //词表单词列表
     Classification_CollectWord: "3007", //教材单词收藏与移除
+    Classification_BreakThroughStartAgain: "3012", //教材单词闯关重新开始
     Classification_WordGroup: "3023", //教材单词组合模式选项
     Classification_GameSubmit: "3024", //单词提交
     Classification_TypeNameStatus: "Classification.TypeNameStatus", //大分类信息
