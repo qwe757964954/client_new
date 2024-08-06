@@ -270,10 +270,14 @@ export class ReviewPlanView extends BaseComponent {
     }
     /**教材单词 更换教材 */
     onBtnChangeBookClick() {
-        ViewsMgr.showViewAsync(PrefabType.TextbookListView).then((node: Node) => {
-            const itemScript = node.getComponent(TextbookListView);
-            itemScript.initData(this._bookData);
-        });
+        if (this._bookData) {
+            ViewsMgr.showViewAsync(PrefabType.TextbookListView).then((node: Node) => {
+                const itemScript = node.getComponent(TextbookListView);
+                itemScript.initData(this._bookData);
+            });
+        } else {
+            ViewsMgr.showView(PrefabType.SelectWordView);
+        }
     }
     /**大冒险 规则按钮 */
     onBtnRule1Click() {
@@ -364,7 +368,7 @@ export class ReviewPlanView extends BaseComponent {
             }
         }
         let bookInfo = data.book_info;
-        if (bookInfo) {
+        if (bookInfo && "" != bookInfo.book_id) {
             this._bookData = bookInfo;
             this.btnChangeBook.active = true;
             this.labelChange.string = TextConfig.ReviewPlan_book_text2;
@@ -372,6 +376,8 @@ export class ReviewPlanView extends BaseComponent {
                 this.imgBook.node.active = true;
             });
         } else {
+            this.btnChangeBook.active = true;
+            this.imgBook.node.active = false;
             this.labelChange.string = TextConfig.ReviewPlan_book_text1;
         }
     }
@@ -436,13 +442,13 @@ export class ReviewPlanView extends BaseComponent {
             ViewsMgr.showView(PrefabType.WordMeaningView, (node: Node) => {
                 node.getComponent(WordMeaningView).initData(wordsdata, {
                     source_type: WordSourceType.review,
-                    ws_id: data.ws_id, 
-                    pass_num: data.pass_num, 
+                    ws_id: data.ws_id,
+                    pass_num: data.pass_num,
                     word_num: wordNum,
-                    error_num: errorNum, 
-                    souceType: this._souceType, 
+                    error_num: errorNum,
+                    souceType: this._souceType,
                     wordCount: wordCount,
-                    monster_id:this._bookData.monster_id
+                    monster_id: this._bookData.monster_id
                 });
             });
         };
