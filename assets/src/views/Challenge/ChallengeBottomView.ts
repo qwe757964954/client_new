@@ -17,22 +17,22 @@ export class ChallengeBottomView extends Component {
     public more_text: Label = null;
 
     @property(List)
-    public collectScroll:List = null;
+    public collectScroll: List = null;
     @property(Node)
-    public chest_box:Node = null;
-    private _totalUnit:number = 0;
-    private _currentUnitIndex:number = 0;
-    private _educationInfo:EducationDataInfo = null;
+    public chest_box: Node = null;
+    private _totalUnit: number = 0;
+    private _currentUnitIndex: number = 0;
+    private _educationInfo: EducationDataInfo = null;
     start() {
 
     }
 
-    updateItemList(data:CurrentBookStatus){
-        this._educationInfo = EducationDataInfos.find(item=> item.id=== data.monster_id);
+    updateItemList(data: CurrentBookStatus) {
+        this._educationInfo = EducationDataInfos.find(item => item.id === data.monster_id);
         this.loadRewardBox();
-        this._totalUnit = data.gate_total_num;
-        this._currentUnitIndex = data.gate_pass_num;
-        this.collectScroll.numItems = data.gate_total_num;
+        this._totalUnit = data.unit_total_num;
+        this._currentUnitIndex = data.unit_pass_num;
+        this.collectScroll.numItems = data.unit_total_num;
         this.collectScroll.update();
         let isComplete = this._currentUnitIndex >= this._totalUnit;/**当前收集的进度 */
         this.chest_box.getComponent(Sprite).grayscale = !isComplete;
@@ -43,7 +43,7 @@ export class ChallengeBottomView extends Component {
         this.more_text.node.active = content_width > scroll_width;
     }
 
-    loadRewardBox(){
+    loadRewardBox() {
         let key_str = this._educationInfo.box;
         ResLoader.instance.load(key_str, SpriteFrame, (err: Error | null, spriteFrame: SpriteFrame) => {
             if (err) {
@@ -53,11 +53,11 @@ export class ChallengeBottomView extends Component {
         });
     }
 
-    onLoadCollectHorizontal(item:Node, idx:number){
-        let item_sript:UnitNumItem = item.getComponent(UnitNumItem);
+    onLoadCollectHorizontal(item: Node, idx: number) {
+        let item_sript: UnitNumItem = item.getComponent(UnitNumItem);
         let unit_num = idx + 1;
-        let isComplete:boolean = this._currentUnitIndex>=unit_num;
-        item_sript.updateRewardStatus(this._educationInfo,isComplete);
+        let isComplete: boolean = this._currentUnitIndex >= unit_num;
+        item_sript.updateRewardStatus(this._educationInfo, isComplete);
     }
 }
 
