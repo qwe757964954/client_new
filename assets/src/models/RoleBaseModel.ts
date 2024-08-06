@@ -83,15 +83,20 @@ export class RoleBaseModel extends BaseComponent {
         this._isSelf = true;
     }
     /**插槽加载 */
-    private loadSlots(slots: SlotPngInfo[]) {
-        if (!slots || !this.role || !this._isSpLoad) return;
+    private loadSlots(slots: SlotPngInfo[], callBack?: Function) {
+        if (!slots || !this.role || !this._isSpLoad) {
+            if (callBack) callBack();
+            return;
+        }
         for (let i = 0; i < slots.length; i++) {
             let slotInfo = slots[i];
+            let index = i;
             LoadManager.loadSpriteFrame(slotInfo.png, this.role.node).then((asset: SpriteFrame) => {
                 let slot = this.role.findSlot(slotInfo.slot);
                 let attachment = this.role.getAttachment(slotInfo.slot, slotInfo.attachment);
                 slot.setAttachment(attachment);
                 this.role.setSlotTexture(slotInfo.slot, asset.texture as Texture2D, true);
+                if (i == slots.length - 1 && callBack) callBack();
             });
         }
     }
@@ -103,15 +108,27 @@ export class RoleBaseModel extends BaseComponent {
         this.updateClothings();
     }
     /**更新服装 */
-    private updateClothings() {
-        if (!this._clothings || !this.role || !this._isSpLoad) return;
+    private updateClothings(callBack?: Function) {
+        if (!this._clothings || !this.role || !this._isSpLoad) {
+            if (callBack) callBack();
+            return;
+        }
         let clothings = this._clothings.getClothings();
+        let loadCount = 0;
+        let loadCall = () => {
+            loadCount--;
+            if (loadCount <= 0 && callBack) callBack();
+        }
+        let isLoad = false;
         for (let i = 0; i < clothings.length; i++) {
             let clothing = clothings[i];
             if (null == clothing) continue;
+            loadCount++;
+            isLoad = true;
             let clothingInfo = DataMgr.clothingConfig[clothing];
-            this.loadSlots(clothingInfo.slots);
+            this.loadSlots(clothingInfo.slots, loadCall);
         }
+        if (!isLoad) loadCall();
     }
     /**替换服装 */
     public changeClothing(clothing: number) {
@@ -192,8 +209,11 @@ export class RoleBaseModel extends BaseComponent {
                 LoadManager.loadSpine(this._roleInfo.path, this.role).then((skeletonData: sp.SkeletonData) => {
                     this._isSpLoad = true;
                     this.initAction();
-                    this.updateClothings();
-                    if (callBack) callBack();
+                    this.node.active = false;
+                    this.updateClothings(() => {
+                        this.node.active = this._isShowFlag2;
+                        if (callBack) callBack();
+                    });
                 });
             } else {
                 if (callBack) callBack();
