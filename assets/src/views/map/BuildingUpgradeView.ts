@@ -12,7 +12,7 @@ import { BaseComponent } from '../../script/BaseComponent';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
 import { ToolUtil } from '../../util/ToolUtil';
-import { RewardItem } from '../common/RewardItem';
+import { RewardItem, RewardItemNumType } from '../common/RewardItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('BuildingUpgradeView')
@@ -88,7 +88,7 @@ export class BuildingUpgradeView extends BaseComponent {
     /**加载列表 */
     onLoadList(node: Node, idx: number) {
         let rewardItem = node.getComponent(RewardItem);
-        rewardItem.init(this._upgradeNeed[idx]);
+        rewardItem.init(this._upgradeNeed[idx], RewardItemNumType.HasNum);
     }
     /**升级结果 */
     onBuildingUpgrade(data: s2cBuildingUpgrade) {

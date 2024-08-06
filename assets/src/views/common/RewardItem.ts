@@ -1,9 +1,11 @@
 import { _decorator, Color, Enum, Label, Sprite, UITransform } from 'cc';
 import { DEV } from 'cc/env';
+import { itemEventKey } from '../../config/EventType';
 import { ItemID } from '../../export/ItemConfig';
 import { DataMgr, ItemData } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
 import { User } from '../../models/User';
+import { EventMgr } from '../../util/EventManager';
 import ListItem from '../../util/list/ListItem';
 const { ccclass, property, executeInEditMode } = _decorator;
 
@@ -74,6 +76,7 @@ export class RewardItem extends ListItem {
 
     private _itemID: ItemID = null;
     private _itemCount: number = 0;
+    private _eventHandle: string = null;
 
     protected start(): void {
         // this.loadShow(this.propID);
@@ -81,6 +84,7 @@ export class RewardItem extends ListItem {
 
     init(data: ItemData, numType?: RewardItemNumType) {
         // console.log("RewardItem init data = ", data.id);
+        this.removeItemEvent();
         this._itemID = data.id;
         this._itemCount = data.num;
         if (null != numType) {
@@ -100,7 +104,7 @@ export class RewardItem extends ListItem {
             LoadManager.loadSprite(propInfo.frame, this.frame);
         }
     }
-    showCountLabel() {
+    private showCountLabel() {
         if (RewardItemNumType.Normal == this._numType) {
             this.labelNum.node.active = false;
             this.labelUserNum.node.active = false;
@@ -127,10 +131,12 @@ export class RewardItem extends ListItem {
             let pos = this.labelNum.node.position.clone();
             pos.x = pos.x - width;
             this.labelUserNum.node.position = pos;
+            this.initItemEvent();
         }
     }
     initByPng(pngPath: string, num?: number, framePath?: string) {
         LoadManager.loadSprite(pngPath, this.img);
+        this._numType = RewardItemNumType.Normal;
         if (null != num) {
             this._itemCount = num;
             this.showCountLabel();
@@ -144,7 +150,18 @@ export class RewardItem extends ListItem {
         }
     }
 
-
+    initItemEvent() {
+        if (this._eventHandle || null == this._itemID) return;
+        this._eventHandle = EventMgr.on(itemEventKey(this._itemID), this.showCountLabel.bind(this));
+    }
+    removeItemEvent() {
+        if (!this._eventHandle || null == this._itemID) return;
+        EventMgr.off(itemEventKey(this._itemID), this._eventHandle);
+        this._eventHandle = null;
+    }
+    onDestroy(): void {
+        this.removeItemEvent();
+    }
 }
 
 
