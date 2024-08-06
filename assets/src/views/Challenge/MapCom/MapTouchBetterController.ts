@@ -295,8 +295,6 @@ export class MapTouchBetterController extends Component {
                     this.dealMove(distance, this.map, this.node);
                 } else {
                     //const distance: Vec3 = this.moveDistance(touch);
-                    // console.log("smile----this.isMoving:" + JSON.stringify(this.isMoving));
-                    // console.log("smile----distance:" + JSON.stringify(distance));
                     console.log("不能移动");
                 }
             } else {
@@ -427,8 +425,6 @@ export class MapTouchBetterController extends Component {
     
         // Calculate the visible rect considering current scale
         const visibleRect = rect(0, 0, containerSize.x / currentScale, containerSize.y / currentScale);
-        console.log("visibleRect______________",visibleRect);
-        console.log("relativePos______________",relativePos);
         // Check if target position is within the visible rect
         if (!visibleRect.contains(v2(relativePos.x, relativePos.y))) {
             // Calculate the offset needed to move the target position within the visible rect
@@ -449,7 +445,6 @@ export class MapTouchBetterController extends Component {
     
             // Move the map to the new position
             this.gatherTouchMove(newMapPos);
-            console.log("newMapPos______________",newMapPos)
             mapContainer.setPosition(newMapPos);
         }
         this.smoothOperate(mapContainer, targetPos, this.defaultScaling);
