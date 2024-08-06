@@ -139,7 +139,7 @@ export class rightPanelchange extends Component {
                 this._rewardData = [...this._rewardData, ...awardInfo.random_reward];
             }
         }
-        this.subjectBtn.active = this._isWordGame;
+        this.subjectBtn.active = false;//this._isWordGame;
         this._isBossPanel = false;
         this.updateView();
         this.node.active = true;
@@ -191,7 +191,7 @@ export class rightPanelchange extends Component {
         if (this._data.game_modes && this._data.game_modes === "word") {
             let big_id = ObjectUtil.extractId(this._data.big_id);
             this.levelTxt.string = big_id + '-' + this._data.small_id;
-            let educationInfo:EducationDataInfo = EducationDataInfos.find(item=> item.id===this._data.monster_id);
+            let educationInfo: EducationDataInfo = EducationDataInfos.find(item => item.id === this._data.monster_id);
             monsterModel.init(FileUtil.removeFileExtension(educationInfo.monster));
             this.monsterNameTxt.string = "宝箱怪";
             this.monsterNode.setScale(-0.8, 0.8, 1);
