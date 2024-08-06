@@ -185,18 +185,10 @@ export class ScrollMapView extends BaseView {
     scrollToNormal(){
         if (this._pointItems.length === 0) return;
         let content_script = this.contentNode.getComponent(MapTouchBetterController);
-        // content_script
         let itemNode = this._pointItems[0];
-        // 获取父节点
-        let parentNode = itemNode.parent;
-        // 获取父节点的父节点
-        let grandparentNode = parentNode.parent;
         // 获取子节点相对于世界坐标系的坐标
         let worldPos = itemNode.getWorldPosition();
-        console.log("worldPos....",worldPos);
-        // 将世界坐标转换为父节点的父节点的局部坐标系
-        let grandparentLocalPos = grandparentNode.getComponent(UITransform).convertToNodeSpaceAR(worldPos);
-        console.log("grandparentLocalPos",grandparentLocalPos);
+        worldPos.x = worldPos.x - itemNode.getComponent(UITransform).width;
         content_script.moveToTargetPos(worldPos); 
     }
 
