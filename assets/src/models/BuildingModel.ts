@@ -763,6 +763,7 @@ export class BuildingModel extends BaseModel {
                     this.showBtnView(this._btnViewShowScale);
                     this._btnViewShowScale = null;
                 }
+                EventManager.emit(EventType.Building_Need_Sort);
             });
         } else {
             if (callBack) callBack();
