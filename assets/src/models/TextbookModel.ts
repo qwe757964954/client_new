@@ -420,7 +420,7 @@ export class c2sBreakThroughStartAgain{
 }
 
 export interface MyTextbookListDelete extends BaseRepPacket {
-    cu_id?: string;
+    book_id?: string;
 }
 
 export interface CollectWordData extends BaseRepPacket {

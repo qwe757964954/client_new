@@ -50,22 +50,25 @@ export class TextbookListView extends BaseView {
         this.addModelListener(NetNotify.Classification_BookStatus, this.onBookStatus);
         this.addModelListener(NetNotify.Classification_BookDel, this.onBookDel);
         this.addModelListener(NetNotify.Classification_ChangeTextbook, this.onChangeTextbook);
+        this.addModelListener(NetNotify.Classification_CurrentBook, this.onCurrentBookStatus);
     }
     onBookDel(data:MyTextbookListDelete) {
-        if(isValid(data.cu_id)){
-            this._curBookData.book_id = data.cu_id;
+        if(isValid(data.book_id)){
+            this._curBookData.book_id = data.book_id;
+            TBServer.reqCurrentBook();
         }
         TBServer.reqBookStatus();
         this.updateShowMyScrollEmpty();
     }
-
+    onCurrentBookStatus(curBook: CurrentBookStatus): void {
+        /**当前词书状态 */
+        this._curBookData = curBook;
+    }
     getSelectDataIndex() {
         // Find the index of the element where book_id matches this._curBookData.book_id
-        console.log("getSelectDataIndex",this._myTextbookDataArr,this._curBookData.book_id);
         const index = this._myTextbookDataArr.findIndex(element => element.book_id === this._curBookData.book_id);
         
         // Return the index, which will be -1 if no match is found
-        console.log("getSelectDataIndex",index);
         return index;
     }
 
