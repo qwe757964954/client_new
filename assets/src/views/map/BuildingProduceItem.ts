@@ -103,6 +103,9 @@ export class BuildingProduceItem extends ListItem {
             ViewsMgr.showTip(TextConfig.Building_Product_Full);
             return;
         }
+        if (!User.checkItems(this._expend, TextConfig.Product_Condition_Error)) {
+            return;
+        }
         ServiceMgr.buildingService.reqBuildingProduceAdd(this._buildingID, [this._level]);
     }
     /**次数按钮点击 */
@@ -113,6 +116,17 @@ export class BuildingProduceItem extends ListItem {
         }
         if (this._num <= 0) {
             ViewsMgr.showTip(TextConfig.Building_Product_Full);
+            return;
+        }
+        let itemsData = [];
+        for (let i = 0; i < this._expend.length; i++) {
+            let data = this._expend[i];
+            let itemData = new ItemData();
+            itemData.id = data.id;
+            itemData.num = data.num * this._num;
+            itemsData.push(itemData);
+        }
+        if (!User.checkItems(itemsData, TextConfig.Product_Condition_Error)) {
             return;
         }
         let ary = new Array(this._num).fill(this._level);

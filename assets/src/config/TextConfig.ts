@@ -44,6 +44,7 @@ export const TextConfig = {
     Castle_Condition2: "精灵等级达到{0}级",
     Castle_Condition3: "人物等级达到{0}",
     Upgrade_Condition_Error: "你的{0}不足，暂时还不能升级哦～",
+    Product_Condition_Error: "你的{0}不足，暂时还不能制作哦～",
     Building_Shop_Buy_Success: "购买建筑成功",
     Building_Product_Success: "恭喜你，制作已完成～",
     Building_Upgrade_Success: "恭喜你，{0}升级已完成～",
