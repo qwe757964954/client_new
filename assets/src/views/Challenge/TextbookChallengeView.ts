@@ -46,7 +46,6 @@ export class TextbookChallengeView extends BaseView {
         super.start();
     }
     protected async initUI(){
-        this.viewAdaptSize();
         await this.initLeftMonster();
         this.initNavTitle();
         this.initAmout();

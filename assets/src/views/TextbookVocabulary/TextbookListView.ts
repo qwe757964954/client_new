@@ -36,7 +36,6 @@ export class TextbookListView extends BaseView {
     }
 
     protected initUI() {
-        this.viewAdaptSize();
         this.initNavTitle();
         TBServer.reqBookStatus();
     }

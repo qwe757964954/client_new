@@ -35,7 +35,6 @@ export class WordCheckView extends BaseView {
     private _wordUnits:{ [unit: string]: CheckWordItem[] } = {};
 
     start() {
-        this.viewAdaptSize();
         super.start();
         this.initTabData();
     }

@@ -24,15 +24,10 @@ export class studyView extends BaseView {
     @property({ type: ScrollView, tooltip: "滚动容器" })
     public scrollView: ScrollView = null;
 
-    update(deltaTime: number) {
 
-    }
-
-    onLoad(): void {
-    }
     /**初始化ui */
     initUI() {
-
+        this.offViewAdaptSize();
     }
 
     onInitModuleEvent() {

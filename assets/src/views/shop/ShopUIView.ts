@@ -36,7 +36,6 @@ export class ShopUIView extends BaseView {
     private _currentTabId:TaskTabIds = TaskTabIds.ImageStore;
     async initUI() {
         await BagConfig.loadBagConfigInfo();
-        this.viewAdaptSize();
         this.initAmout();
         this.initNavTitle();
         try {

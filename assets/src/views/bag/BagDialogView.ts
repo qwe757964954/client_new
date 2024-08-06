@@ -89,7 +89,6 @@ export class BagDialogView extends BaseView {
     }
     async initUI() {
         await BagConfig.loadBagConfigInfo();
-        this.viewAdaptSize();
         this.initAmout();
         //显示角色动画
         this.showRoleDress();

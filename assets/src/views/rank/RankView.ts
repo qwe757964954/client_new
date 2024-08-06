@@ -25,7 +25,6 @@ export class RankView extends BaseView {
     private _combatPowerRankingView:CombatPowerRankingView = null;
     private _tabView: TaskTabView = null;
     protected async initUI() {
-        this.viewAdaptSize();
         this.initNavTitle();
         this.initAmout();
         try {

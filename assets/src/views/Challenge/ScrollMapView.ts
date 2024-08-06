@@ -55,6 +55,10 @@ export class ScrollMapView extends BaseView {
     private _mapItemPool: NodePool = new NodePool();
     private _bgNodePool: NodePool = new NodePool();
 
+    protected initUI(): void {
+        this.offViewAdaptSize();
+    }
+
     onInitModuleEvent() {
         this.addModelListener(EventType.Goto_Textbook_Next_Level, this.gotoNextTextbookLevel);
     }

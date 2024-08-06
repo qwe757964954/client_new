@@ -63,7 +63,6 @@ export class BreakThroughView extends BaseView {
     private _selectGate: GateListItem = null;
 
     start() {
-        this.viewAdaptSize();
         super.start();
     }
 
@@ -76,6 +75,7 @@ export class BreakThroughView extends BaseView {
     }
 
     initUI() {
+        this.offViewAdaptSize();
         this.initNavTitle();
         this.initAmout();
         this.initRightChange();

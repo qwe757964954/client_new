@@ -51,7 +51,6 @@ export class MainUIView extends BaseView {
     initUI() {
         this.labelNick.string = User.nick;
         this.initViews();
-        this.viewAdaptSize();
         ActServer.reqGetActivityInfo();
     }
 

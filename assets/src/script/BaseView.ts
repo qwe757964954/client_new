@@ -57,6 +57,7 @@ export class BaseView extends Component {
 		// this.onLoadBefore()
 	}
 	start() {
+		this.viewAdaptScreen();
 		this.initUI();
 		this.initEvent();
 
@@ -75,6 +76,10 @@ export class BaseView extends Component {
 		maxscale = Number(Math.max(realSize.height / 1000, realSize.width / 1778).toFixed(3));
 		var scaleNum = this.node.getScale();
 		this.node.setScale(scaleNum.x * minscale, scaleNum.y * minscale, scaleNum.z * minscale);
+	}
+
+	offViewAdaptSize() {
+		this.node.setScale(1, 1, 1);
 	}
 
 	protected initUI() {

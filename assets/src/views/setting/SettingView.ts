@@ -47,7 +47,6 @@ export class SettingView extends BaseView {
 
     //初始化
     public async initUI() {
-        this.viewAdaptSize();
         this.initNavTitle();
         await this.initViews();
         this.initTabLisen();

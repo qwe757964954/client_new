@@ -38,7 +38,6 @@ export class WeekTaskView extends BaseView {
     private _taskAward: TaskAwardView = null;
 
     async initUI() {
-        this.viewAdaptSize();
         this.initNavTitle();
         this.initAmout();
         try {

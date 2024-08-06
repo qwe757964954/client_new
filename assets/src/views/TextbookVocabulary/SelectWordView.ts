@@ -41,7 +41,6 @@ export class SelectWordView extends BaseView {
         super.start();
     }
     protected async initUI(){
-        this.viewAdaptSize();
         this.initNavTitle();
         await this.loadRightNav();
         await this.initTabContent();

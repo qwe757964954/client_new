@@ -29,7 +29,6 @@ export class CollectView extends BaseView {
     private _buildAtlasView:BuildingAtlasView = null;
     private _clothingIllustratedView:ClothingIllustratedView = null;
     async initUI() {
-        this.viewAdaptSize();
         this.initNavTitle();
         this.initAmout();
         try {
