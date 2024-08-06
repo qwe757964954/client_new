@@ -75,7 +75,7 @@ export class WorldMapView extends Component {
             ViewsMgr.showTip("请先通关前置岛屿");
             return;
         }
-        if (selectedId > 1) {
+        if (selectedId >= 1) {
             ViewsMgr.showTip("岛屿暂未开放");
             return;
         }
