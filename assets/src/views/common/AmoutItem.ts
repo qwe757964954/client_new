@@ -70,7 +70,7 @@ export class AmoutItem extends ListItem {
                     size: { width: 39, height: 58 },
                     addUrl: "common/word_0023_icon/spriteFrame",
                     activeUrl: "common/img_energy/spriteFrame",
-                    bgUrl: "common/energy_bg/spriteFrame"
+                    bgUrl: "common/normal_bg/spriteFrame"
                 };
             default:
                 return null;

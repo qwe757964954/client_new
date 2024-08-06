@@ -77,6 +77,7 @@ export const NetNotify = {
     /***********************************************背包start*********************************************/
     Classification_BreakdownBackpackItems: "Classification_BreakdownBackpackItems", //背包物品分解
     Classification_BackpackItemSynthesis: "Classification_BackpackItemSynthesis", //背包物品合成
+    Classification_ShopItemBuy: "Classification_ShopItemBuy", //商城商品购买
     /***********************************************背包 end*********************************************/
 
 

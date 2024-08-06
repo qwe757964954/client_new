@@ -3,7 +3,7 @@ import { PrefabType } from '../../config/PrefabType';
 import { ClothingInfo } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { ServiceMgr } from '../../net/ServiceManager';
+import { BagServer } from '../../service/BagService';
 import CCUtil from '../../util/CCUtil';
 import { BagConfig } from '../bag/BagConfig';
 import { BagItemInfo } from '../bag/BagInfo';
@@ -63,7 +63,8 @@ export class ShopStoreItem extends Component {
         // let content_str = `确认消耗${this._data.buy}个${use_amout}购买${this._data.name}吗？`;
         let content_str = `确认消耗${0}个${use_amout}购买${this._data.name}吗？`;
         ViewsManager.showConfirm(content_str, () => {
-            ServiceMgr.buildingService.reqBuyBuilding(this._data.id);
+            BagServer.reqShopItemBuy([this._data.id],[1]);
+            // ServiceMgr.buildingService.reqBuyBuilding(this._data.id);
         })
         // ServiceMgr.shopService.buyGood(this._data.id);
         // EventMgr.emit(EventType.New_Building, this._data);
