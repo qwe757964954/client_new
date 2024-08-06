@@ -8,13 +8,11 @@ import { ViewsManager } from '../../../manager/ViewsManager';
 import { GameMode } from '../../../models/AdventureModel';
 import { UnitWordModel } from '../../../models/TextbookModel';
 import CCUtil from '../../../util/CCUtil';
+import { Shake } from '../../../util/Shake';
 import { WordDetailView } from '../../common/WordDetailView';
 import { BaseModeView } from './BaseModeView';
 import { WordSplitItem } from './items/WordSplitItem';
 import { WordMeaningView } from './WordMeaningView';
-import { Shake } from '../../../util/Shake';
-import { SoundMgr } from '../../../manager/SoundMgr';
-import AudioUtil from '../../../util/AudioUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('StudyModeView')

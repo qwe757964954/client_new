@@ -1,19 +1,16 @@
-import { _decorator, Component, Label, Node } from 'cc';
-import { BasePopup } from '../../script/BasePopup';
-import List from '../../util/list/List';
-import { ThemeWordItem } from './item/ThemeWordItem';
-import CCUtil from '../../util/CCUtil';
-import { SubjectArticleListReply, WordGameSubjectReply } from '../../models/AdventureModel';
-import RemoteImageManager from '../../manager/RemoteImageManager';
-import { ServiceMgr } from '../../net/ServiceManager';
-import { EventMgr } from '../../util/EventManager';
-import { InterfacePath } from '../../net/InterfacePath';
-import { ViewsMgr } from '../../manager/ViewsManager';
+import { _decorator, Label, Node } from 'cc';
+import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
+import RemoteImageManager from '../../manager/RemoteImageManager';
+import { ViewsMgr } from '../../manager/ViewsManager';
+import { WordGameSubjectReply } from '../../models/AdventureModel';
+import { BaseView } from '../../script/BaseView';
+import CCUtil from '../../util/CCUtil';
+import { EventMgr } from '../../util/EventManager';
+import List from '../../util/list/List';
 import { PracticeView } from './PracticeView';
 import { KnowlegeItem } from './item/KnowlegeItem';
-import { BaseView } from '../../script/BaseView';
-import { EventType } from '../../config/EventType';
+import { ThemeWordItem } from './item/ThemeWordItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('SubjectView')
@@ -33,6 +30,10 @@ export class SubjectView extends BaseView {
     private _data: WordGameSubjectReply;
 
     private _isRequesting: boolean = false; //是否正在请求数据
+
+    protected initUI(): void {
+        this.offViewAdaptSize();
+    }
 
     public setData(data: WordGameSubjectReply) {
         this._data = data;

@@ -112,6 +112,7 @@ export class BaseModeView extends BaseView {
     protected _curWordSubmitData: WordSubmitData = null; //当前单词提交数据
     start() {
         super.start();
+        this.offViewAdaptSize();
         this.node.getChildByName("img_bg").addComponent(BlockInputEvents);
         this.initRole(); //初始化角色
         this.initPet(); //初始化精灵
