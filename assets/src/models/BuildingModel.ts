@@ -977,6 +977,7 @@ export class BuildingModel extends BaseModel {
     /**清理生产队列 */
     public clearProduct() {
         this.buildingData.queue = [];
+        this._produceItemAry = [];
     }
     /**设置建造数据 */
     public setBuiltData(remaining_seconds: number) {
