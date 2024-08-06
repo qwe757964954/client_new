@@ -506,10 +506,11 @@ export class MapUICtl extends MainBaseCtl {
     /**点击到建筑 */
     getTouchBuilding(x: number, y: number) {
         let worldPos = this._mainScene.mapCamera.screenToWorld(new Vec3(x, y, 0));
-        let children = this._buidingModelAry;
-        for (let i = children.length - 1; i >= 0; i--) {
+        let children = this._lastSortChildren;//this._buidingModelAry;
+        // for (let i = children.length - 1; i >= 0; i--) {
+        for (let i = 0; i < children.length; i++) {
             const model = children[i];
-            if (model) {
+            if (model instanceof BuildingModel) {
                 if (model.isTouchSelf(worldPos)) {
                     return model;
                 }
