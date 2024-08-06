@@ -37,6 +37,7 @@ export class SelectWordView extends BaseView {
     private _curGradeName:string = "";
     private _curBookid:string = "";
     private _curPhaseId:number = 0;
+    public needShowTextbookChallenge = false;
     start() {
         super.start();
     }
@@ -76,13 +77,17 @@ export class SelectWordView extends BaseView {
         })
     }
     onAddPlanBook(data){
-        // ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
-        //     ViewsManager.instance.closeView(PrefabType.TextbookListView);
-        //     ViewsManager.instance.closeView(PrefabType.SelectWordView);
-        // });
-        EventMgr.dispatch(EventType.Update_Textbook_Challenge);
-        ViewsManager.instance.closeView(PrefabType.TextbookListView);
-        ViewsManager.instance.closeView(PrefabType.SelectWordView);
+        
+        if(this.needShowTextbookChallenge){
+            ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
+                ViewsManager.instance.closeView(PrefabType.SelectWordView);
+            });
+        }else{
+            EventMgr.dispatch(EventType.Update_Textbook_Challenge);
+            ViewsManager.instance.closeView(PrefabType.TextbookListView);
+            ViewsManager.instance.closeView(PrefabType.SelectWordView);
+        }
+        
     }
 
     onSchoolGradeList(data:SchoolBookListGradeItemData){

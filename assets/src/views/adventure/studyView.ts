@@ -7,6 +7,7 @@ import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
 import CCUtil from '../../util/CCUtil';
+import { SelectWordView } from '../TextbookVocabulary/SelectWordView';
 const { ccclass, property } = _decorator;
 
 /**大冒险 学习页面 何存发 2024年4月8日19:21:23 */
@@ -40,7 +41,7 @@ export class studyView extends BaseView {
             });
         } else {
             ViewsManager.instance.showView(PrefabType.SelectWordView, (node: Node) => {
-
+                node.getComponent(SelectWordView).needShowTextbookChallenge = true;
             });
         }
     }
