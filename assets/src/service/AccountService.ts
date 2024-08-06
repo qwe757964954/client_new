@@ -81,6 +81,7 @@ export default class AccountService {
                 User.exp = extra.exp;
                 User.nick = extra.nick_name;
                 User.gender = extra.gender;
+                User.avatarID = Number(extra.avatar);
                 // User.updateStaminaLimitAndTime(extra.stamina_limit, extra.next_stamina_update);
                 EventMgr.emit(EventType.Stamina_Timeout);
             }
