@@ -41,6 +41,7 @@ export class SettingView extends BaseView {
     onUserPlayerDetail(data:UserPlayerDetail){
         console.log("onUserPlayerDetail data = ", data);
         User.roleID = data.role_id;
+        User.avatarID = parseInt(data.avatar);
         this.center.getComponent(CenterView).updateUserInfo(data);
         this.account.getComponent(AccountView).updateUserInfo(data);
     }

@@ -59,7 +59,7 @@ export class ChangeHeadView extends Component {
         // 默认头像框
         this.switchUI(this._curSwitchTab);
         // 头像/框预览
-        this.refreshPreHead(User.curHeadPropId);
+        this.refreshPreHead(User.avatarID);
         this.refreshPreHeadBox(User.curHeadBoxPropId);
     }
     //初始化事件
