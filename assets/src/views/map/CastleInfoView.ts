@@ -14,7 +14,7 @@ import { BaseComponent } from '../../script/BaseComponent';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
 import { ToolUtil } from '../../util/ToolUtil';
-import { RewardItem } from '../common/RewardItem';
+import { RewardItem, RewardItemNumType } from '../common/RewardItem';
 import { PetInfoView } from './PetInfoView';
 const { ccclass, property } = _decorator;
 
@@ -157,7 +157,7 @@ export class CastleInfoView extends BaseComponent {
 
     /**加载列表 */
     onLoadList(node: Node, idx: number) {
-        node.getComponent(RewardItem).init(this._data.upgrade_need[idx]);
+        node.getComponent(RewardItem).init(this._data.upgrade_need[idx], RewardItemNumType.HasNum);
     }
     /**关闭按钮 */
     onBtnCloseClick() {

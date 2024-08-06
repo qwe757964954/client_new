@@ -1,8 +1,9 @@
-import { _decorator, CCInteger, Enum, Label, Sprite } from 'cc';
+import { _decorator, Color, Enum, Label, Sprite, UITransform } from 'cc';
 import { DEV } from 'cc/env';
 import { ItemID } from '../../export/ItemConfig';
 import { DataMgr, ItemData } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
+import { User } from '../../models/User';
 import ListItem from '../../util/list/ListItem';
 const { ccclass, property, executeInEditMode } = _decorator;
 
@@ -12,7 +13,13 @@ export enum RewardItemType {
     PngNum = 2,//只显示图片和数量
 }
 
+export enum RewardItemNumType {
+    Normal = 0,//右下角显示数量
+    HasNum = 1,//下方显示自身数量与需要数量
+}
+
 const defaultFramePath = "common/img_bg_item1/spriteFrame";
+const labelColors: string[] = ["#00FF00", "#FF0000"];
 
 @ccclass('RewardItem')
 @executeInEditMode(true)
@@ -23,6 +30,10 @@ export class RewardItem extends ListItem {
     public img: Sprite = null;//图片
     @property(Label)
     public num: Label = null;//数量
+    @property(Label)
+    public labelNum: Label = null;//需要数量
+    @property(Label)
+    public labelUserNum: Label = null;//已有数量
 
     public _type: RewardItemType = RewardItemType.Normal;
     @property({ type: Enum(RewardItemType), tooltip: DEV && "奖励显示类型" })
@@ -32,34 +43,51 @@ export class RewardItem extends ListItem {
     public set type(val: RewardItemType) {
         this._type = val;
     }
-    public _propID: ItemID = null;
-    @property({ type: Enum(ItemID), tooltip: DEV && "道具ID" })
-    public get propID(): ItemID {
-        return this._propID;
+    public _numType: RewardItemNumType = RewardItemNumType.Normal;
+    @property({ type: Enum(RewardItemNumType), tooltip: DEV && "数量显示类型" })
+    public get numType(): RewardItemNumType {
+        return this._numType;
     }
-    public set propID(val: ItemID) {
-        this._propID = val;
+    public set numType(val: RewardItemNumType) {
+        this._numType = val;
     }
-    public _count: number = 0;
-    @property({ type: CCInteger, tooltip: DEV && "数量", visible() { return this._type != RewardItemType.Png } })
-    public get count(): number {
-        return this._count;
-    }
-    public set count(val: number) {
-        this._count = val;
-        if (this.num) {
-            this.num.string = val.toString();
-        }
-    }
+
+    // public _propID: ItemID = null;
+    // @property({ type: Enum(ItemID), tooltip: DEV && "道具ID" })
+    // public get propID(): ItemID {
+    //     return this._propID;
+    // }
+    // public set propID(val: ItemID) {
+    //     this._propID = val;
+    // }
+    // public _count: number = 0;
+    // @property({ type: CCInteger, tooltip: DEV && "数量", visible() { return this._type != RewardItemType.Png } })
+    // public get count(): number {
+    //     return this._count;
+    // }
+    // public set count(val: number) {
+    //     this._count = val;
+    //     if (this.num) {
+    //         this.num.string = val.toString();
+    //     }
+    // }
+
+    private _itemID: ItemID = null;
+    private _itemCount: number = 0;
 
     protected start(): void {
-        this.loadShow(this.propID);
+        // this.loadShow(this.propID);
     }
 
-    init(data: ItemData) {
+    init(data: ItemData, numType?: RewardItemNumType) {
         // console.log("RewardItem init data = ", data.id);
+        this._itemID = data.id;
+        this._itemCount = data.num;
+        if (null != numType) {
+            this._numType = numType;
+        }
         this.loadShow(data.id);
-        this.num.string = data.num.toString();
+        this.showCountLabel();
     }
     /**加载显示 */
     loadShow(propID: ItemID) {
@@ -72,10 +100,40 @@ export class RewardItem extends ListItem {
             LoadManager.loadSprite(propInfo.frame, this.frame);
         }
     }
+    showCountLabel() {
+        if (RewardItemNumType.Normal == this._numType) {
+            this.labelNum.node.active = false;
+            this.labelUserNum.node.active = false;
+            this.num.node.active = true;
+            this.num.string = this._itemCount.toString();
+        } else {
+            this.labelNum.node.active = true;
+            this.labelUserNum.node.active = true;
+            this.num.node.active = false;
+            this.labelNum.string = "/" + this._itemCount.toString();
+            this.labelNum.updateRenderData();
+            let userCount = User.getItem(this._itemID);
+            if (userCount >= this._itemCount) {
+                this.labelUserNum.color = new Color(labelColors[0]);
+            } else {
+                this.labelUserNum.color = new Color(labelColors[1]);
+            }
+            if (userCount > 999) {
+                this.labelUserNum.string = "999+";
+            } else {
+                this.labelUserNum.string = userCount.toString();
+            }
+            let width = this.labelNum.node.getComponent(UITransform).width;
+            let pos = this.labelNum.node.position.clone();
+            pos.x = pos.x - width;
+            this.labelUserNum.node.position = pos;
+        }
+    }
     initByPng(pngPath: string, num?: number, framePath?: string) {
         LoadManager.loadSprite(pngPath, this.img);
         if (null != num) {
-            this.num.string = num.toString();
+            this._itemCount = num;
+            this.showCountLabel();
         }
         if (this._type == RewardItemType.Normal) {
             if (framePath) {
@@ -86,7 +144,7 @@ export class RewardItem extends ListItem {
         }
     }
 
-    
+
 }
 
 

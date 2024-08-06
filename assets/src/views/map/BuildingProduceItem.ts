@@ -1,6 +1,6 @@
 import { _decorator, Label, Node, Sprite } from 'cc';
 import { TextConfig } from '../../config/TextConfig';
-import { DataMgr, ItemData, ProduceInfo } from '../../manager/DataMgr';
+import { ItemData, ProduceInfo } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
 import { ViewsMgr } from '../../manager/ViewsManager';
 import { User } from '../../models/User';
@@ -9,6 +9,7 @@ import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
 import ListItem from '../../util/list/ListItem';
 import { ToolUtil } from '../../util/ToolUtil';
+import { RewardItem, RewardItemNumType } from '../common/RewardItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('BuildingProduceItem')
@@ -86,9 +87,11 @@ export class BuildingProduceItem extends ListItem {
     /**list加载 */
     onLoadListItem(item: Node, idx: number) {
         let data = this._expend[idx];
-        let propInfo = DataMgr.getItemInfo(data.id);
-        LoadManager.loadSprite(propInfo.png, item.getComponentInChildren(Sprite));
-        item.getComponentInChildren(Label).string = ToolUtil.replace(TextConfig.Prop_Show, data.num);
+        CCUtil.setNodeScale(item, 0.7);
+        item.getComponent(RewardItem).init(data, RewardItemNumType.HasNum);
+        // let propInfo = DataMgr.getItemInfo(data.id);
+        // LoadManager.loadSprite(propInfo.png, item.getComponentInChildren(Sprite));
+        // item.getComponentInChildren(Label).string = ToolUtil.replace(TextConfig.Prop_Show, data.num);
     }
     /**生产按钮点击 */
     onClickProduce() {
