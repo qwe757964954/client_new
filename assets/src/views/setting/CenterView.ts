@@ -1,5 +1,6 @@
 import { Component, Label, Node, ProgressBar, Sprite, _decorator } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
+import { TextConfig } from '../../config/TextConfig';
 import { LoadManager } from '../../manager/LoadManager';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { UserPlayerDetail } from '../../models/SettingModel';
@@ -76,7 +77,8 @@ export class CenterView extends Component {
     // 切换头像
     btnChangeHeadFunc() {
         console.log("btnChangeHeadFunc");
-        ViewsManager.instance.showView(PrefabType.ChangeHeadView);
+        ViewsManager.showTip(TextConfig.Function_Tip);
+        // ViewsManager.instance.showView(PrefabType.ChangeHeadView);
     }
     // 修改名称
     async btnChangeNameFunc() {
