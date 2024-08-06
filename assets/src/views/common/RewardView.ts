@@ -15,6 +15,8 @@ const spConfig2 = {
     anim: ["animation"],
 }
 
+const Layout_Max_Width = 1000;
+
 @ccclass('RewardView')
 export class RewardView extends Component {
     @property(Node)
@@ -85,7 +87,11 @@ export class RewardView extends Component {
             }).start();
         }
         this.layout.getComponent(Layout).updateLayout();
-        this.layout.getComponent(UITransform).width = (this.layout.getComponent(UITransform).height + this.layout.getComponent(Layout).spacingX) * length;
+        let layout_width = (this.layout.getComponent(UITransform).height + this.layout.getComponent(Layout).spacingX) * length;
+        if(layout_width > Layout_Max_Width){
+            layout_width = Layout_Max_Width;
+        }
+        this.layout.getComponent(UITransform).width = layout_width;
         LoadManager.loadSpine(spConfig2.path, this.spYanHua).then(() => {
             this.spYanHua.setAnimation(0, spConfig2.anim[0], true);
         });
