@@ -1,21 +1,21 @@
-import { _decorator, Component, instantiate, Label, Node, Prefab, Sprite } from 'cc';
-import { BaseView } from '../../script/BaseView';
-import { EventMgr } from '../../util/EventManager';
+import { _decorator, instantiate, Label, Node, Prefab, Sprite } from 'cc';
 import { EventType } from '../../config/EventType';
-import { SoundMgr } from '../../manager/SoundMgr';
-import { inf_SpineAniCreate } from '../../manager/InterfaceDefines';
 import { GameRes } from '../../GameRes';
-import { GradeSkipExercisesSubmitReply, UnitData } from '../../models/AdventureModel';
-import { GradeSkipSubjectMgr, SubjectType, UnitSubject } from './GradeSkipSubjectManager';
-import { WordMeanSubject } from './subject/WordMeanSubject';
-import { WordSpellSubject } from './subject/WordSpellSubject';
-import { WordReadingSubject } from './subject/WordReadingSubject';
-import CCUtil from '../../util/CCUtil';
-import { WordExamSubject } from './subject/WordExamSubject';
-import { ExerciseChoiceSubject } from './subject/ExerciseChoiceSubject';
-import { ServiceMgr } from '../../net/ServiceManager';
-import { InterfacePath } from '../../net/InterfacePath';
+import { inf_SpineAniCreate } from '../../manager/InterfaceDefines';
+import { SoundMgr } from '../../manager/SoundMgr';
 import { ViewsMgr } from '../../manager/ViewsManager';
+import { GradeSkipExercisesSubmitReply, UnitData } from '../../models/AdventureModel';
+import { InterfacePath } from '../../net/InterfacePath';
+import { ServiceMgr } from '../../net/ServiceManager';
+import { BaseView } from '../../script/BaseView';
+import CCUtil from '../../util/CCUtil';
+import { EventMgr } from '../../util/EventManager';
+import { GradeSkipSubjectMgr, SubjectType, UnitSubject } from './GradeSkipSubjectManager';
+import { ExerciseChoiceSubject } from './subject/ExerciseChoiceSubject';
+import { WordExamSubject } from './subject/WordExamSubject';
+import { WordMeanSubject } from './subject/WordMeanSubject';
+import { WordReadingSubject } from './subject/WordReadingSubject';
+import { WordSpellSubject } from './subject/WordSpellSubject';
 const { ccclass, property } = _decorator;
 
 @ccclass('UnitExerciseView')
@@ -147,7 +147,7 @@ export class UnitExerciseView extends BaseView {
 
     showResult() {
         console.log("展示结果");
-        this._result = this._wrongNum / this._subjectNum > 0.4 ? 1 : 0;
+        this._result = this._wrongNum / this._subjectNum > 0.4 ? 0 : 1;
         ServiceMgr.studyService.gradeSkipExercisesSubmit(this._unitData.big_id, this._unitData.unit, this._result);
     }
     onClose() {
