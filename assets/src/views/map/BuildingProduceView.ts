@@ -7,7 +7,6 @@ import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { BuildingModel, BuildingState } from '../../models/BuildingModel';
 import { s2cBuildingProduceAdd, s2cBuildingProduceDelete, s2cBuildingProduceGet, s2cBuildingProduceSpeed, s2cBuildingUpgrade, s2cBuildingUpgradeReward } from '../../models/NetModel';
 import { InterfacePath } from '../../net/InterfacePath';
-import { ServiceMgr } from '../../net/ServiceManager';
 import { BaseComponent } from '../../script/BaseComponent';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
@@ -52,8 +51,6 @@ export class BuildingProduceView extends BaseComponent {
     public plLeft: Node = null;//左边层
     @property(Label)
     public labelQueue: Label = null;//队列
-    @property(Node)
-    public btnRewardGet: Node = null;//领取按钮
 
     private _building: BuildingModel = null;
     private _closeCallBack: Function = null;
@@ -92,7 +89,6 @@ export class BuildingProduceView extends BaseComponent {
         CCUtil.onTouch(this.btnRight, this.onClickRight, this);
         CCUtil.onTouch(this.btnUpgrade, this.onClickUpgrade, this);
         CCUtil.onTouch(this.btnUpgradeSpeed, this.onClickUpgradeSpeed, this);
-        CCUtil.onTouch(this.btnRewardGet, this.onClickRewardGet, this);
 
         this.addEvent(InterfacePath.c2sBuildingUpgrade, this.onBuildingUpgrade.bind(this));
         this.addEvent(InterfacePath.c2sBuildingUpgradeReward, this.onBuildingUpgradeReward.bind(this));
@@ -108,7 +104,6 @@ export class BuildingProduceView extends BaseComponent {
         CCUtil.offTouch(this.btnRight, this.onClickRight, this);
         CCUtil.offTouch(this.btnUpgrade, this.onClickUpgrade, this);
         CCUtil.offTouch(this.btnUpgradeSpeed, this.onClickUpgradeSpeed, this);
-        CCUtil.offTouch(this.btnRewardGet, this.onClickRewardGet, this);
 
         this.clearEvent();
     }
@@ -332,15 +327,15 @@ export class BuildingProduceView extends BaseComponent {
         this.labelSpeed.string = "剩余" + ToolUtil.getSecFormatStr(this._upgradeTime);
     }
     /**领取按钮 */
-    onClickRewardGet() {
-        let queue = this._building.buildingData.queue;
-        let data = queue[0];
-        if (!data || data.time > ToolUtil.now()) {
-            ViewsMgr.showTip(TextConfig.Building_Product_Get_Error);
-            return;
-        }
-        ServiceMgr.buildingService.reqBuildingProduceGet(this._building.buildingID);
-    }
+    // onClickRewardGet() {
+    //     let queue = this._building.buildingData.queue;
+    //     let data = queue[0];
+    //     if (!data || data.time > ToolUtil.now()) {
+    //         ViewsMgr.showTip(TextConfig.Building_Product_Get_Error);
+    //         return;
+    //     }
+    //     ServiceMgr.buildingService.reqBuildingProduceGet(this._building.buildingID);
+    // }
 }
 
 
