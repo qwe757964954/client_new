@@ -1,4 +1,4 @@
-import { Layout, Node, NodePool, Prefab, Sprite, SpriteFrame, UITransform, Vec2, _decorator, instantiate } from 'cc';
+import { Layout, Node, Prefab, Sprite, SpriteFrame, UITransform, Vec2, _decorator, instantiate } from 'cc';
 import { EventType } from '../../config/EventType';
 import { TextConfig } from '../../config/TextConfig';
 import { ResLoader } from '../../manager/ResLoader';
@@ -8,8 +8,10 @@ import { BaseView } from '../../script/BaseView';
 import CCUtil from '../../util/CCUtil';
 import { EventMgr } from '../../util/EventManager';
 import ImgUtil from '../../util/ImgUtil';
+import { PoolMgr } from '../../util/PoolUtil';
 import { MapPointItem } from '../adventure/levelmap/MapPointItem';
 import { GotoUnitLevel } from './BreakThroughView';
+import ChallengeUtil from './ChallengeUtil';
 import { MapTouchBetterController } from './MapCom/MapTouchBetterController';
 
 const { ccclass, property } = _decorator;
@@ -20,7 +22,7 @@ export interface MapCoordinate {
     y: number;
 }
 
-const MapCoordinates: MapCoordinate[] = [
+export const MapCoordinates: MapCoordinate[] = [
     { x: 225.147, y: 238.611 },
     { x: 395.16, y: 132.353 },
     { x: 318.654, y: -160.92 },
@@ -52,9 +54,6 @@ export class ScrollMapView extends BaseView {
     private _total_grade = 0;
     public _curLevelIndex: number = 0;
 
-    private _mapItemPool: NodePool = new NodePool();
-    private _bgNodePool: NodePool = new NodePool();
-
     protected initUI(): void {
         this.offViewAdaptSize();
     }
@@ -63,23 +62,8 @@ export class ScrollMapView extends BaseView {
         this.addModelListener(EventType.Goto_Textbook_Next_Level, this.gotoNextTextbookLevel);
     }
 
-    preloadMapItems(count: number) {
-        for (let i = 0; i < count; i++) {
-            this._mapItemPool.put(instantiate(this.mapItemPrefab));
-        }
-    }
-
-    preloadBgNodes(count: number) {
-        for (let i = 0; i < count; i++) {
-            this._bgNodePool.put(new Node());
-        }
-    }
-
     async loadMapItems() {
         this._pointItems = [];
-
-        // Preload map items
-        this.preloadMapItems(this._unitStatus.length);
 
         let unit_count = 0;
         for (const itemData of this._unitStatus) {
@@ -90,8 +74,8 @@ export class ScrollMapView extends BaseView {
                     y: MapCoordinates[index].y
                 };
 
-                let itemNode: Node = this._mapItemPool.size() > 0 
-                    ? this._mapItemPool.get() 
+                let itemNode: Node = PoolMgr.getNodePool("mapItemPool").size() > 0 
+                    ? PoolMgr.getNodeFromPool("mapItemPool")
                     : instantiate(this.mapItemPrefab);
 
                 let itemScript = itemNode.getComponent(MapPointItem);
@@ -105,7 +89,7 @@ export class ScrollMapView extends BaseView {
 
                 CCUtil.onBtnClick(itemNode, (event) => this.onItemClick(event.node));
 
-                const map_count = this.calculateMapsNeeded(unit_count + 1, MapCoordinates.length);
+                const map_count = ChallengeUtil.calculateMapsNeeded(unit_count + 1, MapCoordinates.length);
                 const mapNode = this.MapLaout.getChildByName(`bg_map_${map_count - 1}`);
                 itemNode.setPosition(point.x, point.y, 0);
                 mapNode.addChild(itemNode);
@@ -122,10 +106,6 @@ export class ScrollMapView extends BaseView {
         this._unitStatus.sort(this.compareUnitNames);
 
         this.MapLaout.removeAllChildren();
-
-        const map_count = this.calculateMapsNeeded(this._total_grade, MapCoordinates.length);
-        this.preloadBgNodes(map_count);
-
         try {
             await this.addMapBg();
             await this.loadMapItems();
@@ -186,22 +166,18 @@ export class ScrollMapView extends BaseView {
         content_script.moveToTargetPos(worldPos);
     }
 
-    calculateMapsNeeded(totalLevels: number, levelsPerMap: number): number {
-        return Math.ceil(totalLevels / levelsPerMap);
-    }
-
+    
     addMapBg(): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             ResLoader.instance.load("adventure/bg/long_background/bg_map_01/spriteFrame", SpriteFrame, (err, spriteFrame) => {
                 if (err) {
                     reject(err);
                 } else {
-                    const map_count = this.calculateMapsNeeded(this._total_grade, MapCoordinates.length);
+                    const map_count = ChallengeUtil.calculateMapsNeeded(this._total_grade, MapCoordinates.length);
                     const bgNodes: Node[] = [];
-
                     for (let index = 0; index < map_count; index++) {
-                        let bgNode: Node = this._bgNodePool.size() > 0
-                            ? this._bgNodePool.get()
+                        let bgNode: Node = PoolMgr.getNodePool("bgNodePool").size() > 0
+                            ? PoolMgr.getNodeFromPool("bgNodePool")
                             : ImgUtil.create_2DNode(`bg_map_${index}`);
 
                         bgNode.name = `bg_map_${index}`;

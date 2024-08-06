@@ -20,15 +20,19 @@ export class PoolUtil {
         }
         return this._nodeMap.get(name);
     }
+
     /**
      * 添加节点至对象池
      * @param name 对象池名称
      * @param node 需要添加的节点
      */
-    putNodePool(name: string,node: Node){
-        let nodePool:NodePool = this.getNodePool(name);
-        nodePool.put(node);
+    putNodePool(name: string,node: Node,count: number){
+        for (let i = 0; i < count; i++) {
+            let nodePool:NodePool = this.getNodePool(name);
+            nodePool.put(node);
+        }
     }
+
     /**
      * 从节点池获取节点
      * @param name 对象池名称

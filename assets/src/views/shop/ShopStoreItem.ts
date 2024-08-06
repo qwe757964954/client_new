@@ -1,13 +1,11 @@
 import { _decorator, Component, Label, Node, Sprite } from 'cc';
-import { PrefabType } from '../../config/PrefabType';
+import { TextConfig } from '../../config/TextConfig';
 import { ClothingInfo } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { ServiceMgr } from '../../net/ServiceManager';
 import CCUtil from '../../util/CCUtil';
 import { BagConfig } from '../bag/BagConfig';
 import { BagItemInfo } from '../bag/BagInfo';
-import { GoodsDetailView } from './GoodsDetailView';
 const { ccclass, property } = _decorator;
 
 @ccclass('ShopStoreItem')
@@ -62,9 +60,13 @@ export class ShopStoreItem extends Component {
         let use_amout = "金币";
         // let content_str = `确认消耗${this._data.buy}个${use_amout}购买${this._data.name}吗？`;
         let content_str = `确认消耗${0}个${use_amout}购买${this._data.name}吗？`;
+        ViewsManager.showTip(TextConfig.Function_Tip);
+        /*
         ViewsManager.showConfirm(content_str, () => {
-            ServiceMgr.buildingService.reqBuyBuilding(this._data.id);
+            BagServer.reqShopItemBuy([this._data.id],[1]);
+            // ServiceMgr.buildingService.reqBuyBuilding(this._data.id);
         })
+            */
         // ServiceMgr.shopService.buyGood(this._data.id);
         // EventMgr.emit(EventType.New_Building, this._data);
         // ViewsMgr.closeView(PrefabType.ShopUIView);

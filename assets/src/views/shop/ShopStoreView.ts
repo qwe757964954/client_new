@@ -1,6 +1,7 @@
 import { _decorator, Node } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { ClothingInfo, DataMgr } from '../../manager/DataMgr';
+import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import List from '../../util/list/List';
 import { TabTypeIds } from '../task/TaskInfo';
@@ -22,6 +23,15 @@ export class ShopStoreView extends BaseView {
         } catch (err) {
             console.error("Failed to ShopStoreView nitialize UI:", err);
         }
+    }
+
+    protected onInitModuleEvent() {
+        this.addModelListeners([
+            [NetNotify.Classification_ShopItemBuy, this.onShopItemBuy],
+        ]);
+    }
+    onShopItemBuy(data:any){
+        console.log("onShopItemBuy",data);
     }
     private async initViews() {
         await Promise.all([

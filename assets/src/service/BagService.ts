@@ -1,5 +1,5 @@
 import { ItemData } from "../manager/DataMgr";
-import { c2sBackpackItemSynthesis, c2sBreakdownBackpackItems } from "../models/BagModel";
+import { c2sBackpackItemSynthesis, c2sBreakdownBackpackItems, c2sShopItemBuy } from "../models/BagModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
 import { NetNotify } from "../net/NetNotify";
@@ -39,6 +39,16 @@ export default class _BagService extends BaseControll {
         param.id = data.id;
         NetMgr.sendMsg(param);
     }
+    reqShopItemBuy(ids:number[],nums:number[]){
+        let param: c2sShopItemBuy = new c2sShopItemBuy();
+        param.ids = ids;
+        param.nums = nums;
+        NetMgr.sendMsg(param);
+    }
+    onShopItemBuy(data: any) {
+        this.handleResponse(data, NetNotify.Classification_ShopItemBuy);
+    }
+
     onBreakdownBackpackItems(data: any) {
         this.handleResponse(data, NetNotify.Classification_BreakdownBackpackItems);
     }

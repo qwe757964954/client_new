@@ -1,4 +1,4 @@
-import { _decorator, instantiate, isValid, Label, Node, NodePool, Prefab, Sprite, SpriteFrame } from 'cc';
+import { _decorator, instantiate, isValid, Label, Node, Prefab, Sprite, SpriteFrame } from 'cc';
 import { NetConfig } from '../../../config/NetConfig';
 import { PrefabType } from '../../../config/PrefabType';
 import GlobalConfig from '../../../GlobalConfig';
@@ -11,6 +11,7 @@ import { UnitWordModel } from '../../../models/TextbookModel';
 import { InterfacePath } from '../../../net/InterfacePath';
 import { ServiceMgr } from '../../../net/ServiceManager';
 import CCUtil from '../../../util/CCUtil';
+import { PoolMgr } from '../../../util/PoolUtil';
 import { ToolUtil } from '../../../util/ToolUtil';
 import { BaseModeView, WordSourceType } from './BaseModeView';
 import { SpellWordItem } from './items/SpellWordItem';
@@ -40,7 +41,6 @@ export class WordSpellView extends BaseModeView {
 
     protected _spilitData: any = null;
     private _items: Node[] = [];
-    protected _nodePool: NodePool = new NodePool("spellWordItem");
 
     protected _selectIdxs: number[] = []; //当前选中的索引
     protected _selectItems: Node[] = []; //选中item
@@ -273,7 +273,14 @@ export class WordSpellView extends BaseModeView {
         splits.sort((a, b) => {
             return Math.random() > 0.5 ? 1 : -1;
         }); //乱序
-
+        let pool_size = PoolMgr.getNodePool("spellWordItem").size();
+        console.log(PoolMgr.getNodePool("spellWordItem"))
+        if(pool_size > splits.length)
+        {
+            let need_create = Math.abs(pool_size - splits.length);
+            PoolMgr.putNodePool("spellWordItem",instantiate(this.wordItem),need_create);
+        }
+        
         for (let i = 0; i < splits.length; i++) {
             let item = this.getSplitItem();
             item.getComponent(SpellWordItem).init(splits[i]);
@@ -284,10 +291,9 @@ export class WordSpellView extends BaseModeView {
     }
 
     getSplitItem() {
-        let item = this._nodePool.get();
-        if (!item) {
-            item = instantiate(this.wordItem);
-        }
+        let item: Node = PoolMgr.getNodePool("spellWordItem").size() > 0
+                            ? PoolMgr.getNodeFromPool("bgNodePool")
+                            : instantiate(this.wordItem);
         return item;
     }
 
@@ -296,7 +302,7 @@ export class WordSpellView extends BaseModeView {
             this._items[i].getComponent(SpellWordItem).dispose();
             CCUtil.offTouch(this._items[i], this.onItemClick, this);
             this._items[i].parent = null;
-            this._nodePool.put(this._items[i]);
+            // PoolMgr.putNodePool("spellWordItem",this._items[i],1);
         }
 
         this._items = [];
@@ -329,7 +335,7 @@ export class WordSpellView extends BaseModeView {
 
     onDestroy(): void {
         super.onDestroy();
-        this._nodePool.clear();
+        PoolMgr.getNodePool("spellWordItem").clear()
     }
 
 }

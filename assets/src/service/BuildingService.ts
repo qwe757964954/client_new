@@ -165,6 +165,9 @@ export class BuildingService extends BaseControll {
         EventMgr.emit(EventType.Building_Shop_Buy, data);
         this.reqBuildingEditBatch([obj], [], [], 1);
     }
+
+    
+
     /**建筑建造 */
     reqBuildingBuilt(buildingID: number) {
         console.log("reqBuildingBuilt", buildingID);
