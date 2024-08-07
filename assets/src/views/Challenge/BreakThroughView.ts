@@ -158,7 +158,7 @@ export class BreakThroughView extends BaseView {
         if (isValid(this._curUnitStatus.error_word)) {
             bookLevelData.error_word = this._curUnitStatus.error_word;
         }
-
+        
         switch (gameModel) {
             case LearnGameModel.Tutoring:
                 bookLevelData.game_mode = LearnGameModel.Tutoring;

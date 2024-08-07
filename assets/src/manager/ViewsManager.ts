@@ -437,6 +437,10 @@ export class ViewsManager {
                 widgetCom.right = right;
                 widgetCom.verticalCenter = verticalCenter;
                 widgetCom.updateAlignment();
+                prefab.addRef();
+                node.once(Node.EventType.NODE_DESTROYED, () => {
+                    LoadManager.releaseAsset(prefab);
+                });
                 resolve(null);
                 /*
                 let amoutScript = node.getComponent(TopAmoutView);

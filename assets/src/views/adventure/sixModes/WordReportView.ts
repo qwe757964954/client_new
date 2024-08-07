@@ -14,8 +14,6 @@ import CCUtil from '../../../util/CCUtil';
 import { EventMgr } from '../../../util/EventManager';
 import List from '../../../util/list/List';
 import { NodeUtil } from '../../../util/NodeUtil';
-import { ObjectUtil } from '../../../util/ObjectUtil';
-import { WordSourceType } from './BaseModeView';
 import { ConditionItem } from './ConditionItem';
 import { ReportItem } from './ReportItem';
 const { ccclass, property } = _decorator;
@@ -112,9 +110,9 @@ export class WordReportView extends BaseView {
                 }
                 this._propsData = [...this._propsData, ...awardInfo.random_reward];
             }
-            if (source_type === WordSourceType.classification) {
-                this._propsData = ObjectUtil.convertAwardsToItemData(this._resultSubmitResponse.award_info);
-            }
+            // if (source_type === WordSourceType.classification) {
+            //     this._propsData = ObjectUtil.convertAwardsToItemData(this._resultSubmitResponse.award_info);
+            // }
             this.reward_scroll.numItems = this._propsData.length;
             this.condition_scroll.numItems = ket_length;
             this.showRewardSpAni();
