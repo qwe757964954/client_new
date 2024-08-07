@@ -77,6 +77,7 @@ export class LoginView extends BaseView {
 
     start() {
         super.start();
+        this.offViewAdaptSize();
         GlobalService.getInstance();
         this.connectServer();
         this.plQRCode.setBackCall(this.onPlQrCodeBack.bind(this));
@@ -285,7 +286,7 @@ export class LoginView extends BaseView {
             });
             return;
         }
-        console.log("登录成功",data);
+        console.log("登录成功", data);
         director.loadScene(SceneType.MainScene);
     }
     /**连接断开 */
