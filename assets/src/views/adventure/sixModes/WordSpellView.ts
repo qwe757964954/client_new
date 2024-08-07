@@ -272,15 +272,7 @@ export class WordSpellView extends BaseModeView {
         }
         splits.sort((a, b) => {
             return Math.random() > 0.5 ? 1 : -1;
-        }); //乱序
-        let pool_size = PoolMgr.getNodePool("spellWordItem").size();
-        console.log(PoolMgr.getNodePool("spellWordItem"))
-        if(pool_size < splits.length)
-        {
-            let need_create = Math.abs(pool_size - splits.length);
-            PoolMgr.putNodePool("spellWordItem",instantiate(this.wordItem),need_create);
-        }
-        
+        }); //乱序        
         for (let i = 0; i < splits.length; i++) {
             let item = this.getSplitItem();
             console.log(item);
@@ -303,8 +295,8 @@ export class WordSpellView extends BaseModeView {
             this._items[i].getComponent(SpellWordItem).dispose();
             CCUtil.offTouch(this._items[i], this.onItemClick, this);
             this._items[i].parent = null;
-            PoolMgr.putNodePool("spellWordItem",this._items[i],1);
         }
+        PoolMgr.recycleNodes("spellWordItem",this._items);
         this._items = [];
         this._selectIdxs = [];
         this._selectItems = [];

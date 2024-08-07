@@ -1,4 +1,4 @@
-import { Layout, Node, Prefab, Sprite, SpriteFrame, UITransform, Vec2, _decorator, instantiate } from 'cc';
+import { Layout, Node, Prefab, Sprite, SpriteFrame, UITransform, Vec2, Vec3, _decorator, instantiate, view } from 'cc';
 import { EventType } from '../../config/EventType';
 import { TextConfig } from '../../config/TextConfig';
 import { ResLoader } from '../../manager/ResLoader';
@@ -40,7 +40,7 @@ export const MapCoordinates: MapCoordinate[] = [
 @ccclass('ScrollMapView')
 export class ScrollMapView extends BaseView {
     @property(Node)
-    MapLaout: Node = null;
+    MapLayout: Node = null;
 
     @property(Node)
     contentNode: Node = null;
@@ -51,11 +51,16 @@ export class ScrollMapView extends BaseView {
     private _clickCallback: (itemStatus: UnitItemStatus, gate: GateListItem) => void = null;
     private _unitStatus: UnitItemStatus[] = [];
     private _pointItems: Node[] = [];
-    private _total_grade = 0;
+    private _totalGrade = 0;
     public _curLevelIndex: number = 0;
+    private _itemWidth: number = 0;
+    private _itemHeight: number = 0;
 
     protected initUI(): void {
         this.offViewAdaptSize();
+        const uiTransform = this.mapItemPrefab.data.getComponent(UITransform);
+        this._itemWidth = uiTransform.width;
+        this._itemHeight = uiTransform.height;
     }
 
     onInitModuleEvent() {
@@ -64,22 +69,22 @@ export class ScrollMapView extends BaseView {
 
     async loadMapItems() {
         this._pointItems = [];
+        let unitCount = 0;
 
-        let unit_count = 0;
         for (const itemData of this._unitStatus) {
             for (const gate of itemData.gate_list) {
-                const index = unit_count % MapCoordinates.length;
+                const coordinate = MapCoordinates[unitCount % MapCoordinates.length];
                 const point: MapCoordinate = {
-                    x: MapCoordinates[index].x - 1095,
-                    y: MapCoordinates[index].y
+                    x: coordinate.x - 1095,
+                    y: coordinate.y
                 };
 
                 let itemNode: Node = PoolMgr.getNodePool("mapItemPool").size() > 0 
                     ? PoolMgr.getNodeFromPool("mapItemPool")
                     : instantiate(this.mapItemPrefab);
 
-                let itemScript = itemNode.getComponent(MapPointItem);
-                itemScript.index = unit_count;
+                const itemScript = itemNode.getComponent(MapPointItem);
+                itemScript.index = unitCount;
                 itemScript.initSmallData({
                     big_id: itemData.unit_name,
                     small_id: gate.small_id,
@@ -89,34 +94,38 @@ export class ScrollMapView extends BaseView {
 
                 CCUtil.onBtnClick(itemNode, (event) => this.onItemClick(event.node));
 
-                const map_count = ChallengeUtil.calculateMapsNeeded(unit_count + 1, MapCoordinates.length);
-                const mapNode = this.MapLaout.getChildByName(`bg_map_${map_count - 1}`);
+                const mapCount = ChallengeUtil.calculateMapsNeeded(unitCount + 1, MapCoordinates.length);
+                const mapNode = this.MapLayout.getChildByName(`bg_map_${mapCount - 1}`);
                 itemNode.setPosition(point.x, point.y, 0);
                 mapNode.addChild(itemNode);
                 this._pointItems.push(itemNode);
-                unit_count++;
+                unitCount++;
             }
         }
     }
 
     async initUnit(unitStatus: UnitListItemStatus) {
         this._unitStatus = unitStatus.unit_list;
-        this._total_grade = unitStatus.gate_total;
-
+        this._totalGrade = unitStatus.gate_total;
         this._unitStatus.sort(this.compareUnitNames);
-
-        this.MapLaout.removeAllChildren();
+        console.log(this.MapLayout)
+        // Clean up old items
+        this.MapLayout.children.forEach(map => {
+            PoolMgr.recycleNodes("mapItemPool", map.children);
+        });
+        PoolMgr.recycleNodes("bgNodePool", this.MapLayout.children);
+        this.MapLayout.removeAllChildren();
         try {
-            await this.addMapBg();
+            await this.addMapBackground();
             await this.loadMapItems();
-            this.MapLaout.setPosition(0, 0, 0);
+            this.MapLayout.setPosition(0, 0, 0);
             this.scrollToNormal();
         } catch (error) {
             console.error('Error initializing units:', error);
         }
     }
 
-    compareUnitNames(a: UnitItemStatus, b: UnitItemStatus): number {
+    private compareUnitNames(a: UnitItemStatus, b: UnitItemStatus): number {
         const unitA = a.unit_name.replace(/\s+/g, '');
         const unitB = b.unit_name.replace(/\s+/g, '');
 
@@ -155,45 +164,68 @@ export class ScrollMapView extends BaseView {
         return partsA.length - partsB.length;
     }
 
-    scrollToNormal() {
+    private scrollToNormal() {
         if (this._pointItems.length === 0) return;
+        const contentScript = this.contentNode.getComponent(MapTouchBetterController);
+        const firstItem = this._pointItems[0];
+        const itemPosition = firstItem.getWorldPosition();
+        const uiTransform = firstItem.getComponent(UITransform);
+        itemPosition.x -= uiTransform.width;
 
-        const content_script = this.contentNode.getComponent(MapTouchBetterController);
-        const itemNode = this._pointItems[0];
-        const uiTransform = itemNode.getComponent(UITransform);
-        const worldPos = itemNode.getWorldPosition();
-        worldPos.x -= uiTransform.width;
-        content_script.moveToTargetPos(worldPos);
+        contentScript.moveToTargetPos(itemPosition);
+        contentScript.setTouchMoveCallback((nodePos: Vec3) => this.updateVisibleItems(nodePos));
+
+        const index = 0;
+        this.updateVisibleItems(new Vec3(MapCoordinates[index].x, MapCoordinates[index].y, 0));
     }
 
-    
-    addMapBg(): Promise<void> {
+    private updateVisibleItems(nodePos: Vec3) {
+        const visibleSize = view.getVisibleSize();
+        const viewBounds = {
+            left: nodePos.x - visibleSize.width,
+            right: nodePos.x + visibleSize.width,
+            top: nodePos.y + visibleSize.height,
+            bottom: nodePos.y - visibleSize.height
+        };
+
+        this._pointItems.forEach(item => {
+            const itemPos = item.getWorldPosition();
+            const itemBounds = {
+                left: itemPos.x - this._itemWidth / 2,
+                right: itemPos.x + this._itemWidth / 2,
+                top: itemPos.y + this._itemHeight / 2,
+                bottom: itemPos.y - this._itemHeight / 2
+            };
+
+            item.active = !(itemBounds.right <= viewBounds.left || itemBounds.left >= viewBounds.right ||
+                            itemBounds.top <= viewBounds.bottom || itemBounds.bottom >= viewBounds.top);
+        });
+    }
+
+    private addMapBackground(): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             ResLoader.instance.load("adventure/bg/long_background/bg_map_01/spriteFrame", SpriteFrame, (err, spriteFrame) => {
                 if (err) {
-                    reject(err);
-                } else {
-                    const map_count = ChallengeUtil.calculateMapsNeeded(this._total_grade, MapCoordinates.length);
-                    const bgNodes: Node[] = [];
-                    for (let index = 0; index < map_count; index++) {
-                        let bgNode: Node = PoolMgr.getNodePool("bgNodePool").size() > 0
-                            ? PoolMgr.getNodeFromPool("bgNodePool")
-                            : ImgUtil.create_2DNode(`bg_map_${index}`);
-
-                        bgNode.name = `bg_map_${index}`;
-                        bgNode.addComponent(Sprite).spriteFrame = spriteFrame;
-                        const uiTrans = bgNode.getComponent(UITransform);
-                        uiTrans.anchorPoint = new Vec2(0.5, 0.5);
-                        bgNodes.push(bgNode);
-                    }
-
-                    for (const bgNode of bgNodes) {
-                        this.MapLaout.addChild(bgNode);
-                    }
-
-                    this.MapLaout.getComponent(Layout).updateLayout();
-                    resolve();
+                    return reject(err);
                 }
+
+                const mapCount = ChallengeUtil.calculateMapsNeeded(this._totalGrade, MapCoordinates.length);
+                const bgNodes: Node[] = [];
+                for (let i = 0; i < mapCount; i++) {
+                    let bgNode: Node = PoolMgr.getNodePool("bgNodePool").size() > 0
+                        ? PoolMgr.getNodeFromPool("bgNodePool")
+                        : ImgUtil.create_2DNode(`bg_map_${i}`);
+
+                    bgNode.name = `bg_map_${i}`;
+                    bgNode.addComponent(Sprite).spriteFrame = spriteFrame;
+                    const uiTrans = bgNode.getComponent(UITransform);
+                    uiTrans.anchorPoint = new Vec2(0.5, 0.5);
+                    bgNodes.push(bgNode);
+                }
+
+                bgNodes.forEach(bgNode => this.MapLayout.addChild(bgNode));
+                this.MapLayout.getComponent(Layout).updateLayout();
+                resolve();
             });
         });
     }
@@ -202,13 +234,12 @@ export class ScrollMapView extends BaseView {
         this._clickCallback = callback;
     }
 
-    onItemClick(point: Node) {
-        const item = point.getComponent(MapPointItem);
+    private onItemClick(node: Node) {
+        const item = node.getComponent(MapPointItem);
         this._curLevelIndex = item.index;
         const data = item.data;
-        const itemStatus = this._unitStatus.find(item => item.unit_name === data.big_id);
-        const small_id = data.small_id;
-        const gate = itemStatus.gate_list[small_id - 1];
+        const itemStatus = this._unitStatus.find(status => status.unit_name === data.big_id);
+        const gate = itemStatus.gate_list[data.small_id - 1];
 
         EventMgr.dispatch(EventType.Goto_Textbook_Level, {
             itemStatus,
@@ -217,20 +248,19 @@ export class ScrollMapView extends BaseView {
         } as GotoUnitLevel);
     }
 
-    gotoNextTextbookLevel() {
-        const next_level = this._curLevelIndex + 1;
-        if (next_level >= this._pointItems.length) {
+    private gotoNextTextbookLevel() {
+        const nextIndex = this._curLevelIndex + 1;
+        if (nextIndex >= this._pointItems.length) {
             ViewsManager.showTip(TextConfig.All_level_Tip);
             return;
         }
 
-        const point = this._pointItems[next_level];
-        const item = point.getComponent(MapPointItem);
+        const nextItem = this._pointItems[nextIndex];
+        const item = nextItem.getComponent(MapPointItem);
         this._curLevelIndex = item.index;
         const data = item.data;
-        const itemStatus = this._unitStatus.find(item => item.unit_name === data.big_id);
-        const small_id = data.small_id;
-        const gate = itemStatus.gate_list[small_id - 1];
+        const itemStatus = this._unitStatus.find(status => status.unit_name === data.big_id);
+        const gate = itemStatus.gate_list[data.small_id - 1];
 
         EventMgr.dispatch(EventType.Goto_Break_Through_Textbook_Next_Level, {
             itemStatus,
@@ -241,6 +271,6 @@ export class ScrollMapView extends BaseView {
 
     removePointEvent() {
         // Optionally clean up when removing points
-        // this.MapLaout.removeAllChildren();
     }
 }
+

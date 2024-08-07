@@ -4,42 +4,62 @@ const { ccclass, property } = _decorator;
 @ccclass('PoolUtil')
 export class PoolUtil {
     private static _instance: PoolUtil = null;
-    private _nodeMap:Map<string,NodePool>=new Map();
+    private _nodeMap: Map<string, NodePool> = new Map();
+
     public static getInstance(): PoolUtil {
-		if (!this._instance || this._instance == null) {
-			this._instance = new PoolUtil();
-		}
-		return this._instance;
-	}
-    /**创建一个对象池
-     * @param name 对象池名称
+        if (!this._instance) {
+            this._instance = new PoolUtil();
+        }
+        return this._instance;
+    }
+
+    /** 
+     * Create or get a node pool by name
+     * @param name Pool name
+     * @returns NodePool
      */
-    getNodePool(name: string): NodePool{
-        if(!isValid(this._nodeMap.get(name))) {
-            this._nodeMap.set(name,new NodePool());
+    getNodePool(name: string): NodePool {
+        if (!this._nodeMap.has(name) || !isValid(this._nodeMap.get(name))) {
+            this._nodeMap.set(name, new NodePool());
         }
         return this._nodeMap.get(name);
     }
 
     /**
-     * 添加节点至对象池
-     * @param name 对象池名称
-     * @param node 需要添加的节点
+     * Add nodes to the pool
+     * @param name Pool name
+     * @param nodes Nodes to add
      */
-    putNodePool(name: string,node: Node,count: number){
-        for (let i = 0; i < count; i++) {
-            let nodePool:NodePool = this.getNodePool(name);
+    putNodesInPool(name: string, nodes: Node[]) {
+        let nodePool = this.getNodePool(name);
+        nodes.forEach(node => {
+            // Optionally reset node state here
             nodePool.put(node);
-        }
+        });
     }
 
     /**
-     * 从节点池获取节点
-     * @param name 对象池名称
-     * @returns 
+     * Get a node from the pool
+     * @param name Pool name
+     * @returns Node
      */
-    getNodeFromPool(name: string): Node{
-        return this._nodeMap.get(name).get();
+    getNodeFromPool(name: string): Node {
+        return this.getNodePool(name).get();
+    }
+
+    /**
+     * Recycle nodes back to their respective pools
+     * @param name Pool name
+     * @param nodes Nodes to recycle
+     */
+    recycleNodes(name: string, nodes: Node[]) {
+        let nodePool = this.getNodePool(name);
+        nodes.forEach(node => {
+            // Optionally reset node state here
+            if (isValid(node)) {
+                nodePool.put(node);
+            }
+        });
     }
 }
 

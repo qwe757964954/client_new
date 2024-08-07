@@ -1,4 +1,4 @@
-import { _decorator, error, instantiate, Node, Prefab, SpriteFrame, view } from 'cc';
+import { _decorator, error, Node, Prefab, SpriteFrame, view } from 'cc';
 import { EventType } from '../../config/EventType';
 import { KeyConfig } from '../../config/KeyConfig';
 import { PrefabType } from '../../config/PrefabType';
@@ -9,8 +9,6 @@ import { User } from '../../models/User';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
-import ImgUtil from '../../util/ImgUtil';
-import { PoolMgr } from '../../util/PoolUtil';
 import StorageUtil from '../../util/StorageUtil';
 import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { ChallengeLeftView } from '../TextbookVocabulary/ChallengeLeftView';
@@ -136,7 +134,6 @@ export class TextbookChallengeView extends BaseView {
             if (err) {
                 error && console.error(err);
             }
-            PoolMgr.putNodePool("mapItemPool",instantiate(prefab),data.gate_total);
         });
         ResLoader.instance.load("adventure/bg/long_background/bg_map_01/spriteFrame", SpriteFrame, (err: Error | null, spriteFrame: SpriteFrame) => {
             if (err) {
@@ -144,7 +141,6 @@ export class TextbookChallengeView extends BaseView {
             }
         });
         const map_count = ChallengeUtil.calculateMapsNeeded(data.gate_total, MapCoordinates.length);
-        PoolMgr.putNodePool("bgNodePool",ImgUtil.create_2DNode(),map_count);
         this._unitDetailView.updateUnitTotal(this._unitListArr.gate_total);
     }
     /**获取词书单元信息 */

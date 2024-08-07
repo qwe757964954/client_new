@@ -69,6 +69,7 @@ export class MapTouchBetterController extends Component {
 
     public locked: boolean = false; // 操作锁
     public singleTouchCb: Function = null!; // 点击回调函数
+    public touchMoveCb: Function = null!; // 滑动过程中传递坐标的回调函数
     @property(CCBoolean)
     public isStrict: boolean = false; // 默认为非严格模式
     @property({
@@ -293,6 +294,9 @@ export class MapTouchBetterController extends Component {
                     this.isMoving = true;
                     const distance: Vec3 = this.moveDistance(touch);
                     this.dealMove(distance, this.map, this.node);
+                    if (this.touchMoveCb) {
+                        this.touchMoveCb(touch.getLocation());
+                    }
                 } else {
                     //const distance: Vec3 = this.moveDistance(touch);
                     console.log("不能移动");
@@ -457,5 +461,8 @@ export class MapTouchBetterController extends Component {
         if (this.singleTouchCb) this.singleTouchCb(nodePos);
     }
 
+    public setTouchMoveCallback(cb: Function): void {
+        this.touchMoveCb = cb;
+    }
 
 }
