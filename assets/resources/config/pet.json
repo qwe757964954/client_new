@@ -253,30 +253,58 @@
         {
             "id": 1,
             "name": "伤心",
-            "score": 25,
-            "intimacy": 1,
-            "png": "pet_img_mood1"
+            "minscore": 0,
+            "maxscore": 24,
+            "png": [
+                "pet_img_mood1"
+            ],
+            "text": [
+                "哭哭哭",
+                "哭哭哭",
+                "哭哭哭"
+            ]
         },
         {
             "id": 2,
             "name": "一般",
-            "score": 50,
-            "intimacy": 2,
-            "png": "pet_img_mood2"
+            "minscore": 25,
+            "maxscore": 49,
+            "png": [
+                "pet_img_mood2"
+            ],
+            "text": [
+                "很伤心，主人都不理我了",
+                "很伤心，主人都不理我了",
+                "很伤心，主人都不理我了"
+            ]
         },
         {
             "id": 3,
             "name": "满足",
-            "score": 75,
-            "intimacy": 3,
-            "png": "pet_img_mood3"
+            "minscore": 50,
+            "maxscore": 74,
+            "png": [
+                "pet_img_mood3"
+            ],
+            "text": [
+                "不开心，主人快来陪我玩～",
+                "不开心，主人快来陪我玩～",
+                "不开心，主人快来陪我玩～"
+            ]
         },
         {
             "id": 4,
             "name": "开心",
-            "score": 100,
-            "intimacy": 5,
-            "png": "pet_img_mood4"
+            "minscore": 75,
+            "maxscore": 100,
+            "png": [
+                "pet_img_mood4"
+            ],
+            "text": [
+                "很开心，今天又是元气满满的一天！",
+                "很开心，今天又是元气满满的一天！",
+                "很开心，今天又是元气满满的一天！"
+            ]
         }
     ]
 }

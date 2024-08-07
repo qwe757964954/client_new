@@ -124,7 +124,7 @@ export class BookLevelConfig {
     error_word?: any;
     error_num?: number;
     time_remaining: number;
-    monster_id:number;
+    monster_id: number;
 }
 //成就信息配置
 export class ArchConfig {
@@ -457,7 +457,10 @@ export class DataManager {
         let pet_mood = json.pet_mood;
         for (let k in pet_mood) {
             let obj = pet_mood[k];
-            obj.png = ToolUtil.replace(TextConfig.Mood_Path, obj.png);
+            let png = obj.png;
+            for (const key in png) {
+                png[key] = ToolUtil.replace(TextConfig.Mood_Path, png[key]);
+            }
             this.petMoodConfig.push(obj);
         }
     }
@@ -629,7 +632,7 @@ export class DataManager {
         for (let i = 0; i < this.petMoodConfig.length; i++) {
             const element = this.petMoodConfig[i];
             config = element;
-            if (element.score > moodScore) break;
+            if (element.maxscore >= moodScore) break;
         }
         return config;
     }

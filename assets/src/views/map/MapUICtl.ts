@@ -2,7 +2,6 @@ import { Color, Graphics, Node, Rect, Vec3, instantiate, screen } from "cc";
 import GlobalConfig from "../../GlobalConfig";
 import { EventType } from "../../config/EventType";
 import { MapConfig } from "../../config/MapConfig";
-import { PetMoodType } from "../../config/PetConfig";
 import { PrefabType } from "../../config/PrefabType";
 import { TextConfig } from "../../config/TextConfig";
 import { DataMgr, EditInfo, EditType } from "../../manager/DataMgr";
@@ -1237,7 +1236,7 @@ export class MapUICtl extends MainBaseCtl {
             this._selfPet.hideGift();
         }
         let config = DataMgr.getMoodConfig(User.moodScore);
-        if (config && config.id <= PetMoodType.sad) {
+        if (config) {
             this._selfPet.showMood();
         } else {
             this._selfPet.hideMood();

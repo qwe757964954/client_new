@@ -21,9 +21,10 @@ export enum PetMoodType {
 export class PetMoodInfo {
     id: PetMoodType;//心情id
     name: string;//名字
-    score: number;//得分
-    intimacy: number;//亲密度(每小时增加值)
-    png: string;//图片
+    minscore: number;//最低分数
+    maxscore: number;//最高分数
+    png: string[];//图片
+    text: string[];//文案
 }
 /**亲密度信息 */
 export class IntimacyInfo {
