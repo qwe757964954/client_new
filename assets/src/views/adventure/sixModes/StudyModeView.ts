@@ -84,7 +84,7 @@ export class StudyModeView extends BaseModeView {
         this._wordsData = data;
         this._splits = this._wordsData.map(wordData => {
             const splitData = this._spilitData[wordData.word];
-            return splitData ? splitData.split(" ") : wordData.word.includes(" ") ? wordData.word.split(" ") : [];
+            return splitData ? splitData.split(" ") : (wordData.word.includes(" ") ? wordData.word.split(" ") : [wordData.word]);
         });
         this.showCurrentWord();
     }
