@@ -21,7 +21,6 @@ export class BagDressItem extends ListItem {
             data.spriteFrame = User.gender === 1 ? "Bag/icon_hair_boy/spriteFrame" : "Bag/icon_hair_ girl/spriteFrame";
         }
         const userClothes = BagClothingTypeMapping[data.id].userClothes;
-        console.log(userClothes);
         if (isValid(userClothes)) {
             let item_info:BagItemInfo = BagConfig.findShopItemInfo(userClothes);
             LoadManager.loadSprite(BagConfig.transformPath(item_info.png), this.icon.getComponent(Sprite)).then(() => {
