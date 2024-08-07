@@ -4,6 +4,8 @@ import { ClothingInfo, DataMgr } from '../../manager/DataMgr';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import List from '../../util/list/List';
+import { BagConfig } from '../bag/BagConfig';
+import { GoodsItemInfo } from '../bag/BagInfo';
 import { TabTypeIds } from '../task/TaskInfo';
 import { clothingTypeMapping } from './ShopInfo';
 import { ShopPlayerView } from './ShopPlayerView';
@@ -49,16 +51,21 @@ export class ShopStoreView extends BaseView {
         this.store_list.numItems = this._itemsData.length;
         this.store_list.scrollTo(0, 0);
     }
+    filterItems(clothingConfigs: ClothingInfo[], goodsItems: GoodsItemInfo[]): ClothingInfo[] {
+        const idsInClothingConfigs = new Set(goodsItems.map(item => item.id));
+        const cleanedArray = clothingConfigs.filter(item=>idsInClothingConfigs.has(item.id));
+        return cleanedArray;
+    }
+    
+
     getBuildItems(id: TabTypeIds) {
         this._itemsData = [];
         const editConfig = DataMgr.clothingConfig;
-        
-        // 获取对应的 ClothingType
         const clothingType = clothingTypeMapping[id];
-    
+        // Assuming BagConfig.BagConfigInfo.goods_item_info is GoodsItemInfo[]
+        const filteredItems = this.filterItems(editConfig, BagConfig.BagConfigInfo.goods_item_info);        
         if (clothingType !== undefined) {
-            // 过滤数据
-            this._itemsData = editConfig.filter(item => item.type === clothingType);
+            this._itemsData = filteredItems.filter(item => item.type === clothingType);
         }
     }
 

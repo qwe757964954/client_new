@@ -1,11 +1,14 @@
 import { _decorator, Component, Label, Node, Sprite } from 'cc';
-import { TextConfig } from '../../config/TextConfig';
-import { ClothingInfo } from '../../manager/DataMgr';
+import { PrefabType } from '../../config/PrefabType';
+import { ClothingInfo, ItemData } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
 import { ViewsManager } from '../../manager/ViewsManager';
+import { BagServer } from '../../service/BagService';
 import CCUtil from '../../util/CCUtil';
 import { BagConfig } from '../bag/BagConfig';
-import { BagItemInfo } from '../bag/BagInfo';
+import { BagItemInfo, GoodsItemInfo } from '../bag/BagInfo';
+import { TKConfig } from '../task/TaskConfig';
+import { GoodsDetailView } from './GoodsDetailView';
 const { ccclass, property } = _decorator;
 
 @ccclass('ShopStoreItem')
@@ -37,7 +40,9 @@ export class ShopStoreItem extends Component {
         let item_info:BagItemInfo = BagConfig.findShopItemInfo(data.id);
         // this.lblScore.string = "+" + goodData.medal;
         // this.lblPrice.string = data.buy.toString();
-        this.lblPrice.string = "0";
+        let goodsInfo:GoodsItemInfo = BagConfig.findGoodsItemInfo(data.id);
+        let itemDatas:ItemData[] = TKConfig.convertRewardData(goodsInfo.price);
+        this.lblPrice.string = `${itemDatas[0].num}`;
         LoadManager.loadSprite(BagConfig.transformPath(item_info.png), this.sprIcon).then(() => {
             CCUtil.fixNodeScale(this.sprIcon.node, 260, 260, true);
         });
@@ -57,16 +62,16 @@ export class ShopStoreItem extends Component {
     }
 
     onBuyClick() {
-        let use_amout = "金币";
-        // let content_str = `确认消耗${this._data.buy}个${use_amout}购买${this._data.name}吗？`;
-        let content_str = `确认消耗${0}个${use_amout}购买${this._data.name}吗？`;
-        ViewsManager.showTip(TextConfig.Function_Tip);
-        /*
+        let goodsInfo:GoodsItemInfo = BagConfig.findGoodsItemInfo(this._data.id);
+        let itemDatas:ItemData[] = TKConfig.convertRewardData(goodsInfo.price);
+        let use_amout = BagConfig.findItemInfo(itemDatas[0].id).name;
+        let content_str = `确认消耗${itemDatas[0].num}个${use_amout}购买${this._data.name}吗？`;
+        const ids = itemDatas.map(item => item.id);
+        const nums = itemDatas.map(item => item.num);
         ViewsManager.showConfirm(content_str, () => {
-            BagServer.reqShopItemBuy([this._data.id],[1]);
+            BagServer.reqShopItemBuy(ids,nums);
             // ServiceMgr.buildingService.reqBuyBuilding(this._data.id);
         })
-            */
         // ServiceMgr.shopService.buyGood(this._data.id);
         // EventMgr.emit(EventType.New_Building, this._data);
         // ViewsMgr.closeView(PrefabType.ShopUIView);

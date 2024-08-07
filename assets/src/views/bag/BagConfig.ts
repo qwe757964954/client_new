@@ -98,13 +98,33 @@ export default class _BagConfig {
         return decompose_items;
     }
 
-    findItemInfo(id:number){
+    findBackpackItemInfo(id:number){
         if (!this._BagConfigInfo) {
             console.error("BagConfigInfo is not loaded.");
             return null;
         }
         // 查找 dataItem 对应的背包物品
         const backpackItem = this._BagConfigInfo.backpack_item_info.find(item => item.id === id);
+        return backpackItem;
+    }
+
+    findItemInfo(id:number){
+        if (!this._BagConfigInfo) {
+            console.error("BagConfigInfo is not loaded.");
+            return null;
+        }
+        // 查找 dataItem 对应的背包物品
+        const backpackItem = this._BagConfigInfo.item_info.find(item => item.id === id);
+        return backpackItem;
+    }
+
+    findGoodsItemInfo(id:number){
+        if (!this._BagConfigInfo) {
+            console.error("BagConfigInfo is not loaded.");
+            return null;
+        }
+        // 查找 dataItem 对应的背包物品
+        const backpackItem = this._BagConfigInfo.goods_item_info.find(item => item.id === id);
         return backpackItem;
     }
 
@@ -163,9 +183,9 @@ export default class _BagConfig {
     }
     
     public convertItemArrayData(itemAry:{ [key: number]: number } ){
-        const arrayData: ItemData[] = Object.keys(User.itemAry).map(key => ({
+        const arrayData: ItemData[] = Object.keys(itemAry).map(key => ({
             id: parseInt(key),
-            num: User.itemAry[parseInt(key) as keyof typeof User.itemAry]
+            num: itemAry[parseInt(key) as keyof typeof User.itemAry]
         }));
         return arrayData;
     }

@@ -104,12 +104,12 @@ export class BagDialogView extends BaseView {
     onBreakdownBackpackItems(data: any) {
         console.log("onBreakdownBackpackItems", data);
         // toast("你成功把xx个xx分解了，获得xx个xx")
-        let item_info = BagConfig.findItemInfo(this._breakdownInfo.id);
+        let item_info = BagConfig.findBackpackItemInfo(this._breakdownInfo.id);
         const datas = BagConfig.findBreakdownItems(this._breakdownInfo);
         let decompose_items = TKConfig.convertRewardData(datas);
         let tip_msg = `你成功把${this._breakdownInfo.num}个${item_info.name}分解了，获得`;
         decompose_items.forEach((itemData, index) => {
-            let item_info = BagConfig.findItemInfo(itemData.id);
+            let item_info = BagConfig.findBackpackItemInfo(itemData.id);
             let item_quantity = itemData.num * this._breakdownInfo.num;
             itemData.num = item_quantity;
             tip_msg += `${item_quantity}个${item_info.name}`;
@@ -127,7 +127,7 @@ export class BagDialogView extends BaseView {
         const datas = BagConfig.findMergeItems(this._compositeInfo);
         let merge_items = TKConfig.convertRewardData(datas);
         merge_items = merge_items.filter(item => item.id !== ItemID.coin);
-        let item_info = BagConfig.findItemInfo(merge_items[0].id);
+        let item_info = BagConfig.findBackpackItemInfo(merge_items[0].id);
         let tip_msg = `你成功把${merge_items[0].num}个${item_info.name}合成了${this._compositeInfo.name}`;
         let item_data = [{ id: this._compositeInfo.id, num: 1 }];
         ViewsMgr.showRewards(item_data);

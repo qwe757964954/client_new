@@ -48,7 +48,7 @@ export class BreakdownView extends BasePopup {
         this.caleBagView.setCaleMax(item.num);
         this.caleBagView.setSelectListener(this.onCaleValueChanged.bind(this));
         this.showSourceProps();
-        this.source_text.string = BagConfig.findItemInfo(item.id).name;
+        this.source_text.string = BagConfig.findBackpackItemInfo(item.id).name;
         this.onCaleValueChanged(this.caleBagView.getCaleNumber());
     }
     onCaleValueChanged(num:number){
