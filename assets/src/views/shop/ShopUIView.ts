@@ -1,7 +1,6 @@
 import { _decorator, Node } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
-import { DataMgr } from '../../manager/DataMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { User } from '../../models/User';
 import { BaseView } from '../../script/BaseView';
@@ -45,7 +44,6 @@ export class ShopUIView extends BaseView {
         } catch (err) {
             console.error("Failed to initialize UI:", err);
         }
-        console.log("DataMgr.clothingConfig",DataMgr.clothingConfig);
     }
 
     protected onInitModuleEvent() {
