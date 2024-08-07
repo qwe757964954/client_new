@@ -11,7 +11,7 @@ import { LoginType, User } from '../../models/User';
 import { InterfacePath } from '../../net/InterfacePath';
 import { NetMgr } from '../../net/NetManager';
 import { ServiceMgr } from '../../net/ServiceManager';
-import { BaseView } from '../../script/BaseView';
+import { BaseComponent } from '../../script/BaseComponent';
 import GlobalService from '../../service/GlobalService';
 import CCUtil from '../../util/CCUtil';
 import StorageUtil from '../../util/StorageUtil';
@@ -27,7 +27,7 @@ const PRIVATE_HAS_CHECK_KEY = "private_has_check_key";
 const LOGIN_INFO_KEY = "login_info_key";
 
 @ccclass('LoginView')
-export class LoginView extends BaseView {
+export class LoginView extends BaseComponent {
     @property(Node)
     public middle: Node = null;              // middle节点
     @property(QRCodeView)
@@ -76,8 +76,7 @@ export class LoginView extends BaseView {
     private _loopID: number = null;             // 验证码循环id
 
     start() {
-        super.start();
-        this.offViewAdaptSize();
+        this.iniEvent();
         GlobalService.getInstance();
         this.connectServer();
         this.plQRCode.setBackCall(this.onPlQrCodeBack.bind(this));
@@ -87,16 +86,15 @@ export class LoginView extends BaseView {
         DataMgr.instance.initData();
     }
     onDestroy(): void {
+        this.removeEvent();
         this.clearTimer();
     }
     //初始化事件
-    onInitModuleEvent() {
-        this.addModelListener(InterfacePath.c2sAccountLogin, this.onAccountLogin.bind(this));
-        this.addModelListener(InterfacePath.c2sTokenLogin, this.onAccountLogin.bind(this));
-        this.addModelListener(InterfacePath.c2sPhoneCodeLogin, this.onAccountLogin.bind(this));
-        this.addModelListener(EventType.Socket_ReconnectFail, this.onSocketDis.bind(this));
-
-        this.addModelListener(InterfacePath.Account_Init, this.userInitSuc.bind(this));//老接口
+    iniEvent() {
+        this.addEvent(InterfacePath.c2sAccountLogin, this.onAccountLogin.bind(this));
+        this.addEvent(InterfacePath.c2sTokenLogin, this.onAccountLogin.bind(this));
+        this.addEvent(InterfacePath.c2sPhoneCodeLogin, this.onAccountLogin.bind(this));
+        this.addEvent(EventType.Socket_ReconnectFail, this.onSocketDis.bind(this));
 
         CCUtil.onTouch(this.btnWxLogin, this.wxLogin, this);
         CCUtil.onTouch(this.btnAccountLogin, this.btnLoginClick, this);
@@ -107,6 +105,19 @@ export class LoginView extends BaseView {
         this.agreeToggle.node.on(Toggle.EventType.TOGGLE, this.onToggle, this);
         CCUtil.onTouch(this.btnCode, this.btnPhoneCodeClick, this);
         CCUtil.onTouch(this.btnCodeLogin, this.btnPhoneCodeLoginClick, this);
+    }
+    /**移除事件 */
+    removeEvent() {
+        this.clearEvent();
+
+        CCUtil.offTouch(this.btnWxLogin, this.wxLogin, this);
+        CCUtil.offTouch(this.btnAccountLogin, this.btnLoginClick, this);
+        CCUtil.offTouch(this.btnAgree, this.btnUserAgreeClick, this);
+        CCUtil.offTouch(this.btnPrivacy, this.btnPrivacyClick, this);
+        CCUtil.offTouch(this.btnGoToPhoneCode, this.btnGoToPhoneCodeClick, this);
+        CCUtil.offTouch(this.btnGoToAccount, this.btnGoToAccountClick, this);
+        CCUtil.offTouch(this.btnCode, this.btnPhoneCodeClick, this);
+        CCUtil.offTouch(this.btnCodeLogin, this.btnPhoneCodeLoginClick, this);
     }
 
     checkToken() {
@@ -372,9 +383,5 @@ export class LoginView extends BaseView {
         NetMgr.setServer(obj["WebSocketAddr"], obj["WebSocketPort"], obj["WebPort"]);
         NetMgr.connectNet();
         return true;
-    }
-    // 用户初始化成功
-    userInitSuc() {
-        director.loadScene(SceneType.MainScene);
     }
 }
