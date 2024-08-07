@@ -275,7 +275,7 @@ export class WordSpellView extends BaseModeView {
         }); //乱序
         let pool_size = PoolMgr.getNodePool("spellWordItem").size();
         console.log(PoolMgr.getNodePool("spellWordItem"))
-        if(pool_size > splits.length)
+        if(pool_size < splits.length)
         {
             let need_create = Math.abs(pool_size - splits.length);
             PoolMgr.putNodePool("spellWordItem",instantiate(this.wordItem),need_create);
@@ -283,6 +283,7 @@ export class WordSpellView extends BaseModeView {
         
         for (let i = 0; i < splits.length; i++) {
             let item = this.getSplitItem();
+            console.log(item);
             item.getComponent(SpellWordItem).init(splits[i]);
             item.parent = this.itemNode;
             CCUtil.onTouch(item, this.onItemClick, this);
@@ -292,7 +293,7 @@ export class WordSpellView extends BaseModeView {
 
     getSplitItem() {
         let item: Node = PoolMgr.getNodePool("spellWordItem").size() > 0
-                            ? PoolMgr.getNodeFromPool("bgNodePool")
+                            ? PoolMgr.getNodeFromPool("spellWordItem")
                             : instantiate(this.wordItem);
         return item;
     }
@@ -302,9 +303,8 @@ export class WordSpellView extends BaseModeView {
             this._items[i].getComponent(SpellWordItem).dispose();
             CCUtil.offTouch(this._items[i], this.onItemClick, this);
             this._items[i].parent = null;
-            // PoolMgr.putNodePool("spellWordItem",this._items[i],1);
+            PoolMgr.putNodePool("spellWordItem",this._items[i],1);
         }
-
         this._items = [];
         this._selectIdxs = [];
         this._selectItems = [];
