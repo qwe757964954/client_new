@@ -9,6 +9,7 @@ import { BagConfig } from '../bag/BagConfig';
 import { BagItemInfo, GoodsItemInfo } from '../bag/BagInfo';
 import { TKConfig } from '../task/TaskConfig';
 import { GoodsDetailView } from './GoodsDetailView';
+
 const { ccclass, property } = _decorator;
 
 @ccclass('ShopStoreItem')
@@ -37,55 +38,49 @@ export class ShopStoreItem extends Component {
     initData(data: ClothingInfo) {
         this._data = data;
         this.lblName.string = data.name;
-        let item_info:BagItemInfo = BagConfig.findShopItemInfo(data.id);
-        // this.lblScore.string = "+" + goodData.medal;
-        // this.lblPrice.string = data.buy.toString();
-        let goodsInfo:GoodsItemInfo = BagConfig.findGoodsItemInfo(data.id);
-        let itemDatas:ItemData[] = TKConfig.convertRewardData(goodsInfo.price);
+        
+        // Fetch necessary information directly
+        const itemInfo: BagItemInfo = BagConfig.findShopItemInfo(data.id);
+        const goodsInfo: GoodsItemInfo = BagConfig.findGoodsItemInfo(data.id);
+        const itemDatas: ItemData[] = TKConfig.convertRewardData(goodsInfo.price);
+        
         this.lblPrice.string = `${itemDatas[0].num}`;
-        LoadManager.loadSprite(BagConfig.transformPath(item_info.png), this.sprIcon).then(() => {
+
+        // Load sprite asynchronously and fix node scale
+        LoadManager.loadSprite(BagConfig.transformPath(itemInfo.png), this.sprIcon).then(() => {
             CCUtil.fixNodeScale(this.sprIcon.node, 260, 260, true);
         });
-        // let not_buy = (User.buildingList.includes(data.id) && (data.type === EditType.Buiding || data.type === EditType.LandmarkBuiding))
-        // this.btnBuy.getComponent(Sprite).grayscale = not_buy;
-        // this.btnBuy.getComponent(Button).interactable = !not_buy;
-        // this.lblPrice.string = not_buy ? "售罄" :data.buy.toString();
     }
 
     initEvent() {
         CCUtil.onBtnClick(this.btnBuy, this.onBuyClick.bind(this));
-        // CCUtil.onTouch(this.ndGoods, this.onClickGoods, this);
     }
 
     removeEvent() {
-        CCUtil.offTouch(this.ndGoods, this.onClickGoods, this);
     }
 
     onBuyClick() {
-        let goodsInfo:GoodsItemInfo = BagConfig.findGoodsItemInfo(this._data.id);
-        let itemDatas:ItemData[] = TKConfig.convertRewardData(goodsInfo.price);
-        let use_amout = BagConfig.findItemInfo(itemDatas[0].id).name;
-        let content_str = `确认消耗${itemDatas[0].num}个${use_amout}购买${this._data.name}吗？`;
+        const goodsInfo: GoodsItemInfo = BagConfig.findGoodsItemInfo(this._data.id);
+        const itemDatas: ItemData[] = TKConfig.convertRewardData(goodsInfo.price);
+        
+        const useAmount = BagConfig.findItemInfo(itemDatas[0].id).name;
+        const contentStr = `确认消耗 ${itemDatas[0].num} 个 ${useAmount} 购买 ${this._data.name} 吗？`;
+        
         const ids = itemDatas.map(item => item.id);
         const nums = itemDatas.map(item => item.num);
-        ViewsManager.showConfirm(content_str, () => {
-            BagServer.reqShopItemBuy(ids,nums);
-            // ServiceMgr.buildingService.reqBuyBuilding(this._data.id);
-        })
-        // ServiceMgr.shopService.buyGood(this._data.id);
-        // EventMgr.emit(EventType.New_Building, this._data);
-        // ViewsMgr.closeView(PrefabType.ShopUIView);
+        
+        ViewsManager.showConfirm(contentStr, () => {
+            BagServer.reqShopItemBuy(ids, nums);
+        });
     }
 
     async onClickGoods() {
-        let node = await ViewsManager.instance.showPopup(PrefabType.GoodsDetailView);
-        let detail_script = node.getComponent(GoodsDetailView)
-        // detail_script.initData(this._data);
+        const node = await ViewsManager.instance.showPopup(PrefabType.GoodsDetailView);
+        const detailScript = node.getComponent(GoodsDetailView);
+        // detailScript.initData(this._data);
     }
 
     protected onDestroy(): void {
         this.removeEvent();
     }
 }
-
-
