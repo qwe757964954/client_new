@@ -1,9 +1,7 @@
 import { _decorator, Node } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { User } from '../../models/User';
 import { BaseView } from '../../script/BaseView';
-import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { TaskTabIds, TaskTabInfo } from '../task/TaskInfo';
 import { TaskTabView } from '../task/TaskTabView';
 import { AchievementMedalsView } from './AchievementMedalsView';
@@ -117,16 +115,7 @@ export class CollectView extends BaseView {
         });
     }
 
-    private initAmout() {
-        this.createTopAmout([
-            { type: AmoutType.Diamond, num: User.diamond },
-            { type: AmoutType.Coin, num: User.coin },
-            { type: AmoutType.Energy, num: User.stamina }
-        ]);
-    }
-
-    private async createTopAmout(dataArr: AmoutItemData[]) {
-        let amoutScript: TopAmoutView = await ViewsManager.addAmout(this.top_layout, 6.501, 71.254);
-        amoutScript.loadAmoutData(dataArr);
+    private async initAmout() {
+        await ViewsManager.addAmout(this.top_layout, 6.501, 71.254);
     }
 }

@@ -4,11 +4,9 @@ import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { ArchConfig, DataMgr, ItemData, MedalConfig } from '../../manager/DataMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { User } from '../../models/User';
 import CCUtil from '../../util/CCUtil';
 import EventManager from '../../util/EventManager';
 import { ToolUtil } from '../../util/ToolUtil';
-import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { RewardDialogView } from '../gift/RewardDialogView';
 import { AchieveTaskItem } from './AchieveTaskItem';
 import { AcieveMedalItem } from './AcieveMedalItem';
@@ -202,12 +200,7 @@ export class AchieveDialogView extends Component {
 
     /**初始化游戏数值 */
     initAmout() {
-        ViewsManager.addAmout(this.top_layout, 15.78, 22.437).then((amoutScript: TopAmoutView) => {
-            let dataArr: AmoutItemData[] = [{ type: AmoutType.Diamond, num: User.diamond },
-            { type: AmoutType.Coin, num: User.coin },
-            { type: AmoutType.Energy, num: User.stamina }];
-            amoutScript.loadAmoutData(dataArr);
-        });
+        ViewsManager.addAmout(this.top_layout, 15.78, 22.437);
     }
 
     initData() {

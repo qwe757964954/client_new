@@ -437,13 +437,15 @@ export class ViewsManager {
                 widgetCom.right = right;
                 widgetCom.verticalCenter = verticalCenter;
                 widgetCom.updateAlignment();
-
+                resolve(null);
+                /*
                 let amoutScript = node.getComponent(TopAmoutView);
                 if (amoutScript) {
                     resolve(amoutScript);
                 } else {
                     reject(new Error('addAmout component not found'));
                 }
+                    */
             });
         });
     }

@@ -40,7 +40,7 @@ export class WordCheckView extends BaseView {
     }
 
     initTabData(){
-        let tabStrArr = ["全部单词","已学单词","未学单词","收藏单词"];
+        let tabStrArr = ["全部单词","已学单词","未学单词"];
         for (let i = 0; i < tabStrArr.length; i++) {
             const element = tabStrArr[i];
             let data:BookItemData = {

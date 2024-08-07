@@ -1,10 +1,8 @@
 import { _decorator, Node } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { User } from '../../models/User';
 import { BaseView } from '../../script/BaseView';
 import List from '../../util/list/List';
-import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { BottomItem, BottomItemData, ButtomSelectType } from './BottomItem';
 import { MemberItem, MemberPriceData } from './MemberItem';
 const { ccclass, property } = _decorator;
@@ -39,12 +37,7 @@ export class MemberCentreView extends BaseView {
     }
     /**初始化游戏数值 */
     initAmout(){
-        ViewsManager.addAmout(this.top_layout,15.78,22.437).then((amoutScript: TopAmoutView) => {
-            let dataArr:AmoutItemData[] = [{type:AmoutType.Diamond,num:User.diamond},
-                {type:AmoutType.Coin,num:User.coin},
-                {type:AmoutType.Energy,num:User.stamina}];
-            amoutScript.loadAmoutData(dataArr);
-        });
+        ViewsManager.addAmout(this.top_layout,15.78,22.437);
     }
     /**初始化下方选项 */
     initBottom(){

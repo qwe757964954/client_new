@@ -1,18 +1,14 @@
-import { _decorator, error, instantiate, Node, Prefab, SpriteFrame, view } from 'cc';
+import { _decorator, error, Node, Prefab, SpriteFrame, view } from 'cc';
 import { EventType } from '../../config/EventType';
 import { KeyConfig } from '../../config/KeyConfig';
 import { PrefabType } from '../../config/PrefabType';
 import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { BookAwardListModel, BookPlanDetail, CurrentBookStatus, ModifyPlanData, UnitListItemStatus } from '../../models/TextbookModel';
-import { User } from '../../models/User';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
-import ImgUtil from '../../util/ImgUtil';
-import { PoolMgr } from '../../util/PoolUtil';
 import StorageUtil from '../../util/StorageUtil';
-import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { ChallengeLeftView } from '../TextbookVocabulary/ChallengeLeftView';
 import { ChallengeRemindView, IChallengeRemindData } from '../TextbookVocabulary/ChallengeRemindView';
 import { SettingPlanView } from '../TextbookVocabulary/SettingPlanView';
@@ -136,7 +132,6 @@ export class TextbookChallengeView extends BaseView {
             if (err) {
                 error && console.error(err);
             }
-            PoolMgr.putNodePool("mapItemPool",instantiate(prefab),data.gate_total);
         });
         ResLoader.instance.load("adventure/bg/long_background/bg_map_01/spriteFrame", SpriteFrame, (err: Error | null, spriteFrame: SpriteFrame) => {
             if (err) {
@@ -144,7 +139,6 @@ export class TextbookChallengeView extends BaseView {
             }
         });
         const map_count = ChallengeUtil.calculateMapsNeeded(data.gate_total, MapCoordinates.length);
-        PoolMgr.putNodePool("bgNodePool",ImgUtil.create_2DNode(),map_count);
         this._unitDetailView.updateUnitTotal(this._unitListArr.gate_total);
     }
     /**获取词书单元信息 */
@@ -166,12 +160,7 @@ export class TextbookChallengeView extends BaseView {
     }
     /**初始化游戏数值 */
     initAmout(){
-        ViewsManager.addAmout(this.top_layout,5.471,42.399).then((amoutScript: TopAmoutView) => {
-            let dataArr:AmoutItemData[] = [{type:AmoutType.Diamond,num:User.diamond},
-                {type:AmoutType.Coin,num:User.coin},
-                {type:AmoutType.Energy,num:User.stamina}];
-            amoutScript.loadAmoutData(dataArr);
-        });
+        ViewsManager.addAmout(this.top_layout,5.471,42.399)
     }
 
     async initRightBookUnitInfo() {

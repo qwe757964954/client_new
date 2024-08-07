@@ -6,7 +6,6 @@ import { BookLevelConfig, DataMgr } from '../../manager/DataMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { MapLevelData } from '../../models/AdventureModel';
 import { CurrentBookStatus, GateListItem, ReqUnitStatusParam, ReqUnitType, UnitItemStatus, UnitListItemStatus, UnitStatusData, VocabularyWordData } from '../../models/TextbookModel';
-import { User } from '../../models/User';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
@@ -19,7 +18,6 @@ import { WordMeaningView } from '../adventure/sixModes/WordMeaningView';
 import { WordPracticeView } from '../adventure/sixModes/WordPracticeView';
 import { WordReadingView } from '../adventure/sixModes/WordReadingView';
 import { WordSpellView } from '../adventure/sixModes/WordSpellView';
-import { AmoutItemData, AmoutType } from '../common/TopAmoutView';
 import { BreakThroughRemindView, ITextbookRemindData } from '../TextbookVocabulary/BreakThroughRemindView';
 import { ScrollMapView } from './ScrollMapView';
 
@@ -303,13 +301,7 @@ export class BreakThroughView extends BaseView {
     }
 
     async initAmout() {
-        const amoutScript = await ViewsManager.addAmout(this.top_layout, 5.471, 42.399);
-        const dataArr: AmoutItemData[] = [
-            { type: AmoutType.Diamond, num: User.diamond },
-            { type: AmoutType.Coin, num: User.coin },
-            { type: AmoutType.Energy, num: User.stamina }
-        ];
-        amoutScript.loadAmoutData(dataArr);
+        await ViewsManager.addAmout(this.top_layout, 5.471, 42.399);
     }
 
     async initRightChange() {
