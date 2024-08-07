@@ -13,7 +13,6 @@ import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
 import { NodeUtil } from '../../util/NodeUtil';
 import { RewardItem } from '../common/RewardItem';
-import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { TKConfig } from '../task/TaskConfig';
 import { BagConfig } from './BagConfig';
 import { BagDressItem } from './BagDressItem';
@@ -138,14 +137,7 @@ export class BagDialogView extends BaseView {
     }
 
     initAmount() {
-        ViewsManager.addAmout(this.top_layout, 11.314, 260.722).then((amountScript: TopAmoutView) => {
-            let dataArr: AmoutItemData[] = [
-                { type: AmoutType.Diamond, num: User.diamond },
-                { type: AmoutType.Coin, num: User.coin },
-                { type: AmoutType.Energy, num: User.stamina }
-            ];
-            amountScript.loadAmoutData(dataArr);
-        });
+        ViewsManager.addAmout(this.top_layout, 11.314, 260.722)
     }
 
     onCloseView() {

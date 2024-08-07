@@ -1,10 +1,8 @@
 import { _decorator, Node } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { User } from '../../models/User';
 import { BaseView } from '../../script/BaseView';
 import List from '../../util/list/List';
-import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { GrammarTipItem } from './GrammarTipItem';
 import { GrammarTrainingItem } from './GrammarTrainingItem';
 import { GrammarVocabularyView } from './GrammarVocabularyView';
@@ -71,12 +69,7 @@ export class GrammarTrainingView extends BaseView {
     }
     /**初始化游戏数值 */
     initAmout(){
-        ViewsManager.addAmout(this.top_layout,11.314,160.722).then((amoutScript: TopAmoutView) => {
-            let dataArr:AmoutItemData[] = [{type:AmoutType.Diamond,num:User.diamond},
-                {type:AmoutType.Coin,num:User.coin},
-                {type:AmoutType.Energy,num:User.stamina}];
-            amoutScript.loadAmoutData(dataArr);
-        });
+        ViewsManager.addAmout(this.top_layout,11.314,160.722);
     }
 
     onLoadTabHorizontal(item:Node, idx:number){

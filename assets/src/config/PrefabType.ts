@@ -57,7 +57,7 @@ export const PrefabType = {
     UnitExerciseView: { path: "theme/UnitExerciseView", componentName: "UnitExerciseView", zindex: Hierarchy.POPUPLAYER, tips: "跳级测试界面" },
     //**学习模式相关 end*/
     /*********************************************公共相关start***********************************************************/
-    TopAmoutView: { path: "common/TopAmoutView", zindex: Hierarchy.POPUPLAYER, tips: "数值公共模块" },
+    TopAmoutView: { path: "common/ResPannel", zindex: Hierarchy.POPUPLAYER, tips: "数值公共模块" },
     NavTitleView: { path: "common/NavTitleView", zindex: Hierarchy.POPUPLAYER, tips: "导航公共模块" },
     PopView: { path: "common/PopView", zindex: Hierarchy.TIPLAYER, tips: "提示弹窗" },
     TipView: { path: "common/TipView", zindex: Hierarchy.TIPLAYER, tips: "提示界面" },

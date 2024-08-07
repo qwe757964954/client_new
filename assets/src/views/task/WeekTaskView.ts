@@ -4,11 +4,9 @@ import { PrefabType } from '../../config/PrefabType';
 import { ItemData } from '../../manager/DataMgr';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { ChallengeBoxRewardData, ChallengeTaskReward, TaskBaseData, UserMainTaskData, UserWeekTaskData } from '../../models/TaskModel';
-import { User } from '../../models/User';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TkServer } from '../../service/TaskService';
-import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { DailyTaskView } from './DailyTaskView';
 import { MainTaskView } from './MainTaskView';
 import { TaskAchievementView } from './TaskAchievementView';
@@ -198,17 +196,8 @@ export class WeekTaskView extends BaseView {
         });
     }
 
-    private initAmout() {
-        this.createTopAmout([
-            { type: AmoutType.Diamond, num: User.diamond },
-            { type: AmoutType.Coin, num: User.coin },
-            { type: AmoutType.Energy, num: User.stamina }
-        ]);
-    }
-
-    private async createTopAmout(dataArr: AmoutItemData[]) {
-        let amoutScript: TopAmoutView = await ViewsManager.addAmout(this.top_layout, 6.501, 71.254);
-        amoutScript.loadAmoutData(dataArr);
+    private async initAmout() {
+        await ViewsManager.addAmout(this.top_layout, 6.501, 71.254);
     }
 
     private onTabSelect(info: TaskTabInfo) {

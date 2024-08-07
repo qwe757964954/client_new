@@ -2,10 +2,8 @@ import { _decorator, error, JsonAsset, Label, Node, Sprite, SpriteFrame } from '
 import { PrefabType } from '../../config/PrefabType';
 import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { User } from '../../models/User';
 import { BaseView } from '../../script/BaseView';
 import CCUtil from '../../util/CCUtil';
-import { AmoutItemData, AmoutType, TopAmoutView } from '../common/TopAmoutView';
 import { BossChallengeView } from './BossChallengeView';
 import WordBossArray, { BossGameInfo, BossInfo, WordBossInfoData, WorldBossResponse } from './BossInfo';
 import { CenterBossView } from './CenterBossView';
@@ -71,12 +69,7 @@ export class WorldBossView extends BaseView {
     }
     /**初始化游戏数值 */
     initAmout(){
-        ViewsManager.addAmout(this.top_layout,11.314,160.722).then((amoutScript: TopAmoutView) => {
-            let dataArr:AmoutItemData[] = [{type:AmoutType.Diamond,num:User.diamond},
-                {type:AmoutType.Coin,num:User.coin},
-                {type:AmoutType.Energy,num:User.stamina}];
-            amoutScript.loadAmoutData(dataArr);
-        });
+        ViewsManager.addAmout(this.top_layout,11.314,160.722);
     }
 
     /**初始化右侧闯关 */
