@@ -22,6 +22,7 @@ import { BagOperrationItem } from './BagOperrationItem';
 import { BagTabItem } from './BagTabItem';
 import { BreakdownView } from './BreakdownView';
 import { CompositeBagView } from './CompositeBagView';
+
 const { ccclass, property } = _decorator;
 
 @ccclass('BagDialogView')
@@ -40,13 +41,14 @@ export class BagDialogView extends BaseView {
     public propPrefab: Prefab = null;
 
     @property({ type: Prefab, tooltip: "角色动画预制体" })
-    public roleModel: Prefab = null;//角色动画
+    public roleModel: Prefab = null; // 角色动画
 
     @property({ type: Node, tooltip: "角色容器" })
     public roleContainer: Node = null;
 
     @property(List)
     public tabList: List = null;
+
     @property(List)
     public dress_list: List = null;
 
@@ -54,7 +56,6 @@ export class BagDialogView extends BaseView {
     public op_list: List = null;
 
     private _role: Node = null;
-
     private _propsDatas: ItemData[] = [];
     private _opDatas: BagOperationData[] = [];
     private _selectedItem: ItemData = null;
@@ -62,9 +63,11 @@ export class BagDialogView extends BaseView {
     private _compositeInfo: BackpackItemInfo = null;
     private _breakdownInfo: ItemData = null;
     private _tabSelected: number = 0;
+
     initEvent() {
         CCUtil.onBtnClick(this.btn_close, this.onCloseView.bind(this));
     }
+
     protected onInitModuleEvent() {
         this.addModelListeners([
             [EventType.Bag_PropList, this.onPropList.bind(this)],
@@ -75,22 +78,25 @@ export class BagDialogView extends BaseView {
             [NetNotify.Classification_BackpackItemSynthesis, this.onBackpackItemSynthesis.bind(this)],
         ]);
     }
+
     onCompositeRequest(itemInfo: BackpackItemInfo) {
         this._compositeInfo = itemInfo;
         BagServer.reqBackpackItemSynthesis(this._compositeInfo);
     }
+
     onBreakdownRequest(item: ItemData) {
         this._breakdownInfo = item;
         BagServer.reqBreakdownBackpackItems(this._breakdownInfo);
     }
-    onItemPropsRefresh(data: any) {
+
+    onItemPropsRefresh() {
         this.tabList.selectedId = -1;
         this.tabList.selectedId = this._tabSelected;
     }
+
     async initUI() {
         await BagConfig.loadBagConfigInfo();
-        this.initAmout();
-        //显示角色动画
+        this.initAmount();
         this.showRoleDress();
         this.tabList.numItems = BagTabNames.length;
         this.tabList.selectedId = 0;
@@ -98,84 +104,78 @@ export class BagDialogView extends BaseView {
     }
 
     onPropList(propDatas: ItemData[]) {
-
+        // Implement as needed
     }
 
     onBreakdownBackpackItems(data: any) {
         console.log("onBreakdownBackpackItems", data);
-        // toast("你成功把xx个xx分解了，获得xx个xx")
-        let item_info = BagConfig.findBackpackItemInfo(this._breakdownInfo.id);
+        let itemInfo = BagConfig.findBackpackItemInfo(this._breakdownInfo.id);
         const datas = BagConfig.findBreakdownItems(this._breakdownInfo);
-        let decompose_items = TKConfig.convertRewardData(datas);
-        let tip_msg = `你成功把${this._breakdownInfo.num}个${item_info.name}分解了，获得`;
-        decompose_items.forEach((itemData, index) => {
-            let item_info = BagConfig.findBackpackItemInfo(itemData.id);
-            let item_quantity = itemData.num * this._breakdownInfo.num;
-            itemData.num = item_quantity;
-            tip_msg += `${item_quantity}个${item_info.name}`;
-            // Add a comma separator for all items except the last one
-            if (index < decompose_items.length - 1) {
-                tip_msg += '，';
+        let decomposeItems = TKConfig.convertRewardData(datas);
+        let tipMsg = `你成功把${this._breakdownInfo.num}个${itemInfo.name}分解了，获得`;
+        decomposeItems.forEach((itemData, index) => {
+            let itemInfo = BagConfig.findBackpackItemInfo(itemData.id);
+            let itemQuantity = itemData.num * this._breakdownInfo.num;
+            itemData.num = itemQuantity;
+            tipMsg += `${itemQuantity}个${itemInfo.name}`;
+            if (index < decomposeItems.length - 1) {
+                tipMsg += '，';
             }
         });
-        ViewsMgr.showRewards(decompose_items);
-        ViewsManager.showTip(tip_msg);
-        console.log("onBreakdownBackpackItems", datas);
-
+        ViewsMgr.showRewards(decomposeItems);
+        ViewsManager.showTip(tipMsg);
     }
+
     onBackpackItemSynthesis(data: any) {
         const datas = BagConfig.findMergeItems(this._compositeInfo);
-        let merge_items = TKConfig.convertRewardData(datas);
-        merge_items = merge_items.filter(item => item.id !== ItemID.coin);
-        let item_info = BagConfig.findBackpackItemInfo(merge_items[0].id);
-        let tip_msg = `你成功把${merge_items[0].num}个${item_info.name}合成了${this._compositeInfo.name}`;
-        let item_data = [{ id: this._compositeInfo.id, num: 1 }];
-        ViewsMgr.showRewards(item_data);
-        ViewsManager.showTip(tip_msg);
-        console.log("onBackpackItemSynthesis", data);
+        let mergeItems = TKConfig.convertRewardData(datas);
+        mergeItems = mergeItems.filter(item => item.id !== ItemID.coin);
+        let itemInfo = BagConfig.findBackpackItemInfo(mergeItems[0].id);
+        let tipMsg = `你成功把${mergeItems[0].num}个${itemInfo.name}合成了${this._compositeInfo.name}`;
+        let itemData = [{ id: this._compositeInfo.id, num: 1 }];
+        ViewsMgr.showRewards(itemData);
+        ViewsManager.showTip(tipMsg);
     }
 
-    /**初始化游戏数值 */
-    initAmout() {
-        ViewsManager.addAmout(this.top_layout, 11.314, 260.722).then((amoutScript: TopAmoutView) => {
-            let dataArr: AmoutItemData[] = [{ type: AmoutType.Diamond, num: User.diamond },
-            { type: AmoutType.Coin, num: User.coin },
-            { type: AmoutType.Energy, num: User.stamina }];
-            amoutScript.loadAmoutData(dataArr);
+    initAmount() {
+        ViewsManager.addAmout(this.top_layout, 11.314, 260.722).then((amountScript: TopAmoutView) => {
+            let dataArr: AmoutItemData[] = [
+                { type: AmoutType.Diamond, num: User.diamond },
+                { type: AmoutType.Coin, num: User.coin },
+                { type: AmoutType.Energy, num: User.stamina }
+            ];
+            amountScript.loadAmoutData(dataArr);
         });
     }
 
     onCloseView() {
         ViewsManager.instance.closeView(PrefabType.BagView);
     }
-    /**显示角色的骨骼动画 */
+
     private showRoleDress() {
         this.roleContainer.removeAllChildren();
-        this._role = null;
         this._role = instantiate(this.roleModel);
         this._role.setScale(v3(2, 2, 1));
         this.roleContainer.addChild(this._role);
         NodeUtil.setLayerRecursively(this._role, Layers.Enum.UI_2D);
         let roleModel = this._role.getComponent(RoleBaseModel);
-        let modelId: number = Number(User.curHeadPropId);
         roleModel.initSelf();
         roleModel.show(true);
     }
+
     onLoadPropsGrid(item: Node, idx: number) {
-        let itemScript: RewardItem = item.getComponent(RewardItem);
-        let node_trans = item.getComponent(UITransform);
-        let scale = 125 / node_trans.height;
-        item.setScale(scale, scale, scale)
-        let data: ItemData = {
-            id: this._propsDatas[idx].id,
-            num: this._propsDatas[idx].num,
-        }
+        const itemScript = item.getComponent(RewardItem);
+        const nodeTrans = item.getComponent(UITransform);
+        const scale = 125 / nodeTrans.height;
+        item.setScale(scale, scale, scale);
+        const data: ItemData = this._propsDatas[idx];
         itemScript.init(data);
     }
 
-    onPropsGridSelected(item: any, selectedId: number, lastSelectedId: number, val: number) {
-        if (!isValid(selectedId) || selectedId < 0 || !isValid(item)) { return; }
-        this.onPropsSelected(this._propsDatas[selectedId]);
+    onPropsGridSelected(item: Node, selectedId: number, lastSelectedId: number, val: number) {
+        if (isValid(item) && selectedId >= 0) {
+            this.onPropsSelected(this._propsDatas[selectedId]);
+        }
     }
 
     onPropsSelected(selData: ItemData) {
@@ -185,31 +185,29 @@ export class BagDialogView extends BaseView {
     }
 
     onLoadDressGrid(item: Node, idx: number) {
-        let item_script = item.getComponent(BagDressItem);
-        item_script.updateTabProps(BagGressItems[idx]);
+        const itemScript = item.getComponent(BagDressItem);
+        itemScript.updateTabProps(BagGressItems[idx]);
     }
 
-    onDressGridSelected(item: any, selectedId: number, lastSelectedId: number, val: number) {
-        if (!isValid(selectedId) || selectedId < 0 || !isValid(item)) { return; }
-        console.log("onDressGridSelected", selectedId);
-        // this.clearAllTabLabelColors();
-        // let item_script = item.getComponent(BagTabItem);
-        // item_script.tab_name.color = new Color("#FFFFFF");
+    onDressGridSelected(item: Node, selectedId: number) {
+        if (isValid(item) && selectedId >= 0) {
+            console.log("onDressGridSelected", selectedId);
+        }
     }
-
-
 
     onLoadTabHorizontal(item: Node, idx: number) {
-        let item_script = item.getComponent(BagTabItem);
-        item_script.updateTabProps(BagTabNames[idx].title);
+        const itemScript = item.getComponent(BagTabItem);
+        itemScript.updateTabProps(BagTabNames[idx].title);
     }
 
-    onTabHorizontalSelected(item: any, selectedId: number, lastSelectedId: number, val: number) {
-        if (!isValid(selectedId) || selectedId < 0 || !isValid(item)) { return; }
-        console.log("onTabHorizontalSelected", selectedId);
-        this._tabSelected = selectedId;
-        this.selectTabInfo(BagTabNames[selectedId]);
+    onTabHorizontalSelected(item: Node, selectedId: number) {
+        if (isValid(item) && selectedId >= 0) {
+            console.log("onTabHorizontalSelected", selectedId);
+            this._tabSelected = selectedId;
+            this.selectTabInfo(BagTabNames[selectedId]);
+        }
     }
+
     selectTabInfo(tabInfo: any) {
         let arrayData = BagConfig.convertItemArrayData(User.itemAry);
         const filteredBackpackItems = BagConfig.filterBagItems(arrayData);
@@ -234,23 +232,24 @@ export class BagDialogView extends BaseView {
     }
 
     onOperationHorizontal(item: Node, idx: number) {
-        let item_script = item.getComponent(BagOperrationItem);
-        item_script.updateOperationProps(this._opDatas[idx]);
+        const itemScript = item.getComponent(BagOperrationItem);
+        itemScript.updateOperationProps(this._opDatas[idx]);
     }
 
-    onOperationHorizontalSelected(item: any, selectedId: number, lastSelectedId: number, val: number) {
-        if (!isValid(selectedId) || selectedId < 0 || !isValid(item)) { return; }
-        console.log("onTabHorizontalSelected", selectedId);
-        this.onOperationClick(this._opDatas[selectedId]);
+    onOperationHorizontalSelected(item: Node, selectedId: number) {
+        if (isValid(item) && selectedId >= 0) {
+            console.log("onOperationHorizontalSelected", selectedId);
+            this.onOperationClick(this._opDatas[selectedId]);
+        }
     }
 
     onOperationClick(data: BagOperationData) {
         switch (data.id) {
             case BagOperationIds.Outfit:
-
+                // Implement as needed
                 break;
             case BagOperationIds.UnOutfit:
-
+                // Implement as needed
                 break;
             case BagOperationIds.Disassemble:
                 this.onDisassemble();
@@ -262,18 +261,18 @@ export class BagDialogView extends BaseView {
                 break;
         }
     }
+
     async onDisassemble() {
-        console.log("onDisassemble��解");
-        let node = await ViewsManager.instance.showPopup(PrefabType.BreakdownView);
-        let nodeScript = node.getComponent(BreakdownView)
+        console.log("onDisassemble");
+        const node = await ViewsManager.instance.showPopup(PrefabType.BreakdownView);
+        const nodeScript = node.getComponent(BreakdownView);
         nodeScript.updateBreakDownItem(this._selectedItem);
     }
+
     async onComposite() {
-        console.log("onComposite....");
-        let node = await ViewsManager.instance.showPopup(PrefabType.CompositeBagView);
-        let nodeScript = node.getComponent(CompositeBagView);
+        console.log("onComposite");
+        const node = await ViewsManager.instance.showPopup(PrefabType.CompositeBagView);
+        const nodeScript = node.getComponent(CompositeBagView);
         nodeScript.updateMergeItem(this._selectedItem);
     }
 }
-
-

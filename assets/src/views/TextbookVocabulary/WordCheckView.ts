@@ -121,7 +121,6 @@ export class WordCheckView extends BaseView {
     }
 
     onLoadWordCheckVerticalList(item:Node, idx:number){
-        console.log('onLoadWordCheckVerticalList',item,idx);
         let unit = Object.keys(this._wordUnits)[idx];
         let itemScript = item.getComponent(WordCheckItem);
         itemScript.updateItemProps(unit,this._wordUnits[unit])

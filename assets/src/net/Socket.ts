@@ -90,8 +90,10 @@ export class Socket {
         let buffer: any = msg.data;
         if (!buffer) { return; }
         if (buffer instanceof ArrayBuffer) {
-            // console.log("onMessage data ArrayBuffer");
-            let data = String.fromCharCode.apply(null, new Uint8Array(buffer));
+            // console.log("onMessage data ArrayBuffer")
+            const uint8Array = new Uint8Array(buffer);
+            const data = uint8Array.reduce((acc, i) => acc += String.fromCharCode.apply(null, [i]), '');
+            // let data = String.fromCharCode.apply(null, new Uint8Array(buffer));
             if (this.recvFun) {
                 this.recvFun(data);
             }
