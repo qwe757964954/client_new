@@ -12,18 +12,12 @@ import { TBServer } from '../../service/TextbookService';
 import CCUtil from '../../util/CCUtil';
 import { NodeUtil } from '../../util/NodeUtil';
 import { rightPanelchange } from '../adventure/common/RightPanelchange';
-import { StudyModeView } from '../adventure/sixModes/StudyModeView';
-import { WordExamView } from '../adventure/sixModes/WordExamView';
-import { WordMeaningView } from '../adventure/sixModes/WordMeaningView';
-import { WordPracticeView } from '../adventure/sixModes/WordPracticeView';
-import { WordReadingView } from '../adventure/sixModes/WordReadingView';
-import { WordSpellView } from '../adventure/sixModes/WordSpellView';
 import { BreakThroughRemindView, ITextbookRemindData } from '../TextbookVocabulary/BreakThroughRemindView';
 import { ScrollMapView } from './ScrollMapView';
 
 const { ccclass, property } = _decorator;
 
-// 学习模式
+// Learning modes enumeration
 export enum LearnGameModel {
     Tutoring = 0,
     Spell = 1,
@@ -34,23 +28,18 @@ export enum LearnGameModel {
 }
 
 export interface GotoUnitLevel {
-    itemStatus: UnitItemStatus,
-    gate: GateListItem,
-    isNext: boolean
+    itemStatus: UnitItemStatus;
+    gate: GateListItem;
+    isNext: boolean;
 }
 
 @ccclass('BreakThroughView')
 export class BreakThroughView extends BaseView {
-    @property(Node)
-    public top_layout: Node = null;
-    @property(Node)
-    public content_layout: Node = null;
-    @property(Node)
-    public scrollMapNode: Node = null;
-    @property(Node)
-    public bg: Node = null;
-    @property(Node)
-    public mask_node: Node = null;
+    @property(Node) top_layout: Node = null;
+    @property(Node) content_layout: Node = null;
+    @property(Node) scrollMapNode: Node = null;
+    @property(Node) bg: Node = null;
+    @property(Node) mask_node: Node = null;
 
     private _rightChallenge: rightPanelchange = null;
     private _scrollMap: ScrollMapView = null;
@@ -60,31 +49,20 @@ export class BreakThroughView extends BaseView {
     private _selectitemStatus: UnitItemStatus = null;
     private _selectGate: GateListItem = null;
 
-    start() {
-        super.start();
-    }
-
     initEvent() {
         CCUtil.onBtnClick(this.mask_node, this.hideRightPanelchangeView.bind(this));
     }
 
     removeEvent() {
-        // Unregister events here if needed
+        // Unregister events if needed
     }
 
     initUI() {
         this.offViewAdaptSize();
         this.initNavTitle();
-        this.initAmout();
+        this.initAmount();
         this.initRightChange();
         DataMgr.instance.getAdventureLevelConfig();
-    }
-
-    initData(data: CurrentBookStatus, unitData: UnitListItemStatus) {
-        this._bookData = data;
-        this._curUnitList = unitData;
-        this.initScrollMap();
-        this._scrollMap.initUnit(unitData);
     }
 
     onInitModuleEvent() {
@@ -97,6 +75,12 @@ export class BreakThroughView extends BaseView {
         this.addModelListener(EventType.Goto_Textbook_Level, this.gotoTextbookLevel.bind(this));
         this.addModelListener(EventType.Enter_Level_Test, this.gotoLevelTest.bind(this));
         this.addModelListener(EventType.Goto_Break_Through_Textbook_Next_Level, this.gotoNextLevelTest.bind(this));
+    }
+    initData(data: CurrentBookStatus, unitData: UnitListItemStatus) {
+        this._bookData = data;
+        this._curUnitList = unitData;
+        this.initScrollMap();
+        this._scrollMap.initUnit(unitData);
     }
 
     gotoTextbookLevel(data: GotoUnitLevel) {
@@ -152,42 +136,33 @@ export class BreakThroughView extends BaseView {
             word_num: this._curUnitStatus.word_num,
             error_num: this._curUnitStatus.error_num,
             time_remaining: this._curUnitStatus.time_remaining,
-            monster_id:this._bookData.monster_id
+            monster_id: this._bookData.monster_id
         };
 
         if (isValid(this._curUnitStatus.error_word)) {
             bookLevelData.error_word = this._curUnitStatus.error_word;
         }
         
-        switch (gameModel) {
-            case LearnGameModel.Tutoring:
-                bookLevelData.game_mode = LearnGameModel.Tutoring;
-                await this.gotoTutoring(response, bookLevelData);
-                break;
-            case LearnGameModel.AllSpelledOut:
-                bookLevelData.game_mode = LearnGameModel.AllSpelledOut;
-                await this.gotoAllSpelledOut(response, bookLevelData);
-                break;
-            case LearnGameModel.WordMeaning:
-                bookLevelData.game_mode = LearnGameModel.WordMeaning;
-                await this.gotoMeaning(response, bookLevelData);
-                break;
-            case LearnGameModel.Practice:
-                bookLevelData.game_mode = LearnGameModel.Practice;
-                await this.gotoPractice(response, bookLevelData);
-                break;
-            case LearnGameModel.Reed:
-                bookLevelData.game_mode = LearnGameModel.Reed;
-                await this.gotoReed(response, bookLevelData);
-                break;
-            case LearnGameModel.Spell:
-                bookLevelData.game_mode = LearnGameModel.Spell;
-                await this.gotoSpell(response, bookLevelData);
-                break;
-            default:
-                break;
-        }
+        await this.openLearningView(response, bookLevelData, gameModel);
         this._scrollMap.removePointEvent();
+    }
+
+    async openLearningView(wordData: VocabularyWordData, bookLevelData: BookLevelConfig, gameModel: LearnGameModel) {
+        const viewMap = {
+            [LearnGameModel.Tutoring]: PrefabType.StudyModeView,
+            [LearnGameModel.Spell]: PrefabType.WordSpellView,
+            [LearnGameModel.AllSpelledOut]: PrefabType.WordExamView,
+            [LearnGameModel.Practice]: PrefabType.WordPracticeView,
+            [LearnGameModel.Reed]: PrefabType.WordReadingView,
+            [LearnGameModel.WordMeaning]: PrefabType.WordMeaningView
+        };
+
+        const prefabType = viewMap[gameModel];
+        if (prefabType) {
+            const node = await ViewsManager.instance.showLearnView(prefabType);
+            let scpt: any = node.getComponent(prefabType.componentName); 
+            scpt.initData(wordData.data, bookLevelData);
+        }
     }
 
     onExitIsland() {
@@ -196,7 +171,7 @@ export class BreakThroughView extends BaseView {
     }
 
     onEnterIsland(data: MapLevelData) {
-        let param: ITextbookRemindData = {
+        const param: ITextbookRemindData = {
             sure_text: TextConfig.Restart_Tip,
             cancel_text: TextConfig.Continue_From_Last_Time_Tip,
             content_text: TextConfig.Begin_Break_Through_Tip,
@@ -208,50 +183,19 @@ export class BreakThroughView extends BaseView {
                 };
                 if (isSure) {
                     TBServer.reqBreakThroughStartAgain(reqParam);
-                }else{
+                } else {
                     TBServer.reqUnitStatus(reqParam);
                 }
-                
             }
-        }
-        this.showRemainCalL(param);
+        };
+        this.showRemainCall(param);
     }
 
-    showRemainCalL(data: ITextbookRemindData) {
-        ViewsManager.instance.showPopup(PrefabType.BreakThroughRemindView).then((node: Node)=>{
-            let remindScript: BreakThroughRemindView = node.getComponent(BreakThroughRemindView);
+    showRemainCall(data: ITextbookRemindData) {
+        ViewsManager.instance.showPopup(PrefabType.BreakThroughRemindView).then((node: Node) => {
+            const remindScript = node.getComponent(BreakThroughRemindView);
             remindScript.initRemind(data);
         });
-    }
-
-    async gotoSpell(wordData: VocabularyWordData, bookLevelData: BookLevelConfig) {
-        const node = await ViewsManager.instance.showLearnView(PrefabType.WordSpellView);
-        node.getComponent(WordSpellView).initData(wordData.data, bookLevelData);
-    }
-
-    async gotoReed(wordData: VocabularyWordData, bookLevelData: BookLevelConfig) {
-        const node = await ViewsManager.instance.showLearnView(PrefabType.WordReadingView);
-        node.getComponent(WordReadingView).initData(wordData.data, bookLevelData);
-    }
-
-    async gotoPractice(wordData: VocabularyWordData, bookLevelData: BookLevelConfig) {
-        const node = await ViewsManager.instance.showLearnView(PrefabType.WordPracticeView);
-        node.getComponent(WordPracticeView).initData(wordData.data, bookLevelData);
-    }
-
-    async gotoMeaning(wordData: VocabularyWordData, bookLevelData: BookLevelConfig) {
-        const node = await ViewsManager.instance.showLearnView(PrefabType.WordMeaningView);
-        node.getComponent(WordMeaningView).initData(wordData.data, bookLevelData);
-    }
-
-    async gotoAllSpelledOut(wordData: VocabularyWordData, bookLevelData: BookLevelConfig) {
-        const node = await ViewsManager.instance.showLearnView(PrefabType.WordExamView);
-        node.getComponent(WordExamView).initData(wordData.data, bookLevelData);
-    }
-
-    async gotoTutoring(wordData: VocabularyWordData, bookLevelData: BookLevelConfig) {
-        const node = await ViewsManager.instance.showLearnView(PrefabType.StudyModeView);
-        node.getComponent(StudyModeView).initData(wordData.data, bookLevelData);
     }
 
     showRightChallengeView() {
@@ -265,7 +209,7 @@ export class BreakThroughView extends BaseView {
             big_id: this._selectitemStatus.unit_name,
             micro_id: this._selectGate.small_id,
             game_modes: "word",
-            monster_id:this._bookData.monster_id,
+            monster_id: this._bookData.monster_id,
             flag_info: this._selectGate.flag_info
         };
         this._rightChallenge.openView(param);
@@ -273,13 +217,13 @@ export class BreakThroughView extends BaseView {
     }
 
     onUnitStatus(data: UnitStatusData) {
-        console.log("onUnitStatus",data);
+        console.log("onUnitStatus", data);
         this._curUnitStatus = data;
         this.reqVocabularyWord();
     }
 
-    onBreakThroughStartAgain(data:any){
-        console.log("onBreakThroughStartAgain",data);
+    onBreakThroughStartAgain() {
+        console.log("onBreakThroughStartAgain");
         const reqParam: ReqUnitStatusParam = {
             book_id: this._bookData.book_id,
             unit_id: this._selectitemStatus.unit_id,
@@ -294,14 +238,14 @@ export class BreakThroughView extends BaseView {
     }
 
     async initNavTitle() {
-        this.createNavigation(`${this._bookData.book_name} ${this._bookData.grade}`, this.top_layout, async () =>  {
-            const node = await ViewsManager.instance.showLearnView(PrefabType.TextbookChallengeView); 
+        this.createNavigation(`${this._bookData.book_name} ${this._bookData.grade}`, this.top_layout, async () => {
+            const node = await ViewsManager.instance.showLearnView(PrefabType.TextbookChallengeView);
             ViewsManager.instance.closeView(PrefabType.BreakThroughView);
         });
     }
 
-    async initAmout() {
-        await ViewsManager.addAmout(this.top_layout, 5.471, 42.399);
+    async initAmount() {
+        await ViewsManager.addAmount(this.top_layout, 5.471, 42.399);
     }
 
     async initRightChange() {

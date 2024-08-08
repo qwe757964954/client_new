@@ -187,7 +187,6 @@ export class AchieveDialogView extends Component {
     }
 
     init() {
-        this.initData();
         this.initUI();
         this.addEvent();
     }
@@ -200,11 +199,7 @@ export class AchieveDialogView extends Component {
 
     /**初始化游戏数值 */
     initAmout() {
-        ViewsManager.addAmout(this.top_layout, 15.78, 22.437);
-    }
-
-    initData() {
-        //this._processTxts = [this.processTxt0, this.processTxt1, this.processTxt2, this.processTxt3, this.processTxt4, this.processTxt5, this.processTxt6];
+        ViewsManager.addAmount(this.top_layout, 15.78, 22.437);
     }
 
     addEvent() {

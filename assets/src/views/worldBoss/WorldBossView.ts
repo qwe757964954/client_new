@@ -69,7 +69,7 @@ export class WorldBossView extends BaseView {
     }
     /**初始化游戏数值 */
     initAmout(){
-        ViewsManager.addAmout(this.top_layout,11.314,160.722);
+        ViewsManager.addAmount(this.top_layout,11.314,160.722);
     }
 
     /**初始化右侧闯关 */

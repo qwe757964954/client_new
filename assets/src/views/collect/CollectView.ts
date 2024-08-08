@@ -116,6 +116,6 @@ export class CollectView extends BaseView {
     }
 
     private async initAmout() {
-        await ViewsManager.addAmout(this.top_layout, 6.501, 71.254);
+        await ViewsManager.addAmount(this.top_layout, 6.501, 71.254);
     }
 }

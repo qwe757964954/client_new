@@ -12,12 +12,6 @@ import CCUtil from '../../util/CCUtil';
 import EventManager, { EventMgr } from '../../util/EventManager';
 import List from '../../util/list/List';
 import { ConfirmView } from '../common/ConfirmView';
-import { StudyModeView } from './sixModes/StudyModeView';
-import { WordExamView } from './sixModes/WordExamView';
-import { WordMeaningView } from './sixModes/WordMeaningView';
-import { WordPracticeView } from './sixModes/WordPracticeView';
-import { WordReadingView } from './sixModes/WordReadingView';
-import { WordSpellView } from './sixModes/WordSpellView';
 import { WorldIsland } from './WorldIsland';
 import { WorldMapItem } from './WorldMapItem';
 const { ccclass, property } = _decorator;
@@ -234,7 +228,7 @@ export class WorldMapView extends Component {
     }
 
     //获取关卡单词回包
-    onWordGameWords(data: UnitWordModel[]) {
+    async onWordGameWords(data: UnitWordModel[]) {
         if (!this._getingWords) return;
         console.log('获取单词', data);
         if (this._currentIsland) {
@@ -244,60 +238,26 @@ export class WorldMapView extends Component {
         let gameMode = this._currentLevelData.current_mode;
         this._currentLevelData.progressData = this._levelProgressData;
         this._currentLevelData.error_num = this._levelProgressData.err_num;
-        switch (gameMode) {
-            case GameMode.Study:
-                this.gotoTutoring(data, this._currentLevelData);
-                break;
-            case GameMode.WordMeaning:
-                this.gotoMeaning(data, this._currentLevelData);
-                break;
-            case GameMode.Practice:
-                this.gotoPractice(data, this._currentLevelData);
-                break;
-            case GameMode.Spelling:
-                this.gotoSpell(data, this._currentLevelData);
-                break;
-            case GameMode.Reading:
-                this.gotoReed(data, this._currentLevelData);
-                break;
-            case GameMode.Exam: //测试模式
-                this.gotoAllSpelledOut(data, this._currentLevelData);
-                break;
-            default:
-                break;
+        await this.openLearningView(data, this._currentLevelData, gameMode);
+    }
+
+    async openLearningView(wordData: UnitWordModel[], bookLevelData: GateData, gameModel: GameMode) {
+        const viewMap = {
+            [GameMode.Study]: PrefabType.StudyModeView,
+            [GameMode.Practice]: PrefabType.WordPracticeView,
+            [GameMode.Spelling]: PrefabType.WordSpellView,
+            [GameMode.WordMeaning]: PrefabType.WordMeaningView,
+            [GameMode.Reading]: PrefabType.WordReadingView,
+            [GameMode.Exam]: PrefabType.WordExamView
+        };
+
+        const prefabType = viewMap[gameModel];
+        if (prefabType) {
+            const node = await ViewsManager.instance.showLearnView(prefabType);
+            let scpt: any = node.getComponent(prefabType.componentName); 
+            scpt.initData(wordData, bookLevelData);
         }
     }
-    async gotoSpell(data: UnitWordModel[], bookLevelData: GateData) {
-        const node = await ViewsManager.instance.showLearnView(PrefabType.WordSpellView);
-        node.getComponent(WordSpellView).initData(data, bookLevelData);
-    }
-
-    async gotoReed(data: UnitWordModel[], bookLevelData: GateData) {
-        const node = await ViewsManager.instance.showLearnView(PrefabType.WordReadingView);
-        node.getComponent(WordReadingView).initData(data, bookLevelData);
-    }
-
-    async gotoPractice(data: UnitWordModel[], bookLevelData: GateData) {
-        const node = await ViewsManager.instance.showLearnView(PrefabType.WordPracticeView);
-        node.getComponent(WordPracticeView).initData(data, bookLevelData);
-    }
-
-    async gotoMeaning(data: UnitWordModel[], bookLevelData: GateData) {
-        const node = await ViewsManager.instance.showLearnView(PrefabType.WordMeaningView);
-        node.getComponent(WordMeaningView).initData(data, bookLevelData);
-    }
-
-    async gotoAllSpelledOut(data: UnitWordModel[], bookLevelData: GateData) {
-        const node = await ViewsManager.instance.showLearnView(PrefabType.WordExamView);
-        node.getComponent(WordExamView).initData(data, bookLevelData);
-    }
-
-    async gotoTutoring(data: UnitWordModel[], bookLevelData: GateData) {
-        const node = await ViewsManager.instance.showLearnView(PrefabType.StudyModeView);
-        node.getComponent(StudyModeView).initData(data, bookLevelData);
-    }
-
-
     /**初始化监听事件 */
     initEvent() {
         // for (let i in this.mapView) {

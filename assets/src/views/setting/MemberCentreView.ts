@@ -37,7 +37,7 @@ export class MemberCentreView extends BaseView {
     }
     /**初始化游戏数值 */
     initAmout(){
-        ViewsManager.addAmout(this.top_layout,15.78,22.437);
+        ViewsManager.addAmount(this.top_layout,15.78,22.437);
     }
     /**初始化下方选项 */
     initBottom(){

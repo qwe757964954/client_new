@@ -124,7 +124,7 @@ export class ShopUIView extends BaseView {
     }
     /**初始化游戏数值 */
     initAmout() {
-        ViewsManager.addAmout(this.top_layout, 5.471, 42.399);
+        ViewsManager.addAmount(this.top_layout, 5.471, 42.399);
     }
 
     onCloseView() {

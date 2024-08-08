@@ -137,7 +137,7 @@ export class BagDialogView extends BaseView {
     }
 
     initAmount() {
-        ViewsManager.addAmout(this.top_layout, 11.314, 260.722)
+        ViewsManager.addAmount(this.top_layout, 11.314, 260.722)
     }
 
     onCloseView() {

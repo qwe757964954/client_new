@@ -412,14 +412,14 @@ export class ViewsManager {
      * 
      * 示例代码
      * 
-     * ViewsManager.addAmout(this.top_layout,15.78,22.437).then((amoutScript: TopAmoutView) => {
+     * ViewsManager.addAmount(this.top_layout,15.78,22.437).then((amoutScript: TopAmoutView) => {
             let dataArr:AmoutItemData[] = [{type:AmoutType.Diamond,num:0},
                 {type:AmoutType.Coin,num:0},
                 {type:AmoutType.Energy,num:0}];
             amoutScript.loadAmoutData(dataArr);
         });
      */
-    static addAmout(parent: Node, verticalCenter: number, right: number): Promise<TopAmoutView> {
+    static addAmount(parent: Node, verticalCenter: number, right: number): Promise<TopAmoutView> {
         return new Promise((resolve, reject) => {
             ResLoader.instance.load(`prefab/${PrefabType.TopAmoutView.path}`, Prefab, (err: Error | null, prefab: Prefab) => {
                 if (err) {

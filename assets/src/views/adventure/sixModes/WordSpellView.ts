@@ -275,7 +275,6 @@ export class WordSpellView extends BaseModeView {
         }); //乱序        
         for (let i = 0; i < splits.length; i++) {
             let item = this.getSplitItem();
-            console.log(item);
             item.getComponent(SpellWordItem).init(splits[i]);
             item.parent = this.itemNode;
             CCUtil.onTouch(item, this.onItemClick, this);
