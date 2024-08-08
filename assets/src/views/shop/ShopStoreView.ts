@@ -29,7 +29,7 @@ export class ShopStoreView extends BaseView {
     private _shopClothing: { [key in TabTypeIds]?: ShopClothingInfo } = {};
 
     protected async initUI() {
-        this._shopClothing = ShopClothingTypeMapping;
+        this._shopClothing = JSON.parse(JSON.stringify(ShopClothingTypeMapping));
         try {
             console.log(User.userClothes);
             await this.initViews();
