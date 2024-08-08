@@ -1,19 +1,22 @@
-import { _decorator, Component, Label, Node, Sprite } from 'cc';
+import { _decorator, Label, Node, Sprite } from 'cc';
+import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { ClothingInfo, ItemData } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { BagServer } from '../../service/BagService';
 import CCUtil from '../../util/CCUtil';
+import { EventMgr } from '../../util/EventManager';
+import ListItem from '../../util/list/ListItem';
 import { BagConfig } from '../bag/BagConfig';
 import { BagItemInfo, GoodsItemInfo } from '../bag/BagInfo';
 import { TKConfig } from '../task/TaskConfig';
 import { GoodsDetailView } from './GoodsDetailView';
+import { BuyStoreInfo } from './ShopInfo';
 
 const { ccclass, property } = _decorator;
 
 @ccclass('ShopStoreItem')
-export class ShopStoreItem extends Component {
+export class ShopStoreItem extends ListItem {
     @property({ type: Label, tooltip: "标题" })
     public lblName: Label = null;
 
@@ -31,7 +34,7 @@ export class ShopStoreItem extends Component {
 
     private _data: ClothingInfo = null;
 
-    protected onLoad(): void {
+    onLoad(): void {
         this.initEvent();
     }
     
@@ -65,12 +68,12 @@ export class ShopStoreItem extends Component {
         
         const useAmount = BagConfig.findItemInfo(itemDatas[0].id).name;
         const contentStr = `确认消耗 ${itemDatas[0].num} 个 ${useAmount} 购买 ${this._data.name} 吗？`;
-        
-        const ids = itemDatas.map(item => item.id);
-        const nums = itemDatas.map(item => item.num);
-        
+        let buyInfo:BuyStoreInfo = {
+            ids:[this._data.id],
+            nums:[1]
+        }
         ViewsManager.showConfirm(contentStr, () => {
-            BagServer.reqShopItemBuy(ids, nums);
+            EventMgr.dispatch(EventType.Shop_Buy_Store,buyInfo);
         });
     }
 
@@ -80,7 +83,7 @@ export class ShopStoreItem extends Component {
         // detailScript.initData(this._data);
     }
 
-    protected onDestroy(): void {
+    onDestroy(): void {
         this.removeEvent();
     }
 }

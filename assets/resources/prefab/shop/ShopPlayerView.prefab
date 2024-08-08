@@ -708,7 +708,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Label",
+    "_name": "clothing_amount",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -1007,7 +1007,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Label",
+    "_name": "clothing_number",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -1252,7 +1252,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "btn_yellow_long",
+    "_name": "purchase_btn",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -1591,6 +1591,15 @@
     },
     "roleContainer": {
       "__id__": 8
+    },
+    "clothing_number": {
+      "__id__": 50
+    },
+    "clothing_amount": {
+      "__id__": 38
+    },
+    "purchase_btn": {
+      "__id__": 58
     },
     "_id": ""
   },

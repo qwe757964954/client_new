@@ -151,6 +151,9 @@ export const EventType = {
     Bag_Breakdown_Event: "Bag_Breakdown_Event",
 
     Item_Props_Refresh: "Item_Props_Refresh",
+
+    Shop_Buy_Store: "Shop_Buy_Store",
+
 }
 
 export function itemEventKey(id: ItemID) {

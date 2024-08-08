@@ -49,6 +49,7 @@ export class ShopUIView extends BaseView {
         this.addModelListener(EventType.EditUIView_Refresh, this.onRepShopBuyBuilding.bind(this));
 
 	}
+    
     onRepShopBuyBuilding() {
         this._shopBuildView.updateData(this._currentSubId);
     }

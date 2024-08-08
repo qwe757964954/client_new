@@ -1,44 +1,55 @@
-import { _decorator, Node } from 'cc';
+import { _decorator, isValid, Node } from 'cc';
+import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { ClothingInfo, DataMgr } from '../../manager/DataMgr';
+import { ViewsManager } from '../../manager/ViewsManager';
+import { User } from '../../models/User';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
+import { BagServer } from '../../service/BagService';
 import List from '../../util/list/List';
 import { BagConfig } from '../bag/BagConfig';
 import { GoodsItemInfo } from '../bag/BagInfo';
 import { TabTypeIds } from '../task/TaskInfo';
-import { clothingTypeMapping } from './ShopInfo';
+import { BuyStoreInfo, clothingTypeMapping, ShopClothingInfo, ShopClothingTypeMapping } from './ShopInfo';
 import { ShopPlayerView } from './ShopPlayerView';
 import { ShopStoreItem } from './ShopStoreItem';
+
 const { ccclass, property } = _decorator;
 
 @ccclass('ShopStoreView')
 export class ShopStoreView extends BaseView {
     @property(List)
     public store_list: List = null;
-    
-    private _shopPlayerView:ShopPlayerView = null;
-    private _itemsData: ClothingInfo[] = [];//编辑数据
-    protected async initUI(){
+
+    private _shopPlayerView: ShopPlayerView = null;
+    private _itemsData: ClothingInfo[] = [];
+    private clothingInfo: BuyStoreInfo = null;
+    private _curTabType: TabTypeIds = null;
+    private _shopClothing: { [key in TabTypeIds]?: ShopClothingInfo } = {};
+
+    protected async initUI() {
+        this._shopClothing = ShopClothingTypeMapping;
         try {
+            console.log(User.userClothes);
             await this.initViews();
         } catch (err) {
-            console.error("Failed to ShopStoreView nitialize UI:", err);
+            console.error("Failed to initialize ShopStoreView UI:", err);
         }
     }
 
     protected onInitModuleEvent() {
         this.addModelListeners([
-            [NetNotify.Classification_ShopItemBuy, this.onShopItemBuy],
+            [NetNotify.Classification_ShopItemBuy, this.onShopItemBuy.bind(this)],
+            [EventType.Shop_Buy_Store, this.onShopBuyStore.bind(this)],
         ]);
     }
-    onShopItemBuy(data:any){
-        console.log("onShopItemBuy",data);
-    }
+
     private async initViews() {
         await Promise.all([
-            this.initViewComponent(PrefabType.ShopPlayerView, (node) => this._shopPlayerView = node.getComponent(ShopPlayerView), 
-            {
+            this.initViewComponent(PrefabType.ShopPlayerView, (node) => {
+                this._shopPlayerView = node.getComponent(ShopPlayerView);
+            }, {
                 isAlignRight: true,
                 isAlignBottom: true,
                 bottom: 60.5,
@@ -46,34 +57,62 @@ export class ShopStoreView extends BaseView {
             }),
         ]);
     }
-    updateData(id:TabTypeIds){
-        this.getBuildItems(id);
-        this.store_list.numItems = this._itemsData.length;
-        this.store_list.scrollTo(0, 0);
-    }
-    filterItems(clothingConfigs: ClothingInfo[], goodsItems: GoodsItemInfo[]): ClothingInfo[] {
-        const idsInClothingConfigs = new Set(goodsItems.map(item => item.id));
-        const cleanedArray = clothingConfigs.filter(item=>idsInClothingConfigs.has(item.id));
-        return cleanedArray;
-    }
-    
 
-    getBuildItems(id: TabTypeIds) {
-        this._itemsData = [];
+    private async getBuildItems(id: TabTypeIds) {
         const editConfig = DataMgr.clothingConfig;
         const clothingType = clothingTypeMapping[id];
-        // Assuming BagConfig.BagConfigInfo.goods_item_info is GoodsItemInfo[]
-        const filteredItems = this.filterItems(editConfig, BagConfig.BagConfigInfo.goods_item_info);        
+
         if (clothingType !== undefined) {
+            const filteredItems = this.filterItems(editConfig, BagConfig.BagConfigInfo.goods_item_info);
             this._itemsData = filteredItems.filter(item => item.type === clothingType);
         }
     }
 
-    onLoadShopStoreGrid(item:Node, idx:number){
-        let item_sript:ShopStoreItem = item.getComponent(ShopStoreItem);
-        let data = this._itemsData[idx];
-        item_sript.initData(data);
+    private filterItems(clothingConfigs: ClothingInfo[], goodsItems: GoodsItemInfo[]): ClothingInfo[] {
+        const idsInGoodsItems = new Set(goodsItems.map(item => item.id));
+        return clothingConfigs.filter(item => idsInGoodsItems.has(item.id));
     }
 
-}
+    public updateData(id: TabTypeIds) {
+        this._curTabType = id;
+        this.getBuildItems(id)
+            .then(() => {
+                this.store_list.numItems = this._itemsData.length;
+                const curClothing = this._shopClothing[id]?.userClothes;
+                this.store_list.selectedId = this._itemsData.findIndex(item => item.id === curClothing);
+                this.store_list.scrollTo(0, 0);
+            });
+    }
 
+    private onShopBuyStore(info: BuyStoreInfo) {
+        this.clothingInfo = info;
+        BagServer.reqShopItemBuy(info.ids, info.nums);
+    }
+
+    private onShopItemBuy(data: any) {
+        if (!this.clothingInfo) return;
+        
+        let contentStr = '成功购买 ';
+        this.clothingInfo.ids.forEach((id, i) => {
+            const num = this.clothingInfo.nums[i];
+            const goodsInfo: GoodsItemInfo = BagConfig.findGoodsItemInfo(id);
+            contentStr += ` ${num}个 ${goodsInfo.name}`;
+        });
+        
+        ViewsManager.showTip(contentStr);
+        console.log("onShopItemBuy", data);
+    }
+
+    public onLoadShopStoreGrid(item: Node, idx: number) {
+        const itemScript = item.getComponent(ShopStoreItem);
+        const data = this._itemsData[idx];
+        itemScript.initData(data);
+    }
+
+    public onShopStoreGridSelected(item: Node, selectedId: number, lastSelectedId: number, val: number) {
+        if (!isValid(selectedId) || selectedId < 0 || !isValid(item)) return;
+
+        this._shopClothing[this._curTabType].userClothes = this._itemsData[selectedId].id;
+        this._shopPlayerView.updatePlayerProps(this._shopClothing, this._itemsData[selectedId].id);
+    }
+}
