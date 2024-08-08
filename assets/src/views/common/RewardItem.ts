@@ -1,4 +1,4 @@
-import { _decorator, Color, Enum, Label, Sprite, UITransform } from 'cc';
+import { _decorator, Color, Enum, Label, Node, Sprite, UITransform } from 'cc';
 import { DEV } from 'cc/env';
 import { itemEventKey } from '../../config/EventType';
 import { ItemID } from '../../export/ItemConfig';
@@ -30,6 +30,8 @@ export class RewardItem extends ListItem {
     public frame: Sprite = null;//框
     @property(Sprite)
     public img: Sprite = null;//图片
+    @property(Node)
+    public wearing_flag = null;
     @property(Label)
     public num: Label = null;//数量
     @property(Label)
@@ -92,6 +94,9 @@ export class RewardItem extends ListItem {
         }
         this.loadShow(data.id);
         this.showCountLabel();
+        const userClothesIds = Object.values(User.userClothes)
+            .filter((id): id is number => id !== null);
+        this.wearing_flag.active = userClothesIds.includes(this._itemID);
     }
     /**加载显示 */
     loadShow(propID: ItemID) {
