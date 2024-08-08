@@ -15,6 +15,7 @@ export class RewardShowItem extends ListItem {
 
     init(data: ItemData) {
         let propInfo = DataMgr.getItemInfo(data.id);
+        if (!propInfo) return;
         LoadManager.loadSprite(propInfo.png, this.img);
         this.num.string = ToolUtil.replace(TextConfig.Prop_Show, data.num);
     }

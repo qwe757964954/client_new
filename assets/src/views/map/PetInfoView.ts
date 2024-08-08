@@ -16,6 +16,7 @@ import List from '../../util/list/List';
 import { NodeUtil } from '../../util/NodeUtil';
 import { ToolUtil } from '../../util/ToolUtil';
 import { RewardItem } from '../common/RewardItem';
+import { PetInfoItem } from './PetInfoItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('PetInfoView')
@@ -60,14 +61,13 @@ export class PetInfoView extends BaseComponent {
     /**初始化数据 */
     init(id: number, level: number, removeCall?: Function) {
         this._removeCall = removeCall;
-
-        this.listView.numItems = DataMgr.petMaxLevel;
         this.pet.init(id, level);
         this.pet.show(true);
         NodeUtil.setLayerRecursively(this.pet.node, Layers.Enum.UI_2D);
         this.fixPetSize();
         this.refreshLevel(level);
         this.onMoodScoreUpdate();
+        this.listView.numItems = DataMgr.petMaxLevel;
     }
     /**初始化事件 */
     initEvent() {
@@ -86,7 +86,8 @@ export class PetInfoView extends BaseComponent {
     }
     /**加载列表 */
     onLoadList(node: Node, idx: number) {
-
+        let petInfoItem = node.getComponent(PetInfoItem);
+        petInfoItem.init(this.pet.roleID, idx + 1, this.pet.level);
     }
     /**关闭按钮 */
     onCloseClick() {
@@ -128,9 +129,9 @@ export class PetInfoView extends BaseComponent {
             this.rewardItems[0].init({ id: ItemID.amethyst, num: petConfig.amethyst });
             this.rewardItems[1].init({ id: ItemID.coin, num: petConfig.coin });
             this.rewardItems[2].init({ id: ItemID.diamond, num: petConfig.diamond });
-            this.rewardItems[3].initByPng("map/img_token_gold/spriteFrame", petConfig.roleLevel);
-            this.rewardItems[4].init({ id: ItemID.soul, num: 1 });
-            this.rewardItems[5].init({ id: ItemID.fruit, num: petConfig.intimacy });
+            this.rewardItems[3].initByPng("map/img_token_gold/spriteFrame", petConfig.castleLevel);
+            this.rewardItems[4].init({ id: ItemID.soul, num: petConfig.soul });
+            this.rewardItems[5].init({ id: ItemID.fruit, num: petConfig.fruit });
         } else {
             this.rewardItems[0].node.active = false;
             this.rewardItems[1].node.active = false;
@@ -142,6 +143,7 @@ export class PetInfoView extends BaseComponent {
         }
         // this.rewardItems[5].initByPng("map/pet/pet_img_mood_icon/spriteFrame", petConfig.intimacy);
         this.pet.updateLevel(level);
+        this.listView.numItems = DataMgr.petMaxLevel;
     }
 }
 

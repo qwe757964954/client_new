@@ -1,3 +1,5 @@
+import { ItemData } from "../manager/DataMgr";
+
 /**交互方式 */
 export enum PetInteractionType {
     eat = 1,//喂食
@@ -37,10 +39,12 @@ export class PetInfo {
     name: string;//名字
     level: number;//等级
     amethyst: number;//紫晶石
-    coin: number;//金币
+    castleLevel: number;//城堡等级
     diamond: number;//钻石
-    roleLevel: number;//角色等级
-    intimacy: number;//亲密度
+    fruit: number;//亲密果实
+    soul: number;//精灵魂魄
+    coin: number;//金币
+    rewards: ItemData[];//奖励
 }
 
 

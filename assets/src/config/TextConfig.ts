@@ -18,6 +18,7 @@ export const TextConfig = {
     Ver_Text: "ver:{0}.{1}.{2}.{3}",
     Queue_Text: "{0}/{1}",
     Width_Height_Text: "{0}x{1}",
+    Item_Condition_Error: "{0},不足哦~",
 
     Function_Tip: "开发中，敬请期待",
     Function_Tip2: "暂时没有该功能",

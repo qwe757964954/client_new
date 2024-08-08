@@ -23,6 +23,8 @@ export class PetInteractionView extends BaseComponent {
     @property(Node)
     public frame: Node = null;//框
     @property(Node)
+    public plBtn: Node = null;//按钮层
+    @property(Node)
     public btnInfo: Node = null;//宠物信息
     @property(List)
     public listView: List = null;//列表
@@ -90,7 +92,6 @@ export class PetInteractionView extends BaseComponent {
     }
     /**显示类型 */
     showTye(type: PetInteractionType) {
-        this.frame.active = true;
         if (this._type == type) return;
         this._data = [];
         DataMgr.petInteraction.forEach(element => {
@@ -127,6 +128,9 @@ export class PetInteractionView extends BaseComponent {
                 ViewsMgr.showTip(TextConfig.PetInteraction_Tip);
                 return;
             }
+            if (!User.checkItems([{ id: data.id, num: 1 }], TextConfig.Item_Condition_Error)) {
+                return;
+            }
             this._interactionInfo = data;
             this.img.node.setWorldPosition(img.node.worldPosition);
             ViewsMgr.showWaiting();
@@ -146,6 +150,8 @@ export class PetInteractionView extends BaseComponent {
     /**交互按钮 */
     onInteractionClick(type: PetInteractionType) {
         // console.log("onInteractionClick", type);
+        this.plBtn.active = false;
+        this.frame.active = true;
         this.showTye(type);
     }
     /**类型按钮 */

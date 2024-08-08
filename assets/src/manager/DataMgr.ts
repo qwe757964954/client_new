@@ -382,7 +382,7 @@ export class DataManager {
             this.editTypeConfig[obj.id] = obj;
         }
     }
-    public converAryToReward(ary: number[]): ItemData[] {
+    public converAryToReward(ary: number[], additional: number = 0): ItemData[] {
         let list: ItemData[] = [];
         let i = 0;
         let max = ary.length - 1;
@@ -392,7 +392,7 @@ export class DataManager {
             obj.num = ary[i + 1];
             list.push(obj);
 
-            i = i + 2;
+            i = i + 2 + additional;
         }
         return list;
     }
@@ -445,6 +445,7 @@ export class DataManager {
                 ary = [];
                 this.petConfig[obj.id] = ary;
             }
+            obj.rewards = this.converAryToReward(obj.rewards, 1);
             ary.push(obj);
         }
         for (const key in this.petConfig) {
@@ -624,7 +625,11 @@ export class DataManager {
     }
     /**获取道具信息 */
     public getItemInfo(id: number): ItemInfo {
-        return this.itemConfig[id];
+        let info = this.itemConfig[id];
+        if (!info) {
+            console.log("道具配置不存在", id);
+        }
+        return info;
     }
     /**心情配置 */
     public getMoodConfig(moodScore: number): PetMoodInfo {
