@@ -1,6 +1,5 @@
 import { _decorator, Button, Component, instantiate, Node, Prefab, v3 } from 'cc';
 import { EventType } from '../../config/EventType';
-import { PrefabType } from '../../config/PrefabType';
 import GlobalConfig from '../../GlobalConfig';
 import { DataMgr } from '../../manager/DataMgr';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
@@ -11,6 +10,7 @@ import { ServiceMgr } from '../../net/ServiceManager';
 import CCUtil from '../../util/CCUtil';
 import EventManager, { EventMgr } from '../../util/EventManager';
 import List from '../../util/list/List';
+import { GameStudyViewMap } from '../Challenge/ChallengeUtil';
 import { ConfirmView } from '../common/ConfirmView';
 import { WorldIsland } from './WorldIsland';
 import { WorldMapItem } from './WorldMapItem';
@@ -242,16 +242,7 @@ export class WorldMapView extends Component {
     }
 
     async openLearningView(wordData: UnitWordModel[], bookLevelData: GateData, gameModel: GameMode) {
-        const viewMap = {
-            [GameMode.Study]: PrefabType.StudyModeView,
-            [GameMode.Practice]: PrefabType.WordPracticeView,
-            [GameMode.Spelling]: PrefabType.WordSpellView,
-            [GameMode.WordMeaning]: PrefabType.WordMeaningView,
-            [GameMode.Reading]: PrefabType.WordReadingView,
-            [GameMode.Exam]: PrefabType.WordExamView
-        };
-
-        const prefabType = viewMap[gameModel];
+        const prefabType = GameStudyViewMap[gameModel];
         if (prefabType) {
             const node = await ViewsManager.instance.showLearnView(prefabType);
             let scpt: any = node.getComponent(prefabType.componentName); 

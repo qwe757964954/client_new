@@ -4,7 +4,7 @@ import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { BookLevelConfig, DataMgr } from '../../manager/DataMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { MapLevelData } from '../../models/AdventureModel';
+import { GameMode, MapLevelData } from '../../models/AdventureModel';
 import { CurrentBookStatus, GateListItem, ReqUnitStatusParam, ReqUnitType, UnitItemStatus, UnitListItemStatus, UnitStatusData, VocabularyWordData } from '../../models/TextbookModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
@@ -13,19 +13,11 @@ import CCUtil from '../../util/CCUtil';
 import { NodeUtil } from '../../util/NodeUtil';
 import { rightPanelchange } from '../adventure/common/RightPanelchange';
 import { BreakThroughRemindView, ITextbookRemindData } from '../TextbookVocabulary/BreakThroughRemindView';
+import { GameStudyViewMap } from './ChallengeUtil';
 import { ScrollMapView } from './ScrollMapView';
 
 const { ccclass, property } = _decorator;
 
-// Learning modes enumeration
-export enum LearnGameModel {
-    Tutoring = 0,
-    Spell = 1,
-    AllSpelledOut = 2,
-    Practice = 3,
-    Reed = 4,
-    WordMeaning = 7,
-}
 
 export interface GotoUnitLevel {
     itemStatus: UnitItemStatus;
@@ -125,13 +117,13 @@ export class BreakThroughView extends BaseView {
     }
 
     async onVocabularyWord(response: VocabularyWordData) {
-        const gameModel: LearnGameModel = this._curUnitStatus.game_mode as LearnGameModel;
+        const gameModel: GameMode = this._curUnitStatus.game_mode as GameMode;
         const bookLevelData: BookLevelConfig = {
             book_id: this._bookData.book_id,
             unit: this._selectitemStatus.unit_name,
             unit_id: this._selectitemStatus.unit_id,
             cur_game_mode: gameModel,
-            game_mode: LearnGameModel.Tutoring,
+            game_mode: GameMode.Study,
             small_id: this._selectGate.small_id,
             word_num: this._curUnitStatus.word_num,
             error_num: this._curUnitStatus.error_num,
@@ -147,17 +139,9 @@ export class BreakThroughView extends BaseView {
         this._scrollMap.removePointEvent();
     }
 
-    async openLearningView(wordData: VocabularyWordData, bookLevelData: BookLevelConfig, gameModel: LearnGameModel) {
-        const viewMap = {
-            [LearnGameModel.Tutoring]: PrefabType.StudyModeView,
-            [LearnGameModel.Spell]: PrefabType.WordSpellView,
-            [LearnGameModel.AllSpelledOut]: PrefabType.WordExamView,
-            [LearnGameModel.Practice]: PrefabType.WordPracticeView,
-            [LearnGameModel.Reed]: PrefabType.WordReadingView,
-            [LearnGameModel.WordMeaning]: PrefabType.WordMeaningView
-        };
+    async openLearningView(wordData: VocabularyWordData, bookLevelData: BookLevelConfig, gameModel: GameMode) {
 
-        const prefabType = viewMap[gameModel];
+        const prefabType = GameStudyViewMap[gameModel];
         if (prefabType) {
             const node = await ViewsManager.instance.showLearnView(prefabType);
             let scpt: any = node.getComponent(prefabType.componentName); 
