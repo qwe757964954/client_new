@@ -24,6 +24,7 @@ export default class _BagService extends BaseControll {
         this.addModelListeners([
             [InterfacePath.Classification_BreakdownBackpackItems, this.onBreakdownBackpackItems],
             [InterfacePath.Classification_BackpackItemSynthesis, this.onBackpackItemSynthesis],
+            [InterfacePath.Classification_ShopItemBuy, this.onShopItemBuy],
         ]);
     }
 

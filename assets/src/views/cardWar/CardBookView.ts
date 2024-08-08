@@ -1,17 +1,16 @@
-import { _decorator, Asset, Color, Component, instantiate, Label, Node, Prefab, resources, ScrollView, Sprite } from 'cc';
+import { _decorator, Color, Component, instantiate, Label, Node, Prefab, ScrollView, Sprite } from 'cc';
+import { EventType } from '../../config/EventType';
+import { NetConfig } from '../../config/NetConfig';
+import { PrefabType } from '../../config/PrefabType';
 import { LoadManager } from '../../manager/LoadManager';
+import { ViewsManager } from '../../manager/ViewsManager';
 import AudioUtil from '../../util/AudioUtil';
 import CCUtil from '../../util/CCUtil';
-import { ViewsManager } from '../../manager/ViewsManager';
-import { PrefabType } from '../../config/PrefabType';
 import EventManager from '../../util/EventManager';
-import { CardSimpleInfo, WordMonestTabItem } from './WordMonestTabItem';
-import { WordCardBackItem } from './WordCardBackItem';
-import { NetConfig } from '../../config/NetConfig';
-import ImgUtil from '../../util/ImgUtil';
-import { WordLearnMonestItem } from './WordLearnMonestItem';
 import { NetWordSimpleData, WordSimpleData2 } from '../TextbookVocabulary/SearchWordView';
-import { EventType } from '../../config/EventType';
+import { WordCardBackItem } from './WordCardBackItem';
+import { WordLearnMonestItem } from './WordLearnMonestItem';
+import { CardSimpleInfo, WordMonestTabItem } from './WordMonestTabItem';
 const { ccclass, property } = _decorator;
 
 //Tab页需要的数据  // { name: "S级卡", level: "S", lock: false }

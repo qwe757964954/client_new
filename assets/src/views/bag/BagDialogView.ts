@@ -2,7 +2,7 @@ import { _decorator, instantiate, isValid, Layers, Node, Prefab, UITransform, v3
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { ItemID } from '../../export/ItemConfig';
-import { ItemData } from '../../manager/DataMgr';
+import { DataMgr, ItemData } from '../../manager/DataMgr';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
 import { User } from '../../models/User';
@@ -94,6 +94,7 @@ export class BagDialogView extends BaseView {
     }
 
     async initUI() {
+        console.log('================================',User.itemAry);
         await BagConfig.loadBagConfigInfo();
         this.initAmount();
         this.showRoleDress();
@@ -159,8 +160,15 @@ export class BagDialogView extends BaseView {
         const itemScript = item.getComponent(RewardItem);
         const nodeTrans = item.getComponent(UITransform);
         const scale = 125 / nodeTrans.height;
+        
         item.setScale(scale, scale, scale);
         const data: ItemData = this._propsDatas[idx];
+        let propInfo = DataMgr.getItemInfo(data.id);
+        let backpackItemInfo: BackpackItemInfo = BagConfig.findBackpackItemInfo(propInfo.id);
+        if(isValid(backpackItemInfo) && backpackItemInfo.type === BagItemType.Costume){
+            item.getChildByName("Sprite").setScale(0.6,0.6,0.6);
+            propInfo.png = BagConfig.transformPath(propInfo.png);
+        }
         itemScript.init(data);
     }
 

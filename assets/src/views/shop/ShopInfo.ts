@@ -1,6 +1,7 @@
 // 定义 CollectTabIds 枚举
 
 import { ClothingType, EditType } from "../../manager/DataMgr";
+import { User } from "../../models/User";
 import { TabItemDataInfo, TabTypeIds, TaskTabIds, TaskTabInfo } from "../task/TaskInfo";
 
 
@@ -71,3 +72,28 @@ export const buildTypeMapping: { [key in TabTypeIds]?: EditType } = {
     [TabTypeIds.Decoration]: EditType.Decoration,
     [TabTypeIds.ShopFlooring]: EditType.Land,
 };
+
+
+export interface ShopClothingInfo {
+    type: ClothingType,
+    userClothes: number
+}
+
+//  ShopClothingTypeMapping 映射表
+export const ShopClothingTypeMapping: { [key in TabTypeIds]?: ShopClothingInfo } = {
+    [TabTypeIds.ShopHairstyle]: { type: ClothingType.toufa, userClothes: User.userClothes.hair },
+    [TabTypeIds.ShopAccessories]: { type: ClothingType.shipin, userClothes: User.userClothes.jewelry }, // 这里假设 Head 对应的是 jewelry
+    [TabTypeIds.ShopTop]: { type: ClothingType.shangyi, userClothes: User.userClothes.coat },
+    [TabTypeIds.ShopPants]: { type: ClothingType.kuzi, userClothes: User.userClothes.pants },
+    [TabTypeIds.ShopShoes]: { type: ClothingType.xiezi, userClothes: User.userClothes.shoes },
+    [TabTypeIds.ShopWing]: { type: ClothingType.chibang, userClothes: User.userClothes.wings },
+    [TabTypeIds.ShopHat]: { type: ClothingType.maozi, userClothes: User.userClothes.hat },
+    [TabTypeIds.ShopFaceShape]: { type: ClothingType.lian, userClothes: User.userClothes.face },
+};
+
+
+//背包物品分解
+export interface BuyStoreInfo{
+    ids:number[];
+    nums:number[];
+}
