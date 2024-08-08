@@ -287,17 +287,22 @@ export class MainScene extends BaseComponent {
             role.onClickShow();
             return;
         }
-        role.isActive = false;
+        role.standby(false);
+        role.updateInitFace();
         //延迟一针调用，防止点击事件触发异常（后续点击会穿透）
         TimerMgr.once(() => {
             this.hideMainUIView();
         }, 1);
+        // this._mapUICtl.recordCamera();
+        this._mapUICtl.mapMoveToPos(role.pos);
         ViewsMgr.showView(PrefabType.PetInteractionView, (node: Node) => {
             let view = node.getComponent(PetInteractionView);
-            view.init(role.roleID, role.level);
+            view.init(role);
             view.setRemoveCallback(() => {
-                role.isActive = true;
+                role.resumeAction();
                 this.showMainUIView();
+                role.standby(true);
+                // this._mapUICtl.restoreCamera();
             });
         });
     }

@@ -228,6 +228,10 @@ export class RoleDataModel extends BaseModel {
         }
         CCUtil.setNodeScaleEx(this._spNode, -this._scale, this._scale);
     }
+    /** 更新初始朝向 */
+    public updateInitFace() {
+        CCUtil.setNodeScale(this._spNode, this._scale);
+    }
     // 待机动作
     public idle() {
         if (this._roleState == RoleState.idle) return;
@@ -298,15 +302,17 @@ export class RoleDataModel extends BaseModel {
         this.updateFace();
     }
     // 原地待机
-    public standby() {
+    public standby(laterMove: boolean = true) {
         if (!this._node) return;
         this.idle();
         Tween.stopAllByTarget(this._node);
         this._isMoving = false;
         this._lastPos = this.pos;
-        tween(this._node).delay(0.5).call(() => {
-            EventMgr.emit(EventType.Role_Need_Move, this);
-        }).start();
+        if (laterMove) {
+            tween(this._node).delay(0.5).call(() => {
+                EventMgr.emit(EventType.Role_Need_Move, this);
+            }).start();
+        }
     }
     /** 原地拖拽 */
     public dragStandby() {
@@ -335,10 +341,22 @@ export class RoleDataModel extends BaseModel {
             this.node.active = false;
         }
         if (this._isShowFlag1) {
-            TweenSystem.instance.ActionManager.resumeTarget(this.node);
+            this.resumeAction();
         } else {
-            TweenSystem.instance.ActionManager.pauseTarget(this.node);
+            this.pauseAction();
         }
+    }
+    /** 暂停动作 */
+    public pauseAction() {
+        TweenSystem.instance.ActionManager.pauseTarget(this.node);
+        if (this._role)
+            this._role.paused = true;
+    }
+    /** 恢复动作 */
+    public resumeAction() {
+        TweenSystem.instance.ActionManager.resumeTarget(this.node);
+        if (this._role)
+            this._role.paused = false;
     }
     /** 点击显示 */
     public onClickShow() {

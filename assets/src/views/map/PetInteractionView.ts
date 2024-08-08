@@ -1,4 +1,4 @@
-import { _decorator, color, Label, Layers, Node, Sprite, SpriteFrame, tween, Vec3 } from 'cc';
+import { _decorator, color, Label, Node, Sprite, SpriteFrame, tween } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PetInteractionInfo, PetInteractionType } from '../../config/PetConfig';
 import { PrefabType } from '../../config/PrefabType';
@@ -7,21 +7,21 @@ import { DataMgr } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { s2cPetInfoRep, s2cPetInteraction, s2cPetUpgrade } from '../../models/NetModel';
-import { PetModel } from '../../models/PetModel';
+import { RoleDataModel } from '../../models/RoleDataModel';
 import { User } from '../../models/User';
 import { InterfacePath } from '../../net/InterfacePath';
 import { ServiceMgr } from '../../net/ServiceManager';
 import { BaseComponent } from '../../script/BaseComponent';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
-import { NodeUtil } from '../../util/NodeUtil';
 import { ToolUtil } from '../../util/ToolUtil';
 import { PetInfoView } from './PetInfoView';
-import { PetMoodView } from './PetMoodView';
 const { ccclass, property } = _decorator;
 /**宠物互动界面 */
 @ccclass('PetInteractionView')
 export class PetInteractionView extends BaseComponent {
+    @property(Node)
+    public frame: Node = null;//框
     @property(Node)
     public btnInfo: Node = null;//宠物信息
     @property(List)
@@ -36,17 +36,14 @@ export class PetInteractionView extends BaseComponent {
     public btnType: Node[] = [];//类型
     @property([SpriteFrame])
     public spriteFrames: SpriteFrame[] = [];//图片资源
-    @property(PetModel)
-    public pet: PetModel = null;//宠物
     @property(Label)
     public labelMood: Label = null;//心情分
     @property(Sprite)
+    public imgMood: Sprite = null;//心情img
+    @property(Sprite)
     public img: Sprite = null;//互动img
-    @property(PetMoodView)
-    public moodView: PetMoodView = null;//心情view
 
-    // private _petID: number = null;//宠物id
-    // private _petLevel: number = null;//宠物等级
+    private _pet: RoleDataModel = null;//宠物
     private _data: PetInteractionInfo[] = null;//数据
     private _type: PetInteractionType = null;//类型
     private _removeCall: Function = null;//移除回调
@@ -62,6 +59,7 @@ export class PetInteractionView extends BaseComponent {
     initEvent() {
         CCUtil.onTouch(this.btnClose, this.onCloseClick, this);
         CCUtil.onTouch(this.btnInfo, this.onInfoClick, this);
+        CCUtil.onTouch(this.node, this.onScreenClick, this);
         for (let i = 0; i < this.btnInteraction.length; i++) {
             CCUtil.onTouch(this.btnInteraction[i], this.onInteractionClick.bind(this, i + 1), this);
         }
@@ -77,24 +75,22 @@ export class PetInteractionView extends BaseComponent {
     removeEvent() {
         CCUtil.offTouch(this.btnClose, this.onCloseClick, this);
         CCUtil.offTouch(this.btnInfo, this.onInfoClick, this);
+        CCUtil.offTouch(this.node, this.onScreenClick, this);
 
         this.clearEvent();
     }
-    init(id: number, level: number) {
-        this.showTye(PetInteractionType.eat);
-        // this._petID = id;
-        // this._petLevel = level;
-
-        this.pet.init(id, level);
-        this.pet.show(true);
-        NodeUtil.setLayerRecursively(this.pet.node, Layers.Enum.UI_2D);
-        this.fixPetSize();
+    init(pet: RoleDataModel) {
+        this._type = null;
+        this.frame.active = false;
+        // this.showTye(PetInteractionType.eat);
+        this._pet = pet;
 
         this.onMoodScoreUpdate();
         ServiceMgr.buildingService.reqPetInfo();
     }
     /**显示类型 */
     showTye(type: PetInteractionType) {
+        this.frame.active = true;
         if (this._type == type) return;
         this._data = [];
         DataMgr.instance.petInteraction.forEach(element => {
@@ -112,6 +108,7 @@ export class PetInteractionView extends BaseComponent {
         btn.getComponentInChildren(Label).color = color("#72320F");
         btn.getComponent(Sprite).spriteFrame = this.spriteFrames[0];
 
+        this.btnSelect.active = true;
         this.btnSelect.position = this.btnInteraction[type - 1].position;
         this._type = type;
     }
@@ -141,6 +138,11 @@ export class PetInteractionView extends BaseComponent {
         if (this._removeCall) this._removeCall();
         this.node.destroy();
     }
+    /**屏幕点击 */
+    onScreenClick() {
+        if (this.frame.active) return;
+        this.onCloseClick();
+    }
     /**交互按钮 */
     onInteractionClick(type: PetInteractionType) {
         // console.log("onInteractionClick", type);
@@ -155,8 +157,10 @@ export class PetInteractionView extends BaseComponent {
     onInfoClick() {
         ViewsManager.instance.showView(PrefabType.PetInfoView, (node: Node) => {
             this.node.active = false;
-            node.getComponent(PetInfoView).init(this.pet.roleID, this.pet.level, () => {
+            this._pet.isActive = false;
+            node.getComponent(PetInfoView).init(this._pet.roleID, this._pet.level, () => {
                 this.node.active = true;
+                this._pet.isActive = true;
             });
         });
     }
@@ -172,23 +176,22 @@ export class PetInteractionView extends BaseComponent {
         }
         let petInfo = data.pet_info;
         User.moodScore = petInfo.mood;
-        this.pet.updateLevel(petInfo.level);
-        this.fixPetSize();
 
         this._interactionTimes = petInfo.daily_counts;
     }
     /**心情分更新 */
     onMoodScoreUpdate() {
         this.labelMood.string = User.moodScore.toString();
-        this.moodView.init(User.moodScore);
+        let config = DataMgr.getMoodConfig(User.moodScore);
+        if (config) {
+            LoadManager.loadSprite(ToolUtil.getRandomItem(config.png), this.imgMood);
+        }
     }
     /**宠物升级 */
     onRepPetUpgrade(data: s2cPetUpgrade) {
         if (200 != data.code) {
             return;
         }
-        this.pet.updateLevel(data.level);
-        this.fixPetSize();
     }
     /**宠物互动 */
     onRepPetInteraction(data: s2cPetInteraction) {
@@ -205,15 +208,7 @@ export class PetInteractionView extends BaseComponent {
         LoadManager.loadSprite(propInfo.png, this.img).then(() => {
             this.img.node.active = true;
         });
-        tween(this.img.node).to(0.5, { worldPosition: this.pet.node.worldPosition }).call(() => { this.img.node.active = false }).start();
-    }
-    /**调整宠物大小 */
-    fixPetSize() {
-        if (this.pet.level <= 2) {//特殊处理，后面考虑走配置
-            this.pet.node.scale = new Vec3(1.5, 1.5, 1.5);
-        } else {
-            this.pet.node.scale = new Vec3(1, 1, 1);
-        }
+        tween(this.img.node).to(0.5, { worldPosition: this.node.worldPosition }).call(() => { this.img.node.active = false }).start();
     }
 }
 
