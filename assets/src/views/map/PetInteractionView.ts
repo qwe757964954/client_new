@@ -47,7 +47,7 @@ export class PetInteractionView extends BaseComponent {
     private _data: PetInteractionInfo[] = null;//数据
     private _type: PetInteractionType = null;//类型
     private _removeCall: Function = null;//移除回调
-    private _interactionID: number = null;//互动id
+    private _interactionInfo: PetInteractionInfo = null;//互动信息
     private _interactionTimes: number[] = [0, 0, 0];//互动次数
 
     onLoad() {
@@ -93,7 +93,7 @@ export class PetInteractionView extends BaseComponent {
         this.frame.active = true;
         if (this._type == type) return;
         this._data = [];
-        DataMgr.instance.petInteraction.forEach(element => {
+        DataMgr.petInteraction.forEach(element => {
             if (type != element.type) return;
             this._data.push(element);
         });
@@ -127,7 +127,7 @@ export class PetInteractionView extends BaseComponent {
                 ViewsMgr.showTip(TextConfig.PetInteraction_Tip);
                 return;
             }
-            this._interactionID = data.id;
+            this._interactionInfo = data;
             this.img.node.setWorldPosition(img.node.worldPosition);
             ViewsMgr.showWaiting();
             ServiceMgr.buildingService.reqPetInteraction(data.id);
@@ -204,11 +204,14 @@ export class PetInteractionView extends BaseComponent {
         User.moodScore = petInfo.mood;
         this._interactionTimes = petInfo.daily_counts;
 
-        let propInfo = DataMgr.getItemInfo(this._interactionID);
+        let propInfo = DataMgr.getItemInfo(this._interactionInfo.id);
         LoadManager.loadSprite(propInfo.png, this.img).then(() => {
             this.img.node.active = true;
         });
-        tween(this.img.node).to(0.5, { worldPosition: this.node.worldPosition }).call(() => { this.img.node.active = false }).start();
+        tween(this.img.node).to(0.5, { worldPosition: this.node.worldPosition }).call(() => {
+            this.img.node.active = false;
+            ViewsMgr.showTipSmall(ToolUtil.replace(TextConfig.PetMood_Add_Tip, this._interactionInfo.score), this.node);
+        }).start();
     }
 }
 

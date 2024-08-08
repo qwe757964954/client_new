@@ -143,6 +143,7 @@ export const TextConfig = {
     ReviewPlan_book_text2: "切换教材",
 
     PetInteraction_Tip: "互动次数不足",
+    PetMood_Add_Tip: "心情值+{0}",
     PetUpgrade_Tip: "升级成功",
 
     Sure_Tip: "确定",

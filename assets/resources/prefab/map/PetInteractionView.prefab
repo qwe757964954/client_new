@@ -5548,7 +5548,9 @@
     "labelMood": {
       "__id__": 154
     },
-    "imgMood": null,
+    "imgMood": {
+      "__id__": 133
+    },
     "img": {
       "__id__": 228
     },
