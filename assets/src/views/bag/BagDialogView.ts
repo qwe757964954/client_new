@@ -2,7 +2,7 @@ import { _decorator, instantiate, isValid, Layers, Node, Prefab, UITransform, v3
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { ItemID } from '../../export/ItemConfig';
-import { ClothingInfo, DataMgr, ItemData } from '../../manager/DataMgr';
+import { ClothingInfo, ClothingType, DataMgr, ItemData } from '../../manager/DataMgr';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
 import { User } from '../../models/User';
@@ -17,7 +17,7 @@ import { ShopClothingInfo } from '../shop/ShopInfo';
 import { TKConfig } from '../task/TaskConfig';
 import { BagConfig } from './BagConfig';
 import { BagDressItem } from './BagDressItem';
-import { BackpackItemInfo, BagClothingTypeMapping, BagGressItemIds, BagGressItems, BagItemType, BagOperationData, BagOperationIds, BagTabIds, BagTabNames } from './BagInfo';
+import { BackpackItemInfo, BagGressItemIds, BagGressItems, BagItemType, BagOperationData, BagOperationIds, BagTabIds, BagTabNames } from './BagInfo';
 import { BagOperrationItem } from './BagOperrationItem';
 import { BagTabItem } from './BagTabItem';
 import { BreakdownView } from './BreakdownView';
@@ -66,14 +66,25 @@ export class BagDialogView extends BaseView {
     async initUI() {
         console.log('User Item Array:', User.itemAry);
         await BagConfig.loadBagConfigInfo();
-        this._bagClothing = JSON.parse(JSON.stringify(BagClothingTypeMapping));
+        this.updateBagClothingMapping();
         this.initAmount();
         this.showRoleDress();
         this.tabList.numItems = BagTabNames.length;
         this.tabList.selectedId = 0;
         this.dress_list.numItems = BagGressItems.length;
     }
-
+    private updateBagClothingMapping() {
+        this._bagClothing = {
+            [BagGressItemIds.Hair]: { type: ClothingType.toufa, userClothes: User.userClothes.hair },
+            [BagGressItemIds.Head]: { type: ClothingType.shipin, userClothes: User.userClothes.jewelry }, // 这里假设 Head 对应的是 jewelry
+            [BagGressItemIds.UpperBody]: { type: ClothingType.shangyi, userClothes: User.userClothes.coat },
+            [BagGressItemIds.Pants]: { type: ClothingType.kuzi, userClothes: User.userClothes.pants },
+            [BagGressItemIds.Shoes]: { type: ClothingType.xiezi, userClothes: User.userClothes.shoes },
+            [BagGressItemIds.Wings]: { type: ClothingType.chibang, userClothes: User.userClothes.wings },
+            [BagGressItemIds.Hat]: { type: ClothingType.maozi, userClothes: User.userClothes.hat },
+            [BagGressItemIds.Face]: { type: ClothingType.lian, userClothes: User.userClothes.face },
+        };
+    }
     private initAmount() {
         ViewsManager.addAmount(this.top_layout, 11.314, 260.722);
     }
