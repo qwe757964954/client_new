@@ -151,13 +151,20 @@ export default class _BagConfig {
         }
     
         const isCostume = backpackItem.type === BagItemType.Costume;
+        const userClothesIds = Object.values(User.userClothes)
+            .filter((id): id is number => id !== null);
+        const isOutfit = isCostume && !userClothesIds.includes(backpackItem.id);
+        const isUnOutfit = isCostume && userClothesIds.includes(backpackItem.id);
         const hasMergeItems = backpackItem.merge_item.length > 0 && this.canMergeItem(backpackItem);
         const hasDecomposeItems = backpackItem.decompose_item.length > 0 && dataItem.num > 0;
     
         // Filter the operation list based on item attributes
         return BagOperationNames.filter(operation => {
-            if (operation.id === BagOperationIds.Outfit || operation.id === BagOperationIds.UnOutfit) {
-                return isCostume;
+            if (operation.id === BagOperationIds.Outfit ) {
+                return isOutfit;
+            }
+            if (operation.id === BagOperationIds.UnOutfit) {
+                return isUnOutfit;
             }
             if (operation.id === BagOperationIds.Combine) {
                 return hasMergeItems;

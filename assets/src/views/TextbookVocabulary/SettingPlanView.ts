@@ -43,7 +43,7 @@ export class SettingPlanView extends BasePopup {
     private _totoal_level:number = 20;
     initUI() {
         this.enableClickBlankToClose([this.node.getChildByName("small_dialog_bg")]).then(()=>{
-            this.sendPlan();
+            // this.sendPlan();
         });
     }
     initEvent() {
