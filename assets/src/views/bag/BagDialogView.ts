@@ -246,9 +246,11 @@ export class BagDialogView extends BaseView {
     onOperationClick(data: BagOperationData) {
         switch (data.id) {
             case BagOperationIds.Outfit:
+                console.log("onOperationClick..........穿戴");
                 // Implement as needed
                 break;
             case BagOperationIds.UnOutfit:
+                console.log("onOperationClick..........卸下");
                 // Implement as needed
                 break;
             case BagOperationIds.Disassemble:
