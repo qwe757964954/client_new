@@ -4,6 +4,7 @@ import { KeyConfig } from "../config/KeyConfig";
 import { SceneType } from "../config/PrefabType";
 import { TextConfig } from "../config/TextConfig";
 import { ItemData } from "../manager/DataMgr";
+import { SceneMgr } from "../manager/SceneMgr";
 import { ViewsManager } from "../manager/ViewsManager";
 import { c2sAccountInit, c2sAccountLogin, c2sGetPhoneCode, c2sPhoneCodeLogin, c2sTokenLogin, s2cAccountLogin, s2cItemUpdate } from "../models/NetModel";
 import { LoginType, User } from "../models/User";
@@ -101,9 +102,7 @@ export default class AccountService {
             }
             if (SceneType.LoginScene != director.getScene().name) {
                 ViewsManager.showAlert(data.msg, () => {
-                    User.isAutoLogin = false;
-                    User.resetData();
-                    director.loadScene(SceneType.LoginScene);
+                    SceneMgr.loadScene(SceneType.LoginScene);
                 });
             }
         }
@@ -112,9 +111,7 @@ export default class AccountService {
     onAccountLogout() {
         NetMgr.closeNet();//主动关闭网络，不重连
         ViewsManager.showAlert(TextConfig.Account_Logout_Tip, () => {
-            User.isAutoLogin = false;
-            User.resetData();
-            director.loadScene(SceneType.LoginScene);
+            SceneMgr.loadScene(SceneType.LoginScene);
         });
     }
     /**物品更新 */

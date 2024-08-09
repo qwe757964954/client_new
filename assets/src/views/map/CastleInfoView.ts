@@ -4,6 +4,7 @@ import { TextConfig } from '../../config/TextConfig';
 import GlobalConfig from '../../GlobalConfig';
 import { CastleConfig, DataMgr } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
+import { SceneMgr } from '../../manager/SceneMgr';
 import { ViewsMgr } from '../../manager/ViewsManager';
 import { BuildingModel } from '../../models/BuildingModel';
 import { s2cBuildingUpgrade } from '../../models/NetModel';
@@ -177,7 +178,7 @@ export class CastleInfoView extends BaseComponent {
     onBtnGotoClick(id: number) {
         // ViewsMgr.showTip(TextConfig.Function_Tip);
         if (0 == id) {
-            director.loadScene(SceneType.WorldMapScene, () => {
+            SceneMgr.loadScene(SceneType.WorldMapScene, () => {
                 ViewsMgr.showView(PrefabType.WorldMapView);
             });
         } else if (1 == id) {

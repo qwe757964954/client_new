@@ -1,6 +1,7 @@
-import { _decorator, director, isValid, Node, ScrollView } from 'cc';
+import { _decorator, isValid, Node, ScrollView } from 'cc';
 import { PrefabType, SceneType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
+import { SceneMgr } from '../../manager/SceneMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { CurrentBookStatus } from '../../models/TextbookModel';
 import { NetNotify } from '../../net/NetNotify';
@@ -47,7 +48,7 @@ export class studyView extends BaseView {
     }
     /**关闭页面 TODO*/
     private closeView() {
-        director.loadScene(SceneType.MainScene);
+        SceneMgr.loadScene(SceneType.MainScene);
     }
     /**初始化监听事件 */
     initEvent() {
@@ -60,7 +61,6 @@ export class studyView extends BaseView {
         console.log(name);
         switch (name) {
             case "wordAdventure": //单词大冒险
-                // director.loadScene(SceneType.WorldMapScene);
                 ViewsManager.instance.showView(PrefabType.WorldMapView);
                 break;
             case "bookWord": //教材单词

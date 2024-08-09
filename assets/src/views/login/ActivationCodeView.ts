@@ -1,5 +1,6 @@
-import { _decorator, Component, director, EditBox, Node } from 'cc';
+import { _decorator, Component, EditBox, Node } from 'cc';
 import { SceneType } from '../../config/PrefabType';
+import { SceneMgr } from '../../manager/SceneMgr';
 import CCUtil from '../../util/CCUtil';
 const { ccclass, property } = _decorator;
 
@@ -60,7 +61,7 @@ export class ActivationCodeView extends Component {
     }
     /**跳过点击 */
     onBtnNextClick() {
-        director.loadScene(SceneType.MainScene);
+        SceneMgr.loadScene(SceneType.MainScene);
     }
 }
 

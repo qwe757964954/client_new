@@ -1,7 +1,8 @@
-import { _decorator, Button, Component, director, instantiate, Label, Node, Prefab, UITransform, Vec2, Vec3 } from 'cc';
+import { _decorator, Button, Component, instantiate, Label, Node, Prefab, UITransform, Vec2, Vec3 } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType, SceneType } from '../../config/PrefabType';
 import { DataMgr } from '../../manager/DataMgr';
+import { SceneMgr } from '../../manager/SceneMgr';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { BossLevelData, BossLevelTopicData, GateData, GradeSkipExercisesListReply, IslandProgressModel, MapLevelData, ProgressRewardData, Subject, UnitData, UnitListData, WordGameSubjectReply, WordGameUnitWordReply } from '../../models/AdventureModel';
 import { BaseRepPacket } from '../../models/NetModel';
@@ -496,7 +497,7 @@ export class WorldIsland extends Component {
     /**返回关卡模式 */
     private onBtnBackClick() {
         // EventManager.emit(EventType.Exit_World_Island);
-        director.loadScene(SceneType.MainScene);
+        SceneMgr.loadScene(SceneType.MainScene);
     }
 
     protected onDestroy(): void {

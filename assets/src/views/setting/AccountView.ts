@@ -1,21 +1,20 @@
-import { _decorator, Component, director, Node } from 'cc';
+import { _decorator, Component, Node } from 'cc';
 import { PrefabType, SceneType } from '../../config/PrefabType';
+import { SceneMgr } from '../../manager/SceneMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { UserPlayerDetail } from '../../models/SettingModel';
-import { User } from '../../models/User';
-import { NetMgr } from '../../net/NetManager';
 import { ApplyLogoutView } from './ApplyLogoutView';
 import { ChangeRoleView } from './ChangeRoleView';
 const { ccclass, property } = _decorator;
 
 @ccclass('AccountView')
 export class AccountView extends Component {
-    private _playerDetail:UserPlayerDetail = null;
+    private _playerDetail: UserPlayerDetail = null;
     start() {
         this.init();
     }
 
-    public updateUserInfo(data:UserPlayerDetail) {
+    public updateUserInfo(data: UserPlayerDetail) {
         this._playerDetail = data;
     }
 
@@ -24,15 +23,15 @@ export class AccountView extends Component {
         // this.destoryEvent();
     }
     //初始化
-    public init():void {
+    public init(): void {
         // this.initEvent();
     }
     //初始化事件
-    public initEvent(){
+    public initEvent() {
         // CCUtil.onTouch(this.centerTab, this.onClickCenter, this);
     }
     //销毁事件
-    public destoryEvent(){
+    public destoryEvent() {
         // CCUtil.offTouch(this.btnHead, this.onClickHead, this);
     }
 
@@ -44,7 +43,7 @@ export class AccountView extends Component {
     // 重置
     async btnChongZhiFunc() {
         console.log("btnChongZhiFunc");
-        let node:Node = await ViewsManager.instance.showPopup(PrefabType.ResetPasswordView);
+        let node: Node = await ViewsManager.instance.showPopup(PrefabType.ResetPasswordView);
     }
     // 剧情回顾
     btnJuQingHuiGuFunc() {
@@ -76,9 +75,9 @@ export class AccountView extends Component {
     // 账号注销
     btnZhuXiaoFunc() {
         console.log("btnZhuXiaoFunc");
-        ViewsManager.instance.showView(PrefabType.ApplyLogoutView,(node: Node) => {
+        ViewsManager.instance.showView(PrefabType.ApplyLogoutView, (node: Node) => {
             let itemScript = node.getComponent(ApplyLogoutView);
-            itemScript.setAgreeCallback(()=>{
+            itemScript.setAgreeCallback(() => {
                 console.log("agree  call  back");
                 ViewsManager.instance.showView(PrefabType.LogoutView);
             })
@@ -91,10 +90,7 @@ export class AccountView extends Component {
     // 退出登录
     btnLoginOutFunc() {
         console.log("btnLoginOutFunc");
-        User.isAutoLogin = false;
-        User.resetData();
-        NetMgr.closeNet();
-        director.loadScene(SceneType.LoginScene);
+        SceneMgr.loadScene(SceneType.LoginScene);
     }
 }
 

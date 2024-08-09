@@ -1,7 +1,8 @@
-import { _decorator, director, Label, Node, Sprite } from 'cc';
+import { _decorator, Label, Node, Sprite } from 'cc';
 import { MapStatus } from '../../config/MapConfig';
 import { PrefabType, SceneType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
+import { SceneMgr } from '../../manager/SceneMgr';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { ActivityInfoResponse } from '../../models/ActivityModel';
 import { User } from '../../models/User';
@@ -139,10 +140,6 @@ export class MainUIView extends BaseView {
         // return
         this.node.getChildByName('mask_node').active = true;
         this._mainRightActivity.onHidenClick();
-        // User.isAutoLogin = false;
-        // User.resetData();
-        // NetMgr.closeNet();
-        // director.loadScene(SceneType.LoginScene);
     }
     //复习计划点击
     public onClickReview() {
@@ -192,7 +189,7 @@ export class MainUIView extends BaseView {
     }
     //学习点击
     public onClickStudy() {
-        director.loadScene(SceneType.WorldMapScene);
+        SceneMgr.loadScene(SceneType.WorldMapScene);
     }
 }
 

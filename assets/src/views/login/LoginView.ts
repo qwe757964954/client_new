@@ -1,10 +1,11 @@
-import { _decorator, Button, director, EditBox, Label, Node, sys, Toggle } from 'cc';
+import { _decorator, Button, EditBox, Label, Node, sys, Toggle } from 'cc';
 import { EventType } from '../../config/EventType';
 import { KeyConfig } from '../../config/KeyConfig';
 import { NetConfig } from '../../config/NetConfig';
 import { SceneType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { DataMgr } from '../../manager/DataMgr';
+import { SceneMgr } from '../../manager/SceneMgr';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { s2cAccountLogin, s2cGetPhoneCode } from '../../models/NetModel';
 import { LoginType, User } from '../../models/User';
@@ -130,6 +131,7 @@ export class LoginView extends BaseComponent {
                 return;
             }
         }
+        this.initUI();
     }
 
     initUI() {
@@ -298,7 +300,7 @@ export class LoginView extends BaseComponent {
             return;
         }
         console.log("登录成功", data);
-        director.loadScene(SceneType.MainScene);
+        SceneMgr.loadScene(SceneType.MainScene);
     }
     /**连接断开 */
     onSocketDis() {

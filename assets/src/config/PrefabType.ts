@@ -1,7 +1,7 @@
 
 // 场景类型
 export const SceneType = {
-    LoadingScene: "LoadingScene",
+    LoadingScene: "LoadScene",
     LoginScene: "LoginScene",
     MainScene: "MainScene",
     WorldMapScene: "WorldMapViewManager",
@@ -37,14 +37,14 @@ export type PrefabTypeEntry = {
 export const PrefabType = {
     //**学习模式相关 */
     StudyView: { path: "study/StudyViewchange", zindex: Hierarchy.POPUPLAYER, tips: "学习模块选择" },
-    StudyModeView: { path: "studyModes/StudyModeView",componentName:"StudyModeView", zindex: Hierarchy.POPUPLAYER, tips: "关卡学模式" },
+    StudyModeView: { path: "studyModes/StudyModeView", componentName: "StudyModeView", zindex: Hierarchy.POPUPLAYER, tips: "关卡学模式" },
     WorldMapView: { path: "adventure/WorldMapView", zindex: Hierarchy.POPUPLAYER, tips: "单词大冒险岛屿选择" },
-    WordMeaningView: { path: "studyModes/WordMeaningView", componentName:"WordMeaningView",zindex: Hierarchy.POPUPLAYER, tips: "词意模式" },
-    WordPracticeView: { path: "studyModes/WordPraticeView", componentName:"WordPracticeView",zindex: Hierarchy.POPUPLAYER, tips: "练习模式" },
-    WordSpellView: { path: "studyModes/WordSpellView", componentName:"WordSpellView",zindex: Hierarchy.POPUPLAYER, tips: "拼写模式" },
-    WordReadingView: { path: "studyModes/WordReadingView", componentName:"WordReadingView",zindex: Hierarchy.POPUPLAYER, tips: "读模式" },
-    WordExamView: { path: "studyModes/WordExamView",componentName:"WordExamView", zindex: Hierarchy.POPUPLAYER, tips: "测试模式" },
-    WordReportView: { path: "studyModes/WordReportView", componentName:"WordReportView",zindex: Hierarchy.POPUPLAYER, tips: "结算界面" },
+    WordMeaningView: { path: "studyModes/WordMeaningView", componentName: "WordMeaningView", zindex: Hierarchy.POPUPLAYER, tips: "词意模式" },
+    WordPracticeView: { path: "studyModes/WordPraticeView", componentName: "WordPracticeView", zindex: Hierarchy.POPUPLAYER, tips: "练习模式" },
+    WordSpellView: { path: "studyModes/WordSpellView", componentName: "WordSpellView", zindex: Hierarchy.POPUPLAYER, tips: "拼写模式" },
+    WordReadingView: { path: "studyModes/WordReadingView", componentName: "WordReadingView", zindex: Hierarchy.POPUPLAYER, tips: "读模式" },
+    WordExamView: { path: "studyModes/WordExamView", componentName: "WordExamView", zindex: Hierarchy.POPUPLAYER, tips: "测试模式" },
+    WordReportView: { path: "studyModes/WordReportView", componentName: "WordReportView", zindex: Hierarchy.POPUPLAYER, tips: "结算界面" },
     TransitionView: { path: "common/TransitionView", zindex: Hierarchy.POPUPLAYER, tips: "过渡界面" },
     MapPointItem: { path: "adventure/levelMap/MapPointItem", zindex: Hierarchy.POPUPLAYER, tips: "地图节点" },
     ExamReportView: { path: "studyModes/ExamReportView", zindex: Hierarchy.POPUPLAYER, tips: "测评模式结算界面" },

@@ -1,10 +1,11 @@
-import { Color, Graphics, Node, Rect, Vec3, director, instantiate, screen } from "cc";
+import { Color, Graphics, Node, Rect, Vec3, instantiate, screen } from "cc";
 import GlobalConfig from "../../GlobalConfig";
 import { EventType } from "../../config/EventType";
 import { MapConfig } from "../../config/MapConfig";
 import { PrefabType, SceneType } from "../../config/PrefabType";
 import { TextConfig } from "../../config/TextConfig";
 import { DataMgr, EditInfo, EditType } from "../../manager/DataMgr";
+import { SceneMgr } from "../../manager/SceneMgr";
 import { ViewsMgr } from "../../manager/ViewsManager";
 import { BaseModel } from "../../models/BaseModel";
 import { BgModel } from "../../models/BgModel";
@@ -117,7 +118,7 @@ export class MapUICtl extends MainBaseCtl {
         this._checkFirstRepTimer = TimerMgr.once(() => {
             this.clearFirstRepTimer();
             ViewsMgr.showAlert(TextConfig.Building_Rep_Error, () => {
-                director.loadScene(SceneType.LoginScene);
+                SceneMgr.loadScene(SceneType.LoginScene);
             });
         }, 5000);
         this.mapMove(-288, 588);

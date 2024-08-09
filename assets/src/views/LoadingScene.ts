@@ -1,9 +1,10 @@
-import { _decorator, Asset, Component, director, Label, Node, ProgressBar, sys } from 'cc';
+import { _decorator, Asset, Component, Label, Node, ProgressBar, sys } from 'cc';
 import { MapConfig } from '../config/MapConfig';
 import { SceneType } from '../config/PrefabType';
 import { TextConfig } from '../config/TextConfig';
 import GlobalConfig from '../GlobalConfig';
 import { LoadManager } from '../manager/LoadManager';
+import { SceneMgr } from '../manager/SceneMgr';
 import { ViewsManager, ViewsMgr } from '../manager/ViewsManager';
 import { HttpManager } from '../net/HttpManager';
 import DownloaderUtil from '../util/DownloaderUtil';
@@ -79,7 +80,7 @@ export class LoadingScene extends Component {
     //版本检测完成
     checkVersionOver() {
         if (!this._uiCheck || !this._httpCheck || !this._downCheck) return;
-        director.loadScene(SceneType.LoginScene);
+        SceneMgr.loadScene(SceneType.LoginScene);
     }
     /**http请求版本成功 */
     httpReqVersionCheckSuccess(data: VersionCheck) {
