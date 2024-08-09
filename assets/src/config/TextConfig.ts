@@ -27,6 +27,7 @@ export const TextConfig = {
     Update_Error: "更新失败，请检测网络后再重试",
     Update_Success: "更新成功，是否立即重启游戏",
 
+    Building_Rep_Error: "数据异常，请切换网络后再试",
     Building_Sure_Tip: "这个位置有其他建筑哦~",
     Building_Cell_Tip: "此建筑不能售卖!",
     // Building_Edit_Error: "该建筑不能编辑!",

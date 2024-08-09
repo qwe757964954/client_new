@@ -1,8 +1,8 @@
-import { Color, Graphics, Node, Rect, Vec3, instantiate, screen } from "cc";
+import { Color, Graphics, Node, Rect, Vec3, director, instantiate, screen } from "cc";
 import GlobalConfig from "../../GlobalConfig";
 import { EventType } from "../../config/EventType";
 import { MapConfig } from "../../config/MapConfig";
-import { PrefabType } from "../../config/PrefabType";
+import { PrefabType, SceneType } from "../../config/PrefabType";
 import { TextConfig } from "../../config/TextConfig";
 import { DataMgr, EditInfo, EditType } from "../../manager/DataMgr";
 import { ViewsMgr } from "../../manager/ViewsManager";
@@ -60,6 +60,7 @@ export class MapUICtl extends MainBaseCtl {
     private _callBack: Function = null;//加载完成回调
     private _loadCount: number = 0;//加载计数
     private _needLoadCallBack: boolean = false;//是否需要加载回调
+    private _checkFirstRepTimer: number = null;//检查首次请求返回定时器
     private _checkPetTimer: number = null;//检查宠物定时器
     private _selfPet: RoleDataModel = null;//自己宠物
     private _lastSortChildren: BaseModel[] = null;//上一次排序的节点
@@ -91,6 +92,13 @@ export class MapUICtl extends MainBaseCtl {
         this._recycleBuildingAry = [];
         this.removeEvent();
     }
+    /**清理定时器 */
+    clearFirstRepTimer() {
+        if (this._checkFirstRepTimer) {
+            clearTimeout(this._checkFirstRepTimer);
+            this._checkFirstRepTimer = null;
+        }
+    }
 
     // 初始化
     public async init() {
@@ -106,6 +114,12 @@ export class MapUICtl extends MainBaseCtl {
 
         ServiceMgr.buildingService.reqPetInfo();
         ServiceMgr.buildingService.reqBuildingList();
+        this._checkFirstRepTimer = TimerMgr.once(() => {
+            this.clearFirstRepTimer();
+            ViewsMgr.showAlert(TextConfig.Building_Rep_Error, () => {
+                director.loadScene(SceneType.LoginScene);
+            });
+        }, 5000);
         this.mapMove(-288, 588);
         // console.log("MapUICtl showBg", ToolUtil.getCountKey("showBg"), this._bgModelAry.length, this._landModelAry.length, this._buidingModelAry.length, this._roleModelAry.length, this._cloudModelAry.length);
     }
@@ -1090,6 +1104,7 @@ export class MapUICtl extends MainBaseCtl {
     }
     /**建筑列表 */
     onBuildingList(data: s2cBuildingList) {
+        this.clearFirstRepTimer();
         console.time("onBuildingList");
         this.initBuilding(data.build_list);
         this.initLand(data.land_dict);
