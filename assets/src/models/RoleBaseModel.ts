@@ -100,6 +100,17 @@ export class RoleBaseModel extends BaseComponent {
             });
         }
     }
+    /**插槽卸载 */
+    private unloadSlots(slots: SlotPngInfo[]) {
+        if (!slots || !this.role || !this._isSpLoad) {
+            return;
+        }
+        for (let i = 0; i < slots.length; i++) {
+            let slotInfo = slots[i];
+            let slot = this.role.findSlot(slotInfo.slot);
+            slot.setAttachment(null);
+        }
+    }
     public get clothings() {
         return this._clothings;
     }
@@ -136,6 +147,13 @@ export class RoleBaseModel extends BaseComponent {
         let clothingInfo = DataMgr.clothingConfig[clothing];
         this._clothings.setClothing(clothing, clothingInfo.type);
         this.loadSlots(clothingInfo.slots);
+    }
+    /**卸下服装 */
+    public removeClothing(clothing: number) {
+        if (!clothing) return;
+        let clothingInfo = DataMgr.clothingConfig[clothing];
+        this._clothings.setClothing(null, clothingInfo.type);
+        this.unloadSlots(clothingInfo.slots);
     }
     // 初始化
     protected async init(roleID: number, level: number, roleType: RoleType = RoleType.none) {
