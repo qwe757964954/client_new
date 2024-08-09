@@ -152,6 +152,11 @@ export class BagDialogView extends BaseView {
         roleModel.changeClothing(clothingId);
     }
 
+    public removeClothing(clothingId: number) {
+        const roleModel = this._role.getComponent(RoleBaseModel);
+        roleModel.removeClothing(clothingId);
+    }
+
     private onLoadPropsGrid(item: Node, idx: number) {
         const itemScript = item.getComponent(RewardItem);
         const nodeTrans = item.getComponent(UITransform);
@@ -293,7 +298,7 @@ export class BagDialogView extends BaseView {
                 const clothingInfo2 = this.findInfoById(this._selectedItem.id);
                 if (clothingInfo2) {
                     this.unOutfitUpdateTypeMapping(clothingInfo2, this._bagClothing);
-                    this.changeClothings(null);
+                    this.removeClothing(clothingInfo2.id);
                     this.updateAllLists();
                 }
                 break;
