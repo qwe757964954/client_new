@@ -1,5 +1,3 @@
-import { ClothingType } from "../../manager/DataMgr";
-import { User } from "../../models/User";
 
 // 定义枚举
 export enum BagTabIds {
@@ -73,20 +71,6 @@ export const BagGressItems: BagGressItem[] = [
     { id: BagGressItemIds.Wings, title: "翅膀", spriteFrame: "Bag/icon_wing/spriteFrame" },
     { id: BagGressItemIds.Shoes, title: "鞋子", spriteFrame: "Bag/icon_arms/spriteFrame" }
 ];
-
-
-
-// 更新 BagClothingTypeMapping
-export const BagClothingTypeMapping: { [key in BagGressItemIds]?: { type: ClothingType, userClothes: number } } = {
-    [BagGressItemIds.Hair]: { type: ClothingType.toufa, userClothes: User.userClothes.hair },
-    [BagGressItemIds.Head]: { type: ClothingType.shipin, userClothes: User.userClothes.jewelry }, // 这里假设 Head 对应的是 jewelry
-    [BagGressItemIds.UpperBody]: { type: ClothingType.shangyi, userClothes: User.userClothes.coat },
-    [BagGressItemIds.Pants]: { type: ClothingType.kuzi, userClothes: User.userClothes.pants },
-    [BagGressItemIds.Shoes]: { type: ClothingType.xiezi, userClothes: User.userClothes.shoes },
-    [BagGressItemIds.Wings]: { type: ClothingType.chibang, userClothes: User.userClothes.wings },
-    [BagGressItemIds.Hat]: { type: ClothingType.maozi, userClothes: User.userClothes.hat },
-    [BagGressItemIds.Face]: { type: ClothingType.lian, userClothes: User.userClothes.face },
-};
 
 export enum BagItemType {
     Costume = 1,
