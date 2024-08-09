@@ -57,6 +57,7 @@ export class WordPanel extends BaseView {
             ...this._detailData,
             is_collect: this._detailData.collect_flag
         };
+        this.star.getComponent(Sprite).grayscale = !this.star.getComponent(Sprite).grayscale;
         EventMgr.dispatch(EventType.Search_Collect_Work, searchData);
     }
 

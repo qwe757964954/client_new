@@ -1,5 +1,6 @@
 import { Label, Layout, Node, Prefab, _decorator, instantiate } from 'cc';
 import { CheckWordItem } from '../../models/TextbookModel';
+import List from '../../util/list/List';
 import ListItem from '../../util/list/ListItem';
 import { WordCheckSubItem } from './WordCheckSubItem';
 const { ccclass, property } = _decorator;
@@ -13,8 +14,13 @@ export class WordCheckItem extends ListItem {
     @property(Layout)
     public wordScroll:Layout = null;
 
+    @property(List)
+    public word_list:List = null;
+
     @property(Prefab)
     public wordItem:Prefab = null;
+
+    private _words:CheckWordItem[] = [];
 
     start() {
 
@@ -26,6 +32,7 @@ export class WordCheckItem extends ListItem {
 
     updateItemProps(unit:string,words:CheckWordItem[]){
         this.unit_lab.string = unit;
+        this._words = words;
         this.wordScroll.node.removeAllChildren();
         for (let i = 0; i < words.length; i++) {
             const element = words[i];
@@ -35,6 +42,7 @@ export class WordCheckItem extends ListItem {
             this.wordScroll.node.addChild(subItem);
         }
     }
+
 }
 
 

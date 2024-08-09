@@ -34,7 +34,6 @@ export class SearchWordView extends BaseView {
 
     private _historys: SearchWordItem[] = []; // 查找的历史
     protected _detailData: WordsDetailData = null; // 当前单词详情数据
-
     private _collectWoldInfo:SearchWordItem = null;
 
     protected initUI(): void {
@@ -61,7 +60,13 @@ export class SearchWordView extends BaseView {
             [InterfacePath.Search_Word, this.onSearchWord.bind(this)],
             [InterfacePath.Total_Collect_Word, this.onTotalCollectWord.bind(this)],
             [EventType.Search_Collect_Work,this.onSearchCollectWork.bind(this)],
+            [EventType.Search_Word_Item_Detail,this.onSearchItemDetail.bind(this)],
         ]);
+    }
+
+    onSearchItemDetail(data: SearchWordItem){
+        this._collectWoldInfo = data;
+        ServiceMgr.studyService.moreWordDetail(this._collectWoldInfo.word);
     }
 
     private async onSearchCollectWork(data:SearchWordItem){
@@ -115,7 +120,7 @@ export class SearchWordView extends BaseView {
     }
 
     private createDetailData(data: WordsDetailData): WordsDetailData {
-        const historyItem = this._historys.find(h => h.word === data.variant.word);
+        const historyItem = this._historys.find(h => h.word === this._collectWoldInfo.word);
         let detailData: WordsDetailData ={
             ...historyItem,
             sentence_list: data.sentence_list,

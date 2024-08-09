@@ -153,7 +153,8 @@ export const EventType = {
     Item_Props_Refresh: "Item_Props_Refresh",
 
     Shop_Buy_Store: "Shop_Buy_Store",
-
+    Search_Word_Item_Detail: "Search_Word_Item_Detail",
+    Word_Check_Item_Detail: "Word_Check_Item_Detail",
 }
 
 export function itemEventKey(id: ItemID) {

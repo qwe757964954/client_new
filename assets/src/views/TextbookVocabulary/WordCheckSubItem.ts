@@ -1,9 +1,11 @@
 import { Label, Node, Sprite, _decorator } from 'cc';
+import { EventType } from '../../config/EventType';
 import { NetConfig } from '../../config/NetConfig';
 import { RemoteSoundMgr } from '../../manager/RemoteSoundManager';
 import { CheckWordItem, ReqCollectWord } from '../../models/TextbookModel';
 import { TBServer } from '../../service/TextbookService';
 import CCUtil from '../../util/CCUtil';
+import { EventMgr } from '../../util/EventManager';
 import ListItem from '../../util/list/ListItem';
 const { ccclass, property } = _decorator;
 
@@ -27,13 +29,20 @@ export class WordCheckSubItem extends ListItem {
     }
     initEvent(): void {
         CCUtil.onTouch(this.starNd, this.clickCollectEvent, this);
+        CCUtil.onTouch(this.node, this.onShowMore, this);
         CCUtil.onTouch(this.soundBtn, this.playWordSound, this);
     }
     /**移除监听 */
     removeEvent() {
         CCUtil.offTouch(this.starNd, this.clickCollectEvent, this);
+        CCUtil.offTouch(this.node, this.onShowMore, this);
         CCUtil.offTouch(this.soundBtn, this.playWordSound, this);
     }
+
+    onShowMore() {
+        EventMgr.dispatch(EventType.Word_Check_Item_Detail,this._subData);
+    }
+
     updateSubItem(subData: CheckWordItem){
         this._subData = subData;
         this.CntTxt.string = subData.cn;

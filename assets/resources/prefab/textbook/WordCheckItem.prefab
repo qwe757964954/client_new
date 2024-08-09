@@ -446,6 +446,7 @@
     "wordScroll": {
       "__id__": 11
     },
+    "word_list": null,
     "wordItem": {
       "__uuid__": "5ff6ea63-3377-4097-b772-9119e7120d0a",
       "__expectedType__": "cc.Prefab"

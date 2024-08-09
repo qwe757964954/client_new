@@ -3,7 +3,6 @@ import { EventType } from '../../config/EventType';
 import { NetConfig } from '../../config/NetConfig';
 import { TextConfig } from '../../config/TextConfig';
 import { RemoteSoundMgr } from '../../manager/RemoteSoundManager';
-import { ServiceMgr } from '../../net/ServiceManager';
 import CCUtil from '../../util/CCUtil';
 import { EventMgr } from '../../util/EventManager';
 import ListItem from '../../util/list/ListItem';
@@ -55,7 +54,7 @@ export class WordHistoryItem extends ListItem {
     }
 
     onShowMore() {
-        ServiceMgr.studyService.moreWordDetail(this._data.word);
+        EventMgr.dispatch(EventType.Search_Word_Item_Detail,this._data);
     }
     onPlaySound(){
         let wordSoundUrl = "/sounds/glossary/words/uk/" + this._data.word + ".wav";
