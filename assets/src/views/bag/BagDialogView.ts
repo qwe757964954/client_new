@@ -64,7 +64,6 @@ export class BagDialogView extends BaseView {
     }
 
     async initUI() {
-        console.log('User Item Array:', User.itemAry);
         await BagConfig.loadBagConfigInfo();
         this.updateBagClothingMapping();
         this.initAmount();
@@ -199,7 +198,6 @@ export class BagDialogView extends BaseView {
     }
 
     private onLoadDressGrid(item: Node, idx: number) {
-        console.log("onLoadDressGrid", this._bagClothing);
         const itemScript = item.getComponent(BagDressItem);
         itemScript.updateDressProps(this._bagClothing, BagGressItems[idx]);
     }
@@ -286,7 +284,6 @@ export class BagDialogView extends BaseView {
             }
         });
         User.userClothes.setClothing(null, type);
-        console.log("unOutfitUpdateTypeMapping....", typeMapping, User.userClothes);
     }
 
     private updatePropsSelected(selectedId: number) {
@@ -301,7 +298,6 @@ export class BagDialogView extends BaseView {
                 if (clothingInfo) {
                     this.outfitUpdateTypeMapping(clothingInfo, this._bagClothing);
                     this.changeClothings(clothingInfo.id);
-                    console.log("穿戴.....", clothingInfo, this._bagClothing);
                 }
                 this.updateAllLists();
                 break;
