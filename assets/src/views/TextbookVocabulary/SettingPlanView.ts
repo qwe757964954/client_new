@@ -1,8 +1,6 @@
 import { _decorator, Label, Node } from 'cc';
-import { EventType } from '../../config/EventType';
 import { BasePopup } from '../../script/BasePopup';
 import CCUtil from '../../util/CCUtil';
-import { EventMgr } from '../../util/EventManager';
 import { ScrollViewExtra } from './picker/ScrollViewExtra';
 import { TextbookUtil } from './TextbookUtil';
 const { ccclass, property } = _decorator;
@@ -39,7 +37,7 @@ export class SettingPlanView extends BasePopup {
     private _levelSelect:number = 0;
     private _daySelect:number = 0;
     private _isModify:boolean = false;
-
+    private _saveListener:(data:PlanSaveData)=>void = null;
     private _totoal_level:number = 20;
     initUI() {
         this.enableClickBlankToClose([this.node.getChildByName("small_dialog_bg")]).then(()=>{
@@ -96,7 +94,8 @@ export class SettingPlanView extends BasePopup {
         this.levelScroll.scrollToNumber(`${levels}`);
     }
 
-    updateTitleName(title:string,total_level:number) {
+    updateTitleName(title:string,total_level:number,saveListener:(data:PlanSaveData)=>void):void {
+        this._saveListener = saveListener;
         this.book_title.string = title;
         this._totoal_level = total_level;
         this.levelScroll.setTotalLevel(total_level);
@@ -148,7 +147,7 @@ export class SettingPlanView extends BasePopup {
             right:`${this._daySelect}`,
             isSave:true
         }
-        EventMgr.dispatch(EventType.Select_Word_Plan,data);
+        this._saveListener?.(data);
     }
 }
 

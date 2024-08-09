@@ -145,6 +145,9 @@ export interface BookPlanDetail extends BaseRepPacket {
     num: number;
     user_id: number;
     gate_total: number;
+    gate_pass_total:number;
+    is_completed:number;
+    status:number;
 }
 
 export interface ReqUnitStatusParam {

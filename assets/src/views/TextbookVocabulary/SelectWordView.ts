@@ -2,7 +2,7 @@ import { _decorator, Node } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { BookListItemData, SchoolBookGradeItemData, SchoolBookItemData, SchoolBookListGradeItemData, SchoolBookListItemData, UnitListItemStatus } from '../../models/TextbookModel';
+import { BookListItemData, BookPlanDetail, SchoolBookGradeItemData, SchoolBookItemData, SchoolBookListGradeItemData, SchoolBookListItemData } from '../../models/TextbookModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
@@ -38,6 +38,7 @@ export class SelectWordView extends BaseView {
     private _curBookid:string = "";
     private _curPhaseId:number = 0;
     public needShowTextbookChallenge = false;
+
     start() {
         super.start();
     }
@@ -52,29 +53,30 @@ export class SelectWordView extends BaseView {
 		this.addModelListener(NetNotify.Classification_List,this.onBookList);
         this.addModelListener(NetNotify.Classification_SchoolBook,this.onSchoolBookList);
         this.addModelListener(NetNotify.Classification_SchoolGrade,this.onSchoolGradeList);
-        this.addModelListener(EventType.Select_Word_Plan,this.onSelectWordPlan);
         this.addModelListener(NetNotify.Classification_AddPlanBook,this.onAddPlanBook);
-        this.addModelListener(NetNotify.Classification_UnitListStatus,this.onUnitListStatus);
+        this.addModelListener(NetNotify.Classification_BookPlanDetail, this.onBookPlanDetail.bind(this));
 	}
+
+    onBookPlanDetail(data: BookPlanDetail) {
+        ViewsManager.instance.showPopup(PrefabType.SettingPlanView).then((node: Node)=>{
+            let titleBookName = `${this._curBookName}${this._curGradeName}`
+            let nodeScript:SettingPlanView = node.getComponent(SettingPlanView)
+            nodeScript.updateTitleName(titleBookName,data.gate_total,this.onSelectWordPlan.bind(this));
+        })
+    }
+
     onSelectWordPlan(params:PlanSaveData){
         if(params.isSave){
             this._planData = params;
             let reqData = {
                 book_id:this._curBookid,
-                num:parseInt(this._planData.right),
+                num:parseInt(this._planData.left),
             }
             TBServer.reqAddPlanBook(reqData);
         }else{
             this.textBookScrollView.selectedId = -1;
             this.textBookScrollView.update(); 
         }
-    }
-    onUnitListStatus(data:UnitListItemStatus){
-        ViewsManager.instance.showPopup(PrefabType.SettingPlanView).then((node: Node)=>{
-            let titleBookName = `${this._curBookName}${this._curGradeName}`
-            let nodeScript:SettingPlanView = node.getComponent(SettingPlanView)
-            nodeScript.updateTitleName(titleBookName,data.gate_total);
-        })
     }
     onAddPlanBook(data){
         
@@ -127,6 +129,9 @@ export class SelectWordView extends BaseView {
         this._rightNav = node.getComponent(RightNavView);
     }
 
+    getBookPlanDetail() {
+        TBServer.reqBookPlanDetail(this._curBookid);
+    }
 
     /**初始化导航栏 */
     initNavTitle(){
@@ -151,17 +156,13 @@ export class SelectWordView extends BaseView {
         console.log("book data",itemInfo);
         tabContentItemScript.updateItemProps(idx,itemInfo,this._curBookName);
     }
-    /**获取词书单元信息 */
-    getUnitListStatus(){
-        TBServer.reqUnitListStatus(this._curBookid);
-    }
 
     onTextBookVerticalSelected(item: any, selectedId: number, lastSelectedId: number, val: number){
         if(selectedId === -1){return}
         let itemInfo:SchoolBookGradeItemData = this._schoolGradeListData.data[selectedId];
         this._curBookid = itemInfo.book_id;
         this._curGradeName = itemInfo.grade;
-        this.getUnitListStatus();
+        this.getBookPlanDetail();
     }
 }
 

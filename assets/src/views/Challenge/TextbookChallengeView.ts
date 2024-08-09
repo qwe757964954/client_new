@@ -62,7 +62,6 @@ export class TextbookChallengeView extends BaseView {
     onInitModuleEvent() {
         this.addModelListener(NetNotify.Classification_CurrentBook, this.onCurrentBookStatus.bind(this));
         this.addModelListener(NetNotify.Classification_UnitListStatus, this.onUnitListStatus.bind(this));
-        this.addModelListener(EventType.Select_Word_Plan, this.onSelectWordPlan.bind(this));
         this.addModelListener(NetNotify.Classification_PlanModify, this.onPlanModify.bind(this));
         this.addModelListener(NetNotify.Classification_BookPlanDetail, this.onBookPlanDetail.bind(this));
         this.addModelListener(NetNotify.Classification_BookAwardList, this.onBookAwardList.bind(this));
@@ -97,11 +96,10 @@ export class TextbookChallengeView extends BaseView {
     }
 
     onSelectWordPlan(params: any) {
-        ViewsManager.instance.closePopup(PrefabType.SettingPlanView);
         if (params.isSave) {
             const modifyData: ModifyPlanData = {
                 cu_id: this._planData.cu_id,
-                num: parseInt(params.right, 10)
+                num: parseInt(params.left, 10)
             };
             TBServer.reqModifyPlan(modifyData);
         }
@@ -158,7 +156,7 @@ export class TextbookChallengeView extends BaseView {
         const node = await ViewsManager.instance.showPopup(PrefabType.SettingPlanView);
         const script = node.getComponent(SettingPlanView);
         const titleBookName = `${this._bookData.book_name}${this._bookData.grade}`;
-        script.updateTitleName(titleBookName, this._unitListArr.gate_total);
+        script.updateTitleName(titleBookName, this._planData.gate_total - this._planData.gate_pass_total,this.onSelectWordPlan.bind(this));
     }
 
     private async showBreakThroughView() {
