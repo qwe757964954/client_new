@@ -1,5 +1,6 @@
 import { ClothingType } from "../../manager/DataMgr";
 import { User } from "../../models/User";
+import { ShopClothingInfo } from "../shop/ShopInfo";
 
 // 定义枚举
 export enum BagTabIds {
@@ -77,7 +78,7 @@ export const BagGressItems: BagGressItem[] = [
 
 
 // 更新 BagClothingTypeMapping
-export const BagClothingTypeMapping: { [key in BagGressItemIds]?: { type: ClothingType, userClothes: number } } = {
+export const BagClothingTypeMapping: { [key in BagGressItemIds]?: ShopClothingInfo } = {
     [BagGressItemIds.Hair]: { type: ClothingType.toufa, userClothes: User.userClothes.hair },
     [BagGressItemIds.Head]: { type: ClothingType.shipin, userClothes: User.userClothes.jewelry }, // 这里假设 Head 对应的是 jewelry
     [BagGressItemIds.UpperBody]: { type: ClothingType.shangyi, userClothes: User.userClothes.coat },
