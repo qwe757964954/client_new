@@ -30,7 +30,7 @@ export class WorldMapView extends BaseView {
 
     @property({ type: Node, tooltip: "岛屿地图容器" })
     public islandContainer: Node = null;
-
+    
     @property({ type: List, tooltip: "滚动容器" })
     public scrollView: List = null;
 
@@ -44,8 +44,9 @@ export class WorldMapView extends BaseView {
     private gettingIslandStatus: boolean = false;
     private gettingWords: boolean = false;
     private currentPassIsland: number = 0;
-
+    private _worldIsland:WorldIsland = null;
     protected initUI(): void {
+        this._worldIsland = this.currentIsland.getComponent(WorldIsland);
         this.initData();
         this.offViewAdaptSize();
         this.islandContainer.position = v3(-GlobalConfig.WIN_SIZE.width / 2, 0, 0);
@@ -118,7 +119,7 @@ export class WorldMapView extends BaseView {
         }
         this.currentIsland = instantiate(this.islandPref);
         this.islandContainer.addChild(this.currentIsland);
-        this.currentIsland.getComponent(WorldIsland).setPointsData(this.currentIslandID, data);
+        this._worldIsland.setPointsData(this.currentIslandID, data);
     }
 
     private onGetIslandStatus(data: IslandStatusData) {
@@ -200,7 +201,7 @@ export class WorldMapView extends BaseView {
         if (!this.currentIsland) return;
         this.gettingIslandStatus = false;
         this.currentLevelData = null;
-        const nextLevel = this.currentIsland.getComponent(WorldIsland).getNextLevelData(this.levelProgressData.big_id, this.levelProgressData.small_id);
+        const nextLevel = this._worldIsland.getNextLevelData(this.levelProgressData.big_id, this.levelProgressData.small_id);
         if (nextLevel) {
             this.enterLevel(nextLevel);
         }
@@ -215,7 +216,7 @@ export class WorldMapView extends BaseView {
     private async onWordGameWords(data: UnitWordModel[]) {
         if (!this.gettingWords) return;
         if (this.currentIsland) {
-            this.currentIsland.getComponent(WorldIsland).hideRightPanel();
+            this._worldIsland.hideRightPanel();
         }
         this.gettingWords = false;
         const gameMode = this.currentLevelData.current_mode;
