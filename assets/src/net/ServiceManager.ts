@@ -4,6 +4,7 @@ import { PropService } from "../service/PropService";
 import { ShopService } from "../service/ShopService";
 import StudyService from "../service/StudyService";
 import { UserService } from "../service/UserService";
+import { WordbookService } from "../service/WordbookService";
 
 class ServiceManager {
     private static _instance: ServiceManager = null;
@@ -13,6 +14,7 @@ class ServiceManager {
     public propService: PropService = null;  //背包物品服务
     public shopService: ShopService = null;  //商城相关服务
     public userSrv: UserService = null; //用户相关服务
+    public wordbookSrv: WordbookService = null; //单词本相关服务
 
     public static get i(): ServiceManager {
         if (!this._instance) {
@@ -30,6 +32,7 @@ class ServiceManager {
         this.propService = new PropService();
         this.shopService = new ShopService();
         this.userSrv = new UserService();
+        this.wordbookSrv = new WordbookService();
     }
 }
 /**ServiceManager单例 */

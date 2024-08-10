@@ -578,6 +578,31 @@ export class s2cPetGetReward extends BaseRepPacket {
     next_explore_second: number;//下次探索奖励更新时间
 }
 
+/**单词本-错题本收藏本 */
+export class c2sWordbookErrorbook {
+    command_id: string = InterfacePath.c2sWordbookErrorbook;
+    word_type: string;//err 表示错词本 collect 表示收藏本
+}
+/**单词本-错题本收藏本信息 */
+export class s2cWordbookErrorbookInfo {
+    e_id: number;//错题id
+    word: string;//单词
+    source_type: number;//来源 2表示单词大冒险 1表示教材单词 0总词库
+    w_id: string;//单词id
+    symbol: string;//音标 英标
+    symbolus: string;//音标 美标
+    big_id: number;//大单元id
+    gw_cn: string;//大冒险 中文释义
+    cw_cn: string;//教材单词 中文释义
+    g_cn: string;//总词库 中文释义
+    book_name: string;//教材名称
+}
+/**单词本-错题本收藏本返回 */
+export class s2cWordbookErrorbook extends BaseRepPacket {
+    word_list: s2cWordbookErrorbookInfo[];//错题本
+    word_type: string;//err 表示错词本 collect 表示收藏本
+}
+
 /**********************************以上是新接口*************************************/
 
 //新手引导

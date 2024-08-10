@@ -181,6 +181,10 @@ export const PrefabType = {
     ReviewRewardView: { path: "reviewPlan/ReviewRewardView", zindex: Hierarchy.POPUPLAYER, tips: "复习抽奖奖励" },
     ReviewPlanRuleView: { path: "reviewPlan/ReviewPlanRuleView", zindex: Hierarchy.POPUPLAYER, tips: "复习规则" },
     /*********************************************复习规划end***********************************************************/
+    /*********************************************单词本start***********************************************************/
+    WordbookView: { path: "wordbook/WordbookView", zindex: Hierarchy.POPUPLAYER, tips: "单词本" },
+    ErrorWordbookView: { path: "wordbook/ErrorWordbookView", zindex: Hierarchy.POPUPLAYER, tips: "错题本" },
+    /*********************************************单词本end***********************************************************/
     /*********************************************社交 start***********************************************************/
     FriendsDialogView: { path: "social/FriendsDialogView", componentName: "FriendsDialogView", zindex: Hierarchy.POPUPLAYER, tips: "好友界面" },
     FriendTalkDialogView: { path: "social/FriendTalkDialogView", componentName: "FriendTalkDialogView", zindex: Hierarchy.POPUPLAYER, tips: "好友聊天界面" },
