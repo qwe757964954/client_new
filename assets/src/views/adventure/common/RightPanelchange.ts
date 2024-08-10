@@ -54,7 +54,6 @@ export class rightPanelchange extends BaseView {
     public subjectBtn: Node = null;
 
     private _data: MapLevelData | GateData = null;
-    private _eveId: string;
     private _monsterAni: Node = null;
     private _rewardData: ItemData[] = [];
     private _isTweening: boolean = false;
