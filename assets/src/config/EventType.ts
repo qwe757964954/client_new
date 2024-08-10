@@ -154,6 +154,7 @@ export const EventType = {
     Shop_Buy_Store: "Shop_Buy_Store",
     Search_Word_Item_Detail: "Search_Word_Item_Detail",
     Word_Check_Item_Detail: "Word_Check_Item_Detail",
+    Grade_Select_Event: "Grade_Select_Event",
 }
 
 export function itemEventKey(id: ItemID) {

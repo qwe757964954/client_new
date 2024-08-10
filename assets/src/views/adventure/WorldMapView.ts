@@ -1,5 +1,7 @@
-import { _decorator, Button, Component, instantiate, Node, Prefab, v3 } from 'cc';
+import { _decorator, Button, instantiate, Node, Prefab, v3 } from 'cc';
 import { EventType } from '../../config/EventType';
+import { KeyConfig } from '../../config/KeyConfig';
+import { PrefabType } from '../../config/PrefabType';
 import GlobalConfig from '../../GlobalConfig';
 import { DataMgr } from '../../manager/DataMgr';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
@@ -7,65 +9,76 @@ import { GameMode, GateData, IslandProgressModel, IslandStatusData, LevelProgres
 import { UnitWordModel } from '../../models/TextbookModel';
 import { InterfacePath } from '../../net/InterfacePath';
 import { ServiceMgr } from '../../net/ServiceManager';
+import { BaseView } from '../../script/BaseView';
 import CCUtil from '../../util/CCUtil';
-import EventManager, { EventMgr } from '../../util/EventManager';
 import List from '../../util/list/List';
+import StorageUtil from '../../util/StorageUtil';
 import { GameStudyViewMap } from '../Challenge/ChallengeUtil';
 import { ConfirmView } from '../common/ConfirmView';
 import { WorldIsland } from './WorldIsland';
 import { WorldMapItem } from './WorldMapItem';
+
 const { ccclass, property } = _decorator;
-/**大冒险 世界地图 何存发 2024年4月8日14:45:44 */
+
 @ccclass('WorldMapView')
-export class WorldMapView extends Component {
+export class WorldMapView extends BaseView {
     @property({ type: Prefab, tooltip: "岛屿" })
     public islandPref: Prefab = null;
+
     @property({ type: Button, tooltip: "返回按钮" })
-    public btn_back: Button = null!;
+    public btnBack: Button = null;
+
     @property({ type: Node, tooltip: "岛屿地图容器" })
     public islandContainer: Node = null;
+    
     @property({ type: List, tooltip: "滚动容器" })
     public scrollView: List = null;
 
-    private _openlevels: number = 0;//开放到第几关
+    @property(Node)
+    public gradeSelectBtn: Node = null;
 
-    private _currentIsland: Node = null;//当前岛屿
-
-    private _islandStatusId: string; //岛屿状态
-    private _islandProgressId: string; //岛屿进度
-    private _exitIslandEveId: string; //退出岛屿
-    private _enterLevelEveId: string; //进入关卡
-    private _getWordsEveId: string; //获取单词
-    private _getLevelProgressEveId: string; //获取关卡进度
-    private _enterTestEveId: string; //进入测试
-
-    private _currentIslandID: number = 0;//当前岛屿id
-    private _currentLevelData: GateData = null;//当前关卡数据
-    private _levelProgressData: LevelProgressData = null; //当前关卡进度
-
-    private _getingIslandStatus: boolean = false;//是否正在获取岛屿状态
-    private _getingWords: boolean = false;//是否正在获取单词
-
-    private _currentPassIsland: number = 0;//当前所在岛屿id
-
-    start() {
-        let winssize = GlobalConfig.WIN_SIZE;
-        this.islandContainer.position = v3(-winssize.width / 2, 0, 0);
+    private currentIsland: Node = null;
+    private currentIslandID: number = 0;
+    private currentLevelData: GateData = null;
+    private levelProgressData: LevelProgressData = null;
+    private gettingIslandStatus: boolean = false;
+    private gettingWords: boolean = false;
+    private currentPassIsland: number = 0;
+    private _worldIsland:WorldIsland = null;
+    protected initUI(): void {
+        this._worldIsland = this.currentIsland.getComponent(WorldIsland);
+        this.initData();
+        this.offViewAdaptSize();
+        this.islandContainer.position = v3(-GlobalConfig.WIN_SIZE.width / 2, 0, 0);
         WorldIsland.initMapPoints();
+        if (StorageUtil.getData(KeyConfig.FIRST_WORLD_MAP, "1") === "1") {
+            this.showFirstEnter();
+        }
     }
-
-    onLoad(): void {
-        this.initData()
+    showFirstEnter(){
+        this.gradeSelectEvent();
+    }
+    protected onInitModuleEvent() {
+        this.addModelListeners([
+            [EventType.Exit_World_Island, this.hideIsland.bind(this)],
+            [EventType.Enter_Island_Level, this.enterLevel.bind(this)],
+            [InterfacePath.Island_Status, this.onGetIslandStatus.bind(this)],
+            [InterfacePath.Island_Progress, this.onGetIslandProgress.bind(this)],
+            [InterfacePath.Adventure_LevelProgress, this.onGetLevelProgress.bind(this)],
+            [EventType.Enter_Level_Test, this.enterTest.bind(this)],
+            [EventType.Goto_Textbook_Next_Level, this.goNextLevel.bind(this)],
+            [EventType.Goto_Exam_Mode, this.goExamMode.bind(this)],
+            [InterfacePath.WordGame_LevelRestart, this.levelRestart.bind(this)],
+        ]);
     }
 
     onLoadMapHorizontal(item: Node, idx: number): void {
-        let item_script: WorldMapItem = item.getComponent(WorldMapItem);
-        item_script.updateItemProps(idx, this._currentPassIsland);
+        const itemScript = item.getComponent(WorldMapItem);
+        itemScript.updateItemProps(idx, this.currentPassIsland);
     }
 
     onMapHorizontalSelected(item: any, selectedId: number, lastSelectedId: number, val: number) {
-        console.log("onMapHorizontalSelected", selectedId);
-        if (selectedId > this._currentPassIsland - 1) {
+        if (selectedId > this.currentPassIsland - 1) {
             ViewsMgr.showTip("请先通关前置岛屿");
             return;
         }
@@ -76,237 +89,168 @@ export class WorldMapView extends Component {
         this.switchLevels(selectedId);
     }
 
-    /**初始化数据 */
     private async initData() {
         await DataMgr.instance.getAdventureLevelConfig();
         this.initEvent();
         ServiceMgr.studyService.getIslandStatus();
     }
-    /**切换岛屿 */
-    private switchLevels(i: number) {
-        console.log('切换岛屿', i);
-        this.showIsland(i);
+
+    private switchLevels(id: number) {
+        this.showIsland(id);
     }
 
-    showIsland(id: number) {
-        if (this._getingIslandStatus) {
+    private showIsland(id: number) {
+        if (this.gettingIslandStatus) {
             console.log('正在获取岛屿状态中', id);
             return;
         }
-        this._currentIslandID = +id + 1;
-        this._getingIslandStatus = true;
-        ServiceMgr.studyService.getIslandProgress(this._currentIslandID);
+        this.currentIslandID = id + 1;
+        this.gettingIslandStatus = true;
+        ServiceMgr.studyService.getIslandProgress(this.currentIslandID);
     }
 
-    //获取岛屿进度
-    onGetIslandProgress(data: IslandProgressModel) {
-        if (data.code != 200) {
+    private onGetIslandProgress(data: IslandProgressModel) {
+        if (data.code !== 200) {
             console.error('获取岛屿进度失败', data.msg);
             return;
         }
-        console.log('获取岛屿进度', data);
-
-        if (this._currentIsland) {
-            this._currentIsland.destroy();
-            this._currentIsland = null;
+        if (this.currentIsland) {
+            this.currentIsland.destroy();
         }
-        let copynode = instantiate(this.islandPref);
-        this._currentIsland = copynode;
-        this.islandContainer.addChild(copynode);
-        copynode.getComponent(WorldIsland).setPointsData(this._currentIslandID, data);
+        this.currentIsland = instantiate(this.islandPref);
+        this.islandContainer.addChild(this.currentIsland);
+        this._worldIsland.setPointsData(this.currentIslandID, data);
     }
 
-    //获取岛屿状态
-    onGetIslandStatus(data: IslandStatusData) {
-        console.log('onGetIslandStatus', data);
-        this._getingIslandStatus = false;
-        if (data.code != 200) {
+    private onGetIslandStatus(data: IslandStatusData) {
+        this.gettingIslandStatus = false;
+        if (data.code !== 200) {
             console.error('获取岛屿状态失败', data.msg);
             return;
         }
-        this._currentPassIsland = data.num;
+        this.currentPassIsland = data.num;
         this.scrollView.numItems = 7;
     }
 
-    /**隐藏视图 */
-    hideIsland() {
-        if (this._currentIsland) {
-            this._currentIsland.destroy();
-            this._currentIsland = null;
+    private hideIsland() {
+        if (this.currentIsland) {
+            this.currentIsland.destroy();
         }
-        this._getingIslandStatus = false;
-        this._levelProgressData = null;
-        this._currentLevelData = null;
+        this.gettingIslandStatus = false;
+        this.levelProgressData = null;
+        this.currentLevelData = null;
     }
 
-    //进入关卡
     private enterLevel(data: GateData) {
-        if (this._getingWords) {
+        if (this.gettingWords) {
             console.log('正在获取单词中', data);
             return;
         }
-        console.log('进入关卡', data);
-        this._currentLevelData = data;
-        this._getingWords = true;
+        this.currentLevelData = data;
+        this.gettingWords = true;
         ServiceMgr.studyService.getAdvLevelProgress(data.big_id, data.small_id, data.subject_id, 1);
     }
 
-    //进入关卡测试
-    enterTest(data: GateData) {
-        // ViewsMgr.showTip("测评模式暂未开放");
-        // return;
-        if (this._getingWords) {
+    private enterTest(data: GateData) {
+        if (this.gettingWords) {
             console.log('正在获取单词中');
             return;
         }
-        this._currentLevelData = data;
-
-        this._currentLevelData.current_mode = GameMode.Exam;
-        this._getingWords = true;
-        // if (this._levelProgressData) { //已有当前关数据
-        //     this._levelProgressData.game_mode = GameMode.Exam;
-        //     ServiceMgr.studyService.getWordGameWords(this._currentLevelData.big_id, this._currentLevelData.small_id, this._currentLevelData.micro_id);
-        // } else {
-        ServiceMgr.studyService.getAdvLevelProgress(this._currentLevelData.big_id, this._currentLevelData.small_id, this._currentLevelData.subject_id, 2);
-        // }
+        this.currentLevelData = data;
+        this.currentLevelData.current_mode = GameMode.Exam;
+        this.gettingWords = true;
+        ServiceMgr.studyService.getAdvLevelProgress(this.currentLevelData.big_id, this.currentLevelData.small_id, this.currentLevelData.subject_id, 2);
     }
 
-    onGetLevelProgress(data: LevelProgressData) {
-        if (data.code != 200) {
+    private onGetLevelProgress(data: LevelProgressData) {
+        if (data.code !== 200) {
             ViewsMgr.showTip(data.msg);
             return;
         }
-        this._levelProgressData = data;
-        this._currentLevelData.current_mode = data.game_mode;
-        if (this._currentLevelData.current_mode != GameMode.Exam) { //不是测试模式
-            this._currentLevelData.current_mode = this._levelProgressData.game_mode;
-        }
-        if (data.game_mode != GameMode.Study || this._levelProgressData.pass_num != 0) {
-            ViewsMgr.showConfirm("是否继续上次闯关进度?", () => {
-                // ServiceMgr.studyService.getWordGameWords(this._currentLevelData.big_id, this._currentLevelData.small_id);
-                this.onWordGameWords(data.word_list);
-            }, () => {
-                // this._getingWords = false;
-                ServiceMgr.studyService.wordGameLevelRestart(this._currentLevelData.big_id, this._currentLevelData.small_id);
-            }, "延续上次", "重新开始", false).then((confirmView: ConfirmView) => {
+        this.levelProgressData = data;
+        this.currentLevelData.current_mode = data.game_mode;
+        if (data.game_mode !== GameMode.Study || this.levelProgressData.pass_num !== 0) {
+            ViewsMgr.showConfirm(
+                "是否继续上次闯关进度?",
+                () => this.onWordGameWords(data.word_list),
+                () => ServiceMgr.studyService.wordGameLevelRestart(this.currentLevelData.big_id, this.currentLevelData.small_id),
+                "延续上次",
+                "重新开始",
+                false
+            ).then((confirmView: ConfirmView) => {
                 confirmView.setCloseCall(() => {
-                    this._getingWords = false;
-                })
-            })
+                    this.gettingWords = false;
+                });
+            });
         } else {
-            // ServiceMgr.studyService.getWordGameWords(this._currentLevelData.big_id, this._currentLevelData.small_id);
             this.onWordGameWords(data.word_list);
         }
     }
 
-    levelRestart(data: LevelRestartData) {
-        console.log("LevelRestartData", data);
-        if (data.code == 200) {
-            let category = this._currentLevelData.current_mode == GameMode.Exam ? 2 : 1;
-            ServiceMgr.studyService.getAdvLevelProgress(this._currentLevelData.big_id, this._currentLevelData.small_id, this._currentLevelData.subject_id, category);
+    private levelRestart(data: LevelRestartData) {
+        if (data.code === 200) {
+            const category = this.currentLevelData.current_mode === GameMode.Exam ? 2 : 1;
+            ServiceMgr.studyService.getAdvLevelProgress(this.currentLevelData.big_id, this.currentLevelData.small_id, this.currentLevelData.subject_id, category);
         } else {
             ViewsManager.showTip(data.msg);
-            this._getingWords = false;
+            this.gettingWords = false;
         }
     }
 
-    goNextLevel() {
-        if (!this._currentIsland) return;
-        this._getingIslandStatus = false;
-        this._currentLevelData = null;
-        let nextLevel = this._currentIsland.getComponent(WorldIsland).getNextLevelData(this._levelProgressData.big_id, this._levelProgressData.small_id);
+    private goNextLevel() {
+        if (!this.currentIsland) return;
+        this.gettingIslandStatus = false;
+        this.currentLevelData = null;
+        const nextLevel = this._worldIsland.getNextLevelData(this.levelProgressData.big_id, this.levelProgressData.small_id);
         if (nextLevel) {
             this.enterLevel(nextLevel);
         }
     }
 
-    //进入测试模式
-    goExamMode() {
-        if (this._currentLevelData) {
-            this.enterTest(this._currentLevelData);
+    private goExamMode() {
+        if (this.currentLevelData) {
+            this.enterTest(this.currentLevelData);
         }
     }
 
-    //获取关卡单词回包
-    async onWordGameWords(data: UnitWordModel[]) {
-        if (!this._getingWords) return;
-        console.log('获取单词', data);
-        if (this._currentIsland) {
-            this._currentIsland.getComponent(WorldIsland).hideRightPanel();
+    private async onWordGameWords(data: UnitWordModel[]) {
+        if (!this.gettingWords) return;
+        if (this.currentIsland) {
+            this._worldIsland.hideRightPanel();
         }
-        this._getingWords = false;
-        let gameMode = this._currentLevelData.current_mode;
-        this._currentLevelData.progressData = this._levelProgressData;
-        this._currentLevelData.error_num = this._levelProgressData.err_num;
-        await this.openLearningView(data, this._currentLevelData, gameMode);
+        this.gettingWords = false;
+        const gameMode = this.currentLevelData.current_mode;
+        this.currentLevelData.progressData = this.levelProgressData;
+        this.currentLevelData.error_num = this.levelProgressData.err_num;
+        await this.openLearningView(data, this.currentLevelData, gameMode);
     }
 
-    async openLearningView(wordData: UnitWordModel[], bookLevelData: GateData, gameModel: GameMode) {
-        const prefabType = GameStudyViewMap[gameModel];
+    private async openLearningView(wordData: UnitWordModel[], bookLevelData: GateData, gameMode: GameMode) {
+        const prefabType = GameStudyViewMap[gameMode];
         if (prefabType) {
             const node = await ViewsManager.instance.showLearnView(prefabType);
             let scpt: any = node.getComponent(prefabType.componentName); 
             scpt.initData(wordData, bookLevelData);
         }
     }
-    /**初始化监听事件 */
+
     initEvent() {
-        // for (let i in this.mapView) {
-        //     CCUtil.onTouch(this.mapView[i], this.switchLevels.bind(this, i), this)
-        // }
-        this._exitIslandEveId = EventManager.on(EventType.Exit_World_Island, this.hideIsland.bind(this));
-        this._enterLevelEveId = EventManager.on(EventType.Enter_Island_Level, this.enterLevel.bind(this));
-        // this._getWordsEveId = EventManager.on(EventType.WordGame_Words, this.onWordGameWords.bind(this));
-        this._islandStatusId = EventManager.on(InterfacePath.Island_Status, this.onGetIslandStatus.bind(this));
-        this._islandProgressId = EventManager.on(InterfacePath.Island_Progress, this.onGetIslandProgress.bind(this));
-        this._getLevelProgressEveId = EventManager.on(InterfacePath.Adventure_LevelProgress, this.onGetLevelProgress.bind(this));
-        // this._enterTestEveId = EventManager.on(EventType.Enter_Level_Test, this.enterTest.bind(this));
-        EventMgr.addListener(EventType.Enter_Level_Test, this.enterTest, this);
-        EventMgr.addListener(EventType.Goto_Textbook_Next_Level, this.goNextLevel, this);
-        EventMgr.addListener(EventType.Goto_Exam_Mode, this.goExamMode, this);
-        EventMgr.addListener(InterfacePath.WordGame_LevelRestart, this.levelRestart, this);
-        CCUtil.onTouch(this.btn_back.node, this.onBtnBackClick, this)
-
+        CCUtil.onBtnClick(this.btnBack.node, this.onBtnBackClick.bind(this));
+        CCUtil.onBtnClick(this.gradeSelectBtn, this.gradeSelectEvent.bind(this));
     }
-    /**移除监听 */
-    removeEvent() {
-        // for (let i in this.mapView) {
-        //     CCUtil.offTouch(this.mapView[i], this.switchLevels.bind(this, i), this)
-        // }
-        EventManager.off(EventType.Exit_World_Island, this._exitIslandEveId);
-        EventManager.off(EventType.Enter_Island_Level, this._enterLevelEveId);
-        // EventManager.off(EventType.WordGame_Words, this._getWordsEveId);
-        EventManager.off(InterfacePath.Island_Status, this._islandStatusId);
-        EventManager.off(InterfacePath.Island_Progress, this._islandProgressId);
-        EventManager.off(InterfacePath.Adventure_LevelProgress, this._getLevelProgressEveId);
-        // EventManager.off(EventType.Enter_Level_Test, this._enterTestEveId)
-        EventMgr.removeListener(EventType.Enter_Level_Test, this);
-        EventMgr.removeListener(EventType.Goto_Textbook_Next_Level, this);
-        EventMgr.removeListener(EventType.Goto_Exam_Mode, this);
-        EventMgr.removeListener(InterfacePath.WordGame_LevelRestart, this);
-        CCUtil.offTouch(this.btn_back.node, this.onBtnBackClick, this)
 
-    }
-    /**点击返回按钮 */
-    onBtnBackClick() {
-        // EventManager.emit(EventType.Study_Page_Switching, [0])
+    private onBtnBackClick() {
         this.node.destroy();
     }
 
-    /**打开帮助页面 */
+    private async gradeSelectEvent() {
+        // TODO: Implement grade select event
+        let node = await ViewsManager.instance.showPopup(PrefabType.GradeSelectView);
+    }
+
     private openHelp() {
-        console.log('帮助页面!')
+        console.log('帮助页面!');
     }
-
-    update(deltaTime: number) {
-    }
-    onDestroy() {
-        this.removeEvent()
-    }
-
-
 
 
 }
-
-

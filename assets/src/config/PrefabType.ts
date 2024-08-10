@@ -39,6 +39,7 @@ export const PrefabType = {
     StudyView: { path: "study/StudyViewchange", zindex: Hierarchy.POPUPLAYER, tips: "学习模块选择" },
     StudyModeView: { path: "studyModes/StudyModeView", componentName: "StudyModeView", zindex: Hierarchy.POPUPLAYER, tips: "关卡学模式" },
     WorldMapView: { path: "adventure/WorldMapView", zindex: Hierarchy.POPUPLAYER, tips: "单词大冒险岛屿选择" },
+    GradeSelectView: { path: "adventure/GradeSelectView",componentName: "GradeSelectView", zindex: Hierarchy.POPUPLAYER, tips: "年级选择" },
     WordMeaningView: { path: "studyModes/WordMeaningView", componentName: "WordMeaningView", zindex: Hierarchy.POPUPLAYER, tips: "词意模式" },
     WordPracticeView: { path: "studyModes/WordPraticeView", componentName: "WordPracticeView", zindex: Hierarchy.POPUPLAYER, tips: "练习模式" },
     WordSpellView: { path: "studyModes/WordSpellView", componentName: "WordSpellView", zindex: Hierarchy.POPUPLAYER, tips: "拼写模式" },
