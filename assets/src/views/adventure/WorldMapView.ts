@@ -1,5 +1,6 @@
 import { _decorator, Button, instantiate, Node, Prefab, v3 } from 'cc';
 import { EventType } from '../../config/EventType';
+import { KeyConfig } from '../../config/KeyConfig';
 import { PrefabType } from '../../config/PrefabType';
 import GlobalConfig from '../../GlobalConfig';
 import { DataMgr } from '../../manager/DataMgr';
@@ -11,6 +12,7 @@ import { ServiceMgr } from '../../net/ServiceManager';
 import { BaseView } from '../../script/BaseView';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
+import StorageUtil from '../../util/StorageUtil';
 import { GameStudyViewMap } from '../Challenge/ChallengeUtil';
 import { ConfirmView } from '../common/ConfirmView';
 import { WorldIsland } from './WorldIsland';
@@ -49,8 +51,13 @@ export class WorldMapView extends BaseView {
         this.offViewAdaptSize();
         this.islandContainer.position = v3(-GlobalConfig.WIN_SIZE.width / 2, 0, 0);
         WorldIsland.initMapPoints();
+        if (StorageUtil.getData(KeyConfig.FIRST_WORLD_MAP, "1") === "1") {
+            this.showFirstEnter();
+        }
     }
-
+    showFirstEnter(){
+        this.gradeSelectEvent();
+    }
     protected onInitModuleEvent() {
         this.addModelListeners([
             [EventType.Exit_World_Island, this.hideIsland.bind(this)],

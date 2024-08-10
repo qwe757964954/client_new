@@ -1,8 +1,10 @@
 import { _decorator, Label, Node } from 'cc';
 import { EventType } from '../../config/EventType';
+import { KeyConfig } from '../../config/KeyConfig';
 import { BasePopup } from '../../script/BasePopup';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
+import StorageUtil from '../../util/StorageUtil';
 import { educationAndExams, EducationGrade } from './AdventureInfo';
 import { GradeItem } from './item/GradeItem';
 import { LevelItem } from './item/LevelItem';
@@ -23,6 +25,7 @@ export class GradeSelectView extends BasePopup {
     protected initUI(): void {
         this.enableClickBlankToClose([this.node.getChildByName("frame")]);
         this.levelList.numItems = educationAndExams.length;
+        StorageUtil.saveData(KeyConfig.FIRST_WORLD_MAP, "0");
     }
     protected onInitModuleEvent() {
         this.addModelListeners([
