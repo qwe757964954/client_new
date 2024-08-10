@@ -8,7 +8,7 @@ import { InterfacePath } from '../../../net/InterfacePath';
 import { ServiceMgr } from '../../../net/ServiceManager';
 import { BaseView } from '../../../script/BaseView';
 import CCUtil from '../../../util/CCUtil';
-import EventManager, { EventMgr } from '../../../util/EventManager';
+import EventManager from '../../../util/EventManager';
 import FileUtil from '../../../util/FileUtil';
 import List from '../../../util/list/List';
 import { ObjectUtil } from '../../../util/ObjectUtil';
@@ -74,8 +74,10 @@ export class rightPanelchange extends BaseView {
     }
 
     protected onInitModuleEvent(): void {
-        EventMgr.addListener(EventType.Expand_the_level_page, this.openView, this);
-        EventMgr.addListener(InterfacePath.WordGame_Subject, this.onWordGameSubject, this);
+        this.addModelListeners([
+            [EventType.Expand_the_level_page, this.openView.bind(this)],
+            [InterfacePath.WordGame_Subject, this.onWordGameSubject.bind(this)],
+        ]);
     }
 
     private startTest() {

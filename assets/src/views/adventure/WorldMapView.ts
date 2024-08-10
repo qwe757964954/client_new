@@ -37,7 +37,6 @@ export class WorldMapView extends BaseView {
     @property(Node)
     public gradeSelectBtn: Node = null;
 
-    private openLevels: number = 0;
     private currentIsland: Node = null;
     private currentIslandID: number = 0;
     private currentLevelData: GateData = null;
