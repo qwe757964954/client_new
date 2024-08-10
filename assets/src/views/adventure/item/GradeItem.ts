@@ -1,18 +1,26 @@
-import { _decorator, Component, Label, Node, Sprite } from 'cc';
-import List from '../../../util/list/List';
+import { _decorator, Color, Label, Node } from 'cc';
+import ListItem from '../../../util/list/ListItem';
+import { EducationGrade } from '../AdventureInfo';
 const { ccclass, property } = _decorator;
 
 @ccclass('GradeItem')
-export class GradeItem extends Component {
-    @property(Sprite)
-    public bg: Sprite = null;
+export class GradeItem extends ListItem {
     @property(Label)
     public btnLabel: Label = null;
 
-    public setData(data: any) {
-        this.btnLabel.string = data.level;
+    @property(Node)
+    public selectNode: Node = null;
+
+    public setData(data: EducationGrade) {
+        this.btnLabel.string = data.title;
+    }
+    setSelectColor(){
+        this.btnLabel.color = Color.WHITE;
     }
 
+    setNormalColor(){
+        this.btnLabel.color = new Color("#d6bc99");
+    }
 }
 
 
