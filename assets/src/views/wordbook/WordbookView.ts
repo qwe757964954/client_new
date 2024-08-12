@@ -82,6 +82,11 @@ export class WordbookView extends BaseComponent {
                 node.getComponent(ErrorWordbookView).init(ErrorWordbookType.Collect);
                 node.active = false;
             }),
+            LoadManager.loadPrefab(PrefabType.SearchWorldView.path, this.plRight).then((node: Node) => {
+                this._plRightContentAry[4] = node;
+                // node.getComponent(SearchWordView).init(ErrorWordbookType.Collect);
+                node.active = false;
+            }),
         ]);
 
         this.tabView.updateData(tabInfos, 2);

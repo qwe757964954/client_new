@@ -154,7 +154,7 @@ export class MainUIView extends BaseView {
     }
     //翻译查词点击
     public onClickTranslate() {
-        ViewsManager.instance.showView(PrefabType.SearchWorldView);
+        ViewsManager.instance.showView(PrefabType.WordbookView);
         // ViewsManager.showTip(TextConfig.Function_Tip);
     }
     //编辑点击

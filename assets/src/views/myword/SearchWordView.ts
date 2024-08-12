@@ -23,9 +23,6 @@ export class SearchWordView extends BaseView {
     @property(List)
     private historyList: List = null;
 
-    @property({ type: Node, tooltip: "顶不layout" })
-    public topLayout: Node = null;
-
     @property({ type: Node, tooltip: "查找按钮" })
     public btnSearch: Node = null;
 
@@ -38,7 +35,6 @@ export class SearchWordView extends BaseView {
 
     protected initUI(): void {
         SoundMgr.stopBgm();
-        this.initNavTitle();
         this.initData();
     }
 
@@ -46,12 +42,6 @@ export class SearchWordView extends BaseView {
         const history = localStorage.getItem("searchHistory");
         this._historys = history ? JSON.parse(history) : [];
         this.historyList.numItems = this._historys.length;
-    }
-
-    private initNavTitle() {
-        this.createNavigation("翻译查询", this.topLayout, () => {
-            ViewsManager.instance.closeView(PrefabType.SearchWorldView);
-        });
     }
 
     protected onInitModuleEvent(): void {
