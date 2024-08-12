@@ -37,6 +37,10 @@ export class WordItem extends Component {
     private _moreCall: Function = null;
     private _selectCall: Function = null;
 
+    protected onLoad(): void {
+        this.initEvent();
+    }
+
     private initEvent() {
         CCUtil.onTouch(this.btnHorn, this.onHorn, this);
         CCUtil.onTouch(this.btnMore, this.onMore, this);
@@ -44,19 +48,10 @@ export class WordItem extends Component {
     }
 
     public init(data: WordItemInfo, moreCall?: Function, selectCall?: Function) {
-        if (null == data.isSelect) {
-            this.toggle.node.active = false;
-        } else {
-            this.toggle.node.active = true;
-            if (data.isSelect) {
-                this.bg.active = false;
-                this.selectBg.active = true;
-            } else {
-                this.bg.active = true;
-                this.selectBg.active = false;
-            }
-            this.toggle.isChecked = data.isSelect;
-        }
+        this.toggle.node.active = null != data.isSelect;
+        this.bg.active = !data.isSelect;
+        this.selectBg.active = data.isSelect;
+        this.toggle.isChecked = data.isSelect;
 
         this._data = data;
         this.labelWord.string = data.word;

@@ -5,7 +5,7 @@ import { BaseComponent } from '../../script/BaseComponent';
 import { NavTitleView } from '../common/NavTitleView';
 import { TaskTabInfo } from '../task/TaskInfo';
 import { TaskTabView } from '../task/TaskTabView';
-import { ErrorWordbookView } from './ErrorWordbookView';
+import { ErrorWordbookType, ErrorWordbookView } from './ErrorWordbookView';
 const { ccclass, property } = _decorator;
 
 export enum WordbookType {
@@ -56,6 +56,7 @@ export class WordbookView extends BaseComponent {
     public plRight: Node = null;
 
     private _plRightContentAry: Node[] = [];
+    private _lastSelectTab: Node = null;
 
     protected onDestroy(): void {
         this.clearEvent();
@@ -66,15 +67,24 @@ export class WordbookView extends BaseComponent {
     protected onLoad(): void {
         this.init();
     }
-    private init() {
+    private async init() {
         this.navTitleView.updateNavigationProps("", this.onClose.bind(this));
         this.tabView.setTabSelectClick(this.tabSelect.bind(this));
-        this.tabView.updateData(tabInfos);
 
-        LoadManager.loadPrefab(PrefabType.ErrorWordbookView.path, this.plRight).then((node: Node) => {
-            this._plRightContentAry[2] = node;
-            node.getComponent(ErrorWordbookView).init();
-        });
+        await Promise.all([
+            LoadManager.loadPrefab(PrefabType.ErrorWordbookView.path, this.plRight).then((node: Node) => {
+                this._plRightContentAry[2] = node;
+                node.getComponent(ErrorWordbookView).init(ErrorWordbookType.Errorbook);
+                node.active = false;
+            }),
+            LoadManager.loadPrefab(PrefabType.ErrorWordbookView.path, this.plRight).then((node: Node) => {
+                this._plRightContentAry[3] = node;
+                node.getComponent(ErrorWordbookView).init(ErrorWordbookType.Collect);
+                node.active = false;
+            }),
+        ]);
+
+        this.tabView.updateData(tabInfos, 2);
     }
     /**关闭回调 */
     private onClose() {
@@ -83,6 +93,14 @@ export class WordbookView extends BaseComponent {
     private tabSelect(info: TaskTabInfo) {
         console.log("tabSelect:", info);
         this.navTitleView.setTitleName(info.title);
+        let selectTab = this._plRightContentAry[info.id - 1];
+        if (this._lastSelectTab) {
+            this._lastSelectTab.active = false;
+        }
+        if (selectTab) {
+            selectTab.active = true;
+        }
+        this._lastSelectTab = selectTab;
     }
 }
 

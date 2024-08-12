@@ -9,39 +9,39 @@ const { ccclass, property } = _decorator;
 export class TaskTabView extends BaseView {
 
     @property(List)
-    tab_scroll:List = null;
+    tab_scroll: List = null;
 
-    public tab_datas:TaskTabInfo[] = [];
+    public tab_datas: TaskTabInfo[] = [];
 
-    private callSelectCallback:(info:TaskTabInfo)=>void = null;
+    private callSelectCallback: (info: TaskTabInfo) => void = null;
 
-    updateData(tabs:TaskTabInfo[]){
+    updateData(tabs: TaskTabInfo[], selectId: number = 0) {
         this.tab_datas = tabs;
         this.tab_scroll.numItems = this.tab_datas.length;
-        this.tab_scroll.selectedId = 0;
+        this.tab_scroll.selectedId = selectId;
     }
 
-    setTabSelectClick(callBack:(info:TaskTabInfo)=>void){
+    setTabSelectClick(callBack: (info: TaskTabInfo) => void) {
         this.callSelectCallback = callBack;
     }
-    onLoadTabHorizontal(item:Node, idx:number){
-        let item_sript:TaskTabItem = item.getComponent(TaskTabItem);
+    onLoadTabHorizontal(item: Node, idx: number) {
+        let item_sript: TaskTabItem = item.getComponent(TaskTabItem);
         item_sript.initPropsItem(this.tab_datas[idx]);
     }
 
     onTabListHorizontalSelected(item: any, selectedId: number, lastSelectedId: number, val: number) {
-        if(!isValid(selectedId) || selectedId < 0 || !isValid(item)){return;}
-        let item_sript:TaskTabItem = item.getComponent(TaskTabItem);
+        if (!isValid(selectedId) || selectedId < 0 || !isValid(item)) { return; }
+        let item_sript: TaskTabItem = item.getComponent(TaskTabItem);
         this.clearAllTabContent();
         item_sript.showSubItem = true;
         item_sript.name_lab.color = Color.WHITE;
         item_sript.updateSelectTabContent();
-        if(this.callSelectCallback){
+        if (this.callSelectCallback) {
             this.callSelectCallback(this.tab_datas[selectedId]);
         }
     }
 
-    clearAllTabContent(){
+    clearAllTabContent() {
         for (let index = 0; index < this.tab_scroll.numItems; index++) {
             let item = this.tab_scroll.getItemByListId(index);
             let item_script = item.getComponent(TaskTabItem);

@@ -596,6 +596,7 @@ export class s2cWordbookErrorbookInfo {
     cw_cn: string;//教材单词 中文释义
     g_cn: string;//总词库 中文释义
     book_name: string;//教材名称
+    create_time: string;//创建时间
 }
 /**单词本-错题本收藏本返回 */
 export class s2cWordbookErrorbook extends BaseRepPacket {

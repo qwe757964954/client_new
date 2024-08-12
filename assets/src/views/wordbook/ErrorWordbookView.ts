@@ -9,7 +9,7 @@ import { ReviewSourceType } from '../reviewPlan/ReviewWordListView';
 import { WordItem, WordItemInfo } from './WordItem';
 const { ccclass, property } = _decorator;
 
-const WordbookType = {
+export const ErrorWordbookType = {
     Errorbook: "err",//错题本
     Collect: "collect",//收藏本
 }
@@ -28,6 +28,7 @@ export class ErrorWordbookView extends BaseComponent {
     public btnShowCn: Node = null;
 
     private _isInit: boolean = false;
+    private _sourceType: string = null;
     private _lastSelectTab: Node = null;
     private _showCnFlag: boolean = false;
     private _listData: s2cWordbookErrorbookInfo[] = [];
@@ -35,6 +36,9 @@ export class ErrorWordbookView extends BaseComponent {
 
     protected onDestroy(): void {
         this.clearEvent();
+    }
+    protected onLoad(): void {
+        this.initEvent();
     }
 
     private initEvent() {
@@ -49,17 +53,27 @@ export class ErrorWordbookView extends BaseComponent {
 
         this.addEvent(InterfacePath.c2sWordbookErrorbook, this.onRepErrorbook.bind(this));
     }
-    public init() {
+    public onEnable(): void {
+        if (this._isInit) {
+            if (this._lastSelectTab) {
+                this._lastSelectTab.active = false;
+                this._lastSelectTab = null;
+            }
+            this.onSortByNode(this.btnSortAry[0]);
+        }
+    }
+    public init(sourceType: string) {
         if (this._isInit) return;
         this._isInit = true;
-        this.initEvent();
-        ServiceMgr.wordbookSrv.reqErrorbook(WordbookType.Errorbook);
+        this._sourceType = sourceType;
+        ServiceMgr.wordbookSrv.reqErrorbook(this._sourceType);
     }
     /**错题本返回 */
     private onRepErrorbook(data: s2cWordbookErrorbook) {
         if (200 != data.code) return;
-        if (!data.word_list || data.word_type != WordbookType.Errorbook) return;
+        if (!data.word_list || data.word_type != this._sourceType) return;
         this._listData = data.word_list;
+        this._lastSelectTab = null;
         this.onSortByNode(this.btnSortAry[0]);
         // this.list.numItems = this._listData.length;
     }
@@ -104,14 +118,35 @@ export class ErrorWordbookView extends BaseComponent {
     }
     /**排序按钮 */
     private onSortByNode(node: Node) {
+        console.log("onSortByNode", this._sourceType, this._listData.length);
         let tabNode = node.getChildByName("img_tab");
-        if (tabNode.active) return;
+        if (this._lastSelectTab == tabNode) return;
         tabNode.active = true;
-        let idx = node["idx"];
         if (this._lastSelectTab) {
             this._lastSelectTab.active = false;
         }
         this._lastSelectTab = tabNode;
+        /**排序 */
+        let idx = node["idx"];
+        if (0 == idx) {
+            this._listData.sort((a, b) => {
+                return a.create_time < b.create_time ? 1 : -1;
+            });
+        } else if (1 == idx) {
+            this._listData.sort((a, b) => {
+                return a.create_time >= b.create_time ? 1 : -1;
+            });
+        } else if (2 == idx) {
+            this._listData.sort((a, b) => {
+                return a.word > b.word ? 1 : -1;
+            });
+        } else {
+            this._listData.sort((a, b) => {
+                return a.word <= b.word ? 1 : -1;
+            });
+        }
+
+        this._selectAry = [];
         this.list.numItems = this._listData.length;
     }
     private onBtnSort(event: EventTouch) {
