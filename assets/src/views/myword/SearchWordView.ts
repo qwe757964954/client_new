@@ -67,7 +67,7 @@ export class SearchWordView extends BaseView {
 
     private async onTotalCollectWord(data: any) {
         console.log(data);
-        
+        if(!isValid(this.node) || !this.node.active){return}
         const historyItem = this._historys.find(item => item.word === this._collectWoldInfo.word);
         
         if (historyItem) {
@@ -97,6 +97,7 @@ export class SearchWordView extends BaseView {
 
     private async onMoreWordDetail(data: WordsDetailData) {
         console.log("onMoreWordDetail", data);
+        if(!isValid(this.node) || !this.node.active){return}
         if (data.code !== 200) {
             console.error("获取单词详情失败", data.msg);
             ViewsManager.showTip(TextConfig.Word_Error_Tips);

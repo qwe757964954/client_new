@@ -57,7 +57,7 @@ export class WordPanel extends BaseView {
             ...this._detailData,
             is_collect: this._detailData.collect_flag
         };
-        this.star.getComponent(Sprite).grayscale = !this.star.getComponent(Sprite).grayscale;
+        // this.star.getComponent(Sprite).grayscale = !this.star.getComponent(Sprite).grayscale;
         EventMgr.dispatch(EventType.Search_Collect_Work, searchData);
     }
 
@@ -69,7 +69,7 @@ export class WordPanel extends BaseView {
 
     private async onTotalCollectWord(data: any): Promise<void> {
         this._detailData.collect_flag = this._detailData.collect_flag ? 0 : 1;
-        this.updateStarIcon(data.collect_flag);
+        this.updateStarIcon(this._detailData.collect_flag === 1);
     }
 
     private updateStarIcon(isCollected: boolean): void {
