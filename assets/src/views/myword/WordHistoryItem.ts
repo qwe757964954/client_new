@@ -39,7 +39,6 @@ export class WordHistoryItem extends ListItem {
     }
 
     public updateWordProps(data: SearchWordItem) {
-        console.log(data);
         this._data = data;
         this.lblWord.string = data.word;
         this.cnTxt.string = data.cn;
