@@ -56,16 +56,15 @@ export class WordbookView extends BaseComponent {
     public plRight: Node = null;
 
     private _plRightContentAry: Node[] = [];
-    private _lastSelectTab: Node = null;
-
+    private _tabSelected = 0;
     protected onDestroy(): void {
         this.clearEvent();
     }
     private initEevent() {
 
     }
-    protected onLoad(): void {
-        this.init();
+    protected async onLoad() {
+        await this.init();
     }
     private async init() {
         this.navTitleView.updateNavigationProps("", this.onClose.bind(this));
@@ -89,8 +88,15 @@ export class WordbookView extends BaseComponent {
             }),
         ]);
 
-        this.tabView.updateData(tabInfos, 2);
+        this.tabView.updateData(tabInfos, this._tabSelected);
     }
+
+    public setTabSelected(type: WordbookType){
+        let typeIndex = tabInfos.findIndex(item => item.id as number === type);
+        this._tabSelected = typeIndex;
+        // this.tabView.updateData(tabInfos, typeIndex);
+    }
+
     /**关闭回调 */
     private onClose() {
         this.node.destroy();
@@ -98,14 +104,13 @@ export class WordbookView extends BaseComponent {
     private tabSelect(info: TaskTabInfo) {
         console.log("tabSelect:", info);
         this.navTitleView.setTitleName(info.title);
+        this._plRightContentAry.forEach(element => {
+            element.active = false;
+        });
         let selectTab = this._plRightContentAry[info.id - 1];
-        if (this._lastSelectTab) {
-            this._lastSelectTab.active = false;
-        }
         if (selectTab) {
             selectTab.active = true;
         }
-        this._lastSelectTab = selectTab;
     }
 }
 
