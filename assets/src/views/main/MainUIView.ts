@@ -12,6 +12,7 @@ import { ActServer } from '../../service/ActivityService';
 import CCUtil from '../../util/CCUtil';
 import { ActConfig } from '../activities/ActivityConfig';
 import { ReviewPlanView } from '../reviewPlan/ReviewPlanView';
+import { WordbookType, WordbookView } from '../wordbook/WordbookView';
 import { MainRightActivity } from './MainRightActivity';
 import { MainScene } from './MainScene';
 const { ccclass, property } = _decorator;
@@ -153,8 +154,10 @@ export class MainUIView extends BaseView {
         });
     }
     //翻译查词点击
-    public onClickTranslate() {
-        ViewsManager.instance.showView(PrefabType.SearchWorldView);
+    public async onClickTranslate() {
+       const node = await ViewsManager.instance.showViewAsync(PrefabType.WordbookView);
+       const script:WordbookView = node.getComponent(WordbookView);
+       script.setTabSelected(WordbookType.translate);
         // ViewsManager.showTip(TextConfig.Function_Tip);
     }
     //编辑点击
