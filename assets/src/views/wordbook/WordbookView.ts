@@ -60,7 +60,7 @@ export class WordbookView extends BaseComponent {
     protected onDestroy(): void {
         this.clearEvent();
     }
-    private initEevent() {
+    private initEvent() {
 
     }
     protected async onLoad() {
@@ -91,7 +91,7 @@ export class WordbookView extends BaseComponent {
         this.tabView.updateData(tabInfos, this._tabSelected);
     }
 
-    public setTabSelected(type: WordbookType){
+    public setTabSelected(type: WordbookType) {
         let typeIndex = tabInfos.findIndex(item => item.id as number === type);
         this._tabSelected = typeIndex;
         // this.tabView.updateData(tabInfos, typeIndex);
