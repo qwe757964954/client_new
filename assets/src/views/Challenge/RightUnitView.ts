@@ -63,8 +63,9 @@ export class RightUnitView extends Component {
     }
 
     updateRightPlan(data: BookPlanDetail) {
-        const level = TextbookUtil.calculateLevels(data.gate_total, data.num);
-        this.plan_label.string = `${level}/${data.num}`;
+        let Remaining =  data.gate_total - data.gate_pass_total
+        const level = TextbookUtil.calculateLevels(Remaining, data.num);
+        this.plan_label.string = `${level}/${Remaining}`;
     }
     updateUnitProps(unitData: CurrentBookStatus) {
         console.log("updateUnitProps", unitData);

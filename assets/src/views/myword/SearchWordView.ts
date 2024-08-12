@@ -60,12 +60,10 @@ export class SearchWordView extends BaseView {
     }
     
     private async onSearchCollectWork(data:SearchWordItem){
-        if(!isValid(this.node) || !this.node.active){return}
         this._collectWoldInfo = data;
     }
 
     private async onTotalCollectWord(data: any) {
-        console.log(data);
         if(!isValid(this.node) || !this.node.active){return}
         const historyItem = this._historys.find(item => item.word === this._collectWoldInfo.word);
         
