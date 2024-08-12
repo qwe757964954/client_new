@@ -5,6 +5,7 @@ import { ServiceMgr } from '../../net/ServiceManager';
 import { BaseComponent } from '../../script/BaseComponent';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
+import { ToolUtil } from '../../util/ToolUtil';
 import { ReviewSourceType } from '../reviewPlan/ReviewWordListView';
 import { WordItem, WordItemInfo } from './WordItem';
 const { ccclass, property } = _decorator;
@@ -13,7 +14,7 @@ export const ErrorWordbookType = {
     Errorbook: "err",//错题本
     Collect: "collect",//收藏本
 }
-
+const c_btnSelectCount = 10;
 @ccclass('ErrorWordbookView')
 export class ErrorWordbookView extends BaseComponent {
     @property(List)
@@ -26,6 +27,12 @@ export class ErrorWordbookView extends BaseComponent {
     public btnSortAry: Node[] = [];
     @property(Node)
     public btnShowCn: Node = null;
+    @property(Node)
+    public btnSelectAll: Node = null;
+    @property(Node)
+    public btnSelectTen: Node = null;
+    @property(Node)
+    public btnSelectRand: Node = null;
 
     private _isInit: boolean = false;
     private _sourceType: string = null;
@@ -45,6 +52,9 @@ export class ErrorWordbookView extends BaseComponent {
         CCUtil.onTouch(this.btnReview1, this.onBtnReview1, this);
         CCUtil.onTouch(this.btnReview2, this.onBtnReview2, this);
         CCUtil.onTouch(this.btnShowCn, this.onBtnShowCn, this);
+        CCUtil.onTouch(this.btnSelectAll, this.onBtnSelectAll, this);
+        CCUtil.onTouch(this.btnSelectTen, this.onBtnSelectTen, this);
+        CCUtil.onTouch(this.btnSelectRand, this.onBtnSelectRand, this);
         for (let i = 0; i < this.btnSortAry.length; i++) {
             const element = this.btnSortAry[i];
             element["idx"] = i;
@@ -108,13 +118,29 @@ export class ErrorWordbookView extends BaseComponent {
             this._selectAry[idx] = status;
         });
     }
+    /**获得学习单词 */
+    private getStudyWords() {
+        let ary = [];
+        for (let i = 0; i < this._selectAry.length; i++) {
+            if (this._selectAry[i]) {
+                ary.push(this._listData[i]);
+            }
+        }
+        return ary;
+    }
     /**词义训练 */
     private onBtnReview1() {
-
+        let studyWords = this.getStudyWords();
+        if (studyWords.length == 0) {
+            return;
+        }
     }
     /**拼写训练 */
     private onBtnReview2() {
-
+        let studyWords = this.getStudyWords();
+        if (studyWords.length == 0) {
+            return;
+        }
     }
     /**排序按钮 */
     private onSortByNode(node: Node) {
@@ -146,7 +172,7 @@ export class ErrorWordbookView extends BaseComponent {
             });
         }
 
-        this._selectAry = [];
+        this._selectAry = Array.from({ length: this._listData.length }, () => false);;
         this.list.numItems = this._listData.length;
     }
     private onBtnSort(event: EventTouch) {
@@ -157,6 +183,26 @@ export class ErrorWordbookView extends BaseComponent {
         let tabNode = this.btnShowCn.getChildByName("img_tab");
         this._showCnFlag = !tabNode.active;
         tabNode.active = this._showCnFlag;
+        this.list.updateAll();
+    }
+    /**全部选择 */
+    private onBtnSelectAll() {
+        this._selectAry.fill(true);
+        this.list.updateAll();
+    }
+    /**顺序选择十个 */
+    private onBtnSelectTen() {
+        let needCount = Math.min(c_btnSelectCount, this._selectAry.length);
+        this._selectAry.fill(true, 0, needCount);
+        this._selectAry.fill(false, needCount);
+    }
+    /**随机选择十个 */
+    private onBtnSelectRand() {
+        this._selectAry.fill(false);
+        let ary = ToolUtil.getRandomUniqueItemsIdx(this._selectAry, c_btnSelectCount);
+        for (let i = 0; i < ary.length; i++) {
+            this._selectAry[ary[i]] = true;
+        }
         this.list.updateAll();
     }
 }

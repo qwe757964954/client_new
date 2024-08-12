@@ -1,4 +1,5 @@
 import { _decorator, Component, Label, Node, Toggle } from 'cc';
+import { RemoteSoundMgr } from '../../manager/RemoteSoundManager';
 import { SoundMgr } from '../../manager/SoundMgr';
 import CCUtil from '../../util/CCUtil';
 const { ccclass, property } = _decorator;
@@ -63,6 +64,7 @@ export class WordItem extends Component {
     }
 
     private onHorn() {
+        RemoteSoundMgr.playWord(this._data.word);
     }
 
     private onMore() {
@@ -73,8 +75,11 @@ export class WordItem extends Component {
 
     private onSelect() {
         SoundMgr.click();
+        let isSelect = this.toggle.isChecked;
+        this.bg.active = !isSelect;
+        this.selectBg.active = isSelect;
         if (this._selectCall) {
-            this._selectCall(this._data, this.toggle.isChecked);
+            this._selectCall(this._data, isSelect);
         }
     }
 }

@@ -69,6 +69,29 @@ export class ToolUtil {
     static getRandomItem<T>(arr: T[]): T {
         return arr[Math.floor(Math.random() * arr.length)];
     }
+    /**数组随机取n个不重复的元素 */
+    static getRandomUniqueItems<T>(arr: T[], n: number): T[] {
+        let ret: T[] = [];
+        let tmpList = Array.from({ length: arr.length }, (_, x) => x);
+        for (let i = 0; i < n; i++) {
+            if (tmpList.length == 0) break;
+            let idx = ToolUtil.getRandomInt(0, tmpList.length - 1);
+            ret.push(arr[tmpList[idx]]);
+            tmpList.splice(idx, 1);
+        }
+        return ret;
+    }
+    static getRandomUniqueItemsIdx<T>(arr: T[], n: number): number[] {
+        let ret: number[] = [];
+        let tmpList = Array.from({ length: arr.length }, (_, x) => x);
+        for (let i = 0; i < n; i++) {
+            if (tmpList.length == 0) break;
+            let idx = ToolUtil.getRandomInt(0, tmpList.length - 1);
+            ret.push(tmpList[idx]);
+            tmpList.splice(idx, 1);
+        }
+        return ret;
+    }
 
     /**透明度渐变 */
     static toggleOpacity(node: Node, transTime = 0, endOpacity = 0, onUpdate = (target) => { }) {
