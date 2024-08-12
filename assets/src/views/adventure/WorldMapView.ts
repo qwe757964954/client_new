@@ -46,7 +46,6 @@ export class WorldMapView extends BaseView {
     private currentPassIsland: number = 0;
     private _worldIsland:WorldIsland = null;
     protected initUI(): void {
-        this._worldIsland = this.currentIsland.getComponent(WorldIsland);
         this.initData();
         this.offViewAdaptSize();
         this.islandContainer.position = v3(-GlobalConfig.WIN_SIZE.width / 2, 0, 0);
@@ -118,6 +117,7 @@ export class WorldMapView extends BaseView {
             this.currentIsland.destroy();
         }
         this.currentIsland = instantiate(this.islandPref);
+        this._worldIsland = this.currentIsland.getComponent(WorldIsland);
         this.islandContainer.addChild(this.currentIsland);
         this._worldIsland.setPointsData(this.currentIslandID, data);
     }
