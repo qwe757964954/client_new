@@ -9,6 +9,8 @@ export class WordItemInfo {
     cn: string;//中文解释
     symbol: string;//音标 英标
     symbolus: string;//音标 美标
+    w_id?: string;//单词id
+    next_review_time?: number;//下次复习时间
 
     isShowCn: boolean = true;
     isSelect: boolean = null;

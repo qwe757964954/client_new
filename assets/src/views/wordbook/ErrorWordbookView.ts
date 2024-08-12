@@ -63,7 +63,7 @@ export class ErrorWordbookView extends BaseComponent {
 
         this.addEvent(InterfacePath.c2sWordbookErrorbook, this.onRepErrorbook.bind(this));
     }
-    public onEnable(): void {
+    protected onEnable(): void {
         if (this._isInit) {
             if (this._lastSelectTab) {
                 this._lastSelectTab.active = false;

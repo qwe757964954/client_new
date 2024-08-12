@@ -3,9 +3,11 @@ import { PrefabType } from '../../config/PrefabType';
 import { LoadManager } from '../../manager/LoadManager';
 import { BaseComponent } from '../../script/BaseComponent';
 import { NavTitleView } from '../common/NavTitleView';
+import { ReviewSourceType } from '../reviewPlan/ReviewWordListView';
 import { TaskTabInfo } from '../task/TaskInfo';
 import { TaskTabView } from '../task/TaskTabView';
 import { ErrorWordbookType, ErrorWordbookView } from './ErrorWordbookView';
+import { ReviewWordbookView } from './ReviewWordbookView';
 const { ccclass, property } = _decorator;
 
 export enum WordbookType {
@@ -71,6 +73,16 @@ export class WordbookView extends BaseComponent {
         this.tabView.setTabSelectClick(this.tabSelect.bind(this));
 
         await Promise.all([
+            LoadManager.loadPrefab(PrefabType.ReviewWordbookView.path, this.plRight).then((node: Node) => {
+                this._plRightContentAry[0] = node;
+                node.getComponent(ReviewWordbookView).init(ReviewSourceType.word_game);
+                node.active = false;
+            }),
+            LoadManager.loadPrefab(PrefabType.ReviewWordbookView.path, this.plRight).then((node: Node) => {
+                this._plRightContentAry[1] = node;
+                node.getComponent(ReviewWordbookView).init(ReviewSourceType.classification);
+                node.active = false;
+            }),
             LoadManager.loadPrefab(PrefabType.ErrorWordbookView.path, this.plRight).then((node: Node) => {
                 this._plRightContentAry[2] = node;
                 node.getComponent(ErrorWordbookView).init(ErrorWordbookType.Errorbook);
