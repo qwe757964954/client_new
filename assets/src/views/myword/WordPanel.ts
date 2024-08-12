@@ -5,6 +5,7 @@ import { TextConfig } from '../../config/TextConfig';
 import { RemoteSoundMgr } from '../../manager/RemoteSoundManager';
 import { WordsDetailData } from '../../models/AdventureModel';
 import { InterfacePath } from '../../net/InterfacePath';
+import { ServiceMgr } from '../../net/ServiceManager';
 import { BaseView } from '../../script/BaseView';
 import CCUtil from '../../util/CCUtil';
 import { EventMgr } from '../../util/EventManager';
@@ -57,8 +58,9 @@ export class WordPanel extends BaseView {
             ...this._detailData,
             is_collect: this._detailData.collect_flag
         };
-        // this.star.getComponent(Sprite).grayscale = !this.star.getComponent(Sprite).grayscale;
         EventMgr.dispatch(EventType.Search_Collect_Work, searchData);
+        let status = searchData.is_collect ? 0:1;
+        ServiceMgr.studyService.totalCollectWord(searchData.word,status);
     }
 
     protected onInitModuleEvent(): void {

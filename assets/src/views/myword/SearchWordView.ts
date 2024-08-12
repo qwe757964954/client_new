@@ -58,11 +58,10 @@ export class SearchWordView extends BaseView {
         this._collectWoldInfo = data;
         ServiceMgr.studyService.moreWordDetail(this._collectWoldInfo.word);
     }
-
+    
     private async onSearchCollectWork(data:SearchWordItem){
+        if(!isValid(this.node) || !this.node.active){return}
         this._collectWoldInfo = data;
-        let status = this._collectWoldInfo.is_collect ? 0:1;
-        ServiceMgr.studyService.totalCollectWord(this._collectWoldInfo.word,status);
     }
 
     private async onTotalCollectWord(data: any) {
@@ -80,9 +79,7 @@ export class SearchWordView extends BaseView {
             console.error(`History item with word ${this._collectWoldInfo.word} not found.`);
         }
     }
-
     
-
     private async onSearchWord(data: SearchWordResponse) {
         console.log(data);
         if (!isValid(data.word)) {
