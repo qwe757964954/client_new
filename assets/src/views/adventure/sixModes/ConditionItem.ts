@@ -22,10 +22,12 @@ export class ConditionItem extends ListItem {
         
     }
 
-    updateItemProps(key: string, value:number){
+    updateItemProps(idx: number, data:any){
+        const key = Object.keys(ClearanceConditionsConfig)[idx];
         this.title_txt.string = ClearanceConditionsConfig[key];
-        this.icon_star.getComponent(Sprite).grayscale = value === 0;
-        this.answer_icon.active = value === 1;
+        const value = data[key] === 1;
+        this.icon_star.getComponent(Sprite).grayscale = !value;
+        this.answer_icon.active = value;
     }
 }
 

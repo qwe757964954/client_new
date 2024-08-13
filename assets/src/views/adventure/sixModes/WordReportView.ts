@@ -80,7 +80,7 @@ export class WordReportView extends BaseView {
             this.showResultSpAni(currentAnim, idleAnim);
             this._propsData = this.extractRewardData(data.award_info);
             this.reward_scroll.numItems = this._propsData.length;
-            this.condition_scroll.numItems = numFlags;
+            this.condition_scroll.numItems = Object.keys(ClearanceConditionsConfig).length;
 
             this.showRewardSpAni();
             SoundMgr.victory();
@@ -200,8 +200,6 @@ export class WordReportView extends BaseView {
 
     onLoadConditionVertical(item: Node, idx: number) {
         const itemScript = item.getComponent(ConditionItem);
-        const keys = Object.keys(this._resultSubmitResponse.flag_info);
-        const key = keys[idx];
-        itemScript.updateItemProps(key, this._resultSubmitResponse.flag_info[key]);
+        itemScript.updateItemProps(idx, this._resultSubmitResponse.flag_info);
     }
 }
