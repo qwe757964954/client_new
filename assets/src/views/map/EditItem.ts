@@ -1,4 +1,5 @@
 import { _decorator, Component, EventTouch, Label, Node, Sprite, SpriteFrame, UITransform, Vec2, Vec3 } from 'cc';
+import { EventType } from '../../config/EventType';
 import { MapConfig } from '../../config/MapConfig';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
@@ -7,6 +8,7 @@ import { LoadManager } from '../../manager/LoadManager';
 import { SoundMgr } from '../../manager/SoundMgr';
 import { ViewsMgr } from '../../manager/ViewsManager';
 import CCUtil from '../../util/CCUtil';
+import { EventMgr } from '../../util/EventManager';
 import { TimerMgr } from '../../util/TimerMgr';
 import { ToolUtil } from '../../util/ToolUtil';
 import { BuildingSellView } from './BuildingSellView';
@@ -164,8 +166,7 @@ export class EditItem extends Component {
                 // data.needBuilt = this._data.needBuilt;
                 // data.count = count;
                 this._data.count = count;
-                // EventMgr.emit(EventType.Building_Batch_Sell, this._data);
-                ViewsMgr.showTip(TextConfig.Function_Tip);
+                EventMgr.emit(EventType.Building_Batch_Sell, this._data);
             });
         });
     }
