@@ -1,4 +1,5 @@
 import { _decorator, EventTouch, Node } from 'cc';
+import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { ViewsMgr } from '../../manager/ViewsManager';
@@ -53,14 +54,11 @@ export class ReviewWordbookView extends BaseComponent {
 
         this.addEvent(InterfacePath.c2sReviewPlanList, this.onRepReviewPlanList.bind(this));
         this.addEvent(InterfacePath.c2sReviewPlanStatus, this.onRepReviewPlanStatus.bind(this));
+        this.addEvent(EventType.Wordbook_List_Refresh, this.onWordbookListRefresh.bind(this));
     }
     protected onEnable(): void {
         if (this._isInit) {
-            if (this._lastSelectTab) {
-                this._lastSelectTab.active = false;
-                this._lastSelectTab = null;
-            }
-            this.onSortByNode(this.btnSortAry[0]);
+            this.onStartListRefresh();
         }
     }
 
@@ -199,6 +197,18 @@ export class ReviewWordbookView extends BaseComponent {
             });
         };
         showView();
+    }
+    /**通知列表刷新 */
+    private onWordbookListRefresh() {
+        this.onStartListRefresh();
+    }
+    /**开始列表刷新 */
+    private onStartListRefresh() {
+        if (this._lastSelectTab) {
+            this._lastSelectTab.active = false;
+            this._lastSelectTab = null;
+        }
+        this.onSortByNode(this.btnSortAry[0]);
     }
 }
 

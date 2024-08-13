@@ -1,4 +1,5 @@
 import { _decorator, Label, Node, sp, Vec3 } from 'cc';
+import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { ItemData } from '../../manager/DataMgr';
@@ -10,6 +11,7 @@ import { InterfacePath } from '../../net/InterfacePath';
 import { ServiceMgr } from '../../net/ServiceManager';
 import { BaseComponent } from '../../script/BaseComponent';
 import CCUtil from '../../util/CCUtil';
+import { EventMgr } from '../../util/EventManager';
 import List from '../../util/list/List';
 import { ToolUtil } from '../../util/ToolUtil';
 import { WordSourceType } from '../adventure/sixModes/BaseModeView';
@@ -109,6 +111,7 @@ export class ReviewEndView extends BaseComponent {
     }
     /**完成复习 */
     onBtnEndClick() {
+        EventMgr.emit(EventType.Wordbook_List_Refresh);
         ServiceMgr.studyService.reqReviewPlan();//刷新复习规划
         this.node.destroy();
     }

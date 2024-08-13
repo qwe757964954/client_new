@@ -1,4 +1,5 @@
 import { _decorator, EventTouch, Node } from 'cc';
+import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { ViewsMgr } from '../../manager/ViewsManager';
 import { s2cWordbookErrorbook, s2cWordbookErrorbookInfo } from '../../models/NetModel';
@@ -64,6 +65,7 @@ export class ErrorWordbookView extends BaseComponent {
         }
 
         this.addEvent(InterfacePath.c2sWordbookErrorbook, this.onRepErrorbook.bind(this));
+        this.addEvent(EventType.Wordbook_List_Refresh, this.onWordbookListRefresh.bind(this));
     }
     protected onEnable(): void {
         if (this._isInit) {
@@ -79,7 +81,6 @@ export class ErrorWordbookView extends BaseComponent {
         this._isInit = true;
         this._sourceType = sourceType;
         ServiceMgr.wordbookSrv.reqErrorbook(this.getSourceStr());
-
     }
     /**获得来源字符串 */
     private getSourceStr() {
@@ -88,7 +89,7 @@ export class ErrorWordbookView extends BaseComponent {
         } else if (WordSourceType.collectWordbook == this._sourceType) {
             return "collect";
         }
-        return ""
+        return "";
     }
     /**错题本返回 */
     private onRepErrorbook(data: s2cWordbookErrorbook) {
@@ -98,6 +99,10 @@ export class ErrorWordbookView extends BaseComponent {
         this._lastSelectTab = null;
         this.onSortByNode(this.btnSortAry[0]);
         // this.list.numItems = this._listData.length;
+    }
+    /**通知列表刷新 */
+    private onWordbookListRefresh() {
+        ServiceMgr.wordbookSrv.reqErrorbook(this.getSourceStr());
     }
     /**获得单词中文 */
     private getCn(data: s2cWordbookErrorbookInfo) {

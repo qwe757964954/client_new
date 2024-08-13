@@ -726,7 +726,10 @@ export class BaseModeView extends BaseView {
             if (WordSourceType.classification == this._sourceType) {
                 EventMgr.dispatch(EventType.Exit_Island_Level);
             } else if (WordSourceType.review == this._sourceType || WordSourceType.reviewSpecial === this._sourceType) {
+                EventMgr.emit(EventType.Wordbook_List_Refresh);// 通知
                 ServiceMgr.studyService.reqReviewPlan();//刷新复习规划
+            } else if (WordSourceType.errorWordbook == this._sourceType || WordSourceType.collectWordbook == this._sourceType) {
+                EventMgr.emit(EventType.Wordbook_List_Refresh);// 通知
             }
             this.node.destroy();
         }).then((confirmView) => {

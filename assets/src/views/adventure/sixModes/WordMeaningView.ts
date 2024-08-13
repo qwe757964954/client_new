@@ -1,4 +1,5 @@
 import { _decorator, Label, Node, Sprite, SpriteFrame, tween, Vec3 } from 'cc';
+import { EventType } from '../../../config/EventType';
 import { NetConfig } from '../../../config/NetConfig';
 import { PrefabType } from '../../../config/PrefabType';
 import { TextConfig } from '../../../config/TextConfig';
@@ -13,6 +14,7 @@ import { UnitWordModel } from '../../../models/TextbookModel';
 import { InterfacePath } from '../../../net/InterfacePath';
 import { ServiceMgr } from '../../../net/ServiceManager';
 import CCUtil from '../../../util/CCUtil';
+import { EventMgr } from '../../../util/EventManager';
 import { Shake } from '../../../util/Shake';
 import { ToolUtil } from '../../../util/ToolUtil';
 import { WordDetailView } from '../../common/WordDetailView';
@@ -359,8 +361,8 @@ export class WordMeaningView extends BaseModeView {
             return;
         }
         if (WordSourceType.errorWordbook == this._sourceType || WordSourceType.collectWordbook == this._sourceType) {
+            EventMgr.emit(EventType.Wordbook_List_Refresh);// 通知
             ViewsMgr.showAlert(TextConfig.All_level_Tip, () => {
-                // 通知
                 this.node.destroy();
             });
             return;

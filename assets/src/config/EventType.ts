@@ -100,6 +100,9 @@ export const EventType = {
     CardBookView_CardClick: "CardBookView_CardClick",
     CardBookView_CardWord: "CardBookView_CardWord",
 
+    Wordbook_List_Refresh: "Wordbook_List_Refresh", //单词本刷新单词列表
+    Word_Collect_Refresh: "Word_Collect_Refresh", //单词收藏状态刷新
+
 
     /**新人豪礼相关 */
     NewBieGift_GetDayGift: "NewBieGift_GetDayGift", //获取当天的礼物
