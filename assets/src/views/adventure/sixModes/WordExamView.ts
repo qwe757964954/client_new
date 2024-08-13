@@ -1,14 +1,17 @@
 import { _decorator, instantiate, Label, Node, NodePool, Prefab, Sprite, SpriteFrame, Vec3 } from 'cc';
+import { EventType } from '../../../config/EventType';
 import { PrefabType } from '../../../config/PrefabType';
+import { TextConfig } from '../../../config/TextConfig';
 import { SoundMgr } from '../../../manager/SoundMgr';
-import { ViewsManager } from '../../../manager/ViewsManager';
+import { ViewsManager, ViewsMgr } from '../../../manager/ViewsManager';
 import { GameMode } from '../../../models/AdventureModel';
 import { UnitWordModel } from '../../../models/TextbookModel';
+import CCUtil from '../../../util/CCUtil';
+import { EventMgr } from '../../../util/EventManager';
 import List from '../../../util/list/List';
-import { BaseModeView } from './BaseModeView';
+import { BaseModeView, WordSourceType } from './BaseModeView';
 import { ExamReportView } from './ExamReportView';
 import { ExamItem } from './items/ExamItem';
-import CCUtil from '../../../util/CCUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordExamView')
@@ -94,7 +97,7 @@ export class WordExamView extends BaseModeView {
             if (this._fillLetters.join("") == this._rightWordData.word) { //正确
                 console.log("选择正确");
                 this.resultIcon.spriteFrame = this.rightIcon;
-                this.onGameSubmit(this._rightWordData.word, true);
+                this.onGameSubmit(this._rightWordData.word, true, this._rightWordData, this._fillLetters.join(""));
                 this._rightNum++;
                 this._comboNum++;
                 this.showRightSpAni();
@@ -122,7 +125,7 @@ export class WordExamView extends BaseModeView {
             } else { //错误
                 console.log("选择错误");
                 this.resultIcon.spriteFrame = this.wrongIcon;
-                this.onGameSubmit(this._rightWordData.word, false);
+                this.onGameSubmit(this._rightWordData.word, false, this._rightWordData, this._fillLetters.join(""));
                 this._comboNum = 0;
                 SoundMgr.wrong();
                 // if (this._wrongWordList.indexOf(this._rightWordData) == -1 && !this._wrongMode && !this._errorWords[this._rightWordData.word]) {
@@ -171,6 +174,13 @@ export class WordExamView extends BaseModeView {
     protected modeOver(): void {
         super.modeOver();
         console.log('评测完成，显示结算');
+        if (WordSourceType.errorWordbook == this._sourceType || WordSourceType.collectWordbook == this._sourceType) {
+            EventMgr.emit(EventType.Wordbook_List_Refresh);
+            ViewsMgr.showAlert(TextConfig.All_level_Tip, () => {
+                this.node.destroy();
+            });
+            return;
+        }
         if (this._currentSubmitResponse.pass_flag == 1 || this._currentSubmitResponse.pass_flag == 2) { //成功或失败
             ViewsManager.instance.showView(PrefabType.ExamReportView, (node: Node) => {
                 let nodeScript = node.getComponent(ExamReportView);

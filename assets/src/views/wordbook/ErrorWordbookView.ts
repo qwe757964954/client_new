@@ -10,6 +10,7 @@ import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
 import { ToolUtil } from '../../util/ToolUtil';
 import { WordSourceType } from '../adventure/sixModes/BaseModeView';
+import { WordExamView } from '../adventure/sixModes/WordExamView';
 import { WordMeaningView } from '../adventure/sixModes/WordMeaningView';
 import { ReviewWordModel } from '../reviewPlan/ReviewPlanView';
 import { ReviewSourceType } from '../reviewPlan/ReviewWordListView';
@@ -145,19 +146,14 @@ export class ErrorWordbookView extends BaseComponent {
         }
         return ary;
     }
-    /**词义训练 */
-    private onBtnReview1() {
-        let studyWords = this.getStudyWords();
-        if (studyWords.length == 0) {
-            return;
-        }
+    /**获得单词数据 */
+    private getWordsData(studyWords: s2cWordbookErrorbookInfo[]) {
         let wordsdata: ReviewWordModel[] = [];
         studyWords.forEach((value: s2cWordbookErrorbookInfo) => {
             let word = new ReviewWordModel();
             word.cn = this.getCn(value);;
             word.w_id = value.w_id;
             word.word = value.word;
-            // word.wp_id = value.wp_id;
             word.symbol = value.symbol;
             word.symbolus = value.symbolus;
             word.book_id = value.book_id;
@@ -169,6 +165,15 @@ export class ErrorWordbookView extends BaseComponent {
             word.cw_id = value.cw_id;
             wordsdata.push(word);
         });
+        return wordsdata;
+    }
+    /**词义训练 */
+    private onBtnReview1() {
+        let studyWords = this.getStudyWords();
+        if (studyWords.length == 0) {
+            return;
+        }
+        let wordsdata: ReviewWordModel[] = this.getWordsData(studyWords);
         ViewsMgr.showView(PrefabType.WordMeaningView, (node: Node) => {
             node.getComponent(WordMeaningView).initData(wordsdata, {
                 source_type: this._sourceType,
@@ -186,6 +191,17 @@ export class ErrorWordbookView extends BaseComponent {
         if (studyWords.length == 0) {
             return;
         }
+        let wordsdata: ReviewWordModel[] = this.getWordsData(studyWords);
+        ViewsMgr.showView(PrefabType.WordExamView, (node: Node) => {
+            node.getComponent(WordExamView).initData(wordsdata, {
+                source_type: this._sourceType,
+                pass_num: 0,
+                word_num: 0,
+                error_num: 0,
+                wordCount: wordsdata.length,
+                monster_id: EducationLevel.ElementaryGrade1
+            });
+        });
     }
     /**排序按钮 */
     private onSortByNode(node: Node) {
