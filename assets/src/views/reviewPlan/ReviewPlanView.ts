@@ -17,6 +17,7 @@ import CCUtil from '../../util/CCUtil';
 import { ToolUtil } from '../../util/ToolUtil';
 import { WordSourceType } from '../adventure/sixModes/BaseModeView';
 import { WordMeaningView } from '../adventure/sixModes/WordMeaningView';
+import { EducationLevel } from '../TextbookVocabulary/TextbookInfo';
 import { TextbookListView } from '../TextbookVocabulary/TextbookListView';
 import { ReviewAdjustPlanView } from './ReviewAdjustPlanView';
 import { ReviewPlanRuleView } from './ReviewPlanRuleView';
@@ -448,7 +449,7 @@ export class ReviewPlanView extends BaseComponent {
                     error_num: errorNum,
                     souceType: this._souceType,
                     wordCount: wordCount,
-                    monster_id: this._bookData.monster_id
+                    monster_id: EducationLevel.ElementaryGrade1
                 });
             });
         };

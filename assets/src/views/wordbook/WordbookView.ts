@@ -11,8 +11,8 @@ import { ReviewWordbookView } from './ReviewWordbookView';
 const { ccclass, property } = _decorator;
 
 export enum WordbookType {
-    review_classification = 1,//教材单词复习
-    review_word_game = 2,//单词大冒险复习
+    review_word_game = 1,//单词大冒险复习
+    review_classification = 2,//教材单词复习
     errorbook = 3,//错题本
     collection = 4,//收藏本
     translate = 5,//翻译查词
@@ -20,13 +20,13 @@ export enum WordbookType {
 
 const tabInfos: TaskTabInfo[] = [
     {
-        id: WordbookType.review_classification as number,
-        title: "教材-复习本",
+        id: WordbookType.review_word_game as number,
+        title: "大冒险-复习本",
         subTabItems: [],
     },
     {
-        id: WordbookType.review_word_game as number,
-        title: "大冒险-复习本",
+        id: WordbookType.review_classification as number,
+        title: "教材-复习本",
         subTabItems: [],
     },
     {

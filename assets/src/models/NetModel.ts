@@ -428,6 +428,15 @@ export class s2cReviewPlanListInfo {
     word: string;//单词
     next_review_time: number;//下次复习时间
     cn: string;//中文释义
+    symbol: string;//音标
+    symbolus: string;//美标
+    source: number;//来源 2表示单词大冒险 1表示教材单词
+    big_id: number;//岛屿id
+    small_id: number;//关卡id
+    book_id: string;//教材id
+    book_name: string;//教材名称
+    grade: string;//教材年级
+    unit_id: string;//单元id
 }
 export class s2cReviewPlanList extends BaseRepPacket {
     today_timestamp: number;//今日时间戳
@@ -464,6 +473,7 @@ export class s2cReviewPlanWordInfo {
 /**复习规划状态与单词列表返回 */
 export class s2cReviewPlanStatus extends BaseRepPacket {
     ws_id: string;//单词复习的状态数据id
+    source: number;//来源 2表示单词大冒险 1表示教材单词
     pass_num: number;//已通过单词数
     word_num: number;//复习过单词数
     need_review_num: number;//今日还需要复习单词数

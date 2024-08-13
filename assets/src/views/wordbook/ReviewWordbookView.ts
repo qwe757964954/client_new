@@ -1,13 +1,19 @@
 import { _decorator, EventTouch, Node } from 'cc';
+import { PrefabType } from '../../config/PrefabType';
+import { TextConfig } from '../../config/TextConfig';
 import { ViewsMgr } from '../../manager/ViewsManager';
-import { s2cReviewPlanList } from '../../models/NetModel';
+import { s2cReviewPlanList, s2cReviewPlanStatus } from '../../models/NetModel';
 import { InterfacePath } from '../../net/InterfacePath';
 import { ServiceMgr } from '../../net/ServiceManager';
 import { BaseComponent } from '../../script/BaseComponent';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
+import { WordSourceType } from '../adventure/sixModes/BaseModeView';
+import { WordMeaningView } from '../adventure/sixModes/WordMeaningView';
+import { ReviewWordModel } from '../reviewPlan/ReviewPlanView';
 import { ReviewSourceType } from '../reviewPlan/ReviewWordListView';
-import { WordItemInfo } from './WordItem';
+import { EducationLevel } from '../TextbookVocabulary/TextbookInfo';
+import { WordItem, WordItemInfo } from './WordItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('ReviewWordbookView')
@@ -46,6 +52,7 @@ export class ReviewWordbookView extends BaseComponent {
         }
 
         this.addEvent(InterfacePath.c2sReviewPlanList, this.onRepReviewPlanList.bind(this));
+        this.addEvent(InterfacePath.c2sReviewPlanStatus, this.onRepReviewPlanStatus.bind(this));
     }
     protected onEnable(): void {
         if (this._isInit) {
@@ -58,7 +65,9 @@ export class ReviewWordbookView extends BaseComponent {
     }
 
     public init(souceType: ReviewSourceType): void {
+        if (this._isInit) return;
         this._souceType = souceType;
+        this._isInit = true;
         this.onSortByNode(this.btnSortAry[0]);
     }
 
@@ -67,17 +76,18 @@ export class ReviewWordbookView extends BaseComponent {
         data.idx = idx;
         data.isSelect = null;
         data.isShowCn = this._showCnFlag;
-        // node.getComponent(WordItem).init(data);
+        node.getComponent(WordItem).init(data);
     }
 
     private onBtnReview() {
-
+        ServiceMgr.studyService.reqReviewPlanStatus(this._souceType);
     }
     private onSortByNode(node: Node) {
         let tabNode = node.getChildByName("img_tab");
         if (this._lastSelectTab == tabNode) return;
         tabNode.active = true;
         let idx = node["idx"];
+        console.log("onSortByNode:", idx);
         if (this._lastSelectTab) {
             this._lastSelectTab.active = false;
         }
@@ -88,7 +98,8 @@ export class ReviewWordbookView extends BaseComponent {
         } else {
             type = "all";
         }
-        // this.list.node.active = false;
+        this.list.node.active = false;
+        this.btnReview.active = false;
         ServiceMgr.studyService.reqReviewPlanList(this._souceType, type);
     }
     private onBtnSort(event: EventTouch) {
@@ -109,6 +120,8 @@ export class ReviewWordbookView extends BaseComponent {
             ViewsMgr.showAlert(data.msg);
             return;
         }
+        this._listData = [];
+        let canReview = false;
         this._today = data.today_timestamp;
         data.need_review_list.forEach(item => {
             let info = this._listData.find(obj => obj.w_id == item.w_id);
@@ -119,10 +132,70 @@ export class ReviewWordbookView extends BaseComponent {
             }
             info.word = item.word;
             info.cn = item.cn;
+            info.symbol = item.symbol;
+            info.symbolus = item.symbolus;
             info.next_review_time = item.next_review_time;
+            if (this._today == item.next_review_time) canReview = true;
         });
-        // this.list.node.active = true;
+        this.list.node.active = true;
+        this.btnReview.active = canReview && (this._listData.length > 0);
         this.list.numItems = this._listData.length;
+    }
+    /**复习规划状态与单词列表 */
+    onRepReviewPlanStatus(data: s2cReviewPlanStatus) {
+        if (200 != data.code) {
+            ViewsMgr.showAlert(data.msg);
+            return;
+        }
+        if (!data.review_wp_list || data.review_wp_list.length == 0) {
+            ViewsMgr.showTip(TextConfig.ReviewPlan_Null);
+            return;
+        }
+        if (data.source != this._souceType) {
+            return;
+        }
+
+        let wordsdata: ReviewWordModel[] = [];
+        data.review_wp_list.forEach((value) => {
+            let word: ReviewWordModel = new ReviewWordModel();
+            word.cn = value.cn;
+            word.w_id = value.w_id;
+            word.word = value.word;
+            word.wp_id = value.wp_id;
+            word.symbol = value.symbol;
+            word.symbolus = value.symbolus;
+            word.book_id = value.book_id;
+            word.unit_id = value.unit_id;
+            word.big_id = value.big_id;
+            word.subject_id = value.subject_id;
+            wordsdata.push(word);
+        });
+        let errorNum = 0;
+        for (const key in data.error_wp_info) {
+            const value = data.error_wp_info[key];
+            errorNum++;
+            let word = wordsdata.find(val => val.wp_id == key);
+            if (!word) continue;
+            wordsdata.push(word);
+        }
+        let wordCount = data.review_wp_list.length;
+        let wordNum = Math.min(wordCount, data.word_num);
+        console.log("wordsdata", errorNum, wordsdata);
+        let showView = () => {
+            ViewsMgr.showView(PrefabType.WordMeaningView, (node: Node) => {
+                node.getComponent(WordMeaningView).initData(wordsdata, {
+                    source_type: WordSourceType.review,
+                    ws_id: data.ws_id,
+                    pass_num: data.pass_num,
+                    word_num: wordNum,
+                    error_num: errorNum,
+                    souceType: this._souceType,
+                    wordCount: wordCount,
+                    monster_id: EducationLevel.ElementaryGrade1
+                });
+            });
+        };
+        showView();
     }
 }
 
