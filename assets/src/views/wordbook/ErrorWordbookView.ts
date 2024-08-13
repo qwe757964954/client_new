@@ -1,4 +1,6 @@
 import { _decorator, EventTouch, Node } from 'cc';
+import { PrefabType } from '../../config/PrefabType';
+import { ViewsMgr } from '../../manager/ViewsManager';
 import { s2cWordbookErrorbook, s2cWordbookErrorbookInfo } from '../../models/NetModel';
 import { InterfacePath } from '../../net/InterfacePath';
 import { ServiceMgr } from '../../net/ServiceManager';
@@ -6,14 +8,14 @@ import { BaseComponent } from '../../script/BaseComponent';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
 import { ToolUtil } from '../../util/ToolUtil';
+import { WordSourceType } from '../adventure/sixModes/BaseModeView';
+import { WordMeaningView } from '../adventure/sixModes/WordMeaningView';
+import { ReviewWordModel } from '../reviewPlan/ReviewPlanView';
 import { ReviewSourceType } from '../reviewPlan/ReviewWordListView';
+import { EducationLevel } from '../TextbookVocabulary/TextbookInfo';
 import { WordItem, WordItemInfo } from './WordItem';
 const { ccclass, property } = _decorator;
 
-export const ErrorWordbookType = {
-    Errorbook: "err",//错题本
-    Collect: "collect",//收藏本
-}
 const c_btnSelectCount = 10;
 @ccclass('ErrorWordbookView')
 export class ErrorWordbookView extends BaseComponent {
@@ -35,7 +37,7 @@ export class ErrorWordbookView extends BaseComponent {
     public btnSelectRand: Node = null;
 
     private _isInit: boolean = false;
-    private _sourceType: string = null;
+    private _sourceType: WordSourceType = null;
     private _lastSelectTab: Node = null;
     private _showCnFlag: boolean = false;
     private _listData: s2cWordbookErrorbookInfo[] = [];
@@ -72,16 +74,26 @@ export class ErrorWordbookView extends BaseComponent {
             this.onSortByNode(this.btnSortAry[0]);
         }
     }
-    public init(sourceType: string) {
+    public init(sourceType: WordSourceType) {
         if (this._isInit) return;
         this._isInit = true;
         this._sourceType = sourceType;
-        ServiceMgr.wordbookSrv.reqErrorbook(this._sourceType);
+        ServiceMgr.wordbookSrv.reqErrorbook(this.getSourceStr());
+
+    }
+    /**获得来源字符串 */
+    private getSourceStr() {
+        if (WordSourceType.errorWordbook == this._sourceType) {
+            return "err";
+        } else if (WordSourceType.collectWordbook == this._sourceType) {
+            return "collect";
+        }
+        return ""
     }
     /**错题本返回 */
     private onRepErrorbook(data: s2cWordbookErrorbook) {
         if (200 != data.code) return;
-        if (!data.word_list || data.word_type != this._sourceType) return;
+        if (!data.word_list || data.word_type != this.getSourceStr()) return;
         this._listData = data.word_list;
         this._lastSelectTab = null;
         this.onSortByNode(this.btnSortAry[0]);
@@ -134,6 +146,34 @@ export class ErrorWordbookView extends BaseComponent {
         if (studyWords.length == 0) {
             return;
         }
+        let wordsdata: ReviewWordModel[] = [];
+        studyWords.forEach((value: s2cWordbookErrorbookInfo) => {
+            let word = new ReviewWordModel();
+            word.cn = this.getCn(value);;
+            word.w_id = value.w_id;
+            word.word = value.word;
+            // word.wp_id = value.wp_id;
+            word.symbol = value.symbol;
+            word.symbolus = value.symbolus;
+            word.book_id = value.book_id;
+            word.unit_id = value.unit_id;
+            word.big_id = value.big_id;
+            word.subject_id = value.subject_id;
+            word.source = value.source_type;
+            word.e_id = value.e_id;
+            word.cw_id = value.cw_id;
+            wordsdata.push(word);
+        });
+        ViewsMgr.showView(PrefabType.WordMeaningView, (node: Node) => {
+            node.getComponent(WordMeaningView).initData(wordsdata, {
+                source_type: this._sourceType,
+                pass_num: 0,
+                word_num: 0,
+                error_num: 0,
+                wordCount: wordsdata.length,
+                monster_id: EducationLevel.ElementaryGrade1
+            });
+        });
     }
     /**拼写训练 */
     private onBtnReview2() {
@@ -195,6 +235,7 @@ export class ErrorWordbookView extends BaseComponent {
         let needCount = Math.min(c_btnSelectCount, this._selectAry.length);
         this._selectAry.fill(true, 0, needCount);
         this._selectAry.fill(false, needCount);
+        this.list.updateAll();
     }
     /**随机选择十个 */
     private onBtnSelectRand() {

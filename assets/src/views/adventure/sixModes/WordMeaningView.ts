@@ -1,6 +1,7 @@
-import { _decorator, Label, Node, Sprite, SpriteFrame, tween, UITransform, Vec3 } from 'cc';
+import { _decorator, Label, Node, Sprite, SpriteFrame, tween, Vec3 } from 'cc';
 import { NetConfig } from '../../../config/NetConfig';
 import { PrefabType } from '../../../config/PrefabType';
+import { TextConfig } from '../../../config/TextConfig';
 import GlobalConfig from '../../../GlobalConfig';
 import { ItemData } from '../../../manager/DataMgr';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
@@ -95,7 +96,8 @@ export class WordMeaningView extends BaseModeView {
     //显示当前单词
     showCurrentWord() {
         super.updateConstTime();
-        if (WordSourceType.review == this._sourceType || WordSourceType.reviewSpecial === this._sourceType) {
+        if (WordSourceType.review == this._sourceType || WordSourceType.reviewSpecial === this._sourceType ||
+            WordSourceType.errorWordbook == this._sourceType || WordSourceType.collectWordbook == this._sourceType) {
             this.sentenceLabel.node.parent.active = false;
         }
         this._selectLock = false;
@@ -104,20 +106,22 @@ export class WordMeaningView extends BaseModeView {
         this.wordLabel.string = word;
         this.symbolLabel.string = this._rightWordData.symbol;
         this.initWordDetail(this._rightWordData);
-        if (WordSourceType.reviewSpecial === this._sourceType) {
+        if (WordSourceType.reviewSpecial === this._sourceType || WordSourceType.review === this._sourceType ||
+            WordSourceType.errorWordbook == this._sourceType || WordSourceType.collectWordbook == this._sourceType) {
             for (let i = 0; i < 3; i++) {
                 this.answerList[i].active = false;
             }
-            if (ReviewSourceType.word_game == this._levelData.souceType) {
+            if (ReviewSourceType.word_game == this._rightWordData.source) {
                 ServiceMgr.studyService.reqReviewPlanOption(this._rightWordData.w_id, this._rightWordData.big_id, this._rightWordData.subject_id);
-            } else if (ReviewSourceType.classification == this._levelData.souceType) {
+            } else if (ReviewSourceType.classification == this._rightWordData.source) {
                 ServiceMgr.studyService.reqReviewPlanOptionEx(this._rightWordData.w_id, this._rightWordData.book_id, this._rightWordData.unit_id);
+            } else if (ReviewSourceType.total == this._rightWordData.source) {
+                ServiceMgr.studyService.reqReviewPlanOptionEx2(this._rightWordData.word);
             }
         } else {
             this.randomOption(this._rightWordData);
         }
         this.playWordSound();
-
     }
 
     randomOption(rightWordData: any) {
@@ -237,7 +241,7 @@ export class WordMeaningView extends BaseModeView {
     /**网络请求结束 */
     netReqOver() {
         console.log("netReqOver");
-        if (WordSourceType.reviewSpecial == this._sourceType) {
+        if (WordSourceType.reviewSpecial == this._sourceType || WordSourceType.review == this._sourceType) {
             let data = this._currentSubmitResponse as s2cReviewPlanLongTimeWordSubmit;
             if (data && data.reward_list) {
                 this._rewardList.push(...data.reward_list);
@@ -350,6 +354,13 @@ export class WordMeaningView extends BaseModeView {
             ViewsMgr.showView(PrefabType.ReviewEndView, (node: Node) => {
                 let rewardList = data.reward_list;
                 node.getComponent(ReviewEndView).init(this._levelData.souceType, rewardList);
+                this.node.destroy();
+            });
+            return;
+        }
+        if (WordSourceType.errorWordbook == this._sourceType || WordSourceType.collectWordbook == this._sourceType) {
+            ViewsMgr.showAlert(TextConfig.All_level_Tip, () => {
+                // 通知
                 this.node.destroy();
             });
             return;

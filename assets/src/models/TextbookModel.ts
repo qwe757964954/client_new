@@ -145,9 +145,9 @@ export interface BookPlanDetail extends BaseRepPacket {
     num: number;
     user_id: number;
     gate_total: number;
-    gate_pass_total:number;
-    is_completed:number;
-    status:number;
+    gate_pass_total: number;
+    is_completed: number;
+    status: number;
 }
 
 export interface ReqUnitStatusParam {
@@ -200,6 +200,9 @@ export interface UnitWordModel {
     small_id?: number;
     subject_id?: number;
     collect?: number; //是否收藏
+    source?: number;//0总词库 1教材单词 2大冒险
+    e_id?: string;//错词id
+    cw_id?: string;//收藏单词id
 }
 
 export class c2sBookAwardList {
@@ -253,7 +256,7 @@ export interface CurrentBookStatus extends BaseRepPacket {
     unit_pass_num: number;     // 0
     unit_total_num: number;    // 6
     user_id: number;           // 4
-    monster_id:number;
+    monster_id: number;
 }
 
 export interface ReportResultModel {
@@ -415,7 +418,7 @@ export class c2sCollectWord {
     action: number;
 }
 
-export class c2sBreakThroughStartAgain{
+export class c2sBreakThroughStartAgain {
     command_id: string = InterfacePath.Classification_BreakThroughStartAgain;
     book_id?: string;
     unit_id?: string;

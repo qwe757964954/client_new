@@ -510,6 +510,7 @@ export class c2sReviewPlanOption {
     unit_id: string;//单元id
     big_id: number;//大单元id
     subject_id: number;//主题id
+    word: string;//单词
 }
 /**复习规划选项返回 */
 export class s2cReviewPlanOptionWord {
@@ -595,7 +596,8 @@ export class c2sWordbookErrorbook {
 }
 /**单词本-错题本收藏本信息 */
 export class s2cWordbookErrorbookInfo {
-    e_id: number;//错题id
+    e_id: string;//错题id
+    cw_id: string;//收藏的情况下 收藏单词id
     word: string;//单词
     source_type: number;//来源 2表示单词大冒险 1表示教材单词 0总词库
     w_id: string;//单词id
@@ -607,11 +609,50 @@ export class s2cWordbookErrorbookInfo {
     g_cn: string;//总词库 中文释义
     book_name: string;//教材名称
     create_time: string;//创建时间
+    book_id: string;//教材id
+    unit_id: string;//单元id
+    subject_id: number;//主题id
 }
 /**单词本-错题本收藏本返回 */
 export class s2cWordbookErrorbook extends BaseRepPacket {
     word_list: s2cWordbookErrorbookInfo[];//错题本
     word_type: string;//err 表示错词本 collect 表示收藏本
+}
+/**单词本-收藏单词 */
+export class c2sWordbookCorrectWord {
+    command_id: string = InterfacePath.c2sWordbookCorrectWord;
+    w_id: string;//单词id（总词库是word）
+    action: number;//1表示收藏 0表示取消收藏
+    source_type: number;//来源 2表示单词大冒险 1表示教材单词 0总词库
+}
+/**单词本-收藏单词返回 */
+export class s2cWordbookCorrectWord extends BaseRepPacket {
+    w_id: string;//单词id（总词库是word）
+    action: number;//1表示收藏 0表示取消收藏
+    source_type: number;//来源 2表示单词大冒险 1表示教材单词 0总词库
+}
+/**单词本-单词提交 */
+export class c2sWordbookWordSubmit {
+    command_id: string = InterfacePath.c2sWordbookWordSubmit;
+    m_id: string;//错词本的 e_id 或 收藏本的 cw_id
+    answer: string;//答案
+    status: number;//1正常 2 错误 3 超时错误
+    cost_time: number;//耗时
+    word_type: string;//单词学习来源err 表示错词本 collect 表示收藏本
+}
+/**单词本-单词提交返回 */
+export class s2cWordbookWordSubmit extends BaseRepPacket {
+    m_id: string;//错词本的 e_id 或 收藏本的 cw_id
+    word_type: string;//单词学习来源err 表示错词本 collect 表示收藏本
+}
+
+/**单词本-单词详情 */
+export class c2sWordbookWordDetail {
+    command_id: string = InterfacePath.c2sWordbookWordDetail;
+    word: string;//单词
+}
+/**单词本-单词详情返回 */
+export class s2cWordbookWordDetail extends BaseRepPacket {
 }
 
 /**********************************以上是新接口*************************************/

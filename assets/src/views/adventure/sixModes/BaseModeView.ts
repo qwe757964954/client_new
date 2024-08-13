@@ -10,7 +10,7 @@ import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { SoundMgr } from '../../../manager/SoundMgr';
 import { ViewsManager, ViewsMgr } from '../../../manager/ViewsManager';
 import { AdventureCollectWordModel, AdventureResult, AdventureResultModel, GameMode, GateData, WordsDetailData } from '../../../models/AdventureModel';
-import { s2cReviewPlanLongTimeWordSubmit, s2cReviewPlanSubmit } from '../../../models/NetModel';
+import { s2cReviewPlanLongTimeWordSubmit, s2cReviewPlanSubmit, s2cWordbookWordSubmit } from '../../../models/NetModel';
 import { PetModel } from '../../../models/PetModel';
 import { RoleBaseModel } from '../../../models/RoleBaseModel';
 import { GameSubmitModel, GameSubmitResponse, ReqCollectWord, UnitWordModel } from '../../../models/TextbookModel';
@@ -35,6 +35,8 @@ export enum WordSourceType {
     word_game = 2,//单词大冒险
     review = 3,//复习规划
     reviewSpecial = 4,//复习规划（长时间未复习单词）
+    errorWordbook = 5,//错题本
+    collectWordbook = 6,//收藏本
 }
 /**单词提交数据 */
 class WordSubmitData {
@@ -208,7 +210,8 @@ export class BaseModeView extends BaseView {
                 wordsdata = uniqueWordList;
             }
 
-        } else if (WordSourceType.review === this._sourceType || WordSourceType.reviewSpecial === this._sourceType) {
+        } else if (WordSourceType.review === this._sourceType || WordSourceType.reviewSpecial === this._sourceType ||
+            WordSourceType.errorWordbook == this._sourceType || WordSourceType.collectWordbook == this._sourceType) {
             this._wordIndex = this._levelData.word_num;
             this._rightNum = this._levelData.pass_num;
             this._errorNum = this._levelData.error_num;
@@ -275,6 +278,7 @@ export class BaseModeView extends BaseView {
         this.addModelListener(InterfacePath.Adventure_Word, this.onClassificationWord);
         this.addModelListener(InterfacePath.c2sReviewPlanSubmit, this.onRepReviewSubmit);
         this.addModelListener(InterfacePath.c2sReviewPlanLongTimeWordSubmit, this.onRepReviewPlanLongTimeWordSubmit);
+        this.addModelListener(InterfacePath.c2sWordbookWordSubmit, this.onRepWordbookWordSubmit);
     }
     onGameSubmitResponse(data: GameSubmitResponse) {
         console.log("onGameSubmitResponse....", data);
@@ -285,7 +289,8 @@ export class BaseModeView extends BaseView {
     }
 
     async initRole() {
-        if (WordSourceType.review == this._sourceType || WordSourceType.reviewSpecial === this._sourceType) return;
+        if (WordSourceType.review == this._sourceType || WordSourceType.reviewSpecial === this._sourceType ||
+            WordSourceType.errorWordbook == this._sourceType || WordSourceType.collectWordbook == this._sourceType) return;
         this._role = instantiate(this.roleModel);
         this.roleContainer.addChild(this._role);
         let roleModel = this._role.getComponent(RoleBaseModel);
@@ -350,12 +355,12 @@ export class BaseModeView extends BaseView {
             sp.scale = new Vec3(-scale.x * 0.4, scale.y * 0.4, 1);
             // sp.setPosition(sp.getPosition().x, sp.getPosition().y - 20)
             let monsterModel = this._monster.getComponent(MonsterModel);
-            let educationInfo:EducationDataInfo = EducationDataInfos.find(item=> item.id===levelData.monster_id);
+            let educationInfo: EducationDataInfo = EducationDataInfos.find(item => item.id === levelData.monster_id);
             monsterModel.init(FileUtil.removeFileExtension(educationInfo.monster), true);
             if (this.gameMode == GameMode.Exam) {
                 this.monster.getComponent(UIOpacity).opacity = 125;
             }
-            
+
             let pass = levelData.word_num - 1;
             console.log("this.gameMode = ", this.gameMode, this._wordsData);
             let totalHp = this.gameMode == GameMode.Exam ? this._wordsData.length : this._wordsData.length * 5;
@@ -363,13 +368,14 @@ export class BaseModeView extends BaseView {
             monsterModel.setHp(this._wordsData.length * this._hpLevels[this.gameMode] + pass, totalHp);
             // let hp_scale = monsterModel.hpNode.getScale();
             // monsterModel.hpNode.scale = new Vec3(-hp_scale.x, hp_scale.y, 1);
-        } else if (WordSourceType.review == this._sourceType || WordSourceType.reviewSpecial === this._sourceType) { //复习规划
+        } else if (WordSourceType.review == this._sourceType || WordSourceType.reviewSpecial === this._sourceType ||
+            WordSourceType.errorWordbook == this._sourceType || WordSourceType.collectWordbook == this._sourceType) { //复习规划与单词本
             this._monster = instantiate(this.monsterModel);
             this.monster.addChild(this._monster);
             let scale = this._monster.getScale();
             this._monster.scale = new Vec3(-scale.x * 0.4, scale.y * 0.4, 1);
             let monsterModel = this._monster.getComponent(MonsterModel);
-            let educationInfo:EducationDataInfo = EducationDataInfos.find(item=> item.id===this._levelData.monster_id);
+            let educationInfo: EducationDataInfo = EducationDataInfos.find(item => item.id === this._levelData.monster_id);
             monsterModel.init(FileUtil.removeFileExtension(educationInfo.monster), true);
             monsterModel.setHp(this._rightNum, this._levelData.wordCount);
             CCUtil.setNodeCamera2DUI(this._monster);
@@ -458,6 +464,13 @@ export class BaseModeView extends BaseView {
             ServiceMgr.studyService.reqReviewPlanLongTimeWordSubmit(wordData["wp_id"], word, answer, isRight ? 1 : 0, costTime);
             return;
         }
+        if (WordSourceType.errorWordbook == this._sourceType || WordSourceType.collectWordbook == this._sourceType) {
+            let costTime = Date.now() - this._costTime;
+            let word_type = (WordSourceType.errorWordbook == this._sourceType) ? "err" : "collect";
+            let m_id = (WordSourceType.errorWordbook == this._sourceType) ? wordData.e_id : wordData.cw_id;
+            ServiceMgr.wordbookSrv.reqWordSubmit(m_id, word, answer, isRight ? 1 : 0, costTime, word_type);
+            return;
+        }
     }
 
     //精灵攻击
@@ -496,7 +509,8 @@ export class BaseModeView extends BaseView {
                     monsterModel.inHit().then(() => {
                         resolve(true);
                     });
-                } else if (WordSourceType.review == this._sourceType || WordSourceType.reviewSpecial === this._sourceType) {
+                } else if (WordSourceType.review == this._sourceType || WordSourceType.reviewSpecial === this._sourceType ||
+                    WordSourceType.errorWordbook == this._sourceType || WordSourceType.collectWordbook == this._sourceType) {
                     monsterModel.setHp(this._rightNum, this._levelData.wordCount);
                     monsterModel.inHit().then(() => {
                         resolve(true);
@@ -597,6 +611,11 @@ export class BaseModeView extends BaseView {
         this.netReqOver();
     }
     onRepReviewPlanLongTimeWordSubmit(data: s2cReviewPlanLongTimeWordSubmit) {
+        this._currentSubmitResponse = data;
+        this._upResultSucce = true;
+        this.netReqOver();
+    }
+    private onRepWordbookWordSubmit(data: s2cWordbookWordSubmit) {
         this._currentSubmitResponse = data;
         this._upResultSucce = true;
         this.netReqOver();
@@ -711,7 +730,9 @@ export class BaseModeView extends BaseView {
             }
             this.node.destroy();
         }).then((confirmView) => {
-            confirmView.showExtraLabel(TextConfig.Midway_Exit);
+            if (WordSourceType.word_game == this._sourceType || WordSourceType.classification == this._sourceType) {
+                confirmView.showExtraLabel(TextConfig.Midway_Exit);
+            }
         });
     }
     onDestroy(): void {

@@ -47,6 +47,9 @@ export class ReviewWordModel implements UnitWordModel {
     big_id: number = null;
     small_id: number = null;
     subject_id: number = null;
+    source: number = null;
+    e_id: string = null;//错词id
+    cw_id: string = null;//收藏单词id
 }
 
 @ccclass('ReviewPlanView')
@@ -426,6 +429,7 @@ export class ReviewPlanView extends BaseComponent {
             word.unit_id = value.unit_id;
             word.big_id = value.big_id;
             word.subject_id = value.subject_id;
+            word.source = data.source;
             wordsdata.push(word);
         });
         let errorNum = 0;

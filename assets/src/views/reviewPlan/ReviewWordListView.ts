@@ -10,6 +10,7 @@ import { ReviewWordInfo, ReviewWordItem } from './ReviewWordItem';
 const { ccclass, property } = _decorator;
 
 export enum ReviewSourceType {
+    total = 0,//总词库
     classification = 1,//教材单词
     word_game = 2,//单词大冒险
 }

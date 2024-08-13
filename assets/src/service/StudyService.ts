@@ -209,6 +209,13 @@ export default class StudyService extends BaseControll {
         para.unit_id = unit_id;
         NetMgr.sendMsg(para);
     }
+    reqReviewPlanOptionEx2(word: string) {
+        console.log("reqReviewPlanOptionEx2", word);
+        let para: c2sReviewPlanOption = new c2sReviewPlanOption();
+        para.source = ReviewSourceType.total;
+        para.word = word;
+        NetMgr.sendMsg(para);
+    }
     /**复习规划长时间未复习单词 */
     reqReviewPlanLongTimeWords(source: number, book_id?: string) {
         console.log("reqReviewPlanLongTimeWords", source, book_id);

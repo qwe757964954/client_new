@@ -2,11 +2,12 @@ import { _decorator, Node } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { LoadManager } from '../../manager/LoadManager';
 import { BaseComponent } from '../../script/BaseComponent';
+import { WordSourceType } from '../adventure/sixModes/BaseModeView';
 import { NavTitleView } from '../common/NavTitleView';
 import { ReviewSourceType } from '../reviewPlan/ReviewWordListView';
 import { TaskTabInfo } from '../task/TaskInfo';
 import { TaskTabView } from '../task/TaskTabView';
-import { ErrorWordbookType, ErrorWordbookView } from './ErrorWordbookView';
+import { ErrorWordbookView } from './ErrorWordbookView';
 import { ReviewWordbookView } from './ReviewWordbookView';
 const { ccclass, property } = _decorator;
 
@@ -85,12 +86,12 @@ export class WordbookView extends BaseComponent {
             }),
             LoadManager.loadPrefab(PrefabType.ErrorWordbookView.path, this.plRight).then((node: Node) => {
                 this._plRightContentAry[2] = node;
-                node.getComponent(ErrorWordbookView).init(ErrorWordbookType.Errorbook);
+                node.getComponent(ErrorWordbookView).init(WordSourceType.errorWordbook);
                 node.active = false;
             }),
             LoadManager.loadPrefab(PrefabType.ErrorWordbookView.path, this.plRight).then((node: Node) => {
                 this._plRightContentAry[3] = node;
-                node.getComponent(ErrorWordbookView).init(ErrorWordbookType.Collect);
+                node.getComponent(ErrorWordbookView).init(WordSourceType.collectWordbook);
                 node.active = false;
             }),
             LoadManager.loadPrefab(PrefabType.SearchWorldView.path, this.plRight).then((node: Node) => {

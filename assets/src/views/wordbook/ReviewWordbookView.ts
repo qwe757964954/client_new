@@ -76,7 +76,9 @@ export class ReviewWordbookView extends BaseComponent {
         data.idx = idx;
         data.isSelect = null;
         data.isShowCn = this._showCnFlag;
-        node.getComponent(WordItem).init(data);
+        node.getComponent(WordItem).init(data, () => {
+            ServiceMgr.studyService.moreWordDetail(data.word);
+        });
     }
 
     private onBtnReview() {
@@ -147,11 +149,11 @@ export class ReviewWordbookView extends BaseComponent {
             ViewsMgr.showAlert(data.msg);
             return;
         }
-        if (!data.review_wp_list || data.review_wp_list.length == 0) {
-            ViewsMgr.showTip(TextConfig.ReviewPlan_Null);
+        if (data.source != this._souceType) {
             return;
         }
-        if (data.source != this._souceType) {
+        if (!data.review_wp_list || data.review_wp_list.length == 0) {
+            ViewsMgr.showTip(TextConfig.ReviewPlan_Null);
             return;
         }
 
@@ -168,6 +170,7 @@ export class ReviewWordbookView extends BaseComponent {
             word.unit_id = value.unit_id;
             word.big_id = value.big_id;
             word.subject_id = value.subject_id;
+            word.source = data.source;
             wordsdata.push(word);
         });
         let errorNum = 0;
