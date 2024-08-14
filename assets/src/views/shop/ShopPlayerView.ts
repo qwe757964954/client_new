@@ -9,9 +9,9 @@ import { User } from '../../models/User';
 import CCUtil from '../../util/CCUtil';
 import { EventMgr } from '../../util/EventManager';
 import { NodeUtil } from '../../util/NodeUtil';
+import { ObjectUtil } from '../../util/ObjectUtil';
 import { BagConfig } from '../bag/BagConfig';
 import { GoodsItemInfo } from '../bag/BagInfo';
-import { TKConfig } from '../task/TaskConfig';
 import { TabTypeIds } from '../task/TaskInfo';
 import { BuyStoreInfo, ShopClothingInfo } from './ShopInfo';
 
@@ -73,7 +73,7 @@ export class ShopPlayerView extends Component {
         const needBuyClothings = this.findNeedBuyClothing();
         return needBuyClothings.reduce((total, clothingId) => {
             const goodsInfo: GoodsItemInfo = BagConfig.findGoodsItemInfo(clothingId);
-            const itemDatas: ItemData[] = TKConfig.convertRewardData(goodsInfo.price);
+            const itemDatas: ItemData[] = ObjectUtil.convertRewardData(goodsInfo.price);
             return total + itemDatas[0].num;
         }, 0);
     }

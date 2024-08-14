@@ -7,6 +7,7 @@ import { ChallengeBoxRewardData, ChallengeTaskReward, TaskBaseData, UserMainTask
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TkServer } from '../../service/TaskService';
+import { ObjectUtil } from '../../util/ObjectUtil';
 import { DailyTaskView } from './DailyTaskView';
 import { MainTaskView } from './MainTaskView';
 import { TaskAchievementView } from './TaskAchievementView';
@@ -165,7 +166,7 @@ export class WeekTaskView extends BaseView {
     private async showRewardPopup<T extends { id: number, reward: any }>(taskList: T[], id: number) {
         let taskInfo = taskList.find(item => item.id === id);
         if (taskInfo) {
-            let rewardArr: ItemData[] = TKConfig.convertRewardData(taskInfo.reward);
+            let rewardArr: ItemData[] = ObjectUtil.convertRewardData(taskInfo.reward);
             ViewsMgr.showRewards(rewardArr);
         }
     }

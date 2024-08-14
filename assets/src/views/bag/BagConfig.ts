@@ -2,7 +2,7 @@ import { isValid, JsonAsset } from "cc";
 import { ItemData } from "../../manager/DataMgr";
 import { ResLoader } from "../../manager/ResLoader";
 import { User } from "../../models/User";
-import { TKConfig } from "../task/TaskConfig";
+import { ObjectUtil } from "../../util/ObjectUtil";
 import { BackpackItemInfo, BagItemType, BagOperationData, BagOperationIds, BagOperationNames, GameBagData } from "./BagInfo";
 
 //用户信息服务
@@ -67,7 +67,7 @@ export default class _BagConfig {
         return this._BagConfigInfo.backpack_item_info
             .filter(item => item.merge_item.length > 0)
             .filter(item => {
-                const requiredItems = TKConfig.convertRewardData(item.merge_item);
+                const requiredItems = ObjectUtil.convertRewardData(item.merge_item);
                 return requiredItems.every(requiredItem => {
                     const userItem = arrayData.find(userItem => userItem.id === requiredItem.id);
                     return userItem && userItem.num >= requiredItem.num;
@@ -178,7 +178,7 @@ export default class _BagConfig {
     
     private canMergeItem(item: BackpackItemInfo): boolean {
         let arrayData = BagConfig.convertItemArrayData(User.itemAry);
-        let requiredItems = TKConfig.convertRewardData(item.merge_item);
+        let requiredItems = ObjectUtil.convertRewardData(item.merge_item);
     
         for (let requiredItem of requiredItems) {
             const userItem = arrayData.find(userItem => userItem.id === requiredItem.id);

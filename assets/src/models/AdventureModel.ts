@@ -52,6 +52,12 @@ export class MapLevelData {
     current_mode?: number;
     flag_info?: any;
     monster_id?: number;
+    star_one_reward?: ItemData[];
+    star_two_reward?: ItemData[];
+    star_three_reward?: ItemData[];
+    pass_reward?: ItemData[];
+    random_reward?: ItemData[];
+    
 }
 
 export class BossLevelData {

@@ -88,4 +88,22 @@ export namespace ObjectUtil{
 			num: value
 		}));
 	}
+	/** 
+	 * 将 number[] 对象转换为 ItemData 数组
+	 */
+	export function convertRewardData(rewardArray:number[]){
+        const result = rewardArray.reduce((acc, value, index, array) => {
+            if (index % 2 === 0) {
+              // 当索引为偶数时
+              let propsData: ItemData = {
+                    id: value,
+                    num: array[index + 1]
+                }
+              acc.push(propsData);
+            }
+            return acc;
+          }, [] as ItemData[]);
+
+        return result;
+    }
 }

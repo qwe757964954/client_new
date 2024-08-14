@@ -12,9 +12,9 @@ import { BagServer } from '../../service/BagService';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
 import { NodeUtil } from '../../util/NodeUtil';
+import { ObjectUtil } from '../../util/ObjectUtil';
 import { RewardItem } from '../common/RewardItem';
 import { ShopClothingInfo } from '../shop/ShopInfo';
-import { TKConfig } from '../task/TaskConfig';
 import { BagConfig } from './BagConfig';
 import { BagDressItem } from './BagDressItem';
 import { BackpackItemInfo, BagGressItemIds, BagGressItems, BagItemType, BagOperationData, BagOperationIds, BagTabIds, BagTabNames } from './BagInfo';
@@ -123,7 +123,7 @@ export class BagDialogView extends BaseView {
     private onBreakdownBackpackItems(data: any) {
         console.log("onBreakdownBackpackItems", data);
         const itemInfo = BagConfig.findBackpackItemInfo(this._breakdownInfo.id);
-        const decomposeItems = TKConfig.convertRewardData(BagConfig.findBreakdownItems(this._breakdownInfo));
+        const decomposeItems = ObjectUtil.convertRewardData(BagConfig.findBreakdownItems(this._breakdownInfo));
         const tipMsg = `你成功把${this._breakdownInfo.num}个${itemInfo.name}分解了，获得` +
             decomposeItems.map((itemData, index) => {
                 const itemInfo = BagConfig.findBackpackItemInfo(itemData.id);
@@ -137,7 +137,7 @@ export class BagDialogView extends BaseView {
     }
 
     private onBackpackItemSynthesis(data: any) {
-        const mergeItems = TKConfig.convertRewardData(BagConfig.findMergeItems(this._compositeInfo))
+        const mergeItems = ObjectUtil.convertRewardData(BagConfig.findMergeItems(this._compositeInfo))
             .filter(item => item.id !== ItemID.coin);
         const itemInfo = BagConfig.findBackpackItemInfo(mergeItems[0].id);
         const tipMsg = `你成功把${mergeItems[0].num}个${itemInfo.name}合成了${this._compositeInfo.name}`;

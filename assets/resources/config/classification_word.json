@@ -1,0 +1,98 @@
+{
+    "key_monster": [
+        {
+            "monster_id": 3001,
+            "monster_name": "",
+            "monsterAni": []
+        },
+        {
+            "monster_id": 3002,
+            "monster_name": "",
+            "monsterAni": []
+        },
+        {
+            "monster_id": 3003,
+            "monster_name": "",
+            "monsterAni": []
+        },
+        {
+            "monster_id": 3004,
+            "monster_name": "",
+            "monsterAni": []
+        },
+        {
+            "monster_id": 3005,
+            "monster_name": "",
+            "monsterAni": []
+        },
+        {
+            "monster_id": 3006,
+            "monster_name": "",
+            "monsterAni": []
+        },
+        {
+            "monster_id": 3007,
+            "monster_name": "",
+            "monsterAni": []
+        },
+        {
+            "monster_id": 3008,
+            "monster_name": "",
+            "monsterAni": []
+        },
+        {
+            "monster_id": 3009,
+            "monster_name": "",
+            "monsterAni": []
+        },
+        {
+            "monster_id": 3010,
+            "monster_name": "",
+            "monsterAni": []
+        },
+        {
+            "monster_id": 3011,
+            "monster_name": "",
+            "monsterAni": []
+        },
+        {
+            "monster_id": 3012,
+            "monster_name": "",
+            "monsterAni": []
+        },
+        {
+            "monster_id": 3013,
+            "monster_name": "",
+            "monsterAni": []
+        }
+    ],
+    "classification_reward": [
+        {
+            "star_one_reward": [
+                10001,
+                200,
+                10002,
+                20
+            ],
+            "star_two_reward": [
+                10002,
+                30
+            ],
+            "star_three_reward": [
+                10002,
+                50
+            ],
+            "pass_reward": [
+                10001,
+                500
+            ],
+            "random_reward": [
+                10002,
+                20
+            ],
+            "random_percent": [
+                40
+            ]
+        }
+    ]
+}

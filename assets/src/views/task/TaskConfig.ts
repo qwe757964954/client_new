@@ -1,5 +1,4 @@
 import { JsonAsset } from "cc";
-import { ItemData } from "../../manager/DataMgr";
 import { ResLoader } from "../../manager/ResLoader";
 import { Task, TaskData, WeeklyTask } from "./TaskInfo";
 
@@ -31,22 +30,6 @@ export default class _TaskConfig {
 
     public getTaskFromMain(taskId: number): Task | undefined {
         return this._taskConfigInfo.task_main.find(task => task.id === taskId);
-    }
-
-    public convertRewardData(rewardArray:number[]){
-        const result = rewardArray.reduce((acc, value, index, array) => {
-            if (index % 2 === 0) {
-              // 当索引为偶数时
-              let propsData: ItemData = {
-                    id: value,
-                    num: array[index + 1]
-                }
-              acc.push(propsData);
-            }
-            return acc;
-          }, [] as ItemData[]);
-
-        return result;
     }
 }
 

@@ -7,8 +7,8 @@ import { BasePopup } from '../../script/BasePopup';
 import CCUtil from '../../util/CCUtil';
 import { EventMgr } from '../../util/EventManager';
 import List from '../../util/list/List';
+import { ObjectUtil } from '../../util/ObjectUtil';
 import { RewardItem } from '../common/RewardItem';
-import { TKConfig } from '../task/TaskConfig';
 import { BagConfig } from './BagConfig';
 import { CaleBagView } from './CaleBagView';
 
@@ -53,7 +53,7 @@ export class BreakdownView extends BasePopup {
     }
     onCaleValueChanged(num:number){
         const breakdownIds = BagConfig.findBreakdownItems(this._sourceItem);
-        this._breakdownDatas = TKConfig.convertRewardData(breakdownIds);
+        this._breakdownDatas = ObjectUtil.convertRewardData(breakdownIds);
         for (let index = 0; index < this._breakdownDatas.length; index++) {
             this._breakdownDatas[index].num = this._breakdownDatas[index].num * num;
         }

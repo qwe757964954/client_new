@@ -12,24 +12,26 @@ import EventManager from '../../../util/EventManager';
 import FileUtil from '../../../util/FileUtil';
 import List from '../../../util/list/List';
 import { ObjectUtil } from '../../../util/ObjectUtil';
+import { CGConfig } from '../../Challenge/ChallengeConfig';
 import { EducationDataInfos } from '../../TextbookVocabulary/TextbookInfo';
 import { SubjectView } from '../../theme/SubjectView';
 import { ReportItem } from '../sixModes/ReportItem';
 import { MonsterModel } from './MonsterModel';
+
 const { ccclass, property } = _decorator;
 
 @ccclass('rightPanelchange')
 export class rightPanelchange extends BaseView {
-    @property({ type: Node, tooltip: "关闭按钮" })
+    @property(Node)
     public btn_close: Node = null;
     
-    @property({ type: Node, tooltip: "怪物容器" })
+    @property(Node)
     public monsterNode: Node = null;
     
-    @property({ type: [Node], tooltip: "星星" })
+    @property([Node])
     public stars: Node[] = [];
     
-    @property({ type: [Node], tooltip: "星星条件" })
+    @property([Node])
     public starConditions: Node[] = [];
     
     @property(Label)
@@ -44,13 +46,13 @@ export class rightPanelchange extends BaseView {
     @property(Node)
     public btn_test: Node = null;
     
-    @property({ type: Prefab, tooltip: "怪物预制" })
+    @property(Prefab)
     public monsterPrefab: Prefab = null;
     
-    @property({ type: List, tooltip: "奖励列表" })
+    @property(List)
     public rewardList: List = null;
     
-    @property({ type: Node, tooltip: "主题按钮" })
+    @property(Node)
     public subjectBtn: Node = null;
 
     private _data: MapLevelData | GateData = null;
@@ -63,14 +65,7 @@ export class rightPanelchange extends BaseView {
     private _isGetSubject: boolean = false;
 
     protected initUI(): void {
-        // this.offViewAdaptSize();
         this.node.setScale(0.8, 0.8, 0.8);
-    }
-
-    private levelClick() {
-        console.log("levelClick");
-        const eventType = this._isBossPanel ? EventType.Enter_Boss_Level : EventType.Enter_Island_Level;
-        EventManager.emit(eventType, this._data);
     }
 
     protected onInitModuleEvent(): void {
@@ -78,6 +73,17 @@ export class rightPanelchange extends BaseView {
             [EventType.Expand_the_level_page, this.openView.bind(this)],
             [InterfacePath.WordGame_Subject, this.onWordGameSubject.bind(this)],
         ]);
+    }
+
+    initEvent() {
+        CCUtil.onBtnClick(this.btn_close, this.hideView.bind(this));
+        CCUtil.onBtnClick(this.btn_start, this.levelClick.bind(this));
+        CCUtil.onBtnClick(this.btn_test, this.startTest.bind(this));
+    }
+
+    private levelClick() {
+        const eventType = this._isBossPanel ? EventType.Enter_Boss_Level : EventType.Enter_Island_Level;
+        EventManager.emit(eventType, this._data);
     }
 
     private startTest() {
@@ -88,46 +94,44 @@ export class rightPanelchange extends BaseView {
         EventManager.emit(EventType.Enter_Level_Test, this._data);
     }
 
-    initEvent() {
-        CCUtil.onBtnClick(this.btn_close, this.hideView.bind(this));
-        CCUtil.onBtnClick(this.btn_start, this.levelClick.bind(this));
-        CCUtil.onBtnClick(this.btn_test, this.startTest.bind(this));
-    }
-
     openView(param: MapLevelData | GateData = null) {
-        console.log('接收到的参数=', param);
         this._data = param;
-        this._isWordGame = param && param.game_modes !== "word";
-        this._rewardData = this.extractRewardData(param as GateData);
+        this._isWordGame = param?.game_modes === "word";
 
+        this._rewardData = this.extractRewardData(this._getRewardData(param));
         this.subjectBtn.active = this._isWordGame;
         this._isBossPanel = false;
         this.updateView();
         this.node.active = true;
 
-        if (this._isTweening) return;
-
-        this._isTweening = true;
-        const node_size = this.node.getComponent(UITransform);
-        tween(this.node).by(0.3, { position: new Vec3(-node_size.width, 0, 0) })
-            .call(() => this._isTweening = false)
-            .start();
+        if (!this._isTweening) {
+            this._isTweening = true;
+            const nodeSize = this.node.getComponent(UITransform);
+            tween(this.node).by(0.3, { position: new Vec3(-nodeSize.width, 0, 0) })
+                .call(() => this._isTweening = false)
+                .start();
+        }
     }
 
-    private extractRewardData(awardInfo: GateData): ItemData[] {
-        const rewardData = [
-            ...(awardInfo.star_one_reward || []),
-            ...(awardInfo.star_two_reward || []),
-            ...(awardInfo.star_three_reward || []),
-            ...(awardInfo.pass_reward || []),
-            ...(awardInfo.random_reward || [])
+    private _getRewardData(param: MapLevelData | GateData): ItemData[] {
+        const data = param.game_modes === "word" 
+            ? CGConfig.KeyMonsterInfo.classification_reward 
+            : param;
+
+        return [
+            ...(data.star_one_reward || []),
+            ...(data.star_two_reward || []),
+            ...(data.star_three_reward || []),
+            ...(data.pass_reward || []),
+            ...(data.random_reward || [])
         ];
+    }
 
-        rewardData.forEach(item => {
-            item.from = item.from || "unknown_reward";
-        });
-
-        return rewardData;
+    private extractRewardData(rewardData: ItemData[]): ItemData[] {
+        return rewardData.map(item => ({
+            ...item,
+            from: item.from || "unknown_reward"
+        }));
     }
 
     openBossView(levelData: BossLevelData) {
@@ -147,15 +151,7 @@ export class rightPanelchange extends BaseView {
         this.monsterNode.setScale(1, 1, 1);
 
         this.node.active = true;
-
-        if (this._isTweening) return;
-
-        this._isTweening = true;
-        const node_size = this.node.getComponent(UITransform);
-        const scale = this.node.getScale();
-        tween(this.node).by(0.3, { position: new Vec3(-node_size.width * scale.x, 0, 0) })
-            .call(() => this._isTweening = false)
-            .start();
+        this._playTweenAnimation();
 
         this.rewardList.numItems = this._rewardData.length;
     }
@@ -171,19 +167,17 @@ export class rightPanelchange extends BaseView {
         this.monsterNode.setScale(2, 2, 2);
 
         const monsterModel = this._monsterAni.getComponent(MonsterModel);
-        if (this._data.game_modes === "word") {
-            this.updateWordGameView(monsterModel);
-        } else {
-            this.updateNormalGameView(monsterModel);
-        }
+        this._data.game_modes === "word"
+            ? this.updateWordGameView(monsterModel)
+            : this.updateNormalGameView(monsterModel);
 
         this.updateStarConditions();
         this.rewardList.numItems = this._rewardData.length;
     }
 
     private updateWordGameView(monsterModel: MonsterModel) {
-        const big_id = ObjectUtil.extractId(this._data.big_id);
-        this.levelTxt.string = `${big_id}-${this._data.small_id}`;
+        const bigId = ObjectUtil.extractId(this._data.big_id);
+        this.levelTxt.string = `${bigId}-${this._data.small_id}`;
         const educationInfo = EducationDataInfos.find(item => item.id === this._data.monster_id);
         monsterModel.init(FileUtil.removeFileExtension(educationInfo.monster));
         this.monsterNameTxt.string = "宝箱怪";
@@ -206,7 +200,8 @@ export class rightPanelchange extends BaseView {
             ];
 
             starStatuses.forEach((isGet, index) => {
-                this.starConditions[index].getComponent(Sprite).grayscale = !isGet;
+                const condition = this.starConditions[index].getComponent(Sprite);
+                condition.grayscale = !isGet;
                 this.starConditions[index].getChildByName("star").active = isGet;
                 this.stars[index].getComponent(Sprite).grayscale = index >= starStatuses.filter(status => status).length;
             });
@@ -231,7 +226,6 @@ export class rightPanelchange extends BaseView {
 
     onWordGameSubject(data: WordGameSubjectReply) {
         this._isGetSubject = false;
-        console.log("WordGameSubjectReply", data);
         ViewsMgr.showView(PrefabType.SubjectView, node => {
             node.getComponent(SubjectView).setData(data);
         });
@@ -242,10 +236,24 @@ export class rightPanelchange extends BaseView {
     }
 
     hideView() {
-        const node_size = this.node.getComponent(UITransform);
+        this._playTweenAnimation(true);
+    }
+
+    private _playTweenAnimation(reverse: boolean = false) {
+        if (this._isTweening) return;
+        
+        this._isTweening = true;
+        const nodeSize = this.node.getComponent(UITransform);
         const scale = this.node.getScale();
-        tween(this.node).by(0.3, { position: new Vec3(node_size.width * scale.x, 0, 0) })
-            .call(() => { this.node.active = false; })
+        const targetPosition = reverse
+            ? new Vec3(nodeSize.width * scale.x, 0, 0)
+            : new Vec3(-nodeSize.width * scale.x, 0, 0);
+
+        tween(this.node).by(0.3, { position: targetPosition })
+            .call(() => {
+                if (reverse) this.node.active = false;
+                this._isTweening = false;
+            })
             .start();
     }
 }

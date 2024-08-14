@@ -7,9 +7,9 @@ import { ViewsManager } from '../../manager/ViewsManager';
 import CCUtil from '../../util/CCUtil';
 import { EventMgr } from '../../util/EventManager';
 import ListItem from '../../util/list/ListItem';
+import { ObjectUtil } from '../../util/ObjectUtil';
 import { BagConfig } from '../bag/BagConfig';
 import { BagItemInfo, GoodsItemInfo } from '../bag/BagInfo';
-import { TKConfig } from '../task/TaskConfig';
 import { GoodsDetailView } from './GoodsDetailView';
 import { BuyStoreInfo } from './ShopInfo';
 
@@ -45,7 +45,7 @@ export class ShopStoreItem extends ListItem {
         // Fetch necessary information directly
         const itemInfo: BagItemInfo = BagConfig.findShopItemInfo(data.id);
         const goodsInfo: GoodsItemInfo = BagConfig.findGoodsItemInfo(data.id);
-        const itemDatas: ItemData[] = TKConfig.convertRewardData(goodsInfo.price);
+        const itemDatas: ItemData[] = ObjectUtil.convertRewardData(goodsInfo.price);
         
         this.lblPrice.string = `${itemDatas[0].num}`;
 
@@ -64,7 +64,7 @@ export class ShopStoreItem extends ListItem {
 
     onBuyClick() {
         const goodsInfo: GoodsItemInfo = BagConfig.findGoodsItemInfo(this._data.id);
-        const itemDatas: ItemData[] = TKConfig.convertRewardData(goodsInfo.price);
+        const itemDatas: ItemData[] = ObjectUtil.convertRewardData(goodsInfo.price);
         
         const useAmount = BagConfig.findItemInfo(itemDatas[0].id).name;
         const contentStr = `确认消耗 ${itemDatas[0].num} 个 ${useAmount} 购买 ${this._data.name} 吗？`;

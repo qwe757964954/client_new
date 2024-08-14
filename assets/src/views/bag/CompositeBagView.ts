@@ -11,8 +11,8 @@ import { BasePopup } from '../../script/BasePopup';
 import CCUtil from '../../util/CCUtil';
 import { EventMgr } from '../../util/EventManager';
 import List from '../../util/list/List';
+import { ObjectUtil } from '../../util/ObjectUtil';
 import { RewardItem } from '../common/RewardItem';
-import { TKConfig } from '../task/TaskConfig';
 import { BagConfig } from './BagConfig';
 import { BackpackItemInfo } from './BagInfo';
 import { CaleBagView } from './CaleBagView';
@@ -105,7 +105,7 @@ export class CompositeBagView extends BasePopup {
         this.showTargetProps(itemInfo.id);
 
         const data = BagConfig.findMergeItems(itemInfo);
-        this._mergeItems = TKConfig.convertRewardData(data);
+        this._mergeItems = ObjectUtil.convertRewardData(data);
         this._coinItem = this._mergeItems.find(item => item.id === ItemID.coin);
         this._mergeItems = this._mergeItems.filter(item => item.id !== ItemID.coin);
 

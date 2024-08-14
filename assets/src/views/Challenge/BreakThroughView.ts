@@ -13,6 +13,7 @@ import CCUtil from '../../util/CCUtil';
 import { NodeUtil } from '../../util/NodeUtil';
 import { rightPanelchange } from '../adventure/common/RightPanelchange';
 import { BreakThroughRemindView, ITextbookRemindData } from '../TextbookVocabulary/BreakThroughRemindView';
+import { CGConfig } from './ChallengeConfig';
 import { GameStudyViewMap } from './ChallengeUtil';
 import { ScrollMapView } from './ScrollMapView';
 
@@ -50,6 +51,7 @@ export class BreakThroughView extends BaseView {
     }
 
     initUI() {
+        CGConfig.getChallengeConfig();
         this.offViewAdaptSize();
         this.initNavTitle();
         this.initAmount();
