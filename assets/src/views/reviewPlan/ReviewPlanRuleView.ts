@@ -2,7 +2,7 @@ import { _decorator, Component, Label, Node } from 'cc';
 import GlobalConfig from '../../GlobalConfig';
 import CCUtil from '../../util/CCUtil';
 import { ToolUtil } from '../../util/ToolUtil';
-import { WordSourceType } from './ReviewWordListView';
+import { GameSourceType } from '../adventure/sixModes/BaseModeView';
 const { ccclass, property } = _decorator;
 
 @ccclass('ReviewPlanRuleView')
@@ -29,8 +29,8 @@ export class ReviewPlanRuleView extends Component {
         this.node.destroy();
     }
 
-    init(type: WordSourceType) {
-        if (WordSourceType.word_game == type) {
+    init(type: GameSourceType) {
+        if (GameSourceType.word_game == type) {
             this.labelRule.string = "大冒险规则";
         } else {
             this.labelRule.string = "教材单词规则";
