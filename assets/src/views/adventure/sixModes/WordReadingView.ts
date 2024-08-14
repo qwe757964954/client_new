@@ -15,7 +15,7 @@ import CCUtil from '../../../util/CCUtil';
 import { RecordApi } from '../../../util/third/RecordApi';
 import { RecordResponseData } from '../../../util/third/RecordModel';
 import { MonsterModel } from '../common/MonsterModel';
-import { BaseModeView, WordSourceType } from './BaseModeView';
+import { BaseModeView, GameSourceType } from './BaseModeView';
 import { WordReportView } from './WordReportView';
 const { ccclass, property } = _decorator;
 
@@ -129,7 +129,7 @@ export class WordReadingView extends BaseModeView {
 
         // }
         console.log("this._rightWordData.word______", this._rightWordData.word)
-        if (WordSourceType.word_game == this._sourceType) {
+        if (GameSourceType.word_game == this._sourceType) {
             let levelData = this._levelData as GateData;
             let costTime = Date.now() - this._costTime;
             let params: AdventureResultModel = {
@@ -242,7 +242,7 @@ export class WordReadingView extends BaseModeView {
 
     checkResult() {
         console.log('checkResult');
-        let isAdventure = WordSourceType.word_game == this._sourceType; //是否是大冒险关卡
+        let isAdventure = GameSourceType.word_game == this._sourceType; //是否是大冒险关卡
         if (!isAdventure && !this._turnIsBegin && this._currentSubmitResponse && this._currentSubmitResponse.pass_flag == 1 && !this._finished) {
             this.gotoResult();
         }
@@ -254,7 +254,7 @@ export class WordReadingView extends BaseModeView {
         ViewsManager.instance.showView(PrefabType.WordReportView, (node: Node) => {
             let nodeScript = node.getComponent(WordReportView);
             console.log('朗读模式完成', this._currentSubmitResponse);
-            nodeScript.initData(this._currentSubmitResponse, this.gameMode,this._sourceType);
+            nodeScript.initData(this._currentSubmitResponse, this.gameMode, this._sourceType);
             this.node.parent.destroy();
         });
     }

@@ -14,11 +14,10 @@ import CCUtil from '../../util/CCUtil';
 import { EventMgr } from '../../util/EventManager';
 import List from '../../util/list/List';
 import { ToolUtil } from '../../util/ToolUtil';
-import { WordSourceType } from '../adventure/sixModes/BaseModeView';
+import { GameSourceType } from '../adventure/sixModes/BaseModeView';
 import { WordMeaningView } from '../adventure/sixModes/WordMeaningView';
 import { RewardItem } from '../common/RewardItem';
 import { ReviewWordModel } from './ReviewPlanView';
-import { ReviewSourceType } from './ReviewWordListView';
 const { ccclass, property } = _decorator;
 
 const Spine_Reward = {
@@ -43,7 +42,7 @@ export class ReviewEndView extends BaseComponent {
 
     private _statusData: s2cReviewPlanStatus = null;//数据
     private _data: ItemData[] = null;//数据
-    private _souceType: ReviewSourceType = null;//来源类型
+    private _souceType: GameSourceType = null;//来源类型
 
     protected onLoad(): void {
         this.initEvent();
@@ -62,7 +61,7 @@ export class ReviewEndView extends BaseComponent {
         CCUtil.offTouch(this.btnContinue, this.onBtnContinueClick, this);
         this.clearEvent();
     }
-    init(source: ReviewSourceType, data: ItemData[]) {
+    init(source: GameSourceType, data: ItemData[]) {
         this._souceType = source;
         this._data = data;
         this.btnContinue.active = false;
@@ -102,9 +101,9 @@ export class ReviewEndView extends BaseComponent {
             this.label.string = ToolUtil.replace(TextConfig.ReviewPlan_End, data.need_review_num);
         } else {
             this.btnContinue.active = false;
-            if (ReviewSourceType.word_game == this._souceType) {
+            if (GameSourceType.word_game == this._souceType) {
                 this.label.string = TextConfig.ReviewPlan_End3;
-            } else if (ReviewSourceType.classification == this._souceType) {
+            } else if (GameSourceType.classification == this._souceType) {
                 this.label.string = TextConfig.ReviewPlan_End2;
             }
         }
@@ -154,7 +153,7 @@ export class ReviewEndView extends BaseComponent {
 
         ViewsMgr.showView(PrefabType.WordMeaningView, (node: Node) => {
             node.getComponent(WordMeaningView).initData(wordsdata, {
-                source_type: WordSourceType.review,
+                source_type: GameSourceType.review,
                 ws_id: data.ws_id, pass_num: data.pass_num, word_num: wordNum, error_num: errorNum, souceType: this._souceType, wordCount: wordCount
             });
             this.node.destroy();

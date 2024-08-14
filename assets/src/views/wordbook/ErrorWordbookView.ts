@@ -1,6 +1,7 @@
 import { _decorator, EventTouch, Node } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
+import { WordModel } from '../../config/WordConfig';
 import { ViewsMgr } from '../../manager/ViewsManager';
 import { s2cWordbookErrorbook, s2cWordbookErrorbookInfo } from '../../models/NetModel';
 import { InterfacePath } from '../../net/InterfacePath';
@@ -9,11 +10,11 @@ import { BaseComponent } from '../../script/BaseComponent';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
 import { ToolUtil } from '../../util/ToolUtil';
-import { WordSourceType } from '../adventure/sixModes/BaseModeView';
+import { GameSourceType } from '../adventure/sixModes/BaseModeView';
 import { WordExamView } from '../adventure/sixModes/WordExamView';
 import { WordMeaningView } from '../adventure/sixModes/WordMeaningView';
+import { WordDetailUI } from '../common/WordDetailUI';
 import { ReviewWordModel } from '../reviewPlan/ReviewPlanView';
-import { ReviewSourceType } from '../reviewPlan/ReviewWordListView';
 import { EducationLevel } from '../TextbookVocabulary/TextbookInfo';
 import { WordItem, WordItemInfo } from './WordItem';
 const { ccclass, property } = _decorator;
@@ -39,7 +40,7 @@ export class ErrorWordbookView extends BaseComponent {
     public btnSelectRand: Node = null;
 
     private _isInit: boolean = false;
-    private _sourceType: WordSourceType = null;
+    private _sourceType: GameSourceType = null;
     private _lastSelectTab: Node = null;
     private _showCnFlag: boolean = false;
     private _listData: s2cWordbookErrorbookInfo[] = [];
@@ -77,7 +78,7 @@ export class ErrorWordbookView extends BaseComponent {
             this.onSortByNode(this.btnSortAry[0]);
         }
     }
-    public init(sourceType: WordSourceType) {
+    public init(sourceType: GameSourceType) {
         if (this._isInit) return;
         this._isInit = true;
         this._sourceType = sourceType;
@@ -85,9 +86,9 @@ export class ErrorWordbookView extends BaseComponent {
     }
     /**获得来源字符串 */
     private getSourceStr() {
-        if (WordSourceType.errorWordbook == this._sourceType) {
+        if (GameSourceType.errorWordbook == this._sourceType) {
             return "err";
-        } else if (WordSourceType.collectWordbook == this._sourceType) {
+        } else if (GameSourceType.collectWordbook == this._sourceType) {
             return "collect";
         }
         return "";
@@ -108,9 +109,9 @@ export class ErrorWordbookView extends BaseComponent {
     /**获得单词中文 */
     private getCn(data: s2cWordbookErrorbookInfo) {
         let cn;
-        if (ReviewSourceType.word_game == data.source_type) {
+        if (GameSourceType.word_game == data.source_type) {
             cn = data.gw_cn;
-        } else if (ReviewSourceType.classification == data.source_type) {
+        } else if (GameSourceType.classification == data.source_type) {
             cn = data.cw_cn;
         } else {
             cn = data.g_cn;
@@ -131,7 +132,13 @@ export class ErrorWordbookView extends BaseComponent {
         itemInfo.isSelect = isSelect;
         itemInfo.isShowCn = this._showCnFlag;
         node.getComponent(WordItem).init(itemInfo, () => {
-            ServiceMgr.studyService.moreWordDetail(data.word);
+            ViewsMgr.showView(PrefabType.WordDetailUI, (node: Node) => {
+                let wordData = new WordModel();
+                wordData.word = data.word;
+                wordData.w_id = data.w_id;
+                wordData.source = data.source_type;
+                node.getComponent(WordDetailUI).init(wordData);
+            });
         }, (_, status) => {
             this._selectAry[idx] = status;
         });
@@ -151,7 +158,7 @@ export class ErrorWordbookView extends BaseComponent {
         let wordsdata: ReviewWordModel[] = [];
         studyWords.forEach((value: s2cWordbookErrorbookInfo) => {
             let word = new ReviewWordModel();
-            word.cn = this.getCn(value);;
+            word.cn = this.getCn(value);
             word.w_id = value.w_id;
             word.word = value.word;
             word.symbol = value.symbol;

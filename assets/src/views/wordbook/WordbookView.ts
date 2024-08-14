@@ -2,9 +2,8 @@ import { _decorator, Node } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { LoadManager } from '../../manager/LoadManager';
 import { BaseComponent } from '../../script/BaseComponent';
-import { WordSourceType } from '../adventure/sixModes/BaseModeView';
+import { GameSourceType } from '../adventure/sixModes/BaseModeView';
 import { NavTitleView } from '../common/NavTitleView';
-import { ReviewSourceType } from '../reviewPlan/ReviewWordListView';
 import { TaskTabInfo } from '../task/TaskInfo';
 import { TaskTabView } from '../task/TaskTabView';
 import { ErrorWordbookView } from './ErrorWordbookView';
@@ -76,22 +75,22 @@ export class WordbookView extends BaseComponent {
         await Promise.all([
             LoadManager.loadPrefab(PrefabType.ReviewWordbookView.path, this.plRight).then((node: Node) => {
                 this._plRightContentAry[0] = node;
-                node.getComponent(ReviewWordbookView).init(ReviewSourceType.word_game);
+                node.getComponent(ReviewWordbookView).init(GameSourceType.word_game);
                 node.active = false;
             }),
             LoadManager.loadPrefab(PrefabType.ReviewWordbookView.path, this.plRight).then((node: Node) => {
                 this._plRightContentAry[1] = node;
-                node.getComponent(ReviewWordbookView).init(ReviewSourceType.classification);
+                node.getComponent(ReviewWordbookView).init(GameSourceType.classification);
                 node.active = false;
             }),
             LoadManager.loadPrefab(PrefabType.ErrorWordbookView.path, this.plRight).then((node: Node) => {
                 this._plRightContentAry[2] = node;
-                node.getComponent(ErrorWordbookView).init(WordSourceType.errorWordbook);
+                node.getComponent(ErrorWordbookView).init(GameSourceType.errorWordbook);
                 node.active = false;
             }),
             LoadManager.loadPrefab(PrefabType.ErrorWordbookView.path, this.plRight).then((node: Node) => {
                 this._plRightContentAry[3] = node;
-                node.getComponent(ErrorWordbookView).init(WordSourceType.collectWordbook);
+                node.getComponent(ErrorWordbookView).init(GameSourceType.collectWordbook);
                 node.active = false;
             }),
             LoadManager.loadPrefab(PrefabType.SearchWorldView.path, this.plRight).then((node: Node) => {

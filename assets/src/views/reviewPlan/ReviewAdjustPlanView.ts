@@ -9,10 +9,9 @@ import { BaseComponent } from '../../script/BaseComponent';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
 import { ToolUtil } from '../../util/ToolUtil';
-import { WordSourceType } from '../adventure/sixModes/BaseModeView';
+import { GameSourceType } from '../adventure/sixModes/BaseModeView';
 import { WordMeaningView } from '../adventure/sixModes/WordMeaningView';
 import { ReviewWordModel } from './ReviewPlanView';
-import { ReviewSourceType } from './ReviewWordListView';
 const { ccclass, property } = _decorator;
 
 const maxSelectCount = 10;
@@ -36,7 +35,7 @@ export class ReviewAdjustPlanView extends BaseComponent {
 
     private _selectState: boolean[];
     private _selectCount: number = 0;
-    private _source: ReviewSourceType = null;
+    private _source: GameSourceType = null;
     private _book_id: string = null;
     private _data: s2cReviewPlanWordInfo[] = null;
 
@@ -65,7 +64,7 @@ export class ReviewAdjustPlanView extends BaseComponent {
         this.clearEvent();
     }
     /**初始化 */
-    init(source: ReviewSourceType, book_id?: string) {
+    init(source: GameSourceType, book_id?: string) {
         this._source = source;
         this._book_id = book_id;
 
@@ -100,7 +99,7 @@ export class ReviewAdjustPlanView extends BaseComponent {
         let showView = () => {
             ViewsMgr.showView(PrefabType.WordMeaningView, (node: Node) => {
                 node.getComponent(WordMeaningView).initData(wordsdata, {
-                    source_type: WordSourceType.reviewSpecial,
+                    source_type: GameSourceType.reviewSpecial,
                     pass_num: 0, word_num: 0, error_num: 0, souceType: this._source, wordCount: wordsdata.length
                 });
                 this.node.destroy();

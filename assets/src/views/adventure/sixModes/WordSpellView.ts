@@ -13,7 +13,7 @@ import { ServiceMgr } from '../../../net/ServiceManager';
 import CCUtil from '../../../util/CCUtil';
 import { PoolMgr } from '../../../util/PoolUtil';
 import { ToolUtil } from '../../../util/ToolUtil';
-import { BaseModeView, WordSourceType } from './BaseModeView';
+import { BaseModeView, GameSourceType } from './BaseModeView';
 import { SpellWordItem } from './items/SpellWordItem';
 import { WordReadingView } from './WordReadingView';
 const { ccclass, property } = _decorator;
@@ -69,7 +69,7 @@ export class WordSpellView extends BaseModeView {
         }
         console.log("this.resultSprite_____", this.resultSprite);
         this._wordsData = data;
-        let isAdventure = WordSourceType.word_game == this._sourceType; //是否是大冒险关卡
+        let isAdventure = GameSourceType.word_game == this._sourceType; //是否是大冒险关卡
         if (isAdventure) { //单词大冒险获取组合模式选项
             let levelData = this._levelData as GateData;
             ServiceMgr.studyService.getWordGroup(levelData.big_id, levelData.small_id);
@@ -284,8 +284,8 @@ export class WordSpellView extends BaseModeView {
 
     getSplitItem() {
         let item: Node = PoolMgr.getNodePool("spellWordItem").size() > 0
-                            ? PoolMgr.getNodeFromPool("spellWordItem")
-                            : instantiate(this.wordItem);
+            ? PoolMgr.getNodeFromPool("spellWordItem")
+            : instantiate(this.wordItem);
         return item;
     }
 
@@ -295,7 +295,7 @@ export class WordSpellView extends BaseModeView {
             CCUtil.offTouch(this._items[i], this.onItemClick, this);
             this._items[i].parent = null;
         }
-        PoolMgr.recycleNodes("spellWordItem",this._items);
+        PoolMgr.recycleNodes("spellWordItem", this._items);
         this._items = [];
         this._selectIdxs = [];
         this._selectItems = [];

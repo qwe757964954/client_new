@@ -1,5 +1,6 @@
 /***************************************HTTP**********************************/
 
+import { WordSentenceModel, WordStructureModel, WordVariantModel } from "../config/WordConfig";
 import { ItemData } from "../manager/DataMgr";
 import { InterfacePath } from "../net/InterfacePath";
 import { CurrentBookStatus } from "./TextbookModel";
@@ -649,10 +650,27 @@ export class s2cWordbookWordSubmit extends BaseRepPacket {
 /**单词本-单词详情 */
 export class c2sWordbookWordDetail {
     command_id: string = InterfacePath.c2sWordbookWordDetail;
-    word: string;//单词
+    w_id: string;//单词大冒险 单词id 或 总词库 单词
+    source_type: number;//来源 2表示单词大冒险 1表示教材单词 0总词库
 }
 /**单词本-单词详情返回 */
 export class s2cWordbookWordDetail extends BaseRepPacket {
+    // word: WordModel;
+    word: string;//单词
+    cn: string;//中文解释
+    symbol: string;//音标 英标
+    symbolus: string;//音标 美标
+    g_cn: string;//总词库 中文释义
+    is_collect: number;//是否收藏
+    w_id: string;
+    source_type: number;
+
+    speech: string;
+    sentence_list: WordSentenceModel[];
+    similar_list: [];
+    variant: WordVariantModel;
+    structure: WordStructureModel;
+
 }
 
 /**********************************以上是新接口*************************************/

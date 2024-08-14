@@ -43,6 +43,11 @@ export default class RemoteImageManager {
         });
         this._cacheAsset.clear();
     }
+    /**加载远程单词图片 */
+    loadWordImg(word: string, sprite: Sprite) {
+        let url = ToolUtil.replace("{0}/imgs/words/{1}.jpg", NetConfig.assertUrl, word);
+        return LoadManager.loadRemoteSprite(url, sprite);
+    }
 
     /**加载远程书籍封面 */
     loadBookCover(bookName: string, grade: string, sprite: Sprite) {

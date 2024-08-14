@@ -7,7 +7,7 @@ import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
 import { BaseControll } from "../script/BaseControll";
 import EventManager from "../util/EventManager";
-import { ReviewSourceType } from "../views/reviewPlan/ReviewWordListView";
+import { WordSourceType } from "../views/reviewPlan/ReviewWordListView";
 
 export default class StudyService extends BaseControll {
     constructor() {
@@ -194,7 +194,7 @@ export default class StudyService extends BaseControll {
     reqReviewPlanOption(w_id: string, big_id: number, subject_id: number) {
         console.log("reqReviewPlanOption", w_id, big_id, subject_id);
         let para: c2sReviewPlanOption = new c2sReviewPlanOption();
-        para.source = ReviewSourceType.word_game;
+        para.source = WordSourceType.word_game;
         para.w_id = w_id;
         para.big_id = big_id;
         para.subject_id = subject_id;
@@ -203,7 +203,7 @@ export default class StudyService extends BaseControll {
     reqReviewPlanOptionEx(w_id: string, book_id: string, unit_id: string) {
         console.log("reqReviewPlanOptionEx", w_id, book_id, unit_id);
         let para: c2sReviewPlanOption = new c2sReviewPlanOption();
-        para.source = ReviewSourceType.classification;
+        para.source = WordSourceType.classification;
         para.w_id = w_id;
         para.book_id = book_id;
         para.unit_id = unit_id;
@@ -212,7 +212,7 @@ export default class StudyService extends BaseControll {
     reqReviewPlanOptionEx2(word: string) {
         console.log("reqReviewPlanOptionEx2", word);
         let para: c2sReviewPlanOption = new c2sReviewPlanOption();
-        para.source = ReviewSourceType.total;
+        para.source = WordSourceType.total;
         para.word = word;
         NetMgr.sendMsg(para);
     }

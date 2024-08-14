@@ -9,7 +9,7 @@ import { UnitWordModel } from '../../../models/TextbookModel';
 import CCUtil from '../../../util/CCUtil';
 import { EventMgr } from '../../../util/EventManager';
 import List from '../../../util/list/List';
-import { BaseModeView, WordSourceType } from './BaseModeView';
+import { BaseModeView, GameSourceType } from './BaseModeView';
 import { ExamReportView } from './ExamReportView';
 import { ExamItem } from './items/ExamItem';
 const { ccclass, property } = _decorator;
@@ -174,7 +174,7 @@ export class WordExamView extends BaseModeView {
     protected modeOver(): void {
         super.modeOver();
         console.log('评测完成，显示结算');
-        if (WordSourceType.errorWordbook == this._sourceType || WordSourceType.collectWordbook == this._sourceType) {
+        if (GameSourceType.errorWordbook == this._sourceType || GameSourceType.collectWordbook == this._sourceType) {
             EventMgr.emit(EventType.Wordbook_List_Refresh);
             ViewsMgr.showAlert(TextConfig.All_level_Tip, () => {
                 this.node.destroy();

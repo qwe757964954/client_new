@@ -1,6 +1,7 @@
 import { _decorator, Label, Node, ProgressBar, sp, Sprite } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
+import { WordSourceType } from '../../config/WordConfig';
 import { ItemID } from '../../export/ItemConfig';
 import GlobalConfig from '../../GlobalConfig';
 import { ItemData } from '../../manager/DataMgr';
@@ -15,14 +16,14 @@ import { ServiceMgr } from '../../net/ServiceManager';
 import { BaseComponent } from '../../script/BaseComponent';
 import CCUtil from '../../util/CCUtil';
 import { ToolUtil } from '../../util/ToolUtil';
-import { WordSourceType } from '../adventure/sixModes/BaseModeView';
+import { GameSourceType } from '../adventure/sixModes/BaseModeView';
 import { WordMeaningView } from '../adventure/sixModes/WordMeaningView';
 import { EducationLevel } from '../TextbookVocabulary/TextbookInfo';
 import { TextbookListView } from '../TextbookVocabulary/TextbookListView';
 import { ReviewAdjustPlanView } from './ReviewAdjustPlanView';
 import { ReviewPlanRuleView } from './ReviewPlanRuleView';
 import { ReviewRewardView } from './ReviewRewardView';
-import { ReviewSourceType, ReviewWordListView } from './ReviewWordListView';
+import { ReviewWordListView } from './ReviewWordListView';
 const { ccclass, property } = _decorator;
 
 const spAnimNames = ["jingtai", "danchou", "shilian"];
@@ -117,7 +118,7 @@ export class ReviewPlanView extends BaseComponent {
     private _drawType: ReviewPlanDrawType = null;//抽奖类型
     private _eggID: number = 0;//蛋ID
     private _drawRewards: ItemData[] = null;//抽奖奖励
-    private _souceType: ReviewSourceType = null;//来源类型
+    private _souceType: GameSourceType = null;//来源类型
     private _closeCall: Function = null;//关闭回调
     private _bookData: CurrentBookStatus = null;
 
@@ -236,30 +237,30 @@ export class ReviewPlanView extends BaseComponent {
     /**单词大冒险 今日复习按钮 */
     onBtnTodayReview1Click() {
         ViewsMgr.showView(PrefabType.ReviewWordListView, (node: Node) => {
-            node.getComponent(ReviewWordListView).init(ReviewSourceType.word_game);
+            node.getComponent(ReviewWordListView).init(WordSourceType.word_game);
         });
     }
     /**单词大冒险 复习按钮 */
     onBtnReview1Click() {
-        this._souceType = ReviewSourceType.word_game;
-        ServiceMgr.studyService.reqReviewPlanStatus(ReviewSourceType.word_game);
+        this._souceType = GameSourceType.word_game;
+        ServiceMgr.studyService.reqReviewPlanStatus(GameSourceType.word_game);
     }
     /**单词大冒险  复习规划提示*/
     onLabelTip1Click() {
         ViewsMgr.showView(PrefabType.ReviewAdjustPlanView, (node: Node) => {
-            node.getComponent(ReviewAdjustPlanView).init(ReviewSourceType.word_game);
+            node.getComponent(ReviewAdjustPlanView).init(GameSourceType.word_game);
         });
     }
     /**教材单词 今日复习按钮 */
     onBtnTodayReview2Click() {
         ViewsMgr.showView(PrefabType.ReviewWordListView, (node: Node) => {
-            node.getComponent(ReviewWordListView).init(ReviewSourceType.classification);
+            node.getComponent(ReviewWordListView).init(WordSourceType.classification);
         });
     }
     /**教材单词 复习按钮 */
     onBtnReview2Click() {
-        this._souceType = ReviewSourceType.classification;
-        ServiceMgr.studyService.reqReviewPlanStatus(ReviewSourceType.classification);
+        this._souceType = GameSourceType.classification;
+        ServiceMgr.studyService.reqReviewPlanStatus(GameSourceType.classification);
         // ViewsMgr.showView(PrefabType.ReviewEndView, (node: Node) => {
         //     let rewardList = [{ id: ItemID.coin, num: 10 }, { id: ItemID.diamond, num: 20 }];
         //     node.getComponent(ReviewEndView).init(ReviewSourceType.classification, rewardList);
@@ -269,7 +270,7 @@ export class ReviewPlanView extends BaseComponent {
     /**教材单词  复习规划提示*/
     onLabelTip2Click() {
         ViewsMgr.showView(PrefabType.ReviewAdjustPlanView, (node: Node) => {
-            node.getComponent(ReviewAdjustPlanView).init(ReviewSourceType.classification, this._bookData.book_id);
+            node.getComponent(ReviewAdjustPlanView).init(GameSourceType.classification, this._bookData.book_id);
         });
     }
     /**教材单词 更换教材 */
@@ -286,13 +287,13 @@ export class ReviewPlanView extends BaseComponent {
     /**大冒险 规则按钮 */
     onBtnRule1Click() {
         ViewsMgr.showView(PrefabType.ReviewPlanRuleView, (node: Node) => {
-            node.getComponent(ReviewPlanRuleView).init(ReviewSourceType.word_game);
+            node.getComponent(ReviewPlanRuleView).init(GameSourceType.word_game);
         });
     }
     /**教材单词 规则按钮 */
     onBtnRule2Click() {
         ViewsMgr.showView(PrefabType.ReviewPlanRuleView, (node: Node) => {
-            node.getComponent(ReviewPlanRuleView).init(ReviewSourceType.classification);
+            node.getComponent(ReviewPlanRuleView).init(GameSourceType.classification);
         });
     }
     /**动画结束回调 */
@@ -446,7 +447,7 @@ export class ReviewPlanView extends BaseComponent {
         let showView = () => {
             ViewsMgr.showView(PrefabType.WordMeaningView, (node: Node) => {
                 node.getComponent(WordMeaningView).initData(wordsdata, {
-                    source_type: WordSourceType.review,
+                    source_type: GameSourceType.review,
                     ws_id: data.ws_id,
                     pass_num: data.pass_num,
                     word_num: wordNum,

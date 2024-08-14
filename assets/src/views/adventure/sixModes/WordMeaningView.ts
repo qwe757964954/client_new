@@ -3,6 +3,7 @@ import { EventType } from '../../../config/EventType';
 import { NetConfig } from '../../../config/NetConfig';
 import { PrefabType } from '../../../config/PrefabType';
 import { TextConfig } from '../../../config/TextConfig';
+import { WordSourceType } from '../../../config/WordConfig';
 import GlobalConfig from '../../../GlobalConfig';
 import { ItemData } from '../../../manager/DataMgr';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
@@ -19,8 +20,7 @@ import { Shake } from '../../../util/Shake';
 import { ToolUtil } from '../../../util/ToolUtil';
 import { WordDetailView } from '../../common/WordDetailView';
 import { ReviewEndView } from '../../reviewPlan/ReviewEndView';
-import { ReviewSourceType } from '../../reviewPlan/ReviewWordListView';
-import { BaseModeView, WordSourceType } from './BaseModeView';
+import { BaseModeView, GameSourceType } from './BaseModeView';
 import { WordPracticeView } from './WordPracticeView';
 const { ccclass, property } = _decorator;
 
@@ -98,8 +98,8 @@ export class WordMeaningView extends BaseModeView {
     //显示当前单词
     showCurrentWord() {
         super.updateConstTime();
-        if (WordSourceType.review == this._sourceType || WordSourceType.reviewSpecial === this._sourceType ||
-            WordSourceType.errorWordbook == this._sourceType || WordSourceType.collectWordbook == this._sourceType) {
+        if (GameSourceType.review == this._sourceType || GameSourceType.reviewSpecial === this._sourceType ||
+            GameSourceType.errorWordbook == this._sourceType || GameSourceType.collectWordbook == this._sourceType) {
             this.sentenceLabel.node.parent.active = false;
         }
         this._selectLock = false;
@@ -108,16 +108,16 @@ export class WordMeaningView extends BaseModeView {
         this.wordLabel.string = word;
         this.symbolLabel.string = this._rightWordData.symbol;
         this.initWordDetail(this._rightWordData);
-        if (WordSourceType.reviewSpecial === this._sourceType || WordSourceType.review === this._sourceType ||
-            WordSourceType.errorWordbook == this._sourceType || WordSourceType.collectWordbook == this._sourceType) {
+        if (GameSourceType.reviewSpecial === this._sourceType || GameSourceType.review === this._sourceType ||
+            GameSourceType.errorWordbook == this._sourceType || GameSourceType.collectWordbook == this._sourceType) {
             for (let i = 0; i < 3; i++) {
                 this.answerList[i].active = false;
             }
-            if (ReviewSourceType.word_game == this._rightWordData.source) {
+            if (WordSourceType.word_game == this._rightWordData.source) {
                 ServiceMgr.studyService.reqReviewPlanOption(this._rightWordData.w_id, this._rightWordData.big_id, this._rightWordData.subject_id);
-            } else if (ReviewSourceType.classification == this._rightWordData.source) {
+            } else if (WordSourceType.classification == this._rightWordData.source) {
                 ServiceMgr.studyService.reqReviewPlanOptionEx(this._rightWordData.w_id, this._rightWordData.book_id, this._rightWordData.unit_id);
-            } else if (ReviewSourceType.total == this._rightWordData.source) {
+            } else if (WordSourceType.total == this._rightWordData.source) {
                 ServiceMgr.studyService.reqReviewPlanOptionEx2(this._rightWordData.word);
             }
         } else {
@@ -243,7 +243,7 @@ export class WordMeaningView extends BaseModeView {
     /**网络请求结束 */
     netReqOver() {
         console.log("netReqOver");
-        if (WordSourceType.reviewSpecial == this._sourceType || WordSourceType.review == this._sourceType) {
+        if (GameSourceType.reviewSpecial == this._sourceType || GameSourceType.review == this._sourceType) {
             let data = this._currentSubmitResponse as s2cReviewPlanLongTimeWordSubmit;
             if (data && data.reward_list) {
                 this._rewardList.push(...data.reward_list);
@@ -327,7 +327,7 @@ export class WordMeaningView extends BaseModeView {
             this.errorNumLabel.string = "错误次数：" + this._errorNum;
 
             // }
-            if (WordSourceType.reviewSpecial != this._sourceType) {//复习规划 长时间未复习题目没有错题模式
+            if (GameSourceType.reviewSpecial != this._sourceType) {//复习规划 长时间未复习题目没有错题模式
                 this._wrongWordList.push(this._rightWordData);
                 if (!this._wrongMode) {
                     this._wordIndex++;
@@ -348,7 +348,7 @@ export class WordMeaningView extends BaseModeView {
     protected modeOver(): void {
         super.modeOver();
         console.log('词意模式完成');
-        if (WordSourceType.review == this._sourceType) {
+        if (GameSourceType.review == this._sourceType) {
             let data = this._currentSubmitResponse as s2cReviewPlanSubmit;
             if (0 == data.pass_flag) {
                 return;
@@ -360,14 +360,14 @@ export class WordMeaningView extends BaseModeView {
             });
             return;
         }
-        if (WordSourceType.errorWordbook == this._sourceType || WordSourceType.collectWordbook == this._sourceType) {
+        if (GameSourceType.errorWordbook == this._sourceType || GameSourceType.collectWordbook == this._sourceType) {
             EventMgr.emit(EventType.Wordbook_List_Refresh);// 通知
             ViewsMgr.showAlert(TextConfig.All_level_Tip, () => {
                 this.node.destroy();
             });
             return;
         }
-        if (WordSourceType.reviewSpecial === this._sourceType) {
+        if (GameSourceType.reviewSpecial === this._sourceType) {
             ViewsMgr.showRewards(this._rewardList, () => {
                 ServiceMgr.studyService.reqReviewPlan();//刷新复习规划
                 this.node.destroy();

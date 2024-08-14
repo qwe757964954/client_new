@@ -1,4 +1,5 @@
 import { _decorator, Node, Sprite, SpriteFrame } from 'cc';
+import { WordSourceType } from '../../config/WordConfig';
 import { ViewsMgr } from '../../manager/ViewsManager';
 import { s2cReviewPlanList } from '../../models/NetModel';
 import { InterfacePath } from '../../net/InterfacePath';
@@ -8,12 +9,6 @@ import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
 import { ReviewWordInfo, ReviewWordItem } from './ReviewWordItem';
 const { ccclass, property } = _decorator;
-
-export enum ReviewSourceType {
-    total = 0,//总词库
-    classification = 1,//教材单词
-    word_game = 2,//单词大冒险
-}
 
 enum ReviewType {
     today = "today",//今日复习
@@ -33,7 +28,7 @@ export class ReviewWordListView extends BaseComponent {
     @property([SpriteFrame])
     public btnTitleFrames: SpriteFrame[] = [];//按钮标题图片
 
-    private _souceType: ReviewSourceType = null;//来源类型
+    private _souceType: WordSourceType = null;//来源类型
     private _reviewType: ReviewType = null;//复习类型
     private _data: ReviewWordInfo[] = [];//复习规划列表数据
     private _today: number = 0;//今日日期
@@ -61,7 +56,7 @@ export class ReviewWordListView extends BaseComponent {
         this.clearEvent();
     }
     /**初始化 */
-    public init(souceType: ReviewSourceType): void {
+    public init(souceType: WordSourceType): void {
         this._souceType = souceType;
         this.showList(ReviewType.today);
     }

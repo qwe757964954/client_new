@@ -9,10 +9,9 @@ import { ServiceMgr } from '../../net/ServiceManager';
 import { BaseComponent } from '../../script/BaseComponent';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
-import { WordSourceType } from '../adventure/sixModes/BaseModeView';
+import { GameSourceType } from '../adventure/sixModes/BaseModeView';
 import { WordMeaningView } from '../adventure/sixModes/WordMeaningView';
 import { ReviewWordModel } from '../reviewPlan/ReviewPlanView';
-import { ReviewSourceType } from '../reviewPlan/ReviewWordListView';
 import { EducationLevel } from '../TextbookVocabulary/TextbookInfo';
 import { WordItem, WordItemInfo } from './WordItem';
 const { ccclass, property } = _decorator;
@@ -31,7 +30,7 @@ export class ReviewWordbookView extends BaseComponent {
     private _isInit: boolean = false;
     private _lastSelectTab: Node = null;
     private _showCnFlag: boolean = false;
-    private _souceType: ReviewSourceType = null;//来源类型
+    private _souceType: GameSourceType = null;//来源类型
     // private _reviewType: ReviewType = null;//复习类型
     private _listData: WordItemInfo[] = [];//复习规划列表数据
     private _today: number = 0;//今日日期
@@ -62,7 +61,7 @@ export class ReviewWordbookView extends BaseComponent {
         }
     }
 
-    public init(souceType: ReviewSourceType): void {
+    public init(souceType: GameSourceType): void {
         if (this._isInit) return;
         this._souceType = souceType;
         this._isInit = true;
@@ -185,7 +184,7 @@ export class ReviewWordbookView extends BaseComponent {
         let showView = () => {
             ViewsMgr.showView(PrefabType.WordMeaningView, (node: Node) => {
                 node.getComponent(WordMeaningView).initData(wordsdata, {
-                    source_type: WordSourceType.review,
+                    source_type: GameSourceType.review,
                     ws_id: data.ws_id,
                     pass_num: data.pass_num,
                     word_num: wordNum,
