@@ -1,7 +1,7 @@
 import { _decorator, EventTouch, Node } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
-import { WordModel } from '../../config/WordConfig';
+import { WordCollectInfo, WordModel } from '../../config/WordConfig';
 import { ViewsMgr } from '../../manager/ViewsManager';
 import { s2cWordbookErrorbook, s2cWordbookErrorbookInfo } from '../../models/NetModel';
 import { InterfacePath } from '../../net/InterfacePath';
@@ -42,9 +42,11 @@ export class ErrorWordbookView extends BaseComponent {
     private _isInit: boolean = false;
     private _sourceType: GameSourceType = null;
     private _lastSelectTab: Node = null;
+    private _lastIdx: number = 0;
     private _showCnFlag: boolean = false;
     private _listData: s2cWordbookErrorbookInfo[] = [];
     private _selectAry: boolean[] = [];
+    private _isNeedRefresh: boolean = false;
 
     protected onDestroy(): void {
         this.clearEvent();
@@ -68,14 +70,21 @@ export class ErrorWordbookView extends BaseComponent {
 
         this.addEvent(InterfacePath.c2sWordbookErrorbook, this.onRepErrorbook.bind(this));
         this.addEvent(EventType.Wordbook_List_Refresh, this.onWordbookListRefresh.bind(this));
+        this.addEvent(EventType.Word_Collect_Refresh, this.onWordCollectRefresh.bind(this));
     }
     protected onEnable(): void {
         if (this._isInit) {
-            if (this._lastSelectTab) {
-                this._lastSelectTab.active = false;
-                this._lastSelectTab = null;
+            if (this._isNeedRefresh) {
+                this._lastIdx = 0;
+                ServiceMgr.wordbookSrv.reqErrorbook(this.getSourceStr());
+                this._isNeedRefresh = false;
+            } else {
+                if (this._lastSelectTab) {
+                    this._lastSelectTab.active = false;
+                    this._lastSelectTab = null;
+                }
+                this.onSortByNode(this.btnSortAry[0]);
             }
-            this.onSortByNode(this.btnSortAry[0]);
         }
     }
     public init(sourceType: GameSourceType) {
@@ -98,8 +107,11 @@ export class ErrorWordbookView extends BaseComponent {
         if (200 != data.code) return;
         if (!data.word_list || data.word_type != this.getSourceStr()) return;
         this._listData = data.word_list;
-        this._lastSelectTab = null;
-        this.onSortByNode(this.btnSortAry[0]);
+        if (this._lastSelectTab) {
+            this._lastSelectTab.active = false;
+            this._lastSelectTab = null;
+        }
+        this.onSortByNode(this.btnSortAry[this._lastIdx]);
         // this.list.numItems = this._listData.length;
     }
     /**通知列表刷新 */
@@ -222,6 +234,7 @@ export class ErrorWordbookView extends BaseComponent {
         this._lastSelectTab = tabNode;
         /**排序 */
         let idx = node["idx"];
+        this._lastIdx = idx;
         if (0 == idx) {
             this._listData.sort((a, b) => {
                 return a.create_time < b.create_time ? 1 : -1;
@@ -273,6 +286,15 @@ export class ErrorWordbookView extends BaseComponent {
             this._selectAry[ary[i]] = true;
         }
         this.list.updateAll();
+    }
+    /**通知单词收藏状态变化*/
+    private onWordCollectRefresh(data: WordCollectInfo) {
+        if (GameSourceType.collectWordbook != this._sourceType) return;
+        if (this.node.active) {
+            ServiceMgr.wordbookSrv.reqErrorbook(this.getSourceStr());
+            return;
+        }
+        this._isNeedRefresh = true;
     }
 }
 
