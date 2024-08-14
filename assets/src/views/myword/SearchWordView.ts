@@ -2,6 +2,7 @@ import { _decorator, EditBox, isValid, Node } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
+import { WordModel, WordSourceType } from '../../config/WordConfig';
 import { SoundMgr } from '../../manager/SoundMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { WordsDetailData } from '../../models/AdventureModel';
@@ -10,9 +11,9 @@ import { ServiceMgr } from '../../net/ServiceManager';
 import { BaseView } from '../../script/BaseView';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
+import { WordDetailUI } from '../common/WordDetailUI';
 import { SearchWordItem, SearchWordResponse } from './MyWordInfo';
 import { WordHistoryItem } from './WordHistoryItem';
-import { WordSearchView } from './WordSearchView';
 const { ccclass, property } = _decorator;
 
 @ccclass('SearchWordView')
@@ -48,8 +49,8 @@ export class SearchWordView extends BaseView {
         this.addModelListeners([
             [InterfacePath.More_Word_Detail, this.onMoreWordDetail.bind(this)],
             [InterfacePath.Search_Word, this.onSearchWord.bind(this)],
-            [InterfacePath.Total_Collect_Word, this.onTotalCollectWord.bind(this)],
-            [EventType.Search_Collect_Work,this.onSearchCollectWork.bind(this)],
+            // [InterfacePath.Total_Collect_Word, this.onTotalCollectWord.bind(this)],
+            [EventType.Word_Collect_Refresh,this.onTotalCollectWord.bind(this)],
             [EventType.Search_Word_Item_Detail,this.onSearchItemDetail.bind(this)],
         ]);
     }
@@ -57,10 +58,6 @@ export class SearchWordView extends BaseView {
     onSearchItemDetail(data: SearchWordItem){
         this._collectWoldInfo = data;
         ServiceMgr.studyService.moreWordDetail(this._collectWoldInfo.word);
-    }
-    
-    private async onSearchCollectWork(data:SearchWordItem){
-        this._collectWoldInfo = data;
     }
 
     private async onTotalCollectWord(data: any) {
@@ -101,8 +98,13 @@ export class SearchWordView extends BaseView {
         }
         this._detailData = this.createDetailData(data);
         console.log(this._detailData);
-        const node = await ViewsManager.instance.showViewAsync(PrefabType.WordSearchView);
-        node.getComponent(WordSearchView).updateData(this._detailData);
+        const node = await ViewsManager.instance.showViewAsync(PrefabType.WordDetailUI);
+        let wordData = new WordModel();
+        wordData.word = this._detailData.word;
+        wordData.w_id = this._detailData.w_id;
+        wordData.source = WordSourceType.total;
+        node.getComponent(WordDetailUI).init(wordData);
+        // node.getComponent(WordSearchView).updateData(this._detailData);
     }
 
     private createDetailData(data: WordsDetailData): WordsDetailData {

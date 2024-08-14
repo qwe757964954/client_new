@@ -130,7 +130,7 @@ export class WordDetailUI extends BaseComponent {
     private isSelfWord(source: number, w_id: string) {
         if (source != this._wordData.source) return false;
         if (WordSourceType.total == source && w_id != this._wordData.word) return false;
-        if (w_id != this._wordData.w_id) return false;
+        // if (w_id != this._wordData.w_id) return false;
         return true;
     }
 
@@ -140,7 +140,7 @@ export class WordDetailUI extends BaseComponent {
             this.node.destroy();
             return;
         }
-        if (!this.isSelfWord(data.source_type, data.w_id)) {
+        if (!this.isSelfWord(data.source_type, data.word)) {
             return;
         }
         this.clearTimer();
