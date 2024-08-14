@@ -2,6 +2,7 @@ import { _decorator, EventTouch, Node } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
+import { WordModel, WordSourceType } from '../../config/WordConfig';
 import { ViewsMgr } from '../../manager/ViewsManager';
 import { s2cReviewPlanList, s2cReviewPlanStatus } from '../../models/NetModel';
 import { InterfacePath } from '../../net/InterfacePath';
@@ -11,6 +12,7 @@ import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
 import { GameSourceType } from '../adventure/sixModes/BaseModeView';
 import { WordMeaningView } from '../adventure/sixModes/WordMeaningView';
+import { WordDetailUI } from '../common/WordDetailUI';
 import { ReviewWordModel } from '../reviewPlan/ReviewPlanView';
 import { EducationLevel } from '../TextbookVocabulary/TextbookInfo';
 import { WordItem, WordItemInfo } from './WordItem';
@@ -74,7 +76,17 @@ export class ReviewWordbookView extends BaseComponent {
         data.isSelect = null;
         data.isShowCn = this._showCnFlag;
         node.getComponent(WordItem).init(data, () => {
-            ServiceMgr.studyService.moreWordDetail(data.word);
+            ViewsMgr.showView(PrefabType.WordDetailUI, (node: Node) => {
+                let wordData = new WordModel();
+                wordData.word = data.word;
+                wordData.w_id = data.w_id;
+                if (GameSourceType.word_game == this._souceType) {
+                    wordData.source = WordSourceType.word_game;
+                } else {
+                    wordData.source = WordSourceType.classification;
+                }
+                node.getComponent(WordDetailUI).init(wordData);
+            });
         });
     }
 

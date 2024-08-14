@@ -65,13 +65,23 @@ export class WordDetailUI extends BaseComponent {
             this._timer = null;
         }
     }
-
+    /**
+     * 初始化
+     * @param wordData 
+     * word 单词 必传
+     * w_id 来源，大冒险、教材单词必传，总词库可不传
+     * source 必传
+     */
     init(wordData: WordModel) {
         this._framePos = this.plFrame.position.clone();
         this.pl.active = false;
 
         this._wordData = wordData;
-        ServiceMgr.wordbookSrv.reqWordDetail(this._wordData.w_id, this._wordData.source);
+        if (WordSourceType.total == this._wordData.source) {
+            ServiceMgr.wordbookSrv.reqWordDetail(this._wordData.word, this._wordData.source);
+        } else {
+            ServiceMgr.wordbookSrv.reqWordDetail(this._wordData.w_id, this._wordData.source);
+        }
         this.clearTimer();
         this._timer = TimerMgr.once(() => {
             this.clearTimer();
@@ -97,7 +107,7 @@ export class WordDetailUI extends BaseComponent {
         let detailData = new WordsDetailData();
         detailData.word = this._wordDetailData.word;
         detailData.sentence_list = this._wordDetailData.sentence_list as any;
-        detailData.speech = this._wordDetailData.speech;
+        // detailData.speech = this._wordDetailData.speech;
         detailData.similar_list = this._wordDetailData.similar_list;
         // detailData.ancillary = this._wordDetailData.ancillary as any;
         this.wordDetailView.init(this._wordDetailData.word, detailData);
