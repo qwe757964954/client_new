@@ -159,6 +159,7 @@ export const EventType = {
     Search_Word_Item_Detail: "Search_Word_Item_Detail",
     Word_Check_Item_Detail: "Word_Check_Item_Detail",
     Grade_Select_Event: "Grade_Select_Event",
+    Bag_Player_Action_Event: "Bag_Player_Action_Event",
 }
 
 export function itemEventKey(id: ItemID) {

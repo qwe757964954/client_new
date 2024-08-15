@@ -6,6 +6,7 @@ import { ClothingInfo, ClothingType, DataMgr, ItemData } from '../../manager/Dat
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { DressInfoItem } from '../../models/BagModel';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
+import { RoleModel } from '../../models/RoleModel';
 import { User } from '../../models/User';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
@@ -18,7 +19,7 @@ import { RewardItem } from '../common/RewardItem';
 import { ShopClothingInfo } from '../shop/ShopInfo';
 import { BagConfig } from './BagConfig';
 import { BagDressItem } from './BagDressItem';
-import { BackpackItemInfo, BagGressItemIds, BagGressItems, BagGressTypeMap, BagItemType, BagOperationData, BagOperationIds, BagTabIds, BagTabNames } from './BagInfo';
+import { ActionModel, ActionType, BackpackItemInfo, BagGressItemIds, BagGressItems, BagGressTypeMap, BagItemType, BagOperationData, BagOperationIds, BagTabIds, BagTabNames } from './BagInfo';
 import { BagOperrationItem } from './BagOperrationItem';
 import { BagTabItem } from './BagTabItem';
 import { BreakdownView } from './BreakdownView';
@@ -62,9 +63,34 @@ export class BagDialogView extends BaseView {
             [NetNotify.Classification_BreakdownBackpackItems, this.onBreakdownBackpackItems.bind(this)],
             [NetNotify.Classification_BackpackItemSynthesis, this.onBackpackItemSynthesis.bind(this)],
             [NetNotify.Classification_UpdatePlayerClothing, this.onUpdatePlayerClothing.bind(this)],
+            [EventType.Bag_Player_Action_Event, this.onBagPlayerAction.bind(this)],
         ]);
     }
+    onBagPlayerAction(model: ActionModel) {
+        const roleModel = this._role.getComponent(RoleModel);
+        switch (model.type) {
+            case ActionType.Idle:
 
+                break;
+            case ActionType.Wave:
+
+                break;
+            case ActionType.Walk:
+                roleModel.walk();
+                break;
+            case ActionType.Run:
+
+                break;
+            case ActionType.Jump:
+                roleModel.ju();
+                break;
+            case ActionType.Die:
+                roleModel.idle();
+                break;
+            default:
+                break;
+        }
+    }
     async initUI() {
         console.log("User.userClothes.....", User.userClothes);
         await BagConfig.loadBagConfigInfo();
@@ -136,7 +162,7 @@ export class BagDialogView extends BaseView {
                 itemData.num = itemQuantity;
                 return `${itemQuantity}个${itemInfo.name}`;
             }).join('，');
-        
+
         ViewsMgr.showRewards(decomposeItems);
         ViewsManager.showTip(tipMsg);
     }
@@ -164,7 +190,7 @@ export class BagDialogView extends BaseView {
             .filter(item => item.id !== ItemID.coin);
         const itemInfo = BagConfig.findBackpackItemInfo(mergeItems[0].id);
         const tipMsg = `你成功把${mergeItems[0].num}个${itemInfo.name}合成了${this._compositeInfo.name}`;
-        
+
         ViewsMgr.showRewards([{ id: this._compositeInfo.id, num: 1 }]);
         ViewsManager.showTip(tipMsg);
     }
@@ -175,13 +201,13 @@ export class BagDialogView extends BaseView {
         this._role.setScale(v3(2, 2, 1));
         this.roleContainer.addChild(this._role);
         NodeUtil.setLayerRecursively(this._role, Layers.Enum.UI_2D);
-        const roleModel = this._role.getComponent(RoleBaseModel);
+        const roleModel = this._role.getComponent(RoleModel);
         roleModel.initSelf();
         roleModel.show(true);
     }
 
     public changeClothings(clothingId: number) {
-        const roleModel = this._role.getComponent(RoleBaseModel);
+        const roleModel = this._role.getComponent(RoleModel);
         roleModel.changeClothing(clothingId);
     }
 
@@ -194,7 +220,7 @@ export class BagDialogView extends BaseView {
         const itemScript = item.getComponent(RewardItem);
         const nodeTrans = item.getComponent(UITransform);
         const scale = 125 / nodeTrans.height;
-        
+
         item.setScale(scale, scale, scale);
         const data: ItemData = this._propsDatas[idx];
         const propInfo = DataMgr.getItemInfo(data.id);

@@ -126,3 +126,29 @@ export const BagGressTypeMap: BagGressType[] = [
     { id: ClothingType.toufa, key: "hair" },
     { id: ClothingType.lian, key: "face" }
 ];
+
+
+export enum ActionType {
+    Idle = 1,      // 待机
+    Wave = 2,      // 招手
+    Walk = 3,      // 走路
+    Run = 4,       // 跑步
+    Jump = 5,      // 跳跃
+    Die = 6        // 死亡
+}
+// 定义动作的数据结构
+export interface ActionModel {
+    type: ActionType;
+    title: string;
+}
+
+// 使用定义的动作类型和标题创建一个数组
+export const PlayerActions: ActionModel[] = [
+    { type: ActionType.Idle, title: "待机" },
+    { type: ActionType.Wave, title: "招手" },
+    { type: ActionType.Walk, title: "走路" },
+    { type: ActionType.Run, title: "跑步" },
+    { type: ActionType.Jump, title: "跳跃" },
+    { type: ActionType.Die, title: "死亡" }
+];
+
