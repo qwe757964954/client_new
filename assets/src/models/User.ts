@@ -116,6 +116,18 @@ export class UserClothes {
         this.hat = data.hat;
         this.face = data.face;
     }
+    // 从给定的数据设置服装
+    setAssignData(data: Partial<UserClothes>) {
+        if (data.hair !== undefined) this.hair = data.hair;
+        if (data.jewelry !== undefined) this.jewelry = data.jewelry;
+        if (data.coat !== undefined) this.coat = data.coat;
+        if (data.pants !== undefined) this.pants = data.pants;
+        if (data.shoes !== undefined) this.shoes = data.shoes;
+        if (data.wings !== undefined) this.wings = data.wings;
+        if (data.hat !== undefined) this.hat = data.hat;
+        if (data.face !== undefined) this.face = data.face;
+    }
+
     getClothings() {
         return [this._hair, this._jewelry, this._coat, this._pants, this._shoes, this._wings, this._hat, this._face];
     }

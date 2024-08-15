@@ -256,6 +256,7 @@ export interface CurrentBookStatus extends BaseRepPacket {
     unit_pass_num: number;     // 0
     unit_total_num: number;    // 6
     user_id: number;           // 4
+    today_pay_num:number;
     monster_id: number;
 }
 
