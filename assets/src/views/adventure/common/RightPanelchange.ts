@@ -101,7 +101,7 @@ export class rightPanelchange extends BaseView {
             ? CGConfig.KeyMonsterInfo.classification_reward 
             : param;
         // 获取奖励数据，并设置每个奖励项的 `from` 属性
-        this._rewardData  = this.extractRewardData(data);
+        this._rewardData  = ObjectUtil.extractRewardData(data);
         // this._rewardData = this._Eventlistener()
     
         this.subjectBtn.active = this._isWordGame;
@@ -117,24 +117,6 @@ export class rightPanelchange extends BaseView {
                 .call(() => this._isTweening = false)
                 .start();
         }
-    }
-    
-    private extractRewardData(awardInfo: any): ItemData[] {
-        const rewardTypes = [
-            { key: 'star_three_reward', from: 'star_three_reward' },
-            { key: 'star_two_reward', from: 'star_two_reward' },
-            { key: 'star_one_reward', from: 'star_one_reward' },
-            { key: 'pass_reward', from: 'pass_reward' },
-            { key: 'random_reward', from: 'random_reward' },
-        ];
-
-        return rewardTypes.reduce((acc: ItemData[], { key, from }) => {
-            if (awardInfo[key]) {
-                const rewards = awardInfo[key].map((item: ItemData) => ({ ...item, from }));
-                acc.push(...rewards);
-            }
-            return acc;
-        }, []);
     }
     
 
