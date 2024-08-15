@@ -40,7 +40,7 @@ export class RoleBaseModel extends BaseComponent {
     // private _isActive: boolean = false;//是否激活
     // private _dataPos: Vec3;//数据坐标
     private _isLoad: boolean = false;//是否加载
-    private _isSpLoad: boolean = false;//是否加载动画
+    protected _isSpLoad: boolean = false;//是否加载动画
     private _isShowFlag1: boolean = true;//是否显示标记1(建筑层是否显示)
     private _isShowFlag2: boolean = false;//是否显示标记2(摄像机是否显示)
 

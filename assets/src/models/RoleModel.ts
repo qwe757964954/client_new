@@ -20,5 +20,25 @@ export class RoleModel extends RoleBaseModel {
         this.init(User.roleID);
         this.clothings = User.userClothes;
     }
+    /**跑步 */
+    public run() {
+        if (!this._isSpLoad) return;
+        this.role.setAnimation(0, this._roleInfo.actNames[2], true);
+    }
+    /**跳跃 */
+    public jump() {
+        if (!this._isSpLoad) return;
+        this.role.setAnimation(0, this._roleInfo.actNames[3], true);
+    }
+    /**招手 */
+    public waved() {
+        if (!this._isSpLoad) return;
+        this.role.setAnimation(0, this._roleInfo.actNames[4], true);
+    }
+    /**死亡 */
+    public die() {
+        if (!this._isSpLoad) return;
+        this.role.setAnimation(0, this._roleInfo.actNames[5], true);
+    }
 }
 
