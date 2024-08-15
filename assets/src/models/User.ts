@@ -95,6 +95,14 @@ export class UserClothes {
             EventMgr.emit(EventType.Role_Change_Slot, new ClothingChangeInfo(ClothingType.lian, clothing, oldValue));
         }
     }
+    get hair() { return this._hair; }
+    get jewelry() { return this._jewelry; }
+    get coat() { return this._coat; }
+    get pants() { return this._pants; }
+    get shoes() { return this._shoes; }
+    get wings() { return this._wings; }
+    get hat() { return this._hat; }
+    get face() { return this._face; }
 
 
     // 从给定的数据设置服装
