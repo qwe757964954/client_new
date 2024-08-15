@@ -97,13 +97,19 @@ export class rightPanelchange extends BaseView {
     openView(param: MapLevelData | GateData = null) {
         this._data = param;
         this._isWordGame = param?.game_modes === "word";
-
-        this._rewardData = this.extractRewardData(this._getRewardData(param));
+        const data = param.game_modes === "word" 
+            ? CGConfig.KeyMonsterInfo.classification_reward 
+            : param;
+        // 获取奖励数据，并设置每个奖励项的 `from` 属性
+        this._rewardData  = ObjectUtil.extractRewardData(data);
+        // this._rewardData = this._Eventlistener()
+    
         this.subjectBtn.active = this._isWordGame;
         this._isBossPanel = false;
         this.updateView();
         this.node.active = true;
-
+    
+        // 执行动画
         if (!this._isTweening) {
             this._isTweening = true;
             const nodeSize = this.node.getComponent(UITransform);
@@ -112,27 +118,7 @@ export class rightPanelchange extends BaseView {
                 .start();
         }
     }
-
-    private _getRewardData(param: MapLevelData | GateData): ItemData[] {
-        const data = param.game_modes === "word" 
-            ? CGConfig.KeyMonsterInfo.classification_reward 
-            : param;
-
-        return [
-            ...(data.star_one_reward || []),
-            ...(data.star_two_reward || []),
-            ...(data.star_three_reward || []),
-            ...(data.pass_reward || []),
-            ...(data.random_reward || [])
-        ];
-    }
-
-    private extractRewardData(rewardData: ItemData[]): ItemData[] {
-        return rewardData.map(item => ({
-            ...item,
-            from: item.from || "unknown_reward"
-        }));
-    }
+    
 
     openBossView(levelData: BossLevelData) {
         this._bossLevelData = levelData;

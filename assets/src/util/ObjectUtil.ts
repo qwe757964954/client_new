@@ -106,4 +106,34 @@ export namespace ObjectUtil{
 
         return result;
     }
+
+	/** 
+	 * 将 {
+    "pass_reward": [
+    ],
+    "star_one_reward": [
+    ],
+    "star_two_reward": [
+    ],
+    "star_three_reward": [
+    ]
+	} 对象转换为 ItemData 数组
+	 */
+	export function extractRewardData(awardInfo: any): ItemData[] {
+        const rewardTypes = [
+			{ key: 'star_three_reward', from: 'star_three_reward' },
+			{ key: 'star_two_reward', from: 'star_two_reward' },
+            { key: 'star_one_reward', from: 'star_one_reward' },
+            { key: 'pass_reward', from: 'pass_reward' },
+            { key: 'random_reward', from: 'random_reward' },
+        ];
+        console.log("awardInfo.....extractRewardData",awardInfo);
+        return rewardTypes.reduce((acc: ItemData[], { key, from }) => {
+            if (awardInfo[key]) {
+                const rewards = awardInfo[key].map((item: ItemData) => ({ ...item, from }));
+                acc.push(...rewards);
+            }
+            return acc;
+        }, []);
+    }
 }

@@ -14,6 +14,7 @@ import CCUtil from '../../../util/CCUtil';
 import { EventMgr } from '../../../util/EventManager';
 import List from '../../../util/list/List';
 import { NodeUtil } from '../../../util/NodeUtil';
+import { ObjectUtil } from '../../../util/ObjectUtil';
 import { ConditionItem } from './ConditionItem';
 import { ReportItem } from './ReportItem';
 
@@ -78,7 +79,7 @@ export class WordReportView extends BaseView {
             const idleAnim = `${currentAnim}_idle`;
 
             this.showResultSpAni(currentAnim, idleAnim);
-            this._propsData = this.extractRewardData(data.award_info);
+            this._propsData = ObjectUtil.extractRewardData(data.award_info);
             this.reward_scroll.numItems = this._propsData.length;
             this.condition_scroll.numItems = Object.keys(ClearanceConditionsConfig).length;
 
@@ -88,24 +89,6 @@ export class WordReportView extends BaseView {
             this.showResultSpAni("def", "def_idle");
             SoundMgr.fail();
         }
-    }
-
-    private extractRewardData(awardInfo: any): ItemData[] {
-        const rewardTypes = [
-            { key: 'star_one_reward', from: 'star_one_reward' },
-            { key: 'star_two_reward', from: 'star_two_reward' },
-            { key: 'star_three_reward', from: 'star_three_reward' },
-            { key: 'pass_reward', from: 'pass_reward' },
-            { key: 'random_reward', from: 'random_reward' },
-        ];
-
-        return rewardTypes.reduce((acc: ItemData[], { key, from }) => {
-            if (awardInfo[key]) {
-                const rewards = awardInfo[key].map((item: ItemData) => ({ ...item, from }));
-                acc.push(...rewards);
-            }
-            return acc;
-        }, []);
     }
 
     private showResultSpAni(aniName: string, idleName: string) {

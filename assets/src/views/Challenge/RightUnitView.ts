@@ -49,7 +49,7 @@ export class RightUnitView extends Component {
     public remaining: Label = null;
 
     private _callbacks: { [key: string]: Function } = {};
-
+    private _currentBookStatus:CurrentBookStatus = null;
     start() {
         this.initEvent();
     }
@@ -70,11 +70,11 @@ export class RightUnitView extends Component {
         let Remaining =  data.gate_total - data.gate_pass_total;
         let hasDay = TextbookUtil.calculateDays(Remaining, data.num);
         this.remaining.string = `剩余${hasDay}天`;
-        let totalDay = TextbookUtil.calculateDays(data.gate_total, data.num);
-        this.plan_label.string = `${hasDay}/${totalDay}`;
+        this.plan_label.string = `${this._currentBookStatus.today_pay_num}/${data.num}`;
     }
     updateUnitProps(unitData: CurrentBookStatus) {
         console.log("updateUnitProps", unitData);
+        this._currentBookStatus = unitData;
         this.title_label.string = unitData.book_name;
         this.grade_label.string = unitData.grade;
         this.study_label.string = unitData.study_word_num.toString();

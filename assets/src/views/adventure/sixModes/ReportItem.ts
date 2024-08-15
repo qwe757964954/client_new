@@ -1,9 +1,8 @@
-import { _decorator, error, Label, Node, Sprite, SpriteFrame } from 'cc';
-import { ResLoader } from '../../../manager/ResLoader';
-import ListItem from '../../../util/list/ListItem';
+import { _decorator, Label, Node, Sprite } from 'cc';
 import { ItemID } from '../../../export/ItemConfig';
 import { DataMgr, ItemData } from '../../../manager/DataMgr';
 import { LoadManager } from '../../../manager/LoadManager';
+import ListItem from '../../../util/list/ListItem';
 const { ccclass, property } = _decorator;
 
 export enum ReportItemType {
