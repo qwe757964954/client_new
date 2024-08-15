@@ -192,7 +192,7 @@ export class rightPanelchange extends BaseView {
     }
 
     private updateStarConditions() {
-        if (isValid(this._data.flag_info)) {
+        if (Object.keys(this._data.flag_info).length > 0) {
             const starStatuses = [
                 isValid(this._data.flag_info.star_one),
                 isValid(this._data.flag_info.star_two),

@@ -1,5 +1,6 @@
 import { ItemData } from "../manager/DataMgr";
-import { c2sBackpackItemSynthesis, c2sBreakdownBackpackItems, c2sShopItemBuy } from "../models/BagModel";
+import { c2sBackpackItemSynthesis, c2sBreakdownBackpackItems, c2sGetPlayerClothing, c2sShopItemBuy, c2sUpdatePlayerClothing, DressInfoItem } from "../models/BagModel";
+import { User } from "../models/User";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
 import { NetNotify } from "../net/NetNotify";
@@ -18,13 +19,14 @@ export default class _BagService extends BaseControll {
     constructor(name: string) {
         super(name);
     }
-
     /** 初始化模块事件 */
     protected onInitModuleEvent() {
         this.addModelListeners([
             [InterfacePath.Classification_BreakdownBackpackItems, this.onBreakdownBackpackItems],
             [InterfacePath.Classification_BackpackItemSynthesis, this.onBackpackItemSynthesis],
             [InterfacePath.Classification_ShopItemBuy, this.onShopItemBuy],
+            [InterfacePath.Classification_GetPlayerClothing, this.onGetPlayerClothing],
+            [InterfacePath.Classification_UpdatePlayerClothing, this.onUpdatePlayerClothing],
         ]);
     }
 
@@ -45,6 +47,25 @@ export default class _BagService extends BaseControll {
         param.ids = ids;
         param.nums = nums;
         NetMgr.sendMsg(param);
+    }
+
+    reqGetPlayerClothing(){
+        let param: c2sGetPlayerClothing = new c2sGetPlayerClothing();
+        NetMgr.sendMsg(param);
+    }
+    reqUpdatePlayerClothing(data:DressInfoItem){
+        const param = new c2sUpdatePlayerClothing(data);
+        NetMgr.sendMsg(param);
+    }
+    onGetPlayerClothing(data:any){
+        let dress_info = data.dress_info;
+        // 使用 setData 更新 User.userClothes
+        console.log(dress_info)
+        User.userClothes.setData(dress_info);
+        this.handleResponse(data, NetNotify.Classification_GetPlayerClothing);
+    }
+    onUpdatePlayerClothing(data:any){
+        this.handleResponse(data, NetNotify.Classification_UpdatePlayerClothing);
     }
     onShopItemBuy(data: any) {
         this.handleResponse(data, NetNotify.Classification_ShopItemBuy);

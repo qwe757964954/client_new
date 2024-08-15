@@ -9,6 +9,7 @@ import { User } from '../../models/User';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { ActServer } from '../../service/ActivityService';
+import { BagServer } from '../../service/BagService';
 import CCUtil from '../../util/CCUtil';
 import { ActConfig } from '../activities/ActivityConfig';
 import { ReviewPlanView } from '../reviewPlan/ReviewPlanView';
@@ -51,6 +52,7 @@ export class MainUIView extends BaseView {
     private _mainRightActivity: MainRightActivity = null;//右侧活动
     /**初始化UI */
     initUI() {
+        BagServer.reqGetPlayerClothing();
         this.labelNick.string = User.nick;
         this.initViews();
         ActServer.reqGetActivityInfo();

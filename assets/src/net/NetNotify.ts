@@ -78,6 +78,8 @@ export const NetNotify = {
     Classification_BreakdownBackpackItems: "Classification_BreakdownBackpackItems", //背包物品分解
     Classification_BackpackItemSynthesis: "Classification_BackpackItemSynthesis", //背包物品合成
     Classification_ShopItemBuy: "Classification_ShopItemBuy", //商城商品购买
+    Classification_GetPlayerClothing: "Classification_GetPlayerClothing", // 获取人物装饰信息
+    Classification_UpdatePlayerClothing: "Classification_UpdatePlayerClothing", // 更新人物装饰信息
     /***********************************************背包 end*********************************************/
 
 

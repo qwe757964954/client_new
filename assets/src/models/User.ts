@@ -15,58 +15,54 @@ export enum LoginType {
 }
 /**用户服装 */
 export class UserClothes {
-    hair: number = null;//头发
-    jewelry: number = null;//饰品
-    coat: number = null;//上衣
-    pants: number = null;//裤子
-    shoes: number = null;//鞋子
-    wings: number = null;//翅膀
-    hat: number = null;//帽子
-    face: number = null;//脸
+    hair: number | null = null;//头发
+    jewelry: number | null = null;//饰品
+    coat: number | null = null;//上衣
+    pants: number | null = null;//裤子
+    shoes: number | null = null;//鞋子
+    wings: number | null = null;//翅膀
+    hat: number | null = null;//帽子
+    face: number | null = null;//脸
 
     reset() {
-        // this.hair = null;
-        // this.jewelry = null;
-        // this.coat = null;
-        // this.pants = null;
-        // this.shoes = null;
-        // this.wings = null;
-        // this.hat = null;
-        // this.face = null;
+        this.hair = this.jewelry = this.coat = this.pants = this.shoes = this.wings = this.hat = this.face = null;
     }
-    setData(data: UserClothes) {
-        this.hair = data.hair;
-        this.jewelry = data.jewelry;
-        this.coat = data.coat;
-        this.pants = data.pants;
-        this.shoes = data.shoes;
-        this.wings = data.wings;
-        this.hat = data.hat;
-        this.face = data.face;
+    // 从给定的数据设置服装
+    setData(data: Partial<UserClothes>) {
+        Object.assign(this, data);
     }
     getClothings() {
         return [this.hair, this.jewelry, this.coat, this.pants, this.shoes, this.wings, this.hat, this.face];
     }
-    setClothing(clothing: number, type?: ClothingType) {
-        if (null == type) {
-            type = DataMgr.clothingConfig[clothing].type;
-        }
-        if (ClothingType.toufa == type) {
-            this.hair = clothing;
-        } else if (ClothingType.shipin == type) {
-            this.jewelry = clothing;
-        } else if (ClothingType.shangyi == type) {
-            this.coat = clothing;
-        } else if (ClothingType.kuzi == type) {
-            this.pants = clothing;
-        } else if (ClothingType.xiezi == type) {
-            this.shoes = clothing;
-        } else if (ClothingType.chibang == type) {
-            this.wings = clothing;
-        } else if (ClothingType.maozi == type) {
-            this.hat = clothing;
-        } else if (ClothingType.lian == type) {
-            this.face = clothing;
+     // 根据类型设置服装
+     setClothing(clothing: number, type?: ClothingType) {
+        type = type ?? DataMgr.clothingConfig[clothing]?.type;
+
+        switch (type) {
+            case ClothingType.toufa:
+                this.hair = clothing;
+                break;
+            case ClothingType.shipin:
+                this.jewelry = clothing;
+                break;
+            case ClothingType.shangyi:
+                this.coat = clothing;
+                break;
+            case ClothingType.kuzi:
+                this.pants = clothing;
+                break;
+            case ClothingType.xiezi:
+                this.shoes = clothing;
+                break;
+            case ClothingType.chibang:
+                this.wings = clothing;
+                break;
+            case ClothingType.maozi:
+                this.hat = clothing;
+                break;
+            case ClothingType.lian:
+                this.face = clothing;
+                break;
         }
     }
 }
@@ -138,20 +134,20 @@ class UserModel {
 
     private constructor() {
         // for test
-        this.userClothes.hair = 30001;
-        this.userClothes.jewelry = 30002;
-        this.userClothes.coat = 30003;
-        this.userClothes.pants = 30004;
-        this.userClothes.shoes = 30005;
+        // this.userClothes.hair = 30001;
+        // this.userClothes.jewelry = 30002;
+        // this.userClothes.coat = 30003;
+        // this.userClothes.pants = 30004;
+        // this.userClothes.shoes = 30005;
         // this.userClothes.wings = 0;
         // this.userClothes.hat = 0;
         // this.userClothes.face = 0;
 
-        this.userClothes.hair = 30006;
-        this.userClothes.jewelry = 30007;
-        this.userClothes.coat = 30008;
-        this.userClothes.pants = 30009;
-        this.userClothes.shoes = 30010;
+        // this.userClothes.hair = 30006;
+        // this.userClothes.jewelry = 30007;
+        // this.userClothes.coat = 30008;
+        // this.userClothes.pants = 30009;
+        // this.userClothes.shoes = 30010;
     }
 
     public resetData() {

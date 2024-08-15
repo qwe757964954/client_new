@@ -4,6 +4,7 @@ import { PrefabType } from '../../config/PrefabType';
 import { ItemID } from '../../export/ItemConfig';
 import { ClothingInfo, ClothingType, DataMgr, ItemData } from '../../manager/DataMgr';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
+import { DressInfoItem } from '../../models/BagModel';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
 import { User } from '../../models/User';
 import { NetNotify } from '../../net/NetNotify';
@@ -17,7 +18,7 @@ import { RewardItem } from '../common/RewardItem';
 import { ShopClothingInfo } from '../shop/ShopInfo';
 import { BagConfig } from './BagConfig';
 import { BagDressItem } from './BagDressItem';
-import { BackpackItemInfo, BagGressItemIds, BagGressItems, BagItemType, BagOperationData, BagOperationIds, BagTabIds, BagTabNames } from './BagInfo';
+import { BackpackItemInfo, BagGressItemIds, BagGressItems, BagGressTypeMap, BagItemType, BagOperationData, BagOperationIds, BagTabIds, BagTabNames } from './BagInfo';
 import { BagOperrationItem } from './BagOperrationItem';
 import { BagTabItem } from './BagTabItem';
 import { BreakdownView } from './BreakdownView';
@@ -27,12 +28,11 @@ const { ccclass, property } = _decorator;
 
 @ccclass('BagDialogView')
 export class BagDialogView extends BaseView {
-
     @property(Node) public btn_close: Node = null;
     @property(Node) public top_layout: Node = null;
     @property({ type: List }) public propList: List = null;
     @property({ type: Prefab, tooltip: "物品预制体" }) public propPrefab: Prefab = null;
-    @property({ type: Prefab, tooltip: "角色动画预制体" }) public roleModel: Prefab = null; // 角色动画
+    @property({ type: Prefab, tooltip: "角色动画预制体" }) public roleModel: Prefab = null;
     @property({ type: Node, tooltip: "角色容器" }) public roleContainer: Node = null;
     @property(List) public tabList: List = null;
     @property(List) public dress_list: List = null;
@@ -47,6 +47,7 @@ export class BagDialogView extends BaseView {
     private _breakdownInfo: ItemData = null;
     private _tabSelected: number = 0;
     private _bagClothing: { [key in BagGressItemIds]?: ShopClothingInfo } = {};
+    private _bagOperationId: BagOperationIds = BagOperationIds.Combine;
 
     initEvent() {
         CCUtil.onBtnClick(this.btn_close, this.onCloseView.bind(this));
@@ -60,10 +61,12 @@ export class BagDialogView extends BaseView {
             [EventType.Item_Props_Refresh, this.onItemPropsRefresh.bind(this)],
             [NetNotify.Classification_BreakdownBackpackItems, this.onBreakdownBackpackItems.bind(this)],
             [NetNotify.Classification_BackpackItemSynthesis, this.onBackpackItemSynthesis.bind(this)],
+            [NetNotify.Classification_UpdatePlayerClothing, this.onUpdatePlayerClothing.bind(this)],
         ]);
     }
 
     async initUI() {
+        console.log("User.userClothes.....", User.userClothes);
         await BagConfig.loadBagConfigInfo();
         this.updateBagClothingMapping();
         this.initAmount();
@@ -72,10 +75,11 @@ export class BagDialogView extends BaseView {
         this.tabList.selectedId = 0;
         this.dress_list.numItems = BagGressItems.length;
     }
+
     private updateBagClothingMapping() {
         this._bagClothing = {
             [BagGressItemIds.Hair]: { type: ClothingType.toufa, userClothes: User.userClothes.hair },
-            [BagGressItemIds.Head]: { type: ClothingType.shipin, userClothes: User.userClothes.jewelry }, // 这里假设 Head 对应的是 jewelry
+            [BagGressItemIds.Head]: { type: ClothingType.shipin, userClothes: User.userClothes.jewelry },
             [BagGressItemIds.UpperBody]: { type: ClothingType.shangyi, userClothes: User.userClothes.coat },
             [BagGressItemIds.Pants]: { type: ClothingType.kuzi, userClothes: User.userClothes.pants },
             [BagGressItemIds.Shoes]: { type: ClothingType.xiezi, userClothes: User.userClothes.shoes },
@@ -84,6 +88,7 @@ export class BagDialogView extends BaseView {
             [BagGressItemIds.Face]: { type: ClothingType.lian, userClothes: User.userClothes.face },
         };
     }
+
     private initAmount() {
         ViewsManager.addAmount(this.top_layout, 11.314, 260.722);
     }
@@ -102,17 +107,17 @@ export class BagDialogView extends BaseView {
         nodeScript.updateMergeItem(this._selectedItem);
     }
 
-    onCompositeRequest(itemInfo: BackpackItemInfo) {
+    private onCompositeRequest(itemInfo: BackpackItemInfo) {
         this._compositeInfo = itemInfo;
         BagServer.reqBackpackItemSynthesis(this._compositeInfo);
     }
 
-    onBreakdownRequest(item: ItemData) {
+    private onBreakdownRequest(item: ItemData) {
         this._breakdownInfo = item;
         BagServer.reqBreakdownBackpackItems(this._breakdownInfo);
     }
 
-    onItemPropsRefresh() {
+    private onItemPropsRefresh() {
         this.tabList.selectedId = this._tabSelected;
     }
 
@@ -125,7 +130,7 @@ export class BagDialogView extends BaseView {
         const itemInfo = BagConfig.findBackpackItemInfo(this._breakdownInfo.id);
         const decomposeItems = ObjectUtil.convertRewardData(BagConfig.findBreakdownItems(this._breakdownInfo));
         const tipMsg = `你成功把${this._breakdownInfo.num}个${itemInfo.name}分解了，获得` +
-            decomposeItems.map((itemData, index) => {
+            decomposeItems.map((itemData) => {
                 const itemInfo = BagConfig.findBackpackItemInfo(itemData.id);
                 const itemQuantity = itemData.num * this._breakdownInfo.num;
                 itemData.num = itemQuantity;
@@ -134,6 +139,24 @@ export class BagDialogView extends BaseView {
         
         ViewsMgr.showRewards(decomposeItems);
         ViewsManager.showTip(tipMsg);
+    }
+
+    private onUpdatePlayerClothing(data: any) {
+        const clothingInfo = this.findInfoById(this._selectedItem.id);
+        if (!clothingInfo) {
+            console.error("ClothingInfo not found");
+            return;
+        }
+
+        if (this._bagOperationId === BagOperationIds.Outfit) {
+            this.outfitUpdateTypeMapping(clothingInfo);
+            this.changeClothings(clothingInfo.id);
+        } else if (this._bagOperationId === BagOperationIds.UnOutfit) {
+            this.unOutfitUpdateTypeMapping(clothingInfo);
+            this.removeClothing(clothingInfo.id);
+        }
+
+        this.updateAllLists();
     }
 
     private onBackpackItemSynthesis(data: any) {
@@ -266,9 +289,9 @@ export class BagDialogView extends BaseView {
         return DataMgr.clothingConfig.find(item => isValid(item) && item.id === id);
     }
 
-    private outfitUpdateTypeMapping(clothingInfo: ClothingInfo, typeMapping: { [key in BagGressItemIds]?: ShopClothingInfo }) {
+    private outfitUpdateTypeMapping(clothingInfo: ClothingInfo) {
         const { type, id } = clothingInfo;
-        Object.values(typeMapping).forEach(info => {
+        Object.values(this._bagClothing).forEach(info => {
             if (info.type === type) {
                 info.userClothes = id;
             }
@@ -276,9 +299,9 @@ export class BagDialogView extends BaseView {
         User.userClothes.setClothing(id, type);
     }
 
-    private unOutfitUpdateTypeMapping(clothingInfo: ClothingInfo, typeMapping: { [key in BagGressItemIds]?: ShopClothingInfo }) {
+    private unOutfitUpdateTypeMapping(clothingInfo: ClothingInfo) {
         const { type, id } = clothingInfo;
-        Object.values(typeMapping).forEach(info => {
+        Object.values(this._bagClothing).forEach(info => {
             if (info.type === type) {
                 info.userClothes = null;
             }
@@ -291,22 +314,34 @@ export class BagDialogView extends BaseView {
         this.propList.selectedId = selectedId;
     }
 
+    private getKeyFromType(type: ClothingType): keyof DressInfoItem | undefined {
+        const typeEntry = BagGressTypeMap.find(entry => entry.id === type);
+        return typeEntry ? typeEntry.key : undefined;
+    }
+
+    private reqUpdateClothingInfo(type: ClothingType, num: number) {
+        const key = this.getKeyFromType(type);
+        if (key !== undefined) {
+            const param: DressInfoItem = { [key]: num };
+            BagServer.reqUpdatePlayerClothing(param);
+        } else {
+            console.error(`Invalid ClothingType: ${type}`);
+        }
+    }
+
     private onOperationClick(data: BagOperationData) {
+        this._bagOperationId = data.id;
+        const clothingInfo = this.findInfoById(this._selectedItem.id);
+
         switch (data.id) {
             case BagOperationIds.Outfit:
-                const clothingInfo = this.findInfoById(this._selectedItem.id);
                 if (clothingInfo) {
-                    this.outfitUpdateTypeMapping(clothingInfo, this._bagClothing);
-                    this.changeClothings(clothingInfo.id);
+                    this.reqUpdateClothingInfo(clothingInfo.type, clothingInfo.id);
                 }
-                this.updateAllLists();
                 break;
             case BagOperationIds.UnOutfit:
-                const clothingInfo2 = this.findInfoById(this._selectedItem.id);
-                if (clothingInfo2) {
-                    this.unOutfitUpdateTypeMapping(clothingInfo2, this._bagClothing);
-                    this.removeClothing(clothingInfo2.id);
-                    this.updateAllLists();
+                if (clothingInfo) {
+                    this.reqUpdateClothingInfo(clothingInfo.type, 0);
                 }
                 break;
             case BagOperationIds.Disassemble:

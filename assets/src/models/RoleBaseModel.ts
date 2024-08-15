@@ -133,7 +133,7 @@ export class RoleBaseModel extends BaseComponent {
         let isLoad = false;
         for (let i = 0; i < clothings.length; i++) {
             let clothing = clothings[i];
-            if (null == clothing) continue;
+            if (null == clothing || 0 == clothing) continue;
             loadCount++;
             isLoad = true;
             let clothingInfo = DataMgr.clothingConfig[clothing];

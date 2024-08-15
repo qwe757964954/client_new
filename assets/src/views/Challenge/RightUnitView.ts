@@ -1,4 +1,4 @@
-import { _decorator, Component, Label, Node, ProgressBar } from 'cc';
+import { _decorator, Component, isValid, Label, Node, ProgressBar } from 'cc';
 import { NetConfig } from '../../config/NetConfig';
 import { BookPlanDetail, CurrentBookStatus } from '../../models/TextbookModel';
 import CCUtil from '../../util/CCUtil';
@@ -64,7 +64,8 @@ export class RightUnitView extends Component {
 
     updateRightPlan(data: BookPlanDetail) {
         let Remaining =  data.gate_total - data.gate_pass_total
-        const level = TextbookUtil.calculateLevels(Remaining, data.num);
+        let level = TextbookUtil.calculateLevels(Remaining, data.num);
+        level = isValid(level) ? level : 0;
         this.plan_label.string = `${level}/${Remaining}`;
     }
     updateUnitProps(unitData: CurrentBookStatus) {

@@ -172,6 +172,8 @@ export const InterfacePath = {
     Classification_BreakdownBackpackItems: "1401", //背包物品分解
     Classification_BackpackItemSynthesis: "1402", //背包物品合成
     Classification_ShopItemBuy: "1403", //商城商品购买
+    Classification_GetPlayerClothing: "1421", // 获取人物装饰信息
+    Classification_UpdatePlayerClothing: "1422", // 更新人物装饰信息
     /***********************************************背包相关 end*********************************************/
 
     /***********************************************运营活动相关start*********************************************/
@@ -179,6 +181,8 @@ export const InterfacePath = {
     Classification_SignRewardDraw: "1412", //签到奖励领取
     Classification_WeekendCarouselDraw: "1413", //周末大转盘抽奖
     /***********************************************运营活动相关 end*********************************************/
+
+    
 
     /************************************socket消息类型end*********************************************/
 }

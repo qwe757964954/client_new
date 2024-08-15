@@ -1,3 +1,5 @@
+import { ClothingType } from "../../manager/DataMgr";
+import { DressInfoItem } from "../../models/BagModel";
 
 // 定义枚举
 export enum BagTabIds {
@@ -105,3 +107,22 @@ export interface GameBagData {
     backpack_item_info: BackpackItemInfo[];
     goods_item_info: GoodsItemInfo[];
 }
+
+
+// BagGressType 类型定义
+type BagGressType = {
+    id: ClothingType;
+    key: keyof DressInfoItem;
+};
+
+// 修正 BagGressTypeMap 中的 key 值
+export const BagGressTypeMap: BagGressType[] = [
+    { id: ClothingType.shipin, key: "jewelry" },
+    { id: ClothingType.shangyi, key: "coat" },
+    { id: ClothingType.kuzi, key: "pants" },
+    { id: ClothingType.xiezi, key: "shoes" },
+    { id: ClothingType.chibang, key: "wings" },
+    { id: ClothingType.maozi, key: "hat" },
+    { id: ClothingType.toufa, key: "hair" },
+    { id: ClothingType.lian, key: "face" }
+];

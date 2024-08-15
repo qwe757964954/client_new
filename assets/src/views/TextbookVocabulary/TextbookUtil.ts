@@ -1,12 +1,20 @@
 export class TextbookUtil { 
     public static calculateDays(totoal_level:number,challengesPerDay: number){
+        if (challengesPerDay === 0) {
+            console.error("challengesPerDay cannot be zero.");
+            return 0; // or another default value
+        }
         return Math.ceil(totoal_level / challengesPerDay);
     }
 
-    public static calculateLevels(totoal_level:number,days: number){
-        return Math.ceil(totoal_level / days);
+    public static calculateLevels(total_level: number, days: number): number {
+        if (days === 0) {
+            console.error("Days cannot be zero.");
+            return 0; // or another default value
+        }
+        return Math.ceil(total_level / days);
     }
-
+    
     /**
 	 * 根据天数计划那天的年月日
 	 * @param days 天数

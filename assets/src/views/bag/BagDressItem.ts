@@ -22,7 +22,7 @@ export class BagDressItem extends ListItem {
             data.spriteFrame = User.gender === 1 ? "Bag/icon_hair_boy/spriteFrame" : "Bag/icon_hair_ girl/spriteFrame";
         }
         const userClothes = clothMap[data.id].userClothes;
-        if (isValid(userClothes)) {
+        if (isValid(userClothes) && userClothes != 0) {
             let item_info:BagItemInfo = BagConfig.findShopItemInfo(userClothes);
             LoadManager.loadSprite(BagConfig.transformPath(item_info.png), this.icon.getComponent(Sprite)).then(() => {
                 CCUtil.fixNodeScale(this.icon, 120, 120, true);
