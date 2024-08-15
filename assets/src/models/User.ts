@@ -13,29 +13,106 @@ export enum LoginType {
     wechat = 4,//微信登录
     token = 5,//token登录
 }
+/**服装变化信息 */
+export class ClothingChangeInfo {
+    public type: ClothingType;//服装类型
+    public clothing: number;
+    public oldClothing: number;
+
+    constructor(type: ClothingType, clothing: number, oldClothing: number) {
+        this.type = type;
+        this.clothing = clothing;
+        this.oldClothing = oldClothing;
+    }
+}
 /**用户服装 */
 export class UserClothes {
-    hair: number | null = null;//头发
-    jewelry: number | null = null;//饰品
-    coat: number | null = null;//上衣
-    pants: number | null = null;//裤子
-    shoes: number | null = null;//鞋子
-    wings: number | null = null;//翅膀
-    hat: number | null = null;//帽子
-    face: number | null = null;//脸
+    private _hair: number | null = null;//头发
+    private _jewelry: number | null = null;//饰品
+    private _coat: number | null = null;//上衣
+    private _pants: number | null = null;//裤子
+    private _shoes: number | null = null;//鞋子
+    private _wings: number | null = null;//翅膀
+    private _hat: number | null = null;//帽子
+    private _face: number | null = null;//脸
 
     reset() {
-        this.hair = this.jewelry = this.coat = this.pants = this.shoes = this.wings = this.hat = this.face = null;
+        this._hair = this._jewelry = this._coat = this._pants = this._shoes = this._wings = this._hat = this._face = null;
     }
+    set hair(clothing: number) {
+        let oldValue = this._hair;
+        this._hair = clothing;
+        if (clothing != oldValue && this == User.userClothes) {
+            EventMgr.emit(EventType.Role_Change_Slot, new ClothingChangeInfo(ClothingType.toufa, clothing, oldValue));
+        }
+    }
+    set jewelry(clothing: number) {
+        let oldValue = this._jewelry;
+        this._jewelry = clothing;
+        if (clothing != oldValue && this == User.userClothes) {
+            EventMgr.emit(EventType.Role_Change_Slot, new ClothingChangeInfo(ClothingType.shipin, clothing, oldValue));
+        }
+    }
+    set coat(clothing: number) {
+        let oldValue = this._coat;
+        this._coat = clothing;
+        if (clothing != oldValue && this == User.userClothes) {
+            EventMgr.emit(EventType.Role_Change_Slot, new ClothingChangeInfo(ClothingType.shangyi, clothing, oldValue));
+        }
+    }
+    set pants(clothing: number) {
+        let oldValue = this._pants;
+        this._pants = clothing;
+        if (clothing != oldValue && this == User.userClothes) {
+            EventMgr.emit(EventType.Role_Change_Slot, new ClothingChangeInfo(ClothingType.kuzi, clothing, oldValue));
+        }
+    }
+    set shoes(clothing: number) {
+        let oldValue = this._shoes;
+        this._shoes = clothing;
+        if (clothing != oldValue && this == User.userClothes) {
+            EventMgr.emit(EventType.Role_Change_Slot, new ClothingChangeInfo(ClothingType.xiezi, clothing, oldValue));
+        }
+    }
+    set wings(clothing: number) {
+        let oldValue = this._wings;
+        this._wings = clothing;
+        if (clothing != oldValue && this == User.userClothes) {
+            EventMgr.emit(EventType.Role_Change_Slot, new ClothingChangeInfo(ClothingType.chibang, clothing, oldValue));
+        }
+    }
+    set hat(clothing: number) {
+        let oldValue = this._hat;
+        this._hat = clothing;
+        if (clothing != oldValue && this == User.userClothes) {
+            EventMgr.emit(EventType.Role_Change_Slot, new ClothingChangeInfo(ClothingType.maozi, clothing, oldValue));
+        }
+    }
+    set face(clothing: number) {
+        let oldValue = this._face;
+        this._face = clothing;
+        if (clothing != oldValue && this == User.userClothes) {
+            EventMgr.emit(EventType.Role_Change_Slot, new ClothingChangeInfo(ClothingType.lian, clothing, oldValue));
+        }
+    }
+
+
     // 从给定的数据设置服装
-    setData(data: Partial<UserClothes>) {
-        Object.assign(this, data);
+    setData(data: UserClothes) {
+        this.hair = data.hair;
+        this.jewelry = data.jewelry;
+        this.coat = data.coat;
+        this.pants = data.pants;
+        this.shoes = data.shoes;
+        this.wings = data.wings;
+        this.hat = data.hat;
+        this.face = data.face;
     }
     getClothings() {
-        return [this.hair, this.jewelry, this.coat, this.pants, this.shoes, this.wings, this.hat, this.face];
+        return [this._hair, this._jewelry, this._coat, this._pants, this._shoes, this._wings, this._hat, this._face];
     }
-     // 根据类型设置服装
-     setClothing(clothing: number, type?: ClothingType) {
+    // 根据类型设置服装
+    setClothing(clothing: number, type?: ClothingType) {
         type = type ?? DataMgr.clothingConfig[clothing]?.type;
 
         switch (type) {

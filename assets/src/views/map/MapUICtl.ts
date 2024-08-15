@@ -17,7 +17,7 @@ import { MapSpModel } from "../../models/MapSpModel";
 import { s2cBuildingBuilt, s2cBuildingBuiltReward, s2cBuildingBuiltSpeed, s2cBuildingEditBatch, s2cBuildingInfoGet, s2cBuildingList, s2cBuildingListInfo, s2cBuildingProduceAdd, s2cBuildingProduceDelete, s2cBuildingProduceGet, s2cBuildingProduceSpeed, s2cBuildingUpgrade, s2cBuildingUpgradeReward, s2cBuildingUpgradeSpeed, s2cCloudUnlock, s2cCloudUnlockGet, s2cCloudUnlockSpeed, s2cPetGetReward, s2cPetInfoRep, s2cPetUpgrade, s2cSpeedWordsGet } from "../../models/NetModel";
 import { RoleType } from "../../models/RoleBaseModel";
 import { RoleDataModel } from "../../models/RoleDataModel";
-import { User } from "../../models/User";
+import { ClothingChangeInfo, User } from "../../models/User";
 import { InterfacePath } from "../../net/InterfacePath";
 import { ServiceMgr } from "../../net/ServiceManager";
 import EventManager, { EventMgr } from "../../util/EventManager";
@@ -63,6 +63,7 @@ export class MapUICtl extends MainBaseCtl {
     private _needLoadCallBack: boolean = false;//是否需要加载回调
     private _checkFirstRepTimer: number = null;//检查首次请求返回定时器
     private _checkPetTimer: number = null;//检查宠物定时器
+    private _selfRole: RoleDataModel = null;//自己角色
     private _selfPet: RoleDataModel = null;//自己宠物
     private _lastSortChildren: BaseModel[] = null;//上一次排序的节点
 
@@ -162,6 +163,7 @@ export class MapUICtl extends MainBaseCtl {
         this.addEvent(InterfacePath.c2sBuildingUpgradeSpeed, this.onRepBuildingUpgradeSpeed.bind(this));
         this.addEvent(InterfacePath.c2sBuildingProduceSpeed, this.onRepBuildingProduceSpeed.bind(this));
         this.addEvent(InterfacePath.c2sCloudUnlockSpeed, this.onRepCloudUnlockSpeed.bind(this));
+        this.addEvent(EventType.Role_Change_Slot, this.onRoleChangeSlot.bind(this));
     }
     // 移除事件
     removeEvent() {
@@ -353,6 +355,8 @@ export class MapUICtl extends MainBaseCtl {
             this.roleMove(roleModel);
             this._roleModelAry.push(roleModel);
             this.buildingRoleSort();
+
+            this._selfRole = roleModel;
         }
         // 精灵
         if (null != User.petLevel) {
@@ -1536,5 +1540,11 @@ export class MapUICtl extends MainBaseCtl {
         let building = this.findBuilding(data.id);
         if (!building) return;
         building.setProducts(data.product_infos);
+    }
+    /**角色换装 */
+    onRoleChangeSlot(data: ClothingChangeInfo) {
+        if (!this._selfRole) return;
+        this._selfRole.removeClothing(data.oldClothing);
+        this._selfRole.changeClothing(data.clothing);
     }
 }

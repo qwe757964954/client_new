@@ -111,6 +111,17 @@ export class RoleDataModel extends BaseModel {
             });
         }
     }
+    /**插槽卸载 */
+    private unloadSlots(slots: SlotPngInfo[]) {
+        if (!slots || !this._role || !this._isSpLoad) {
+            return;
+        }
+        for (let i = 0; i < slots.length; i++) {
+            let slotInfo = slots[i];
+            let slot = this._role.findSlot(slotInfo.slot);
+            slot.setAttachment(null);
+        }
+    }
     public get clothings() {
         return this._clothings;
     }
@@ -135,6 +146,13 @@ export class RoleDataModel extends BaseModel {
         let clothingInfo = DataMgr.clothingConfig[clothing];
         this._clothings.setClothing(clothing, clothingInfo.type);
         this.loadSlots(clothingInfo.slots);
+    }
+    /**卸下服装 */
+    public removeClothing(clothing: number) {
+        if (!clothing) return;
+        let clothingInfo = DataMgr.clothingConfig[clothing];
+        this._clothings.setClothing(null, clothingInfo.type);
+        this.unloadSlots(clothingInfo.slots);
     }
     public get isSelf(): boolean {
         return this._isSelf;

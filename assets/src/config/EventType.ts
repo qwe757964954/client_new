@@ -18,6 +18,7 @@ export const EventType = {
     Building_Need_Sort: "BuildingNeedSort",//建筑需要排序
     Role_Need_Move: "RoleNeedMove",//角色需要移动
     Role_Need_Sort: "RoleNeedSort",//角色需要排序
+    Role_Change_Slot: "RoleChangeSlot",//角色换装
     GridRect_Need_Draw: "GridRectNeedDraw",//格子需要绘制
     EditUIView_Refresh: "EditUIViewRefresh",//编辑界面刷新
     New_Building: "NewBuilding",//新建建筑
