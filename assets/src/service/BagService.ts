@@ -60,8 +60,7 @@ export default class _BagService extends BaseControll {
     onGetPlayerClothing(data:any){
         let dress_info = data.dress_info;
         // 使用 setData 更新 User.userClothes
-        console.log(dress_info)
-        User.userClothes.setData(dress_info);
+        User.userClothes.setAssignData(dress_info);
         this.handleResponse(data, NetNotify.Classification_GetPlayerClothing);
     }
     onUpdatePlayerClothing(data:any){

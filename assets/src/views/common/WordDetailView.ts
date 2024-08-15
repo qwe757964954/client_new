@@ -1,12 +1,10 @@
 import { _decorator, Color, Component, Label, Node, Sprite, SpriteFrame } from 'cc';
+import { SentenceData, WordsDetailData } from '../../models/AdventureModel';
 import CCUtil from '../../util/CCUtil';
-import EventManager from '../../util/EventManager';
-import { EventType } from '../../config/EventType';
 import List from '../../util/list/List';
-import { WordSentensItem } from './WordSentensItem';
 import { WordMeanItem } from '../study/item/WordMeanItem';
 import { WordSimilarItem } from '../study/item/WordSimilarItem';
-import { SentenceData, WordsDetailData } from '../../models/AdventureModel';
+import { WordSentensItem } from './WordSentensItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordDetailView')
@@ -52,8 +50,7 @@ export class WordDetailView extends Component {
             this.initSentences(this._detailData.sentence_list);
         }
         if (this._detailData.speech) { //释义
-            let means = JSON.parse(this._detailData.speech);
-            this.initMeans(means);
+            this.initMeans(this._detailData.speech);
         }
         if (this._detailData.similar_list) { //相似词
             this.initSimilars(this._detailData.similar_list);

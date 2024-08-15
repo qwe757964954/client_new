@@ -36,7 +36,6 @@ export class SettingPlanView extends BasePopup {
 
     private _levelSelect:number = 0;
     private _daySelect:number = 0;
-    private _isModify:boolean = false;
     private _saveListener:(data:PlanSaveData)=>void = null;
     private _totoal_level:number = 20;
     initUI() {

@@ -107,7 +107,7 @@ export class WordDetailUI extends BaseComponent {
         let detailData = new WordsDetailData();
         detailData.word = this._wordDetailData.word;
         detailData.sentence_list = this._wordDetailData.sentence_list as any;
-        // detailData.speech = this._wordDetailData.speech;
+        detailData.speech = this._wordDetailData.speech;
         detailData.similar_list = this._wordDetailData.similar_list;
         // detailData.ancillary = this._wordDetailData.ancillary as any;
         this.wordDetailView.init(this._wordDetailData.word, detailData);

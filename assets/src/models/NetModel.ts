@@ -665,7 +665,7 @@ export class s2cWordbookWordDetail extends BaseRepPacket {
     w_id: string;
     source_type: number;
 
-    speech: string;
+    speech: { sp: string, tr: string }[];
     sentence_list: WordSentenceModel[];
     similar_list: [];
     variant: WordVariantModel;

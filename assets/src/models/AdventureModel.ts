@@ -191,7 +191,7 @@ export class WordsDetailData extends BaseRepPacket {
     example_cn: string;
     etyma: string;      //词根
     ancillary: string;  //助记
-    speech: string;
+    speech: { sp: string, tr: string }[];
     sentence_list?: SentenceData[];
     similar_list?: { word: string, cn: string }[];
     variant?: any;

@@ -47,9 +47,7 @@ export class SearchWordView extends BaseView {
 
     protected onInitModuleEvent(): void {
         this.addModelListeners([
-            [InterfacePath.More_Word_Detail, this.onMoreWordDetail.bind(this)],
             [InterfacePath.Search_Word, this.onSearchWord.bind(this)],
-            // [InterfacePath.Total_Collect_Word, this.onTotalCollectWord.bind(this)],
             [EventType.Word_Collect_Refresh,this.onTotalCollectWord.bind(this)],
             [EventType.Search_Word_Item_Detail,this.onSearchItemDetail.bind(this)],
         ]);
@@ -57,7 +55,7 @@ export class SearchWordView extends BaseView {
 
     onSearchItemDetail(data: SearchWordItem){
         this._collectWoldInfo = data;
-        ServiceMgr.studyService.moreWordDetail(this._collectWoldInfo.word);
+        this.onMoreWordDetail(data);
     }
 
     private async onTotalCollectWord(data: any) {
@@ -87,37 +85,15 @@ export class SearchWordView extends BaseView {
         this.updateHistoryList();
     }
 
-    private async onMoreWordDetail(data: WordsDetailData) {
+    private async onMoreWordDetail(data: SearchWordItem) {
         console.log("onMoreWordDetail", data);
         if(!isValid(this.node) || !this.node.active){return}
-        if (data.code !== 200) {
-            console.error("获取单词详情失败", data.msg);
-            ViewsManager.showTip(TextConfig.Word_Error_Tips);
-            this._detailData = null;
-            return;
-        }
-        this._detailData = this.createDetailData(data);
-        console.log(this._detailData);
         const node = await ViewsManager.instance.showViewAsync(PrefabType.WordDetailUI);
         let wordData = new WordModel();
-        wordData.word = this._detailData.word;
-        wordData.w_id = this._detailData.w_id;
+        wordData.word = data.word;
+        wordData.w_id = "";
         wordData.source = WordSourceType.total;
         node.getComponent(WordDetailUI).init(wordData);
-        // node.getComponent(WordSearchView).updateData(this._detailData);
-    }
-
-    private createDetailData(data: WordsDetailData): WordsDetailData {
-        const historyItem = this._historys.find(h => h.word === this._collectWoldInfo.word);
-        let detailData: WordsDetailData ={
-            ...historyItem,
-            sentence_list: data.sentence_list,
-            similar_list: data.similar_list,
-            structure: data.structure,
-            variant: data.variant,
-        };
-        detailData.collect_flag = historyItem.is_collect;
-        return detailData;
     }
 
     initEvent(): void {

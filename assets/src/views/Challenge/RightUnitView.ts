@@ -1,4 +1,4 @@
-import { _decorator, Component, isValid, Label, Node, ProgressBar } from 'cc';
+import { _decorator, Component, Label, Node, ProgressBar } from 'cc';
 import { NetConfig } from '../../config/NetConfig';
 import { BookPlanDetail, CurrentBookStatus } from '../../models/TextbookModel';
 import CCUtil from '../../util/CCUtil';
@@ -44,6 +44,10 @@ export class RightUnitView extends Component {
     public check_word_btn: Node = null;
     @property(Node)
     public modify_plan_btn: Node = null;
+
+    @property(Label)
+    public remaining: Label = null;
+
     private _callbacks: { [key: string]: Function } = {};
 
     start() {
@@ -63,10 +67,11 @@ export class RightUnitView extends Component {
     }
 
     updateRightPlan(data: BookPlanDetail) {
-        let Remaining =  data.gate_total - data.gate_pass_total
-        let level = TextbookUtil.calculateLevels(Remaining, data.num);
-        level = isValid(level) ? level : 0;
-        this.plan_label.string = `${level}/${Remaining}`;
+        let Remaining =  data.gate_total - data.gate_pass_total;
+        let hasDay = TextbookUtil.calculateDays(Remaining, data.num);
+        this.remaining.string = `剩余${hasDay}天`;
+        let totalDay = TextbookUtil.calculateDays(data.gate_total, data.num);
+        this.plan_label.string = `${hasDay}/${totalDay}`;
     }
     updateUnitProps(unitData: CurrentBookStatus) {
         console.log("updateUnitProps", unitData);

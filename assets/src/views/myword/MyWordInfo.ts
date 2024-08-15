@@ -11,7 +11,7 @@ export interface SearchWordItem {
     example_cn: string;
     etyma: string;
     ancillary: string;
-    speech: string;
+    speech: { sp: string, tr: string }[];
     is_collect: number;
 }
 
