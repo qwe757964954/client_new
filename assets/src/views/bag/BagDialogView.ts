@@ -70,22 +70,22 @@ export class BagDialogView extends BaseView {
         const roleModel = this._role.getComponent(RoleModel);
         switch (model.type) {
             case ActionType.Idle:
-
+                roleModel.idle();
                 break;
             case ActionType.Wave:
-
+                roleModel.waved();
                 break;
             case ActionType.Walk:
                 roleModel.walk();
                 break;
             case ActionType.Run:
-
+                roleModel.run();
                 break;
             case ActionType.Jump:
-                roleModel.ju();
+                roleModel.jump();
                 break;
             case ActionType.Die:
-                roleModel.idle();
+                roleModel.die();
                 break;
             default:
                 break;
