@@ -55,11 +55,11 @@ export class BaseView extends Component {
 	}
 	onLoad() {
 		// this.onLoadBefore()
+		this.initEvent();
 	}
 	start() {
 		this.viewAdaptScreen();
 		this.initUI();
-		this.initEvent();
 
 	}
 
