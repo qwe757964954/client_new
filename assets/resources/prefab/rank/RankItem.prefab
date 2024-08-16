@@ -954,7 +954,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Label",
+    "_name": "rank",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -1113,7 +1113,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Label-001",
+    "_name": "name",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -1408,7 +1408,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "img_101",
+    "_name": "avatar_icon",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -1680,7 +1680,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Label-002",
+    "_name": "praise",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -1877,11 +1877,24 @@
     "__prefab": {
       "__id__": 77
     },
-    "selectedMode": 0,
-    "selectedFlag": null,
-    "selectedFlag2": null,
-    "selectedSpriteFrame": null,
-    "adaptiveSize": false,
+    "rank_icon": {
+      "__id__": 32
+    },
+    "avatar_icon": {
+      "__id__": 56
+    },
+    "rank_num": {
+      "__id__": 41
+    },
+    "myname": {
+      "__id__": 47
+    },
+    "score": {
+      "__id__": 24
+    },
+    "praise": {
+      "__id__": 71
+    },
     "_id": ""
   },
   {

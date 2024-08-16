@@ -1,7 +1,10 @@
 import { _decorator, Node } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { ViewsManager } from '../../manager/ViewsManager';
+import { WordRankResponse } from '../../models/RankModel';
+import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
+import { RKServer } from '../../service/RankService';
 import { TaskTabIds, TaskTabInfo } from '../task/TaskInfo';
 import { TaskTabView } from '../task/TaskTabView';
 import { CombatPowerRankingView } from './CombatPowerRankingView';
@@ -23,6 +26,7 @@ export class RankView extends BaseView {
     private _combatPowerRankingView:CombatPowerRankingView = null;
     private _tabView: TaskTabView = null;
     protected async initUI() {
+        
         this.initNavTitle();
         this.initAmout();
         try {
@@ -32,6 +36,17 @@ export class RankView extends BaseView {
         } catch (err) {
             console.error("Failed to initialize UI:", err);
         }
+        RKServer.reqUserVocabularyRank();
+    }
+    protected onInitModuleEvent(): void {
+        this.addModelListeners([
+            [NetNotify.Classification_UserVocabularyRank, this.onUserVocabularyRank],
+        ]);
+    }
+
+    onUserVocabularyRank(data:WordRankResponse){
+        console.log("onUserVocabularyRank data = ", data,this._vocabularyRankingView);
+        this._vocabularyRankingView.updateData(data);
     }
 
     private async initViews() {
