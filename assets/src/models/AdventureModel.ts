@@ -32,6 +32,13 @@ export class SentenceData {
 //大冒险岛屿状态
 export class c2sIslandStatus {
     command_id: string = InterfacePath.Island_Status;
+    phase_id:number;
+}
+
+//大冒险_年级选择与修改
+export class c2sWordGameGradeModify {
+    command_id: string = InterfacePath.WordGameGradeModify;
+    phase_id:number;
 }
 
 export class IslandStatusModel {
@@ -508,3 +515,14 @@ export class GradeSkipExercisesSubmitReply extends BaseRepPacket {
     small_id_list: number[];
 }
 
+// Define an interface for the objects in the data array
+export interface LandDataItem {
+    big_id: number;
+    status: number;
+    flag: number;
+}
+
+// Define an interface for the top-level response
+export interface LandStatusResponse extends BaseRepPacket{
+    data: LandDataItem[];  // Array of LandDataItem
+}

@@ -5,13 +5,14 @@ import { PrefabType } from '../../config/PrefabType';
 import GlobalConfig from '../../GlobalConfig';
 import { DataMgr } from '../../manager/DataMgr';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
-import { GameMode, GateData, IslandProgressModel, IslandStatusData, LevelProgressData, LevelRestartData } from '../../models/AdventureModel';
+import { GameMode, GateData, IslandProgressModel, LandStatusResponse, LevelProgressData, LevelRestartData } from '../../models/AdventureModel';
 import { UnitWordModel } from '../../models/TextbookModel';
 import { InterfacePath } from '../../net/InterfacePath';
 import { ServiceMgr } from '../../net/ServiceManager';
 import { BaseView } from '../../script/BaseView';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
+import { ObjectUtil } from '../../util/ObjectUtil';
 import StorageUtil from '../../util/StorageUtil';
 import { GameStudyViewMap } from '../Challenge/ChallengeUtil';
 import { ConfirmView } from '../common/ConfirmView';
@@ -43,7 +44,7 @@ export class WorldMapView extends BaseView {
     private levelProgressData: LevelProgressData = null;
     private gettingIslandStatus: boolean = false;
     private gettingWords: boolean = false;
-    private currentPassIsland: number = 0;
+    private currentPassIsland: LandStatusResponse = null;
     private _worldIsland:WorldIsland = null;
     protected initUI(): void {
         this.initData();
@@ -77,14 +78,16 @@ export class WorldMapView extends BaseView {
     }
 
     onMapHorizontalSelected(item: any, selectedId: number, lastSelectedId: number, val: number) {
-        if (selectedId > this.currentPassIsland - 1) {
+        let islandData = DataMgr.getIslandData(selectedId + 1);
+        const isValid = ObjectUtil.isBigIdValid(islandData.big_id, this.currentPassIsland);
+        if (!isValid) {
             ViewsMgr.showTip("请先通关前置岛屿");
             return;
         }
-        if (selectedId >= 1) {
-            ViewsMgr.showTip("岛屿暂未开放");
-            return;
-        }
+        // if (selectedId >= 1) {
+        //     ViewsMgr.showTip("岛屿暂未开放");
+        //     return;
+        // }
         this.switchLevels(selectedId);
     }
 
@@ -122,14 +125,14 @@ export class WorldMapView extends BaseView {
         this._worldIsland.setPointsData(this.currentIslandID, data);
     }
 
-    private onGetIslandStatus(data: IslandStatusData) {
+    private onGetIslandStatus(data: LandStatusResponse) {
         this.gettingIslandStatus = false;
         if (data.code !== 200) {
             console.error('获取岛屿状态失败', data.msg);
             return;
         }
-        this.currentPassIsland = data.num;
-        this.scrollView.numItems = 7;
+        this.currentPassIsland = data;
+        this.scrollView.numItems = DataMgr.islandConfig.length;
     }
 
     private hideIsland() {

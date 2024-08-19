@@ -18,12 +18,12 @@ export interface DataFriendListResponse extends BaseRepPacket {
 }
 
 export class c2sUserFriendList {
-    command_id: string = InterfacePath.Classification_UserFriendList;//InterfacePath.Island_Status;
+    command_id: string = InterfacePath.Classification_UserFriendList;
 }
 
 
 export class c2sUserFriendAdd {
-    command_id: string = InterfacePath.Classification_UserFriendAdd;//InterfacePath.Island_Status;
+    command_id: string = InterfacePath.Classification_UserFriendAdd;
     friend_id: number;
 }
 
@@ -41,12 +41,12 @@ export interface DataFriendSearchResponse extends BaseRepPacket {
 
 
 export class c2sUserFriendSearch {
-    command_id: string = InterfacePath.Classification_UserFriendSearch;//InterfacePath.Island_Status;
+    command_id: string = InterfacePath.Classification_UserFriendSearch;
     search_id: string;
 }
 
 export class c2sUserFriendApplyList {
-    command_id: string = InterfacePath.Classification_UserFriendApplyList;//InterfacePath.Island_Status;
+    command_id: string = InterfacePath.Classification_UserFriendApplyList;
 }
 
 export interface UserApplyModel {

@@ -1,11 +1,13 @@
-import { _decorator, Label, Node } from 'cc';
+import { _decorator, isValid, Label, Node } from 'cc';
 import { EventType } from '../../config/EventType';
 import { KeyConfig } from '../../config/KeyConfig';
+import { InterfacePath } from '../../net/InterfacePath';
+import { ServiceMgr } from '../../net/ServiceManager';
 import { BasePopup } from '../../script/BasePopup';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
 import StorageUtil from '../../util/StorageUtil';
-import { educationAndExams, EducationGrade } from './AdventureInfo';
+import { educationAndExams, EducationGrade, EducationPhase, phaseTitles } from './AdventureInfo';
 import { GradeItem } from './item/GradeItem';
 import { LevelItem } from './item/LevelItem';
 const { ccclass, property } = _decorator;
@@ -21,21 +23,43 @@ export class GradeSelectView extends BasePopup {
     @property(Label)
     public selectLabel: Label = null;
 
+    private currentGradeData: EducationGrade = null;
 
     protected initUI(): void {
-        this.enableClickBlankToClose([this.node.getChildByName("frame")]);
+        this.enableClickBlankToClose([this.node.getChildByName("frame")]).then(() => {
+            this.currentGradeData = null;
+            this.onsureClick();
+        });
         this.levelList.numItems = educationAndExams.length;
         StorageUtil.saveData(KeyConfig.FIRST_WORLD_MAP, "0");
     }
     protected onInitModuleEvent() {
         this.addModelListeners([
             [EventType.Grade_Select_Event, this.onGradeSelectEvent.bind(this)],
+            [InterfacePath.WordGameGradeModify, this.onWordGameGradeModify.bind(this)],
         ]);
 	}
+
+    onWordGameGradeModify(data:any){
+        console.log("onWordGameGradeModify.....",data);
+    }
+
     protected initEvent(): void {
         CCUtil.onBtnClick(this.closeBtn,this.onCloseClick.bind(this));
+        CCUtil.onBtnClick(this.sureBtn,this.onsureClick.bind(this));
     }
+
+    onsureClick(){
+        if(isValid(this.currentGradeData)){
+            ServiceMgr.studyService.reqWordGameGradeModify(this.currentGradeData.phase_id);
+        }else{
+            ServiceMgr.studyService.reqWordGameGradeModify(EducationPhase.PRIMARY);
+        }
+        this.onCloseClick();
+    }
+
     onCloseClick(){
+        ServiceMgr.studyService.getIslandStatus();
         this.closePop();
     }
     onLevelListRender(item: Node, index: number) {
@@ -45,6 +69,10 @@ export class GradeSelectView extends BasePopup {
     onLevelListSelected(item: Node, selectedId: number) {
         
     }
+    getPhaseTitle(phase_id: EducationPhase): string {
+        return phaseTitles[phase_id] || '未知阶段';
+    }
+    
     onGradeSelectEvent(gradeData: EducationGrade) {
         // 遍历所有关卡项
         for (let i = 0; i < this.levelList.numItems; i++) {
@@ -62,6 +90,9 @@ export class GradeSelectView extends BasePopup {
             // 更新 gradeList 中项目的颜色
             this.updateGradeListColors(script.gradeList, selectedIndex);
         }
+        const phaseTitle = this.getPhaseTitle(gradeData.phase_id);
+        this.selectLabel.string = `(已选择${phaseTitle}${gradeData.title})`;
+        this.currentGradeData = gradeData;
     }
     
     // 工具函数：更新 gradeList 项目的颜色

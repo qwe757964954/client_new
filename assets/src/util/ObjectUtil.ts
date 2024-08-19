@@ -1,4 +1,5 @@
 import { ItemData } from "../manager/DataMgr";
+import { LandStatusResponse } from "../models/AdventureModel";
 
 
 export namespace ObjectUtil{
@@ -135,5 +136,9 @@ export namespace ObjectUtil{
             }
             return acc;
         }, []);
+    }
+
+	export function isBigIdValid(bigId: number, responseData: LandStatusResponse): boolean {
+        return responseData.data.some(item => item.big_id === bigId && item.status === 1);
     }
 }

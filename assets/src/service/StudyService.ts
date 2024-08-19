@@ -2,7 +2,7 @@ import { isValid } from "cc";
 import { EventType } from "../config/EventType";
 import { WordSourceType } from "../config/WordConfig";
 import { ViewsManager } from "../manager/ViewsManager";
-import { AdventureCollectWordModel, AdventureResultModel, c2sAdventureCollectWord, c2sAdventureResult, c2sAdventureWord, c2sAdventureWordSentence, c2sAdvLevelProgress, c2sArticleExercisesList, c2sBossLevelRestart, c2sBossLevelSubmit, c2sBossLevelTopic, c2sGetProgressReward, c2sGetUnitList, c2sGradeSkipExercisesList, c2sGradeSkipExercisesSubmit, c2sIslandProgress, c2sIslandStatus, c2sMoreWordDetail, c2sSearchWord, c2sSubjectArticleList, c2sTextbookWordGroup, c2sTotalCollectWord, c2sWordGameLevelRestart, c2sWordGameSubject, c2sWordGameUnitWords, c2sWordGameWords, c2sWordGroup, WordGameWordsData } from "../models/AdventureModel";
+import { AdventureCollectWordModel, AdventureResultModel, c2sAdventureCollectWord, c2sAdventureResult, c2sAdventureWord, c2sAdventureWordSentence, c2sAdvLevelProgress, c2sArticleExercisesList, c2sBossLevelRestart, c2sBossLevelSubmit, c2sBossLevelTopic, c2sGetProgressReward, c2sGetUnitList, c2sGradeSkipExercisesList, c2sGradeSkipExercisesSubmit, c2sIslandProgress, c2sIslandStatus, c2sMoreWordDetail, c2sSearchWord, c2sSubjectArticleList, c2sTextbookWordGroup, c2sTotalCollectWord, c2sWordGameGradeModify, c2sWordGameLevelRestart, c2sWordGameSubject, c2sWordGameUnitWords, c2sWordGameWords, c2sWordGroup, WordGameWordsData } from "../models/AdventureModel";
 import { c2sReviewPlan, c2sReviewPlanDraw, c2sReviewPlanList, c2sReviewPlanLongTimeWords, c2sReviewPlanLongTimeWordSubmit, c2sReviewPlanOption, c2sReviewPlanStatus, c2sReviewPlanSubmit, c2sReviewPlanUpdate } from "../models/NetModel";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
@@ -48,6 +48,12 @@ export default class StudyService extends BaseControll {
     getIslandStatus() {
         let para: c2sIslandStatus = new c2sIslandStatus();
         NetMgr.sendMsg(para);
+    }
+
+    reqWordGameGradeModify(phase_id: number){
+        let param: c2sWordGameGradeModify = new c2sWordGameGradeModify();
+        param.phase_id = phase_id;
+        NetMgr.sendMsg(param);
     }
 
     //获取大冒险岛屿进度
