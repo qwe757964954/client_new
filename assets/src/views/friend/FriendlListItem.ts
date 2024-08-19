@@ -1,4 +1,4 @@
-import { _decorator, Label, Node, Prefab, ScrollView, Sprite, SpriteFrame } from 'cc';
+import { _decorator, Label, Node, Sprite } from 'cc';
 import { LoadManager } from '../../manager/LoadManager';
 import { FriendListItemModel } from '../../models/FriendModel';
 import ListItem from '../../util/list/ListItem';
@@ -23,34 +23,14 @@ export class FriendListItem extends ListItem {
     @property({ type: Label, tooltip: "朋友战力标签" })
     lblCe: Label = null;
 
-    @property({ type: ScrollView, tooltip: "奖章列表" })
-    medalList: ScrollView = null;
-
     @property({ type: Label, tooltip: "状态标签" })
     lblState: Label = null;
-
-    @property({ type: Label, tooltip: "闯过的关卡标签" })
-    lblIsland: Label = null;
 
     @property({ type: Node, tooltip: "红色按钮" })
     ndRedPoint: Node = null;
 
-    @property({ type: Label, tooltip: "状态标签" })
-    lblRedTip: Label = null;
-
-    @property({ type: Node, tooltip: "弹出按钮" })
-    btnArrow: Node = null;
-
-    @property({ type: Prefab, tooltip: "奖章预制体" })
-    preMedalIcon: Prefab = null;
-
-    @property({ type: [SpriteFrame], tooltip: "背景页的图片数组" }) // 0:选中 1: 未选中
-    public sprBgAry: SpriteFrame[] = [];
-
     _data: FriendListItemModel = null;
     async initData(data: FriendListItemModel) {
-        
-        //console.log("FriendListItem initData: ", data);
         this._data = data;
         let headIdMap = { "101": 101, "1101": 101, "102": 102, "1102": 102, "103": 103, "1103": 103 }
         let avatar: number = headIdMap[data.avatar];
@@ -61,7 +41,7 @@ export class FriendListItem extends ListItem {
             });
         this.lblRealName.string = data.user_name;
         this.ndRedPoint.active = data.unread_count > 0;
-        this.lblRedTip.string = data.unread_count + "";
+        // this.lblRedTip.string = data.unread_count + "";
     }
 }
 
