@@ -70,6 +70,7 @@ export class StudyModeView extends BaseModeView {
     private _playingUrl: string = null;
 
     onLoad(): void {
+        super.onLoad();
         this.gameMode = GameMode.Study;
     }
 
