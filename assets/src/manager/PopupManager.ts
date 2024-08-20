@@ -31,7 +31,7 @@ export class PopupManager {
     }
 
     private async createPopup(viewConfig: PrefabConfig): Promise<Node> {
-        const nd = await this.createPopup(viewConfig);
+        const nd = await this.createBasePopup(viewConfig);
         // Ensure that the node is properly initialized
         await ImgUtil.create_PureNode(nd);
         return nd;
