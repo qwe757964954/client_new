@@ -2,6 +2,7 @@ import { _decorator, Button, Component, instantiate, Label, Node, Prefab, UITran
 import { EventType } from '../../config/EventType';
 import { PrefabType, SceneType } from '../../config/PrefabType';
 import { DataMgr } from '../../manager/DataMgr';
+import { PopMgr } from '../../manager/PopupManager';
 import { SceneMgr } from '../../manager/SceneMgr';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { BossLevelData, BossLevelTopicData, GateData, GradeSkipExercisesListReply, IslandProgressModel, MapLevelData, ProgressRewardData, Subject, UnitData, UnitListData, WordGameSubjectReply, WordGameUnitWordReply } from '../../models/AdventureModel';
@@ -33,8 +34,6 @@ export class WorldIsland extends Component {
     public btn_details: Button = null;
     @property({ type: Button, tooltip: "我的位置" })
     public btn_pos: Button = null;
-    @property({ type: rightPanelchange, tooltip: "关卡选择页面" })
-    public levelPanel: rightPanelchange = null;
 
     @property({ type: List, tooltip: "地图List" })
     public mapPointList: List = null;
@@ -91,6 +90,7 @@ export class WorldIsland extends Component {
     rewardBoxList: List = null;
     private _progressRewards: ProgressRewardData[] = [];
     private _selectUnit: UnitData = null;
+    private _rightChallenge: rightPanelchange = null;
     start() {
         this.initUI();
         this.initEvent();
@@ -133,12 +133,10 @@ export class WorldIsland extends Component {
         ServiceMgr.studyService.getWordGameUnits(this._bigId);
     }
 
-    mapPointClick(data: MapLevelData) {
-        this.levelPanel.node.active = true;
-        let nodesize = this.levelPanel.node.getComponent(UITransform).contentSize;
-        this.levelPanel.node.setPosition(nodesize.width, 100);
-        console.log('点击了地图点', data);
-        this.levelPanel.openView(data);
+    async mapPointClick(data: MapLevelData) {
+        let node = await PopMgr.showPopRight(PrefabType.RightPanelchange,"stage_frame");
+        this._rightChallenge = node.getComponent(rightPanelchange);
+        this._rightChallenge.openView(data);
     }
 
     onMapPointRender(item: Node, idx: number) {
@@ -273,10 +271,6 @@ export class WorldIsland extends Component {
 
     /**初始化UI */
     private initUI() {
-        let nodesize = this.levelPanel.node.getComponent(UITransform).contentSize;
-        this.levelPanel.node.setPosition(-nodesize.width, 100);
-        this.levelPanel.hideView();
-
         this.initPet();
         this.initRole();
         // this.initMonster();
@@ -310,13 +304,12 @@ export class WorldIsland extends Component {
         monsterModel.init("spine/monster/adventure/" + islandData.bossAni);
     }
 
-    challangeBoss() {
+    async challangeBoss() {
         console.log("challangeBoss");
-        this.levelPanel.node.active = true;
-        let nodesize = this.levelPanel.node.getComponent(UITransform).contentSize;
-        this.levelPanel.node.setPosition(nodesize.width, 100);
         let levelData: BossLevelData = DataMgr.getIslandBossConfig(this._bigId);
-        this.levelPanel.openBossView(levelData);
+        let node = await PopMgr.showPopRight(PrefabType.RightPanelchange,"stage_frame");
+        this._rightChallenge = node.getComponent(rightPanelchange);
+        this._rightChallenge.openBossView(levelData);
     }
 
     onGetBossLevelTopic(data: BossLevelTopicData) {

@@ -1,5 +1,6 @@
 import { _decorator, Component, Node } from 'cc';
 import { PrefabType, SceneType } from '../../config/PrefabType';
+import { PopMgr } from '../../manager/PopupManager';
 import { SceneMgr } from '../../manager/SceneMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { UserPlayerDetail } from '../../models/SettingModel';
@@ -43,7 +44,7 @@ export class AccountView extends Component {
     // 重置
     async btnChongZhiFunc() {
         console.log("btnChongZhiFunc");
-        let node: Node = await ViewsManager.instance.showPopup(PrefabType.ResetPasswordView);
+        let node: Node = await PopMgr.showPopup(PrefabType.ResetPasswordView);
     }
     // 剧情回顾
     btnJuQingHuiGuFunc() {

@@ -1,6 +1,7 @@
 import { _decorator, Node } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
+import { PopMgr } from '../../manager/PopupManager';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { BookListItemData, BookPlanDetail, SchoolBookGradeItemData, SchoolBookItemData, SchoolBookListGradeItemData, SchoolBookListItemData } from '../../models/TextbookModel';
 import { NetNotify } from '../../net/NetNotify';
@@ -58,7 +59,7 @@ export class SelectWordView extends BaseView {
 	}
 
     onBookPlanDetail(data: BookPlanDetail) {
-        ViewsManager.instance.showPopup(PrefabType.SettingPlanView).then((node: Node)=>{
+        PopMgr.showPopup(PrefabType.SettingPlanView).then((node: Node)=>{
             let titleBookName = `${this._curBookName}${this._curGradeName}`
             let nodeScript:SettingPlanView = node.getComponent(SettingPlanView)
             nodeScript.updateTitleName(titleBookName,data.gate_total,this.onSelectWordPlan.bind(this));

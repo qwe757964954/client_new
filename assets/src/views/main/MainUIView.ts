@@ -2,6 +2,7 @@ import { _decorator, Label, Node, Sprite } from 'cc';
 import { MapStatus } from '../../config/MapConfig';
 import { PrefabType, SceneType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
+import { PopMgr } from '../../manager/PopupManager';
 import { SceneMgr } from '../../manager/SceneMgr';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { ActivityInfoResponse } from '../../models/ActivityModel';
@@ -60,15 +61,6 @@ export class MainUIView extends BaseView {
 
     private async initViews() {
         await Promise.all([
-            this.initViewComponent(PrefabType.MainRightActivity, (node) => {
-                this._mainRightActivity = node.getComponent(MainRightActivity)
-                this._mainRightActivity.showPos = this._mainRightActivity.node.position;
-            }, {
-                isAlignVerticalCenter: true,
-                isAlignRight: true,
-                verticalCenter: 0,
-                right: -480
-            }),
             this.initViewComponent(PrefabType.MainNotifyView, (node) => { }, {
                 isAlignBottom: true,
                 isAlignRight: true,
@@ -107,7 +99,6 @@ export class MainUIView extends BaseView {
         CCUtil.onTouch(this.btnStudy, this.onClickStudy, this);
         CCUtil.onBtnClick(this.btn_friend, this.onClickFriend.bind(this));
         CCUtil.onBtnClick(this.operational_activities, this.onClickOperationalActivities.bind(this));
-        CCUtil.onBtnClick(this.node.getChildByName('mask_node'), this.onMaskClick.bind(this));
     }
     //移除事件
     public removeEvent() {
@@ -123,7 +114,9 @@ export class MainUIView extends BaseView {
     }
     /**好友点击 */
     async onClickFriend() {
-        await ViewsManager.instance.showPopup(PrefabType.FriendsDialogView);
+        // await ViewsManager.instance.showPopup(PrefabType.FriendsDialogView);
+        await PopMgr.showPopRight(PrefabType.FriendsDialogView,"content");
+
     }
     /**运营活动 */
     async onClickOperationalActivities() {
@@ -138,11 +131,9 @@ export class MainUIView extends BaseView {
         // ViewsManager.showTip(TextConfig.Function_Tip);
     }
     //菜单点击
-    public onClickMenu() {
-        // ViewsManager.instance.showTip(TextConfig.Function_Tip);
-        // return
-        this.node.getChildByName('mask_node').active = true;
-        this._mainRightActivity.onHidenClick();
+    public async onClickMenu() {
+        let node = await PopMgr.showPopRight(PrefabType.MainRightActivity,"content");
+        this._mainRightActivity = node.getComponent(MainRightActivity);
     }
     //复习计划点击
     public onClickReview() {
@@ -174,10 +165,6 @@ export class MainUIView extends BaseView {
     //商店点击
     public onClickShop() {
         ViewsMgr.showView(PrefabType.ShopUIView);
-    }
-    onMaskClick() {
-        this.node.getChildByName('mask_node').active = false;
-        this._mainRightActivity.onHidenClick();
     }
     //任务点击
     public onClickTask() {

@@ -2,10 +2,11 @@ import { _decorator, Label, Node, Prefab } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
+import { PopMgr } from '../../manager/PopupManager';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { DataFriendApplyListResponse, DataFriendListResponse, FriendListItemModel, SystemMailItem, SystemMailListResponse, UserFriendData, UserSystemAwardResponse } from '../../models/FriendModel';
 import { NetNotify } from '../../net/NetNotify';
-import { BasePopup } from '../../script/BasePopup';
+import { BasePopRight } from '../../script/BasePopRight';
 import { FdServer } from '../../service/FriendService';
 import CCUtil from '../../util/CCUtil';
 import { ObjectUtil } from '../../util/ObjectUtil';
@@ -26,7 +27,7 @@ export enum FriendRightStatus {
 
 
 @ccclass('FriendsDialogView')
-export class FriendsDialogView extends BasePopup {
+export class FriendsDialogView extends BasePopRight {
     @property({ type: Node, tooltip: "关闭按钮" })
     public closeBtn: Node = null;
 
@@ -57,9 +58,10 @@ export class FriendsDialogView extends BasePopup {
         this.setLeftTab();
         this.setFriendListSelect();
         this.setEmailListSelect();
-        this.enableClickBlankToClose([this.node.getChildByName("content"),this._rightPlayerInfo.node,this._leftTab.node]).then(()=>{
+        this.enableClickBlankToClose([this.contentNd,this._rightPlayerInfo.node,this._leftTab.node]).then(()=>{
             
         });
+        
     }
     protected onInitModuleEvent(): void {
         this.addModelListeners([
@@ -211,7 +213,7 @@ export class FriendsDialogView extends BasePopup {
     }
 
     async onFriendTalk(){
-        let node = await ViewsManager.instance.showPopup(PrefabType.FriendTalkDialogView);
+        let node = await PopMgr.showPopup(PrefabType.FriendTalkDialogView);
         let talk_script = node.getComponent(FriendTalkDialogView)
         let selected = this._friend_list.findIndex(friend => friend.friend_id === this._selectedFriend.friend_id);
         talk_script.currentFriendSelected = selected;

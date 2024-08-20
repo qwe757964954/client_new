@@ -1,30 +1,24 @@
-import { _decorator, isValid, Node, tween, UITransform, Vec3 } from 'cc';
+import { _decorator, isValid, Node } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { BaseView } from '../../script/BaseView';
-import CCUtil from '../../util/CCUtil';
+import { BasePopRight } from '../../script/BasePopRight';
 import List from '../../util/list/List';
 import { MainActivityIds, MainActivityInfo, MainActivityInfos } from './MainInfo';
 import { RightActivityItem } from './RightActivityItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('MainRightActivity')
-export class MainRightActivity extends BaseView {
+export class MainRightActivity extends BasePopRight {
     @property(List)
     public activity_list: List = null;
 
     @property(Node)
     public btn_hiden:Node = null;
-    private _showPos:Vec3 = null;
-    private _isShow:boolean = false;
-    set showPos(pos:Vec3) {
-        this._showPos = pos.clone();
-    }
     protected initUI(): void {
+        this.enableClickBlankToClose([this.node.getChildByName("content")]);
         this.activity_list.numItems = MainActivityInfos.length;
     }
     protected initEvent(): void {
-        CCUtil.onBtnClick(this.btn_hiden,this.onHidenClick.bind(this));
     }
     onLoadActivityListGrid(item:Node,idx:number){
         let item_script = item.getComponent(RightActivityItem);
@@ -64,20 +58,6 @@ export class MainRightActivity extends BaseView {
     async onClickRank(){
         await ViewsManager.instance.showViewAsync(PrefabType.RankView);
     }
-    public onHidenClick() {
-        this._isShow = !this._isShow;
-        this.showPlayerInfo(this._isShow);
-    }
-
-    public showPlayerInfo(isShow: boolean) {
-        this._isShow = isShow;
-        let node_size = this.node.getComponent(UITransform);
-        let temp_width = node_size.width;
-        let posx = this._isShow ? -temp_width : 0;
-        tween(this.node).to(0.3, { position: new Vec3(this._showPos.x +posx, this._showPos.y, 0) }).call(() => {
-        }).start();
-    }
-
 
 }
 

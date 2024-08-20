@@ -3,6 +3,7 @@ import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { EditInfo, EditType } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
+import { PopMgr } from '../../manager/PopupManager';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { User } from '../../models/User';
 import { ServiceMgr } from '../../net/ServiceManager';
@@ -87,7 +88,7 @@ export class ShopGoodsItem extends Component {
     }
 
     async onClickGoods() {
-        let node = await ViewsManager.instance.showPopup(PrefabType.GoodsDetailView);
+        let node = await PopMgr.showPopup(PrefabType.GoodsDetailView);
         let detail_script = node.getComponent(GoodsDetailView)
         detail_script.initData(this._data);
     }

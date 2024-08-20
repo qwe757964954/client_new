@@ -4,6 +4,7 @@ import { KeyConfig } from '../../config/KeyConfig';
 import { PrefabType } from '../../config/PrefabType';
 import GlobalConfig from '../../GlobalConfig';
 import { DataMgr } from '../../manager/DataMgr';
+import { PopMgr } from '../../manager/PopupManager';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { GameMode, GateData, IslandProgressModel, LandStatusResponse, LevelProgressData, LevelRestartData } from '../../models/AdventureModel';
 import { UnitWordModel } from '../../models/TextbookModel';
@@ -248,7 +249,7 @@ export class WorldMapView extends BaseView {
 
     private async gradeSelectEvent() {
         // TODO: Implement grade select event
-        let node = await ViewsManager.instance.showPopup(PrefabType.GradeSelectView);
+        let node = await PopMgr.showPopup(PrefabType.GradeSelectView);
     }
 
     private openHelp() {
