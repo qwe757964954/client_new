@@ -4,7 +4,7 @@ import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { PopMgr } from '../../manager/PopupManager';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
-import { DataFriendApplyListResponse, DataFriendListResponse, FriendListItemModel, SystemMailItem, SystemMailListResponse, UserFriendData, UserSystemAwardResponse } from '../../models/FriendModel';
+import { FriendListItemModel, SystemMailItem, SystemMailListResponse, UserFriendData, UserSystemAwardResponse } from '../../models/FriendModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BasePopRight } from '../../script/BasePopRight';
 import { FdServer } from '../../service/FriendService';
@@ -12,7 +12,6 @@ import CCUtil from '../../util/CCUtil';
 import { ObjectUtil } from '../../util/ObjectUtil';
 import { FriendAddView } from './FriendAddView';
 import { FriendEmailView } from './FriendEmailView';
-import { FriendTabType } from './FriendInfo';
 import { FriendLeftTabView } from './FriendLeftTabView';
 import { FriendListView } from './FriendListView';
 import { FriendMessageView } from './FriendMessageView';
@@ -55,7 +54,6 @@ export class FriendsDialogView extends BasePopRight {
     async initUI() {
         await this.initViews();
         this.initData();
-        this.setLeftTab();
         this.setFriendListSelect();
         this.setEmailListSelect();
         this.enableClickBlankToClose([this.contentNd,this._rightPlayerInfo.node,this._leftTab.node]).then(()=>{
@@ -126,10 +124,7 @@ export class FriendsDialogView extends BasePopRight {
         ));
     }
 
-    private setLeftTab(){
-        this._leftTab.setTabClickListener(this.onClickTab.bind(this));
-        this._leftTab.updateTabList();
-    }
+    
 
     private setFriendListSelect(){
         this._fListView.setFriendSelectListener(this.onSelectFriend.bind(this));
@@ -164,33 +159,7 @@ export class FriendsDialogView extends BasePopRight {
         this._fEmailView.node.active = false;
     }
 
-    onClickTab(click:FriendTabType) {
-        this.hidenAllFriendView();
-        switch (click) {
-            case FriendTabType.List:// 好友列表
-                this.titleTxt.string = TextConfig.Friend_List; //"好友列表";
-                this._fListView.node.active = true;
-                FdServer.reqUserFriendList();
-                break;
-            case FriendTabType.Add: //添加好友
-                this.titleTxt.string = TextConfig.Friend_Add; //"添加好友";
-                this._fAddView.node.active = true;
-                break;
-            case FriendTabType.Apply: //好友申请列表
-                this.titleTxt.string = TextConfig.Friend_Apply; //"好友申请";
-                this._fMsgView.node.active = true;
-                break;
-            case FriendTabType.Message: // 好友消息通知
-                this.titleTxt.string = TextConfig.Friend_Notify; // "好友通知";
-                this._fEmailView.node.active = true;
-                // this._fEmailView.setEmailListSelected(0);
-                break;
-        }
-        let isShow = click === FriendTabType.List || click === FriendTabType.Message;
-        if(!isShow){
-            this._rightPlayerInfo.showPlayerInfo(isShow); 
-        }
-    }
+    
 
     
 
@@ -220,27 +189,9 @@ export class FriendsDialogView extends BasePopRight {
         talk_script.init(this._friend_list);
     }
 
-    /**更新朋友列表 */
-    onUpdateFriendList(friendDatas: DataFriendListResponse) {
-        this._friend_list = friendDatas.data;
-        this._fListView.updateData(this._friend_list);
-        // this._fListView.setFriendListSelected(0);
-    }
+    
 
-    /**更新推荐朋友列表 */
-    onShowRecommendList(friendDatas: DataFriendListResponse) {
-        console.log("onShowRecommendList",friendDatas);
-        this._fAddView.updateData(friendDatas.data);
-    }
-
-    onUserFriendApplyModify(data:any){
-        FdServer.reqUserFriendApplyList();
-    }
-
-    /**更新申请好友列表 */
-    onUpdateApplyFriendList(response: DataFriendApplyListResponse) {
-        this._fMsgView.updateData(response.data);
-    }
+    
     onUserDelFriendMessage(response: any){
         FdServer.reqUserFriendList();
     }

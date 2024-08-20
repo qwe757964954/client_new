@@ -1,14 +1,12 @@
-export const FriendTabInfos = [
-    { id: 1, title: "好友列表"},
-    { id: 2, title: "添加好友"},
-    { id: 3, title: "好友申请"},
-    { id: 4, title: "好友消息"},
-];
-
 
 export enum FriendTabType {
     List = 0, /** 好友列表 */
-    Add = 1, /** 添加好友 */
-    Apply = 2, /** 好友申请 */
-    Message = 3 /** 好友消息 */
+    Apply = 1, /** 好友申请 */
+    Blacklist = 2 /** 黑名单 */
 }
+
+export const FriendTabInfos = [
+    { id: FriendTabType.List, title: "好友列表"},
+    { id: FriendTabType.Apply, title: "申请列表"},
+    { id: FriendTabType.Blacklist, title: "黑名单"},
+];

@@ -45,8 +45,8 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -699,
-      "y": -306.871,
+      "x": 0,
+      "y": 0,
       "z": 0
     },
     "_lrot": {
@@ -603,7 +603,9 @@
     "selectedFlag": {
       "__id__": 8
     },
-    "selectedFlag2": null,
+    "selectedFlag2": {
+      "__id__": 8
+    },
     "selectedSpriteFrame": null,
     "adaptiveSize": false,
     "tab_name": {

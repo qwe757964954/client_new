@@ -115,7 +115,7 @@ export class MainUIView extends BaseView {
     /**好友点击 */
     async onClickFriend() {
         // await ViewsManager.instance.showPopup(PrefabType.FriendsDialogView);
-        await PopMgr.showPopRight(PrefabType.FriendsDialogView,"content");
+        await PopMgr.showPopRight(PrefabType.FriendListView,"content");
 
     }
     /**运营活动 */
