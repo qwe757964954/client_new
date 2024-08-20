@@ -1,9 +1,11 @@
 import { _decorator, Node } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
+import { PopMgr } from '../../manager/PopupManager';
 import { DataFriendApplyListResponse, DataFriendListResponse, UserFriendData } from '../../models/FriendModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BasePopRight } from '../../script/BasePopRight';
 import { FdServer } from '../../service/FriendService';
+import CCUtil from '../../util/CCUtil';
 import { FriendTabType } from './FriendInfo';
 import { FriendLeftTabView } from './FriendLeftTabView';
 import { ApplyList } from './ListViews/ApplyList';
@@ -15,6 +17,17 @@ const { ccclass, property } = _decorator;
 export class FriendListView extends BasePopRight {
     @property(Node)
     public contentNd: Node = null;
+    @property(Node)
+    public leftView: Node = null;
+    @property(Node)
+    public wechatInvite: Node = null;
+
+    @property(Node)
+    public addFriend: Node = null;
+
+    @property(Node)
+    public closeIcon: Node = null;
+
     private _leftTab:FriendLeftTabView = null;
     private _friendList:FriendList = null;
     private _applyList:ApplyList = null;
@@ -25,6 +38,11 @@ export class FriendListView extends BasePopRight {
         this.setLeftTab();
         this.initData();
     }
+    protected initEvent(): void {
+        CCUtil.onBtnClick(this.closeIcon,this.closeClickEvent.bind(this));
+        CCUtil.onBtnClick(this.addFriend,this.addFriendClickEvent.bind(this));
+    }
+
     protected onInitModuleEvent(): void {
         this.addModelListeners([
             [NetNotify.Classification_UserFriendList, this.onUpdateFriendList],
@@ -91,7 +109,12 @@ export class FriendListView extends BasePopRight {
                 break;
         }
     }
-
+    closeClickEvent(){
+        this.closePop();
+    }
+    async addFriendClickEvent(){
+        await PopMgr.showPopFriend(PrefabType.FriendAddView,this.leftView,"content");
+    }
     hidenAllFrinedList(){
         this._friendList.node.active = false;
         this._applyList.node.active = false;

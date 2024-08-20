@@ -1,7 +1,7 @@
 import { _decorator, EditBox, isValid, Label, Node } from 'cc';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { FriendListItemModel, UserFriendData } from '../../models/FriendModel';
-import { BaseView } from '../../script/BaseView';
+import { BasePopFriend } from '../../script/BasePopFriend';
 import { FdServer } from '../../service/FriendService';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
@@ -10,7 +10,7 @@ import { FriendSearchItem } from './FriendSearchItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('FriendAddView')
-export class FriendAddView extends BaseView {
+export class FriendAddView extends BasePopFriend {
     @property({ type: Node, tooltip: "查找好友结果结点" }) //imgHead
     public resultBox: Node = null;
     @property({ type: List, tooltip: "推荐好友滚动列表" })

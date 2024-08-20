@@ -197,7 +197,7 @@ export const PrefabType = {
     Blacklist: { path: "social/ListViews/Blacklist", zindex: Hierarchy.POPUPLAYER, tips: "好友Blacklist界面" },
     FriendPlayerInfoView: { path: "social/FriendPlayerInfoView", zindex: Hierarchy.POPUPLAYER, tips: "好友玩家信息界面" },
     FriendListView: { path: "social/FriendListView",componentName: "FriendListView", zindex: Hierarchy.POPUPLAYER, tips: "好友列表界面" },
-    FriendAddView: { path: "social/FriendAddView", zindex: Hierarchy.POPUPLAYER, tips: "好友添加界面" },
+    FriendAddView: { path: "social/FriendAddView",componentName: "FriendAddView", zindex: Hierarchy.POPUPLAYER, tips: "好友添加界面" },
     FriendMessageView: { path: "social/FriendMessageView", zindex: Hierarchy.POPUPLAYER, tips: "好友消息界面" },
     FriendEmailView: { path: "social/FriendEmailView", zindex: Hierarchy.POPUPLAYER, tips: "好友邮件界面" },
     /*********************************************社交 End*************************************************************/

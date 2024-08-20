@@ -13,6 +13,9 @@ export class ChatContentItem extends Component {
     @property({ type: Node, tooltip: "头像结点" })
     ndHead: Node = null;
 
+    @property({ type: Node, tooltip: "头像结点" })
+    bg: Node = null;
+
     @property({ type: Node, tooltip: "当前时间结点" })
     timeBox: Node = null;
 

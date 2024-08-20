@@ -18,14 +18,6 @@ const { ccclass, property } = _decorator;
 
 @ccclass('FriendPlayerInfoView')
 export class FriendPlayerInfoView extends BaseView {
-    @property(Node)
-    public btnTalk: Node = null; // 对话按钮
-
-    @property(Node)
-    public btnHouse: Node = null; // 返回家园按钮
-
-    @property(Node)
-    public btnDelete: Node = null; // 删除好友按钮
 
     @property(Node)
     public roleInfoBox: Node = null; // 角色信息容器
@@ -126,9 +118,6 @@ export class FriendPlayerInfoView extends BaseView {
     }
 
     protected initEvent(): void {
-        this.registerButtonEvent(this.btnTalk, this.onTalkClick);
-        this.registerButtonEvent(this.btnHouse, this.onHouseClick);
-        this.registerButtonEvent(this.btnDelete, this.onDeleteClick);
         this.registerButtonEvent(this.reciveBtn, this.onReceiveClick);
         this.registerButtonEvent(this.btnHide, this.onHidenClick);
     }

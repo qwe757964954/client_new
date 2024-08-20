@@ -1,5 +1,6 @@
 import { BlockInputEvents, Node, Prefab, _decorator, instantiate } from 'cc';
 import { PrefabConfig } from '../config/PrefabType';
+import { BasePopFriend } from '../script/BasePopFriend';
 import { BasePopRight } from '../script/BasePopRight';
 import { BasePopup } from '../script/BasePopup';
 import CCUtil from '../util/CCUtil';
@@ -120,6 +121,42 @@ export class PopupManager {
             });
         });
     }
+
+    async showPopFriend(viewConfig: PrefabConfig, parent:Node,aniName: string): Promise<Node> {
+        return new Promise((resolve, reject) => {
+            // Load the prefab and instantiate it
+            ResLoader.instance.load(`prefab/${viewConfig.path}`, Prefab, async (err, prefab) => {
+                if (err) {
+                    console.error(err);
+                    reject(err);
+                    return;
+                }
+
+                // Instantiate and add the prefab as a child node
+                let node = instantiate(prefab);
+                parent.addChild(node);
+                CCUtil.addWidget(parent, { left: 0, right: 0, top: 0, bottom: 0 });
+
+                // Retrieve the component and execute the show animation
+                let scpt: BasePopFriend = node.getComponent(viewConfig.componentName);
+
+                if (scpt) {
+                    try {
+                        scpt.show(aniName,parent); // Call the specific method for showing
+                        resolve(node); // Resolve after the animation completes
+                    } catch (animationError) {
+                        console.error(animationError);
+                        reject(animationError);
+                    }
+                } else {
+                    console.error(`Component ${viewConfig.componentName} not found`);
+                    reject(new Error(`Component ${viewConfig.componentName} not found`));
+                }
+            });
+        });
+    }
+
+
     /**
      * 
      * @param viewConfig 
