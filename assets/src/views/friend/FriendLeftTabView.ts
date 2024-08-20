@@ -13,7 +13,7 @@ export class FriendLeftTabView extends Component {
     private _clickListener:(click:number) => void = null;
 
     protected start(): void {
-        // this.updateTabList();
+        
     }
 
     updateTabList(){
