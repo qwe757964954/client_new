@@ -2,6 +2,7 @@ import { _decorator, error, Node, Prefab, SpriteFrame, view } from 'cc';
 import { EventType } from '../../config/EventType';
 import { KeyConfig } from '../../config/KeyConfig';
 import { PrefabType } from '../../config/PrefabType';
+import { PopMgr } from '../../manager/PopupManager';
 import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { BookAwardListModel, BookPlanDetail, CurrentBookStatus, ModifyPlanData, UnitListItemStatus } from '../../models/TextbookModel';
@@ -53,7 +54,7 @@ export class TextbookChallengeView extends BaseView {
             sure_text: "查看任务",
             content_text: message,
         };
-        const node = await ViewsManager.instance.showPopup(PrefabType.ChallengeRemindView);
+        const node = await PopMgr.showPopup(PrefabType.ChallengeRemindView);
         const remindScript = node.getComponent(ChallengeRemindView);
         remindScript.initRemind(data);
         StorageUtil.saveData(KeyConfig.FIRST_TEXTBOOK_CHALLENGE, "0");
@@ -153,7 +154,7 @@ export class TextbookChallengeView extends BaseView {
     }
 
     private async showSettingPlanView() {
-        const node = await ViewsManager.instance.showPopup(PrefabType.SettingPlanView);
+        const node = await PopMgr.showPopup(PrefabType.SettingPlanView);
         const script = node.getComponent(SettingPlanView);
         const titleBookName = `${this._bookData.book_name}${this._bookData.grade}`;
         script.updateTitleName(titleBookName, this._planData.gate_total - this._planData.gate_pass_total,this.onSelectWordPlan.bind(this));

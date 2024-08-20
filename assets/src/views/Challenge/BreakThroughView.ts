@@ -3,6 +3,7 @@ import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { BookLevelConfig, DataMgr } from '../../manager/DataMgr';
+import { PopMgr } from '../../manager/PopupManager';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { GameMode, MapLevelData } from '../../models/AdventureModel';
 import { CurrentBookStatus, GateListItem, ReqUnitStatusParam, ReqUnitType, UnitItemStatus, UnitListItemStatus, UnitStatusData, VocabularyWordData } from '../../models/TextbookModel';
@@ -178,7 +179,7 @@ export class BreakThroughView extends BaseView {
     }
 
     showRemainCall(data: ITextbookRemindData) {
-        ViewsManager.instance.showPopup(PrefabType.BreakThroughRemindView).then((node: Node) => {
+        PopMgr.showPopup(PrefabType.BreakThroughRemindView).then((node: Node) => {
             const remindScript = node.getComponent(BreakThroughRemindView);
             remindScript.initRemind(data);
         });

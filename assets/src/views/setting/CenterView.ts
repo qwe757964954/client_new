@@ -2,6 +2,7 @@ import { Component, Label, Node, ProgressBar, Sprite, _decorator } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { LoadManager } from '../../manager/LoadManager';
+import { PopMgr } from '../../manager/PopupManager';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { UserPlayerDetail } from '../../models/SettingModel';
 import { User } from '../../models/User';
@@ -83,7 +84,7 @@ export class CenterView extends Component {
     // 修改名称
     async btnChangeNameFunc() {
         console.log("btnChangeNameFunc");
-        let node:Node = await ViewsManager.instance.showPopup(PrefabType.ChangeNameView);
+        let node:Node = await PopMgr.showPopup(PrefabType.ChangeNameView);
         let nodeScript: ChangeNameView = node.getComponent(ChangeNameView);
         nodeScript.updataData(this._playerDetail);
     }

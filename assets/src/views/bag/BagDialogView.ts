@@ -3,6 +3,7 @@ import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { ItemID } from '../../export/ItemConfig';
 import { ClothingInfo, ClothingType, DataMgr, ItemData } from '../../manager/DataMgr';
+import { PopMgr } from '../../manager/PopupManager';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { DressInfoItem } from '../../models/BagModel';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
@@ -121,14 +122,14 @@ export class BagDialogView extends BaseView {
 
     private async onDisassemble() {
         console.log("onDisassemble");
-        const node = await ViewsManager.instance.showPopup(PrefabType.BreakdownView);
+        const node = await PopMgr.showPopup(PrefabType.BreakdownView);
         const nodeScript = node.getComponent(BreakdownView);
         nodeScript.updateBreakDownItem(this._selectedItem);
     }
 
     private async onComposite() {
         console.log("onComposite");
-        const node = await ViewsManager.instance.showPopup(PrefabType.CompositeBagView);
+        const node = await PopMgr.showPopup(PrefabType.CompositeBagView);
         const nodeScript = node.getComponent(CompositeBagView);
         nodeScript.updateMergeItem(this._selectedItem);
     }

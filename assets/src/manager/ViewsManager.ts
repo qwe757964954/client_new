@@ -1,6 +1,5 @@
-import { BlockInputEvents, Camera, Color, Node, Prefab, UITransform, Vec3, Widget, instantiate, isValid } from "cc";
+import { Camera, Color, Node, Prefab, UITransform, Vec3, Widget, instantiate, isValid } from "cc";
 import { Hierarchy, PrefabConfig, PrefabType } from "../config/PrefabType";
-import { BasePopup } from "../script/BasePopup";
 import CCUtil from "../util/CCUtil";
 import ImgUtil from "../util/ImgUtil";
 import { ConfirmView } from "../views/common/ConfirmView";
@@ -12,6 +11,7 @@ import { TipView } from "../views/common/TipView";
 import { TopAmoutView } from "../views/common/TopAmoutView";
 import { ItemData } from "./DataMgr";
 import { LoadManager } from "./LoadManager";
+import { PopMgr } from "./PopupManager";
 import { ResLoader } from "./ResLoader";
 
 //界面管理类
@@ -56,71 +56,7 @@ export class ViewsManager {
     genPureColorSpriteFrame(color: Color = Color.BLACK) {
 
     }
-    /**
-     * 
-     * @param viewConfig 
-     * 示例代码： ViewsManager.instance.closePopup(PrefabType.SettingPlanView);
-     */
-    closePopup(viewConfig: PrefabConfig) {
-        // 关闭界面
-        let parent = this.getParentNode(viewConfig.zindex);
-        parent?.getChildByName(viewConfig.path.replace("/", "_"))?.destroy();
-    }
 
-    /**
-     * 
-     * @param viewConfig  需要有scpt_name 且继承 BasePopup  参考 SettingPlanView
-     * @param data 打开需要添加的参数，tudo
-     * @returns 
-     * 示例：
-     * ViewsManager.instance.showPopup(PrefabType.SettingPlanView).then((node: Node)=>{
-            let nodeScript:SettingPlanView = node.getComponent(SettingPlanView);
-            let titleBookName = `${this._curUnitStatus.book_name}${this._curUnitStatus.grade}`;
-            nodeScript.updateTitleName(titleBookName);
-        })
-     */
-    async showPopup(viewConfig: PrefabConfig, data?: any): Promise<Node> {
-        // Retrieve or create the parent node based on z-index
-        let parent = this.getParentNode(viewConfig.zindex);
-        let nd_name = viewConfig.path.replace("/", "_");
-        let nd: Node = ImgUtil.create_2DNode(nd_name);
-        parent.addChild(nd);
-
-        // Add blocking input events and set widget settings
-        nd.addComponent(BlockInputEvents);
-        CCUtil.addWidget(nd, { left: 0, right: 0, top: 0, bottom: 0 });
-
-        // Ensure that the node is properly initialized
-        await ImgUtil.create_PureNode(nd);
-
-        return new Promise((resolve, reject) => {
-            // Load the prefab and instantiate it
-            ResLoader.instance.load(`prefab/${viewConfig.path}`, Prefab, async (err, prefab) => {
-                if (err) {
-                    console.error(err);
-                    reject(err);
-                    return;
-                }
-
-                // Instantiate and add the prefab as a child node
-                let node = instantiate(prefab);
-                nd.addChild(node);
-                CCUtil.addWidget(nd, { left: 0, right: 0, top: 0, bottom: 0 });
-
-                // Retrieve the component and execute the show animation
-                let scpt: BasePopup = node.getComponent(viewConfig.componentName);
-
-                try {
-                    // await scpt.showAnim();
-                    scpt.showAnim();
-                    resolve(node as Node); // Resolve after the animation completes
-                } catch (animationError) {
-                    console.error(animationError);
-                    reject(animationError);
-                }
-            });
-        });
-    }
     public showLearnView(viewConfig: PrefabConfig): Promise<Node> {
         let parent = this.getParentNode(viewConfig.zindex);
         let nd_name = viewConfig.path.replace("/", "_");
@@ -312,7 +248,7 @@ export class ViewsManager {
 
     // 显示确定弹窗
     public async showConfirm(content: string, sureCall?: Function, cancelCall?: Function, sureStr?: string, cancelStr?: string, canClose: boolean = true) {
-        let node: Node = await this.showPopup(PrefabType.ConfirmView);
+        let node: Node = await PopMgr.showPopup(PrefabType.ConfirmView);
         let nodeScript: ConfirmView = node.getComponent(ConfirmView);
         nodeScript.getComponent(ConfirmView).init(content, sureCall, cancelCall, sureStr, cancelStr, canClose);
         return nodeScript;

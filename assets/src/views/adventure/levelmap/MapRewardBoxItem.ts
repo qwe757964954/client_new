@@ -1,9 +1,9 @@
 import { _decorator, Component, Material, Node, sp } from 'cc';
-import CCUtil from '../../../util/CCUtil';
-import { ViewsManager } from '../../../manager/ViewsManager';
 import { PrefabType } from '../../../config/PrefabType';
-import { MapProcessRewardView } from '../common/MapProcessRewardView';
+import { PopMgr } from '../../../manager/PopupManager';
 import { ProgressRewardData } from '../../../models/AdventureModel';
+import CCUtil from '../../../util/CCUtil';
+import { MapProcessRewardView } from '../common/MapProcessRewardView';
 const { ccclass, property } = _decorator;
 
 @ccclass('MapRewardBoxItem')
@@ -20,7 +20,7 @@ export class MapRewardBoxItem extends Component {
 
     async onClick() {
         console.log("clickBox", this._data);
-        let node: Node = await ViewsManager.instance.showPopup(PrefabType.MapProcessRewardView);
+        let node: Node = await PopMgr.showPopup(PrefabType.MapProcessRewardView);
         let nodeScript: MapProcessRewardView = node.getComponent(MapProcessRewardView);
         nodeScript.updateRewardScroll(this._data, this._passNum, this);
     }

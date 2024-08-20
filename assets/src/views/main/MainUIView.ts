@@ -2,6 +2,7 @@ import { _decorator, Label, Node, Sprite } from 'cc';
 import { MapStatus } from '../../config/MapConfig';
 import { PrefabType, SceneType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
+import { PopMgr } from '../../manager/PopupManager';
 import { SceneMgr } from '../../manager/SceneMgr';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { ActivityInfoResponse } from '../../models/ActivityModel';
@@ -123,7 +124,9 @@ export class MainUIView extends BaseView {
     }
     /**好友点击 */
     async onClickFriend() {
-        await ViewsManager.instance.showPopup(PrefabType.FriendsDialogView);
+        // await ViewsManager.instance.showPopup(PrefabType.FriendsDialogView);
+        await PopMgr.showPopRight(PrefabType.FriendsDialogView,"content");
+
     }
     /**运营活动 */
     async onClickOperationalActivities() {

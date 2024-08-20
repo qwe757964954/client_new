@@ -3,6 +3,7 @@ import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { ClothingInfo, ItemData } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
+import { PopMgr } from '../../manager/PopupManager';
 import { ViewsManager } from '../../manager/ViewsManager';
 import CCUtil from '../../util/CCUtil';
 import { EventMgr } from '../../util/EventManager';
@@ -78,7 +79,7 @@ export class ShopStoreItem extends ListItem {
     }
 
     async onClickGoods() {
-        const node = await ViewsManager.instance.showPopup(PrefabType.GoodsDetailView);
+        const node = await PopMgr.showPopup(PrefabType.GoodsDetailView);
         const detailScript = node.getComponent(GoodsDetailView);
         // detailScript.initData(this._data);
     }

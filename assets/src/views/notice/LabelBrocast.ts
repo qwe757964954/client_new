@@ -1,7 +1,7 @@
 import { _decorator, Label, macro, Node, tween, Tween, UITransform, v3 } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
-import { ViewsManager } from '../../manager/ViewsManager';
+import { PopMgr } from '../../manager/PopupManager';
 import { AnnouncementDataResponse, AnnouncementItem } from '../../models/AnnouncementModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
@@ -59,7 +59,7 @@ export class LabelBrocast extends BaseView {
     }
 
     async onShowNotice(data: NoticeContentData) {
-        await ViewsManager.instance.showPopup(PrefabType.NoticeDialogView);
+        await PopMgr.showPopup(PrefabType.NoticeDialogView);
     }
 
     setContent(content: string) {
