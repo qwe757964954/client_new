@@ -79,9 +79,14 @@ export class LandModel extends BaseModel {
         } else {
             path = DataMgr.getEditPng(this._landInfo);
         }
-        LoadManager.loadSprite(path, this._sprite, true).then(() => {
+        if (this.isDefault()) {
+            this._sprite.spriteFrame = null;
             if (callBack) callBack();
-        });
+        } else {
+            LoadManager.loadSprite(path, this._sprite, true).then(() => {
+                if (callBack) callBack();
+            });
+        }
         if (this.isDefault()) {
             if (this._flowerSprite) {
                 this._flowerSprite.node.active = true;
