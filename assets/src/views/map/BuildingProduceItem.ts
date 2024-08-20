@@ -36,6 +36,8 @@ export class BuildingProduceItem extends ListItem {
     public produceNode: Node = null;//生产节点
     @property(Node)
     public lockNode: Node = null;//锁定节点
+    @property(Label)
+    public labelProduceNum: Label = null;//生产数量
 
     private _expend: ItemData[] = null;
     private _num: number = 0;
@@ -76,6 +78,9 @@ export class BuildingProduceItem extends ListItem {
             this.lockNode.active = true;
             this.labelLock.string = data.unlock > cbLevel ? ToolUtil.replace(TextConfig.Produce_Lock1, data.unlock) : ToolUtil.replace(TextConfig.Produce_Lock2, data.unlock);
             return;
+        }
+        if (data.produce && data.produce.length > 0) {
+            this.labelProduceNum.string = ToolUtil.replace(TextConfig.Prop_Show, data.produce[0].num);
         }
         this.produceNode.active = true;
         this.lockNode.active = false;

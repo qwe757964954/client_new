@@ -21,6 +21,8 @@ const { ccclass, property } = _decorator;
 @ccclass('PetInteractionView')
 export class PetInteractionView extends BaseComponent {
     @property(Node)
+    public bg: Node = null;//背景
+    @property(Node)
     public frame: Node = null;//框
     @property(Node)
     public plBtn: Node = null;//按钮层
@@ -83,6 +85,7 @@ export class PetInteractionView extends BaseComponent {
     }
     init(pet: RoleDataModel) {
         this._type = null;
+        this.bg.active = false;
         this.frame.active = false;
         // this.showTye(PetInteractionType.eat);
         this._pet = pet;
@@ -152,6 +155,7 @@ export class PetInteractionView extends BaseComponent {
         // console.log("onInteractionClick", type);
         this.plBtn.active = false;
         this.frame.active = true;
+        this.bg.active = true;
         this.showTye(type);
     }
     /**类型按钮 */

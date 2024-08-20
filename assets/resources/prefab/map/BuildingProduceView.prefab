@@ -5108,7 +5108,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 25.01953125,
+      "width": 55.01953125,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -5144,7 +5144,7 @@
       "b": 255,
       "a": 255
     },
-    "_string": "/3",
+    "_string": "/3级",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 30,
