@@ -471,6 +471,7 @@
             "name": "伤心",
             "minscore": 0,
             "maxscore": 24,
+            "percent": 0.5,
             "png": [
                 "pet_img_mood1"
             ],
@@ -485,6 +486,7 @@
             "name": "一般",
             "minscore": 25,
             "maxscore": 49,
+            "percent": 0.8,
             "png": [
                 "pet_img_mood2"
             ],
@@ -499,6 +501,7 @@
             "name": "满足",
             "minscore": 50,
             "maxscore": 74,
+            "percent": 1.0,
             "png": [
                 "pet_img_mood3"
             ],
@@ -513,6 +516,7 @@
             "name": "开心",
             "minscore": 75,
             "maxscore": 100,
+            "percent": 1.1,
             "png": [
                 "pet_img_mood4"
             ],

@@ -195,6 +195,57 @@
                 "sk02_xiezi_l",
                 "sk02_xiezi_r"
             ]
+        },
+        {
+            "id": 30022,
+            "name": "饰品2",
+            "type": 2,
+            "slotPng": [
+                "sk03_shipin"
+            ]
+        },
+        {
+            "id": 30023,
+            "name": "上衣3",
+            "type": 3,
+            "slotPng": [
+                "sk03_dabi2_l",
+                "sk03_dabi2_r",
+                "sk03_dabi_l",
+                "sk03_dabi_r",
+                "sk03_shangyi",
+                "sk03_xiaobi_l",
+                "sk03_xiaobi_r"
+            ]
+        },
+        {
+            "id": 30024,
+            "name": "裤子4",
+            "type": 4,
+            "slotPng": [
+                "sk03_kuzi02_r",
+                "sk03_kuzi_l",
+                "sk03_kuzi_r",
+                "sk03_kuzsanjiaoi_r"
+            ]
+        },
+        {
+            "id": 30025,
+            "name": "鞋子5",
+            "type": 5,
+            "slotPng": [
+                "sk03_xiezi_l",
+                "sk03_xiezi_r"
+            ]
+        },
+        {
+            "id": 30026,
+            "name": "翅膀6",
+            "type": 6,
+            "slotPng": [
+                "sk03_chibang_l",
+                "sk03_chibang_r"
+            ]
         }
     ]
 }

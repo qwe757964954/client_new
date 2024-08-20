@@ -203,6 +203,36 @@
             "name": "鞋子2",
             "png": "sk02_xiezi_l",
             "frame": "img_bg_item5"
+        },
+        {
+            "id": 30022,
+            "name": "饰品2",
+            "png": "sk03_shipin",
+            "frame": "img_bg_item5"
+        },
+        {
+            "id": 30023,
+            "name": "上衣3",
+            "png": "sk03_shangyi",
+            "frame": "img_bg_item5"
+        },
+        {
+            "id": 30024,
+            "name": "裤子4",
+            "png": "sk03_kuzsanjiaoi_r",
+            "frame": "img_bg_item5"
+        },
+        {
+            "id": 30025,
+            "name": "鞋子5",
+            "png": "sk03_xiezi_l",
+            "frame": "img_bg_item5"
+        },
+        {
+            "id": 30026,
+            "name": "翅膀6",
+            "png": "sk03_chibang_l",
+            "frame": "img_bg_item5"
         }
     ],
     "backpack_item_info": [
@@ -356,76 +386,6 @@
             "id": 20019,
             "name": "抽奖券",
             "type": 2,
-            "merge_item": [],
-            "decompose_item": []
-        },
-        {
-            "id": 30001,
-            "name": "头发1",
-            "type": 1,
-            "merge_item": [],
-            "decompose_item": []
-        },
-        {
-            "id": 30002,
-            "name": "饰品1",
-            "type": 1,
-            "merge_item": [],
-            "decompose_item": []
-        },
-        {
-            "id": 30003,
-            "name": "衣服1",
-            "type": 1,
-            "merge_item": [],
-            "decompose_item": []
-        },
-        {
-            "id": 30004,
-            "name": "裤子1",
-            "type": 1,
-            "merge_item": [],
-            "decompose_item": []
-        },
-        {
-            "id": 30005,
-            "name": "鞋子1",
-            "type": 1,
-            "merge_item": [],
-            "decompose_item": []
-        },
-        {
-            "id": 30006,
-            "name": "头发2",
-            "type": 1,
-            "merge_item": [],
-            "decompose_item": []
-        },
-        {
-            "id": 30007,
-            "name": "饰品2",
-            "type": 1,
-            "merge_item": [],
-            "decompose_item": []
-        },
-        {
-            "id": 30008,
-            "name": "衣服2",
-            "type": 1,
-            "merge_item": [],
-            "decompose_item": []
-        },
-        {
-            "id": 30009,
-            "name": "裤子2",
-            "type": 1,
-            "merge_item": [],
-            "decompose_item": []
-        },
-        {
-            "id": 30010,
-            "name": "鞋子2",
-            "type": 1,
             "merge_item": [],
             "decompose_item": []
         }

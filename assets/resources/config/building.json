@@ -2111,6 +2111,40 @@
             "animpos": [],
             "description": "",
             "function": ""
+        },
+        {
+            "id": 124,
+            "name": "变色草测试1",
+            "theme": 0,
+            "buy": 0,
+            "sell": 0,
+            "enable": 1,
+            "width": 2,
+            "height": 2,
+            "type": 4,
+            "baseColor": "#91e353b4",
+            "png": "dikuai_ceshi11",
+            "animation": "",
+            "animpos": [],
+            "description": "",
+            "function": ""
+        },
+        {
+            "id": 125,
+            "name": "变色草测试2",
+            "theme": 0,
+            "buy": 0,
+            "sell": 0,
+            "enable": 1,
+            "width": 2,
+            "height": 2,
+            "type": 4,
+            "baseColor": "#91e353b4",
+            "png": "dikuai_ceshi21",
+            "animation": "",
+            "animpos": [],
+            "description": "",
+            "function": ""
         }
     ],
     "castle_info": [
@@ -2409,6 +2443,22 @@
             "pngs": [
                 "dikuai_yanshidizhuan1",
                 "dikuai_yanshidizhuan2"
+            ]
+        },
+        {
+            "id": 124,
+            "type": 1,
+            "pngs": [
+                "dikuai_ceshi11",
+                "dikuai_ceshi12"
+            ]
+        },
+        {
+            "id": 125,
+            "type": 1,
+            "pngs": [
+                "dikuai_ceshi21",
+                "dikuai_ceshi22"
             ]
         }
     ]

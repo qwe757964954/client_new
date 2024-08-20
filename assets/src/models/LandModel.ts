@@ -1,7 +1,7 @@
 import { _decorator, Node, Rect, Sprite, Vec3 } from "cc";
 import { MapConfig } from "../config/MapConfig";
 import { PrefabType } from "../config/PrefabType";
-import { DataMgr, EditInfo } from "../manager/DataMgr";
+import { DataMgr, EditInfo, LandExtraInfo, LandExtraType } from "../manager/DataMgr";
 import { LoadManager } from "../manager/LoadManager";
 import { ToolUtil } from "../util/ToolUtil";
 import { BaseModel } from "./BaseModel";
@@ -17,6 +17,7 @@ export class LandModel extends BaseModel {
     private _grids: GridModel[];//格子
 
     private _landInfo: EditInfo;//地块信息
+    private _extraInfo: LandExtraInfo;//额外信息
 
     private _dataLandInfo: EditInfo;//数据地块信息
     private _sprite: Sprite = null;//图片
@@ -41,6 +42,7 @@ export class LandModel extends BaseModel {
         this._y = y;
         this._width = width;
         this._landInfo = landInfo;
+        this._extraInfo = DataMgr.getLandExtraInfo(landInfo.id);
         this._dataLandInfo = landInfo;
         this._parent = parent;
     }
@@ -70,7 +72,14 @@ export class LandModel extends BaseModel {
     }
     //显示地块
     public showLand(callBack?: Function) {
-        LoadManager.loadSprite(DataMgr.getEditPng(this._landInfo), this._sprite, true).then(() => {
+        let path;
+        // console.log("showLand", this._x, this._y, this._extraInfo);
+        if (this._extraInfo && LandExtraType.interval == this._extraInfo.type) {
+            path = this._extraInfo.pngs[(this._x + this._y) / 2 % 2];
+        } else {
+            path = DataMgr.getEditPng(this._landInfo);
+        }
+        LoadManager.loadSprite(path, this._sprite, true).then(() => {
             if (callBack) callBack();
         });
         if (this.isDefault()) {
@@ -94,6 +103,7 @@ export class LandModel extends BaseModel {
             return;
         }
         this._landInfo = landInfo;
+        this._extraInfo = DataMgr.getLandExtraInfo(landInfo.id);
         this.showLand();
     }
     // 批量刷地块
@@ -139,7 +149,6 @@ export class LandModel extends BaseModel {
     public loadNode(callBack?: Function) {
         if (!this._isLoadNode) {
             this._isLoadNode = true;
-
             LoadManager.loadPrefab(PrefabType.LandModel.path, this._parent, true).then((node: Node) => {
                 this._node = node;
                 this._node.active = this._isShow;

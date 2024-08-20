@@ -240,6 +240,17 @@ export class ThemeInfo {
     id: number;//id
     name: string;//名字
 }
+/**地块额外类型 */
+export enum LandExtraType {
+    none = 0,//无
+    interval = 1,//间隔
+}
+/**地块额外信息 */
+export class LandExtraInfo {
+    id: number;//id
+    type: LandExtraType;//类型
+    pngs: string[];//图片
+}
 
 //数据管理器
 export class DataManager {
@@ -255,6 +266,7 @@ export class DataManager {
     public buildProduceInfo: BuildProduceInfo[] = [];//建筑生产信息
     public editTypeConfig: EditTypeInfo[] = [];//编辑类型配置
     public themeConfig: ThemeInfo[] = [];//主题信息
+    public landExtraConfig: LandExtraInfo[] = [];//地块额外信息
     public wordSplitConfig: any = null;
     public adventureLevelConfig: AdvLevelConfig[] = null;
     public itemConfig: { [key: number]: ItemInfo } = {};//道具信息
@@ -380,6 +392,15 @@ export class DataManager {
         for (let k in type_info) {
             let obj = type_info[k];
             this.editTypeConfig[obj.id] = obj;
+        }
+        /**地块额外信息 */
+        let land_extra_info = json.land_extra_info;
+        for (let k in land_extra_info) {
+            let obj = land_extra_info[k];
+            for (const key in obj.pngs) {
+                obj.pngs[key] = ToolUtil.replace(TextConfig.Building_Path1, obj.pngs[key]);
+            }
+            this.landExtraConfig[obj.id] = obj;
         }
     }
     public converAryToReward(ary: number[], additional: number = 0): ItemData[] {
@@ -640,6 +661,10 @@ export class DataManager {
             if (element.maxscore >= moodScore) break;
         }
         return config;
+    }
+    /**获取地块额外信息 */
+    public getLandExtraInfo(id: number): LandExtraInfo {
+        return this.landExtraConfig[id];
     }
 }
 
