@@ -71,8 +71,9 @@ export class EditUIView extends BaseComponent {
         this._mainScene = mainScene;
         this._uiTransform = this.node.getComponent(UITransform);
         this.initEditType();
-        this.showEditType(EditType.Null);
         this.initTheme();
+        // this.showEditType(EditType.Null);
+        this.onBtnTypeClickEx(this.typeList.getItemByListId(0));
     }
     // 初始化事件
     initEvent() {
@@ -141,8 +142,9 @@ export class EditUIView extends BaseComponent {
     initData() {
         this._isBaseColor = false;
         this._editType = null;
-        this._lastSelect = null;
-        this.onBtnTypeClickEx(this.typeList.getItemByListId(0));
+        let firstItem = this.typeList.getItemByListId(0);
+        if (firstItem == this._lastSelect) this._lastSelect = null;
+        this.onBtnTypeClickEx(firstItem);
     }
     /**初始化类型 */
     initEditType() {
