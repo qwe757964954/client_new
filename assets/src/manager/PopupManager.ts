@@ -19,20 +19,21 @@ export class PopupManager {
         }
         return this._instance;
     }
-    private async createPopup(viewConfig: PrefabConfig): Promise<Node> {
+    private async createBasePopup(viewConfig: PrefabConfig): Promise<Node> {
         // Retrieve or create the parent node based on z-index
         let parent = ViewsMgr.getParentNode(viewConfig.zindex);
         let nd_name = viewConfig.path.replace("/", "_");
         let nd: Node = ImgUtil.create_2DNode(nd_name);
         parent.addChild(nd);
-
-        // Add blocking input events and set widget settings
         nd.addComponent(BlockInputEvents);
         CCUtil.addWidget(nd, { left: 0, right: 0, top: 0, bottom: 0 });
+        return nd;
+    }
 
+    private async createPopup(viewConfig: PrefabConfig): Promise<Node> {
+        const nd = await this.createPopup(viewConfig);
         // Ensure that the node is properly initialized
         await ImgUtil.create_PureNode(nd);
-
         return nd;
     }
 
@@ -85,7 +86,7 @@ export class PopupManager {
      * 示例代码 await PopMgr.showPopRight(PrefabType.FriendsDialogView,"content");
      */
     async showPopRight(viewConfig: PrefabConfig, aniName: string): Promise<Node> {
-        const nd = await this.createPopup(viewConfig);
+        const nd = await this.createBasePopup(viewConfig);
 
         return new Promise((resolve, reject) => {
             // Load the prefab and instantiate it
