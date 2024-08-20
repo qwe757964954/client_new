@@ -64,7 +64,7 @@ export class PopupManager {
                 let scpt: BasePopup = node.getComponent(viewConfig.componentName);
                 if (scpt) {
                     try {
-                        await scpt.show(); // Call the base class method for showing
+                        scpt.show(); // Call the base class method for showing
                         resolve(node); // Resolve after the animation completes
                     } catch (animationError) {
                         console.error(animationError);
@@ -106,7 +106,7 @@ export class PopupManager {
 
                 if (scpt) {
                     try {
-                        await scpt.show(aniName); // Call the specific method for showing
+                        scpt.show(aniName); // Call the specific method for showing
                         resolve(node); // Resolve after the animation completes
                     } catch (animationError) {
                         console.error(animationError);

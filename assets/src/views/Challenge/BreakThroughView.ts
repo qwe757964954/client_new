@@ -1,4 +1,4 @@
-import { _decorator, isValid, Layers, Node, UITransform } from 'cc';
+import { _decorator, isValid, Node } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
@@ -10,8 +10,6 @@ import { CurrentBookStatus, GateListItem, ReqUnitStatusParam, ReqUnitType, UnitI
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
-import CCUtil from '../../util/CCUtil';
-import { NodeUtil } from '../../util/NodeUtil';
 import { rightPanelchange } from '../adventure/common/RightPanelchange';
 import { BreakThroughRemindView, ITextbookRemindData } from '../TextbookVocabulary/BreakThroughRemindView';
 import { CGConfig } from './ChallengeConfig';
@@ -33,7 +31,6 @@ export class BreakThroughView extends BaseView {
     @property(Node) content_layout: Node = null;
     @property(Node) scrollMapNode: Node = null;
     @property(Node) bg: Node = null;
-    @property(Node) mask_node: Node = null;
 
     private _rightChallenge: rightPanelchange = null;
     private _scrollMap: ScrollMapView = null;
@@ -44,7 +41,6 @@ export class BreakThroughView extends BaseView {
     private _selectGate: GateListItem = null;
 
     initEvent() {
-        CCUtil.onBtnClick(this.mask_node, this.hideRightPanelchangeView.bind(this));
     }
 
     removeEvent() {
@@ -56,7 +52,6 @@ export class BreakThroughView extends BaseView {
         this.offViewAdaptSize();
         this.initNavTitle();
         this.initAmount();
-        this.initRightChange();
         DataMgr.instance.getAdventureLevelConfig();
     }
 
@@ -91,7 +86,7 @@ export class BreakThroughView extends BaseView {
     gotoNextLevelTest(data: GotoUnitLevel) {
         this._selectitemStatus = data.itemStatus;
         this._selectGate = data.gate;
-        this.hideRightPanelchangeView();
+        this._rightChallenge.hideView();
         const reqParam: ReqUnitStatusParam = {
             book_id: this._bookData.book_id,
             unit_id: this._selectitemStatus.unit_id,
@@ -153,7 +148,7 @@ export class BreakThroughView extends BaseView {
     }
 
     onExitIsland() {
-        this.hideRightPanelchangeView();
+        this._rightChallenge.hideView();
         this.getUnitListStatus();
     }
 
@@ -185,12 +180,7 @@ export class BreakThroughView extends BaseView {
         });
     }
 
-    showRightChallengeView() {
-        const contentSize = this.content_layout.getComponent(UITransform);
-        const nodeSize = this._rightChallenge.node.getComponent(UITransform);
-        const posX = contentSize.width / 2 + nodeSize.width / 2;
-        this._rightChallenge.node.setPosition(posX, 0, 0);
-        this._rightChallenge.node.active = true;
+    async showRightChallengeView() {
         const param: MapLevelData = {
             small_id: this._selectGate.small_id,
             big_id: this._selectitemStatus.unit_name,
@@ -199,8 +189,9 @@ export class BreakThroughView extends BaseView {
             monster_id: this._bookData.monster_id,
             flag_info: this._selectGate.flag_info
         };
+        let node = await PopMgr.showPopRight(PrefabType.RightPanelchange,"stage_frame");
+        this._rightChallenge = node.getComponent(rightPanelchange);
         this._rightChallenge.openView(param);
-        this.mask_node.active = true;
     }
 
     onUnitStatus(data: UnitStatusData) {
@@ -235,22 +226,7 @@ export class BreakThroughView extends BaseView {
         await ViewsManager.addAmount(this.top_layout, 5.471, 42.399);
     }
 
-    async initRightChange() {
-        const node = await this.loadAndInitPrefab(PrefabType.RightPanelchange, this.content_layout);
-        NodeUtil.setLayerRecursively(node, Layers.Enum.UI_2D);
-        const contentSize = this.content_layout.getComponent(UITransform);
-        const nodeSize = node.getComponent(UITransform);
-        const posX = contentSize.width / 2 + nodeSize.width / 2;
-        node.setPosition(posX, 0, 0);
-        this._rightChallenge = node.getComponent(rightPanelchange);
-    }
-
     initScrollMap() {
         this._scrollMap = this.scrollMapNode.getComponent(ScrollMapView);
-    }
-
-    hideRightPanelchangeView() {
-        this.mask_node.active = false;
-        this._rightChallenge.hideView();
     }
 }

@@ -1,4 +1,4 @@
-import { _decorator, instantiate, isValid, Label, Node, Prefab, Sprite, tween, UITransform, Vec3 } from 'cc';
+import { _decorator, instantiate, isValid, Label, Node, Prefab, Sprite, Vec3 } from 'cc';
 import { EventType } from '../../../config/EventType';
 import { PrefabType } from '../../../config/PrefabType';
 import { DataMgr, ItemData } from '../../../manager/DataMgr';
@@ -6,7 +6,7 @@ import { ViewsMgr } from '../../../manager/ViewsManager';
 import { BossLevelData, GateData, MapLevelData, WordGameSubjectReply } from '../../../models/AdventureModel';
 import { InterfacePath } from '../../../net/InterfacePath';
 import { ServiceMgr } from '../../../net/ServiceManager';
-import { BaseView } from '../../../script/BaseView';
+import { BasePopRight } from '../../../script/BasePopRight';
 import CCUtil from '../../../util/CCUtil';
 import EventManager from '../../../util/EventManager';
 import FileUtil from '../../../util/FileUtil';
@@ -21,7 +21,7 @@ import { MonsterModel } from './MonsterModel';
 const { ccclass, property } = _decorator;
 
 @ccclass('rightPanelchange')
-export class rightPanelchange extends BaseView {
+export class rightPanelchange extends BasePopRight {
     @property(Node)
     public btn_close: Node = null;
     
@@ -58,14 +58,13 @@ export class rightPanelchange extends BaseView {
     private _data: MapLevelData | GateData = null;
     private _monsterAni: Node = null;
     private _rewardData: ItemData[] = [];
-    private _isTweening: boolean = false;
     private _isBossPanel: boolean = false;
     private _bossLevelData: BossLevelData = null;
     private _isWordGame: boolean = false;
     private _isGetSubject: boolean = false;
 
     protected initUI(): void {
-        this.node.setScale(0.8, 0.8, 0.8);
+        this.enableClickBlankToClose([this.node.getChildByName("stage_frame")]);
     }
 
     protected onInitModuleEvent(): void {
@@ -108,15 +107,6 @@ export class rightPanelchange extends BaseView {
         this._isBossPanel = false;
         this.updateView();
         this.node.active = true;
-    
-        // 执行动画
-        if (!this._isTweening) {
-            this._isTweening = true;
-            const nodeSize = this.node.getComponent(UITransform);
-            tween(this.node).by(0.3, { position: new Vec3(-nodeSize.width, 0, 0) })
-                .call(() => this._isTweening = false)
-                .start();
-        }
     }
     
 
@@ -137,7 +127,6 @@ export class rightPanelchange extends BaseView {
         this.monsterNode.setScale(1, 1, 1);
 
         this.node.active = true;
-        this._playTweenAnimation();
 
         this.rewardList.numItems = this._rewardData.length;
     }
@@ -222,24 +211,6 @@ export class rightPanelchange extends BaseView {
     }
 
     hideView() {
-        this._playTweenAnimation(true);
-    }
-
-    private _playTweenAnimation(reverse: boolean = false) {
-        if (this._isTweening) return;
-        
-        this._isTweening = true;
-        const nodeSize = this.node.getComponent(UITransform);
-        const scale = this.node.getScale();
-        const targetPosition = reverse
-            ? new Vec3(nodeSize.width * scale.x, 0, 0)
-            : new Vec3(-nodeSize.width * scale.x, 0, 0);
-
-        tween(this.node).by(0.3, { position: targetPosition })
-            .call(() => {
-                if (reverse) this.node.active = false;
-                this._isTweening = false;
-            })
-            .start();
+        this.closePop();
     }
 }

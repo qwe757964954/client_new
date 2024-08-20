@@ -22,8 +22,9 @@ export class BasePopRight extends BasePopupBase {
             const startPosition = new Vec3(width, 0, 0); // Start off-screen to the right
             this.animatedNode.position = startPosition;
             this.initUI();
-            const { width: nodeWidth } = this.animatedNode.getComponent(UITransform)!; // Ensure non-null assertion
-            const finalPosition = new Vec3((width - nodeWidth) / 2, 0, 0);
+            const { width: nodeWidth } = this.animatedNode.getComponent(UITransform)!;
+            const scale = this.animatedNode.getScale();
+            const finalPosition = new Vec3((width - nodeWidth * scale.x) / 2, 0, 0);
 
             this.animatedNode.active = true;
 
