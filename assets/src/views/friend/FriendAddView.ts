@@ -1,6 +1,7 @@
-import { _decorator, EditBox, isValid, Label, Node } from 'cc';
+import { _decorator, EditBox, isValid, Node } from 'cc';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { FriendListItemModel, UserFriendData } from '../../models/FriendModel';
+import { DataFriendListResponse, FriendListItemModel, UserFriendData } from '../../models/FriendModel';
+import { NetNotify } from '../../net/NetNotify';
 import { BasePopFriend } from '../../script/BasePopFriend';
 import { FdServer } from '../../service/FriendService';
 import CCUtil from '../../util/CCUtil';
@@ -11,8 +12,8 @@ const { ccclass, property } = _decorator;
 
 @ccclass('FriendAddView')
 export class FriendAddView extends BasePopFriend {
-    @property({ type: Node, tooltip: "查找好友结果结点" }) //imgHead
-    public resultBox: Node = null;
+    @property({ type: FriendSearchItem}) //imgHead
+    public resultBox: FriendSearchItem = null;
     @property({ type: List, tooltip: "推荐好友滚动列表" })
     public recommendList: List = null;
 
@@ -22,6 +23,9 @@ export class FriendAddView extends BasePopFriend {
     @property({ type: Node, tooltip: "添加好友按钮" })
     public addBtn: Node = null;
 
+    @property(Node)
+    public back_icon:Node = null;
+
     @property({ type: EditBox, tooltip: "查找好友编辑框" })
     public searchEdt: EditBox = null;
 
@@ -30,14 +34,28 @@ export class FriendAddView extends BasePopFriend {
     private _searchData:UserFriendData = null;
 
     protected initUI(): void {
-        
+        FdServer.reqUserRecommendFriendList();
     }
 
     protected initEvent(): void {
         CCUtil.onBtnClick(this.searchBtn,this.gotoSearch.bind(this));
         CCUtil.onBtnClick(this.addBtn,this.addFriend.bind(this));
+        CCUtil.onBtnClick(this.back_icon,this.closeClickEvent.bind(this));
     }
-
+    protected onInitModuleEvent(): void {
+        this.addModelListeners([
+            // [NetNotify.Classification_UserFriendList, this.onUpdateFriendList],
+            // [NetNotify.Classification_UserFriendApplyList, this.onUpdateApplyFriendList],
+            [NetNotify.Classification_UserFriendSearch, this.onSearchFriendResult],
+            // [NetNotify.Classification_UserFriendApplyModify, this.onUserFriendApplyModify],
+            // [NetNotify.Classification_UserDelFriendMessage, this.onUserDelFriendMessage],
+            // [NetNotify.Classification_UserSystemMailList, this.onUserSystemMailList],
+            // [NetNotify.Classification_UserSystemMailDetail, this.onUserSystemMailDetail],
+            // [NetNotify.Classification_UserSystemAwardGet, this.onUserSystemAwardGet],
+            [NetNotify.Classification_UserRecommendFriendList, this.onShowRecommendList],
+            // [EventType.Friend_Talk_Event, this.onFriendTalk],
+        ]);
+    }
     gotoSearch(){
         console.log('gotoSearch');
         let search_id = this.searchEdt.string;
@@ -59,21 +77,25 @@ export class FriendAddView extends BasePopFriend {
         FdServer.reqUserFriendAdd(this._searchData.user_id);
     }
 
+    closeClickEvent(){
+        this.closePop();
+    }
+
     updateSearchData(friendDatas: UserFriendData){
         this._searchData = friendDatas;
-        this.resultBox.active = true;
-        let realName = this.resultBox.getChildByName("realName");
-        realName.getComponent(Label).string = friendDatas.user_name;
-        let idTxt = this.resultBox.getChildByName("idTxt");
-        idTxt.getComponent(Label).string = friendDatas.user_id+"";
+        this.resultBox.node.active = true;
+        
     }
-
-    updateData(friendDatas: FriendListItemModel[]){
-        this.resultBox.active = false;
-        this._recommendFriendDataList = friendDatas;
+    async onSearchFriendResult(response: UserFriendData) {
+        this.updateSearchData(response);
+    }
+    /**更新推荐朋友列表 */
+    onShowRecommendList(friendDatas: DataFriendListResponse) {
+        console.log("onShowRecommendList",friendDatas);
+        this.resultBox.node.active = false;
+        this._recommendFriendDataList = friendDatas.data;
         this.recommendList.numItems = this._recommendFriendDataList.length;
     }
-
     onLoadFriendVertical(item:Node, idx:number){
         let item_script = item.getComponent(FriendSearchItem);
         let friendData: any = this._recommendFriendDataList[idx];

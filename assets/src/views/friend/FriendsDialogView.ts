@@ -2,7 +2,6 @@ import { _decorator, Label, Node, Prefab } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
-import { PopMgr } from '../../manager/PopupManager';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { FriendListItemModel, SystemMailItem, SystemMailListResponse, UserFriendData, UserSystemAwardResponse } from '../../models/FriendModel';
 import { NetNotify } from '../../net/NetNotify';
@@ -16,7 +15,6 @@ import { FriendLeftTabView } from './FriendLeftTabView';
 import { FriendListView } from './FriendListView';
 import { FriendMessageView } from './FriendMessageView';
 import { FriendPlayerInfoView } from './FriendPlayerInfoView';
-import { FriendTalkDialogView } from './FriendTalkDialogView';
 const { ccclass, property } = _decorator;
 
 export enum FriendRightStatus {
@@ -181,13 +179,7 @@ export class FriendsDialogView extends BasePopRight {
         FdServer.reqUserRecommendFriendList();
     }
 
-    async onFriendTalk(){
-        let node = await PopMgr.showPopup(PrefabType.FriendTalkDialogView);
-        let talk_script = node.getComponent(FriendTalkDialogView)
-        let selected = this._friend_list.findIndex(friend => friend.friend_id === this._selectedFriend.friend_id);
-        talk_script.currentFriendSelected = selected;
-        talk_script.init(this._friend_list);
-    }
+    
 
     
 

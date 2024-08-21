@@ -4,6 +4,7 @@ import { ApplicationStatus, ApplyModifyModel, UserApplyModel } from '../../model
 import { FdServer } from '../../service/FriendService';
 import CCUtil from '../../util/CCUtil';
 import ListItem from '../../util/list/ListItem';
+import { HeadIdMap } from './FriendInfo';
 const { ccclass, property } = _decorator;
 
 @ccclass('MsgListItem')
@@ -45,8 +46,7 @@ export class MsgListItem extends ListItem {
 
     async initData(data: UserApplyModel): Promise<void> {
         this._data = data;
-        const headIdMap = { "101": 101, "1101": 101, "102": 102, "1102": 102, "103": 103, "1103": 103 };
-        const avatar = headIdMap[data.avatar] || 101; // 默认头像
+        const avatar = HeadIdMap[data.avatar] || 101; // 默认头像
         const avatarPath = `friend/head_${avatar}/spriteFrame`;
 
         try {

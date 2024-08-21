@@ -3,6 +3,7 @@ import { LoadManager } from '../../manager/LoadManager';
 import { ChatDataItem, FriendListItemModel } from '../../models/FriendModel';
 import { User } from '../../models/User';
 import { ObjectUtil } from '../../util/ObjectUtil';
+import { HeadIdMap } from './FriendInfo';
 const { ccclass, property } = _decorator;
 
 @ccclass('ChatContentItem')
@@ -58,8 +59,7 @@ export class ChatContentItem extends Component {
     }
 
     private async loadAvatar(avatarId: string | number) {
-        const headIdMap = { "101": 101, "1101": 101, "102": 102, "1102": 102, "103": 103, "1103": 103 };
-        const avatar = headIdMap[avatarId] || 101; // Default to 101 if not found
+        const avatar = HeadIdMap[avatarId] || 101; // Default to 101 if not found
         const avatarPath = `friend/head_${avatar}/spriteFrame`;
 
         try {

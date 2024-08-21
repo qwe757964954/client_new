@@ -11,9 +11,6 @@ const { ccclass, property } = _decorator;
 export class MainRightActivity extends BasePopRight {
     @property(List)
     public activity_list: List = null;
-
-    @property(Node)
-    public btn_hiden:Node = null;
     protected initUI(): void {
         this.enableClickBlankToClose([this.node.getChildByName("content")]);
         this.activity_list.numItems = MainActivityInfos.length;

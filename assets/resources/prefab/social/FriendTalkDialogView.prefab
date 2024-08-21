@@ -3743,14 +3743,18 @@
     "__prefab": {
       "__id__": 167
     },
-    "closeBtn": null,
+    "closeBtn": {
+      "__id__": 33
+    },
     "contentNd": {
       "__id__": 2
     },
     "bqBtn": {
       "__id__": 78
     },
-    "sendBtn": null,
+    "sendBtn": {
+      "__id__": 66
+    },
     "hotAreaBox": {
       "__id__": 86
     },

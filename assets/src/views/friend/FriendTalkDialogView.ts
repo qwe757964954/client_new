@@ -1,7 +1,7 @@
 import { _decorator, EventTouch, isValid, Node, NodeEventType, UITransform } from 'cc';
 import { ChatDataItem, ChatMessageResponse, DataFriendListResponse, FriendListItemModel, SendMessageModel } from '../../models/FriendModel';
 import { NetNotify } from '../../net/NetNotify';
-import { BasePopup } from '../../script/BasePopup';
+import { BasePopFriend } from '../../script/BasePopFriend';
 import { FdServer } from '../../service/FriendService';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
@@ -12,7 +12,7 @@ import { ChatListItem } from './ChatListItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('FriendTalkDialogView')
-export class FriendTalkDialogView extends BasePopup {
+export class FriendTalkDialogView extends BasePopFriend {
     @property({ type: Node, tooltip: "关闭按钮" })
     closeBtn: Node = null;
 
@@ -58,7 +58,7 @@ export class FriendTalkDialogView extends BasePopup {
 
     protected initUI(): void {
         this.setMagicData();
-        this.enableClickBlankToClose([this.node.getChildByName("content")]);
+        // this.enableClickBlankToClose([this.node.getChildByName("content")]);
     }
 
     set currentFriendSelected(selected: number) {

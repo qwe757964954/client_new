@@ -964,7 +964,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 115,
+      "x": 125,
       "y": 0,
       "z": 0
     },
@@ -1114,7 +1114,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 305,
+      "width": 315,
       "height": 30
     },
     "_anchorPoint": {
@@ -1152,7 +1152,7 @@
     "_paddingRight": 0,
     "_paddingTop": 0,
     "_paddingBottom": 0,
-    "_spacingX": -10,
+    "_spacingX": 0,
     "_spacingY": 0,
     "_verticalDirection": 1,
     "_horizontalDirection": 0,
@@ -2973,11 +2973,24 @@
     "__prefab": {
       "__id__": 125
     },
-    "imgHead": null,
-    "lblRealName": null,
-    "lblID": null,
-    "lblState": null,
-    "btnAddFriend": null,
+    "imgHead": {
+      "__id__": 13
+    },
+    "lblRealName": {
+      "__id__": 33
+    },
+    "lblID": {
+      "__id__": 39
+    },
+    "state_icon": {
+      "__id__": 59
+    },
+    "btnAddFriend": {
+      "__id__": 110
+    },
+    "level_txt": {
+      "__id__": 80
+    },
     "_id": ""
   },
   {

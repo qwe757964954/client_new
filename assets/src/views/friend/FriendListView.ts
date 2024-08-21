@@ -1,7 +1,8 @@
 import { _decorator, Node } from 'cc';
+import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { PopMgr } from '../../manager/PopupManager';
-import { DataFriendApplyListResponse, DataFriendListResponse, UserFriendData } from '../../models/FriendModel';
+import { DataFriendApplyListResponse, DataFriendListResponse, FriendListItemModel } from '../../models/FriendModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BasePopRight } from '../../script/BasePopRight';
 import { FdServer } from '../../service/FriendService';
@@ -33,7 +34,7 @@ export class FriendListView extends BasePopRight {
     private _applyList:ApplyList = null;
     private _blacklist:Blacklist = null;
     protected async initUI() {
-        this.enableClickBlankToClose([this.contentNd]);
+        this.enableClickBlankToClose([this.contentNd,this.leftView]);
         await this.initViews();
         this.setLeftTab();
         this.initData();
@@ -47,14 +48,12 @@ export class FriendListView extends BasePopRight {
         this.addModelListeners([
             [NetNotify.Classification_UserFriendList, this.onUpdateFriendList],
             [NetNotify.Classification_UserFriendApplyList, this.onUpdateApplyFriendList],
-            [NetNotify.Classification_UserFriendSearch, this.onSearchFriendResult],
             [NetNotify.Classification_UserFriendApplyModify, this.onUserFriendApplyModify],
             [NetNotify.Classification_UserDelFriendMessage, this.onUserDelFriendMessage],
             // [NetNotify.Classification_UserSystemMailList, this.onUserSystemMailList],
             // [NetNotify.Classification_UserSystemMailDetail, this.onUserSystemMailDetail],
             // [NetNotify.Classification_UserSystemAwardGet, this.onUserSystemAwardGet],
-            [NetNotify.Classification_UserRecommendFriendList, this.onShowRecommendList],
-            // [EventType.Friend_Talk_Event, this.onFriendTalk],
+            [EventType.Friend_Talk_Event, this.onFriendTalk],
         ]);
     }
     private async initViews() {
@@ -67,7 +66,10 @@ export class FriendListView extends BasePopRight {
             },
             {
                 prefabType: PrefabType.FriendList,
-                initCallback: (node: Node) => this._friendList = node.getComponent(FriendList),
+                initCallback: (node: Node) => {
+                    this._friendList = node.getComponent(FriendList);
+                    this._friendList.setFriendSelectListener(this.onFriendClick.bind(this));
+                },
                 parentNode: this.contentNd
             },
             {
@@ -88,7 +90,7 @@ export class FriendListView extends BasePopRight {
     }
     initData() {
         // FdServer.reqUserSystemMailLis();
-        // FdServer.reqUserRecommendFriendList();
+        // 
     }
     private setLeftTab(){
         this._leftTab.setTabClickListener(this.onClickTab.bind(this));
@@ -108,6 +110,20 @@ export class FriendListView extends BasePopRight {
                 this._blacklist.updateData();
                 break;
         }
+    }
+
+    async onFriendClick(data:FriendListItemModel){
+        console.log("onFriendClick.....",data);
+        await PopMgr.showPopFriend(PrefabType.FriendPlayerInfoView,this.leftView,"content");
+    }
+    async onFriendTalk(data:FriendListItemModel){
+        console.log("onFriendTalk",data);
+        await PopMgr.showPopFriend(PrefabType.FriendTalkDialogView,this.leftView,"content");
+        // let node = await PopMgr.showPopup(PrefabType.FriendTalkDialogView);
+        // let talk_script = node.getComponent(FriendTalkDialogView)
+        // let selected = this._friend_list.findIndex(friend => friend.friend_id === this._selectedFriend.friend_id);
+        // talk_script.currentFriendSelected = selected;
+        // talk_script.init(this._friend_list);
     }
     closeClickEvent(){
         this.closePop();
@@ -130,15 +146,8 @@ export class FriendListView extends BasePopRight {
     onUpdateFriendList(friendDatas: DataFriendListResponse) {
         this._friendList.updateData(friendDatas.data);
     }
-    async onSearchFriendResult(response: UserFriendData) {
-        // this._fAddView.updateSearchData(response);
-        console.log(response);
-    }
-    /**更新推荐朋友列表 */
-    onShowRecommendList(friendDatas: DataFriendListResponse) {
-        console.log("onShowRecommendList",friendDatas);
-        // this._fAddView.updateData(friendDatas.data);
-    }
+    
+    
     onUserDelFriendMessage(response: any){
         FdServer.reqUserFriendList();
     }

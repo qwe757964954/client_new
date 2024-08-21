@@ -1,7 +1,11 @@
 import { _decorator, Label, Node, Sprite } from 'cc';
+import { EventType } from '../../../config/EventType';
 import { LoadManager } from '../../../manager/LoadManager';
 import { FriendListItemModel } from '../../../models/FriendModel';
+import CCUtil from '../../../util/CCUtil';
+import { EventMgr } from '../../../util/EventManager';
 import ListItem from '../../../util/list/ListItem';
+import { HeadIdMap } from '../FriendInfo';
 const { ccclass, property } = _decorator;
 
 
@@ -38,10 +42,17 @@ export class FriendListItem extends ListItem {
     levelTxt: Label = null;
 
     _data: FriendListItemModel = null;
+
+    protected start(): void {
+        this.initEvent();
+    }
+    initEvent(){
+        CCUtil.onBtnClick(this.kingdom_btn,this.kingdomClickEvent.bind(this));
+        CCUtil.onBtnClick(this.chat_btn,this.chatClickEvent.bind(this));
+    }
     async initData(data: FriendListItemModel) {
         this._data = data;
-        let headIdMap = { "101": 101, "1101": 101, "102": 102, "1102": 102, "103": 103, "1103": 103 }
-        let avatar: number = headIdMap[data.avatar];
+        let avatar: number = HeadIdMap[data.avatar];
         let avatarPath: string = `friend/head_${avatar}/spriteFrame`;
         await LoadManager.loadSprite(avatarPath, this.imgHead.getComponent(Sprite));
         this.lblRealName.string = data.user_name;
@@ -52,6 +63,13 @@ export class FriendListItem extends ListItem {
         const bg_url = `friend/${bg_str}/spriteFrame`;
         await LoadManager.loadSprite(bg_url, this.imgBg.getComponent(Sprite));
         // this.lblRedTip.string = data.unread_count + "";
+    }
+    kingdomClickEvent(){
+        console.log("kingdomClick");
+    }
+    chatClickEvent(){
+        console.log("chatClick");
+        EventMgr.dispatch(EventType.Friend_Talk_Event,this._data);
     }
 }
 
