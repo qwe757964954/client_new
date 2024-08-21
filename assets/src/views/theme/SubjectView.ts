@@ -4,7 +4,7 @@ import { PrefabType } from '../../config/PrefabType';
 import RemoteImageManager from '../../manager/RemoteImageManager';
 import { ViewsMgr } from '../../manager/ViewsManager';
 import { WordGameSubjectReply } from '../../models/AdventureModel';
-import { BaseView } from '../../script/BaseView';
+import { BasePopup } from '../../script/BasePopup';
 import CCUtil from '../../util/CCUtil';
 import { EventMgr } from '../../util/EventManager';
 import List from '../../util/list/List';
@@ -14,7 +14,7 @@ import { ThemeWordItem } from './item/ThemeWordItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('SubjectView')
-export class SubjectView extends BaseView {
+export class SubjectView extends BasePopup {
     @property(Node)
     public closeBtn: Node;
     @property(Label)
@@ -32,10 +32,11 @@ export class SubjectView extends BaseView {
     private _isRequesting: boolean = false; //是否正在请求数据
 
     protected initUI(): void {
-        this.offViewAdaptSize();
+        // this.offViewAdaptSize();
     }
 
     public setData(data: WordGameSubjectReply) {
+        console.log("WordGameSubjectReply",data);
         this._data = data;
         this.title.string = data.subject.subject_name;
         this.wordList.numItems = this._data.word_list.length;
@@ -65,7 +66,7 @@ export class SubjectView extends BaseView {
     }
 
     closeView() {
-        ViewsMgr.closeView(PrefabType.SubjectView);
+        this.closePop();
     }
     protected initEvent(): void {
         CCUtil.onTouch(this.closeBtn, this.closeView, this);

@@ -2,6 +2,7 @@ import { _decorator, instantiate, isValid, Label, Node, Prefab, Sprite, Vec3 } f
 import { EventType } from '../../../config/EventType';
 import { PrefabType } from '../../../config/PrefabType';
 import { DataMgr, ItemData } from '../../../manager/DataMgr';
+import { PopMgr } from '../../../manager/PopupManager';
 import { ViewsMgr } from '../../../manager/ViewsManager';
 import { BossLevelData, GateData, MapLevelData, WordGameSubjectReply } from '../../../models/AdventureModel';
 import { InterfacePath } from '../../../net/InterfacePath';
@@ -95,7 +96,7 @@ export class rightPanelchange extends BasePopRight {
 
     openView(param: MapLevelData | GateData = null) {
         this._data = param;
-        this._isWordGame = param?.game_modes === "word";
+        this._isWordGame = param?.game_modes !== "word";
         const data = param.game_modes === "word" 
             ? CGConfig.KeyMonsterInfo.classification_reward 
             : param;
@@ -199,11 +200,10 @@ export class rightPanelchange extends BasePopRight {
         ServiceMgr.studyService.getWordGameSubject(gateData.subject_id);
     }
 
-    onWordGameSubject(data: WordGameSubjectReply) {
+    async onWordGameSubject(data: WordGameSubjectReply) {
         this._isGetSubject = false;
-        ViewsMgr.showView(PrefabType.SubjectView, node => {
-            node.getComponent(SubjectView).setData(data);
-        });
+        let node = await PopMgr.showPopup(PrefabType.SubjectView);
+        node.getComponent(SubjectView).setData(data);
     }
 
     onRewardItemRender(item: Node, idx: number) {

@@ -5099,7 +5099,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "spriteFrame",
+    "_name": "subjectBtn",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {

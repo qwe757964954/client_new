@@ -1,4 +1,4 @@
-import { ItemData } from "../manager/DataMgr";
+import { IslandData, ItemData } from "../manager/DataMgr";
 import { LandStatusResponse } from "../models/AdventureModel";
 
 
@@ -141,4 +141,16 @@ export namespace ObjectUtil{
 	export function isBigIdValid(bigId: number, responseData: LandStatusResponse): boolean {
         return responseData.data.some(item => item.big_id === bigId && item.status === 1);
     }
+
+	// Type guard function to check if data is of type IslandData
+	export function isIslandData(data: {} | IslandData): data is IslandData {
+		return (data as IslandData).big_id !== undefined &&
+			(data as IslandData).big_name !== undefined &&
+			(data as IslandData).phase_id !== undefined &&
+			(data as IslandData).phase_name !== undefined &&
+			(data as IslandData).grade !== undefined &&
+			(data as IslandData).bossName !== undefined &&
+			(data as IslandData).bossAni !== undefined;
+	}
+
 }

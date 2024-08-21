@@ -3,7 +3,7 @@ import { EventType } from '../../config/EventType';
 import { KeyConfig } from '../../config/KeyConfig';
 import { PrefabType } from '../../config/PrefabType';
 import GlobalConfig from '../../GlobalConfig';
-import { DataMgr } from '../../manager/DataMgr';
+import { DataMgr, IslandData } from '../../manager/DataMgr';
 import { PopMgr } from '../../manager/PopupManager';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { GameMode, GateData, IslandProgressModel, LandStatusResponse, LevelProgressData, LevelRestartData } from '../../models/AdventureModel';
@@ -17,6 +17,7 @@ import { ObjectUtil } from '../../util/ObjectUtil';
 import StorageUtil from '../../util/StorageUtil';
 import { GameStudyViewMap } from '../Challenge/ChallengeUtil';
 import { ConfirmView } from '../common/ConfirmView';
+import { EvaluationModel, phaseTips } from './AdventureInfo';
 import { WorldIsland } from './WorldIsland';
 import { WorldMapItem } from './WorldMapItem';
 
@@ -47,7 +48,11 @@ export class WorldMapView extends BaseView {
     private gettingWords: boolean = false;
     private currentPassIsland: LandStatusResponse = null;
     private _worldIsland:WorldIsland = null;
+
+    private _mapLandDatas:(IslandData | EvaluationModel)[] = [];
+
     protected initUI(): void {
+        this._mapLandDatas = this.insertEmptyObjects(DataMgr.islandConfig);
         this.initData();
         this.offViewAdaptSize();
         this.islandContainer.position = v3(-GlobalConfig.WIN_SIZE.width / 2, 0, 0);
@@ -75,11 +80,17 @@ export class WorldMapView extends BaseView {
 
     onLoadMapHorizontal(item: Node, idx: number): void {
         const itemScript = item.getComponent(WorldMapItem);
-        itemScript.updateItemProps(idx, this.currentPassIsland);
+        let data = this._mapLandDatas[idx];
+        itemScript.updateItemProps(data, this.currentPassIsland);
     }
 
     onMapHorizontalSelected(item: any, selectedId: number, lastSelectedId: number, val: number) {
-        let islandData = DataMgr.getIslandData(selectedId + 1);
+        let data = this._mapLandDatas[selectedId];
+        const isValidLandData = ObjectUtil.isIslandData(data);
+        if(!isValidLandData){
+            return;
+        }
+        const islandData = data as IslandData;
         const isValid = ObjectUtil.isBigIdValid(islandData.big_id, this.currentPassIsland);
         if (!isValid) {
             ViewsMgr.showTip("请先通关前置岛屿");
@@ -89,7 +100,7 @@ export class WorldMapView extends BaseView {
         //     ViewsMgr.showTip("岛屿暂未开放");
         //     return;
         // }
-        this.switchLevels(selectedId);
+        this.showIsland(islandData);
     }
 
     private async initData() {
@@ -98,16 +109,12 @@ export class WorldMapView extends BaseView {
         ServiceMgr.studyService.getIslandStatus();
     }
 
-    private switchLevels(id: number) {
-        this.showIsland(id);
-    }
-
-    private showIsland(id: number) {
+    private showIsland(data: IslandData) {
         if (this.gettingIslandStatus) {
-            console.log('正在获取岛屿状态中', id);
+            console.log('正在获取岛屿状态中', data.big_id);
             return;
         }
-        this.currentIslandID = id + 1;
+        this.currentIslandID = data.big_id;
         this.gettingIslandStatus = true;
         ServiceMgr.studyService.getIslandProgress(this.currentIslandID);
     }
@@ -133,7 +140,26 @@ export class WorldMapView extends BaseView {
             return;
         }
         this.currentPassIsland = data;
-        this.scrollView.numItems = DataMgr.islandConfig.length;
+        console.log("onGetIslandStatus......",this._mapLandDatas);
+        this.scrollView.numItems = this._mapLandDatas.length;
+    }
+
+    insertEmptyObjects(data: IslandData[]): (IslandData | EvaluationModel)[] {
+        const result: (IslandData | EvaluationModel)[] = [];
+        let previousPhaseId: number | null = null;
+
+        for (const item of data) {
+            if (item.phase_id !== previousPhaseId && previousPhaseId !== null) {
+                let evData:EvaluationModel = {
+                    message:phaseTips[previousPhaseId]
+                }
+                result.push(evData);
+            }
+            result.push(item);
+            previousPhaseId = item.phase_id;
+        }
+
+        return result;
     }
 
     private hideIsland() {

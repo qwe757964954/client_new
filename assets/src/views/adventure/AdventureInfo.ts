@@ -86,3 +86,14 @@ export const educationAndExams: EducationStage[] = [
         ],
     },
 ];
+
+export interface EvaluationModel {
+    message: string;
+}
+
+export const phaseTips: { [key in EducationPhase]: string } = {
+    [EducationPhase.PRIMARY]: '小升初的词汇量(800核心词汇量)',
+    [EducationPhase.JUNIOR_HIGH]: '中考的词汇量(1600核心词汇量)',
+    [EducationPhase.SENIOR_HIGH]: '高考的词汇量(3200核心词汇量)',
+    [EducationPhase.UNIVERSITY]: '四级的词汇量(6400核心词汇量)',
+};
