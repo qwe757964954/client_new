@@ -10,3 +10,5 @@ export const FriendTabInfos = [
     { id: FriendTabType.Apply, title: "申请列表"},
     { id: FriendTabType.Blacklist, title: "黑名单"},
 ];
+
+export const HeadIdMap = { "101": 101, "1101": 101, "102": 102, "1102": 102, "103": 103, "1103": 103 };

@@ -46,7 +46,7 @@ export class BasePopFriend extends BaseView {
 
         tween(this.animatedNode)
             .to(0.3, { position: offScreenPosition }, { easing: easing.sineInOut })
-            .call(() => this.node.parent.destroy())
+            .call(() => this.node.destroy())
             .start();
     }
 
@@ -56,5 +56,9 @@ export class BasePopFriend extends BaseView {
         this.parent = parent;
         this.initUI();
         await this.animateIn();
+    }
+
+    closePop(): void {
+        this.animateOut();
     }
 }

@@ -1,11 +1,11 @@
-import { _decorator, Button, instantiate, Label, Layers, Node, Prefab, Sprite, tween, UITransform, v3, Vec3 } from 'cc';
+import { _decorator, Button, instantiate, Label, Layers, Node, Prefab, Sprite, UITransform, v3 } from 'cc';
 import { EventType } from '../../config/EventType';
 import { TextConfig } from '../../config/TextConfig';
 import { ItemData } from '../../manager/DataMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { FriendListItemModel, SystemMailItem } from '../../models/FriendModel';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
-import { BaseView } from '../../script/BaseView';
+import { BasePopFriend } from '../../script/BasePopFriend';
 import { FdServer } from '../../service/FriendService';
 import CCUtil from '../../util/CCUtil';
 import { EventMgr } from '../../util/EventManager';
@@ -17,7 +17,7 @@ import { RewardItem } from '../common/RewardItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('FriendPlayerInfoView')
-export class FriendPlayerInfoView extends BaseView {
+export class FriendPlayerInfoView extends BasePopFriend {
 
     @property(Node)
     public roleInfoBox: Node = null; // 角色信息容器
@@ -49,13 +49,6 @@ export class FriendPlayerInfoView extends BaseView {
     private _data: FriendListItemModel = null;
     private _msgData: SystemMailItem = null;
     private _propsData: ItemData[] = [];
-    private _isShow: boolean = false;
-
-    private _showPos: Vec3 = null;
-
-    set showPos(pos: Vec3) {
-        this._showPos = pos.clone();
-    }
 
 
 
@@ -118,7 +111,7 @@ export class FriendPlayerInfoView extends BaseView {
     }
 
     protected initEvent(): void {
-        this.registerButtonEvent(this.reciveBtn, this.onReceiveClick);
+        // this.registerButtonEvent(this.reciveBtn, this.onReceiveClick);
         this.registerButtonEvent(this.btnHide, this.onHidenClick);
     }
 
@@ -149,18 +142,7 @@ export class FriendPlayerInfoView extends BaseView {
         item.setScale(scale, scale, scale);
         rewardItem.init(this._propsData[idx]);
     }
-
-    public onHidenClick() {
-        this._isShow = !this._isShow;
-        this.showPlayerInfo(this._isShow);
-    }
-
-    public showPlayerInfo(isShow: boolean) {
-        this._isShow = isShow;
-        let node_size = this.node.getComponent(UITransform);
-        let temp_width = node_size.width - 200;
-        let posx = this._isShow ? temp_width : 0;
-        tween(this.node).to(0.3, { position: new Vec3(this._showPos.x + posx, this._showPos.y, 0) }).call(() => {
-        }).start();
+    onHidenClick(){
+        this.closePop();
     }
 }

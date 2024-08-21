@@ -29,13 +29,10 @@
       },
       {
         "__id__": 114
-      },
-      {
-        "__id__": 116
       }
     ],
     "_prefab": {
-      "__id__": 118
+      "__id__": 116
     },
     "_lpos": {
       "__type__": "cc.Vec3",
@@ -2592,51 +2589,6 @@
     "fileId": "78aUrbEVlF0p2j+wKhN/q1"
   },
   {
-    "__type__": "cc.Sprite",
-    "_name": "",
-    "_objFlags": 0,
-    "__editorExtras__": {},
-    "node": {
-      "__id__": 1
-    },
-    "_enabled": true,
-    "__prefab": {
-      "__id__": 115
-    },
-    "_customMaterial": null,
-    "_srcBlendFactor": 2,
-    "_dstBlendFactor": 4,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_spriteFrame": {
-      "__uuid__": "acd3d41d-0b42-43e9-9071-5013b952b244@f9941",
-      "__expectedType__": "cc.SpriteFrame"
-    },
-    "_type": 0,
-    "_fillType": 0,
-    "_sizeMode": 0,
-    "_fillCenter": {
-      "__type__": "cc.Vec2",
-      "x": 0,
-      "y": 0
-    },
-    "_fillStart": 0,
-    "_fillRange": 0,
-    "_isTrimmedMode": true,
-    "_useGrayscale": false,
-    "_atlas": null,
-    "_id": ""
-  },
-  {
-    "__type__": "cc.CompPrefabInfo",
-    "fileId": "fa8LdFPzJNKKNAdfHQmqqR"
-  },
-  {
     "__type__": "29752y8JctAkKrPxUVAUbPa",
     "_name": "",
     "_objFlags": 0,
@@ -2646,7 +2598,7 @@
     },
     "_enabled": true,
     "__prefab": {
-      "__id__": 117
+      "__id__": 115
     },
     "roleInfoBox": {
       "__id__": 21
@@ -2661,7 +2613,9 @@
     },
     "awardList": null,
     "reciveBtn": null,
-    "btnHide": null,
+    "btnHide": {
+      "__id__": 9
+    },
     "_id": ""
   },
   {
