@@ -5,7 +5,7 @@ import GlobalConfig from '../../../GlobalConfig';
 import { BookLevelConfig, DataMgr } from '../../../manager/DataMgr';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { SoundMgr } from '../../../manager/SoundMgr';
-import { ViewsManager } from '../../../manager/ViewsManager';
+import { ViewsManager, ViewsMgr } from '../../../manager/ViewsManager';
 import { GameMode, GateData, SentenceData, WordGroupData, WordGroupModel, WordsDetailData } from '../../../models/AdventureModel';
 import { UnitWordModel } from '../../../models/TextbookModel';
 import { InterfacePath } from '../../../net/InterfacePath';

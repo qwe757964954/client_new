@@ -4,7 +4,7 @@ import { PrefabType } from '../../../config/PrefabType';
 import { DataMgr } from '../../../manager/DataMgr';
 import RemoteImageManager from '../../../manager/RemoteImageManager';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
-import { ViewsManager } from '../../../manager/ViewsManager';
+import { ViewsManager, ViewsMgr } from '../../../manager/ViewsManager';
 import { GameMode } from '../../../models/AdventureModel';
 import { UnitWordModel } from '../../../models/TextbookModel';
 import CCUtil from '../../../util/CCUtil';

@@ -1,5 +1,6 @@
 import { _decorator, EventTouch, instantiate, Layers, Node, Prefab, sp, tween, Vec3 } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
+import { ViewsMgr } from '../../manager/ViewsManager';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
 import { UserPlayerDetail, UserPlayerModifyModel } from '../../models/SettingModel';
 import { BaseView } from '../../script/BaseView';

@@ -1,5 +1,6 @@
 import { _decorator, Component } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
+import { ViewsMgr } from '../../manager/ViewsManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('LogoutView')

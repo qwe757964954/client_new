@@ -1,7 +1,7 @@
 import { _decorator, Node } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
-import { ViewsManager } from '../../manager/ViewsManager';
+import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { BaseView } from '../../script/BaseView';
 import { BagConfig } from '../bag/BagConfig';
 import { TabItemDataInfo, TabTypeIds, TaskTabIds, TaskTabInfo } from '../task/TaskInfo';

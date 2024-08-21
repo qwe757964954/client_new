@@ -391,4 +391,4 @@ export class ViewsManager {
     }
 }
 
-export const ViewsMgr = ViewsMgr;
+export const ViewsMgr = ViewsManager.instance;

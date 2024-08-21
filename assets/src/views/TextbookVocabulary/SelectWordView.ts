@@ -2,6 +2,7 @@ import { _decorator, Node } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { PopMgr } from '../../manager/PopupManager';
+import { ViewsMgr } from '../../manager/ViewsManager';
 import { BookListItemData, BookPlanDetail, SchoolBookGradeItemData, SchoolBookItemData, SchoolBookListGradeItemData, SchoolBookListItemData } from '../../models/TextbookModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';

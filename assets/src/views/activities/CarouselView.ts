@@ -2,6 +2,7 @@ import { _decorator, Component, instantiate, Label, misc, Node, Prefab, Tween, t
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { ResLoader } from '../../manager/ResLoader';
+import { ViewsMgr } from '../../manager/ViewsManager';
 import { ActServer } from '../../service/ActivityService';
 import CCUtil from '../../util/CCUtil';
 import { ActConfig } from './ActivityConfig';

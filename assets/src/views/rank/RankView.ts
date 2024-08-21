@@ -1,6 +1,6 @@
 import { _decorator, Node } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
-import { ViewsManager } from '../../manager/ViewsManager';
+import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { WordRankResponse } from '../../models/RankModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';

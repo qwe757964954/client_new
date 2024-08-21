@@ -1,6 +1,7 @@
 import { _decorator } from 'cc';
 import { EventType } from '../config/EventType';
 import { TextConfig } from '../config/TextConfig';
+import { ViewsMgr } from '../manager/ViewsManager';
 import { GoodsItemData, ShopAllGoods } from '../models/GoodsModel';
 import { BaseControll } from '../script/BaseControll';
 import EventManager from '../util/EventManager';

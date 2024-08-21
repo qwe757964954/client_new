@@ -1,4 +1,5 @@
 import { _decorator, Component, Node } from 'cc';
+import { ViewsMgr } from '../../manager/ViewsManager';
 
 const { ccclass, property } = _decorator;
 

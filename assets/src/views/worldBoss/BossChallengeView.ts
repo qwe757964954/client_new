@@ -1,6 +1,7 @@
 import { Label, Layers, Node, Prefab, UITransform, Vec3, _decorator, instantiate, tween } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
+import { ViewsMgr } from '../../manager/ViewsManager';
 import { PetModel } from '../../models/PetModel';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
 import { BaseView } from '../../script/BaseView';

@@ -3,7 +3,7 @@ import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { LoadManager } from '../../manager/LoadManager';
 import { PopMgr } from '../../manager/PopupManager';
-import { ViewsManager } from '../../manager/ViewsManager';
+import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { UserPlayerDetail } from '../../models/SettingModel';
 import { User } from '../../models/User';
 import ImgUtil from '../../util/ImgUtil';

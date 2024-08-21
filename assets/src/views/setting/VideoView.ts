@@ -1,5 +1,6 @@
 import { _decorator, Component, Label, Node, ProgressBar, Slider, VideoPlayer } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
+import { ViewsMgr } from '../../manager/ViewsManager';
 import { TimerMgr } from '../../util/TimerMgr';
 import { ToolUtil } from '../../util/ToolUtil';
 const { ccclass, property } = _decorator;

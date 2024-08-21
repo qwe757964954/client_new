@@ -2,6 +2,7 @@ import { _decorator, Component, Node } from 'cc';
 import { PrefabType, SceneType } from '../../config/PrefabType';
 import { PopMgr } from '../../manager/PopupManager';
 import { SceneMgr } from '../../manager/SceneMgr';
+import { ViewsMgr } from '../../manager/ViewsManager';
 import { UserPlayerDetail } from '../../models/SettingModel';
 import { ApplyLogoutView } from './ApplyLogoutView';
 import { ChangeRoleView } from './ChangeRoleView';

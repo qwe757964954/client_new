@@ -1,5 +1,6 @@
 import { _decorator, isValid, Node } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
+import { ViewsMgr } from '../../manager/ViewsManager';
 import { BasePopRight } from '../../script/BasePopRight';
 import List from '../../util/list/List';
 import { MainActivityIds, MainActivityInfo, MainActivityInfos } from './MainInfo';

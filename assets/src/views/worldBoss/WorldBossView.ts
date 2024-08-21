@@ -1,7 +1,7 @@
 import { _decorator, error, JsonAsset, Label, Node, Sprite, SpriteFrame } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { ResLoader } from '../../manager/ResLoader';
-import { ViewsManager } from '../../manager/ViewsManager';
+import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { BaseView } from '../../script/BaseView';
 import CCUtil from '../../util/CCUtil';
 import { BossChallengeView } from './BossChallengeView';

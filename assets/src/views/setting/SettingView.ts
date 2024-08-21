@@ -1,7 +1,7 @@
 import { _decorator, Node } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
-import { ViewsManager } from '../../manager/ViewsManager';
+import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { UserPlayerDetail } from '../../models/SettingModel';
 import { User } from '../../models/User';
 import { NetNotify } from '../../net/NetNotify';

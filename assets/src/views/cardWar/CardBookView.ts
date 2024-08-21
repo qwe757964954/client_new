@@ -3,7 +3,7 @@ import { EventType } from '../../config/EventType';
 import { NetConfig } from '../../config/NetConfig';
 import { PrefabType } from '../../config/PrefabType';
 import { LoadManager } from '../../manager/LoadManager';
-import { ViewsManager } from '../../manager/ViewsManager';
+import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import AudioUtil from '../../util/AudioUtil';
 import CCUtil from '../../util/CCUtil';
 import EventManager from '../../util/EventManager';

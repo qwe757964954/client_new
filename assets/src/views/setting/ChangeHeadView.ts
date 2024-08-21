@@ -3,6 +3,7 @@ import { PbConst } from '../../config/PbConst';
 import { PrefabType } from '../../config/PrefabType';
 import { ChangeHeadTypeEnum, SettingConfig } from '../../config/SettingConfig';
 import { LoadManager } from '../../manager/LoadManager';
+import { ViewsMgr } from '../../manager/ViewsManager';
 import { User } from '../../models/User';
 import ImgUtil from '../../util/ImgUtil';
 const { ccclass, property } = _decorator;

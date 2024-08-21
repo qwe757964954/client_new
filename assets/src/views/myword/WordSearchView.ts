@@ -1,5 +1,6 @@
 import { _decorator, Node } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
+import { ViewsMgr } from '../../manager/ViewsManager';
 import { WordsDetailData } from '../../models/AdventureModel';
 import { BaseView } from '../../script/BaseView';
 import { WordPanel } from './WordPanel';

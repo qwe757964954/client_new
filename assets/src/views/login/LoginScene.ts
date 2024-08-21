@@ -1,6 +1,7 @@
 import { _decorator, Component, Label, Node } from 'cc';
 import GlobalConfig from '../../GlobalConfig';
 import { SoundMgr } from '../../manager/SoundMgr';
+import { ViewsMgr } from '../../manager/ViewsManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('LoginScene')

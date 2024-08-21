@@ -6,7 +6,7 @@ import { TextConfig } from '../../../config/TextConfig';
 import { BookLevelConfig } from '../../../manager/DataMgr';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { ResLoader } from '../../../manager/ResLoader';
-import { ViewsManager } from '../../../manager/ViewsManager';
+import { ViewsManager, ViewsMgr } from '../../../manager/ViewsManager';
 import { AdventureResultModel, GameMode, GateData } from '../../../models/AdventureModel';
 import { GameSubmitModel, UnitWordModel } from '../../../models/TextbookModel';
 import { ServiceMgr } from '../../../net/ServiceManager';

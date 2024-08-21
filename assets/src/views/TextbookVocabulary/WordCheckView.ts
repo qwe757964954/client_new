@@ -2,7 +2,7 @@ import { _decorator, isValid, Label, Node } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
-import { ViewsManager } from '../../manager/ViewsManager';
+import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { WordsDetailData } from '../../models/AdventureModel';
 import { BookItemData, CheckOrderType, CheckWordItem, CheckWordModel, CheckWordResponse, CheckWordType, CurrentBookStatus } from '../../models/TextbookModel';
 import { InterfacePath } from '../../net/InterfacePath';

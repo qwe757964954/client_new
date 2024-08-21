@@ -1,6 +1,7 @@
 import { _decorator, JsonAsset, Node } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { ResLoader } from '../../manager/ResLoader';
+import { ViewsMgr } from '../../manager/ViewsManager';
 import { BaseView } from '../../script/BaseView';
 import List from '../../util/list/List';
 import { ResponseData, VocabularyParentNode } from './GrammarInfo';

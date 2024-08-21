@@ -1,6 +1,6 @@
 import { _decorator, Node } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
-import { ViewsManager } from '../../manager/ViewsManager';
+import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { BaseView } from '../../script/BaseView';
 import List from '../../util/list/List';
 import { GrammarTipItem } from './GrammarTipItem';

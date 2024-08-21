@@ -5,6 +5,7 @@ import { GameRes } from '../../../GameRes';
 import { ItemData } from '../../../manager/DataMgr';
 import { inf_SpineAniCreate } from '../../../manager/InterfaceDefines';
 import { SoundMgr } from '../../../manager/SoundMgr';
+import { ViewsMgr } from '../../../manager/ViewsManager';
 import { AdventureResult, BossLevelSubmitData } from '../../../models/AdventureModel';
 import { GameSubmitResponse } from '../../../models/TextbookModel';
 import { BaseView } from '../../../script/BaseView';

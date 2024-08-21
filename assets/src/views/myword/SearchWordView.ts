@@ -4,7 +4,7 @@ import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { WordModel, WordSourceType } from '../../config/WordConfig';
 import { SoundMgr } from '../../manager/SoundMgr';
-import { ViewsManager } from '../../manager/ViewsManager';
+import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { WordsDetailData } from '../../models/AdventureModel';
 import { InterfacePath } from '../../net/InterfacePath';
 import { ServiceMgr } from '../../net/ServiceManager';

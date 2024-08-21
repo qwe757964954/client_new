@@ -4,7 +4,7 @@ import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { BookLevelConfig, DataMgr } from '../../manager/DataMgr';
 import { PopMgr } from '../../manager/PopupManager';
-import { ViewsManager } from '../../manager/ViewsManager';
+import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { GameMode, MapLevelData } from '../../models/AdventureModel';
 import { CurrentBookStatus, GateListItem, ReqUnitStatusParam, ReqUnitType, UnitItemStatus, UnitListItemStatus, UnitStatusData, VocabularyWordData } from '../../models/TextbookModel';
 import { NetNotify } from '../../net/NetNotify';
