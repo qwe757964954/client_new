@@ -16,6 +16,7 @@ export class CloudModel extends BaseModel {
     private _img: Sprite = null;//图片
     private _label: Label = null;//文字
     private _unlockNode: Node = null;//解锁节点
+    private _unlockTip: Node = null;//解锁提示
 
     // y从上往下，x从右往左
     private _x: number;//x格子坐标
@@ -29,11 +30,19 @@ export class CloudModel extends BaseModel {
     private _isLoadOver: boolean = false;//图片是否加载完成
     private _timer: number = null;//定时器
     private _uiNodeShow: boolean = true;//是否显示
+    private _canUnlock: boolean = false;//是否可以解锁
     public get unlockTime(): number {
         return this._unlockTime;
     }
     public get isUnlock(): boolean {
         return this._isUnlock;
+    }
+    public get canUnlock(): boolean {
+        return this._canUnlock;
+    }
+    public set canUnlock(canUnlock: boolean) {
+        this._canUnlock = canUnlock;
+        this.refreshUIView();
     }
 
     public dispose(): void {
@@ -96,6 +105,7 @@ export class CloudModel extends BaseModel {
                 this.clearTimer();
                 this._timer = TimerMgr.loop(this.updateBySec.bind(this), 1000);
             }
+            if (this._unlockTip) this._unlockTip.active = false;
             this.refreshTimeEx();
         } else {
             if (this._label)
@@ -163,13 +173,16 @@ export class CloudModel extends BaseModel {
                     if (this._label) this._label.node.active = true;
                     if (this._unlockNode) this._unlockNode.active = false;
                 }
+                if (this._unlockTip) this._unlockTip.active = false;
             } else {
                 if (this._label) this._label.node.active = false;
                 if (this._unlockNode) this._unlockNode.active = false;
+                if (this._unlockTip) this._unlockTip.active = this._canUnlock;
             }
         } else {
             if (this._label) this._label.node.active = false;
             if (this._unlockNode) this._unlockNode.active = false;
+            if (this._unlockTip) this._unlockTip.active = false;
         }
     }
     //显示图片
@@ -210,6 +223,7 @@ export class CloudModel extends BaseModel {
                 this._img = this._node.getChildByName("Sprite").getComponent(Sprite);
                 this._label = this._node.getChildByName("Label").getComponent(Label);
                 this._unlockNode = this._node.getChildByName("img_right");
+                this._unlockTip = this._node.getChildByName("img_unlock");
                 this.refreshUIView();
                 this.refreshTimeEx();
 

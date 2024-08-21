@@ -405,6 +405,7 @@ export class MapUICtl extends MainBaseCtl {
         }
         // this.refreshCloudShowType();
         this.updateCameraVisible();
+        this.refreshCloudUnlockState();
         console.timeEnd("initCloud");
     }
     /**是否存在乌云 */
@@ -1213,6 +1214,8 @@ export class MapUICtl extends MainBaseCtl {
                 this._cloudModelAry = this._cloudModelAry.filter(element => element != cloud);
             });
         }
+        this.refreshCloudUnlockState();
+
         let list = ToolUtil.itemMapToList(data.award_items);
         ViewsMgr.showRewards(list);
     }
@@ -1546,5 +1549,21 @@ export class MapUICtl extends MainBaseCtl {
         if (!this._selfRole) return;
         this._selfRole.removeClothing(data.oldClothing);
         this._selfRole.changeClothing(data.clothing);
+    }
+    /**刷新乌云是否可以解锁状态 */
+    refreshCloudUnlockState() {
+        this._cloudModelAry.forEach(cloud => {
+            let width = cloud.width;
+            let xAry = [0, width, 0, -width];
+            let yAry = [-width, 0, width, 0];
+            for (let i = 0; i < xAry.length; i++) {
+                let grid = this.getGridInfo(cloud.x + xAry[i], cloud.y + yAry[i]);
+                if (grid && grid.isEditArea && !grid.cloud) {
+                    cloud.canUnlock = true;
+                    return;
+                }
+            }
+            cloud.canUnlock = false;
+        });
     }
 }
