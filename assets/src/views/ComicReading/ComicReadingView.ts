@@ -2,9 +2,10 @@ import { _decorator, Node } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { BaseView } from '../../script/BaseView';
-import { RankTabInfos } from '../rank/RankInfo';
 import { TaskTabInfo } from '../task/TaskInfo';
 import { TaskTabView } from '../task/TaskTabView';
+import { ComicLandView } from './ComicLandView';
+import { ComicReadingTabInfos } from './ComicReadingInfo';
 const { ccclass, property } = _decorator;
 
 @ccclass('ComicReadingView')
@@ -15,6 +16,7 @@ export class ComicReadingView extends BaseView {
     @property(Node)
     public content_layout: Node = null;
     private _tabView: TaskTabView = null;
+    private _comicLandView:ComicLandView = null;
     protected async initUI() {
         this.initNavTitle();
         this.initAmout();
@@ -30,7 +32,7 @@ export class ComicReadingView extends BaseView {
         this.initViewComponent(PrefabType.TaskTabView, (node) => {
             this._tabView = node.getComponent(TaskTabView);
             this._tabView.setTabSelectClick(this.onTabSelect.bind(this));
-            this._tabView.updateData(RankTabInfos);
+            this._tabView.updateData(ComicReadingTabInfos);
         }, {
             isAlignTop: true,
             isAlignLeft: true,
@@ -40,12 +42,15 @@ export class ComicReadingView extends BaseView {
     }
     private async initViews() {
         const viewComponents = [
-            // {
-            //     prefabType: PrefabType.FriendLeftTabView,
-            //     initCallback: (node: Node) => this._leftTab = node.getComponent(FriendLeftTabView),
-            //     alignOptions: { isAlignTop: true,isAlignHorizontalCenter:true, top: 116.002,horizontalCenter:0},
-            //     parentNode: this.contentNd
-            // },
+            {
+                prefabType: PrefabType.ComicLandView,
+                initCallback: (node: Node) => {
+                    this._comicLandView = node.getComponent(ComicLandView)
+                    this._comicLandView.setComicLandViewListener(this.onComicLandViewClick.bind(this));
+                },
+                alignOptions:{},
+                parentNode: this.content_layout
+            },
             // {
             //     prefabType: PrefabType.FriendList,
             //     initCallback: (node: Node) => {
@@ -72,12 +77,16 @@ export class ComicReadingView extends BaseView {
     }
     
     private onTabSelect(info: TaskTabInfo) {
+        console.log('onTabSelect', info);
         // this.hideAllContent();
         // this.selectMenuType(info);
     }
 
+    private onComicLandViewClick(click: number) {
+        console.log('onComicLandViewClick', click);
+    }
     private initNavTitle() {
-        this.createNavigation("排行",this.top_layout, () => {
+        this.createNavigation("英文漫画阅读",this.top_layout, () => {
             ViewsMgr.closeView(PrefabType.ComicReadingView);
         });
     }

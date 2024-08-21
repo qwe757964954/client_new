@@ -1,13 +1,13 @@
 
-  // Box animation data array
- export const boxAniData = [
-    { id: 1, aniurl: "chest_tutor", },
-    { id: 2, aniurl: "chest_uncommon", },
-    { id: 3, aniurl: "chest_rare",  },
-    { id: 4, aniurl: "chest_epic",},
-    { id: 5, aniurl: "chest_legend",}
-  ];
-  
+// Box animation data array
+export const boxAniData = [
+  { id: 1, aniurl: "chest_tutor", },
+  { id: 2, aniurl: "chest_uncommon", },
+  { id: 3, aniurl: "chest_rare", },
+  { id: 4, aniurl: "chest_epic", },
+  { id: 5, aniurl: "chest_legend", }
+];
+
 // 定义 TaskTabIds 枚举
 export enum TaskTabIds {
   AchievementChallenge = 1, // 成就挑战
@@ -28,7 +28,19 @@ export enum TaskTabIds {
   NewbieGift,
   WeekendCarousel,
   InvitationEvent,
-  ActivityOther
+  ActivityOther,
+
+
+  Land1 = 100,
+  Land2,
+  Land3,
+  Land4,
+  Land5,
+  Land6,
+  Land7,
+  Land8,
+  Land9,
+  Land10,
 }
 
 export enum TabTypeIds {
@@ -92,62 +104,62 @@ export const TabItemDataInfos: TabItemDataInfo[] = [
 // 定义 TaskTabInfos 数组
 export const TaskTabInfos: TaskTabInfo[] = [
   {
-      id: TaskTabIds.AchievementChallenge,
-      title: "成就挑战",
-      subTabItems: TabItemDataInfos
+    id: TaskTabIds.AchievementChallenge,
+    title: "成就挑战",
+    subTabItems: TabItemDataInfos
   },
   {
-      id: TaskTabIds.WeeklyTasks,
-      title: "每周任务",
-      subTabItems: [],
+    id: TaskTabIds.WeeklyTasks,
+    title: "每周任务",
+    subTabItems: [],
   },
   {
-      id: TaskTabIds.MainTasks,
-      title: "主线任务",
-      subTabItems: [],
+    id: TaskTabIds.MainTasks,
+    title: "主线任务",
+    subTabItems: [],
   },
   {
-      id: TaskTabIds.DailyTasks,
-      title: "每日任务",
-      subTabItems: [],
+    id: TaskTabIds.DailyTasks,
+    title: "每日任务",
+    subTabItems: [],
   }
 ];
 
-  // Define the types for the different parts of the data
-  export interface Medal {
-      MedalConfId: number;
-  }
-  
-  export interface AchievementStatus {
-      CurrentAchConfId: number;
-      Mid: number;
-      Status: number;
-      NextIds: number[];
-  }
-  
-  export interface Statistic {
-      AchType: number;
-      AchTotalNum: number;
-      AchEndNum: number;
-  }
-  
-  // Main data structure
-  export interface AchInfoData {
-      Level: number;
-      MedalList: Medal[];
-      RecStatusList: AchievementStatus[];
-      Statistics: Statistic[];
-  }
-  
-  // Main response structure
- export interface AchInfoResponse {
-      Code: number;
-      Data: AchInfoData;
-      Msg: string;
-      Path: string;
-  }
-  
-  // 定义奖励的类型
+// Define the types for the different parts of the data
+export interface Medal {
+  MedalConfId: number;
+}
+
+export interface AchievementStatus {
+  CurrentAchConfId: number;
+  Mid: number;
+  Status: number;
+  NextIds: number[];
+}
+
+export interface Statistic {
+  AchType: number;
+  AchTotalNum: number;
+  AchEndNum: number;
+}
+
+// Main data structure
+export interface AchInfoData {
+  Level: number;
+  MedalList: Medal[];
+  RecStatusList: AchievementStatus[];
+  Statistics: Statistic[];
+}
+
+// Main response structure
+export interface AchInfoResponse {
+  Code: number;
+  Data: AchInfoData;
+  Msg: string;
+  Path: string;
+}
+
+// 定义奖励的类型
 export interface Reward {
   type: number;
   amount: number;

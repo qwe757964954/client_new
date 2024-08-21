@@ -258,7 +258,8 @@ export const PrefabType = {
     /*********************************************myword End*************************************************************/
 
     /*********************************************漫画阅读 start***********************************************************/
-    ComicReadingView: { path: "ComicReading/ComicReadingView", zindex: Hierarchy.POPUPLAYER, tips: "漫画阅读" },
+    ComicReadingView: { path: "comicReading/ComicReadingView", zindex: Hierarchy.POPUPLAYER, tips: "漫画阅读" },
+    ComicLandView: { path: "comicReading/ComicLandView", zindex: Hierarchy.POPUPLAYER, tips: "漫画阅读" },
     /*********************************************漫画阅读 end***********************************************************/
-
+    
 }
