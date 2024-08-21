@@ -70,7 +70,7 @@ export class ChatContentItem extends Component {
     }
 
     private async loadChatIcon(message: string) {
-        const chatIconPath = `friend/${message}/spriteFrame`;
+        const chatIconPath = `friend/face/${message}/spriteFrame`;
 
         try {
             await LoadManager.loadSprite(chatIconPath, this.chatImg);

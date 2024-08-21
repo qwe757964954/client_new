@@ -1,5 +1,5 @@
 import { _decorator, EventTouch, isValid, Node, NodeEventType, UITransform } from 'cc';
-import { ChatDataItem, ChatMessageResponse, DataFriendListResponse, FriendListItemModel, SendMessageModel } from '../../models/FriendModel';
+import { ChatDataItem, ChatMessageResponse, FriendListItemModel, SendMessageModel } from '../../models/FriendModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BasePopFriend } from '../../script/BasePopFriend';
 import { FdServer } from '../../service/FriendService';
@@ -7,7 +7,6 @@ import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
 import { ChatContentItem } from './ChatContentItem';
 import { ChatEmoteItem } from './ChatEmoteItem';
-import { ChatListItem } from './ChatListItem';
 
 const { ccclass, property } = _decorator;
 
@@ -34,9 +33,6 @@ export class FriendTalkDialogView extends BasePopFriend {
     @property({ type: List, tooltip: "表情选择列表" })
     selectList: List = null;
 
-    @property({ type: List, tooltip: "好友列表" })
-    friendList: List = null;
-
     @property({ type: List, tooltip: "聊天列表" })
     talkList: List = null;
 
@@ -50,10 +46,9 @@ export class FriendTalkDialogView extends BasePopFriend {
     private _chatDatas: ChatDataItem[] = [];
     private _currentFriendSelected: number = 0;
 
-    init(friend: FriendListItemModel[]): void {
-        this._friendDataList = friend;
-        this.friendList.numItems = this._friendDataList.length;
-        this.friendList.selectedId = this._currentFriendSelected;
+    init(friend: FriendListItemModel): void {
+        this._selectFriend = friend;
+        FdServer.reqUserFriendMessageList(this._selectFriend.friend_id);
     }
 
     protected initUI(): void {
@@ -69,7 +64,6 @@ export class FriendTalkDialogView extends BasePopFriend {
         this.addModelListeners([
             [NetNotify.Classification_UserFriendMessageList, this.onUserFriendMessageList],
             [NetNotify.Classification_UserSendMessageFriend, this.onUserSendMessageFriend],
-            [NetNotify.Classification_UserFriendList, this.onUpdateFriendList],
             [NetNotify.Classification_UserMessageStatusUpdate, this.onUserMessageStatusUpdate],
         ]);
     }
@@ -98,25 +92,14 @@ export class FriendTalkDialogView extends BasePopFriend {
         }
     }
 
-    private onUpdateFriendList(friendDatas: DataFriendListResponse): void {
-        this.init(friendDatas.data);
-    }
-
-    private onloadFriendListVertical(item: Node, idx: number): void {
-        console.log("onloadFriendListVertical....", this._friendDataList[idx]);
-        const itemScript = item.getComponent(ChatListItem);
-        itemScript.initData(this._friendDataList[idx]);
-    }
-
     private onUserMessageStatusUpdate(response: any): void {
         console.log("onUserMessageStatusUpdate....", response);
         this._friendDataList[this._currentFriendSelected].unread_count = 0;
-        this.friendList.numItems = this._friendDataList.length;
         this.talkList.updateAll();
     }
     onUserSendMessageFriend(data:any){
         this.bqContent.active = false;
-        FdServer.reqUserFriendList();
+        FdServer.reqUserFriendMessageList(this._selectFriend.friend_id);
     }
     private onFriendListVerticalSelected(item: any, selectedId: number, lastSelectedId: number, val: number): void {
         if (!isValid(selectedId) || selectedId < 0 || !isValid(item)) return;

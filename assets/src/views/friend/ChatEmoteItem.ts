@@ -11,7 +11,7 @@ export class ChatEmoteItem extends ListItem {
     _bqId: number = 100;
     async initData(bqId: number) {
         this._bqId = bqId;
-        let emotePath: string = "friend/" + bqId + "/spriteFrame";
+        let emotePath: string = "friend/face/" + bqId + "/spriteFrame";
         try {
             await LoadManager.loadSprite(emotePath, this.bgIcon);
         } catch (error) {
