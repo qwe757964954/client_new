@@ -1,23 +1,23 @@
-import { _decorator, Component, instantiate, Label, Node, NodePool, Prefab, SpriteFrame, tween, UIOpacity, UITransform, Vec3 } from 'cc';
-import { BaseModeView } from './BaseModeView';
-import { BossLevelData, BossLevelSubmitData, BossLevelTopicData, GameMode, BossTopicData } from '../../../models/AdventureModel';
-import { MonsterModel } from '../common/MonsterModel';
+import { _decorator, instantiate, Node, Prefab, tween, UIOpacity, UITransform, Vec3 } from 'cc';
+import { EventType } from '../../../config/EventType';
+import { PrefabType } from '../../../config/PrefabType';
 import { DataMgr } from '../../../manager/DataMgr';
+import { SoundMgr } from '../../../manager/SoundMgr';
+import { ViewsMgr } from '../../../manager/ViewsManager';
+import { BossLevelData, BossLevelSubmitData, BossLevelTopicData, BossTopicData, GameMode } from '../../../models/AdventureModel';
+import { PetModel } from '../../../models/PetModel';
+import { InterfacePath } from '../../../net/InterfacePath';
+import { ServiceMgr } from '../../../net/ServiceManager';
 import CCUtil from '../../../util/CCUtil';
 import { EventMgr } from '../../../util/EventManager';
-import { InterfacePath } from '../../../net/InterfacePath';
-import { ViewsManager, ViewsMgr } from '../../../manager/ViewsManager';
-import { PrefabType } from '../../../config/PrefabType';
-import { ExamReportView } from './ExamReportView';
-import { PetModel } from '../../../models/PetModel';
-import { SubjectType, UnitSubject } from '../../theme/GradeSkipSubjectManager';
-import { WordMeanSubject } from '../../theme/subject/WordMeanSubject';
-import { WordSpellSubject } from '../../theme/subject/WordSpellSubject';
-import { WordReadingSubject } from '../../theme/subject/WordReadingSubject';
+import { SubjectType } from '../../theme/GradeSkipSubjectManager';
 import { WordExamSubject } from '../../theme/subject/WordExamSubject';
-import { EventType } from '../../../config/EventType';
-import { SoundMgr } from '../../../manager/SoundMgr';
-import { ServiceMgr } from '../../../net/ServiceManager';
+import { WordMeanSubject } from '../../theme/subject/WordMeanSubject';
+import { WordReadingSubject } from '../../theme/subject/WordReadingSubject';
+import { WordSpellSubject } from '../../theme/subject/WordSpellSubject';
+import { MonsterModel } from '../common/MonsterModel';
+import { BaseModeView } from './BaseModeView';
+import { ExamReportView } from './ExamReportView';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordBossView')
@@ -207,10 +207,10 @@ export class WordBossView extends BaseModeView {
     //显示结果
     showResult() {
         if (this._resultData.flag == 1 || this._resultData.flag == 2) { //成功或失败
-            ViewsManager.instance.showView(PrefabType.ExamReportView, (node: Node) => {
+            ViewsMgr.showView(PrefabType.ExamReportView, (node: Node) => {
                 let nodeScript = node.getComponent(ExamReportView);
                 nodeScript.initBossLevel(this._resultData);
-                ViewsManager.instance.closeView(PrefabType.WordBossView);
+                ViewsMgr.closeView(PrefabType.WordBossView);
             });
         }
     }
@@ -228,7 +228,7 @@ export class WordBossView extends BaseModeView {
     }
 
     protected closeView() {
-        ViewsManager.instance.showConfirm("确定退出学习吗?", () => {
+        ViewsMgr.showConfirm("确定退出学习吗?", () => {
             this.node.destroy();
         });
     }

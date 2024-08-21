@@ -318,14 +318,14 @@ export class WorldIsland extends Component {
         data.big_id = this._bigId;
         if (data.challenge_info.word_num > 0) {
             ViewsMgr.showConfirm("是否继续上次闯关进度?", () => {
-                ViewsManager.instance.showView(PrefabType.WordBossView, (node: Node) => {
+                ViewsMgr.showView(PrefabType.WordBossView, (node: Node) => {
                     node.getComponent(WordBossView).initData(data);
                 });
             }, () => {
                 ServiceMgr.studyService.bossLevelRestart(this._bigId, data.challenge_info.bl_id);
             }, "延续上次", "重新开始", false);
         } else {
-            ViewsManager.instance.showView(PrefabType.WordBossView, (node: Node) => {
+            ViewsMgr.showView(PrefabType.WordBossView, (node: Node) => {
                 node.getComponent(WordBossView).initData(data);
             });
         }

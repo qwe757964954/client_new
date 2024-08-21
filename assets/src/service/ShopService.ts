@@ -1,7 +1,6 @@
 import { _decorator } from 'cc';
 import { EventType } from '../config/EventType';
 import { TextConfig } from '../config/TextConfig';
-import { ViewsManager } from '../manager/ViewsManager';
 import { GoodsItemData, ShopAllGoods } from '../models/GoodsModel';
 import { BaseControll } from '../script/BaseControll';
 import EventManager from '../util/EventManager';
@@ -30,7 +29,7 @@ export class ShopService extends BaseControll {
     }
 
     buyGood(id: number) {
-        ViewsManager.instance.showTip(TextConfig.Function_Tip2);
+        ViewsMgr.showTip(TextConfig.Function_Tip2);
     }
 }
 

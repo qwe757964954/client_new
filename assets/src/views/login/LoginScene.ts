@@ -1,7 +1,6 @@
 import { _decorator, Component, Label, Node } from 'cc';
 import GlobalConfig from '../../GlobalConfig';
 import { SoundMgr } from '../../manager/SoundMgr';
-import { ViewsManager } from '../../manager/ViewsManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('LoginScene')
@@ -18,7 +17,7 @@ export class LoginScene extends Component {
     public labelVer: Label = null;
     onLoad() {
         SoundMgr.loginBgm();
-        ViewsManager.instance.initLayer(this.sceneLayer, this.popupLayer, this.tipLayer, this.loadingLayer);
+        ViewsMgr.initLayer(this.sceneLayer, this.popupLayer, this.tipLayer, this.loadingLayer);
         this.labelVer.string = GlobalConfig.getVersionStr();
     }
 }

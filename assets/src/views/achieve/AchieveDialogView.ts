@@ -429,7 +429,7 @@ export class AchieveDialogView extends Component {
         let awards: string[] = data.Awards;
         let numCoin: number = Number(awards[0]);
         let numDiamond: number = Number(awards[1]);
-        ViewsManager.instance.showView(PrefabType.NewbieRewardDialogView, (node: Node) => {
+        ViewsMgr.showView(PrefabType.NewbieRewardDialogView, (node: Node) => {
             let awardInfo: ItemData = {
                 "id": 1,
                 "num": numDiamond,
@@ -444,7 +444,7 @@ export class AchieveDialogView extends Component {
     }
 
     private onCloseView() {
-        ViewsManager.instance.closeView(PrefabType.AchieveDialogView);
+        ViewsMgr.closeView(PrefabType.AchieveDialogView);
     }
 
     private onMedalSelectSure() {

@@ -64,7 +64,7 @@ export class GrammarTrainingView extends BaseView {
     /**初始化导航栏 */
     initNavTitle(){
         this.createNavigation(`语法训练`,this.top_layout, () => {
-            ViewsManager.instance.closeView(PrefabType.GrammarTrainingView);
+            ViewsMgr.closeView(PrefabType.GrammarTrainingView);
         });
     }
     /**初始化游戏数值 */
@@ -87,7 +87,7 @@ export class GrammarTrainingView extends BaseView {
 
     onTipGridSelected(item: any, selectedId: number, lastSelectedId: number, val: number){
         console.log("onTipGridSelected",selectedId);
-        ViewsManager.instance.showView(PrefabType.GrammarVocabularyView,(node: Node)=>{
+        ViewsMgr.showView(PrefabType.GrammarVocabularyView,(node: Node)=>{
             let vocabulary_script:GrammarVocabularyView = node.getComponent(GrammarVocabularyView);
             vocabulary_script.setSelectId(selectedId);
         });

@@ -5,7 +5,6 @@ import { GameRes } from '../../../GameRes';
 import { ItemData } from '../../../manager/DataMgr';
 import { inf_SpineAniCreate } from '../../../manager/InterfaceDefines';
 import { SoundMgr } from '../../../manager/SoundMgr';
-import { ViewsManager } from '../../../manager/ViewsManager';
 import { AdventureResult } from '../../../models/AdventureModel';
 import { RoleBaseModel } from '../../../models/RoleBaseModel';
 import { GameSubmitResponse } from '../../../models/TextbookModel';
@@ -146,7 +145,7 @@ export class WordReportView extends BaseView {
 
     private gotoNextLevel() {
         console.log("下一关卡");
-        ViewsManager.instance.closeView(PrefabType.WordReportView);
+        ViewsMgr.closeView(PrefabType.WordReportView);
         this.node.destroy();
         EventMgr.dispatch(EventType.Goto_Textbook_Next_Level);
     }

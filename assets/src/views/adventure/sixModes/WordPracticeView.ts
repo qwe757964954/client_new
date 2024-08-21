@@ -3,16 +3,15 @@ import { NetConfig } from '../../../config/NetConfig';
 import { PrefabType } from '../../../config/PrefabType';
 import { DataMgr } from '../../../manager/DataMgr';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
-import { ViewsManager } from '../../../manager/ViewsManager';
 import { GameMode } from '../../../models/AdventureModel';
 import { UnitWordModel } from '../../../models/TextbookModel';
 import CCUtil from '../../../util/CCUtil';
 import List from '../../../util/list/List';
+import { Shake } from '../../../util/Shake';
 import { BaseModeView } from './BaseModeView';
 import { LetterItem } from './items/LetterItem';
 import { SelectLetterItem } from './items/SelectLetterItem';
 import { WordSpellView } from './WordSpellView';
-import { Shake } from '../../../util/Shake';
 const { ccclass, property } = _decorator;
 
 @ccclass('WordPracticeView')
@@ -160,7 +159,7 @@ export class WordPracticeView extends BaseModeView {
             let wordData = JSON.parse(JSON.stringify(this._wordsData));
             let levelData = JSON.parse(JSON.stringify(this._levelData));
             console.log("过渡界面回调_________________________");
-            let node = await ViewsManager.instance.showLearnView(PrefabType.WordSpellView);
+            let node = await ViewsMgr.showLearnView(PrefabType.WordSpellView);
             node.getComponent(WordSpellView).initData(wordData, levelData);
             this.node.parent.destroy();
         })

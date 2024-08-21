@@ -2,7 +2,6 @@ import { _decorator, Node } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { PopMgr } from '../../manager/PopupManager';
-import { ViewsManager } from '../../manager/ViewsManager';
 import { BookListItemData, BookPlanDetail, SchoolBookGradeItemData, SchoolBookItemData, SchoolBookListGradeItemData, SchoolBookListItemData } from '../../models/TextbookModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
@@ -82,13 +81,13 @@ export class SelectWordView extends BaseView {
     onAddPlanBook(data){
         
         if(this.needShowTextbookChallenge){
-            ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
-                ViewsManager.instance.closeView(PrefabType.SelectWordView);
+            ViewsMgr.showView(PrefabType.TextbookChallengeView, (node: Node) => {
+                ViewsMgr.closeView(PrefabType.SelectWordView);
             });
         }else{
             EventMgr.dispatch(EventType.Update_Textbook_Challenge);
-            ViewsManager.instance.closeView(PrefabType.TextbookListView);
-            ViewsManager.instance.closeView(PrefabType.SelectWordView);
+            ViewsMgr.closeView(PrefabType.TextbookListView);
+            ViewsMgr.closeView(PrefabType.SelectWordView);
         }
         
     }
@@ -137,7 +136,7 @@ export class SelectWordView extends BaseView {
     /**初始化导航栏 */
     initNavTitle(){
         this.createNavigation("添加词书",this.top_layout, async () => {
-            ViewsManager.instance.closeView(PrefabType.SelectWordView);
+            ViewsMgr.closeView(PrefabType.SelectWordView);
         });
     }
     /**初始化tab选项 */

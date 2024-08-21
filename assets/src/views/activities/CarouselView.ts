@@ -2,7 +2,6 @@ import { _decorator, Component, instantiate, Label, misc, Node, Prefab, Tween, t
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { ResLoader } from '../../manager/ResLoader';
-import { ViewsManager } from '../../manager/ViewsManager';
 import { ActServer } from '../../service/ActivityService';
 import CCUtil from '../../util/CCUtil';
 import { ActConfig } from './ActivityConfig';
@@ -60,7 +59,7 @@ export class CarouselView extends Component {
 
     onStartWheel() {
         if(ActConfig.activityInfoResponse.draw_status_list.length >= MaxCarouseCount){
-            ViewsManager.instance.showTip(TextConfig.Insufficient_Draw_Carousel);
+            ViewsMgr.showTip(TextConfig.Insufficient_Draw_Carousel);
             return;
         }
         if (this.isSpinning) return; // 如果正在旋转，直接返回

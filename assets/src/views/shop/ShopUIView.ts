@@ -120,7 +120,7 @@ export class ShopUIView extends BaseView {
     initNavTitle() {
         this.createNavigation("商城",this.top_layout, () => {
             // GlobalConfig.initRessolutionHeight();
-            ViewsManager.instance.closeView(PrefabType.ShopUIView);
+            ViewsMgr.closeView(PrefabType.ShopUIView);
         });
     }
     /**初始化游戏数值 */
@@ -129,7 +129,7 @@ export class ShopUIView extends BaseView {
     }
 
     onCloseView() {
-        ViewsManager.instance.closeView(PrefabType.ShopUIView);
+        ViewsMgr.closeView(PrefabType.ShopUIView);
     }
 }
 

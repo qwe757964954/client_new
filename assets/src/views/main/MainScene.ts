@@ -529,7 +529,7 @@ export class MainScene extends BaseComponent {
     }
     /**展示建筑生产界面 */
     showBuildingProduceView(selectBuilding: BuildingModel) {
-        ViewsManager.instance.showView(PrefabType.BuildingProduceView, (node: Node) => {
+        ViewsMgr.showView(PrefabType.BuildingProduceView, (node: Node) => {
             let children = this._mapUICtl.getBuildingModelAry();
             let buildAry = [];
             let idx = 0;
@@ -603,7 +603,7 @@ export class MainScene extends BaseComponent {
     }
     /**显示城堡升级界面 */
     showCastleView(selectBuilding: BuildingModel) {
-        ViewsManager.instance.showView(PrefabType.CastleInfoView, (node: Node) => {
+        ViewsMgr.showView(PrefabType.CastleInfoView, (node: Node) => {
             this._mainUIView.node.active = false;
             let view = node.getComponent(CastleInfoView);
             let pos = selectBuilding.pos;

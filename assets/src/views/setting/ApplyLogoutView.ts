@@ -1,6 +1,5 @@
 import { _decorator, Component, Label } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
-import { ViewsManager } from '../../manager/ViewsManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('ApplyLogoutView')
@@ -23,14 +22,14 @@ export class ApplyLogoutView extends Component {
     }
 
     onClickError(){
-        ViewsManager.instance.closeView(PrefabType.ApplyLogoutView);
+        ViewsMgr.closeView(PrefabType.ApplyLogoutView);
     }
 
     onAgreeContinue(){
         if(this._agreeCallback){
             this._agreeCallback();
         }
-        ViewsManager.instance.closeView(PrefabType.ApplyLogoutView);
+        ViewsMgr.closeView(PrefabType.ApplyLogoutView);
     }
 
 }

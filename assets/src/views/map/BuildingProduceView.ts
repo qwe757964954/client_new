@@ -3,7 +3,7 @@ import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import GlobalConfig from '../../GlobalConfig';
 import { BuildProduceInfo, DataMgr } from '../../manager/DataMgr';
-import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
+import { ViewsMgr } from '../../manager/ViewsManager';
 import { BuildingModel, BuildingState } from '../../models/BuildingModel';
 import { s2cBuildingProduceAdd, s2cBuildingProduceDelete, s2cBuildingProduceGet, s2cBuildingProduceSpeed, s2cBuildingUpgrade, s2cBuildingUpgradeReward } from '../../models/NetModel';
 import { InterfacePath } from '../../net/InterfacePath';
@@ -175,7 +175,7 @@ export class BuildingProduceView extends BaseComponent {
             ViewsMgr.showTip(TextConfig.Building_Upgrade_Error);
             return;
         }
-        ViewsManager.instance.showView(PrefabType.BuildingUpgradeView, (node: Node) => {
+        ViewsMgr.showView(PrefabType.BuildingUpgradeView, (node: Node) => {
             node.getComponent(BuildingUpgradeView).init(this._building);
         });
     }

@@ -105,7 +105,7 @@ export class RewardDialogView extends Component {
     }
 
     onCloseView() {
-        // ViewsManager.instance.closeView(PrefabType.NewbieRewardDialogView);
+        // ViewsMgr.closeView(PrefabType.NewbieRewardDialogView);
         if (!this._canClose) return;
         this._canClose = false;
         EffectUtil.centerClose(this.node, () => {

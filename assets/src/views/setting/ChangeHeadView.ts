@@ -3,7 +3,6 @@ import { PbConst } from '../../config/PbConst';
 import { PrefabType } from '../../config/PrefabType';
 import { ChangeHeadTypeEnum, SettingConfig } from '../../config/SettingConfig';
 import { LoadManager } from '../../manager/LoadManager';
-import { ViewsManager } from '../../manager/ViewsManager';
 import { User } from '../../models/User';
 import ImgUtil from '../../util/ImgUtil';
 const { ccclass, property } = _decorator;
@@ -74,7 +73,7 @@ export class ChangeHeadView extends Component {
     // 关闭
     btnCloseFunc() {
         console.log("btnCloseFunc");
-        ViewsManager.instance.closeView(PrefabType.ChangeHeadView);
+        ViewsMgr.closeView(PrefabType.ChangeHeadView);
     }
     // 头像框tab
     btnHeadBoxTabFunc() {

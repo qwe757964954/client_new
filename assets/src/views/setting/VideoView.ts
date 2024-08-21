@@ -1,9 +1,7 @@
-import { _decorator, Component, EditBox, Label, Node, ProgressBar, Slider, VideoPlayer} from 'cc';
-import { ViewsManager } from '../../manager/ViewsManager';
+import { _decorator, Component, Label, Node, ProgressBar, Slider, VideoPlayer } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
-import { User } from '../../models/User';
-import { ToolUtil } from '../../util/ToolUtil';
 import { TimerMgr } from '../../util/TimerMgr';
+import { ToolUtil } from '../../util/ToolUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('VideoView')
@@ -64,7 +62,7 @@ export class VideoView extends Component {
     // 关闭
     btnCloseFunc() {
         console.log("btnCloseFunc");
-        ViewsManager.instance.closeView(PrefabType.VideoView);
+        ViewsMgr.closeView(PrefabType.VideoView);
     }
     // 关闭
     btnResumePauseFunc(event: Event, customEventData: string) {

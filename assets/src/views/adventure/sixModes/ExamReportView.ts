@@ -5,7 +5,6 @@ import { GameRes } from '../../../GameRes';
 import { ItemData } from '../../../manager/DataMgr';
 import { inf_SpineAniCreate } from '../../../manager/InterfaceDefines';
 import { SoundMgr } from '../../../manager/SoundMgr';
-import { ViewsManager } from '../../../manager/ViewsManager';
 import { AdventureResult, BossLevelSubmitData } from '../../../models/AdventureModel';
 import { GameSubmitResponse } from '../../../models/TextbookModel';
 import { BaseView } from '../../../script/BaseView';
@@ -106,7 +105,7 @@ export class ExamReportView extends BaseView {
 
     gotoNextLevel() {
         console.log("下一关卡")
-        ViewsManager.instance.closeView(PrefabType.ExamReportView);
+        ViewsMgr.closeView(PrefabType.ExamReportView);
         this.node.destroy();
         EventMgr.dispatch(EventType.Goto_Textbook_Next_Level);
     }

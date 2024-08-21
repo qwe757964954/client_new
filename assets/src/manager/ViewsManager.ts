@@ -202,7 +202,7 @@ export class ViewsManager {
         });
     }
     static showAlert(content: string, callBack?: Function) {
-        ViewsManager.instance.showAlert(content, callBack);
+        ViewsMgr.showAlert(content, callBack);
     }
     // 显示提示
     public showTip(content: string, callBack?: Function) {
@@ -243,7 +243,7 @@ export class ViewsManager {
         });
     }
     static showTip(content: string, callBack?: Function) {
-        ViewsManager.instance.showTip(content, callBack);
+        ViewsMgr.showTip(content, callBack);
     }
 
     // 显示确定弹窗
@@ -254,7 +254,7 @@ export class ViewsManager {
         return nodeScript;
     }
     static showConfirm(content: string, sureCall?: Function, cancelCall?: Function, sureStr?: string, cancelStr?: string, canClose: boolean = true) {
-        ViewsManager.instance.showConfirm(content, sureCall, cancelCall, sureStr, cancelStr, canClose);
+        ViewsMgr.showConfirm(content, sureCall, cancelCall, sureStr, cancelStr, canClose);
     }
     /**
      * 显示奖励弹窗
@@ -303,7 +303,7 @@ export class ViewsManager {
      * 
      * ViewsManager.addNavigation(this.top_layout,0,0).then((navScript: NavTitleView) => {
             navScript.updateNavigationProps("会员中心",()=>{
-                ViewsManager.instance.closeView(PrefabType.MemberCentreView);
+                ViewsMgr.closeView(PrefabType.MemberCentreView);
             });
         });
      */
@@ -391,4 +391,4 @@ export class ViewsManager {
     }
 }
 
-export const ViewsMgr = ViewsManager.instance;
+export const ViewsMgr = ViewsMgr;

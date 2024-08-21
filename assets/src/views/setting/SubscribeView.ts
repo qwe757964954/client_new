@@ -1,5 +1,4 @@
 import { _decorator, Component, Node } from 'cc';
-import { ViewsManager } from '../../manager/ViewsManager';
 import { PrefabType } from '../../config/PrefabType';
 const { ccclass, property } = _decorator;
 
@@ -20,7 +19,7 @@ export class SubscribeView extends Component {
     // 关闭
     btnCloseFunc() {
         console.log("btnCloseFunc");
-        ViewsManager.instance.closeView(PrefabType.SubscribeView);
+        ViewsMgr.closeView(PrefabType.SubscribeView);
     }
 }
 

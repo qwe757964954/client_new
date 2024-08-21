@@ -1,7 +1,6 @@
 import { _decorator, Component, Label, Node, Size, UITransform } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { SettingConfig } from '../../config/SettingConfig';
-import { ViewsManager } from '../../manager/ViewsManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('MyTableView')
@@ -83,7 +82,7 @@ export class MyTableView extends Component {
     // 关闭
     btnCloseFunc() {
         console.log("btnCloseFunc");
-        ViewsManager.instance.closeView(PrefabType.MyTableView);
+        ViewsMgr.closeView(PrefabType.MyTableView);
     }
 }
 

@@ -1,6 +1,5 @@
 import { _decorator, Node } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
-import { ViewsManager } from '../../manager/ViewsManager';
 import { WordsDetailData } from '../../models/AdventureModel';
 import { BaseView } from '../../script/BaseView';
 import { WordPanel } from './WordPanel';
@@ -27,7 +26,7 @@ export class WordSearchView extends BaseView {
     }
     private initNavTitle() {
         this.createNavigation("单词详情",this.top_layout, () => {
-            ViewsManager.instance.closeView(PrefabType.WordSearchView);
+            ViewsMgr.closeView(PrefabType.WordSearchView);
         });
     }
     private async initViews() {

@@ -5,7 +5,7 @@ import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { DataMgr } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
-import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
+import { ViewsMgr } from '../../manager/ViewsManager';
 import { s2cPetInfoRep, s2cPetInteraction, s2cPetUpgrade } from '../../models/NetModel';
 import { RoleDataModel } from '../../models/RoleDataModel';
 import { User } from '../../models/User';
@@ -165,7 +165,7 @@ export class PetInteractionView extends BaseComponent {
     }
     /**信息按钮 */
     onInfoClick() {
-        ViewsManager.instance.showView(PrefabType.PetInfoView, (node: Node) => {
+        ViewsMgr.showView(PrefabType.PetInfoView, (node: Node) => {
             this.node.active = false;
             this._pet.isActive = false;
             node.getComponent(PetInfoView).init(this._pet.roleID, this._pet.level, () => {

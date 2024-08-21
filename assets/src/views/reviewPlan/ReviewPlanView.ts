@@ -209,7 +209,7 @@ export class ReviewPlanView extends BaseComponent {
     }
     /**返回按钮 */
     async onBtnBackClick() {
-        // await ViewsManager.instance.showViewAsync(PrefabType.TextbookChallengeView);
+        // await ViewsMgr.showViewAsync(PrefabType.TextbookChallengeView);
         this.node.destroy();
     }
     /**抽奖按钮 */

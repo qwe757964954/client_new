@@ -1,7 +1,7 @@
 [
   {
     "__type__": "cc.Prefab",
-    "_name": "RankView",
+    "_name": "ComicReadingView",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_native": "",
@@ -13,7 +13,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "RankView",
+    "_name": "ComicReadingView",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": null,
@@ -587,7 +587,7 @@
     "fileId": "a3adF76wVNfIGQwCP9N8/C"
   },
   {
-    "__type__": "2c929z2Ct9GrayVeZoVyNM8",
+    "__type__": "2321eYLvvFOTICm4yXBasH2",
     "_name": "",
     "_objFlags": 0,
     "__editorExtras__": {},
@@ -608,7 +608,7 @@
   },
   {
     "__type__": "cc.CompPrefabInfo",
-    "fileId": "0b7EEeBcdKEZzfNu7ExnLJ"
+    "fileId": "ceNL7r6wlL1KOmR3/bpcjS"
   },
   {
     "__type__": "cc.PrefabInfo",

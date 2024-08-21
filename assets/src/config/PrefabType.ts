@@ -257,4 +257,8 @@ export const PrefabType = {
     WordPanel: { path: "myword/WordPanel", zindex: Hierarchy.POPUPLAYER, tips: "单词弹窗" },
     /*********************************************myword End*************************************************************/
 
+    /*********************************************漫画阅读 start***********************************************************/
+    ComicReadingView: { path: "ComicReading/ComicReadingView", zindex: Hierarchy.POPUPLAYER, tips: "漫画阅读" },
+    /*********************************************漫画阅读 end***********************************************************/
+
 }

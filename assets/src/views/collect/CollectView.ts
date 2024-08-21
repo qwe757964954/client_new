@@ -111,7 +111,7 @@ export class CollectView extends BaseView {
 
     private initNavTitle() {
         this.createNavigation("成就徽章",this.top_layout, () => {
-            ViewsManager.instance.closeView(PrefabType.CollectView);
+            ViewsMgr.closeView(PrefabType.CollectView);
         });
     }
 

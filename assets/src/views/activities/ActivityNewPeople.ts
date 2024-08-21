@@ -1,6 +1,6 @@
 import { _decorator, isValid, Node } from 'cc';
 import { TextConfig } from '../../config/TextConfig';
-import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
+import { ViewsMgr } from '../../manager/ViewsManager';
 import { SignRewardDrawResponse } from '../../models/ActivityModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
@@ -59,7 +59,7 @@ export class ActivityNewPeople extends BaseView {
 
     onSignNowClick(){
         if(!ActConfig.isTodayDayGreaterThanGivenDateDay()){
-            ViewsManager.instance.showTip(TextConfig.Insufficient_Day_Sign);
+            ViewsMgr.showTip(TextConfig.Insufficient_Day_Sign);
             return;
         }
         ActServer.reqSignRewardDraw(); 

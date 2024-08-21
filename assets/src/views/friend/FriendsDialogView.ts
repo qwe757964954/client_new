@@ -2,7 +2,7 @@ import { _decorator, Label, Node, Prefab } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
-import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
+import { ViewsMgr } from '../../manager/ViewsManager';
 import { FriendListItemModel, SystemMailItem, SystemMailListResponse, UserFriendData, UserSystemAwardResponse } from '../../models/FriendModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BasePopRight } from '../../script/BasePopRight';
@@ -192,7 +192,7 @@ export class FriendsDialogView extends BasePopRight {
     }
 
     onHouseClick() {
-        ViewsManager.instance.showTip(TextConfig.Function_Tip2);
+        ViewsMgr.showTip(TextConfig.Function_Tip2);
     }
 }
 

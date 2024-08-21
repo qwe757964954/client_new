@@ -3,7 +3,7 @@ import { EventType } from '../../../config/EventType';
 import { PrefabType } from '../../../config/PrefabType';
 import { TextConfig } from '../../../config/TextConfig';
 import { SoundMgr } from '../../../manager/SoundMgr';
-import { ViewsManager, ViewsMgr } from '../../../manager/ViewsManager';
+import { ViewsMgr } from '../../../manager/ViewsManager';
 import { GameMode } from '../../../models/AdventureModel';
 import { UnitWordModel } from '../../../models/TextbookModel';
 import CCUtil from '../../../util/CCUtil';
@@ -182,7 +182,7 @@ export class WordExamView extends BaseModeView {
             return;
         }
         if (this._currentSubmitResponse.pass_flag == 1 || this._currentSubmitResponse.pass_flag == 2) { //成功或失败
-            ViewsManager.instance.showView(PrefabType.ExamReportView, (node: Node) => {
+            ViewsMgr.showView(PrefabType.ExamReportView, (node: Node) => {
                 let nodeScript = node.getComponent(ExamReportView);
                 nodeScript.initData(this._currentSubmitResponse, this._sourceType);
                 this.node.parent.destroy();

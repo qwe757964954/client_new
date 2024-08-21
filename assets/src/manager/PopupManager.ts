@@ -160,7 +160,7 @@ export class PopupManager {
     /**
      * 
      * @param viewConfig 
-     * 示例代码： ViewsManager.instance.closePopup(PrefabType.SettingPlanView);
+     * 示例代码： ViewsMgr.closePopup(PrefabType.SettingPlanView);
      */
     closePopup(viewConfig: PrefabConfig) {
         // 关闭界面

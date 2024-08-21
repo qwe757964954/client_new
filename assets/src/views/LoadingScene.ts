@@ -5,7 +5,7 @@ import { TextConfig } from '../config/TextConfig';
 import GlobalConfig from '../GlobalConfig';
 import { LoadManager } from '../manager/LoadManager';
 import { SceneMgr } from '../manager/SceneMgr';
-import { ViewsManager, ViewsMgr } from '../manager/ViewsManager';
+import { ViewsMgr } from '../manager/ViewsManager';
 import { HttpManager } from '../net/HttpManager';
 import DownloaderUtil from '../util/DownloaderUtil';
 const { ccclass, property } = _decorator;
@@ -46,7 +46,7 @@ export class LoadingScene extends Component {
     private _uiCheck: boolean = false;//ui版本检测
 
     start() {
-        ViewsManager.instance.initLayer(this.sceneLayer, this.popupLayer, this.tipLayer, this.loadingLayer);
+        ViewsMgr.initLayer(this.sceneLayer, this.popupLayer, this.tipLayer, this.loadingLayer);
         this.labelVer.string = GlobalConfig.getVersionStr();
         LoadManager.preload(MapConfig.bgInfo.preload);
         this.checkVersion();

@@ -114,20 +114,20 @@ export class MainUIView extends BaseView {
     }
     /**好友点击 */
     async onClickFriend() {
-        // await ViewsManager.instance.showPopup(PrefabType.FriendsDialogView);
+        // await ViewsMgr.showPopup(PrefabType.FriendsDialogView);
         await PopMgr.showPopRight(PrefabType.FriendListView,"content");
 
     }
     /**运营活动 */
     async onClickOperationalActivities() {
-        // ViewsManager.instance.showTip(TextConfig.Function_Tip);
+        // ViewsMgr.showTip(TextConfig.Function_Tip);
         // return
-        await ViewsManager.instance.showViewAsync(PrefabType.ActivityView);
+        await ViewsMgr.showViewAsync(PrefabType.ActivityView);
     }
 
     //头像点击
     public onClickHead() {
-        ViewsManager.instance.showView(PrefabType.SettingView);
+        ViewsMgr.showView(PrefabType.SettingView);
         // ViewsManager.showTip(TextConfig.Function_Tip);
     }
     //菜单点击
@@ -137,7 +137,7 @@ export class MainUIView extends BaseView {
     }
     //复习计划点击
     public onClickReview() {
-        ViewsManager.instance.showView(PrefabType.ReviewPlanView, (node: Node) => {
+        ViewsMgr.showView(PrefabType.ReviewPlanView, (node: Node) => {
             // this._mainScene.mapCamera.node.active = false;
             // this._mainScene.mapUICamera.node.active = false;
             node.getComponent(ReviewPlanView).setCloseCall(() => {
@@ -148,7 +148,7 @@ export class MainUIView extends BaseView {
     }
     //翻译查词点击
     public async onClickTranslate() {
-       const node = await ViewsManager.instance.showViewAsync(PrefabType.WordbookView);
+       const node = await ViewsMgr.showViewAsync(PrefabType.WordbookView);
        const script:WordbookView = node.getComponent(WordbookView);
        script.setTabSelected(WordbookType.translate);
         // ViewsManager.showTip(TextConfig.Function_Tip);
@@ -160,7 +160,7 @@ export class MainUIView extends BaseView {
     //BOSS点击
     public onClickBoss() {
         ViewsManager.showTip(TextConfig.Function_Tip);
-        // ViewsManager.instance.showView(PrefabType.WorldBossView);
+        // ViewsMgr.showView(PrefabType.WorldBossView);
     }
     //商店点击
     public onClickShop() {

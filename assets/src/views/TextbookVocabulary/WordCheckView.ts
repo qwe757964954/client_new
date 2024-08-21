@@ -62,7 +62,7 @@ export class WordCheckView extends BaseView {
     /** 初始化导航栏 */
     private initNavTitle() {
         this.createNavigation("单词列表", this.top_layout, () => {
-            ViewsManager.instance.closeView(PrefabType.WordCheckView);
+            ViewsMgr.closeView(PrefabType.WordCheckView);
         });
     }
 
@@ -100,7 +100,7 @@ export class WordCheckView extends BaseView {
             return;
         }
         this._detailData = this.createDetailData(data);
-        const node = await ViewsManager.instance.showViewAsync(PrefabType.WordSearchView);
+        const node = await ViewsMgr.showViewAsync(PrefabType.WordSearchView);
         node.getComponent(WordSearchView).updateData(this._detailData);
     }
 

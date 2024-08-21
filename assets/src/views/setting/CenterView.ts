@@ -79,7 +79,7 @@ export class CenterView extends Component {
     btnChangeHeadFunc() {
         console.log("btnChangeHeadFunc");
         ViewsManager.showTip(TextConfig.Function_Tip);
-        // ViewsManager.instance.showView(PrefabType.ChangeHeadView);
+        // ViewsMgr.showView(PrefabType.ChangeHeadView);
     }
     // 修改名称
     async btnChangeNameFunc() {
@@ -95,13 +95,13 @@ export class CenterView extends Component {
     // 我的表格
     btnMyTableFunc() {
         console.log("btnMyTableFunc");
-        ViewsManager.instance.showView(PrefabType.MyTableView);
+        ViewsMgr.showView(PrefabType.MyTableView);
     }
 
     /**点击订阅学习周报事件 */
     btnSubscribeFunc() {
         console.log("btnSubscribeFunc");
-        ViewsManager.instance.showView(PrefabType.SubscribeView);
+        ViewsMgr.showView(PrefabType.SubscribeView);
     }
 }
 

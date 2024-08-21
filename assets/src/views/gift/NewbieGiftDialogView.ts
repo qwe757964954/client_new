@@ -2,7 +2,6 @@ import { _decorator, Component, EventTouch, instantiate, Node, Prefab, ScrollVie
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { ItemData } from '../../manager/DataMgr';
-import { ViewsManager } from '../../manager/ViewsManager';
 import CCUtil from '../../util/CCUtil';
 import EventManager from '../../util/EventManager';
 import { NewbieGiftItem } from './NewbieGiftItem';
@@ -157,7 +156,7 @@ export class NewbieGiftDialogView extends Component {
                 this.tomorrowFlag.active = true;
             }
 
-            ViewsManager.instance.showView(PrefabType.NewbieRewardDialogView, (node: Node) => {
+            ViewsMgr.showView(PrefabType.NewbieRewardDialogView, (node: Node) => {
                 let awardInfo: ItemData = {
                     "id": 1,
                     "num": 200,
@@ -184,7 +183,7 @@ export class NewbieGiftDialogView extends Component {
     }
 
     private onCloseView() {
-        ViewsManager.instance.closeView(PrefabType.NewbieGiftDialogView);
+        ViewsMgr.closeView(PrefabType.NewbieGiftDialogView);
     }
 
     start() {

@@ -1,7 +1,6 @@
 import { Label, Layers, Node, Prefab, UITransform, Vec3, _decorator, instantiate, tween } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
-import { ViewsManager } from '../../manager/ViewsManager';
 import { PetModel } from '../../models/PetModel';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
 import { BaseView } from '../../script/BaseView';
@@ -118,8 +117,8 @@ export class BossChallengeView extends BaseView {
         this._challengeFrame.onLoadWordData(this._bossGame.Words);
     }
     onCloseView() {
-        ViewsManager.instance.showView(PrefabType.WorldBossView, (node: Node) => {
-            ViewsManager.instance.closeView(PrefabType.BossChallengeView);
+        ViewsMgr.showView(PrefabType.WorldBossView, (node: Node) => {
+            ViewsMgr.closeView(PrefabType.BossChallengeView);
         });
     }
     onChallengeReportResult(params: { result: AnswerType }) {

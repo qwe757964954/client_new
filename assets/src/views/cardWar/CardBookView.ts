@@ -200,7 +200,7 @@ export class CardBookView extends Component {
     /**关闭页面 TODO*/
     private onClose() {
         //director.loadScene(SceneType.MainScene);
-        ViewsManager.instance.closeView(PrefabType.CardBookView);
+        ViewsMgr.closeView(PrefabType.CardBookView);
     }
 
     /**获取卡牌 TODO*/

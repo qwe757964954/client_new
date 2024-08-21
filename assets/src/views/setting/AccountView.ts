@@ -2,7 +2,6 @@ import { _decorator, Component, Node } from 'cc';
 import { PrefabType, SceneType } from '../../config/PrefabType';
 import { PopMgr } from '../../manager/PopupManager';
 import { SceneMgr } from '../../manager/SceneMgr';
-import { ViewsManager } from '../../manager/ViewsManager';
 import { UserPlayerDetail } from '../../models/SettingModel';
 import { ApplyLogoutView } from './ApplyLogoutView';
 import { ChangeRoleView } from './ChangeRoleView';
@@ -39,7 +38,7 @@ export class AccountView extends Component {
     // 激活码激活
     btnJiHuoFunc() {
         console.log("btnJiHuoFunc");
-        ViewsManager.instance.showView(PrefabType.AccountActivationView);
+        ViewsMgr.showView(PrefabType.AccountActivationView);
     }
     // 重置
     async btnChongZhiFunc() {
@@ -54,33 +53,33 @@ export class AccountView extends Component {
     async btnChangeRoleFunc() {
         console.log("btnChangeRoleFunc");
         try {
-            let node = await ViewsManager.instance.showViewAsync(PrefabType.ChangeRoleView);
+            let node = await ViewsMgr.showViewAsync(PrefabType.ChangeRoleView);
             let changeRoleView = node.getComponent(ChangeRoleView);
             changeRoleView.updateData(this._playerDetail);
         } catch (error) {
             console.error("Failed to show ChangeRoleView", error);
         }
-        // let node = await ViewsManager.instance.showViewAsync(PrefabType.ChangeRoleView);
+        // let node = await ViewsMgr.showViewAsync(PrefabType.ChangeRoleView);
         // node.getComponent(ChangeRoleView).updateData(this._playerDetail);
     }
     // 会员中心
     btnVipCenterFunc() {
         console.log("btnVipCenterFunc");
-        ViewsManager.instance.showView(PrefabType.MemberCentreView);
+        ViewsMgr.showView(PrefabType.MemberCentreView);
     }
     // 意见反馈
     btnFanKuiFunc() {
         console.log("btnFanKuiFunc");
-        ViewsManager.instance.showView(PrefabType.FeedbackView);
+        ViewsMgr.showView(PrefabType.FeedbackView);
     }
     // 账号注销
     btnZhuXiaoFunc() {
         console.log("btnZhuXiaoFunc");
-        ViewsManager.instance.showView(PrefabType.ApplyLogoutView, (node: Node) => {
+        ViewsMgr.showView(PrefabType.ApplyLogoutView, (node: Node) => {
             let itemScript = node.getComponent(ApplyLogoutView);
             itemScript.setAgreeCallback(() => {
                 console.log("agree  call  back");
-                ViewsManager.instance.showView(PrefabType.LogoutView);
+                ViewsMgr.showView(PrefabType.LogoutView);
             })
         });
     }

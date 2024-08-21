@@ -64,7 +64,7 @@ export class WorldBossView extends BaseView {
     /**初始化导航栏 */
     initNavTitle(){
         this.createNavigation("挑战BOSS",this.top_layout, () => {
-            ViewsManager.instance.closeView(PrefabType.WorldBossView);
+            ViewsMgr.closeView(PrefabType.WorldBossView);
         });
     }
     /**初始化游戏数值 */
@@ -124,8 +124,8 @@ export class WorldBossView extends BaseView {
 
     onChallengeWorldBoss(){
         console.log("onChallengeWorldBoss");
-        ViewsManager.instance.showView(PrefabType.BossChallengeView, (node: Node) => {
-            ViewsManager.instance.closeView(PrefabType.WorldBossView);
+        ViewsMgr.showView(PrefabType.BossChallengeView, (node: Node) => {
+            ViewsMgr.closeView(PrefabType.WorldBossView);
             let nodeScript:BossChallengeView = node.getComponent(BossChallengeView);
             nodeScript.initData(this._worldRankData.Data.Game)
         });

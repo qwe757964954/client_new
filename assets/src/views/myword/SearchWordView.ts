@@ -88,7 +88,7 @@ export class SearchWordView extends BaseView {
     private async onMoreWordDetail(data: SearchWordItem) {
         console.log("onMoreWordDetail", data);
         if(!isValid(this.node) || !this.node.active){return}
-        const node = await ViewsManager.instance.showViewAsync(PrefabType.WordDetailUI);
+        const node = await ViewsMgr.showViewAsync(PrefabType.WordDetailUI);
         let wordData = new WordModel();
         wordData.word = data.word;
         wordData.w_id = "";

@@ -1,6 +1,5 @@
 import { _decorator, EventTouch, instantiate, Layers, Node, Prefab, sp, tween, Vec3 } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
-import { ViewsManager } from '../../manager/ViewsManager';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
 import { UserPlayerDetail, UserPlayerModifyModel } from '../../models/SettingModel';
 import { BaseView } from '../../script/BaseView';
@@ -122,11 +121,11 @@ export class ChangeRoleView extends BaseView {
             role_id: this._currentRoleId
         };
         STServer.reqUserPlayerModify(param);
-        ViewsManager.instance.closeView(PrefabType.ChangeRoleView);
+        ViewsMgr.closeView(PrefabType.ChangeRoleView);
     }
 
     onBackClose() {
         console.log("onBackClose____________");
-        ViewsManager.instance.closeView(PrefabType.ChangeRoleView);
+        ViewsMgr.closeView(PrefabType.ChangeRoleView);
     }
 }

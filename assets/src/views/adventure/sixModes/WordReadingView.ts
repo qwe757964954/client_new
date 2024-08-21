@@ -251,7 +251,7 @@ export class WordReadingView extends BaseModeView {
     protected gotoResult(): void {
         console.log('朗读模式完成');
         this._finished = true;
-        ViewsManager.instance.showView(PrefabType.WordReportView, (node: Node) => {
+        ViewsMgr.showView(PrefabType.WordReportView, (node: Node) => {
             let nodeScript = node.getComponent(WordReportView);
             console.log('朗读模式完成', this._currentSubmitResponse);
             nodeScript.initData(this._currentSubmitResponse, this.gameMode, this._sourceType);

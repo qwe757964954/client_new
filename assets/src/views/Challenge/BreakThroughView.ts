@@ -141,7 +141,7 @@ export class BreakThroughView extends BaseView {
 
         const prefabType = GameStudyViewMap[gameModel];
         if (prefabType) {
-            const node = await ViewsManager.instance.showLearnView(prefabType);
+            const node = await ViewsMgr.showLearnView(prefabType);
             let scpt: any = node.getComponent(prefabType.componentName); 
             scpt.initData(wordData.data, bookLevelData);
         }
@@ -217,8 +217,8 @@ export class BreakThroughView extends BaseView {
 
     async initNavTitle() {
         this.createNavigation(`${this._bookData.book_name} ${this._bookData.grade}`, this.top_layout, async () => {
-            const node = await ViewsManager.instance.showLearnView(PrefabType.TextbookChallengeView);
-            ViewsManager.instance.closeView(PrefabType.BreakThroughView);
+            const node = await ViewsMgr.showLearnView(PrefabType.TextbookChallengeView);
+            ViewsMgr.closeView(PrefabType.BreakThroughView);
         });
     }
 

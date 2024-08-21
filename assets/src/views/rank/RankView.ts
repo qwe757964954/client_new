@@ -70,7 +70,7 @@ export class RankView extends BaseView {
     }
     private initNavTitle() {
         this.createNavigation("排行",this.top_layout, () => {
-            ViewsManager.instance.closeView(PrefabType.RankView);
+            ViewsMgr.closeView(PrefabType.RankView);
         });
     }
 

@@ -7,7 +7,7 @@ const { ccclass, property } = _decorator;
 /**帮助窗口
  * 配置文件在config/gameHelp.json
  * 调用示例
- * ViewsManager.instance.showView(PrefabType.HelpDialogView, (node: Node) => {
+ * ViewsMgr.showView(PrefabType.HelpDialogView, (node: Node) => {
             let strHelp: string = DataMgr.instance.helpConfig["邀请规则说明"];
             node.getComponent(HelpDialogView).initData(strHelp);
         });

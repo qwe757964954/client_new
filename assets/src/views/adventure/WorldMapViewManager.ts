@@ -1,10 +1,4 @@
-import { _decorator, Component, instantiate, Node, Prefab, view } from 'cc';
-import { EventType } from '../../config/EventType';
-import EventManager from '../../util/EventManager';
-import { WorldMapView } from './WorldMapView';
-import { ViewsManager } from '../../manager/ViewsManager';
-import { PrefabType } from '../../config/PrefabType';
-import { StudyModeView } from './sixModes/StudyModeView';
+import { _decorator, Component, Node } from 'cc';
 
 const { ccclass, property } = _decorator;
 
@@ -37,7 +31,7 @@ export class WorldMapViewManager extends Component {
     }
     /**初始化UI */
     private initUI() {
-        ViewsManager.instance.initLayer(this.sceneLayer, this.popupLayer, this.tipLayer, this.loadingLayer);
+        ViewsMgr.initLayer(this.sceneLayer, this.popupLayer, this.tipLayer, this.loadingLayer);
 
     }
 

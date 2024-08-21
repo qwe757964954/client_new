@@ -1,7 +1,6 @@
 import { _decorator, JsonAsset, Node } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { ResLoader } from '../../manager/ResLoader';
-import { ViewsManager } from '../../manager/ViewsManager';
 import { BaseView } from '../../script/BaseView';
 import List from '../../util/list/List';
 import { ResponseData, VocabularyParentNode } from './GrammarInfo';
@@ -48,7 +47,7 @@ export class GrammarVocabularyView extends BaseView {
     /**初始化导航栏 */
     initNavTitle(){
         this.createNavigation(`语法训练`,this.top_layout, () => {
-            ViewsManager.instance.closeView(PrefabType.GrammarVocabularyView);
+            ViewsMgr.closeView(PrefabType.GrammarVocabularyView);
         });
     }
     onLoadVocabularyGrid(item:Node, idx:number){

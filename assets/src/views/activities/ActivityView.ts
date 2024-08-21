@@ -118,7 +118,7 @@ export class RankView extends BaseView {
     }
     private initNavTitle() {
         this.createNavigation("新人豪礼",this.top_layout, () => {
-            ViewsManager.instance.closeView(PrefabType.ActivityView);
+            ViewsMgr.closeView(PrefabType.ActivityView);
         });
     }
 

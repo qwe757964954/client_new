@@ -193,7 +193,7 @@ export class WeekTaskView extends BaseView {
 
     private initNavTitle() {
         this.createNavigation("每周任务",this.top_layout, () => {
-            ViewsManager.instance.closeView(PrefabType.WeekTaskView);
+            ViewsMgr.closeView(PrefabType.WeekTaskView);
         });
     }
 

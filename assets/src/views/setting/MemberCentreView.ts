@@ -32,7 +32,7 @@ export class MemberCentreView extends BaseView {
     /**初始化导航栏 */
     initNavTitle(){
         this.createNavigation("会员中心",this.top_layout, () => {
-            ViewsManager.instance.closeView(PrefabType.MemberCentreView);
+            ViewsMgr.closeView(PrefabType.MemberCentreView);
         });
     }
     /**初始化游戏数值 */

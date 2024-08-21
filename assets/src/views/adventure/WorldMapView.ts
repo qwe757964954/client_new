@@ -140,7 +140,6 @@ export class WorldMapView extends BaseView {
             return;
         }
         this.currentPassIsland = data;
-        console.log("onGetIslandStatus......",this._mapLandDatas);
         this.scrollView.numItems = this._mapLandDatas.length;
     }
 
@@ -258,7 +257,7 @@ export class WorldMapView extends BaseView {
     private async openLearningView(wordData: UnitWordModel[], bookLevelData: GateData, gameMode: GameMode) {
         const prefabType = GameStudyViewMap[gameMode];
         if (prefabType) {
-            const node = await ViewsManager.instance.showLearnView(prefabType);
+            const node = await ViewsMgr.showLearnView(prefabType);
             let scpt: any = node.getComponent(prefabType.componentName); 
             scpt.initData(wordData, bookLevelData);
         }

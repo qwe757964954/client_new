@@ -390,6 +390,6 @@ export class BagDialogView extends BaseView {
     }
 
     private onCloseView() {
-        ViewsManager.instance.closeView(PrefabType.BagView);
+        ViewsMgr.closeView(PrefabType.BagView);
     }
 }

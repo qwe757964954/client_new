@@ -1,6 +1,5 @@
 import { _decorator, isValid, Node } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
-import { ViewsManager } from '../../manager/ViewsManager';
 import { BasePopRight } from '../../script/BasePopRight';
 import List from '../../util/list/List';
 import { MainActivityIds, MainActivityInfo, MainActivityInfos } from './MainInfo';
@@ -45,15 +44,15 @@ export class MainRightActivity extends BasePopRight {
     }
 
     async onClickBag(){
-        await ViewsManager.instance.showViewAsync(PrefabType.BagView);
+        await ViewsMgr.showViewAsync(PrefabType.BagView);
     }
 
     async onClickCollect(){
-        await ViewsManager.instance.showViewAsync(PrefabType.CollectView);
+        await ViewsMgr.showViewAsync(PrefabType.CollectView);
     }
 
     async onClickRank(){
-        await ViewsManager.instance.showViewAsync(PrefabType.RankView);
+        await ViewsMgr.showViewAsync(PrefabType.RankView);
     }
 
 }

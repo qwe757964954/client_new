@@ -219,7 +219,7 @@ export class StudyModeView extends BaseModeView {
         this.showTransitionView(async () => {
             const wordData = JSON.parse(JSON.stringify(this._wordsData));
             const levelData = JSON.parse(JSON.stringify(this._levelData));
-            let node = await ViewsManager.instance.showLearnView(PrefabType.WordMeaningView);
+            let node = await ViewsMgr.showLearnView(PrefabType.WordMeaningView);
             node.getComponent(WordMeaningView).initData(wordData, levelData);
             this.node.parent.destroy();
         });

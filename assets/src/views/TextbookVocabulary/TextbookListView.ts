@@ -89,8 +89,8 @@ export class TextbookListView extends BaseView {
     /**初始化导航栏 */
     initNavTitle() {
         this.createNavigation("词书列表",this.top_layout, () => {
-            // ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
-                ViewsManager.instance.closeView(PrefabType.TextbookListView);
+            // ViewsMgr.showView(PrefabType.TextbookChallengeView, (node: Node) => {
+                ViewsMgr.closeView(PrefabType.TextbookListView);
             // });
         });
     }
@@ -130,21 +130,21 @@ export class TextbookListView extends BaseView {
         // this.myScrollView.node.active = this._myTextbookDataArr.length !== 0;
     }
     onChangeTextbook(){
-        // ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
-        //     ViewsManager.instance.closeView(PrefabType.TextbookListView);
+        // ViewsMgr.showView(PrefabType.TextbookChallengeView, (node: Node) => {
+        //     ViewsMgr.closeView(PrefabType.TextbookListView);
         // });
         EventMgr.dispatch(EventType.Update_Textbook_Challenge);
-        ViewsManager.instance.closeView(PrefabType.TextbookListView);
+        ViewsMgr.closeView(PrefabType.TextbookListView);
     }
     onClickHelp() {
         console.log("onClickHelp");
-        ViewsManager.instance.showView(PrefabType.SelectWordHelp);
+        ViewsMgr.showView(PrefabType.SelectWordHelp);
     }
 
     onClickAddTextbook() {
         console.log("onClickAddTextbook");
-        ViewsManager.instance.showView(PrefabType.SelectWordView, (node: Node) => {
-            // ViewsManager.instance.closeView(PrefabType.TextbookListView);
+        ViewsMgr.showView(PrefabType.SelectWordView, (node: Node) => {
+            // ViewsMgr.closeView(PrefabType.TextbookListView);
         });
     }
 }

@@ -130,7 +130,7 @@ export class TextbookChallengeView extends BaseView {
 
     initNavTitle() {
         this.createNavigation("我的词书", this.top_layout, () => {
-            ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);
+            ViewsMgr.closeView(PrefabType.TextbookChallengeView);
         });
     }
 
@@ -161,26 +161,26 @@ export class TextbookChallengeView extends BaseView {
     }
 
     private async showBreakThroughView() {
-        const node = await ViewsManager.instance.showLearnView(PrefabType.BreakThroughView);
+        const node = await ViewsMgr.showLearnView(PrefabType.BreakThroughView);
         const script = node.getComponent(BreakThroughView);
         script.initData(this._bookData, this._unitListArr);
-        ViewsManager.instance.closeView(PrefabType.TextbookChallengeView);
+        ViewsMgr.closeView(PrefabType.TextbookChallengeView);
     }
 
     private async showChangeBookView() {
-        const node = await ViewsManager.instance.showViewAsync(PrefabType.TextbookListView);
+        const node = await ViewsMgr.showViewAsync(PrefabType.TextbookListView);
         const script = node.getComponent(TextbookListView);
         script.initData(this._bookData);
     }
 
     private async showCheckWordView() {
-        const node = await ViewsManager.instance.showViewAsync(PrefabType.WordCheckView);
+        const node = await ViewsMgr.showViewAsync(PrefabType.WordCheckView);
         const script = node.getComponent(WordCheckView);
         script.initData(this._bookData);
     }
 
     private async showReviewView() {
-        await ViewsManager.instance.showViewAsync(PrefabType.ReviewPlanView);
+        await ViewsMgr.showViewAsync(PrefabType.ReviewPlanView);
     }
 
     async initChallengeBottom() {

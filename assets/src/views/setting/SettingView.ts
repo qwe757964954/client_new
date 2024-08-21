@@ -59,7 +59,7 @@ export class SettingView extends BaseView {
     }
     private initNavTitle() {
         this.createNavigation("设置",this.top_layout, () => {
-            ViewsManager.instance.closeView(PrefabType.SettingView);
+            ViewsMgr.closeView(PrefabType.SettingView);
         });
     }
     private fetchInitialData() {
@@ -119,13 +119,13 @@ export class SettingView extends BaseView {
     btnAboutUsFunc() {
         console.log("btnAboutUsFunc");
         ViewsManager.showTip(TextConfig.Function_Tip);
-        // ViewsManager.instance.showView(PrefabType.VideoView);
+        // ViewsMgr.showView(PrefabType.VideoView);
     }
 
     // 返回主界面
     btnCloseFunc() {
         console.log("btnCloseFunc");
-        ViewsManager.instance.closeView(PrefabType.SettingView);
+        ViewsMgr.closeView(PrefabType.SettingView);
     }
 }
 

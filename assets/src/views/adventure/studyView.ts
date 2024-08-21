@@ -2,7 +2,7 @@ import { _decorator, isValid, Node, ScrollView } from 'cc';
 import { PrefabType, SceneType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { SceneMgr } from '../../manager/SceneMgr';
-import { ViewsManager } from '../../manager/ViewsManager';
+import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { CurrentBookStatus } from '../../models/TextbookModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BaseView } from '../../script/BaseView';
@@ -38,10 +38,10 @@ export class studyView extends BaseView {
     onCurrentBookStatus(curBook: CurrentBookStatus): void {
         /**当前词书状态 */
         if (isValid(curBook.book_id) && isValid(curBook.book_name) && isValid(curBook.grade)) {
-            ViewsManager.instance.showView(PrefabType.TextbookChallengeView, (node: Node) => {
+            ViewsMgr.showView(PrefabType.TextbookChallengeView, (node: Node) => {
             });
         } else {
-            ViewsManager.instance.showView(PrefabType.SelectWordView, (node: Node) => {
+            ViewsMgr.showView(PrefabType.SelectWordView, (node: Node) => {
                 node.getComponent(SelectWordView).needShowTextbookChallenge = true;
             });
         }
@@ -61,14 +61,17 @@ export class studyView extends BaseView {
         console.log(name);
         switch (name) {
             case "wordAdventure": //单词大冒险
-                ViewsManager.instance.showView(PrefabType.WorldMapView);
+                ViewsMgr.showView(PrefabType.WorldMapView);
                 break;
             case "bookWord": //教材单词
                 TBServer.reqCurrentBook();
                 break;
             // case "grammar": //语法训练
-            //     ViewsManager.instance.showView(PrefabType.GrammarTrainingView);
+            //     ViewsMgr.showView(PrefabType.GrammarTrainingView);
             //     break;
+            case "pictureBook": //英文漫画阅读
+                ViewsMgr.showViewAsync(PrefabType.ComicReadingView);
+                break
             default:
                 ViewsManager.showTip(TextConfig.Function_Tip);
                 break;
