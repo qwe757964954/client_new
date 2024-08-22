@@ -355,7 +355,18 @@ export class MapTouchBetterController extends Component {
         }, this);
     }
 
-    private smoothOperate(target: Node, pos: Vec3, scale: number): void {
+    public getScale(): number {
+        return this.map.getScale().x;
+    }
+
+    public manualOperate( scale: number): void {
+        let target: Node = this.map;
+        let transform = <UITransform>this.node.getComponent(UITransform);
+        let pos: Vec3 = transform.convertToNodeSpaceAR(v3(transform.width / 2, transform.height / 2));
+        this.smoothOperate(target, pos, scale);
+    }
+
+    public smoothOperate(target: Node, pos: Vec3, scale: number): void {
         // 放大缩小
         if (this.minScale <= scale && scale <= this.maxScale) {
             // 获取速率的小数后几位，防止速率过小时取整直接舍弃掉了变化

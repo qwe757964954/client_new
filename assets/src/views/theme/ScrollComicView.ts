@@ -2,6 +2,7 @@ import { _decorator, Button, Label, Node } from 'cc';
 import { BaseView } from '../../script/BaseView';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
+import { MapTouchBetterController } from '../Challenge/MapCom/MapTouchBetterController';
 import { ComicPageItem } from './ComicPageItem';
 const { ccclass, property } = _decorator;
 
@@ -32,8 +33,9 @@ export class ScrollComicView extends BaseView {
     pageLabel: Label = null;
 
     private _currentPage:number = 0;
-
+    private _mapScript:MapTouchBetterController = null;
     protected initUI(): void {
+        this._mapScript = this.comic_list.scrollView.view.getComponent(MapTouchBetterController);
         this.comic_list.numItems = 6;
         this._currentPage = 0;
         this.updatePageText();
@@ -65,11 +67,13 @@ export class ScrollComicView extends BaseView {
     }
 
     clickEnlargeEvent(){
-
+        let needScale = this._mapScript.getScale() + 0.1;
+        this._mapScript.manualOperate(needScale);
     }
 
     clickNarrowEvent(){
-
+        let needScale = this._mapScript.getScale() - 0.1;
+        this._mapScript.manualOperate(needScale);
     }
 
     onListRender(item: Node, idx: number) {
@@ -80,6 +84,8 @@ export class ScrollComicView extends BaseView {
 
     onListPageChange(pageNum: number) {
         console.log('当前是第' + pageNum + '页');
+        this._mapScript.manualOperate(1);
+        // this.comic_list.getItemByListId(pageNum)
         this._currentPage = pageNum;
         this.updatePageText();
     }
