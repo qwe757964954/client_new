@@ -2345,11 +2345,16 @@
         "__expectedType__": "cc.SpriteFrame"
       }
     ],
-    "scrollView": {
-      "__id__": 89
-    },
     "pageLabel": {
       "__id__": 26
+    },
+    "defaultScaling": 1,
+    "minScale": 1,
+    "maxScale": 2,
+    "zoomStep": 0.1,
+    "zoomSpeed": 0.1,
+    "scrollView": {
+      "__id__": 89
     },
     "_id": ""
   },
