@@ -8,11 +8,6 @@ const { ccclass, property } = _decorator;
 
 @ccclass('ScrollComicView')
 export class ScrollComicView extends BaseView {
-    @property(Node)
-    MapLayout: Node = null;
-
-    @property(Node)
-    contentNode: Node = null;
     
     @property(List)
     comic_list:List = null;

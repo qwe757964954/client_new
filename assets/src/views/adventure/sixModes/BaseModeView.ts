@@ -275,7 +275,7 @@ export class BaseModeView extends BaseView {
         this.addModelListener(EventType.Classification_AdventureCollectWord, this.onAdventureCollectWord);
         this.addModelListener(NetNotify.Classification_GameSubmit, this.onGameSubmitResponse);
         this.addModelListener(InterfacePath.Adventure_Result, this.onUpResult);
-        this.addModelListener(InterfacePath.Adventure_Word, this.onAdventureWord);
+        this.addModelListener(InterfacePath.Adventure_Word, this.onClassificationWord);
         this.addModelListener(InterfacePath.c2sReviewPlanSubmit, this.onRepReviewSubmit);
         this.addModelListener(InterfacePath.c2sReviewPlanLongTimeWordSubmit, this.onRepReviewPlanLongTimeWordSubmit);
         this.addModelListener(InterfacePath.c2sWordbookWordSubmit, this.onRepWordbookWordSubmit);
@@ -668,8 +668,7 @@ export class BaseModeView extends BaseView {
         }
         this.setCollect(word.collect == 1 ? true : false);
     }
-
-    onAdventureWord(data: WordsDetailData){
+    protected onClassificationWord(data: WordsDetailData) {
         if (data.code != 200) {
             console.error("获取单词详情失败", data.msg);
             this._detailData = null;
@@ -678,11 +677,6 @@ export class BaseModeView extends BaseView {
         console.log("获取单词详情", data);
         this._detailData = data;
         this.setCollect(this._detailData.collect === 1);
-    }
-
-    protected onClassificationWord(data: WordsDetailData) {
-        this._detailData = data;
-        this.setCollect(this._detailData.collect_flag === 1);
     }
 
     protected onCollectWord(data: any) {

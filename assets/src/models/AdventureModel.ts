@@ -190,7 +190,6 @@ export class WordsDetailData extends BaseRepPacket {
     cn: string; //单词释义
     c_id?: string;
     collect?: number;
-    collect_flag?: number;
     symbol: string;    //音标
     symbolus: string;  //美式音标
     syllable: string;  //音素拆分
