@@ -1,7 +1,6 @@
 import { _decorator, Label, Layers, Node, ProgressBar, Vec3 } from 'cc';
 import { EventType } from '../../config/EventType';
 import { TextConfig } from '../../config/TextConfig';
-import { ItemID } from '../../export/ItemConfig';
 import GlobalConfig from '../../GlobalConfig';
 import { DataMgr } from '../../manager/DataMgr';
 import { ViewsMgr } from '../../manager/ViewsManager';
@@ -96,6 +95,14 @@ export class PetInfoView extends BaseComponent {
     }
     /**升级按钮 */
     onUpgadeClick() {
+        let petConfig = DataMgr.petConfig[this.pet.roleID][this.pet.level];
+        if (!User.checkItems(petConfig.upgradeNeed, TextConfig.Upgrade_Condition_Error)) {
+            return;
+        }
+        if (petConfig.castleLevel > User.castleLevel) {
+            ViewsMgr.showTip(TextConfig.PetUpgrade_Castle_Error);
+            return;
+        }
         ServiceMgr.buildingService.reqPetUpgrade(this.pet.level);
     }
     /**心情分更新 */
@@ -126,22 +133,20 @@ export class PetInfoView extends BaseComponent {
         if (level < DataMgr.petMaxLevel) {
             this.btnUpgade.active = true;
             let petConfig = DataMgr.petConfig[this.pet.roleID][level];
-            this.rewardItems[0].init({ id: ItemID.amethyst, num: petConfig.amethyst });
-            this.rewardItems[1].init({ id: ItemID.coin, num: petConfig.coin });
-            this.rewardItems[2].init({ id: ItemID.diamond, num: petConfig.diamond });
-            this.rewardItems[3].initByPng("map/img_token_gold/spriteFrame", petConfig.castleLevel);
-            this.rewardItems[4].init({ id: ItemID.soul, num: petConfig.soul });
-            this.rewardItems[5].init({ id: ItemID.fruit, num: petConfig.fruit });
+            for (let i = 0; i < 6; i++) {
+                if (3 == i) {
+                    this.rewardItems[3].initByPng("map/img_token_gold/spriteFrame", petConfig.castleLevel);
+                } else {
+                    let idx = i < 3 ? i : i - 1;
+                    this.rewardItems[i].init(petConfig.upgradeNeed[idx]);
+                }
+            }
         } else {
-            this.rewardItems[0].node.active = false;
-            this.rewardItems[1].node.active = false;
-            this.rewardItems[2].node.active = false;
-            this.rewardItems[3].node.active = false;
-            this.rewardItems[4].node.active = false;
-            this.rewardItems[5].node.active = false;
+            for (let i = 0; i < 6; i++) {
+                this.rewardItems[i].node.active = false;
+            }
             this.btnUpgade.active = false;
         }
-        // this.rewardItems[5].initByPng("map/pet/pet_img_mood_icon/spriteFrame", petConfig.intimacy);
         this.pet.updateLevel(level);
         this.listView.numItems = DataMgr.petMaxLevel;
     }

@@ -466,7 +466,8 @@ export class DataManager {
                 ary = [];
                 this.petConfig[obj.id] = ary;
             }
-            obj.rewards = this.converAryToReward(obj.rewards, 1);
+            obj.upgradeNeed = this.converAryToReward(obj.upgradeNeed);
+            obj.randomRewards = this.converAryToReward(obj.randomRewards);
             ary.push(obj);
         }
         for (const key in this.petConfig) {

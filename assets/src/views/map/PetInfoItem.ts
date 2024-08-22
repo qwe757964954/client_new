@@ -49,7 +49,7 @@ export class PetInfoItem extends Component {
         }
         for (let i = 0; i < this.rewardItems.length; i++) {
             let rewardItem = this.rewardItems[i];
-            rewardItem.init(petConfig.rewards[i]);
+            rewardItem.init(petConfig.randomRewards[i]);
         }
         if (level <= unlockLevel) {
             this.nodeTip.active = true;

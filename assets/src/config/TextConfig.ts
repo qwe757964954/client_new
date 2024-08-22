@@ -19,6 +19,7 @@ export const TextConfig = {
     Queue_Text: "{0}/{1}",
     Width_Height_Text: "{0}x{1}",
     Item_Condition_Error: "{0},不足哦~",
+    Item_Count_Text: "数量：{0}",
 
     Function_Tip: "开发中，敬请期待",
     Function_Tip2: "暂时没有该功能",
@@ -147,6 +148,7 @@ export const TextConfig = {
     PetInteraction_Tip: "互动次数不足",
     PetMood_Add_Tip: "心情值+{0}",
     PetUpgrade_Tip: "升级成功",
+    PetUpgrade_Castle_Error: "你的城堡等级不够，暂时还不能升级哦～",
 
     Sure_Tip: "确定",
     Cancel_Tip: "取消",

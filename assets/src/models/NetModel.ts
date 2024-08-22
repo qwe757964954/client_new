@@ -547,14 +547,14 @@ export class s2cReviewPlanLongTimeWordSubmit extends BaseRepPacket {
 /**宠物信息 */
 export class c2sPetInfo {
     command_id: string = InterfacePath.c2sPetInfo;
+    p_user_id: number;//用户id
 }
 /**宠物信息返回 */
 export class s2cPetInfo {
     user_id: number;//用户id
     level: number;//等级
     mood: number;//心情分
-    intimacy: number;//亲密度
-    daily_counts: number[];//每日互动次数
+    explore_reward: ItemData[];//未领取的奖励详情
     has_reward: boolean;//是否有探索奖励
     next_update_second: number;//下次心情状态和亲密度更新时间
     next_explore_second: number;//下次探索奖励更新时间
@@ -565,6 +565,7 @@ export class s2cPetInfoRep extends BaseRepPacket {
 /**宠物互动 */
 export class c2sPetInteraction {
     private command_id: string = InterfacePath.c2sPetInteraction;
+    p_user_id: number;//用户id
     interact_id: number;//互动id
 }
 /**宠物互动返回 */
@@ -586,7 +587,7 @@ export class c2sPetGetReward {
 }
 /**领取探索奖励返回 */
 export class s2cPetGetReward extends BaseRepPacket {
-    explore_award: ItemData[];//奖励信息
+    explore_reward: ItemData[];//奖励信息
     next_explore_second: number;//下次探索奖励更新时间
 }
 

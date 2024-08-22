@@ -15,7 +15,8 @@ export class BuildingService extends BaseControll {
         // this.addModelListener(InterfacePath.c2sBuildingList);
     }
     /**建筑列表 */
-    reqBuildingList() {
+    reqBuildingList(userID: number) {
+        console.log("reqBuildingList", userID);
         let para = new c2sBuildingList();
         NetMgr.sendMsg(para);
     }
@@ -110,15 +111,17 @@ export class BuildingService extends BaseControll {
     }
 
     /**宠物信息 */
-    reqPetInfo() {
-        console.log("reqPetInfo");
+    reqPetInfo(userID: number) {
+        console.log("reqPetInfo", userID);
         let para = new c2sPetInfo();
+        para.p_user_id = userID;
         NetMgr.sendMsg(para);
     }
     /**宠物互动 */
-    reqPetInteraction(id: number) {
+    reqPetInteraction(id: number, userID: number) {
         console.log("reqPetInteraction", id);
         let para = new c2sPetInteraction();
+        para.p_user_id = userID;
         para.interact_id = id;
         NetMgr.sendMsg(para);
     }
@@ -166,7 +169,7 @@ export class BuildingService extends BaseControll {
         this.reqBuildingEditBatch([obj], [], [], 1);
     }
 
-    
+
 
     /**建筑建造 */
     reqBuildingBuilt(buildingID: number) {

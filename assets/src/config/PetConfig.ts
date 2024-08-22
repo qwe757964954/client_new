@@ -38,13 +38,14 @@ export class PetInfo {
     id: number;//宠物id
     name: string;//名字
     level: number;//等级
-    amethyst: number;//紫晶石
+    // amethyst: number;//紫晶石
     castleLevel: number;//城堡等级
-    diamond: number;//钻石
-    fruit: number;//亲密果实
-    soul: number;//精灵魂魄
-    coin: number;//金币
-    rewards: ItemData[];//奖励
+    // diamond: number;//钻石
+    // fruit: number;//亲密果实
+    // soul: number;//精灵魂魄
+    // coin: number;//金币
+    upgradeNeed: ItemData[];//升级所需
+    randomRewards: ItemData[];//奖励
 }
 
 

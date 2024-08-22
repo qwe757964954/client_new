@@ -49,12 +49,17 @@ export class RoleDataModel extends BaseModel {
     private _isShowFlag1: boolean = true;//是否显示标记1(建筑层是否显示)
     // private _isShowFlag2: boolean = false;//是否显示标记2(摄像机是否显示)
 
+    private _userID: number;//用户id
     private _roleID: number;//角色id
     private _level: number;//等级
     private _roleType: RoleType = RoleType.none;//角色类型
     private _roleInfo: RoleInfo;//角色信息
     private _clothings: UserClothes = new UserClothes();//服装
     private _needMovePos: Vec3 = null;//需要移动的位置
+
+    public get userID(): number {
+        return this._userID;
+    }
 
     /**精灵独有 */
     /**显示礼物提示 */
@@ -161,11 +166,12 @@ export class RoleDataModel extends BaseModel {
         return this._roleType;
     }
     // 初始化
-    public init(roleID: number, level: number, roleType: RoleType) {
+    public init(roleID: number, level: number, roleType: RoleType, userID: number) {
         if (RoleType.none != this._roleType) return;
         this._roleType = roleType;
         this._roleID = roleID;
         this._level = level;
+        this._userID = userID;
         if (RoleType.role == roleType) {
             this._roleInfo = DataMgr.roleConfig[this._roleID];
             this._scale = MapConfig.roleScale;
@@ -177,13 +183,13 @@ export class RoleDataModel extends BaseModel {
     public initSelfRole() {
         this._isSelf = true;
         let roleID = User.roleID;
-        this.init(roleID, 1, RoleType.role);
+        this.init(roleID, 1, RoleType.role, User.curMapUserID);
         this._clothings.setData(User.userClothes);
     }
     public initSelfPet() {
         this._isSelf = true;
         let petID = User.petID;
-        this.init(petID, User.petLevel, RoleType.sprite);
+        this.init(petID, User.petLevel, RoleType.sprite, User.curMapUserID);
     }
 
     get pos() {

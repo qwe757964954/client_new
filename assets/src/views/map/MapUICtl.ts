@@ -9,7 +9,7 @@ import { SceneMgr } from "../../manager/SceneMgr";
 import { ViewsMgr } from "../../manager/ViewsManager";
 import { BaseModel } from "../../models/BaseModel";
 import { BgModel } from "../../models/BgModel";
-import { BuildingModel, BuildingOperationData, BuildingOperationType, BuildingState, RecycleData } from "../../models/BuildingModel";
+import { BuildingIDType, BuildingModel, BuildingOperationData, BuildingOperationType, BuildingState, RecycleData } from "../../models/BuildingModel";
 import { CloudModel } from "../../models/CloudModel";
 import { GridModel } from "../../models/GridModel";
 import { LandModel } from "../../models/LandModel";
@@ -114,8 +114,8 @@ export class MapUICtl extends MainBaseCtl {
         this.initMap();
         this.initMapSpine();
 
-        ServiceMgr.buildingService.reqPetInfo();
-        ServiceMgr.buildingService.reqBuildingList();
+        ServiceMgr.buildingService.reqPetInfo(User.curMapUserID);
+        ServiceMgr.buildingService.reqBuildingList(User.curMapUserID);
         this._checkFirstRepTimer = TimerMgr.once(() => {
             this.clearFirstRepTimer();
             ViewsMgr.showAlert(TextConfig.Building_Rep_Error, () => {
@@ -1246,7 +1246,7 @@ export class MapUICtl extends MainBaseCtl {
         this.clearCheckPetTimer();
         if (User.petHasReward) return;//有精灵奖励了不需要定时去刷新
         this._checkPetTimer = TimerMgr.once(() => {
-            ServiceMgr.buildingService.reqPetInfo();
+            ServiceMgr.buildingService.reqPetInfo(User.curMapUserID);
             this.clearCheckPetTimer();
         }, time * 1000);
     }
@@ -1272,7 +1272,7 @@ export class MapUICtl extends MainBaseCtl {
             ViewsMgr.showAlert(data.msg);
             return;
         }
-        ViewsMgr.showRewards(data.explore_award);
+        ViewsMgr.showRewards(data.explore_reward);
         User.petHasReward = false;
         this.checkPetShow();
         this.setCheckPetTimer(data.next_explore_second);
@@ -1435,6 +1435,9 @@ export class MapUICtl extends MainBaseCtl {
         }
         let building = this.findBuilding(data.id);
         if (!building) return;
+        if (BuildingIDType.castle == building.editInfo.id) {
+            User.castleLevel = data.level;
+        }
         building.buildingLevel = data.level;
         building.buildingState = data.status;
         ViewsMgr.showView(PrefabType.BuildingSuccessView, (node: Node) => {

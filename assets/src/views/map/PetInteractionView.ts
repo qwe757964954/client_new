@@ -52,7 +52,6 @@ export class PetInteractionView extends BaseComponent {
     private _type: PetInteractionType = null;//类型
     private _removeCall: Function = null;//移除回调
     private _interactionInfo: PetInteractionInfo = null;//互动信息
-    private _interactionTimes: number[] = [0, 0, 0];//互动次数
 
     onLoad() {
         this.initEvent();
@@ -91,7 +90,7 @@ export class PetInteractionView extends BaseComponent {
         this._pet = pet;
 
         this.onMoodScoreUpdate();
-        ServiceMgr.buildingService.reqPetInfo();
+        ServiceMgr.buildingService.reqPetInfo(pet.userID);
     }
     /**显示类型 */
     showTye(type: PetInteractionType) {
@@ -121,23 +120,21 @@ export class PetInteractionView extends BaseComponent {
         let data = this._data[idx];
         let img = item.getChildByName('img')?.getComponent(Sprite);
         let label = item.getChildByName('Label')?.getComponent(Label);
+        let label2 = item.getChildByName('Label2')?.getComponent(Label);
         let propInfo = DataMgr.getItemInfo(data.id);
         if (label) label.string = ToolUtil.replace(TextConfig.Pet_Mood_Prop, data.score);
+        if (label2) label2.string = ToolUtil.replace(TextConfig.Item_Count_Text, User.getItem(data.id));
         if (img) LoadManager.loadSprite(propInfo.png, img);
         CCUtil.offTouch(item);
         CCUtil.onTouch(item, () => {
             console.log("onTouch", data.type, data.id);
-            if (this._interactionTimes[data.type - 1] <= 0) {
-                ViewsMgr.showTip(TextConfig.PetInteraction_Tip);
-                return;
-            }
             if (!User.checkItems([{ id: data.id, num: 1 }], TextConfig.Item_Condition_Error)) {
                 return;
             }
             this._interactionInfo = data;
             this.img.node.setWorldPosition(img.node.worldPosition);
             ViewsMgr.showWaiting();
-            ServiceMgr.buildingService.reqPetInteraction(data.id);
+            ServiceMgr.buildingService.reqPetInteraction(data.id, this._pet.userID);
         });
     }
     /**关闭按钮 */
@@ -186,8 +183,6 @@ export class PetInteractionView extends BaseComponent {
         }
         let petInfo = data.pet_info;
         User.moodScore = petInfo.mood;
-
-        this._interactionTimes = petInfo.daily_counts;
     }
     /**心情分更新 */
     onMoodScoreUpdate() {
@@ -212,7 +207,6 @@ export class PetInteractionView extends BaseComponent {
         }
         let petInfo = data.pet_info;
         User.moodScore = petInfo.mood;
-        this._interactionTimes = petInfo.daily_counts;
 
         let propInfo = DataMgr.getItemInfo(this._interactionInfo.id);
         LoadManager.loadSprite(propInfo.png, this.img).then(() => {

@@ -221,6 +221,8 @@ class UserModel {
     private _staminaTimer: number = null;  // 体力恢复定时器
     private _staminaInterval: number = 180;  // 体力恢复间隔
 
+    private _curMapUserID: number = null;//当前所在地图用户id
+
 
     // 测试数据
     //// 头像数据
@@ -422,6 +424,14 @@ class UserModel {
     }
     public get landList(): readonly number[] {
         return this._landList;
+    }
+
+    public set curMapUserID(id: number) {
+        this._curMapUserID = id;
+    }
+    public get curMapUserID(): number {
+        if (null == this._curMapUserID) return this.userID;
+        return this._curMapUserID;
     }
 
     public getItem(id: ItemID): number {

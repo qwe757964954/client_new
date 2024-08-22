@@ -64,7 +64,7 @@ export class RewardView extends Component {
     /**初始化 */
     init(data: ItemData[], callBack?: Function) {
         this._callBack = callBack;
-        if (data.length <= 0) {
+        if (!data || data.length <= 0) {
             if (this._callBack) this._callBack();
             this.node.destroy();
             return;
@@ -88,7 +88,7 @@ export class RewardView extends Component {
         }
         this.layout.getComponent(Layout).updateLayout();
         let layout_width = (this.layout.getComponent(UITransform).height + this.layout.getComponent(Layout).spacingX) * length;
-        if(layout_width > Layout_Max_Width){
+        if (layout_width > Layout_Max_Width) {
             layout_width = Layout_Max_Width;
         }
         this.layout.getComponent(UITransform).width = layout_width;
