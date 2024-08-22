@@ -2,12 +2,12 @@
   "ver": "1.1.50",
   "importer": "prefab",
   "imported": true,
-  "uuid": "73e4868d-422b-4bc0-9e64-23a7bcc171e4",
+  "uuid": "3f3892cb-3b54-40be-88f8-dc7766158f0f",
   "files": [
     ".json"
   ],
   "subMetas": {},
   "userData": {
-    "syncNodeName": "ComicPageItem"
+    "syncNodeName": "ComicController"
   }
 }
