@@ -396,14 +396,17 @@ export class WorldIsland extends Component {
             return;
         }
         console.log("WordGameUnitWordReply", data);
-        let subjectData: WordGameSubjectReply = new WordGameSubjectReply();
-        subjectData.word_list = data.word_list;
-        subjectData.subject = new Subject();
-        subjectData.subject.big_id = this._selectUnit.big_id;
-        subjectData.subject.subject_name = this._selectUnit.unit;
-        subjectData.subject.sentence_knowledge = [];
-        subjectData.subject.is_unit = true;
-        subjectData.subject.status = this._selectUnit.status;
+        let subjectData: WordGameSubjectReply = {
+            word_list : data.word_list,
+            subject : {
+                big_id:this._selectUnit.big_id,
+                subject_name:this._selectUnit.unit,
+                sentence_knowledge:[],
+                is_unit:true,
+                status:this._selectUnit.status,
+            }
+        }
+        
         let node = await PopMgr.showPopup(PrefabType.SubjectView);
         node.getComponent(SubjectView).setData(subjectData);
     }

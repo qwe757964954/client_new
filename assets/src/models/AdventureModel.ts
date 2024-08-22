@@ -465,10 +465,13 @@ export interface KnowledgeItem {
 // 定义主题的接口
 export interface Subject {
     big_id: number;
-    subject_id: number;
+    subject_id?: number;
     subject_name: string;
-    subject_cn: string;
+    subject_cn?: string;
     sentence_knowledge: KnowledgeItem[];
+    is_unit?: boolean;
+    status?:number
+
 }
 
 // 定义文章项的接口
@@ -483,7 +486,7 @@ export interface ArticleItemData {
 export interface WordGameSubjectReply extends BaseRepPacket {
     subject: Subject;
     word_list: WordItem[];
-    article_list: ArticleItemData[];
+    article_list?: ArticleItemData[];
 }
 
 
