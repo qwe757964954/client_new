@@ -1,4 +1,4 @@
-import { _decorator, Button, Component, instantiate, Label, Node, Prefab, UITransform, Vec2, Vec3 } from 'cc';
+import { _decorator, Button, Component, instantiate, isValid, Label, Node, Prefab, UITransform, Vec2, Vec3 } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType, SceneType } from '../../config/PrefabType';
 import { DataMgr } from '../../manager/DataMgr';
@@ -375,6 +375,12 @@ export class WorldIsland extends Component {
         item.getComponent(UnitItem).setData(this._unitDatas[index]);
     }
 
+    onUnitItemSelected(item: any, selectedId: number, lastSelectedId: number, val: number) {
+        if(!isValid(selectedId) || selectedId < 0 || !isValid(item)){return;}
+        console.log("onUnitItemSelected",selectedId);
+        this.onUnitClick(this._unitDatas[selectedId]);
+    }
+
     onUnitClick(data: UnitData) {
         if (this._isGetUnitWords) return;
         this._isGetUnitWords = true;
@@ -383,7 +389,7 @@ export class WorldIsland extends Component {
         ServiceMgr.studyService.getUnitWords(data.big_id, data.unit);
     }
 
-    onGetUnitWords(data: WordGameUnitWordReply) {
+    async onGetUnitWords(data: WordGameUnitWordReply) {
         this._isGetUnitWords = false;
         if (data.code != 200) {
             ViewsManager.showTip(data.msg);
@@ -398,9 +404,8 @@ export class WorldIsland extends Component {
         subjectData.subject.sentence_knowledge = [];
         subjectData.subject.is_unit = true;
         subjectData.subject.status = this._selectUnit.status;
-        ViewsMgr.showView(PrefabType.SubjectView, (node: Node) => {
-            node.getComponent(SubjectView).setData(subjectData);
-        })
+        let node = await PopMgr.showPopup(PrefabType.SubjectView);
+        node.getComponent(SubjectView).setData(subjectData);
     }
 
     onGradeSkipChallenge(data: Subject) {
@@ -441,7 +446,6 @@ export class WorldIsland extends Component {
         EventMgr.addListener(InterfacePath.BossLevel_Topic, this.onGetBossLevelTopic, this);
         EventMgr.addListener(EventType.Enter_Boss_Level, this.enterBossLevel, this);
         EventMgr.addListener(InterfacePath.WordGame_UnitList, this.onGetUnits, this);
-        EventMgr.addListener(EventType.WordGame_Unit_Click, this.onUnitClick, this);
         EventMgr.addListener(InterfacePath.WordGame_UnitWords, this.onGetUnitWords, this);
         EventMgr.addListener(EventType.GradeSkip_Challenge, this.onGradeSkipChallenge, this);
         EventMgr.addListener(InterfacePath.GradeSkip_ExercisesList, this.onGradeSkipExercises, this);
@@ -459,7 +463,6 @@ export class WorldIsland extends Component {
         EventMgr.removeListener(InterfacePath.BossLevel_Topic, this);
         EventMgr.removeListener(EventType.Enter_Boss_Level, this);
         EventMgr.removeListener(InterfacePath.WordGame_UnitList, this);
-        EventMgr.removeListener(EventType.WordGame_Unit_Click, this);
         EventMgr.removeListener(InterfacePath.WordGame_UnitWords, this);
         EventMgr.removeListener(EventType.GradeSkip_Challenge, this);
         EventMgr.removeListener(InterfacePath.GradeSkip_ExercisesList, this);

@@ -1,13 +1,10 @@
-import { _decorator, Component, Label, Node, Sprite } from 'cc';
+import { _decorator, Label, Sprite } from 'cc';
 import { UnitData } from '../../../models/AdventureModel';
-import CCUtil from '../../../util/CCUtil';
-import { BaseView } from '../../../script/BaseView';
-import { EventMgr } from '../../../util/EventManager';
-import { EventType } from '../../../config/EventType';
+import ListItem from '../../../util/list/ListItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('UnitItem')
-export class UnitItem extends BaseView {
+export class UnitItem extends ListItem {
     @property(Label)
     public unitTxt: Label = null;
 
@@ -18,19 +15,6 @@ export class UnitItem extends BaseView {
         this.unitTxt.string = data.unit;
         this.getComponent(Sprite).grayscale = data.status == 0;
     }
-
-    onClick() {
-        EventMgr.dispatch(EventType.WordGame_Unit_Click, this._data)
-    }
-
-    protected initEvent(): void {
-        CCUtil.onTouch(this.node, this.onClick, this);
-    }
-
-    protected removeEvent(): void {
-        CCUtil.offTouch(this.node, this.onClick, this);
-    }
-
 }
 
 
