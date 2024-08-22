@@ -1,4 +1,4 @@
-import { _decorator, Component, instantiate, Label, Layers, Node, Prefab, v3 } from 'cc';
+import { _decorator, Button, Component, instantiate, Label, Layers, Node, Prefab, Sprite, v3 } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { ItemData } from '../../manager/DataMgr';
@@ -35,6 +35,7 @@ export class ShopPlayerView extends Component {
     private _shopClothing: { [key in TabTypeIds]?: ShopClothingInfo } = {};
 
     start() {
+        this.purchase_btn.getComponent(Button).interactable = false;
         this.showRoleDress();
         this.initEvents();
     }
@@ -67,6 +68,9 @@ export class ShopPlayerView extends Component {
 
         const totalCount = this.getTotalClothing();
         this.clothing_amount.string = `${totalCount}`;
+        let canBuy = totalCount > 0 && User.coin > totalCount;
+        this.purchase_btn.getComponent(Button).interactable = canBuy;
+        this.purchase_btn.getComponent(Sprite).grayscale = !canBuy;
     }
 
     private getTotalClothing(): number {

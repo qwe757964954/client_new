@@ -2236,9 +2236,9 @@
       "__id__": 92
     },
     "bounceDuration": 0.23,
-    "brake": 0.75,
-    "elastic": false,
-    "inertia": false,
+    "brake": 0.5,
+    "elastic": true,
+    "inertia": true,
     "horizontal": true,
     "vertical": false,
     "cancelInnerEvents": false,
