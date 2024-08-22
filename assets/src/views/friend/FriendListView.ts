@@ -1,7 +1,9 @@
 import { _decorator, Node } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
+import { TextConfig } from '../../config/TextConfig';
 import { PopMgr } from '../../manager/PopupManager';
+import { ViewsMgr } from '../../manager/ViewsManager';
 import { DataFriendApplyListResponse, DataFriendListResponse, FriendListItemModel } from '../../models/FriendModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BasePopRight } from '../../script/BasePopRight';
@@ -43,6 +45,7 @@ export class FriendListView extends BasePopRight {
     protected initEvent(): void {
         CCUtil.onBtnClick(this.closeIcon,this.closeClickEvent.bind(this));
         CCUtil.onBtnClick(this.addFriend,this.addFriendClickEvent.bind(this));
+        CCUtil.onBtnClick(this.wechatInvite,this.wechatInviteClickEvent.bind(this));
     }
 
     protected onInitModuleEvent(): void {
@@ -129,6 +132,10 @@ export class FriendListView extends BasePopRight {
     async addFriendClickEvent(){
         await PopMgr.showPopFriend(PrefabType.FriendAddView,this.leftView,"content");
     }
+    wechatInviteClickEvent(){
+        ViewsMgr.showTip(TextConfig.Function_Tip2);
+    }
+
     hidenAllFrinedList(){
         this._friendList.node.active = false;
         this._applyList.node.active = false;

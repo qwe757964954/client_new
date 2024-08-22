@@ -86,7 +86,7 @@ export class SubjectView extends BasePopup {
 
     onKonwlegeItemRender(item: Node, idx: number) {
         let konwlege = item.getComponent(KnowlegeItem);
-        konwlege.setData(this._data.subject.sentence_knowledge[idx]);
+        konwlege.setData(this._data.article_list[idx]);
     }
 
     onDestroy(): void {

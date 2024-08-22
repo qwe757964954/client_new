@@ -200,7 +200,7 @@ export class PracticeView extends BaseView {
 
     onArticleListRender(item: Node, idx: number) {
         let itemSp = item.getComponent(ArticleItem);
-        itemSp.setData(this._data.subject.dialogue_content[idx]);
+        itemSp.setData(this._data.article_list[idx]);
     }
 }
 
