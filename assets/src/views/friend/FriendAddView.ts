@@ -24,7 +24,7 @@ export class FriendAddView extends BasePopFriend {
     public addBtn: Node = null;
 
     @property(Node)
-    public back_icon:Node = null;
+    public closeBtn:Node = null;
 
     @property({ type: EditBox, tooltip: "查找好友编辑框" })
     public searchEdt: EditBox = null;
@@ -39,8 +39,8 @@ export class FriendAddView extends BasePopFriend {
 
     protected initEvent(): void {
         CCUtil.onBtnClick(this.searchBtn,this.gotoSearch.bind(this));
-        CCUtil.onBtnClick(this.addBtn,this.addFriend.bind(this));
-        CCUtil.onBtnClick(this.back_icon,this.closeClickEvent.bind(this));
+        // CCUtil.onBtnClick(this.addBtn,this.addFriend.bind(this));
+        CCUtil.onBtnClick(this.closeBtn,this.onCloseClickEvent.bind(this));
     }
     protected onInitModuleEvent(): void {
         this.addModelListeners([
@@ -77,7 +77,8 @@ export class FriendAddView extends BasePopFriend {
         FdServer.reqUserFriendAdd(this._searchData.user_id);
     }
 
-    closeClickEvent(){
+    onCloseClickEvent(){
+        console.log("onCloseClickEvent................................")
         this.closePop();
     }
 
