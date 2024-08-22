@@ -215,6 +215,8 @@ export class PetInteractionView extends BaseComponent {
         tween(this.img.node).to(0.5, { worldPosition: this.node.worldPosition }).call(() => {
             this.img.node.active = false;
             ViewsMgr.showTipSmall(ToolUtil.replace(TextConfig.PetMood_Add_Tip, this._interactionInfo.score), this.node);
+
+            this.listView.updateAll();
         }).start();
     }
 }
