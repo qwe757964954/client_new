@@ -388,6 +388,111 @@
             "type": 2,
             "merge_item": [],
             "decompose_item": []
+        },
+        {
+            "id": 30001,
+            "name": "头发1",
+            "type": 1,
+            "merge_item": [],
+            "decompose_item": []
+        },
+        {
+            "id": 30002,
+            "name": "饰品1",
+            "type": 1,
+            "merge_item": [],
+            "decompose_item": []
+        },
+        {
+            "id": 30003,
+            "name": "衣服1",
+            "type": 1,
+            "merge_item": [],
+            "decompose_item": []
+        },
+        {
+            "id": 30004,
+            "name": "裤子1",
+            "type": 1,
+            "merge_item": [],
+            "decompose_item": []
+        },
+        {
+            "id": 30005,
+            "name": "鞋子1",
+            "type": 1,
+            "merge_item": [],
+            "decompose_item": []
+        },
+        {
+            "id": 30006,
+            "name": "头发2",
+            "type": 1,
+            "merge_item": [],
+            "decompose_item": []
+        },
+        {
+            "id": 30007,
+            "name": "饰品2",
+            "type": 1,
+            "merge_item": [],
+            "decompose_item": []
+        },
+        {
+            "id": 30008,
+            "name": "衣服2",
+            "type": 1,
+            "merge_item": [],
+            "decompose_item": []
+        },
+        {
+            "id": 30009,
+            "name": "裤子2",
+            "type": 1,
+            "merge_item": [],
+            "decompose_item": []
+        },
+        {
+            "id": 30010,
+            "name": "鞋子2",
+            "type": 1,
+            "merge_item": [],
+            "decompose_item": []
+        },
+        {
+            "id": 30022,
+            "name": "饰品2",
+            "type": 1,
+            "merge_item": [],
+            "decompose_item": []
+        },
+        {
+            "id": 30023,
+            "name": "上衣3",
+            "type": 1,
+            "merge_item": [],
+            "decompose_item": []
+        },
+        {
+            "id": 30024,
+            "name": "裤子4",
+            "type": 1,
+            "merge_item": [],
+            "decompose_item": []
+        },
+        {
+            "id": 30025,
+            "name": "鞋子5",
+            "type": 1,
+            "merge_item": [],
+            "decompose_item": []
+        },
+        {
+            "id": 30026,
+            "name": "翅膀6",
+            "type": 1,
+            "merge_item": [],
+            "decompose_item": []
         }
     ],
     "goods_item_info": [
