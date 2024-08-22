@@ -88,6 +88,7 @@ class NetManager {
     }
     //关闭服务器
     public closeNet() {
+        console.log("closeNet", this._socket);
         if (this._socket) {
             this._socket.closeSocket();
             this._socket = null;
@@ -138,14 +139,16 @@ class NetManager {
     //socket错误回调
     public onError() {
         console.log("onError");
-        EventMgr.emit(EventType.Socket_Dis);
-        this.reConnect();
+        if (this._socket) {
+            EventMgr.emit(EventType.Socket_Dis);
+            this.reConnect();
+        }
     }
     //socket关闭回调
     public onClose() {
         console.log("onClose");
-        EventMgr.emit(EventType.Socket_Close);
         if (this._socket) {
+            EventMgr.emit(EventType.Socket_Close);
             this.reConnect();
         }
     }
