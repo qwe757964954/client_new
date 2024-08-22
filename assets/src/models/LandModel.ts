@@ -1,8 +1,10 @@
 import { _decorator, Node, Rect, Sprite, Vec3 } from "cc";
+import { EventType } from "../config/EventType";
 import { MapConfig } from "../config/MapConfig";
 import { PrefabType } from "../config/PrefabType";
 import { DataMgr, EditInfo, LandExtraInfo, LandExtraType } from "../manager/DataMgr";
 import { LoadManager } from "../manager/LoadManager";
+import { EventMgr } from "../util/EventManager";
 import { ToolUtil } from "../util/ToolUtil";
 import { BaseModel } from "./BaseModel";
 import { GridModel } from "./GridModel";
@@ -63,6 +65,7 @@ export class LandModel extends BaseModel {
         this._y = gridInfo.y;
         let gridPos = gridInfo.pos;
         let pos = new Vec3(gridPos.x, gridPos.y - this._width * gridInfo.height, 0);
+        this._zIndex = -pos.y;
         this._pos = pos;
         if (this._node)
             this._node.position = pos;
@@ -165,6 +168,7 @@ export class LandModel extends BaseModel {
                 } else {
                     if (callBack) callBack();
                 }
+                EventMgr.emit(EventType.Land_Need_Sort);
             });
         } else {
             if (callBack) callBack();

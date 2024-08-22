@@ -55,6 +55,7 @@ export class MapUICtl extends MainBaseCtl {
     private _buyBuildingCacheAry: RecycleData[] = [];//购买建筑缓存信息
     private _isNeedUpdateVisible: boolean = false;//是否需要更新可视区域
     private _isNeedSort: boolean = false;//是否需要重新排序
+    private _isLandNeedSort: boolean = false;//地块是否需要重新排序
     private _roleIsShow: boolean = true;//角色是否显示
     private _buildingUIIsShow: boolean = true;//建筑UI是否显示
 
@@ -164,6 +165,7 @@ export class MapUICtl extends MainBaseCtl {
         this.addEvent(InterfacePath.c2sBuildingProduceSpeed, this.onRepBuildingProduceSpeed.bind(this));
         this.addEvent(InterfacePath.c2sCloudUnlockSpeed, this.onRepCloudUnlockSpeed.bind(this));
         this.addEvent(EventType.Role_Change_Slot, this.onRoleChangeSlot.bind(this));
+        this.addEvent(EventType.Land_Need_Sort, this.landSort.bind(this));
     }
     // 移除事件
     removeEvent() {
@@ -1015,6 +1017,26 @@ export class MapUICtl extends MainBaseCtl {
     buildingRoleSort() {
         this._isNeedSort = true;//统一排序
     }
+    /**地块排序 */
+    landSort() {
+        this._isLandNeedSort = true;//统一排序
+    }
+    landSortEx() {
+        let children: LandModel[] = [];
+        this._landModelAry.forEach(element => {
+            if (element.node && !element.isDefault()) {
+                children.push(element);
+            }
+        });
+        children.sort((a, b) => {
+            return b.ZIndex - a.ZIndex;
+        });
+        let maxindex = this._mainScene.landLayer.children.length - 1;
+        for (const element of children) {
+            element.node.setSiblingIndex(maxindex);
+            maxindex--;
+        }
+    }
     buildingRoleSortEx() {
         // console.time("buildingRoleSortEx use");
         let children: BaseModel[] = [];
@@ -1083,6 +1105,10 @@ export class MapUICtl extends MainBaseCtl {
         if (this._isNeedSort) {
             this.buildingRoleSortEx();
             this._isNeedSort = false;
+        }
+        if (this._isLandNeedSort) {
+            this.landSortEx();
+            this._isLandNeedSort = false;
         }
         if (this._isNeedUpdateVisible) {
             this.updateCameraVisible(true);

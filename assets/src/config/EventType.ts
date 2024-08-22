@@ -16,6 +16,7 @@ export const EventType = {
     MapStatus_Change: "MapStatusChange",//地图状态改变
     BuidingModel_Remove: "BuildingModelRemove",//建筑模型移除
     Building_Need_Sort: "BuildingNeedSort",//建筑需要排序
+    Land_Need_Sort: "BuildingNeedSort",//地块需要排序
     Role_Need_Move: "RoleNeedMove",//角色需要移动
     Role_Need_Sort: "RoleNeedSort",//角色需要排序
     Role_Change_Slot: "RoleChangeSlot",//角色换装
