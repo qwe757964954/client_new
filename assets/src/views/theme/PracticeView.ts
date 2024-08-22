@@ -1,31 +1,26 @@
-import { _decorator, Component, instantiate, Label, Node, Prefab, Sprite, tween, UITransform, Vec3 } from 'cc';
-import { BasePopup } from '../../script/BasePopup';
-import List from '../../util/list/List';
-import { ArticleItem } from './item/ArticleItem';
-import { ArticleExercise, ArticleExercisesListReply, QuestionKind, SubjectArticleListReply, WordGameSubjectReply } from '../../models/AdventureModel';
-import CCUtil from '../../util/CCUtil';
-import { ServiceMgr } from '../../net/ServiceManager';
-import { EventMgr } from '../../util/EventManager';
-import { InterfacePath } from '../../net/InterfacePath';
-import { ViewsMgr } from '../../manager/ViewsManager';
-import { ChoiceQuestion } from './ChoiceQuestion';
+import { _decorator, instantiate, Label, Node, Prefab, tween, UITransform, Vec3 } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
-import { ArticleView } from './ArticleView';
+import { ViewsMgr } from '../../manager/ViewsManager';
+import { ArticleExercise, ArticleExercisesListReply, QuestionKind, SubjectArticleListReply, WordGameSubjectReply } from '../../models/AdventureModel';
+import { InterfacePath } from '../../net/InterfacePath';
+import { ServiceMgr } from '../../net/ServiceManager';
 import { BaseView } from '../../script/BaseView';
+import CCUtil from '../../util/CCUtil';
+import { EventMgr } from '../../util/EventManager';
+import List from '../../util/list/List';
+import { ArticleView } from './ArticleView';
+import { ChoiceQuestion } from './ChoiceQuestion';
+import { ArticleItem } from './item/ArticleItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('PracticeView')
 export class PracticeView extends BaseView {
     @property(Node)
-    public closeBtn: Node;
-    @property(Label)
-    public title: Label;
-    @property(Sprite)
-    public comicImg: Sprite;
+    public top_layout: Node;
+    @property(Node)
+    public content_layout: Node;
     @property(List)
     public articleList: List;
-    @property(Node)
-    public readBtn: Node;
     @property(Node)
     public practiceBtn: Node;
     @property(Label)
@@ -56,9 +51,14 @@ export class PracticeView extends BaseView {
 
     private _isGettingArticle: boolean = false;
 
+    protected initUI(): void {
+        this.initNavTitle();
+    }
+
     public setData(data: WordGameSubjectReply) {
         this._data = data;
-        this.title.string = data.subject.subject_name;
+        // this._navTitleView.setTitleName(data.subject.subject_name);
+        return;
         this.articleList.numItems = this._data.subject.dialogue_content.length;
         console.log("ddddddddddd", data);
         this.scheduleOnce(() => {
@@ -156,10 +156,12 @@ export class PracticeView extends BaseView {
     closePop() {
         this.node.destroy();
     }
-
+    private initNavTitle() {
+        this.createNavigation("I hava a fream",this.top_layout, () => {
+            ViewsMgr.closeView(PrefabType.PracticeView);
+        });
+    }
     protected initEvent(): void {
-        CCUtil.onTouch(this.closeBtn, this.closePop, this);
-        CCUtil.onTouch(this.readBtn, this.gotoRead, this);
         CCUtil.onTouch(this.practiceBtn, this.gotoPractice, this);
         CCUtil.onTouch(this.preBtn, this.preQuestion, this);
         CCUtil.onTouch(this.nextBtn, this.nextQuestion, this);
@@ -168,8 +170,6 @@ export class PracticeView extends BaseView {
     }
 
     protected removeEvent(): void {
-        CCUtil.offTouch(this.closeBtn, this.closePop, this);
-        CCUtil.offTouch(this.readBtn, this.gotoRead, this);
         CCUtil.offTouch(this.practiceBtn, this.gotoPractice, this);
         CCUtil.offTouch(this.preBtn, this.preQuestion, this);
         CCUtil.offTouch(this.nextBtn, this.nextQuestion, this);
