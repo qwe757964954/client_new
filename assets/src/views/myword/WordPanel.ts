@@ -56,7 +56,7 @@ export class WordPanel extends BaseView {
     private onCollectStart(): void {
         const searchData: SearchWordItem = {
             ...this._detailData,
-            is_collect: this._detailData.collect_flag
+            is_collect: this._detailData.collect
         };
         EventMgr.dispatch(EventType.Search_Collect_Work, searchData);
         let status = searchData.is_collect ? 0:1;
@@ -70,8 +70,8 @@ export class WordPanel extends BaseView {
     }
 
     private async onTotalCollectWord(data: any): Promise<void> {
-        this._detailData.collect_flag = this._detailData.collect_flag ? 0 : 1;
-        this.updateStarIcon(this._detailData.collect_flag === 1);
+        this._detailData.collect = this._detailData.collect ? 0 : 1;
+        this.updateStarIcon(this._detailData.collect === 1);
     }
 
     private updateStarIcon(isCollected: boolean): void {
@@ -91,7 +91,7 @@ export class WordPanel extends BaseView {
         this.updateWordLabels(data);
         this.loadWordImage(data.word);
         this.wordDetailView.init(data.word, this._detailData);
-        this.updateStarIcon(data.collect_flag === 1);
+        this.updateStarIcon(data.collect === 1);
     }
 
     private updateWordLabels(data: WordsDetailData): void {
