@@ -77,7 +77,6 @@ export const EventType = {
     Classification_Word: "Classification_Word",//单个单词详情
     MapPoint_Click: "MapPoint_Click", //点击了地图点
     Update_MapPoint: "Update_MapPoint",//更新地图点数据
-    WordGame_Unit_Click: "WordGame_Unit_Click", //大冒险点击单元
     Subject_ItemChoice: "Subject_ItemChoice",//主题题目选择
     GradeSkip_Challenge: "GradeSkip_Challenge",//跳过关卡
     GradeSkip_Subject_Result: "GradeSkip_Subject_Result",//跳过关卡题目结果
