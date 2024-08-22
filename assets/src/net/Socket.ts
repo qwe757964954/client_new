@@ -37,7 +37,7 @@ export class Socket {
             this.openFun = null;
             this.recvFun = null;
             this.closeFun = null;
-            this.onError = null;
+            this.errorFun = null;
         }
     }
 
