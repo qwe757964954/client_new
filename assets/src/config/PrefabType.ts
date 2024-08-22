@@ -52,10 +52,7 @@ export const PrefabType = {
     WordBossView: { path: "studyModes/WordBossView", zindex: Hierarchy.POPUPLAYER, tips: "Boss关卡" },
     LevelUpView: { path: "common/LevelUpView", zindex: Hierarchy.POPUPLAYER, tips: "升级界面" },
     MapProcessRewardView: { path: "adventure/common/MapProcessRewardView", componentName: "MapProcessRewardView", zindex: Hierarchy.POPUPLAYER, tips: "岛屿进度奖励展示" },
-    SubjectView: { path: "theme/SubjectView", componentName: "SubjectView", zindex: Hierarchy.POPUPLAYER, tips: "主题界面" },
-    PracticeView: { path: "theme/PracticeView", componentName: "PracticeView", zindex: Hierarchy.POPUPLAYER, tips: "主题文章列表界面" },
-    ArticleView: { path: "theme/ArticleView", componentName: "ArticleView", zindex: Hierarchy.POPUPLAYER, tips: "AI阅读文章列表界面" },
-    UnitExerciseView: { path: "theme/UnitExerciseView", componentName: "UnitExerciseView", zindex: Hierarchy.POPUPLAYER, tips: "跳级测试界面" },
+
     //**学习模式相关 end*/
     /*********************************************公共相关start***********************************************************/
     TopAmoutView: { path: "common/ResPannel", zindex: Hierarchy.POPUPLAYER, tips: "数值公共模块" },
@@ -262,4 +259,13 @@ export const PrefabType = {
     ComicLandView: { path: "comicReading/ComicLandView", zindex: Hierarchy.POPUPLAYER, tips: "漫画阅读" },
     /*********************************************漫画阅读 end***********************************************************/
     
+    /*********************************************主题 start***********************************************************/
+    SubjectView: { path: "theme/SubjectView", componentName: "SubjectView", zindex: Hierarchy.POPUPLAYER, tips: "主题界面" },
+    PracticeView: { path: "theme/PracticeView", componentName: "PracticeView", zindex: Hierarchy.POPUPLAYER, tips: "主题文章列表界面" },
+    ArticleView: { path: "theme/ArticleView", componentName: "ArticleView", zindex: Hierarchy.POPUPLAYER, tips: "AI阅读文章列表界面" },
+    ComicController: { path: "theme/ComicController", componentName: "ComicController", zindex: Hierarchy.POPUPLAYER, tips: "漫画" },
+    ReadArticleView: { path: "theme/ReadArticleView", componentName: "ReadArticleView", zindex: Hierarchy.POPUPLAYER, tips: "读文章" },
+    UnitExerciseView: { path: "theme/UnitExerciseView", componentName: "UnitExerciseView", zindex: Hierarchy.POPUPLAYER, tips: "跳级测试界面" },
+    /*********************************************主题 end***********************************************************/
+
 }

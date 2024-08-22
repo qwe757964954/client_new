@@ -7,10 +7,11 @@ import { ServiceMgr } from '../../net/ServiceManager';
 import { BaseView } from '../../script/BaseView';
 import CCUtil from '../../util/CCUtil';
 import { EventMgr } from '../../util/EventManager';
-import List from '../../util/list/List';
 import { ArticleView } from './ArticleView';
 import { ChoiceQuestion } from './ChoiceQuestion';
+import { ComicController } from './ComicController';
 import { ArticleItem } from './item/ArticleItem';
+import { ReadArticleView } from './ReadArticleView';
 const { ccclass, property } = _decorator;
 
 @ccclass('PracticeView')
@@ -19,8 +20,7 @@ export class PracticeView extends BaseView {
     public top_layout: Node;
     @property(Node)
     public content_layout: Node;
-    @property(List)
-    public articleList: List;
+    
     @property(Node)
     public practiceBtn: Node;
     @property(Label)
@@ -51,19 +51,40 @@ export class PracticeView extends BaseView {
 
     private _isGettingArticle: boolean = false;
 
-    protected initUI(): void {
+    private _comicController:ComicController = null;
+    private _readArticleView:ReadArticleView = null;
+
+    protected async initUI() {
         this.initNavTitle();
+        await this.initViews();
+        this._navTitleView.setTitleName(this._data.subject.subject_name);
+        this._readArticleView.updateData(this._data);
+    }
+
+    private async initViews() {
+        const viewComponents = [
+            {
+                prefabType: PrefabType.ComicController,
+                initCallback: (node: Node) => this._comicController = node.getComponent(ComicController),
+                alignOptions: { isAlignTop: true,isAlignLeft: true, top: 130.735,left:41.954},
+                parentNode: this.content_layout
+            },
+            {
+                prefabType: PrefabType.ReadArticleView,
+                initCallback: (node: Node) => this._readArticleView = node.getComponent(ReadArticleView),
+                alignOptions: { isAlignTop: true,isAlignRight:true, top: 130.735,right:54.642},
+                parentNode: this.content_layout
+            },
+        ]
+
+        await Promise.all(viewComponents.map(config => 
+            this.initViewComponent(config.prefabType, config.initCallback, config.alignOptions, config.parentNode)
+        ));
     }
 
     public setData(data: WordGameSubjectReply) {
         this._data = data;
-        // this._navTitleView.setTitleName(data.subject.subject_name);
-        return;
-        this.articleList.numItems = this._data.subject.dialogue_content.length;
-        console.log("ddddddddddd", data);
-        this.scheduleOnce(() => {
-            this.articleList.updateAll();
-        }, 0.05);
+        console.log("setData......",this._data,this._readArticleView);
         this._isGettingPractice = true;
         ServiceMgr.studyService.getArticleExercisesList(data.subject.subject_id);
     }

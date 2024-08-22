@@ -33,6 +33,7 @@ export class SubjectView extends BasePopup {
 
     protected initUI(): void {
         // this.offViewAdaptSize();
+        this.enableClickBlankToClose([this.node.getChildByName("frame")]);
     }
 
     public setData(data: WordGameSubjectReply) {

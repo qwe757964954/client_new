@@ -430,19 +430,62 @@ export class c2sWordGameSubject {
     command_id: string = InterfacePath.WordGame_Subject;
     subject_id: number;
 }
-export class WordGameSubjectReply extends BaseRepPacket {
-    subject: Subject;
-    word_list: UnitWord[];
+
+// TypeScript 类型定义
+
+// 定义词汇项的接口
+interface WordItem {
+    w_id: string;
+    big_id: number;
+    small_id: number;
+    subject_id: number;
+    word: string;
+    cn: string;
+    image_url: string | null;
+    symbol: string;
 }
-export class Subject {
+
+// 定义句子项的接口
+export interface SentenceItem {
+    w_id: string;
+    word: string;
+    w_cn: string;
+    sentence: string;
+    subject_id: number;
+    cn: string;
+}
+
+// 定义知识点的接口
+export interface KnowledgeItem {
+    knowledge: string;
+    subject_id: number;
+    sentence_list: SentenceItem[];
+}
+
+// 定义主题的接口
+export interface Subject {
     big_id: number;
     subject_id: number;
     subject_name: string;
-    sentence_knowledge: string[];
-    dialogue_content: string[];
-    is_unit?: boolean = false;
-    status?: number;
+    subject_cn: string;
+    sentence_knowledge: KnowledgeItem[];
 }
+
+// 定义文章项的接口
+export interface ArticleItemData {
+    article_id: number;
+    subject_id: number;
+    article: string;
+    create_time: string;
+}
+
+// 定义主数据接口
+export interface WordGameSubjectReply extends BaseRepPacket {
+    subject: Subject;
+    word_list: WordItem[];
+    article_list: ArticleItemData[];
+}
+
 
 //大冒险主题ai文章列表
 export class c2sSubjectArticleList {
