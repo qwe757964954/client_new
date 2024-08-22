@@ -40,7 +40,7 @@ export class UserClothes {
         this._hair = this._jewelry = this._coat = this._pants = this._shoes = this._wings = this._hat = this._face = null;
     }
     set hair(clothing: number) {
-        if (0 == clothing) clothing = null;
+        if (0 == clothing || null == clothing) clothing = 30001;
         let oldValue = this._hair;
         this._hair = clothing;
         if (clothing != oldValue && this == User.userClothes) {
@@ -48,7 +48,7 @@ export class UserClothes {
         }
     }
     set jewelry(clothing: number) {
-        if (0 == clothing) clothing = null;
+        if (0 == clothing || null == clothing) clothing = 30002;
         let oldValue = this._jewelry;
         this._jewelry = clothing;
         if (clothing != oldValue && this == User.userClothes) {
@@ -56,7 +56,7 @@ export class UserClothes {
         }
     }
     set coat(clothing: number) {
-        if (0 == clothing) clothing = null;
+        if (0 == clothing || null == clothing) clothing = 30003;
         let oldValue = this._coat;
         this._coat = clothing;
         if (clothing != oldValue && this == User.userClothes) {
@@ -64,7 +64,7 @@ export class UserClothes {
         }
     }
     set pants(clothing: number) {
-        if (0 == clothing) clothing = null;
+        if (0 == clothing || null == clothing) clothing = 30004;
         let oldValue = this._pants;
         this._pants = clothing;
         if (clothing != oldValue && this == User.userClothes) {
@@ -72,7 +72,7 @@ export class UserClothes {
         }
     }
     set shoes(clothing: number) {
-        if (0 == clothing) clothing = null;
+        if (0 == clothing || null == clothing) clothing = 30005;
         let oldValue = this._shoes;
         this._shoes = clothing;
         if (clothing != oldValue && this == User.userClothes) {
