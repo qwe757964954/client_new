@@ -15,6 +15,10 @@ export class TaskTabView extends BaseView {
 
     private callSelectCallback: (info: TaskTabInfo) => void = null;
 
+    protected initUI(): void {
+        this.offViewAdaptSize();
+    }
+
     updateData(tabs: TaskTabInfo[], selectId: number = 0) {
         this.tab_datas = tabs;
         this.tab_scroll.numItems = this.tab_datas.length;
