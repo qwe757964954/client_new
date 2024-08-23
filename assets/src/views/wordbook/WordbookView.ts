@@ -2,6 +2,7 @@ import { _decorator, Node } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { LoadManager } from '../../manager/LoadManager';
 import { BaseComponent } from '../../script/BaseComponent';
+import CCUtil from '../../util/CCUtil';
 import { GameSourceType } from '../adventure/sixModes/BaseModeView';
 import { NavTitleView } from '../common/NavTitleView';
 import { TaskTabInfo } from '../task/TaskInfo';
@@ -66,6 +67,7 @@ export class WordbookView extends BaseComponent {
 
     }
     protected async onLoad() {
+        CCUtil.viewAdaptScreen([this.plLeft, this.plRight]);
         await this.init();
     }
     private async init() {

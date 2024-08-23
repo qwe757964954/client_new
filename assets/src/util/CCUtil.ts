@@ -1,5 +1,7 @@
 import { Button, EventKeyboard, EventTouch, Input, KeyCode, Layers, Node, NodeEventType, SpriteFrame, UITransform, Vec3, Widget, director, gfx, input, isValid } from "cc";
+import GlobalConfig from "../GlobalConfig";
 import { SoundMgr } from "../manager/SoundMgr";
+import { ToolUtil } from "./ToolUtil";
 
 export default class CCUtil {
     public static clickCall(event: EventTouch) {
@@ -249,5 +251,12 @@ export default class CCUtil {
     /**设置节点相机2D_UI */
     public static setNodeCamera2DUI(node: Node) {
         CCUtil.setNodeCamera(node, Layers.Enum.UI_2D);
+    }
+    /** */
+    public static viewAdaptScreen(nodes: Node[]) {
+        let scale = ToolUtil.getValue(GlobalConfig.WIN_DESIGN_RATE, 0.1, 1.0);
+        nodes.forEach(node => {
+            CCUtil.setNodeScale(node, scale);
+        });
     }
 }

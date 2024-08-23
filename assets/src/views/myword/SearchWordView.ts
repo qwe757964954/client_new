@@ -32,11 +32,12 @@ export class SearchWordView extends BaseView {
 
     private _historys: SearchWordItem[] = []; // 查找的历史
     protected _detailData: WordsDetailData = null; // 当前单词详情数据
-    private _collectWoldInfo:SearchWordItem = null;
+    private _collectWoldInfo: SearchWordItem = null;
 
     protected initUI(): void {
         SoundMgr.stopBgm();
         this.initData();
+        this.offViewAdaptSize();
     }
 
     private initData() {
@@ -48,39 +49,39 @@ export class SearchWordView extends BaseView {
     protected onInitModuleEvent(): void {
         this.addModelListeners([
             [InterfacePath.Search_Word, this.onSearchWord.bind(this)],
-            [EventType.Word_Collect_Refresh,this.onTotalCollectWord.bind(this)],
-            [EventType.Search_Word_Item_Detail,this.onSearchItemDetail.bind(this)],
-            [EventType.Search_Collect_Work,this.onCollectWork.bind(this)],
+            [EventType.Word_Collect_Refresh, this.onTotalCollectWord.bind(this)],
+            [EventType.Search_Word_Item_Detail, this.onSearchItemDetail.bind(this)],
+            [EventType.Search_Collect_Work, this.onCollectWork.bind(this)],
         ]);
     }
 
-    onSearchItemDetail(data: SearchWordItem){
+    onSearchItemDetail(data: SearchWordItem) {
         this._collectWoldInfo = data;
         this.onMoreWordDetail(data);
     }
-    onCollectWork(data:SearchWordItem){
+    onCollectWork(data: SearchWordItem) {
         this._collectWoldInfo = data;
-        const collect = data.is_collect === 1 ? 0:1;
+        const collect = data.is_collect === 1 ? 0 : 1;
         ServiceMgr.wordbookSrv.reqCollectWord(data.word, collect, 0);
     }
     private async onTotalCollectWord(data: any) {
-        if(!isValid(this.node) || !this.node.active){return}
+        if (!isValid(this.node) || !this.node.active) { return }
         console.log(data);
         console.log(this._historys);
         console.log(this._collectWoldInfo);
         const historyItem = this._historys.find(item => item.word === this._collectWoldInfo.word);
-        
+
         if (historyItem) {
             historyItem.is_collect = this._collectWoldInfo.is_collect ? 0 : 1;
-            
+
             this.saveHistory();
-            
+
             this.updateHistoryList();
         } else {
             console.error(`History item with word ${this._collectWoldInfo.word} not found.`);
         }
     }
-    
+
     private async onSearchWord(data: SearchWordResponse) {
         console.log(data);
         if (!isValid(data.word)) {
@@ -95,7 +96,7 @@ export class SearchWordView extends BaseView {
 
     private async onMoreWordDetail(data: SearchWordItem) {
         console.log("onMoreWordDetail", data);
-        if(!isValid(this.node) || !this.node.active){return}
+        if (!isValid(this.node) || !this.node.active) { return }
         const node = await ViewsMgr.showViewAsync(PrefabType.WordDetailUI);
         let wordData = new WordModel();
         wordData.word = data.word;
