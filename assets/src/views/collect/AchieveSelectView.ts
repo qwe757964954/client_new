@@ -13,6 +13,7 @@ export class AchieveSelectView extends BaseView {
     achieveList: List = null;
 
     protected initUI(): void {
+        this.offViewAdaptSize();
         this.achieveList.numItems = 5;
     }
 }

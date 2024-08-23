@@ -1,4 +1,5 @@
 import { _decorator, Label, Node, Prefab } from 'cc';
+import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { PopMgr } from '../../manager/PopupManager';
 import { ViewsMgr } from '../../manager/ViewsManager';
@@ -21,10 +22,6 @@ export class PracticeView extends BaseView {
     public content_layout: Node;
     @property(Label)
     public practiceLabel: Label;
-    @property(Node)
-    public articleNode: Node;
-    @property(Node)
-    public mainFrame: Node;
     @property(Prefab)
     public choiceQuestionPrefab: Prefab; // 选择题
 
@@ -44,7 +41,13 @@ export class PracticeView extends BaseView {
         this._readArticleView.updateData(this._data);
         this.switchComponent.setSwichListener(this.swichChangeListener.bind(this));
     }
-
+    protected onInitModuleEvent(): void {
+        this.addModelListeners([
+            [InterfacePath.Article_ExercisesList, this.onGetExerciseList],
+            [InterfacePath.Subject_ArticleList, this.onGetArticle],
+            [EventType.Practic_Right_View_Hiden,this.onPracticHiden]
+        ]);
+    }
     private async initViews() {
         const viewComponents = [
             {
@@ -70,7 +73,9 @@ export class PracticeView extends BaseView {
         this._data = data;
         console.log("setData......",this._data,this._readArticleView);
     }
-
+    onPracticHiden(){
+        this.switchComponent.setSwitchState(false);
+    }
     gotoRead() {
         if (this._isGettingArticle) return;
         this._isGettingArticle = true;
@@ -90,7 +95,7 @@ export class PracticeView extends BaseView {
         if (status) {
             await PopMgr.showPopRight(PrefabType.PracticRightView,"content");
         } else {
-            
+            PopMgr.closePopup(PrefabType.PracticRightView);
         }
 
     }
@@ -114,12 +119,7 @@ export class PracticeView extends BaseView {
         });
     }
 
-    protected onInitModuleEvent(): void {
-        this.addModelListeners([
-            [InterfacePath.Article_ExercisesList, this.onGetExerciseList],
-            [InterfacePath.Subject_ArticleList, this.onGetArticle],
-        ]);
-    }
+    
 
     onArticleListRender(item: Node, idx: number) {
         let itemSp = item.getComponent(ArticleItem);

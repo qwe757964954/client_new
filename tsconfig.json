@@ -6,7 +6,7 @@
   "compilerOptions": {
     "strict": false,
     "lib": [
-      "es2017",
+      "es2021",
       "dom"
     ]
   },

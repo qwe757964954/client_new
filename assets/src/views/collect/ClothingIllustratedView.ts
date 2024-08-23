@@ -10,6 +10,7 @@ export class ClothingIllustratedView extends BaseView {
     public cloth_list: List = null;
     
     protected initUI(): void {
+        this.offViewAdaptSize();
         this.cloth_list.numItems = 20;
     }
 

@@ -1,4 +1,4 @@
-import { _decorator, Button, instantiate, Node, Prefab, v3 } from 'cc';
+import { _decorator, Button, Node, Prefab, v3 } from 'cc';
 import { EventType } from '../../config/EventType';
 import { KeyConfig } from '../../config/KeyConfig';
 import { PrefabType } from '../../config/PrefabType';
@@ -6,7 +6,7 @@ import GlobalConfig from '../../GlobalConfig';
 import { DataMgr, IslandData } from '../../manager/DataMgr';
 import { PopMgr } from '../../manager/PopupManager';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
-import { GameMode, GateData, IslandProgressModel, LandStatusResponse, LevelProgressData, LevelRestartData } from '../../models/AdventureModel';
+import { GameMode, GateData, LandStatusResponse, LevelProgressData, LevelRestartData } from '../../models/AdventureModel';
 import { UnitWordModel } from '../../models/TextbookModel';
 import { InterfacePath } from '../../net/InterfacePath';
 import { ServiceMgr } from '../../net/ServiceManager';
@@ -41,10 +41,8 @@ export class WorldMapView extends BaseView {
     public gradeSelectBtn: Node = null;
 
     private currentIsland: Node = null;
-    private currentIslandID: number = 0;
     private currentLevelData: GateData = null;
     private levelProgressData: LevelProgressData = null;
-    private gettingIslandStatus: boolean = false;
     private gettingWords: boolean = false;
     private currentPassIsland: LandStatusResponse = null;
     private _worldIsland:WorldIsland = null;
@@ -66,10 +64,8 @@ export class WorldMapView extends BaseView {
     }
     protected onInitModuleEvent() {
         this.addModelListeners([
-            [EventType.Exit_World_Island, this.hideIsland.bind(this)],
             [EventType.Enter_Island_Level, this.enterLevel.bind(this)],
             [InterfacePath.Island_Status, this.onGetIslandStatus.bind(this)],
-            [InterfacePath.Island_Progress, this.onGetIslandProgress.bind(this)],
             [InterfacePath.Adventure_LevelProgress, this.onGetLevelProgress.bind(this)],
             [EventType.Enter_Level_Test, this.enterTest.bind(this)],
             [EventType.Goto_Textbook_Next_Level, this.goNextLevel.bind(this)],
@@ -105,36 +101,15 @@ export class WorldMapView extends BaseView {
 
     private async initData() {
         await DataMgr.instance.getAdventureLevelConfig();
-        this.initEvent();
         ServiceMgr.studyService.getIslandStatus();
     }
 
-    private showIsland(data: IslandData) {
-        if (this.gettingIslandStatus) {
-            console.log('正在获取岛屿状态中', data.big_id);
-            return;
-        }
-        this.currentIslandID = data.big_id;
-        this.gettingIslandStatus = true;
-        ServiceMgr.studyService.getIslandProgress(this.currentIslandID);
-    }
-
-    private onGetIslandProgress(data: IslandProgressModel) {
-        if (data.code !== 200) {
-            console.error('获取岛屿进度失败', data.msg);
-            return;
-        }
-        if (this.currentIsland) {
-            this.currentIsland.destroy();
-        }
-        this.currentIsland = instantiate(this.islandPref);
-        this._worldIsland = this.currentIsland.getComponent(WorldIsland);
-        this.islandContainer.addChild(this.currentIsland);
-        this._worldIsland.setPointsData(this.currentIslandID, data);
+    private async showIsland(data: IslandData) {
+        let node = await ViewsMgr.showViewAsync(PrefabType.WorldIsland);
+        node.getComponent(WorldIsland).updateLandId(data.big_id);
     }
 
     private onGetIslandStatus(data: LandStatusResponse) {
-        this.gettingIslandStatus = false;
         if (data.code !== 200) {
             console.error('获取岛屿状态失败', data.msg);
             return;
@@ -160,16 +135,6 @@ export class WorldMapView extends BaseView {
 
         return result;
     }
-
-    private hideIsland() {
-        if (this.currentIsland) {
-            this.currentIsland.destroy();
-        }
-        this.gettingIslandStatus = false;
-        this.levelProgressData = null;
-        this.currentLevelData = null;
-    }
-
     private enterLevel(data: GateData) {
         if (this.gettingWords) {
             console.log('正在获取单词中', data);
@@ -228,7 +193,6 @@ export class WorldMapView extends BaseView {
 
     private goNextLevel() {
         if (!this.currentIsland) return;
-        this.gettingIslandStatus = false;
         this.currentLevelData = null;
         const nextLevel = this._worldIsland.getNextLevelData(this.levelProgressData.big_id, this.levelProgressData.small_id);
         if (nextLevel) {
