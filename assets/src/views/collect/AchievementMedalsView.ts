@@ -14,6 +14,7 @@ export class AchievementMedalsView extends BaseView {
     private _achieveSelectView:AchieveSelectView = null;
 
     protected initUI(): void {
+        this.offViewAdaptSize();
         this.achievement_list.numItems = 50;
         this.initViews();
     }

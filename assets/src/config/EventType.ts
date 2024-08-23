@@ -58,7 +58,6 @@ export const EventType = {
 
     Enter_Island_Level: "Enter_Island_Level",  //进入大冒险关卡
     Enter_Level_Test: "Enter_Level_Test",  //进入关卡测试
-    Exit_World_Island: "Exit_World_Island",  //退出岛屿界面
     Enter_Boss_Level: "Enter_Boss_Level",  //进入Boss关卡
 
     Exit_Island_Level: "Exit_Island_Level",  //退出大冒险关卡
@@ -160,6 +159,7 @@ export const EventType = {
     Word_Check_Item_Detail: "Word_Check_Item_Detail",
     Grade_Select_Event: "Grade_Select_Event",
     Bag_Player_Action_Event: "Bag_Player_Action_Event",
+    Practic_Right_View_Hiden: "Practic_Right_View_Hiden",
 }
 
 export function itemEventKey(id: ItemID) {

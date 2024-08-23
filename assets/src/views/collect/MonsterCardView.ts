@@ -14,6 +14,7 @@ export class MonsterCardView extends BaseView {
 
     private _achieveTabView:AchieveTabView = null;
     protected async initUI() {
+        this.offViewAdaptSize();
         this.monster_list.numItems = 20;
         try {
             await this.initViews();

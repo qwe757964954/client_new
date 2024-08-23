@@ -28,7 +28,7 @@ export abstract class BasePopupBase extends BaseView {
     closePop(): void {
         this.animateOut();
     }
-
+    
     enableClickBlankToClose(excludedNodes: Node[]): Promise<void> {
         return new Promise<void>((resolve) => {
             this.touchEndHandler = (evt: EventTouch) => {

@@ -16,6 +16,7 @@ export class BuildingAtlasView extends BaseView {
     private _achieveTabView:AchieveTabView = null;
     private _themeView:ThemeView = null;
     protected async initUI() {
+        this.offViewAdaptSize();
         this.build_list.numItems = 20;
         try {
             await this.initViews();

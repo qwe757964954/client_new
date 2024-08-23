@@ -1,4 +1,4 @@
-import { _decorator, Button, Component, instantiate, isValid, Label, Node, Prefab, UITransform, Vec2, Vec3 } from 'cc';
+import { _decorator, instantiate, isValid, Label, Node, Prefab, UITransform, Vec2, Vec3 } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType, SceneType } from '../../config/PrefabType';
 import { DataMgr } from '../../manager/DataMgr';
@@ -10,8 +10,8 @@ import { BaseRepPacket } from '../../models/NetModel';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
 import { InterfacePath } from '../../net/InterfacePath';
 import { ServiceMgr } from '../../net/ServiceManager';
+import { BaseView } from '../../script/BaseView';
 import CCUtil from '../../util/CCUtil';
-import EventManager, { EventMgr } from '../../util/EventManager';
 import List from '../../util/list/List';
 import { GradeSkipSubjectMgr } from '../theme/GradeSkipSubjectManager';
 import { SubjectView } from '../theme/SubjectView';
@@ -26,14 +26,14 @@ const { ccclass, property } = _decorator;
 
 /**魔法森林 何存发 2024年4月9日17:51:36 */
 @ccclass('WorldIsland')
-export class WorldIsland extends Component {
+export class WorldIsland extends BaseView {
 
     @property({ type: Node, tooltip: "返回按钮" })
     public back: Node = null;
-    @property({ type: Button, tooltip: "世界地图" })
-    public btn_details: Button = null;
-    @property({ type: Button, tooltip: "我的位置" })
-    public btn_pos: Button = null;
+    @property({ type: Node, tooltip: "世界地图" })
+    public btn_details: Node = null;
+    @property({ type: Node, tooltip: "我的位置" })
+    public btn_pos: Node = null;
 
     @property({ type: List, tooltip: "地图List" })
     public mapPointList: List = null;
@@ -85,15 +85,42 @@ export class WorldIsland extends Component {
     private _currentPos: GateData;
 
     private _isGetUnitWords: boolean = false; //是否正在获取单元单词
-
+    private currentIslandID: number = 0;
     @property(List)
     rewardBoxList: List = null;
     private _progressRewards: ProgressRewardData[] = [];
     private _selectUnit: UnitData = null;
     private _rightChallenge: rightPanelchange = null;
-    start() {
-        this.initUI();
-        this.initEvent();
+
+    protected initUI(): void {
+        this.initPet();
+        this.initRole();
+    }
+
+    protected onInitModuleEvent() {
+        this.addModelListeners([
+            [EventType.MapPoint_Click, this.mapPointClick.bind(this)],
+            [EventType.Update_MapPoint, this.onUpdatePoint.bind(this)],
+            [InterfacePath.BossLevel_Topic, this.onGetBossLevelTopic.bind(this)],
+            [EventType.Enter_Boss_Level, this.enterBossLevel.bind(this)],
+            [InterfacePath.WordGame_UnitList, this.onGetUnits.bind(this)],
+            [InterfacePath.WordGame_UnitWords, this.onGetUnitWords.bind(this)],
+            [EventType.GradeSkip_Challenge, this.onGradeSkipChallenge.bind(this)],
+            [InterfacePath.GradeSkip_ExercisesList, this.onGradeSkipExercises.bind(this)],
+            [InterfacePath.WordBossGame_Restart, this.onBossGameRestart.bind(this)],
+            [InterfacePath.Island_Progress, this.onGetIslandProgress.bind(this)],
+        ]);
+    }
+
+    protected initEvent(): void {
+        CCUtil.onBtnClick(this.back, this.onBtnBackClick.bind(this));
+        CCUtil.onBtnClick(this.btn_details, this.onBtnDetailsClick.bind(this));
+        CCUtil.onBtnClick(this.btn_pos, this.skipToCurrent.bind(this));
+    }
+
+    updateLandId(landId: number){
+        this.currentIslandID = landId;
+        ServiceMgr.studyService.getIslandProgress(landId);
     }
 
     setPointsData(bigId: number, progresssData: IslandProgressModel) {
@@ -269,13 +296,7 @@ export class WorldIsland extends Component {
         return this.mapPoints.get(bigId);
     }
 
-    /**初始化UI */
-    private initUI() {
-        this.initPet();
-        this.initRole();
-        // this.initMonster();
-    }
-
+   
     async initRole() {
         this._role = instantiate(this.roleModel);
         this.roleContainer.addChild(this._role);
@@ -302,6 +323,7 @@ export class WorldIsland extends Component {
         let monsterModel = this._boss.getComponent(MonsterModel);
         let islandData = DataMgr.getIslandData(this._bigId);
         monsterModel.init("spine/monster/adventure/" + islandData.bossAni);
+        CCUtil.onBtnClick(this._boss, this.challangeBoss.bind(this));
     }
 
     async challangeBoss() {
@@ -310,6 +332,14 @@ export class WorldIsland extends Component {
         let node = await PopMgr.showPopRight(PrefabType.RightPanelchange,"stage_frame");
         this._rightChallenge = node.getComponent(rightPanelchange);
         this._rightChallenge.openBossView(levelData);
+    }
+
+    private onGetIslandProgress(data: IslandProgressModel) {
+        if (data.code !== 200) {
+            console.error('获取岛屿进度失败', data.msg);
+            return;
+        }
+        this.setPointsData(this.currentIslandID, data);
     }
 
     onGetBossLevelTopic(data: BossLevelTopicData) {
@@ -437,42 +467,10 @@ export class WorldIsland extends Component {
         });
     }
 
-    /**初始化监听事件 */
-    private initEvent() {
-        CCUtil.onTouch(this.back, this.onBtnBackClick, this);
-        CCUtil.onTouch(this.btn_details, this.onBtnDetailsClick, this);
-        CCUtil.onTouch(this.btn_pos, this.skipToCurrent, this);
-        CCUtil.onTouch(this._boss, this.challangeBoss, this);
-
-        this._mapPointClickEvId = EventManager.on(EventType.MapPoint_Click, this.mapPointClick.bind(this));
-        this._mapPointUpdateEvId = EventManager.on(EventType.Update_MapPoint, this.onUpdatePoint.bind(this));
-        EventMgr.addListener(InterfacePath.BossLevel_Topic, this.onGetBossLevelTopic, this);
-        EventMgr.addListener(EventType.Enter_Boss_Level, this.enterBossLevel, this);
-        EventMgr.addListener(InterfacePath.WordGame_UnitList, this.onGetUnits, this);
-        EventMgr.addListener(InterfacePath.WordGame_UnitWords, this.onGetUnitWords, this);
-        EventMgr.addListener(EventType.GradeSkip_Challenge, this.onGradeSkipChallenge, this);
-        EventMgr.addListener(InterfacePath.GradeSkip_ExercisesList, this.onGradeSkipExercises, this);
-        EventMgr.addListener(InterfacePath.WordBossGame_Restart, this.onBossGameRestart, this);
-    }
-    /**移除监听 */
-    private removeEvent() {
-        CCUtil.offTouch(this.back, this.onBtnBackClick, this);
-        CCUtil.offTouch(this.btn_details, this.onBtnDetailsClick, this);
-        CCUtil.offTouch(this.btn_pos, this.skipToCurrent, this);
-        CCUtil.offTouch(this._boss, this.challangeBoss, this);
-        EventManager.off(EventType.MapPoint_Click, this._mapPointClickEvId);
-        EventManager.off(EventType.Update_MapPoint, this._mapPointUpdateEvId);
-
-        EventMgr.removeListener(InterfacePath.BossLevel_Topic, this);
-        EventMgr.removeListener(EventType.Enter_Boss_Level, this);
-        EventMgr.removeListener(InterfacePath.WordGame_UnitList, this);
-        EventMgr.removeListener(InterfacePath.WordGame_UnitWords, this);
-        EventMgr.removeListener(EventType.GradeSkip_Challenge, this);
-        EventMgr.removeListener(InterfacePath.GradeSkip_ExercisesList, this);
-    }
+    
 
     onBtnDetailsClick() {
-        EventManager.emit(EventType.Exit_World_Island);
+        ViewsMgr.closeView(PrefabType.WorldIsland);
     }
 
     /**跳转到当前位置 */
@@ -495,15 +493,8 @@ export class WorldIsland extends Component {
     }
     /**返回关卡模式 */
     private onBtnBackClick() {
-        // EventManager.emit(EventType.Exit_World_Island);
         SceneMgr.loadScene(SceneType.MainScene);
     }
-
-    protected onDestroy(): void {
-        this.removeEvent()
-        console.log('销毁')
-    }
-
 }
 
 

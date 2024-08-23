@@ -14,6 +14,7 @@ export class VocabularyRankingView extends BaseView {
     private _myRank:MyRank = null;
     private _wordRankResponse:WordRankResponse = null;
     protected async initUI() {
+        this.offViewAdaptSize();
         await this.initViews();
         this._myRank.updateMyRankData(this._wordRankResponse.user_rank);
 

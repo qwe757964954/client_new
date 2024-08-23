@@ -11,6 +11,7 @@ export class CombatPowerRankingView extends BaseView {
     public rank_list:List = null;
     private _myRank:MyRank = null;
     protected initUI(): void {
+        this.offViewAdaptSize();
         this.rank_list.numItems = 20;
         this.initViews();
     }

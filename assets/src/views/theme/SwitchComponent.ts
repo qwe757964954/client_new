@@ -20,7 +20,7 @@ export class SwitchComponent extends Component {
     switchDuration: number = 0.2;
 
     @property
-    isOn: boolean = false;
+    public isOn: boolean = false;
 
     private _touchStarted: boolean = false;
     private _thumbWidth: number = 0;

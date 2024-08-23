@@ -3,7 +3,7 @@ import { EventType } from '../../config/EventType';
 import { TextConfig } from '../../config/TextConfig';
 import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { GateListItem, UnitItemStatus, UnitListItemStatus } from '../../models/TextbookModel';
+import { UnitItemStatus, UnitListItemStatus } from '../../models/TextbookModel';
 import { BaseView } from '../../script/BaseView';
 import CCUtil from '../../util/CCUtil';
 import { EventMgr } from '../../util/EventManager';
@@ -47,8 +47,6 @@ export class ScrollMapView extends BaseView {
 
     @property(Prefab)
     mapItemPrefab: Prefab = null;
-
-    private _clickCallback: (itemStatus: UnitItemStatus, gate: GateListItem) => void = null;
     private _unitStatus: UnitItemStatus[] = [];
     private _pointItems: Node[] = [];
     private _totalGrade = 0;
@@ -228,10 +226,6 @@ export class ScrollMapView extends BaseView {
                 resolve();
             });
         });
-    }
-
-    setClickCallback(callback: (itemStatus: UnitItemStatus, gate: GateListItem) => void) {
-        this._clickCallback = callback;
     }
 
     private onItemClick(node: Node) {

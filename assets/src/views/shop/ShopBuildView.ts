@@ -1,6 +1,5 @@
-import { _decorator, Node } from 'cc';
+import { _decorator, Component, Node } from 'cc';
 import { DataMgr, EditInfo, EditType } from '../../manager/DataMgr';
-import { BaseView } from '../../script/BaseView';
 import List from '../../util/list/List';
 import { TabTypeIds } from '../task/TaskInfo';
 import { ShopGoodsItem } from './ShopGoodsItem';
@@ -8,7 +7,7 @@ import { buildTypeMapping } from './ShopInfo';
 const { ccclass, property } = _decorator;
 
 @ccclass('ShopBuildView')
-export class ShopBuildView extends BaseView {
+export class ShopBuildView extends Component {
     @property(List)
     public build_list:List = null;
     private _itemsData: EditInfo[] = null;//编辑数据

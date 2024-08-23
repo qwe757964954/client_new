@@ -15,6 +15,7 @@ export class ThemeView extends BaseView {
     public dropdown: Dropdown = null;
 
     protected initUI(): void {
+        this.offViewAdaptSize();
         this.themeList.numItems = 6;
     }
 

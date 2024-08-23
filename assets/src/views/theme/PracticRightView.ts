@@ -1,8 +1,10 @@
 import { _decorator, Label, Node } from 'cc';
+import { EventType } from '../../config/EventType';
 import { ArticleExercise, QuestionKind, WordGameSubjectReply } from '../../models/AdventureModel';
 import { ServiceMgr } from '../../net/ServiceManager';
 import { BasePopRight } from '../../script/BasePopRight';
 import CCUtil from '../../util/CCUtil';
+import { EventMgr } from '../../util/EventManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('PracticRightView')
@@ -18,7 +20,9 @@ export class PracticRightView extends BasePopRight {
     private _currentQuestionIdx: number = 0; //当前题目索引
     private _questionList: ArticleExercise[] = [];
     protected initUI(): void {
-        this.enableClickBlankToClose([this.node.getChildByName("content")]);
+        this.enableClickBlankToClose([this.node.getChildByName("content")]).then(()=>{
+            EventMgr.dispatch(EventType.Practic_Right_View_Hiden);
+        });
     }
 
     updateData(data:WordGameSubjectReply){

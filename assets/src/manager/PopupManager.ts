@@ -23,7 +23,7 @@ export class PopupManager {
     private async createBasePopup(viewConfig: PrefabConfig): Promise<Node> {
         // Retrieve or create the parent node based on z-index
         let parent = ViewsMgr.getParentNode(viewConfig.zindex);
-        let nd_name = viewConfig.path.replace("/", "_");
+        let nd_name = viewConfig.path.replaceAll("/", "_");
         let nd: Node = ImgUtil.create_2DNode(nd_name);
         parent.addChild(nd);
         nd.addComponent(BlockInputEvents);
@@ -165,7 +165,7 @@ export class PopupManager {
     closePopup(viewConfig: PrefabConfig) {
         // 关闭界面
         let parent = ViewsMgr.getParentNode(viewConfig.zindex);
-        parent?.getChildByName(viewConfig.path.replace("/", "_"))?.destroy();
+        parent?.getChildByName(viewConfig.path.replaceAll("/", "_"))?.destroy();
     }
 }
 

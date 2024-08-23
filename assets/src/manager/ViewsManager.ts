@@ -57,78 +57,65 @@ export class ViewsManager {
 
     }
 
+    // 显示学习视图
     public showLearnView(viewConfig: PrefabConfig): Promise<Node> {
-        let parent = this.getParentNode(viewConfig.zindex);
-        let nd_name = viewConfig.path.replace("/", "_");
-        let nd: Node = ImgUtil.create_2DNode(nd_name);
-        parent.addChild(nd);
+        const parent = this.getParentNode(viewConfig.zindex);
+        const nodeName = this.getNodeName(viewConfig.path);
+        const node = ImgUtil.create_2DNode(nodeName);
+        parent.addChild(node);
+
         return new Promise((resolve, reject) => {
-            // Load the prefab and instantiate it
-            ResLoader.instance.load(`prefab/${viewConfig.path}`, Prefab, async (err, prefab) => {
+            ResLoader.instance.load(`prefab/${viewConfig.path}`, Prefab, (err, prefab) => {
                 if (err) {
-                    console.error(err);
-                    reject(err);
-                    return;
+                    console.error("Failed to load prefab:", err);
+                    return reject(err);
                 }
-                let node = instantiate(prefab);
-                nd.addChild(node);
-                CCUtil.addWidget(nd, { left: 0, right: 0, top: 0, bottom: 0 });
-                try {
-                    resolve(node as Node); // Resolve after the animation completes
-                } catch (animationError) {
-                    console.error(animationError);
-                    reject(animationError);
-                }
+
+                const prefabNode = instantiate(prefab);
+                node.addChild(prefabNode);
+                CCUtil.addWidget(node, { left: 0, right: 0, top: 0, bottom: 0 });
+
+                resolve(prefabNode);
             });
         });
     }
 
-
-    // 显示界面
+    // 显示视图
     public showView(viewConfig: PrefabConfig, callBack?: Function) {
         if (this.isExistView(viewConfig)) {
-            console.log("显示界面 已存在", viewConfig.path);
+            console.log("View already exists", viewConfig.path);
             return;
         }
-        let parent = this.getParentNode(viewConfig.zindex);
-        if (this._loadingPrefabMap.hasOwnProperty(viewConfig.path)) {
-            this._loadingPrefabMap[viewConfig.path]++;
-        } else {
-            this._loadingPrefabMap[viewConfig.path] = 1;
-        }
-        let tmpNode = new Node();
-        let tmpName = "tmp_" + viewConfig.path.replace("/", "_");
-        tmpNode.name = tmpName;
+
+        const parent = this.getParentNode(viewConfig.zindex);
+        this.incrementLoadingState(viewConfig.path);
+
+        const tmpNode = this.createTemporaryNode(viewConfig.path);
         parent.addChild(tmpNode);
 
         console.time(viewConfig.path);
-        LoadManager.loadPrefab(viewConfig.path, parent, viewConfig.isCache).then((node: Node) => {
-            console.log("显示界面", viewConfig.path);
-            console.timeEnd(viewConfig.path);
-            node.name = viewConfig.path.replace("/", "_");
+        LoadManager.loadPrefab(viewConfig.path, parent, viewConfig.isCache)
+            .then((node: Node) => {
+                console.log("View loaded", viewConfig.path);
+                console.timeEnd(viewConfig.path);
 
-            if (this._loadingPrefabMap.hasOwnProperty(viewConfig.path)) {
-                this._loadingPrefabMap[viewConfig.path]--;
-            }
-            if (callBack) callBack(node);
-            // 异常处理，避免预制体加载过程中被移除了
-            let tmpNode = parent.getChildByName(tmpName);
-            if (tmpNode) {
+                node.name = this.getNodeName(viewConfig.path);
+                this.decrementLoadingState(viewConfig.path);
+
+                if (callBack) callBack(node);
+
+                // Remove temporary node
                 tmpNode.destroy();
-            } else {
-                console.log("界面已经被移除", viewConfig.path);
-                node.destroy();
-            }
-        }).catch((error) => {
-            console.log("显示界面 error", error);
-            if (this._loadingPrefabMap.hasOwnProperty(viewConfig.path)) {
-                this._loadingPrefabMap[viewConfig.path]--;
-            }
-        });
+            })
+            .catch((error) => {
+                console.error("Error loading view", viewConfig.path, error);
+                this.decrementLoadingState(viewConfig.path);
+                tmpNode.destroy();
+            });
     }
 
+    // 异步显示视图
     public async showViewAsync(viewConfig: PrefabConfig): Promise<Node> {
-        // Check if the view already exists
         if (this.isExistView(viewConfig)) {
             console.log("View already exists", viewConfig.path);
             return Promise.reject(new Error(`View already exists: ${viewConfig.path}`));
@@ -136,51 +123,60 @@ export class ViewsManager {
 
         console.log("Loading view", viewConfig.path);
         const parent = this.getParentNode(viewConfig.zindex);
+        this.incrementLoadingState(viewConfig.path);
 
-        // Increment loading state
-        this._loadingPrefabMap[viewConfig.path] = (this._loadingPrefabMap[viewConfig.path] || 0) + 1;
-
-        // Create a temporary node to hold the loading state
-        const tmpNode = new Node();
-        tmpNode.name = `tmp_${viewConfig.path.replace("/", "_")}`;
+        const tmpNode = this.createTemporaryNode(viewConfig.path);
         parent.addChild(tmpNode);
 
         try {
-            // Load the prefab
             const node = await LoadManager.loadPrefab(viewConfig.path, parent);
-            console.log("Loaded view", viewConfig.path);
-            node.name = viewConfig.path.replace("/", "_");
+            console.log("View loaded", viewConfig.path);
+            node.name = this.getNodeName(viewConfig.path);
 
             // Remove temporary node if it still exists
-            if (tmpNode && tmpNode.parent) {
-                tmpNode.destroy();
-            }
+            tmpNode.destroy();
 
             return node;
         } catch (error) {
             console.error("Failed to load view", viewConfig.path, error);
-
-            // Ensure temporary node is removed
-            if (tmpNode && tmpNode.parent) {
-                tmpNode.destroy();
-            }
-
+            tmpNode.destroy();
             throw error;
         } finally {
-            // Decrement loading state
-            if (--this._loadingPrefabMap[viewConfig.path] <= 0) {
-                delete this._loadingPrefabMap[viewConfig.path];
-            }
+            this.decrementLoadingState(viewConfig.path);
         }
     }
 
+    // 辅助方法: 获取节点名称
+    private getNodeName(path: string): string {
+        return path.replaceAll("/", "_");
+    }
 
+    // 辅助方法: 创建临时节点
+    private createTemporaryNode(path: string): Node {
+        const tmpNode = new Node();
+        tmpNode.name = `tmp_${this.getNodeName(path)}`;
+        return tmpNode;
+    }
 
+    // 辅助方法: 增加加载状态
+    private incrementLoadingState(path: string) {
+        this._loadingPrefabMap[path] = (this._loadingPrefabMap[path] || 0) + 1;
+    }
+
+    // 辅助方法: 减少加载状态
+    private decrementLoadingState(path: string) {
+        if (this._loadingPrefabMap[path] > 0) {
+            this._loadingPrefabMap[path]--;
+            if (this._loadingPrefabMap[path] === 0) {
+                delete this._loadingPrefabMap[path];
+            }
+        }
+    }
     // 关闭界面
     public closeView(viewConfig: PrefabConfig) {
         console.log("closeView", viewConfig.path);
         let parent = this.getParentNode(viewConfig.zindex);
-        let name = viewConfig.path.replace("/", "_");
+        let name = this.getNodeName(viewConfig.path);
         parent?.getChildByName("tmp_" + name)?.destroy();
         parent?.getChildByName(name)?.destroy();
     }
@@ -190,7 +186,7 @@ export class ViewsManager {
         if (this._loadingPrefabMap.hasOwnProperty(viewConfig.path) && this._loadingPrefabMap[viewConfig.path] > 0) {
             return true;
         }
-        if (parent.getChildByName(viewConfig.path.replace("/", "_"))) {
+        if (parent.getChildByName(this.getNodeName(viewConfig.path))) {
             return true;
         }
         return false;

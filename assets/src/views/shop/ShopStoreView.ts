@@ -29,6 +29,7 @@ export class ShopStoreView extends BaseView {
     private _shopClothing: { [key in TabTypeIds]?: ShopClothingInfo } = {};
 
     protected async initUI() {
+        this.offViewAdaptSize();
         this.updateShopClothingMapping();
         try {
             await this.initViews();

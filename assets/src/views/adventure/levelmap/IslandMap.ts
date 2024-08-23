@@ -1,11 +1,11 @@
 import { _decorator, Component, instantiate, Node, Prefab, Sprite, SpriteFrame, UITransform, Vec3 } from 'cc';
 import { EventType } from '../../../config/EventType';
-import { GateData, MapLevelData, MicroListItem } from '../../../models/AdventureModel';
+import { ViewsMgr } from '../../../manager/ViewsManager';
+import { GateData } from '../../../models/AdventureModel';
 import CCUtil from '../../../util/CCUtil';
 import EventManager from '../../../util/EventManager';
 import { WorldIsland } from '../WorldIsland';
 import { MapPointItem } from './MapPointItem';
-import { ViewsMgr } from '../../../manager/ViewsManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('IslandMap')
@@ -35,6 +35,9 @@ export class IslandMap extends Component {
 
     //设置数据
     setData(islandId: number, mapPoints: GateData[], progressData: number) {
+
+        console.log("setData....", islandId, mapPoints, progressData)
+
         this.removePointEvent();
         this._progressData = progressData;
         this._pointDatas = mapPoints;

@@ -19,12 +19,13 @@ export class BasePopRight extends BasePopupBase {
 
             // Set initial position off-screen to the right
             const { width } = view.getVisibleSize();
-            const startPosition = new Vec3(width, 0, 0); // Start off-screen to the right
+            const startY = this.animatedNode.getPosition().y;
+            const startPosition = new Vec3(width, startY, 0); // Start off-screen to the right
             this.animatedNode.position = startPosition;
             this.initUI();
             const { width: nodeWidth } = this.animatedNode.getComponent(UITransform)!;
             const scale = this.animatedNode.getScale();
-            const finalPosition = new Vec3((width - nodeWidth * scale.x) / 2, 0, 0);
+            const finalPosition = new Vec3((width - nodeWidth * scale.x) / 2, startY, 0);
 
             this.animatedNode.active = true;
 
@@ -40,9 +41,9 @@ export class BasePopRight extends BasePopupBase {
             console.error('No animated node found for closing animation.');
             return;
         }
-
+        const startY = this.animatedNode.getPosition().y;
         const { width } = view.getVisibleSize();
-        const offScreenPosition = new Vec3(width, 0, 0); // Off-screen to the right
+        const offScreenPosition = new Vec3(width, startY, 0); // Off-screen to the right
 
         tween(this.animatedNode)
             .to(0.3, { position: offScreenPosition }, { easing: easing.sineInOut })
