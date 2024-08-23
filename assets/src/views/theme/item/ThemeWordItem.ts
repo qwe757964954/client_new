@@ -1,13 +1,13 @@
 import { _decorator, Label, Node, Sprite } from 'cc';
-import { UnitWord } from '../../../models/AdventureModel';
-import { BaseView } from '../../../script/BaseView';
-import CCUtil from '../../../util/CCUtil';
-import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
 import { NetConfig } from '../../../config/NetConfig';
+import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
+import { UnitWord } from '../../../models/AdventureModel';
+import CCUtil from '../../../util/CCUtil';
+import ListItem from '../../../util/list/ListItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('ThemeWordItem')
-export class ThemeWordItem extends BaseView {
+export class ThemeWordItem extends ListItem {
     @property(Sprite)
     public bgSprite: Sprite = null;
     @property(Label)
@@ -23,6 +23,10 @@ export class ThemeWordItem extends BaseView {
     private _data: any;
 
     private _isCollect: boolean = false;
+
+    protected start(): void {
+        this.initEvent();
+    }
 
     initData(data: UnitWord) {
         this._data = data;
@@ -46,12 +50,8 @@ export class ThemeWordItem extends BaseView {
     }
 
     protected initEvent(): void {
-        CCUtil.onTouch(this.soundNode, this.onSoundClick, this);
-        CCUtil.onTouch(this.collectNode, this.onCollect, this);
-    }
-    protected removeEvent(): void {
-        CCUtil.offTouch(this.soundNode, this.onSoundClick, this);
-        CCUtil.offTouch(this.collectNode, this.onCollect, this);
+        CCUtil.onBtnClick(this.soundNode, this.onSoundClick.bind(this));
+        CCUtil.onBtnClick(this.collectNode, this.onCollect.bind(this));
     }
 
 

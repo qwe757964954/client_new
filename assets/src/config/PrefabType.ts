@@ -266,6 +266,7 @@ export const PrefabType = {
     ComicController: { path: "theme/ComicController", componentName: "ComicController", zindex: Hierarchy.POPUPLAYER, tips: "漫画" },
     ReadArticleView: { path: "theme/ReadArticleView", componentName: "ReadArticleView", zindex: Hierarchy.POPUPLAYER, tips: "读文章" },
     UnitExerciseView: { path: "theme/UnitExerciseView", componentName: "UnitExerciseView", zindex: Hierarchy.POPUPLAYER, tips: "跳级测试界面" },
+    PracticRightView: { path: "theme/PracticRightView", componentName: "PracticRightView", zindex: Hierarchy.POPUPLAYER, tips: "右侧练习" },
     /*********************************************主题 end***********************************************************/
 
 }
