@@ -65,7 +65,6 @@ export const EventType = {
     Challenge_ReportResult: "Challenge_ReportResult",  //挑战上报结果
 
 
-    Goto_Textbook_Level: "Goto_Textbook_Level",  //进入单词大冒险
     Goto_Textbook_Next_Level: "Goto_Textbook_Next_Level",  //进入单词大冒险下一关
     Goto_Break_Through_Textbook_Next_Level: "Goto_Break_Through_Textbook_Next_Level",
     Goto_Exam_Mode: "Goto_Exam_Mode", //进入考试模式

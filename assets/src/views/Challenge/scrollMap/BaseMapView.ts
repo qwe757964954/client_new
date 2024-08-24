@@ -205,7 +205,6 @@ export abstract class BaseMapView extends BaseView {
     }
         
     private updateVisibleItems(nodePos: Vec3) {
-        console.log("updateVisibleItems", nodePos);
         const visibleSize = view.getVisibleSize();
         const viewBounds = this.getViewBounds(nodePos, visibleSize);
 

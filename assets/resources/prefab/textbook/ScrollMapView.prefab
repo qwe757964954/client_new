@@ -486,10 +486,9 @@
       "__id__": 2
     },
     "mapItemPrefab": {
-      "__uuid__": "4963a1de-a843-49b2-ac8f-a0c2ab340b0e",
+      "__uuid__": "47c3c52a-c9f8-4826-b4eb-a2f005648ac2",
       "__expectedType__": "cc.Prefab"
     },
-    "myCoordinates": [],
     "_id": ""
   },
   {
@@ -518,7 +517,6 @@
       "__uuid__": "4963a1de-a843-49b2-ac8f-a0c2ab340b0e",
       "__expectedType__": "cc.Prefab"
     },
-    "myCoordinates": [],
     "_id": ""
   },
   {
