@@ -14,7 +14,7 @@ import { rightPanelchange } from '../adventure/common/RightPanelchange';
 import { BreakThroughRemindView, ITextbookRemindData } from '../TextbookVocabulary/BreakThroughRemindView';
 import { CGConfig } from './ChallengeConfig';
 import { GameStudyViewMap } from './ChallengeUtil';
-import { ScrollMapView } from './ScrollMapView';
+import { ScrollMapView } from './scrollMap/ScrollMapView';
 
 const { ccclass, property } = _decorator;
 
@@ -67,12 +67,14 @@ export class BreakThroughView extends BaseView {
     initData(data: CurrentBookStatus, unitData: UnitListItemStatus) {
         this._bookData = data;
         this._curUnitList = unitData;
-        this.scrollMap.initUnit(unitData);
+        this.scrollMap.initMap(unitData);
     }
 
-    gotoTextbookLevel(data: GotoUnitLevel) {
-        this._selectitemStatus = data.itemStatus;
-        this._selectGate = data.gate;
+    gotoTextbookLevel(data: MapLevelData) {
+        const itemStatus = this._curUnitList.unit_list.find(status => status.unit_name === data.big_id);
+        const gate = itemStatus.gate_list[data.small_id - 1];
+        this._selectitemStatus = itemStatus;
+        this._selectGate = gate;
         this.showRightChallengeView();
     }
 
@@ -207,7 +209,7 @@ export class BreakThroughView extends BaseView {
 
     onUnitListStatus(data: UnitListItemStatus) {
         this._curUnitList = data;
-        this.scrollMap.initUnit(data);
+        this.scrollMap.initMap(data);
     }
 
     async initNavTitle() {

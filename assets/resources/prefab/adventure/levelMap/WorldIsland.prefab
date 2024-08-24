@@ -104,7 +104,7 @@
       "__id__": 2
     },
     "asset": {
-      "__uuid__": "3d80836c-0670-4352-8acd-d3d59a37ef5b",
+      "__uuid__": "87d12e55-123b-4374-ac6d-2363fc3da4e0",
       "__expectedType__": "cc.Prefab"
     },
     "fileId": "c46/YsCPVOJYA4mWEpNYRx",
@@ -115,7 +115,7 @@
   },
   {
     "__type__": "cc.PrefabInstance",
-    "fileId": "620T/+SyBHIZ4ps6Q0a0fc",
+    "fileId": "60bQZsSh9Ex5sYbqKMZFBo",
     "prefabRootNode": {
       "__id__": 1
     },
@@ -154,7 +154,7 @@
     "propertyPath": [
       "_name"
     ],
-    "value": "ScrollWordMapView"
+    "value": "ScrollMapView"
   },
   {
     "__type__": "cc.TargetInfo",
@@ -3296,7 +3296,7 @@
   {
     "__type__": "cc.TargetInfo",
     "localID": [
-      "15HtQBwJRDfqcT0DbYFcOQ"
+      "e0j+jF6VNPO4PYVkaLKHJs"
     ]
   },
   {

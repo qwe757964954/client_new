@@ -103,7 +103,7 @@ export class rightPanelchange extends BasePopRight {
         // 获取奖励数据，并设置每个奖励项的 `from` 属性
         this._rewardData  = ObjectUtil.extractRewardData(data);
         // this._rewardData = this._Eventlistener()
-    
+        console.log("openView....this._rewardData",this._rewardData);
         this.subjectBtn.active = this._isWordGame;
         this._isBossPanel = false;
         this.updateView();
@@ -168,7 +168,7 @@ export class rightPanelchange extends BasePopRight {
     }
 
     private updateStarConditions() {
-        if (Object.keys(this._data.flag_info).length > 0) {
+        if (isValid(this._data.flag_info) &&Object.keys(this._data.flag_info).length > 0) {
             const starStatuses = [
                 isValid(this._data.flag_info.star_one),
                 isValid(this._data.flag_info.star_two),

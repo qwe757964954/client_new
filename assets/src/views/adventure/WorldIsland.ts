@@ -11,13 +11,13 @@ import { ServiceMgr } from '../../net/ServiceManager';
 import { BaseView } from '../../script/BaseView';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
+import { ScrollWordMapView } from '../Challenge/scrollMap/ScrollWordMapView';
 import { GradeSkipSubjectMgr } from '../theme/GradeSkipSubjectManager';
 import { SubjectView } from '../theme/SubjectView';
 import { UnitExerciseView } from '../theme/UnitExerciseView';
 import { rightPanelchange } from './common/RightPanelchange';
 import { UnitItem } from './common/UnitItem';
 import { LandTaskView } from './levelmap/LandTaskView';
-import { ScrollWordMapView } from './ScrollWordMapView';
 import { WordBossView } from './sixModes/WordBossView';
 const { ccclass, property } = _decorator;
 
@@ -75,7 +75,7 @@ export class WorldIsland extends BaseView {
 
     setPointsData(progresssData: IslandProgressModel) {
         this._progressData = progresssData;
-        this.scrollMap.initWordLevel(progresssData);
+        this.scrollMap.initMap(progresssData);
         this.landTask.updateProps(progresssData);
         ServiceMgr.studyService.getWordGameUnits(this.currentIslandID);
     }
