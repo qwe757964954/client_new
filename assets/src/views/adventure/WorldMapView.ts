@@ -208,9 +208,6 @@ export class WorldMapView extends BaseView {
 
     private async onWordGameWords(data: UnitWordModel[]) {
         if (!this.gettingWords) return;
-        if (this.currentIsland) {
-            this._worldIsland.hideRightPanel();
-        }
         this.gettingWords = false;
         const gameMode = this.currentLevelData.current_mode;
         this.currentLevelData.progressData = this.levelProgressData;

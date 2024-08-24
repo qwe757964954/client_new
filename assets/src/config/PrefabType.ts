@@ -53,7 +53,7 @@ export const PrefabType = {
     WordBossView: { path: "studyModes/WordBossView", zindex: Hierarchy.POPUPLAYER, tips: "Boss关卡" },
     LevelUpView: { path: "common/LevelUpView", zindex: Hierarchy.POPUPLAYER, tips: "升级界面" },
     MapProcessRewardView: { path: "adventure/common/MapProcessRewardView", componentName: "MapProcessRewardView", zindex: Hierarchy.POPUPLAYER, tips: "岛屿进度奖励展示" },
-
+    MonsterModel: { path: "adventure/common/MonsterModel", componentName: "MonsterModel", zindex: Hierarchy.POPUPLAYER, tips: "怪物模型" },
     //**学习模式相关 end*/
     /*********************************************公共相关start***********************************************************/
     TopAmoutView: { path: "common/ResPannel", zindex: Hierarchy.POPUPLAYER, tips: "数值公共模块" },
@@ -131,7 +131,7 @@ export const PrefabType = {
     BuildingModel: { path: "map/model/BuildingModel", zindex: Hierarchy.SCENELAYER, tips: "建筑模型" },
     SpModel: { path: "map/model/SpModel", zindex: Hierarchy.SCENELAYER, tips: "特效模型" },
     RoleModel: { path: "map/model/RoleModel", zindex: Hierarchy.SCENELAYER, tips: "角色模型" },
-    // PetMode: { path: "map/model/PetMode", zindex: Hierarchy.SCENELAYER, tips: "宠物模型" },
+    PetModel: { path: "map/model/PetModel", zindex: Hierarchy.SCENELAYER, tips: "宠物模型" },
     RoleBaseModel: { path: "map/model/RoleBaseModel", zindex: Hierarchy.SCENELAYER, tips: "角色模型" },
     MainUIView: { path: "map/MainUIView", zindex: Hierarchy.SCENELAYER, tips: "地图UI界面", isCache: true },
     EditUIView: { path: "map/EditUIView", zindex: Hierarchy.SCENELAYER, tips: "地图编辑UI界面" },

@@ -3,16 +3,13 @@ import { EventType } from '../../config/EventType';
 import { TextConfig } from '../../config/TextConfig';
 import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { UnitItemStatus, UnitListItemStatus } from '../../models/TextbookModel';
+import { GateData, IslandProgressModel } from '../../models/AdventureModel';
 import { BaseView } from '../../script/BaseView';
-import CCUtil from '../../util/CCUtil';
-import { EventMgr } from '../../util/EventManager';
 import ImgUtil from '../../util/ImgUtil';
 import { PoolMgr } from '../../util/PoolUtil';
 import { MapPointItem } from '../adventure/levelmap/MapPointItem';
-import { GotoUnitLevel } from './BreakThroughView';
-import ChallengeUtil from './ChallengeUtil';
-import { MapTouchBetterController } from './MapCom/MapTouchBetterController';
+import ChallengeUtil from '../Challenge/ChallengeUtil';
+import { MapTouchBetterController } from '../Challenge/MapCom/MapTouchBetterController';
 
 const { ccclass, property } = _decorator;
 
@@ -37,8 +34,8 @@ export const MapCoordinates: MapCoordinate[] = [
     { x: 2065.9, y: 261.275 }
 ];
 
-@ccclass('ScrollMapView')
-export class ScrollMapView extends BaseView {
+@ccclass('ScrollWordMapView')
+export class ScrollWordMapView extends BaseView {
     @property(Node)
     MapLayout: Node = null;
 
@@ -47,9 +44,10 @@ export class ScrollMapView extends BaseView {
 
     @property(Prefab)
     mapItemPrefab: Prefab = null;
-    private _unitStatus: UnitItemStatus[] = [];
+    private _unitStatus: GateData[] = [];
     private _pointItems: Node[] = [];
     private _totalGrade = 0;
+    private _passGrade = 0;
     public _curLevelIndex: number = 0;
     private _itemWidth: number = 0;
     private _itemHeight: number = 0;
@@ -70,44 +68,39 @@ export class ScrollMapView extends BaseView {
         let unitCount = 0;
 
         for (const itemData of this._unitStatus) {
-            for (const gate of itemData.gate_list) {
-                const coordinate = MapCoordinates[unitCount % MapCoordinates.length];
-                const point: MapCoordinate = {
-                    x: coordinate.x - 1095,
-                    y: coordinate.y
-                };
+            const coordinate = MapCoordinates[unitCount % MapCoordinates.length];
+            const point: MapCoordinate = {
+                x: coordinate.x - 1095,
+                y: coordinate.y
+            };
 
-                let itemNode: Node = PoolMgr.getNodePool("mapItemPool").size() > 0 
-                    ? PoolMgr.getNodeFromPool("mapItemPool")
-                    : instantiate(this.mapItemPrefab);
-
-                const itemScript = itemNode.getComponent(MapPointItem);
-                itemScript.index = unitCount;
-                itemScript.initSmallData({
-                    big_id: itemData.unit_name,
-                    small_id: gate.small_id,
-                    micro_id: gate.small_id,
-                    flag_info: gate.flag_info
-                });
-
-                CCUtil.onBtnClick(itemNode, (event) => this.onItemClick(event.node));
-
-                const mapCount = ChallengeUtil.calculateMapsNeeded(unitCount + 1, MapCoordinates.length);
-                const mapNode = this.MapLayout.getChildByName(`bg_map_${mapCount - 1}`);
-                itemNode.setPosition(point.x, point.y, 0);
-                mapNode.addChild(itemNode);
-                this._pointItems.push(itemNode);
-                unitCount++;
+            let itemNode: Node = PoolMgr.getNodePool("mapItemPool").size() > 0
+                ? PoolMgr.getNodeFromPool("mapItemPool")
+                : instantiate(this.mapItemPrefab);
+            
+            const itemScript = itemNode.getComponent(MapPointItem);
+            itemScript.initGateData(itemData);
+            itemScript.clearAni();
+            if(unitCount === this._passGrade-1){
+                itemScript.showPlayerAndPet();
             }
+            if(unitCount === this._totalGrade-1){
+                itemScript.initBoss();
+            }
+            const mapCount = ChallengeUtil.calculateMapsNeeded(unitCount + 1, MapCoordinates.length);
+            const mapNode = this.MapLayout.getChildByName(`bg_map_${mapCount - 1}`);
+            itemNode.setPosition(point.x, point.y, 0);
+            mapNode.addChild(itemNode);
+            this._pointItems.push(itemNode);
+            unitCount++;
         }
     }
 
-    async initUnit(unitStatus: UnitListItemStatus) {
-        this._unitStatus = unitStatus.unit_list;
-        this._totalGrade = unitStatus.gate_total;
-        this._unitStatus.sort(this.compareUnitNames);
-        console.log(this.MapLayout)
-        // Clean up old items
+    async initWordLevel(data: IslandProgressModel) {
+        console.log("initWordLevel", data);
+        this._unitStatus = data.gate_list;
+        this._totalGrade = data.gate_total_num;
+        this._passGrade = data.gate_pass_num;
         this.MapLayout.children.forEach(map => {
             PoolMgr.recycleNodes("mapItemPool", map.children);
         });
@@ -121,45 +114,6 @@ export class ScrollMapView extends BaseView {
         } catch (error) {
             console.error('Error initializing units:', error);
         }
-    }
-
-    private compareUnitNames(a: UnitItemStatus, b: UnitItemStatus): number {
-        const unitA = a.unit_name.replace(/\s+/g, '');
-        const unitB = b.unit_name.replace(/\s+/g, '');
-
-        const isANumber = !isNaN(Number(unitA));
-        const isBNumber = !isNaN(Number(unitB));
-
-        if (isANumber && isBNumber) {
-            return Number(unitA) - Number(unitB);
-        }
-
-        if (isANumber !== isBNumber) {
-            return isANumber ? 1 : -1;
-        }
-
-        const partsA = unitA.split(/(\d+)/).filter(Boolean);
-        const partsB = unitB.split(/(\d+)/).filter(Boolean);
-
-        for (let i = 0; i < Math.min(partsA.length, partsB.length); i++) {
-            const partA = partsA[i];
-            const partB = partsB[i];
-            const numA = parseInt(partA, 10);
-            const numB = parseInt(partB, 10);
-
-            if (!isNaN(numA) && !isNaN(numB)) {
-                if (numA !== numB) {
-                    return numA - numB;
-                }
-            } else {
-                const comparison = partA.localeCompare(partB);
-                if (comparison !== 0) {
-                    return comparison;
-                }
-            }
-        }
-
-        return partsA.length - partsB.length;
     }
 
     private scrollToNormal() {
@@ -196,7 +150,7 @@ export class ScrollMapView extends BaseView {
             };
 
             item.active = !(itemBounds.right <= viewBounds.left || itemBounds.left >= viewBounds.right ||
-                            itemBounds.top <= viewBounds.bottom || itemBounds.bottom >= viewBounds.top);
+                itemBounds.top <= viewBounds.bottom || itemBounds.bottom >= viewBounds.top);
         });
     }
 
@@ -228,39 +182,25 @@ export class ScrollMapView extends BaseView {
         });
     }
 
-    private onItemClick(node: Node) {
-        const item = node.getComponent(MapPointItem);
-        this._curLevelIndex = item.index;
-        const data = item.data;
-        const itemStatus = this._unitStatus.find(status => status.unit_name === data.big_id);
-        const gate = itemStatus.gate_list[data.small_id - 1];
-
-        EventMgr.dispatch(EventType.Goto_Textbook_Level, {
-            itemStatus,
-            gate,
-            isNext: false
-        } as GotoUnitLevel);
-    }
-
     private gotoNextTextbookLevel() {
         const nextIndex = this._curLevelIndex + 1;
         if (nextIndex >= this._pointItems.length) {
             ViewsManager.showTip(TextConfig.All_level_Tip);
             return;
         }
+        return
+        // const nextItem = this._pointItems[nextIndex];
+        // const item = nextItem.getComponent(MapPointItem);
+        // this._curLevelIndex = item.index;
+        // const data = item.data;
+        // const itemStatus = this._unitStatus.find(status => status.unit_name === data.big_id);
+        // const gate = itemStatus.gate_list[data.small_id - 1];
 
-        const nextItem = this._pointItems[nextIndex];
-        const item = nextItem.getComponent(MapPointItem);
-        this._curLevelIndex = item.index;
-        const data = item.data;
-        const itemStatus = this._unitStatus.find(status => status.unit_name === data.big_id);
-        const gate = itemStatus.gate_list[data.small_id - 1];
-
-        EventMgr.dispatch(EventType.Goto_Break_Through_Textbook_Next_Level, {
-            itemStatus,
-            gate,
-            isNext: true
-        } as GotoUnitLevel);
+        // EventMgr.dispatch(EventType.Goto_Break_Through_Textbook_Next_Level, {
+        //     itemStatus,
+        //     gate,
+        //     isNext: true
+        // } as GotoUnitLevel);
     }
 }
 

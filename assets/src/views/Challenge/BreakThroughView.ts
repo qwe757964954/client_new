@@ -29,11 +29,9 @@ export interface GotoUnitLevel {
 export class BreakThroughView extends BaseView {
     @property(Node) top_layout: Node = null;
     @property(Node) content_layout: Node = null;
-    @property(Node) scrollMapNode: Node = null;
-    @property(Node) bg: Node = null;
+    @property(ScrollMapView) scrollMap: ScrollMapView = null;
 
     private _rightChallenge: rightPanelchange = null;
-    private _scrollMap: ScrollMapView = null;
     private _bookData: CurrentBookStatus = null;
     private _curUnitList: UnitListItemStatus = null;
     private _curUnitStatus: UnitStatusData = null;
@@ -69,8 +67,7 @@ export class BreakThroughView extends BaseView {
     initData(data: CurrentBookStatus, unitData: UnitListItemStatus) {
         this._bookData = data;
         this._curUnitList = unitData;
-        this.initScrollMap();
-        this._scrollMap.initUnit(unitData);
+        this.scrollMap.initUnit(unitData);
     }
 
     gotoTextbookLevel(data: GotoUnitLevel) {
@@ -132,9 +129,7 @@ export class BreakThroughView extends BaseView {
         if (isValid(this._curUnitStatus.error_word)) {
             bookLevelData.error_word = this._curUnitStatus.error_word;
         }
-        
         await this.openLearningView(response, bookLevelData, gameModel);
-        this._scrollMap.removePointEvent();
     }
 
     async openLearningView(wordData: VocabularyWordData, bookLevelData: BookLevelConfig, gameModel: GameMode) {
@@ -212,7 +207,7 @@ export class BreakThroughView extends BaseView {
 
     onUnitListStatus(data: UnitListItemStatus) {
         this._curUnitList = data;
-        this._scrollMap.initUnit(data);
+        this.scrollMap.initUnit(data);
     }
 
     async initNavTitle() {
@@ -224,9 +219,5 @@ export class BreakThroughView extends BaseView {
 
     async initAmount() {
         await ViewsManager.addAmount(this.top_layout, 5.471, 42.399);
-    }
-
-    initScrollMap() {
-        this._scrollMap = this.scrollMapNode.getComponent(ScrollMapView);
     }
 }

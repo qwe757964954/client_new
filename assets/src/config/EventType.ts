@@ -76,6 +76,7 @@ export const EventType = {
     Sys_Ani_Stop: "Sys_Ani_Stop",//停止动画
     Classification_Word: "Classification_Word",//单个单词详情
     MapPoint_Click: "MapPoint_Click", //点击了地图点
+    MapPoint_Boss_Click: "MapPoint_Boss_Click", //点击了地图点
     Update_MapPoint: "Update_MapPoint",//更新地图点数据
     Subject_ItemChoice: "Subject_ItemChoice",//主题题目选择
     GradeSkip_Challenge: "GradeSkip_Challenge",//跳过关卡

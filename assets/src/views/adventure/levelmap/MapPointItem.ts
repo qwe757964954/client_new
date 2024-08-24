@@ -1,7 +1,16 @@
-import { _decorator, Component, isValid, Label, Node, Sprite } from 'cc';
-import { GateData, MapLevelData, MicroListItem } from '../../../models/AdventureModel';
-import { ObjectUtil } from '../../../util/ObjectUtil';
+import { _decorator, Component, instantiate, isValid, Label, Node, Prefab, Sprite } from 'cc';
+import { EventType } from '../../../config/EventType';
+import { PrefabType } from '../../../config/PrefabType';
+import { DataMgr } from '../../../manager/DataMgr';
 import { LoadManager } from '../../../manager/LoadManager';
+import { ResLoader } from '../../../manager/ResLoader';
+import { ViewsMgr } from '../../../manager/ViewsManager';
+import { BossLevelData, GateData, MapLevelData, MicroListItem } from '../../../models/AdventureModel';
+import { RoleBaseModel } from '../../../models/RoleBaseModel';
+import CCUtil from '../../../util/CCUtil';
+import EventManager from '../../../util/EventManager';
+import { ObjectUtil } from '../../../util/ObjectUtil';
+import { MonsterModel } from '../common/MonsterModel';
 const { ccclass, property } = _decorator;
 
 export enum StarType {
@@ -19,6 +28,18 @@ export class MapPointItem extends Component {
     @property({ type: Label, tooltip: "关卡Label" })
     public levelLabel: Label = null;
 
+    @property(Node)
+    public player:Node = null;
+
+    @property(Node)
+    public pet:Node = null;
+
+    @property(Node)
+    public monster:Node = null;
+
+    @property(Node)
+    public boss:Node = null;
+
     public data: MapLevelData | MicroListItem = null;
     public gateData: GateData = null;
 
@@ -27,9 +48,24 @@ export class MapPointItem extends Component {
 
 
     start() {
-
+        this.initEvent();
     }
-
+    initEvent(){
+        CCUtil.onBtnClick(this.bgNode,this.onItemClick.bind(this));
+        CCUtil.onBtnClick(this.boss,this.onBossClick.bind(this));
+    }
+    private onBossClick(){
+        let levelData: BossLevelData = DataMgr.getIslandBossConfig(this.gateData.big_id);
+        EventManager.emit(EventType.MapPoint_Boss_Click, levelData);
+    }
+    private onItemClick() {
+        const data = this.gateData;
+        if (!data.can_play) {
+            ViewsMgr.showTip("请先通过前置关卡");
+            return;
+        }
+        EventManager.emit(EventType.MapPoint_Click, data);
+    }
     //大冒险关卡点初始化
     initData(data: MicroListItem) {
         this.data = data;
@@ -119,6 +155,56 @@ export class MapPointItem extends Component {
                 this.stars[2].getComponent(Sprite).grayscale = false;
             }
         }
+    }
+
+    showPlayerAndPet(){
+        this.initRole();
+        this.initPet();
+        this.initMonter();
+    }
+
+    async initRole() {
+        const prefab = await ResLoader.instance.loadAsyncPromise<Prefab>("resources", `prefab/${PrefabType.RoleModel.path}`, Prefab);
+        let node = instantiate(prefab);
+        this.player.addChild(node);
+        let roleModel = node.getComponent(RoleBaseModel);
+        roleModel.initSelf();
+        roleModel.show(true);
+    }
+    async initPet() {
+        const prefab = await ResLoader.instance.loadAsyncPromise<Prefab>("resources", `prefab/${PrefabType.PetModel.path}`, Prefab);
+        let node = instantiate(prefab);
+        this.pet.addChild(node);
+        let roleModel = node.getComponent(RoleBaseModel);
+        roleModel.initSelf();
+        roleModel.show(true);
+    }
+
+    async initMonter(){
+        const prefab = await ResLoader.instance.loadAsyncPromise<Prefab>("resources", `prefab/${PrefabType.MonsterModel.path}`, Prefab);
+        let node = instantiate(prefab);
+        this.monster.addChild(node);
+        let monsterData = DataMgr.getMonsterData(this.gateData.monster_id);
+        let monsterModel = node.getComponent(MonsterModel);
+        monsterModel.init("spine/monster/adventure/" + monsterData.monsterAni);
+    }
+
+    async initBoss(){
+        this.monster.active = false;
+        const prefab = await ResLoader.instance.loadAsyncPromise<Prefab>("resources", `prefab/${PrefabType.MonsterModel.path}`, Prefab);
+        let node = instantiate(prefab);
+        this.boss.addChild(node);
+        let monsterModel = node.getComponent(MonsterModel);
+        console.log("initBoss.....",this.gateData);
+        let islandData = DataMgr.getIslandData(this.gateData.big_id);
+        monsterModel.init("spine/monster/adventure/" + islandData.bossAni);
+    }
+
+    clearAni(){
+        this.player.removeAllChildren();
+        this.pet.removeAllChildren();
+        this.monster.removeAllChildren();
+        this.boss.removeAllChildren();
     }
 }
 

@@ -1,13 +1,11 @@
-import { _decorator, instantiate, isValid, Label, Node, Prefab, UITransform, Vec2, Vec3 } from 'cc';
+import { _decorator, isValid, Node } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType, SceneType } from '../../config/PrefabType';
-import { DataMgr } from '../../manager/DataMgr';
 import { PopMgr } from '../../manager/PopupManager';
 import { SceneMgr } from '../../manager/SceneMgr';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
-import { BossLevelData, BossLevelTopicData, GateData, GradeSkipExercisesListReply, IslandProgressModel, MapLevelData, ProgressRewardData, Subject, UnitData, UnitListData, WordGameSubjectReply, WordGameUnitWordReply } from '../../models/AdventureModel';
+import { BossLevelData, BossLevelTopicData, GateData, GradeSkipExercisesListReply, IslandProgressModel, MapLevelData, Subject, UnitData, UnitListData, WordGameSubjectReply, WordGameUnitWordReply } from '../../models/AdventureModel';
 import { BaseRepPacket } from '../../models/NetModel';
-import { RoleBaseModel } from '../../models/RoleBaseModel';
 import { InterfacePath } from '../../net/InterfacePath';
 import { ServiceMgr } from '../../net/ServiceManager';
 import { BaseView } from '../../script/BaseView';
@@ -16,11 +14,10 @@ import List from '../../util/list/List';
 import { GradeSkipSubjectMgr } from '../theme/GradeSkipSubjectManager';
 import { SubjectView } from '../theme/SubjectView';
 import { UnitExerciseView } from '../theme/UnitExerciseView';
-import { MonsterModel } from './common/MonsterModel';
 import { rightPanelchange } from './common/RightPanelchange';
 import { UnitItem } from './common/UnitItem';
-import { IslandMap } from './levelmap/IslandMap';
-import { MapRewardBoxItem } from './levelmap/MapRewardBoxItem';
+import { LandTaskView } from './levelmap/LandTaskView';
+import { ScrollWordMapView } from './ScrollWordMapView';
 import { WordBossView } from './sixModes/WordBossView';
 const { ccclass, property } = _decorator;
 
@@ -34,73 +31,26 @@ export class WorldIsland extends BaseView {
     public btn_details: Node = null;
     @property({ type: Node, tooltip: "我的位置" })
     public btn_pos: Node = null;
-
-    @property({ type: List, tooltip: "地图List" })
-    public mapPointList: List = null;
-
-    @property({ type: Node, tooltip: "地图容器" })
-    public mapContent: Node = null;
-
-    @property({ type: Prefab, tooltip: "角色模型" })
-    public roleModel: Prefab = null;
-    @property({ type: Node, tooltip: "角色容器" })
-    public roleContainer: Node = null;
-    @property({ type: Node, tooltip: "精灵容器" })
-    public petContainer: Node = null;
-    @property({ type: Prefab, tooltip: "精灵预制体" })
-    public petModel: Prefab = null;
-    @property({ type: Node, tooltip: "人物精灵动画容器" })
-    public roleAniContainer: Node = null;
-    @property({ type: Node, tooltip: "岛屿boss容器" })
-    public bossContainer: Node = null;
-    @property({ type: Node, tooltip: "关卡怪物容器" })
-    public monsterContainer: Node = null;
-    @property({ type: Prefab, tooltip: "怪物模型" })
-    public monsterModel: Prefab = null;
-    @property({ type: Label, tooltip: "进度Label" })
-    public progressLabel: Label = null;
-    @property(Node)
-    public progressBar: Node = null;
     @property(List)
     public unitList: List = null;
+    @property(ScrollWordMapView) scrollMap: ScrollWordMapView = null;
+    @property(LandTaskView) landTask: LandTaskView = null;
     private _unitDatas: UnitData[] = [];
-
-    protected _pet: Node = null; //精灵
-    protected _role: Node = null; //人物
-    protected _monster: Node = null; //当前关卡怪物
-    protected _boss: Node = null; //岛屿boss
-
-    private _bigId: number = 1; //岛屿id
-    private _mapBaseCounts: number[] = [12, 9, 8]; //地图点数量
-    private _mapLevelsData: GateData[][] = [];
     private static mapPoints: Map<number, number[][]> = null; //各岛屿地图点坐标
-
-    private _mapPointClickEvId: string;
-    private _mapPointUpdateEvId: string;
-
-    private _passNum: number;
     private _progressData: IslandProgressModel = null;
-
     private _isRequest: boolean = false; //是否请求中
-    private _currentPos: GateData;
-
     private _isGetUnitWords: boolean = false; //是否正在获取单元单词
     private currentIslandID: number = 0;
-    @property(List)
-    rewardBoxList: List = null;
-    private _progressRewards: ProgressRewardData[] = [];
+    
     private _selectUnit: UnitData = null;
-    private _rightChallenge: rightPanelchange = null;
-
     protected initUI(): void {
-        this.initPet();
-        this.initRole();
+
     }
 
     protected onInitModuleEvent() {
         this.addModelListeners([
             [EventType.MapPoint_Click, this.mapPointClick.bind(this)],
-            [EventType.Update_MapPoint, this.onUpdatePoint.bind(this)],
+            [EventType.MapPoint_Boss_Click, this.challangeBoss.bind(this)],
             [InterfacePath.BossLevel_Topic, this.onGetBossLevelTopic.bind(this)],
             [EventType.Enter_Boss_Level, this.enterBossLevel.bind(this)],
             [InterfacePath.WordGame_UnitList, this.onGetUnits.bind(this)],
@@ -123,135 +73,17 @@ export class WorldIsland extends BaseView {
         ServiceMgr.studyService.getIslandProgress(landId);
     }
 
-    setPointsData(bigId: number, progresssData: IslandProgressModel) {
+    setPointsData(progresssData: IslandProgressModel) {
         this._progressData = progresssData;
-        this._bigId = bigId;
-        this._passNum = progresssData.gate_pass_num;
-        this.initBoss();
-        let pointsData = progresssData.gate_list;
-        //分割数组
-        this._mapLevelsData = [];
-        let baseCount = this._mapBaseCounts[bigId - 1]
-        for (let i = 0; i < pointsData.length; i += baseCount) {
-            this._mapLevelsData.push(pointsData.slice(i, i + baseCount));
-        }
-        this.mapPointList.numItems = this._mapLevelsData.length;
-        let transform = this.mapContent.getComponent(UITransform);
-        transform.width = 0;
-        for (let i = 0; i < this._mapLevelsData.length; i++) {
-            if (this._mapLevelsData[i].length < baseCount) {
-                let pos = WorldIsland.getMapPointsByBigId(this._bigId)[this._mapLevelsData[i].length - 1];
-                transform.width += pos[0] + 250;
-            } else {
-                transform.width += 2145;
-            }
-        }
-        console.log('地图宽度', transform.width);
-
-        if (this._currentPos) {
-            this.skipToMapPoint(this._bigId, this._currentPos.big_id, this._currentPos.small_id);
-        }
-
-        this.progressLabel.string = this._progressData.gate_pass_num + "/" + this._progressData.gate_total_num;
-        this.progressBar.getComponent(UITransform).width = this._progressData.gate_pass_num / this._progressData.gate_total_num * 545;
-        this._progressRewards = this._progressData.progress_reward_list;
-        this.rewardBoxList.numItems = this._progressRewards.length;
-
-        ServiceMgr.studyService.getWordGameUnits(this._bigId);
+        this.scrollMap.initWordLevel(progresssData);
+        this.landTask.updateProps(progresssData);
+        ServiceMgr.studyService.getWordGameUnits(this.currentIslandID);
     }
 
     async mapPointClick(data: MapLevelData) {
         let node = await PopMgr.showPopRight(PrefabType.RightPanelchange,"stage_frame");
-        this._rightChallenge = node.getComponent(rightPanelchange);
-        this._rightChallenge.openView(data);
-    }
-
-    onMapPointRender(item: Node, idx: number) {
-        let posData = item.getComponent(IslandMap).setData(this._bigId, this._mapLevelsData[idx], this._passNum);
-        if (posData) {
-            console.log('地图点坐标', posData);
-            let pos: Vec3 = posData.position;
-            this.roleAniContainer.position = new Vec3(pos.x - 150, pos.y, 0);
-            posData.map.setAniNode(this.roleAniContainer);
-
-            if (!this._monster) {
-                this.initMonster();
-            }
-            let monsterData = DataMgr.getMonsterData(posData.pointData.monster_id);
-            let monsterModel = this._monster.getComponent(MonsterModel);
-            monsterModel.init("spine/monster/adventure/" + monsterData.monsterAni);
-            this.monsterContainer.position = new Vec3(pos.x + 100, pos.y, 0);
-            posData.map.setMonsterNode(this.monsterContainer);
-
-            this._currentPos = posData.pointData;
-        }
-        //最后一个地图添加岛屿boss
-        if (idx == this._mapLevelsData.length - 1) {
-            item.getComponent(IslandMap).setBossNode(this.bossContainer);
-        }
-    }
-
-    skipToMapPoint(big_id: number, small_id: number, micro_id: number) {
-        let skipPosX = 0;
-        let points = WorldIsland.getMapPointsByBigId(big_id);
-        for (let i = 0; i < this._mapLevelsData.length; i++) {
-            for (let j = 0; j < this._mapLevelsData[i].length; j++) {
-                if (this._mapLevelsData[i][j].big_id == big_id && this._mapLevelsData[i][j].big_id == big_id && this._mapLevelsData[i][j].small_id == small_id) {
-                    skipPosX = i * 2145 + points[j][0] - 250;
-                    this.mapPointList.scrollView.scrollToOffset(new Vec2(skipPosX, 0));
-                    return;
-                }
-            }
-        }
-    }
-
-    updatePointData(big_id: number, small_id: number, star: number) {
-        let mapoint = null;
-        let gateList = this._progressData.gate_list;
-        let currentIdx = -1;
-        for (let i = 0; i < gateList.length; i++) {
-            if (gateList[i].big_id == big_id && gateList[i].small_id == small_id) {
-                currentIdx = i;
-                mapoint = gateList[i];
-                break;
-            }
-        }
-        if (mapoint) {
-            if (!mapoint.flag_info) {
-                mapoint.flag_info = {}
-            }
-            if (star == 1) {
-                mapoint.flag_info.star_one = 1;
-            } else if (star == 2) {
-                mapoint.flag_info.star_one = 1;
-                mapoint.flag_info.star_two = 1;
-            } else if (star == 3) {
-                mapoint.flag_info.star_one = 1;
-                mapoint.flag_info.star_two = 1;
-                mapoint.flag_info.star_three = 1;
-            }
-            mapoint.flag = 1;
-            if (currentIdx == this._passNum) { //是否是当前进度关卡
-                this._passNum++;
-                if (this._passNum < gateList.length) {
-                    gateList[this._passNum].can_play = 1;
-                }
-                this._progressData.gate_pass_num = this._passNum;
-            }
-            this.mapPointList.numItems = this._mapLevelsData.length;
-            let transform = this.mapContent.getComponent(UITransform);
-            transform.width = 0;
-            for (let i = 0; i < this._mapLevelsData.length; i++) {
-                if (this._mapLevelsData[i].length < this._mapBaseCounts[this._bigId - 1]) {
-                    let pos = WorldIsland.getMapPointsByBigId(this._bigId)[this._mapLevelsData[i].length - 1];
-                    transform.width += pos[0] + 250;
-                } else {
-                    transform.width += 2145;
-                }
-            }
-            console.log('地图宽度', transform.width);
-            this.rewardBoxList.numItems = this._progressRewards.length;
-        }
+        let script = node.getComponent(rightPanelchange);
+        script.openView(data);
     }
 
     getNextLevelData(big_id: number, small_id: number): GateData {
@@ -277,7 +109,7 @@ export class WorldIsland extends BaseView {
     }
 
     onUpdatePoint(data: { big_id: number, small_id: number, star: number }) {
-        this.updatePointData(data.big_id, data.small_id, data.star);
+        // this.updatePointData(data.big_id, data.small_id, data.star);
     }
 
     static initMapPoints() {
@@ -296,42 +128,11 @@ export class WorldIsland extends BaseView {
         return this.mapPoints.get(bigId);
     }
 
-   
-    async initRole() {
-        this._role = instantiate(this.roleModel);
-        this.roleContainer.addChild(this._role);
-        let roleModel = this._role.getComponent(RoleBaseModel);
-        roleModel.initSelf();
-        roleModel.show(true);
-    }
-    async initPet() {
-        this._pet = instantiate(this.petModel);
-        this.petContainer.addChild(this._pet);
-        let roleModel = this._pet.getComponent(RoleBaseModel);
-        roleModel.initSelf();
-        roleModel.show(true);
-    }
-
-    initMonster() {
-        this._monster = instantiate(this.monsterModel);
-        this.monsterContainer.addChild(this._monster);
-    }
-
-    initBoss() {
-        this._boss = instantiate(this.monsterModel);
-        this.bossContainer.addChild(this._boss);
-        let monsterModel = this._boss.getComponent(MonsterModel);
-        let islandData = DataMgr.getIslandData(this._bigId);
-        monsterModel.init("spine/monster/adventure/" + islandData.bossAni);
-        CCUtil.onBtnClick(this._boss, this.challangeBoss.bind(this));
-    }
-
-    async challangeBoss() {
+    async challangeBoss(levelData: BossLevelData) {
         console.log("challangeBoss");
-        let levelData: BossLevelData = DataMgr.getIslandBossConfig(this._bigId);
         let node = await PopMgr.showPopRight(PrefabType.RightPanelchange,"stage_frame");
-        this._rightChallenge = node.getComponent(rightPanelchange);
-        this._rightChallenge.openBossView(levelData);
+        const script = node.getComponent(rightPanelchange);
+        script.openBossView(levelData);
     }
 
     private onGetIslandProgress(data: IslandProgressModel) {
@@ -339,20 +140,21 @@ export class WorldIsland extends BaseView {
             console.error('获取岛屿进度失败', data.msg);
             return;
         }
-        this.setPointsData(this.currentIslandID, data);
+        console.log("onGetIslandProgress.......",data);
+        this.setPointsData(data);
     }
 
     onGetBossLevelTopic(data: BossLevelTopicData) {
         this._isRequest = false;
         console.log("onGetBossLevelTopic", data);
-        data.big_id = this._bigId;
+        data.big_id = this.currentIslandID;
         if (data.challenge_info.word_num > 0) {
             ViewsMgr.showConfirm("是否继续上次闯关进度?", () => {
                 ViewsMgr.showView(PrefabType.WordBossView, (node: Node) => {
                     node.getComponent(WordBossView).initData(data);
                 });
             }, () => {
-                ServiceMgr.studyService.bossLevelRestart(this._bigId, data.challenge_info.bl_id);
+                ServiceMgr.studyService.bossLevelRestart(this.currentIslandID, data.challenge_info.bl_id);
             }, "延续上次", "重新开始", false);
         } else {
             ViewsMgr.showView(PrefabType.WordBossView, (node: Node) => {
@@ -373,15 +175,7 @@ export class WorldIsland extends BaseView {
     enterBossLevel() {
         if (this._isRequest) return;
         this._isRequest = true;
-        ServiceMgr.studyService.getBossLevelTopic(this._bigId);
-    }
-
-    hideRightPanel() {
-        // this.levelPanel.node.active = false;
-    }
-
-    onMapRewardBoxRender(item: Node, index: number) {
-        item.getComponent(MapRewardBoxItem).setData(this._progressRewards[index], this._progressData.gate_pass_num);
+        ServiceMgr.studyService.getBossLevelTopic(this.currentIslandID);
     }
 
     onGetUnits(data: UnitListData) {
@@ -475,21 +269,7 @@ export class WorldIsland extends BaseView {
 
     /**跳转到当前位置 */
     skipToCurrent() {
-        if (this._currentPos) {
-            let transform = this.mapContent.getComponent(UITransform);
-            let width = 0;
-            for (let i = 0; i < this._mapLevelsData.length; i++) {
-                if (this._mapLevelsData[i].length < this._mapBaseCounts[this._bigId - 1]) {
-                    let pos = WorldIsland.getMapPointsByBigId(this._bigId)[this._mapLevelsData[i].length - 1];
-                    width += pos[0] + 250;
-                } else {
-                    width += 2145;
-                }
-            }
-            this.skipToMapPoint(this._bigId, this._currentPos.big_id, this._currentPos.small_id);
-            this.mapPointList.updateAll();
-            transform.width = width;
-        }
+       
     }
     /**返回关卡模式 */
     private onBtnBackClick() {

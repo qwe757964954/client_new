@@ -20,7 +20,7 @@ import { ServiceMgr } from '../../../net/ServiceManager';
 import { BaseView } from '../../../script/BaseView';
 import { TBServer } from '../../../service/TextbookService';
 import CCUtil from '../../../util/CCUtil';
-import EventManager, { EventMgr } from '../../../util/EventManager';
+import { EventMgr } from '../../../util/EventManager';
 import FileUtil from '../../../util/FileUtil';
 import ImgUtil from '../../../util/ImgUtil';
 import { ToolUtil } from '../../../util/ToolUtil';
@@ -591,14 +591,14 @@ export class BaseModeView extends BaseView {
         if (data.code == 200) {
             this._currentSubmitResponse = data;
             this._upResultSucce = true;
-            if (data.pass_flag == 1 && GameSourceType.word_game == this._sourceType) { //大冒险关卡
-                let levelData = this._levelData as GateData;
-                let pointData: any = {};
-                pointData.big_id = levelData.big_id;
-                pointData.small_id = levelData.small_id;
-                pointData.star = data.star_num;
-                EventManager.emit(EventType.Update_MapPoint, pointData);
-            }
+            // if (data.pass_flag == 1 && GameSourceType.word_game == this._sourceType) { //大冒险关卡
+            //     let levelData = this._levelData as GateData;
+            //     let pointData: any = {};
+            //     pointData.big_id = levelData.big_id;
+            //     pointData.small_id = levelData.small_id;
+            //     pointData.star = data.star_num;
+            //     EventManager.emit(EventType.Update_MapPoint, pointData);
+            // }
             // this.checkResult();
             this.netReqOver();
         }
