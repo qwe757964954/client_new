@@ -722,7 +722,7 @@ export class BaseModeView extends BaseView {
         }
         ViewsMgr.showConfirm(str, () => {
             if (!this.node) return;
-            if (GameSourceType.classification == this._sourceType) {
+            if (GameSourceType.classification == this._sourceType || GameSourceType.word_game == this._sourceType) {
                 EventMgr.dispatch(EventType.Exit_Island_Level);
             } else if (GameSourceType.review == this._sourceType || GameSourceType.reviewSpecial === this._sourceType) {
                 EventMgr.emit(EventType.Wordbook_List_Refresh);// 通知

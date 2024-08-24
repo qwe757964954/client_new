@@ -40,6 +40,7 @@ export class MapPointItem extends BaseMapPointItem {
     }
 
     initUnitData(data: GateData) {
+        this.clearAni();
         this.data = data;
         this.levelLabel.string = `${data.big_id}-${data.small_id}`;
         const bgSp = this.bgNode.getComponent(Sprite);

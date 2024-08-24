@@ -41,7 +41,7 @@ export class WorldIsland extends BaseView {
     private _isRequest: boolean = false; //是否请求中
     private _isGetUnitWords: boolean = false; //是否正在获取单元单词
     private currentIslandID: number = 0;
-    
+    private _rightChallenge: rightPanelchange = null;
     private _selectUnit: UnitData = null;
     protected initUI(): void {
 
@@ -59,6 +59,7 @@ export class WorldIsland extends BaseView {
             [InterfacePath.GradeSkip_ExercisesList, this.onGradeSkipExercises.bind(this)],
             [InterfacePath.WordBossGame_Restart, this.onBossGameRestart.bind(this)],
             [InterfacePath.Island_Progress, this.onGetIslandProgress.bind(this)],
+            [EventType.Exit_Island_Level, this.onExitIsland.bind(this)],
         ]);
     }
 
@@ -82,8 +83,8 @@ export class WorldIsland extends BaseView {
 
     async mapPointClick(data: MapLevelData) {
         let node = await PopMgr.showPopRight(PrefabType.RightPanelchange,"stage_frame");
-        let script = node.getComponent(rightPanelchange);
-        script.openView(data);
+        this._rightChallenge = node.getComponent(rightPanelchange);
+        this._rightChallenge.openView(data);
     }
 
     getNextLevelData(big_id: number, small_id: number): GateData {
@@ -131,8 +132,8 @@ export class WorldIsland extends BaseView {
     async challangeBoss(levelData: BossLevelData) {
         console.log("challangeBoss");
         let node = await PopMgr.showPopRight(PrefabType.RightPanelchange,"stage_frame");
-        const script = node.getComponent(rightPanelchange);
-        script.openBossView(levelData);
+        this._rightChallenge = node.getComponent(rightPanelchange);
+        this._rightChallenge.openBossView(levelData);
     }
 
     private onGetIslandProgress(data: IslandProgressModel) {
@@ -143,7 +144,10 @@ export class WorldIsland extends BaseView {
         console.log("onGetIslandProgress.......",data);
         this.setPointsData(data);
     }
-
+    onExitIsland(){
+        this._rightChallenge.hideView();
+        ServiceMgr.studyService.getIslandProgress(this.currentIslandID);
+    }
     onGetBossLevelTopic(data: BossLevelTopicData) {
         this._isRequest = false;
         console.log("onGetBossLevelTopic", data);

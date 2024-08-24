@@ -13,7 +13,6 @@ export class ScrollWordMapView extends BaseMapView {
         let itemNode = this.getItemNode();
         const itemScript = itemNode.getComponent(MapPointItem);
         itemScript.initUnitData(itemData);
-        itemScript.clearAni();
         if (unitCount === this._passGrade) {
             itemScript.showPlayerAndPet();
         }
