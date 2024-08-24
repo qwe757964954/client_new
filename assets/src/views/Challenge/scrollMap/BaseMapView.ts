@@ -21,6 +21,9 @@ export abstract class BaseMapView extends BaseView {
     @property(Prefab)
     mapItemPrefab: Prefab = null;
 
+    @property()
+    public moveOffset: number = 200;
+
     // @property([Vec2])
     myCoordinates: Vec2[] = [];
     protected _unitStatus: any[] = [];
@@ -75,14 +78,13 @@ export abstract class BaseMapView extends BaseView {
             this._unitStatus.sort(this.compareUnitNames);
         }
         this._totalGrade = data.gate_total_num || data.gate_total; 
-        this._passGrade = data.gate_pass_num || data.gate_pass_num;
+        this._passGrade = isValid(data.gate_pass_num)? data.gate_pass_num:0; 
         this.myCoordinates = MapCoordinates.getInstance().getCoordinates(1);
         this.clearOldItems();
 
         try {
             await this.addMapBackground();
             await Promise.all([this.loadMapItems()]);
-            this.MapLayout.setPosition(0, 0, 0);
             this.scrollToNormal();
         } catch (error) {
             console.error('Error initializing map:', error);
@@ -179,11 +181,12 @@ export abstract class BaseMapView extends BaseView {
             : new Node('BackgroundNode'); // Placeholder, replace with actual node creation logic
     }
 
-    private scrollToNormal() {
+    public scrollToNormal() {
+        this.MapLayout.setPosition(0, 0, 0);
         if (this._pointItems.length === 0) return;
 
         const contentScript = this.contentNode.getComponent(MapTouchBetterController);
-        const firstItem = this._pointItems[0];
+        const firstItem = this._pointItems[this._passGrade];
         const itemPosition = this.calculateItemPosition(firstItem);
         const movePosition = this.calculateMovePosition(firstItem);
         contentScript.moveToTargetPos(movePosition);
@@ -193,14 +196,14 @@ export abstract class BaseMapView extends BaseView {
 
     private calculateMovePosition(itemNode: Node):Vec3{
         const itemPosition = itemNode.getWorldPosition();
-        itemPosition.x -= 200;
+        itemPosition.x -= this.moveOffset;
         return itemPosition;
     }
 
     private calculateItemPosition(itemNode: Node): Vec3 {
         let itemPosition = itemNode.getComponent(UITransform).convertToNodeSpaceAR(itemNode.getWorldPosition());
         const uiTransform = itemNode.getComponent(UITransform);
-        itemPosition.x -= 200;
+        itemPosition.x -= this.moveOffset;
         return itemPosition;
     }
         

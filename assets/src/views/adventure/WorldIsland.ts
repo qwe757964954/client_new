@@ -109,26 +109,6 @@ export class WorldIsland extends BaseView {
         return nextPoint;
     }
 
-    onUpdatePoint(data: { big_id: number, small_id: number, star: number }) {
-        // this.updatePointData(data.big_id, data.small_id, data.star);
-    }
-
-    static initMapPoints() {
-        if (this.mapPoints) return;
-        this.mapPoints = new Map<number, number[][]>();
-        this.mapPoints.set(1, [[198, 250], [377, 58], [310, -131], [450, -288], [684, -266], [878, -138], [1106, -47], [1347, -166], [1594, -238], [1718, -42], [1582, 145], [1983, 275]]);
-        this.mapPoints.set(2, [[190, 55], [391, 197], [662, 209], [810, 11], [940, -179], [1155, -308], [1482, -318], [1713, -207], [1917, -42]]);
-        this.mapPoints.set(3, [[198, 133], [338, -64], [534, -260], [1013, -105], [1275, 31], [1502, -45], [1772, 21], [1947, 119]]);
-        this.mapPoints.set(4, [[190, 243], [309, 64], [430, -127], [622, -295], [874, -178], [1135, -62], [1382, -176], [1643, -191], [1811, -23], [1935, 150]]);
-        this.mapPoints.set(5, [[221, 244], [389, 96], [302, -89], [443, -289], [715, -242], [960, -100], [1265, -61], [1572, -257], [1735, -8], [1593, 151], [1821, 287], [2121, 266]]);
-        this.mapPoints.set(6, [[221, 244], [389, 96], [302, -89], [443, -289], [715, -242], [960, -100], [1265, -61], [1572, -257], [1735, -8], [1593, 151], [1821, 287], [2121, 266]]);
-        this.mapPoints.set(7, [[221, 244], [389, 96], [302, -89], [443, -289], [715, -242], [960, -100], [1265, -61], [1572, -257], [1735, -8], [1593, 151], [1821, 287], [2121, 266]]);
-    }
-
-    static getMapPointsByBigId(bigId: number) {
-        return this.mapPoints.get(bigId);
-    }
-
     async challangeBoss(levelData: BossLevelData) {
         console.log("challangeBoss");
         let node = await PopMgr.showPopRight(PrefabType.RightPanelchange,"stage_frame");
@@ -273,7 +253,7 @@ export class WorldIsland extends BaseView {
 
     /**跳转到当前位置 */
     skipToCurrent() {
-       
+       this.scrollMap.scrollToNormal();
     }
     /**返回关卡模式 */
     private onBtnBackClick() {

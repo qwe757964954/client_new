@@ -54,7 +54,6 @@ export class WorldMapView extends BaseView {
         this.initData();
         this.offViewAdaptSize();
         this.islandContainer.position = v3(-GlobalConfig.WIN_SIZE.width / 2, 0, 0);
-        WorldIsland.initMapPoints();
         if (StorageUtil.getData(KeyConfig.FIRST_WORLD_MAP, "1") === "1") {
             this.showFirstEnter();
         }
