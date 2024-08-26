@@ -1,9 +1,8 @@
 import { Label, Layers, Node, Prefab, UITransform, Vec3, _decorator, instantiate, tween } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
-import { ViewsMgr } from '../../manager/ViewsManager';
+import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { PetModel } from '../../models/PetModel';
-import { RoleBaseModel } from '../../models/RoleBaseModel';
 import { BaseView } from '../../script/BaseView';
 import CCUtil from '../../util/CCUtil';
 import { NodeUtil } from '../../util/NodeUtil';
@@ -23,15 +22,10 @@ export class BossChallengeView extends BaseView {
 
     @property(Node)
     public btn_close: Node = null;
-
-    @property(Prefab)
-    public roleModel: Prefab = null;//角色动画
     @property({ type: Node, tooltip: "角色容器" })
     public roleContainer: Node = null;
     @property({ type: Node, tooltip: "精灵容器" })
     public petContainer: Node = null;
-    @property({ type: Prefab, tooltip: "精灵预制体" })
-    public petModel: Prefab = null;
     @property(Prefab)
     public monsterModel: Prefab = null;//怪物动画
     @property({ type: Node, tooltip: "所有怪物容器" })
@@ -69,20 +63,10 @@ export class BossChallengeView extends BaseView {
         this.remaining_word.string = `剩余单词量：${this._bossGame.LastNum}`;
     }
     async initRole() {
-        this._role = instantiate(this.roleModel);
-        this.roleContainer.addChild(this._role);
-        NodeUtil.setLayerRecursively(this._role, Layers.Enum.UI_2D);
-        let roleModel = this._role.getComponent(RoleBaseModel);
-        roleModel.initSelf();
-        roleModel.show(true);
+        this._role = await ViewsManager.addRoleToNode(this.roleContainer);
     }
     async initPet() {
-        this._pet = instantiate(this.petModel);
-        this.petContainer.addChild(this._pet);
-        NodeUtil.setLayerRecursively(this._pet, Layers.Enum.UI_2D);
-        let roleModel = this._pet.getComponent(RoleBaseModel);
-        roleModel.initSelf();
-        roleModel.show(true);
+        this._pet = await ViewsManager.addPetToNode(this.petContainer);
     }
 
     initMonster(bossData: BossInfo) {

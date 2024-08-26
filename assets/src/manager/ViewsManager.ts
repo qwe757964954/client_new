@@ -1,7 +1,9 @@
-import { Camera, Color, Node, Prefab, UITransform, Vec3, Widget, instantiate, isValid } from "cc";
+import { Camera, Color, Layers, Node, Prefab, UITransform, Vec3, Widget, instantiate, isValid } from "cc";
 import { Hierarchy, PrefabConfig, PrefabType } from "../config/PrefabType";
+import { RoleBaseModel } from "../models/RoleBaseModel";
 import CCUtil from "../util/CCUtil";
 import ImgUtil from "../util/ImgUtil";
+import { NodeUtil } from "../util/NodeUtil";
 import { ConfirmView } from "../views/common/ConfirmView";
 import { NavTitleView } from "../views/common/NavTitleView";
 import { PopView } from "../views/common/PopView";
@@ -384,6 +386,50 @@ export class ViewsManager {
                     */
             });
         });
+    }
+
+    public static async addRoleToNode(parent: Node): Promise<Node> {
+        try {
+            // 加载 Prefab
+            const prefab = await ResLoader.instance.loadAsyncPromise<Prefab>("resources", `prefab/${PrefabType.RoleModel.path}`, Prefab);
+            const node = instantiate(prefab);
+            NodeUtil.setLayerRecursively(node, Layers.Enum.UI_2D);
+            parent.addChild(node);
+            // 获取并初始化 RoleBaseModel 组件
+            const roleModel = node.getComponent(RoleBaseModel);
+            if (roleModel) {
+                await roleModel.initSelf(); // 假设 initSelf 是一个返回 Promise 的异步函数
+                roleModel.show(true);
+            } else {
+                throw new Error('RoleBaseModel component not found on the node.');
+            }
+            return node;
+        } catch (error) {
+            console.error('Failed to add pet to node:', error);
+            throw error; // 如果需要，将错误抛出到调用者
+        }
+    }
+
+    public static async addPetToNode(parent: Node): Promise<Node> {
+        try {
+            // 加载 Prefab
+            const prefab = await ResLoader.instance.loadAsyncPromise<Prefab>("resources", `prefab/${PrefabType.PetModel.path}`, Prefab);
+            const node = instantiate(prefab);
+            NodeUtil.setLayerRecursively(node, Layers.Enum.UI_2D);
+            parent.addChild(node);
+            // 获取并初始化 RoleBaseModel 组件
+            const roleModel = node.getComponent(RoleBaseModel);
+            if (roleModel) {
+                await roleModel.initSelf(); // 假设 initSelf 是一个返回 Promise 的异步函数
+                roleModel.show(true);
+            } else {
+                throw new Error('RoleBaseModel component not found on the node.');
+            }
+            return node;
+        } catch (error) {
+            console.error('Failed to add pet to node:', error);
+            throw error; // 如果需要，将错误抛出到调用者
+        }
     }
 }
 

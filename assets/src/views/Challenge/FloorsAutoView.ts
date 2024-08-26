@@ -1,6 +1,6 @@
-import { _decorator, CCInteger, Component, instantiate, Layers, Node, Prefab, UITransform, view } from 'cc';
+import { _decorator, CCInteger, Component, Node, UITransform, view } from 'cc';
+import { ViewsManager } from '../../manager/ViewsManager';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
-import { NodeUtil } from '../../util/NodeUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('FloorsAutoView')
@@ -13,9 +13,6 @@ export class FloorsAutoView extends Component {
     public role_node: Node = null;
     @property({ type: CCInteger })
     private speed: number = 0;
-
-    @property(Prefab)
-    public roleModel: Prefab = null;//角色
     start() {
         this.setFloorProps();
         this.initRolePlayer();
@@ -28,11 +25,8 @@ export class FloorsAutoView extends Component {
     }
 
     async initRolePlayer() {
-        let role = instantiate(this.roleModel);
-        this.role_node.addChild(role);
-        NodeUtil.setLayerRecursively(role, Layers.Enum.UI_2D);
-        let roleModel = role.getComponent(RoleBaseModel);
-        await roleModel.initSelf();
+        const role = await ViewsManager.addRoleToNode(this.role_node);
+        const roleModel = role.getComponent(RoleBaseModel);
         roleModel.walk();
     }
     update(deltaTime: number) {

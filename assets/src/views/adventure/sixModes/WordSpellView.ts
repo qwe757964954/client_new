@@ -50,8 +50,6 @@ export class WordSpellView extends BaseModeView {
     private _selectLock: boolean = false; //选择锁
     private _wordGroup: WordGroupModel[];
 
-    private _getWordGroupEvId: string; //获取单词组合数据事件id
-    private _getTextBookWordGroupEvId: string; //获取教材单词组合数据事件id
     async initData(wordsdata: UnitWordModel[], levelData: any) {
         this.gameMode = GameMode.Spelling;
         this._spilitData = await DataMgr.instance.getWordSplitConfig();

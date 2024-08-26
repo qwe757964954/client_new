@@ -1,11 +1,11 @@
-import { _decorator, instantiate, Layers, Node, Prefab, UITransform } from 'cc';
+import { _decorator, Node, UITransform } from 'cc';
 import { EventType } from '../../../config/EventType';
 import { PrefabType } from '../../../config/PrefabType';
 import { GameRes } from '../../../GameRes';
 import { ItemData } from '../../../manager/DataMgr';
 import { inf_SpineAniCreate } from '../../../manager/InterfaceDefines';
 import { SoundMgr } from '../../../manager/SoundMgr';
-import { ViewsMgr } from '../../../manager/ViewsManager';
+import { ViewsManager, ViewsMgr } from '../../../manager/ViewsManager';
 import { AdventureResult } from '../../../models/AdventureModel';
 import { RoleBaseModel } from '../../../models/RoleBaseModel';
 import { GameSubmitResponse } from '../../../models/TextbookModel';
@@ -13,7 +13,6 @@ import { BaseView } from '../../../script/BaseView';
 import CCUtil from '../../../util/CCUtil';
 import { EventMgr } from '../../../util/EventManager';
 import List from '../../../util/list/List';
-import { NodeUtil } from '../../../util/NodeUtil';
 import { ObjectUtil } from '../../../util/ObjectUtil';
 import { ConditionItem } from './ConditionItem';
 import { ReportItem } from './ReportItem';
@@ -42,9 +41,6 @@ export class WordReportView extends BaseView {
 
     @property(List)
     public condition_scroll: List = null;
-
-    @property(Prefab)
-    public roleModel: Prefab = null; //角色
 
     @property(Node)
     public role_node: Node = null;
@@ -163,13 +159,8 @@ export class WordReportView extends BaseView {
 
     private async initRolePlayer() {
         console.log("initRolePlayer 关卡列表");
-        const role = instantiate(this.roleModel);
-        this.role_node.addChild(role);
-        NodeUtil.setLayerRecursively(role, Layers.Enum.UI_2D);
-
+        const role = await ViewsManager.addRoleToNode(this.role_node);
         const roleModel = role.getComponent(RoleBaseModel);
-        await roleModel.initSelf();
-        roleModel.show(true);
         roleModel.standby();
     }
 

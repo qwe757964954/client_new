@@ -1,14 +1,11 @@
-import { _decorator, Button, Component, instantiate, Label, Layers, Node, Prefab, Sprite, v3 } from 'cc';
+import { _decorator, Button, Component, Label, Node, Sprite, v3 } from 'cc';
 import { EventType } from '../../config/EventType';
-import { PrefabType } from '../../config/PrefabType';
 import { ItemData } from '../../manager/DataMgr';
-import { ResLoader } from '../../manager/ResLoader';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
 import { User } from '../../models/User';
 import CCUtil from '../../util/CCUtil';
 import { EventMgr } from '../../util/EventManager';
-import { NodeUtil } from '../../util/NodeUtil';
 import { ObjectUtil } from '../../util/ObjectUtil';
 import { BagConfig } from '../bag/BagConfig';
 import { GoodsItemInfo } from '../bag/BagInfo';
@@ -46,17 +43,9 @@ export class ShopPlayerView extends Component {
 
     private async showRoleDress() {
         this.roleContainer.removeAllChildren();
-        this._role = null;
-
-        const prefab = await ResLoader.instance.loadAsyncPromise<Prefab>("resources", `prefab/${PrefabType.RoleModel.path}`, Prefab);
-        this._role = instantiate(prefab);
+        this._role = await ViewsManager.addRoleToNode(this.roleContainer);
+        console.log(this.roleContainer,this._role);
         this._role.setScale(v3(2, 2, 1));
-        this.roleContainer.addChild(this._role);
-
-        NodeUtil.setLayerRecursively(this._role, Layers.Enum.UI_2D);
-        const roleModel = this._role.getComponent(RoleBaseModel);
-        roleModel.initSelf();
-        roleModel.show(true);
     }
 
     public updatePlayerProps(shopClothing: { [key in TabTypeIds]?: ShopClothingInfo }, clothingId: number) {

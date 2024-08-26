@@ -1,16 +1,14 @@
-import { _decorator, Button, instantiate, Label, Layers, Node, Prefab, Sprite, UITransform, v3 } from 'cc';
+import { _decorator, Button, Label, Node, Sprite, UITransform } from 'cc';
 import { EventType } from '../../config/EventType';
 import { TextConfig } from '../../config/TextConfig';
 import { ItemData } from '../../manager/DataMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { FriendListItemModel, SystemMailItem } from '../../models/FriendModel';
-import { RoleBaseModel } from '../../models/RoleBaseModel';
 import { BasePopFriend } from '../../script/BasePopFriend';
 import { FdServer } from '../../service/FriendService';
 import CCUtil from '../../util/CCUtil';
 import { EventMgr } from '../../util/EventManager';
 import List from '../../util/list/List';
-import { NodeUtil } from '../../util/NodeUtil';
 import { ObjectUtil } from '../../util/ObjectUtil';
 import { RewardItem } from '../common/RewardItem';
 
@@ -34,8 +32,8 @@ export class FriendPlayerInfoView extends BasePopFriend {
     @property({ type: Node, tooltip: "角色容器" })
     public roleContainer: Node = null;
 
-    @property({ type: Prefab, tooltip: "角色动画预制体" })
-    public roleModel: Prefab = null; // 角色动画预制体
+    @property({ type: Node, tooltip: "精灵容器" })
+    public petContainer: Node = null;
 
     @property(List)
     public awardList: List = null; // 奖励列表
@@ -50,8 +48,6 @@ export class FriendPlayerInfoView extends BasePopFriend {
     private _msgData: SystemMailItem = null;
     private _propsData: ItemData[] = [];
 
-
-
     updateData(data: FriendListItemModel) {
         this._data = data;
         this.showRoleInfo();
@@ -63,9 +59,10 @@ export class FriendPlayerInfoView extends BasePopFriend {
     }
 
     private showRoleInfo() {
-        this.setActiveView(true);
-        this.labelName.string = this._data.user_name;
+        // this.setActiveView(true);
+        // this.labelName.string = this._data.user_name;
         this.loadRoleModel();
+        this.loadPetModel();
     }
 
     private showMessageInfo() {
@@ -96,18 +93,16 @@ export class FriendPlayerInfoView extends BasePopFriend {
         buttonNode.getComponent(Button).interactable = isActive;
     }
 
-    private loadRoleModel() {
+    private async loadRoleModel() {
         this.roleContainer.removeAllChildren();
-        const roleNode = instantiate(this.roleModel);
-        roleNode.setScale(v3(1.5, 1.5, 1));
-        this.roleContainer.addChild(roleNode);
-        NodeUtil.setLayerRecursively(roleNode, Layers.Enum.UI_2D);
+        const role = await ViewsManager.addRoleToNode(this.roleContainer);
+        role.setScale(1.5,1.5,1);
+    }
 
-        const roleModel = roleNode.getComponent(RoleBaseModel);
-        const modelId = parseInt(this._data.avatar);
-        const dressConfig = [9500, 9700, 9701, 9702, 9703]; // 示例的dressConfig
-        roleModel.initSelf();
-        roleModel.show(true);
+    private async loadPetModel(){
+        this.petContainer.removeAllChildren();
+        const pet = await ViewsManager.addPetToNode(this.petContainer);
+        pet.setScale(1.5,1.5,1);
     }
 
     protected initEvent(): void {

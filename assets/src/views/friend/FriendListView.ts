@@ -11,6 +11,7 @@ import { FdServer } from '../../service/FriendService';
 import CCUtil from '../../util/CCUtil';
 import { FriendTabType } from './FriendInfo';
 import { FriendLeftTabView } from './FriendLeftTabView';
+import { FriendPlayerInfoView } from './FriendPlayerInfoView';
 import { FriendTalkDialogView } from './FriendTalkDialogView';
 import { ApplyList } from './ListViews/ApplyList';
 import { Blacklist } from './ListViews/Blacklist';
@@ -118,7 +119,9 @@ export class FriendListView extends BasePopRight {
 
     async onFriendClick(data:FriendListItemModel){
         console.log("onFriendClick.....",data);
-        await PopMgr.showPopFriend(PrefabType.FriendPlayerInfoView,this.leftView,"content");
+        let node = await PopMgr.showPopFriend(PrefabType.FriendPlayerInfoView,this.leftView,"content");
+        let script = node.getComponent(FriendPlayerInfoView);
+        script.updateData(data);
     }
     async onFriendTalk(data:FriendListItemModel){
         console.log("onFriendTalk",data);

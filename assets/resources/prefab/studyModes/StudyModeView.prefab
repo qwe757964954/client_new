@@ -253,7 +253,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 817.419,
-      "y": 443.162,
+      "y": 443.16200000000003,
       "z": 0
     },
     "_lrot": {
@@ -5298,7 +5298,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": -822.9509999999999,
-      "y": 440.34,
+      "y": 440.34000000000003,
       "z": 0
     },
     "_lrot": {
@@ -5629,19 +5629,11 @@
     "mainNode": {
       "__id__": 56
     },
-    "roleModel": {
-      "__uuid__": "80fd3ca8-20bc-4718-91da-cbb70251a5e8",
-      "__expectedType__": "cc.Prefab"
-    },
     "roleContainer": {
       "__id__": 44
     },
     "petContainer": {
       "__id__": 50
-    },
-    "petModel": {
-      "__uuid__": "1d26e9ff-9c72-4aa5-a2f9-310ae87fc823",
-      "__expectedType__": "cc.Prefab"
     },
     "monsterContainer": {
       "__id__": 18
@@ -6043,7 +6035,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 1778,
-      "height": 1000
+      "height": 1000.0000000000001
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",

@@ -1,4 +1,4 @@
-import { _decorator, instantiate, isValid, Layers, Node, Prefab, UITransform, v3 } from 'cc';
+import { _decorator, isValid, Node, Prefab, UITransform, v3 } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { ItemID } from '../../export/ItemConfig';
@@ -14,7 +14,6 @@ import { BaseView } from '../../script/BaseView';
 import { BagServer } from '../../service/BagService';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
-import { NodeUtil } from '../../util/NodeUtil';
 import { ObjectUtil } from '../../util/ObjectUtil';
 import { RewardItem } from '../common/RewardItem';
 import { ShopClothingInfo } from '../shop/ShopInfo';
@@ -34,7 +33,6 @@ export class BagDialogView extends BaseView {
     @property(Node) public top_layout: Node = null;
     @property({ type: List }) public propList: List = null;
     @property({ type: Prefab, tooltip: "物品预制体" }) public propPrefab: Prefab = null;
-    @property({ type: Prefab, tooltip: "角色动画预制体" }) public roleModel: Prefab = null;
     @property({ type: Node, tooltip: "角色容器" }) public roleContainer: Node = null;
     @property(List) public tabList: List = null;
     @property(List) public dress_list: List = null;
@@ -196,15 +194,10 @@ export class BagDialogView extends BaseView {
         ViewsManager.showTip(tipMsg);
     }
 
-    private showRoleDress() {
+    private async showRoleDress() {
         this.roleContainer.removeAllChildren();
-        this._role = instantiate(this.roleModel);
+        this._role = await ViewsManager.addRoleToNode(this.roleContainer);
         this._role.setScale(v3(2, 2, 1));
-        this.roleContainer.addChild(this._role);
-        NodeUtil.setLayerRecursively(this._role, Layers.Enum.UI_2D);
-        const roleModel = this._role.getComponent(RoleModel);
-        roleModel.initSelf();
-        roleModel.show(true);
     }
 
     public changeClothings(clothingId: number) {

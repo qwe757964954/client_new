@@ -1,6 +1,6 @@
-import { _decorator, instantiate, Label, Node, Prefab, sp } from 'cc';
+import { _decorator, Label, Node, sp } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
-import { ViewsMgr } from '../../manager/ViewsManager';
+import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
 import { BaseView } from '../../script/BaseView';
 import CCUtil from '../../util/CCUtil';
@@ -25,8 +25,6 @@ export class LevelUpView extends BaseView {
     public reward_scroll: List = null;
     @property(Node)
     public closeBtn: Node = null;
-    @property(Prefab)
-    public roleModel: Prefab = null;
     @property(Node)
     public roleNode: Node = null;
     @property(List)
@@ -77,11 +75,8 @@ export class LevelUpView extends BaseView {
     }
 
     async initRolePlayer() {
-        let role = instantiate(this.roleModel);
-        this.roleNode.addChild(role);
-        let roleModel = role.getComponent(RoleBaseModel);
-        await roleModel.initSelf();
-        roleModel.show(true);
+        const role = await ViewsManager.addRoleToNode(this.roleNode);
+        const roleModel = role.getComponent(RoleBaseModel);
         roleModel.standby();
     }
 

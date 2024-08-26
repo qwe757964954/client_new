@@ -4,8 +4,8 @@ import { PrefabType } from '../../../config/PrefabType';
 import { DataMgr } from '../../../manager/DataMgr';
 import { LoadManager } from '../../../manager/LoadManager';
 import { ResLoader } from '../../../manager/ResLoader';
+import { ViewsManager } from '../../../manager/ViewsManager';
 import { BossLevelData, GateData } from '../../../models/AdventureModel';
-import { RoleBaseModel } from '../../../models/RoleBaseModel';
 import CCUtil from '../../../util/CCUtil';
 import { EventMgr } from '../../../util/EventManager';
 import { MonsterModel } from '../common/MonsterModel';
@@ -61,21 +61,11 @@ export class MapPointItem extends BaseMapPointItem {
         this.initMonter();
     }
     async initRole() {
-        const prefab = await ResLoader.instance.loadAsyncPromise<Prefab>("resources", `prefab/${PrefabType.RoleModel.path}`, Prefab);
-        const node = instantiate(prefab);
-        this.player.addChild(node);
-        const roleModel = node.getComponent(RoleBaseModel);
-        roleModel.initSelf();
-        roleModel.show(true);
+        ViewsManager.addRoleToNode(this.player);
     }
 
     async initPet() {
-        const prefab = await ResLoader.instance.loadAsyncPromise<Prefab>("resources", `prefab/${PrefabType.PetModel.path}`, Prefab);
-        const node = instantiate(prefab);
-        this.pet.addChild(node);
-        const roleModel = node.getComponent(RoleBaseModel);
-        roleModel.initSelf();
-        roleModel.show(true);
+        ViewsManager.addPetToNode(this.pet);
     }
 
     async initMonter() {

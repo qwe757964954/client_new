@@ -12,7 +12,6 @@ import { ViewsManager, ViewsMgr } from '../../../manager/ViewsManager';
 import { AdventureCollectWordModel, AdventureResult, AdventureResultModel, GameMode, GateData, WordsDetailData } from '../../../models/AdventureModel';
 import { s2cReviewPlanLongTimeWordSubmit, s2cReviewPlanSubmit, s2cWordbookWordSubmit } from '../../../models/NetModel';
 import { PetModel } from '../../../models/PetModel';
-import { RoleBaseModel } from '../../../models/RoleBaseModel';
 import { GameSubmitModel, GameSubmitResponse, ReqCollectWord, UnitWordModel } from '../../../models/TextbookModel';
 import { InterfacePath } from '../../../net/InterfacePath';
 import { NetNotify } from '../../../net/NetNotify';
@@ -56,14 +55,10 @@ export class BaseModeView extends BaseView {
 
     @property({ type: Node, tooltip: "主面板" })
     mainNode: Node = null;
-    @property(Prefab)
-    public roleModel: Prefab = null;//角色动画
     @property({ type: Node, tooltip: "角色容器" })
     public roleContainer: Node = null;
     @property({ type: Node, tooltip: "精灵容器" })
     public petContainer: Node = null;
-    @property({ type: Prefab, tooltip: "精灵预制体" })
-    public petModel: Prefab = null;
     @property({ type: Node, tooltip: "所有怪物容器" })
     public monsterContainer: Node = null;
     @property({ type: Prefab, tooltip: "小怪物预制体" })
@@ -291,19 +286,10 @@ export class BaseModeView extends BaseView {
     async initRole() {
         if (GameSourceType.review == this._sourceType || GameSourceType.reviewSpecial === this._sourceType ||
             GameSourceType.errorWordbook == this._sourceType || GameSourceType.collectWordbook == this._sourceType) return;
-        this._role = instantiate(this.roleModel);
-        this.roleContainer.addChild(this._role);
-        let roleModel = this._role.getComponent(RoleBaseModel);
-        roleModel.initSelf();
-        roleModel.show(true);
+        this._role = await ViewsManager.addRoleToNode(this.roleContainer);
     }
     async initPet() {
-        this._pet = instantiate(this.petModel);
-        this.petContainer.addChild(this._pet);
-        let roleModel = this._pet.getComponent(RoleBaseModel);
-        roleModel.initSelf();
-        roleModel.show(true);
-        CCUtil.setNodeCamera2DUI(this._pet);
+        this._pet = await ViewsManager.addPetToNode(this.petContainer);
     }
 
     initPetAttack() {
