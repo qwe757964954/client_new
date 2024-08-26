@@ -211,6 +211,7 @@ export class MapUICtl extends MainBaseCtl {
         let row = landInfo.row;
         let dtX = landInfo.dtX;
         let dtY = landInfo.dtY;
+        let count = 0;
         for (let i = 0; i < col; i++) {
             let ary: GridModel[] = [];
             this._gridAry[i] = ary;
@@ -218,8 +219,10 @@ export class MapUICtl extends MainBaseCtl {
                 if (!this.gridIsCanEdit(i, j)) continue;
                 let pos = new Vec3((j - i) * 0.5 * width + dtX * width, (-i - j) * 0.5 * height + dtY * height, 0);
                 ary[j] = new GridModel(i, j, pos, width, height);
+                count++;
             }
         }
+        // console.log("initGrid count:", count);
         console.timeEnd("initGrid");
     }
     //初始化地图
@@ -385,12 +388,13 @@ export class MapUICtl extends MainBaseCtl {
         let col = gridInfo.col;
         let row = gridInfo.row;
         let cloudWidth = MapConfig.cloud.width;
-        let index = 0;
+        let index = -1;
         for (let i = 0; i < col; i += cloudWidth) {
             for (let j = 0; j < row; j += cloudWidth) {
                 if (this.cloudIsUnlock(i, j)) continue;
                 let gridInfo = this.getGridInfo(i, j);
                 if (!gridInfo || gridInfo.cloud) continue;
+                index++;
                 let key = ToolUtil.replace(TextConfig.Land_Key, i, j);
                 let leftTime = null;
                 if (map.hasOwnProperty(key)) {
@@ -402,7 +406,6 @@ export class MapUICtl extends MainBaseCtl {
                 this._cloudModelAry.push(cloud);
                 this.setCloudGrid(cloud, i, j);
                 cloud.showID = index;
-                index++;
             }
         }
         // this.refreshCloudShowType();
