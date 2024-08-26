@@ -66,6 +66,7 @@ export enum TabTypeIds {
   ShopFlooring,      // 商店地板
 
   ShopDressTotal,    //全部
+  ShoSuitTotal,      //套装
   ShopHairstyle,     // 商店发型
   ShopAccessories,   //商店饰品
   ShopTop,           // 商店上衣

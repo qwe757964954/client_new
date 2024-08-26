@@ -99,7 +99,15 @@ export interface BackpackItemInfo {
 export interface GoodsItemInfo {
     id: number;
     name: string;
+    suit_id?: number;
+    suit_name?: string;
     price: [number, number];
+}
+
+export interface CothingSuitInfo {
+    suit_id: number;
+    suit_title: string;
+    items: GoodsItemInfo[];
 }
 
 export interface GameBagData {

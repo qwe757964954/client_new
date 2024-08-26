@@ -3,7 +3,7 @@ import { ItemData } from "../../manager/DataMgr";
 import { ResLoader } from "../../manager/ResLoader";
 import { User } from "../../models/User";
 import { ObjectUtil } from "../../util/ObjectUtil";
-import { BackpackItemInfo, BagItemType, BagOperationData, BagOperationIds, BagOperationNames, GameBagData } from "./BagInfo";
+import { BackpackItemInfo, BagItemType, BagOperationData, BagOperationIds, BagOperationNames, CothingSuitInfo, GameBagData, GoodsItemInfo } from "./BagInfo";
 
 //用户信息服务
 export default class _BagConfig {
@@ -189,7 +189,7 @@ export default class _BagConfig {
         return true;
     }
     // 是否存在背包
-    isExistInpackage(key: string): boolean {
+    public isExistInPackage(key: string): boolean {
         // 检查 key 是否存在于对象中
         if (key in User.itemAry) {
             // 检查对应的值是否大于 0
@@ -198,6 +198,41 @@ export default class _BagConfig {
         // 如果 key 不存在，则返回 false
         return false;
     }
+
+    public isExistGoodsInPackage(items:GoodsItemInfo[]){
+        let count = 0;
+        for (const item of items) {
+            const isExist = this.isExistInPackage(item.id.toString());
+            if (isExist) {
+                count++;
+            }
+        }
+        return count === items.length;
+    }
+
+    public filterSuitData():CothingSuitInfo[]{
+        console.log("getSuit....",this._BagConfigInfo.goods_item_info);
+        // 使用 Map 存储套装信息
+        const suitsMap = new Map<number, CothingSuitInfo>();
+
+        this._BagConfigInfo.goods_item_info
+            .filter(item => item.suit_id >= 1) // 过滤掉 suit_id 小于 1 的项
+            .forEach(item => {
+                const suit = suitsMap.get(item.suit_id);
+
+                if (suit) {
+                    suit.items.push(item);
+                } else {
+                    suitsMap.set(item.suit_id, {
+                        suit_id: item.suit_id,
+                        suit_title: item.suit_name,
+                        items: [item]
+                    });
+                }
+            });
+        return Array.from(suitsMap.values());
+    }
+
     public convertItemArrayData(itemAry:{ [key: number]: number } ){
         const arrayData: ItemData[] = Object.keys(itemAry).map(key => ({
             id: parseInt(key),

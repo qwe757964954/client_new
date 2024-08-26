@@ -48,6 +48,7 @@ export class ShopPlayerView extends Component {
     }
 
     public updatePlayerProps(shopClothing: { [key in TabTypeIds]?: ShopClothingInfo }, clothingId: number) {
+        console.log("updatePlayerProps",clothingId);
         this._shopClothing = shopClothing;
         this.changeClothings(clothingId);
 

@@ -4,9 +4,10 @@ import { ClothingType, EditType } from "../../manager/DataMgr";
 import { TabItemDataInfo, TabTypeIds, TaskTabIds, TaskTabInfo } from "../task/TaskInfo";
 
 
-// 定义 ShopStoreSubTabInfos 数组
+// 定义 ShopStoreSubTabInfos 数组  
 export const ShopStoreSubTabInfos: TabItemDataInfo[] = [
     { id: TabTypeIds.ShopDressTotal, title: "全部",imageUrl:"" },
+    { id: TabTypeIds.ShoSuitTotal, title: "套装",imageUrl:"" },
     { id: TabTypeIds.ShopHairstyle, title: "发型",imageUrl:"" },
     { id: TabTypeIds.ShopAccessories, title: "饰品",imageUrl:"" },
     { id: TabTypeIds.ShopTop, title: "上衣",imageUrl:"" },

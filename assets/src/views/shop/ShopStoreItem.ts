@@ -54,7 +54,7 @@ export class ShopStoreItem extends ListItem {
         const itemInfo: BagItemInfo = BagConfig.findShopItemInfo(data.id);
         const goodsInfo: GoodsItemInfo = BagConfig.findGoodsItemInfo(data.id);
         const itemDatas: ItemData[] = ObjectUtil.convertRewardData(goodsInfo.price);
-        const isExist = BagConfig.isExistInpackage(data.id.toString());
+        const isExist = BagConfig.isExistInPackage(data.id.toString());
         this.lblPrice.string = isExist ? "已存在":`${itemDatas[0].num}`;
         this.btnBuy.getComponent(Sprite).grayscale = isExist;
         this.btnBuy.getComponent(Button).interactable = !isExist;
