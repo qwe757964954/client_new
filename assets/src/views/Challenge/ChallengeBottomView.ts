@@ -4,61 +4,85 @@ import { CurrentBookStatus } from '../../models/TextbookModel';
 import List from '../../util/list/List';
 import { EducationDataInfo, EducationDataInfos } from '../TextbookVocabulary/TextbookInfo';
 import { UnitNumItem } from './UnitNumItem';
+
 const { ccclass, property } = _decorator;
 
 @ccclass('ChallengeBottomView')
 export class ChallengeBottomView extends Component {
     @property(Label)
-    public collect_num: Label = null;   // 收单元
-    @property(Label)
-    public collect_total: Label = null;   // 总单元
+    private collectNum: Label = null;
 
     @property(Label)
-    public more_text: Label = null;
+    private collectTotal: Label = null;
+
+    @property(Label)
+    private moreText: Label = null;
 
     @property(List)
-    public collectScroll: List = null;
+    private collectScroll: List = null;
+
     @property(Node)
-    public chest_box: Node = null;
-    private _totalUnit: number = 0;
-    private _currentUnitIndex: number = 0;
-    private _educationInfo: EducationDataInfo = null;
+    private chestBox: Node = null;
+
+    private totalUnit: number = 0;
+    private currentUnitIndex: number = 0;
+    private educationInfo: EducationDataInfo = null;
+
     start() {
-
+        // Initialization code, if any
     }
 
-    updateItemList(data: CurrentBookStatus) {
-        this._educationInfo = EducationDataInfos.find(item => item.id === data.monster_id);
+    public updateItemList(data: CurrentBookStatus) {
+        this.educationInfo = EducationDataInfos.find(item => item.id === data.monster_id) || null;
+        if (!this.educationInfo) {
+            error(`EducationDataInfo not found for id: ${data.monster_id}`);
+            return;
+        }
+
         this.loadRewardBox();
-        this._totalUnit = data.unit_total_num;
-        this._currentUnitIndex = data.unit_pass_num;
-        this.collectScroll.numItems = data.unit_total_num;
+        this.totalUnit = data.unit_total_num;
+        this.currentUnitIndex = data.unit_pass_num;
+
+        this.collectScroll.numItems = this.totalUnit;
         this.collectScroll.update();
-        let isComplete = this._currentUnitIndex >= this._totalUnit;/**当前收集的进度 */
-        this.chest_box.getComponent(Sprite).grayscale = !isComplete;
-        this.collect_num.string = this._currentUnitIndex.toString();
-        this.collect_total.string = this._totalUnit.toString();
-        let scroll_width = this.collectScroll.scrollView.getComponent(UITransform).width;
-        let content_width = this.collectScroll.scrollView.content.getComponent(UITransform).width;
-        this.more_text.node.active = content_width > scroll_width;
+
+        const isComplete = this.currentUnitIndex >= this.totalUnit;
+        this.chestBox.getComponent(Sprite).grayscale = !isComplete;
+
+        this.collectNum.string = this.currentUnitIndex.toString();
+        this.collectTotal.string = this.totalUnit.toString();
+
+        this.updateMoreTextVisibility();
     }
 
-    loadRewardBox() {
-        let key_str = this._educationInfo.box;
-        ResLoader.instance.load(key_str, SpriteFrame, (err: Error | null, spriteFrame: SpriteFrame) => {
+    private loadRewardBox() {
+        const keyStr = this.educationInfo.box;
+        ResLoader.instance.load(keyStr, SpriteFrame, (err: Error | null, spriteFrame: SpriteFrame) => {
             if (err) {
-                error && console.error(err);
+                error('Failed to load sprite frame:', err);
+                return;
             }
-            this.chest_box.getComponent(Sprite).spriteFrame = spriteFrame;
+            const sprite = this.chestBox.getComponent(Sprite);
+            if (sprite) {
+                sprite.spriteFrame = spriteFrame;
+            }
         });
     }
 
-    onLoadCollectHorizontal(item: Node, idx: number) {
-        let item_sript: UnitNumItem = item.getComponent(UnitNumItem);
-        let unit_num = idx + 1;
-        let isComplete: boolean = this._currentUnitIndex >= unit_num;
-        item_sript.updateRewardStatus(this._educationInfo, isComplete);
+    private updateMoreTextVisibility() {
+        const scrollWidth = this.collectScroll.scrollView.getComponent(UITransform).width;
+        const contentWidth = this.collectScroll.scrollView.content.getComponent(UITransform).width;
+        this.moreText.node.active = contentWidth > scrollWidth;
+    }
+
+    public onLoadCollectHorizontal(item: Node, idx: number) {
+        const unitNumItem = item.getComponent(UnitNumItem);
+        if (unitNumItem) {
+            const unitNum = idx + 1;
+            const isComplete = this.currentUnitIndex >= unitNum;
+            unitNumItem.updateRewardStatus(this.educationInfo, isComplete);
+        } else {
+            error('UnitNumItem component not found on the node.');
+        }
     }
 }
-
-

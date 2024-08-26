@@ -104,7 +104,7 @@
       "__id__": 2
     },
     "asset": {
-      "__uuid__": "87d12e55-123b-4374-ac6d-2363fc3da4e0",
+      "__uuid__": "06565e76-e728-47a9-a4f2-5b2e6fe74aaf",
       "__expectedType__": "cc.Prefab"
     },
     "fileId": "c46/YsCPVOJYA4mWEpNYRx",
@@ -115,7 +115,7 @@
   },
   {
     "__type__": "cc.PrefabInstance",
-    "fileId": "60bQZsSh9Ex5sYbqKMZFBo",
+    "fileId": "f2a6MVk3VKDqyog+Qe1mtz",
     "prefabRootNode": {
       "__id__": 1
     },
@@ -154,7 +154,7 @@
     "propertyPath": [
       "_name"
     ],
-    "value": "ScrollMapView"
+    "value": "WorldScrollView"
   },
   {
     "__type__": "cc.TargetInfo",

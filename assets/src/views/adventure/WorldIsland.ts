@@ -4,7 +4,7 @@ import { PrefabType, SceneType } from '../../config/PrefabType';
 import { PopMgr } from '../../manager/PopupManager';
 import { SceneMgr } from '../../manager/SceneMgr';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
-import { BossLevelData, BossLevelTopicData, GateData, GradeSkipExercisesListReply, IslandProgressModel, MapLevelData, Subject, UnitData, UnitListData, WordGameSubjectReply, WordGameUnitWordReply } from '../../models/AdventureModel';
+import { BossLevelData, BossLevelTopicData, GradeSkipExercisesListReply, IslandProgressModel, MapLevelData, Subject, UnitData, UnitListData, WordGameSubjectReply, WordGameUnitWordReply } from '../../models/AdventureModel';
 import { BaseRepPacket } from '../../models/NetModel';
 import { InterfacePath } from '../../net/InterfacePath';
 import { ServiceMgr } from '../../net/ServiceManager';
@@ -86,29 +86,6 @@ export class WorldIsland extends BaseView {
         this._rightChallenge = node.getComponent(rightPanelchange);
         this._rightChallenge.openView(data);
     }
-
-    getNextLevelData(big_id: number, small_id: number): GateData {
-        let currentIdx = -1;
-        let gateList = this._progressData.gate_list;
-        let nextPoint: GateData = null;
-        //找到当前地图点
-        for (let i = 0; i < gateList.length; i++) {
-            if (gateList[i].big_id == big_id && gateList[i].small_id == small_id) {
-                currentIdx = i;
-                break;
-            }
-        }
-        if (currentIdx == -1) return null;
-        if (currentIdx == gateList.length - 1) { //岛屿通关
-            ViewsMgr.showTip("已通关第" + big_id + "岛屿");
-            return null;
-        } else {
-            currentIdx++;
-            nextPoint = gateList[currentIdx];
-        }
-        return nextPoint;
-    }
-
     async challangeBoss(levelData: BossLevelData) {
         console.log("challangeBoss");
         let node = await PopMgr.showPopRight(PrefabType.RightPanelchange,"stage_frame");

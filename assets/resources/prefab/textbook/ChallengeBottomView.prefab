@@ -40,7 +40,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": -353,
+      "y": -353.00000000000006,
       "z": 0
     },
     "_lrot": {
@@ -2189,19 +2189,19 @@
     "__prefab": {
       "__id__": 94
     },
-    "collect_num": {
+    "collectNum": {
       "__id__": 64
     },
-    "collect_total": {
+    "collectTotal": {
       "__id__": 76
     },
-    "more_text": {
+    "moreText": {
       "__id__": 55
     },
     "collectScroll": {
       "__id__": 40
     },
-    "chest_box": {
+    "chestBox": {
       "__id__": 3
     },
     "_id": ""

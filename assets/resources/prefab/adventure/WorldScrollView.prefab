@@ -1,7 +1,7 @@
 [
   {
     "__type__": "cc.Prefab",
-    "_name": "ScrollMapView",
+    "_name": "WorldScrollView",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_native": "",
@@ -13,7 +13,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "ScrollMapView",
+    "_name": "WorldScrollView",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": null,
@@ -465,7 +465,7 @@
     "fileId": "c060gksb9F3KfCCONI1dwj"
   },
   {
-    "__type__": "f6e3b2ECKxBHZkEeM1ANWWa",
+    "__type__": "fd97bf8gNlGxZjhmmEo26VC",
     "_name": "",
     "_objFlags": 0,
     "__editorExtras__": {},
@@ -483,7 +483,7 @@
       "__id__": 2
     },
     "mapItemPrefab": {
-      "__uuid__": "47c3c52a-c9f8-4826-b4eb-a2f005648ac2",
+      "__uuid__": "4963a1de-a843-49b2-ac8f-a0c2ab340b0e",
       "__expectedType__": "cc.Prefab"
     },
     "moveOffset": 200,
@@ -491,7 +491,7 @@
   },
   {
     "__type__": "cc.CompPrefabInfo",
-    "fileId": "55Kg6kGsNGHoEh9gj27LHw"
+    "fileId": "e0j+jF6VNPO4PYVkaLKHJs"
   },
   {
     "__type__": "cc.PrefabInfo",

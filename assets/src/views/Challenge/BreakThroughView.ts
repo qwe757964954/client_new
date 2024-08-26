@@ -62,7 +62,7 @@ export class BreakThroughView extends BaseView {
         this.addModelListener(EventType.Exit_Island_Level, this.onExitIsland.bind(this));
         this.addModelListener(EventType.MapPoint_Click, this.gotoTextbookLevel.bind(this));
         this.addModelListener(EventType.Enter_Level_Test, this.gotoLevelTest.bind(this));
-        this.addModelListener(EventType.Goto_Break_Through_Textbook_Next_Level, this.gotoNextLevelTest.bind(this));
+        this.addModelListener(EventType.Goto_Module_Next_Level, this.gotoNextLevelTest.bind(this));
     }
     initData(data: CurrentBookStatus, unitData: UnitListItemStatus) {
         this._bookData = data;

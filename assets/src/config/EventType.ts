@@ -66,7 +66,8 @@ export const EventType = {
 
 
     Goto_Textbook_Next_Level: "Goto_Textbook_Next_Level",  //进入单词大冒险下一关
-    Goto_Break_Through_Textbook_Next_Level: "Goto_Break_Through_Textbook_Next_Level",
+    Goto_Module_Next_Level: "Goto_Module_Next_Level",
+    Update_Curent_Level_Index: "Update_Curent_Level_Index",
     Goto_Exam_Mode: "Goto_Exam_Mode", //进入考试模式
     //大冒险学习模式相关
     WordGame_Words: "WordGame_Words",  // 获取单词数据

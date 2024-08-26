@@ -1,4 +1,5 @@
 import { _decorator, instantiate, isValid, Layout, Node, Prefab, Size, Sprite, SpriteFrame, UITransform, Vec2, Vec3, view } from 'cc';
+import { EventType } from '../../../config/EventType';
 import { ResLoader } from '../../../manager/ResLoader';
 import { UnitItemStatus } from '../../../models/TextbookModel';
 import { BaseView } from '../../../script/BaseView';
@@ -21,7 +22,7 @@ export abstract class BaseMapView extends BaseView {
     @property(Prefab)
     mapItemPrefab: Prefab = null;
 
-    @property()
+    @property
     public moveOffset: number = 200;
 
     // @property([Vec2])
@@ -30,9 +31,14 @@ export abstract class BaseMapView extends BaseView {
     protected _pointItems: Node[] = [];
     protected _totalGrade = 0;
     protected _passGrade = 0;
+    public _curLevelIndex:number = 0;
     protected initUI(): void {
         this.offViewAdaptSize();
         
+    }
+    onInitModuleEvent() {
+        this.addModelListener(EventType.Goto_Textbook_Next_Level, this.gotoNextLevel);
+        this.addModelListener(EventType.Update_Curent_Level_Index, this.updateCurLevelIndex);
     }
     private compareUnitNames(a: UnitItemStatus, b: UnitItemStatus): number {
         const unitA = a.unit_name.replace(/\s+/g, '');
@@ -242,6 +248,10 @@ export abstract class BaseMapView extends BaseView {
                itemBounds.left >= viewBounds.right || 
                itemBounds.top <= viewBounds.bottom || 
                itemBounds.bottom >= viewBounds.top;
+    }
+
+    public updateCurLevelIndex(index: number): void {
+        this._curLevelIndex = index;
     }
 
     protected abstract gotoNextLevel(): void;

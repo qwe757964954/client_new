@@ -18,78 +18,95 @@ export enum RightUnitCallbackType {
 @ccclass('RightUnitView')
 export class RightUnitView extends Component {
     @property(Label)
-    public title_label: Label = null;
+    private titleLabel: Label = null;
+
     @property(Label)
-    public grade_label: Label = null;
+    private gradeLabel: Label = null;
+
     @property(Label)
-    public study_label: Label = null;
+    private studyLabel: Label = null;
+
     @property(Label)
-    public total_label: Label = null;
+    private totalLabel: Label = null;
+
     @property(Label)
-    public plan_label: Label = null;
+    private planLabel: Label = null;
 
     @property(ProgressBar)
-    public study_progress: ProgressBar = null;
+    private studyProgress: ProgressBar = null;
 
     @property(Node)
-    public current_img: Node = null;
+    private currentImage: Node = null;
 
     @property(Node)
-    public change_textbook: Node = null;
+    private changeTextbookButton: Node = null;
+
     @property(Node)
-    public break_through_btn: Node = null;
+    private breakThroughButton: Node = null;
+
     @property(Node)
-    public review_btn: Node = null;
+    private reviewButton: Node = null;
+
     @property(Node)
-    public check_word_btn: Node = null;
+    private checkWordButton: Node = null;
+
     @property(Node)
-    public modify_plan_btn: Node = null;
+    private modifyPlanButton: Node = null;
 
     @property(Label)
-    public remaining: Label = null;
+    private remainingLabel: Label = null;
 
-    private _callbacks: { [key: string]: Function } = {};
-    private _currentBookStatus:CurrentBookStatus = null;
+    private callbacks: { [key in RightUnitCallbackType]?: () => void } = {};
+    private currentBookStatus: CurrentBookStatus = null;
+
     start() {
-        this.initEvent();
+        this.initializeEvents();
     }
 
-    private initEvent() {
-        this.bindEvent(this.change_textbook, RightUnitCallbackType.CHANGE_BOOK);
-        this.bindEvent(this.break_through_btn, RightUnitCallbackType.BREAK_THROUGH);
-        this.bindEvent(this.review_btn, RightUnitCallbackType.REVIEW);
-        this.bindEvent(this.check_word_btn, RightUnitCallbackType.CHECK_WORD);
-        this.bindEvent(this.modify_plan_btn, RightUnitCallbackType.MODIFY);
+    private initializeEvents() {
+        const buttons = [
+            { node: this.changeTextbookButton, type: RightUnitCallbackType.CHANGE_BOOK },
+            { node: this.breakThroughButton, type: RightUnitCallbackType.BREAK_THROUGH },
+            { node: this.reviewButton, type: RightUnitCallbackType.REVIEW },
+            { node: this.checkWordButton, type: RightUnitCallbackType.CHECK_WORD },
+            { node: this.modifyPlanButton, type: RightUnitCallbackType.MODIFY }
+        ];
+
+        buttons.forEach(({ node, type }) => this.bindEvent(node, type));
     }
 
     private bindEvent(node: Node, type: RightUnitCallbackType) {
-        CCUtil.onBtnClick(node, () => this._callbacks[type]?.());
+        CCUtil.onBtnClick(node, () => {
+            const callback = this.callbacks[type];
+            if (callback) callback();
+        });
     }
 
-    updateRightPlan(data: BookPlanDetail) {
-        let Remaining =  data.gate_total - data.gate_pass_total;
-        let hasDay = TextbookUtil.calculateDays(Remaining, data.num);
-        this.remaining.string = `剩余${hasDay}天`;
-        this.plan_label.string = `${this._currentBookStatus.today_pay_num}/${data.num}`;
+    public updateRightPlan(data: BookPlanDetail) {
+        const remainingDays = TextbookUtil.calculateDays(data.gate_total - data.gate_pass_total, data.num);
+        this.remainingLabel.string = `剩余${remainingDays}天`;
+        this.planLabel.string = `${this.currentBookStatus.today_pay_num}/${data.num}`;
     }
-    updateUnitProps(unitData: CurrentBookStatus) {
+
+    public updateUnitProps(unitData: CurrentBookStatus) {
         console.log("updateUnitProps", unitData);
-        this._currentBookStatus = unitData;
-        this.title_label.string = unitData.book_name;
-        this.grade_label.string = unitData.grade;
-        this.study_label.string = unitData.study_word_num.toString();
-        this.total_label.string = unitData.total_word_num.toString();
-        this.study_progress.progress = unitData.study_word_num / unitData.total_word_num;
+        this.currentBookStatus = unitData;
+
+        this.titleLabel.string = unitData.book_name;
+        this.gradeLabel.string = unitData.grade;
+        this.studyLabel.string = unitData.study_word_num.toString();
+        this.totalLabel.string = unitData.total_word_num.toString();
+        this.studyProgress.progress = unitData.study_word_num / unitData.total_word_num;
 
         const bookImgUrl = `${NetConfig.assertUrl}/imgs/bookcover/${unitData.book_name}/${unitData.grade}.jpg`;
-        ImgUtil.loadRemoteImage(bookImgUrl, this.current_img, 188.573, 255.636);
+        ImgUtil.loadRemoteImage(bookImgUrl, this.currentImage, 188.573, 255.636);
     }
 
-    setCallback(type: RightUnitCallbackType, callback: Function) {
-        this._callbacks[type] = callback;
+    public setCallback(type: RightUnitCallbackType, callback: () => void) {
+        this.callbacks[type] = callback;
     }
 
     onDestroy() {
-        this._callbacks = {};
+        this.callbacks = {};
     }
 }

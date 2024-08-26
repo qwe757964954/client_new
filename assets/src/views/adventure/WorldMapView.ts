@@ -67,7 +67,7 @@ export class WorldMapView extends BaseView {
             [InterfacePath.Island_Status, this.onGetIslandStatus.bind(this)],
             [InterfacePath.Adventure_LevelProgress, this.onGetLevelProgress.bind(this)],
             [EventType.Enter_Level_Test, this.enterTest.bind(this)],
-            [EventType.Goto_Textbook_Next_Level, this.goNextLevel.bind(this)],
+            [EventType.Goto_Module_Next_Level, this.enterLevel.bind(this)],
             [EventType.Goto_Exam_Mode, this.goExamMode.bind(this)],
             [InterfacePath.WordGame_LevelRestart, this.levelRestart.bind(this)],
         ]);
@@ -187,15 +187,6 @@ export class WorldMapView extends BaseView {
         } else {
             ViewsManager.showTip(data.msg);
             this.gettingWords = false;
-        }
-    }
-
-    private goNextLevel() {
-        if (!this.currentIsland) return;
-        this.currentLevelData = null;
-        const nextLevel = this._worldIsland.getNextLevelData(this.levelProgressData.big_id, this.levelProgressData.small_id);
-        if (nextLevel) {
-            this.enterLevel(nextLevel);
         }
     }
 

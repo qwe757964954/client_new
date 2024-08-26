@@ -21,7 +21,7 @@ export class BaseMapPointItem extends Component {
     public levelLabel: Label = null;
 
     public data: GateData | MapLevelData  = null;
-
+    public index:number = 0;
     protected initStars(flagInfo: any) {
         this.clearPointStars();
         if (isValid(flagInfo)) {
@@ -60,7 +60,7 @@ export class BaseMapPointItem extends Component {
             ViewsMgr.showTip("请先通过前置关卡");
             return;
         }
-
+        EventMgr.emit(EventType.Update_Curent_Level_Index,this.index);
         EventMgr.emit(EventType.MapPoint_Click, this.data);
         // To be overridden by subclasses
     }

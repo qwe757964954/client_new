@@ -4836,43 +4836,43 @@
     "__prefab": {
       "__id__": 195
     },
-    "title_label": {
+    "titleLabel": {
       "__id__": 11
     },
-    "grade_label": {
+    "gradeLabel": {
       "__id__": 49
     },
-    "study_label": {
+    "studyLabel": {
       "__id__": 79
     },
-    "total_label": {
+    "totalLabel": {
       "__id__": 91
     },
-    "plan_label": {
+    "planLabel": {
       "__id__": 37
     },
-    "study_progress": {
+    "studyProgress": {
       "__id__": 25
     },
-    "current_img": {
+    "currentImage": {
       "__id__": 174
     },
-    "change_textbook": {
+    "changeTextbookButton": {
       "__id__": 52
     },
-    "break_through_btn": {
+    "breakThroughButton": {
       "__id__": 106
     },
-    "review_btn": {
+    "reviewButton": {
       "__id__": 122
     },
-    "check_word_btn": {
+    "checkWordButton": {
       "__id__": 136
     },
-    "modify_plan_btn": {
+    "modifyPlanButton": {
       "__id__": 158
     },
-    "remaining": {
+    "remainingLabel": {
       "__id__": 155
     },
     "_id": ""

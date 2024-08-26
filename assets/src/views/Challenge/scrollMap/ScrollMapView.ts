@@ -11,7 +11,7 @@ const { ccclass, property } = _decorator;
 
 @ccclass('ScrollMapView')
 export class ScrollMapView extends BaseMapView {
-    public _curLevelIndex:number = 0;
+    
     protected createItemNode(itemData: UnitItemStatus, unitCount: number): Node[] {
         let nodeArr:Node[] = []; 
         for (const gate of itemData.gate_list) {
@@ -42,11 +42,10 @@ export class ScrollMapView extends BaseMapView {
         this._curLevelIndex = item.index;
         const data = item.data;
         const itemStatus = this._unitStatus.find(status => status.unit_name === data.big_id);
-        const unit = itemStatus.unit_list[data.small_id - 1];
-
-        EventMgr.dispatch(EventType.Goto_Break_Through_Textbook_Next_Level, {
+        const gate = itemStatus.gate_list[data.small_id - 1];
+        EventMgr.dispatch(EventType.Goto_Module_Next_Level, {
             itemStatus,
-            unit,
+            gate,
             isNext: true
         });
     }
