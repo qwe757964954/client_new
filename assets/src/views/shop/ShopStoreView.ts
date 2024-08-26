@@ -76,6 +76,8 @@ export class ShopStoreView extends BaseView {
         if (clothingType !== undefined) {
             const filteredItems = this.filterItems(editConfig, BagConfig.BagConfigInfo.goods_item_info);
             this._itemsData = filteredItems.filter(item => item.type === clothingType);
+        }else if(id === TabTypeIds.ShopDressTotal){
+            this._itemsData = this.filterItems(editConfig, BagConfig.BagConfigInfo.goods_item_info);
         }
     }
 
@@ -87,10 +89,7 @@ export class ShopStoreView extends BaseView {
     public async updateData(id: TabTypeIds) {
         this._curTabType = id;
         await this.getBuildItems(id);
-
         this.store_list.numItems = this._itemsData.length;
-        const curClothing = this._shopClothing[id]?.userClothes;
-        this.store_list.selectedId = this._itemsData.findIndex(item => item.id === curClothing);
         this.store_list.scrollTo(0, 0);
     }
 
@@ -115,13 +114,43 @@ export class ShopStoreView extends BaseView {
     public onLoadShopStoreGrid(item: Node, idx: number) {
         const itemScript = item.getComponent(ShopStoreItem);
         const data = this._itemsData[idx];
-        itemScript.initData(data);
+        itemScript.initData(data,this._shopClothing);
     }
 
     public onShopStoreGridSelected(item: Node, selectedId: number, lastSelectedId: number, val: number) {
         if (isValid(selectedId) && selectedId >= 0 && isValid(item)) {
-            this._shopClothing[this._curTabType].userClothes = this._itemsData[selectedId].id;
-            this._shopPlayerView.updatePlayerProps(this._shopClothing, this._itemsData[selectedId].id);
+            let info:ClothingInfo = this._itemsData[selectedId];
+            if(BagConfig.isExistInpackage(info.id.toString())){
+                return
+            }
+            let clothing:ShopClothingInfo = this.findByType(info.type);
+            clothing.userClothes = info.id;
+            this._shopPlayerView.updatePlayerProps(this._shopClothing, info.id);
+            this.updateSelectProps(info);
         }
     }
+    
+    updateSelectProps(selectInfo:ClothingInfo){
+        const total = this.store_list.numItems;
+        for (let i = 0; i < total; i++) {
+            const node = this.store_list.getItemByListId(i)
+            const script = node.getComponent(ShopStoreItem);
+            if(script.data.type === selectInfo.type) {
+                script.updateRightActive(script.data.id === selectInfo.id);
+            }
+        }
+
+    }
+
+    private findByType(type: number): ShopClothingInfo | undefined {
+        // 遍历对象的每一个属性
+        for (const key in this._shopClothing) {
+            if (this._shopClothing[key].type === type) {
+                return this._shopClothing[key];
+            }
+        }
+        // 如果没有找到匹配的类型，则返回 undefined
+        return undefined;
+    }
+    
 }

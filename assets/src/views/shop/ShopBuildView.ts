@@ -15,7 +15,7 @@ export class ShopBuildView extends Component {
     updateData(id:TabTypeIds){
         this.getBuildItems(id);
         this.build_list.numItems = this._itemsData.length;
-        this.build_list.scrollTo(0, 0);
+        // this.build_list.scrollTo(0, 0);
     }
 
     getBuildItems(id:TabTypeIds){

@@ -188,7 +188,16 @@ export default class _BagConfig {
         }
         return true;
     }
-    
+    // 是否存在背包
+    isExistInpackage(key: string): boolean {
+        // 检查 key 是否存在于对象中
+        if (key in User.itemAry) {
+            // 检查对应的值是否大于 0
+            return User.itemAry[key] > 0;
+        }
+        // 如果 key 不存在，则返回 false
+        return false;
+    }
     public convertItemArrayData(itemAry:{ [key: number]: number } ){
         const arrayData: ItemData[] = Object.keys(itemAry).map(key => ({
             id: parseInt(key),

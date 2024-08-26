@@ -11,6 +11,8 @@ import { EventMgr } from '../../util/EventManager';
 import List from '../../util/list/List';
 import { ObjectUtil } from '../../util/ObjectUtil';
 import { RewardItem } from '../common/RewardItem';
+import { PlayerInfoResources } from './FriendInfo';
+import { ScoreItem } from './ListViews/ScoreItem';
 
 const { ccclass, property } = _decorator;
 
@@ -38,6 +40,9 @@ export class FriendPlayerInfoView extends BasePopFriend {
     @property(List)
     public awardList: List = null; // 奖励列表
 
+    @property(List)
+    public infoList: List = null; // 人物信息
+
     @property(Node)
     public reciveBtn: Node = null; // 接收按钮
 
@@ -48,7 +53,12 @@ export class FriendPlayerInfoView extends BasePopFriend {
     private _msgData: SystemMailItem = null;
     private _propsData: ItemData[] = [];
 
+    protected initUI(): void {
+        this.infoList.numItems = PlayerInfoResources.length;
+    }
+
     updateData(data: FriendListItemModel) {
+        console.log("updateData.....",data);
         this._data = data;
         this.showRoleInfo();
     }
@@ -137,6 +147,12 @@ export class FriendPlayerInfoView extends BasePopFriend {
         item.setScale(scale, scale, scale);
         rewardItem.init(this._propsData[idx]);
     }
+
+    onLoadInfoHorizontal(item: Node, idx: number) {
+        let script = item.getComponent(ScoreItem);
+        script.updatePropsInfo(idx);
+    }
+
     onHidenClick(){
         this.closePop();
     }

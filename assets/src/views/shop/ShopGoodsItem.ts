@@ -64,7 +64,7 @@ export class ShopGoodsItem extends Component {
         let not_buy = (User.buildingList.includes(data.id) && (data.type === EditType.Buiding || data.type === EditType.LandmarkBuiding))
         this.btnBuy.getComponent(Sprite).grayscale = not_buy;
         this.btnBuy.getComponent(Button).interactable = !not_buy;
-        this.lblPrice.string = not_buy ? "售罄" :data.buy.toString();
+        this.lblPrice.string = not_buy ? "达拥有上限" :data.buy.toString();
     }
 
     initEvent() {

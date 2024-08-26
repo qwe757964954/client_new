@@ -44,8 +44,7 @@ export class ShopPlayerView extends Component {
     private async showRoleDress() {
         this.roleContainer.removeAllChildren();
         this._role = await ViewsManager.addRoleToNode(this.roleContainer);
-        console.log(this.roleContainer,this._role);
-        this._role.setScale(v3(2, 2, 1));
+        this._role.setScale(v3(-2, 2, 1));
     }
 
     public updatePlayerProps(shopClothing: { [key in TabTypeIds]?: ShopClothingInfo }, clothingId: number) {

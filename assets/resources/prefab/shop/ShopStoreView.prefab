@@ -542,7 +542,7 @@
     "pageChangeEvent": {
       "__id__": 25
     },
-    "_virtual": true,
+    "_virtual": false,
     "cyclic": false,
     "lackCenter": false,
     "lackSlide": false,
@@ -555,7 +555,7 @@
     "selectedEvent": {
       "__id__": 27
     },
-    "repeatEventSingle": false,
+    "repeatEventSingle": true,
     "_id": ""
   },
   {

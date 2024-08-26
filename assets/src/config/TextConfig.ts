@@ -9,7 +9,7 @@ export const TextConfig = {
     Clothing_Path: "animation/clothing/{0}/spriteFrame",
 
     Land_Key: "{0}_{1}",
-    Pet_Mood_Prop: "+{0}",
+    Pet_Mood_Prop: "{0}",
     Prop_Show: "x{0}",
     Produce_Lock1: "城堡等级达到{0}级",
     Produce_Lock2: "建筑物等级达到{0}级",

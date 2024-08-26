@@ -1624,7 +1624,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -33.633,
+      "x": -56.721,
       "y": 0,
       "z": 0
     },
@@ -1760,7 +1760,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -8.611,
+      "x": -31.699,
       "y": 0,
       "z": 0
     },
@@ -1801,7 +1801,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 48.4921875,
+      "width": 104,
       "height": 54.4
     },
     "_anchorPoint": {
@@ -1837,7 +1837,7 @@
       "b": 255,
       "a": 255
     },
-    "_string": "2400",
+    "_string": "达拥有上限",
     "_horizontalAlign": 0,
     "_verticalAlign": 1,
     "_actualFontSize": 20,
@@ -2773,7 +2773,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 1778,
-      "height": 1000
+      "height": 1000.0000000000001
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
