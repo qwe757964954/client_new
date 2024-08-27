@@ -106,8 +106,15 @@ export class ViewsManager {
 
                 if (callBack) callBack(node);
 
-                // Remove temporary node
-                tmpNode.destroy();
+                let tmpNode = parent.getChildByName(this.getTmpNodeName(viewConfig.path));
+                if (tmpNode) {
+                    // Remove temporary node
+                    tmpNode.destroy();
+                }
+                else {
+                    console.log("界面已经被移除", viewConfig.path);
+                    node.destroy();
+                }
             })
             .catch((error) => {
                 console.error("Error loading view", viewConfig.path, error);
@@ -152,11 +159,15 @@ export class ViewsManager {
     private getNodeName(path: string): string {
         return path.replaceAll("/", "_");
     }
+    // 辅助方法: 创建临时节点名称
+    private getTmpNodeName(path: string): string {
+        return `tmp_${this.getNodeName(path)}`;
+    }
 
     // 辅助方法: 创建临时节点
     private createTemporaryNode(path: string): Node {
         const tmpNode = new Node();
-        tmpNode.name = `tmp_${this.getNodeName(path)}`;
+        tmpNode.name = this.getTmpNodeName(path);
         return tmpNode;
     }
 
@@ -205,14 +216,14 @@ export class ViewsManager {
     // 显示提示
     public showTip(content: string, callBack?: () => void) {
         this.showView(PrefabType.TipView, (node: Node) => {
-            node.getComponent(TipView).init(content, false,callBack);
+            node.getComponent(TipView).init(content, false, callBack);
         });
     }
 
     // 显示带颜色提示  富文本提示
     public showColorTip(content: string, callBack?: () => void) {
         this.showView(PrefabType.TipView, (node: Node) => {
-            node.getComponent(TipView).init(content, true,callBack);
+            node.getComponent(TipView).init(content, true, callBack);
         });
     }
 

@@ -92,7 +92,7 @@ export class BuildingProduceItem extends ListItem {
     /**list加载 */
     onLoadListItem(item: Node, idx: number) {
         let data = this._expend[idx];
-        CCUtil.setNodeScale(item, 0.7);
+        // CCUtil.setNodeScale(item, 0.7);
         item.getComponent(RewardItem).init(data, RewardItemNumType.HasNum);
         // let propInfo = DataMgr.getItemInfo(data.id);
         // LoadManager.loadSprite(propInfo.png, item.getComponentInChildren(Sprite));
