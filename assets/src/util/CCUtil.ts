@@ -42,25 +42,28 @@ export default class CCUtil {
      * @param {boolean} clean 是否去除节点的已存在点击事件
      */
     static onBtnClick(node: Node, cb: Function, clean: boolean = true) {
-        if (node.getComponent && !node.getComponent(Button)) {
-            node.addComponent(Button).target = node;
-            node.addComponent(Button).transition = Button.Transition.SCALE;
-            node.addComponent(Button).zoomScale = 1.2;
-            node.addComponent(Button).duration = 0.1;
+        let button = node.getComponent(Button);
+        if (!button) {
+            button = node.addComponent(Button);
+            button.transition = Button.Transition.SCALE;
+            button.zoomScale = 1.2;
+            button.duration = 0.1;
         }
+
         if (clean) {
             node.off("click");
         }
-        node.on("click", (event, arg2, arg3, arg4, arg5) => {
-            let now = new Date().getTime();
-            if (now - this.clickLastTime < 150) {
-                console.log("点击间隔过于频繁，打回", (now - this.clickLastTime));
-                this.clickLastTime = new Date().getTime();
+
+        node.on("click", (event, ...args) => {
+            const now = new Date().getTime();
+            if (now - CCUtil.clickLastTime < 150) {
+                console.log("点击间隔过于频繁，打回", (now - CCUtil.clickLastTime));
                 return;
             }
-            cb(event, arg2, arg3, arg4, arg5);
-            SoundMgr.click();
-            this.clickLastTime = new Date().getTime();
+
+            cb(event, ...args);
+            SoundMgr.click();  // Ensure SoundMgr is imported or defined elsewhere
+            CCUtil.clickLastTime = now;
         });
     }
     // 触摸事件解除
