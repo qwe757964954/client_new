@@ -657,7 +657,7 @@ export class BuildingModel extends BaseModel {
         }
         // let spriteFrame = CaptureUtils.capture(this._building.node);
         // let colors = CCUtil.readPixels(spriteFrame, pos.x, pos.y);
-        let colors = CCUtil.readPixels(this._building.spriteFrame, x, y);
+        let colors = CCUtil.readPixel(this._building.spriteFrame, x, y);
         return colors[3] >= 50;
     }
     /** 画格子区域 */

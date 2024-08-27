@@ -69,7 +69,7 @@ export class BuildingUpgradeView extends BaseComponent {
         this.labelLevel2.string = ToolUtil.replace(TextConfig.Level_Text, level + 1);
         let data = produceInfo.data[level + 1];
         if (!data) return;
-        this.labelTip.string = data.upgrade_tips;
+        // this.labelTip.string = data.upgrade_tips;
         this._upgradeNeed = data.upgrade_need;
         this.listView.numItems = this._upgradeNeed.length;
         LoadManager.loadSprite(data.res_png, this.img);

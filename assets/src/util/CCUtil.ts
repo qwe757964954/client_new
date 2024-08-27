@@ -1,8 +1,9 @@
-import { Button, EventKeyboard, EventTouch, Input, KeyCode, Layers, Node, NodeEventType, SpriteFrame, UITransform, Vec3, Widget, director, gfx, input, isValid } from "cc";
+import { Button, Camera, Color, Director, EventKeyboard, EventTouch, Input, KeyCode, Layers, Node, NodeEventType, RenderTexture, SpriteFrame, UITransform, Vec3, Widget, director, gfx, input, isValid } from "cc";
 import GlobalConfig from "../GlobalConfig";
 import { SoundMgr } from "../manager/SoundMgr";
 import { ToolUtil } from "./ToolUtil";
 
+const s_cameraLayer: number = Layers.Enum["SCEEN_SHOT"];
 export default class CCUtil {
     public static clickCall(event: EventTouch) {
         console.log("clickCall", event.currentTarget._name);
@@ -129,7 +130,7 @@ export default class CCUtil {
         return buffer;
     }
     /**获取指定位置像素 */
-    public static readPixels(spriteFrame: SpriteFrame, x: number, y: number): Uint8Array {
+    public static readPixel(spriteFrame: SpriteFrame, x: number, y: number): Uint8Array {
         const size = spriteFrame.originalSize;
         if (x > size.width || y > size.height) return null;
         const rect = spriteFrame.rect;
@@ -167,6 +168,74 @@ export default class CCUtil {
         bufferViews.push(buffer);
         director.root.device.copyTextureToBuffers(gfxTexture, bufferViews, [region]);
         // console.log("readPixels return", buffer[0], buffer[1], buffer[2], buffer[3]);
+        return buffer;
+    }
+    /**获取指定位置像素，通过摄像机（注意：测试还有问题，同时多个一起调用有问题） */
+    public static async readPixelByCamera(node: Node, x: number, y: number): Promise<Uint8Array> {
+        let camera;
+        if (null == camera) {
+            let tmpNode = new Node();
+            camera = tmpNode.addComponent(Camera);
+            camera.projection = Camera.ProjectionType.ORTHO;
+            camera.clearColor = Color.TRANSPARENT;
+            camera.near = 0;
+            camera.visibility = s_cameraLayer;
+        }
+        let layer = node.layer;
+        camera.node.parent = node;
+        camera.enabled = true;
+        camera.node.active = true;
+        node.layer = layer | s_cameraLayer;
+        // CCUtil.setNodeCamera(node, s_cameraLayer);
+
+        let transform = node.getComponent(UITransform);
+        let size = transform.contentSize;
+        // console.log("readPixelByCamera", x, y, size.width, size.height, transform.anchorX, transform.anchorY);
+        let spriteFrame = new SpriteFrame();
+        let renderTex = new RenderTexture();
+        renderTex.reset({
+            width: size.width,
+            height: size.height,
+        });
+        camera.orthoHeight = size.height / 2;
+        camera.node.position = new Vec3(size.width * (0.5 - transform.anchorX), size.height * (0.5 - transform.anchorY), 0);
+        camera.targetTexture = renderTex;
+        spriteFrame.texture = renderTex;
+        spriteFrame.packable = false;
+        // director.root.frameMove(0);
+        let rect = spriteFrame.rect;
+        const px = x + (rect.width - size.width) / 2;
+        const py = y + (rect.height - size.height) / 2;
+        const buffer = new Uint8Array(4);
+        let offsetX = rect.x + px;
+        let offsetY = rect.y + py;
+        let width = 1;
+        let height = 1;
+        const gfxTexture = spriteFrame.getGFXTexture();
+        const bufferViews = [];
+        const region = new gfx.BufferTextureCopy;
+        region.texOffset.x = offsetX;
+        region.texOffset.y = offsetY;
+        region.texExtent.width = width;
+        region.texExtent.height = height;
+        bufferViews.push(buffer);
+        await new Promise<void>((resolve) => {
+            director.once(Director.EVENT_AFTER_DRAW, () => {
+                resolve();
+            });
+        });
+        // let bufferAry = renderTex.readPixels(0, 0, size.width, size.height);
+        // let count = 0;
+        // for (let i = 0; i < bufferAry.length; i++) {
+        //     if (0 != bufferAry[i]) {
+        //         count++;
+        //     }
+        // }
+        director.root.device.copyTextureToBuffers(gfxTexture, bufferViews, [region]);
+        // console.log("readPixelByCamera 2：", count, buffer);
+        camera.node.active = false;
+        camera.node.parent = null;
+        node.layer = layer;
         return buffer;
     }
 
