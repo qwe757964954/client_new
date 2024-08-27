@@ -4,7 +4,7 @@ import { TextConfig } from '../../config/TextConfig';
 import { EditInfo, EditType } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
 import { PopMgr } from '../../manager/PopupManager';
-import { ViewsManager } from '../../manager/ViewsManager';
+import { ViewsMgr } from '../../manager/ViewsManager';
 import { User } from '../../models/User';
 import { ServiceMgr } from '../../net/ServiceManager';
 import CCUtil from '../../util/CCUtil';
@@ -78,13 +78,12 @@ export class ShopGoodsItem extends Component {
 
     onBuyClick() {
         let use_amout = "金币";
-        let content_str = `确认消耗${this._data.buy}个${use_amout}购买${this._data.name}吗？`;
-        ViewsManager.showConfirm(content_str, () => {
+        const contentStr = `<color=#000000>确认消耗<color=#ff0000>${this._data.buy}个${use_amout}</color><color=#000000>购买</color><color=#ff0000>${this._data.name}</color><color=#000000>吗？</color>`;
+        ViewsMgr.showConfirm("", () => {
             ServiceMgr.buildingService.reqBuyBuilding(this._data.id);
-        })
-        // ServiceMgr.shopService.buyGood(this._data.id);
-        // EventMgr.emit(EventType.New_Building, this._data);
-        // ViewsMgr.closeView(PrefabType.ShopUIView);
+        }).then((confirmView) => {
+            confirmView.showRichText(contentStr);
+        });
     }
 
     async onClickGoods() {
