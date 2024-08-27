@@ -1,0 +1,108 @@
+{
+    "education_info": [
+        {
+            "id": 3001,
+            "monsterName": "宝箱怪",
+            "monsterAni": "xsg_06_r",
+            "monster_effect": "xsg_06_tx",
+            "lock_opener": "rewad_key10",
+            "box": "treasure_chest6"
+        },
+        {
+            "id": 3002,
+            "monsterName": "宝箱怪",
+            "monsterAni": "xsg_03_r",
+            "monster_effect": "xsg_03_tx",
+            "lock_opener": "rewad_progress",
+            "box": "treasure_chest3"
+        },
+        {
+            "id": 3003,
+            "monsterName": "宝箱怪",
+            "monsterAni": "xsg_01_r",
+            "monster_effect": "xsg_01_tx",
+            "lock_opener": "rewad_key1",
+            "box": "treasure_chest1"
+        },
+        {
+            "id": 3004,
+            "monsterName": "宝箱怪",
+            "monsterAni": "xsg_07_r",
+            "monster_effect": "xsg_07_tx",
+            "lock_opener": "rewad_key3",
+            "box": "treasure_chest7"
+        },
+        {
+            "id": 3005,
+            "monsterName": "宝箱怪",
+            "monsterAni": "xsg_08_r",
+            "monster_effect": "xsg_08_tx",
+            "lock_opener": "rewad_key7",
+            "box": "treasure_chest8"
+        },
+        {
+            "id": 3006,
+            "monsterName": "宝箱怪",
+            "monsterAni": "xsg_04_r",
+            "monster_effect": "xsg_04_tx",
+            "lock_opener": "rewad_key2",
+            "box": "treasure_chest4"
+        },
+        {
+            "id": 3007,
+            "monsterName": "宝箱怪",
+            "monsterAni": "xsg_02_r",
+            "monster_effect": "xsg_02_tx",
+            "lock_opener": "rewad_key9",
+            "box": "treasure_chest2"
+        },
+        {
+            "id": 3008,
+            "monsterName": "宝箱怪",
+            "monsterAni": "xsg_05_r",
+            "monster_effect": "xsg_05_tx",
+            "lock_opener": "rewad_key8",
+            "box": "treasure_chest5"
+        },
+        {
+            "id": 3009,
+            "monsterName": "宝箱怪",
+            "monsterAni": "xsg_10_r",
+            "monster_effect": "xsg_10_tx",
+            "lock_opener": "rewad_key4",
+            "box": "treasure_chest10"
+        },
+        {
+            "id": 3010,
+            "monsterName": "宝箱怪",
+            "monsterAni": "xsg_11_r",
+            "monster_effect": "xsg_11_tx",
+            "lock_opener": "rewad_key6",
+            "box": "treasure_chest11"
+        },
+        {
+            "id": 3011,
+            "monsterName": "宝箱怪",
+            "monsterAni": "xsg_13_r",
+            "monster_effect": "xsg_13_tx",
+            "lock_opener": "rewad_key5",
+            "box": "treasure_chest13"
+        },
+        {
+            "id": 3012,
+            "monsterName": "宝箱怪",
+            "monsterAni": "xsg_09_r",
+            "monster_effect": "xsg_09_tx",
+            "lock_opener": "rewad_key11",
+            "box": "treasure_chest9"
+        },
+        {
+            "id": 3015,
+            "monsterName": "宝箱怪",
+            "monsterAni": "xsg_12_r",
+            "monster_effect": "xsg_12_tx",
+            "lock_opener": "rewad_key11",
+            "box": "treasure_chest12"
+        }
+    ]
+}

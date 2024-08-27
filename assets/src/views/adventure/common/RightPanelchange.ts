@@ -14,7 +14,7 @@ import FileUtil from '../../../util/FileUtil';
 import List from '../../../util/list/List';
 import { ObjectUtil } from '../../../util/ObjectUtil';
 import { CGConfig } from '../../Challenge/ChallengeConfig';
-import { EducationDataInfos } from '../../TextbookVocabulary/TextbookInfo';
+import { TbConfig } from '../../TextbookVocabulary/TextbookInfo';
 import { SubjectView } from '../../theme/SubjectView';
 import { ReportItem } from '../sixModes/ReportItem';
 import { MonsterModel } from './MonsterModel';
@@ -154,8 +154,7 @@ export class rightPanelchange extends BasePopRight {
     private updateWordGameView(monsterModel: MonsterModel) {
         const bigId = ObjectUtil.extractId(this._data.big_id);
         this.levelTxt.string = `${bigId}-${this._data.small_id}`;
-        const educationInfo = EducationDataInfos.find(item => item.id === this._data.monster_id);
-        monsterModel.init(FileUtil.removeFileExtension(educationInfo.monster));
+        monsterModel.init(FileUtil.removeFileExtension(TbConfig.getMasterAniName(this._data.monster_id)));
         this.monsterNameTxt.string = "宝箱怪";
         this.monsterNode.setScale(-0.8, 0.8, 1);
     }
