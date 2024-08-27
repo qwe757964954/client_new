@@ -31,6 +31,8 @@ class AnswerUI {
     status: Sprite = null;
 }
 
+const one_word_time = 20;
+
 @ccclass('SpeedWordsView')
 export class SpeedWordsView extends BaseComponent {
     @property({ type: Label, tooltip: "单词Label" })
@@ -47,6 +49,8 @@ export class SpeedWordsView extends BaseComponent {
     timesLabel: Label = null;
     @property(Node)
     btnClose: Node = null;
+    @property(Label)
+    speedTimeLabel: Label = null;
 
     private _answerUIList: AnswerUI[] = [];//答案UI列表
     private _buildingID: number = null;//建筑ID
@@ -161,6 +165,7 @@ export class SpeedWordsView extends BaseComponent {
     showRightCount() {
         // this.timesLabel.string = ToolUtil.replace(TextConfig.Queue_Text, this._rightCount, this._word_list.length);
         this.timesLabel.string = ToolUtil.replace(TextConfig.Queue_Text, this._curWordIndex + 1, this._word_list.length);
+        this.speedTimeLabel.string = ToolUtil.replace(TextConfig.Speed_Words_Speed_Tip1, this._rightCount * one_word_time);
     }
     /**显示时间 */
     showTime() {
@@ -237,6 +242,9 @@ export class SpeedWordsView extends BaseComponent {
     }
     /**结束答题 */
     endAnswer() {
+        if (this._rightCount > 0) {
+            ViewsMgr.showAlert(ToolUtil.replace(TextConfig.Speed_Words_Speed_Tip2, this._rightCount * one_word_time));
+        }
         this.node.destroy();
     }
     /**答题结果 */

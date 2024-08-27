@@ -11,6 +11,8 @@ export class PopView extends Component {
     public label: Label = null;
     @property(Sprite)
     public btnClose: Sprite = null;
+    @property(Node)
+    public btnSure: Node = null;
 
     private _canClose: boolean = false;
     private _callBack: Function = null;//回调
@@ -33,11 +35,13 @@ export class PopView extends Component {
     initEvent() {
         CCUtil.onTouch(this, this.onBtnCloseClick, this);
         CCUtil.onTouch(this.btnClose, this.onBtnCloseClick, this);
+        CCUtil.onTouch(this.btnSure, this.onBtnCloseClick, this);
     }
     // 移除监听
     removeEvent() {
         CCUtil.offTouch(this, this.onBtnCloseClick, this);
         CCUtil.offTouch(this.btnClose, this.onBtnCloseClick, this);
+        CCUtil.offTouch(this.btnSure, this.onBtnCloseClick, this);
     }
     // 关闭按钮点击
     onBtnCloseClick() {

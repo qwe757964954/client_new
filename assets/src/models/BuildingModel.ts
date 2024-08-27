@@ -944,7 +944,7 @@ export class BuildingModel extends BaseModel {
                 if (this._fence) {
                     this._fence.active = false;
                 }
-                if (this._building) {
+                if (this._building && this.isCanEdit) {
                     this._building.node.active = false;
                 }
             }

@@ -18,7 +18,7 @@ export const TextConfig = {
     Ver_Text: "ver:{0}.{1}.{2}.{3}",
     Queue_Text: "{0}/{1}",
     Width_Height_Text: "{0}x{1}",
-    Item_Condition_Error: "{0},不足哦~",
+    Item_Condition_Error: "非常抱歉，你的{0}道具不足哦～ （温馨提示：可以到商店购买哦）",
     Item_Count_Text: "数量：{0}",
 
     Function_Tip: "开发中，敬请期待",
@@ -61,6 +61,8 @@ export const TextConfig = {
     Speed_Words_Exit_Tip2: "是否退出单词加速？\n（中途退出后，本次升级不能再用单词加速哦）",
     Speed_Words_Exit_Tip3: "是否退出单词加速？\n（中途退出后，本次制作不能再用单词加速哦）",
     Speed_Words_Exit_Tip4: "是否退出单词加速？\n（中途退出后，本次扩张不能再用单词加速哦）",
+    Speed_Words_Speed_Tip1: "（累计已加速{0}秒）",
+    Speed_Words_Speed_Tip2: "（恭喜你，累计加速{0}秒。",
     Building_Success_Type1: "建造成功",
     Building_Success_Type2: "升级成功",
 

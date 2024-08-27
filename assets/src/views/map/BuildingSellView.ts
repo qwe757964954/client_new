@@ -19,6 +19,8 @@ export class BuildingSellView extends Component {
     public listView: List = null;//列表
     @property(CaleBagView)
     public caleBagView: CaleBagView = null;
+    @property(Node)
+    public btnClose: Node = null;//关闭按钮
 
     private _count: number = 1;
     private _editInfo: EditInfo = null;
@@ -35,10 +37,12 @@ export class BuildingSellView extends Component {
     initEvent() {
         CCUtil.onTouch(this.node, this.onBgClick, this);
         CCUtil.onTouch(this.btnSell, this.onBtnSellClick, this);
+        CCUtil.onTouch(this.btnClose, this.onBtnCloseClick, this);
     }
     removeEvent() {
         CCUtil.offTouch(this.node, this.onBgClick, this);
         CCUtil.offTouch(this.btnSell, this.onBtnSellClick, this);
+        CCUtil.offTouch(this.btnClose, this.onBtnCloseClick, this);
     }
     init(editInfo: EditInfo, maxCount: number, sellCall: Function) {
         this._editInfo = editInfo;
@@ -47,6 +51,7 @@ export class BuildingSellView extends Component {
         this._count = 1;
         this.labelName.string = editInfo.name;
         this.labelContent.string = editInfo.description;
+        this.caleBagView.valMinMaxToGray = true;
         this.caleBagView.setCaleMax(this._maxCount);
         this.caleBagView.setSelectListener(this.onCountChange.bind(this));
         this.listView.numItems = 1;
@@ -69,6 +74,10 @@ export class BuildingSellView extends Component {
         if (this._count == num) return;
         this._count = num;
         this.listView.numItems = 1;
+    }
+    /**关闭点击 */
+    onBtnCloseClick() {
+        this.node.destroy();
     }
 }
 

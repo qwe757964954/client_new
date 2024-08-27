@@ -3,6 +3,7 @@ import { EventType } from '../../config/EventType';
 import { MapConfig } from '../../config/MapConfig';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
+import { ItemID } from '../../export/ItemConfig';
 import { DataMgr, EditInfo, EditType } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
 import { SoundMgr } from '../../manager/SoundMgr';
@@ -166,6 +167,7 @@ export class EditItem extends Component {
                 // data.needBuilt = this._data.needBuilt;
                 // data.count = count;
                 this._data.count = count;
+                ViewsMgr.showRewards([{ id: ItemID.coin, num: this._data.sell * count }]);
                 EventMgr.emit(EventType.Building_Batch_Sell, this._data);
             });
         });

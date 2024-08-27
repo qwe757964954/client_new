@@ -169,7 +169,7 @@ export class UserClothes {
                 this.face = clothing;
                 break;
         }
-        
+
     }
 }
 
@@ -497,13 +497,17 @@ class UserModel {
         EventMgr.emit(EventType.Stamina_Timer_Update, time);
     }
     /**判断物品条件是否满足 */
-    public checkItems(data: ItemData[], tipStr: string = null): boolean {
+    public checkItems(data: ItemData[], tipStr: string = null, onlyTip: boolean = false): boolean {
         for (let i = 0; i < data.length; i++) {
             const item = data[i];
             let hasNum = this._itemAry[item.id] || 0;
             if (hasNum < item.num) {
                 if (tipStr) {
-                    ViewsMgr.showConfirm(ToolUtil.replace(tipStr, DataMgr.getItemInfo(item.id).name));
+                    if (onlyTip) {
+                        ViewsMgr.showAlert(ToolUtil.replace(tipStr, DataMgr.getItemInfo(item.id).name));
+                    } else {
+                        ViewsMgr.showConfirm(ToolUtil.replace(tipStr, DataMgr.getItemInfo(item.id).name));
+                    }
                 }
                 return false;
             }

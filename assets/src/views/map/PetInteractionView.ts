@@ -128,7 +128,7 @@ export class PetInteractionView extends BaseComponent {
         CCUtil.offTouch(item);
         CCUtil.onTouch(item, () => {
             console.log("onTouch", data.type, data.id);
-            if (!User.checkItems([{ id: data.id, num: 1 }], TextConfig.Item_Condition_Error)) {
+            if (!User.checkItems([{ id: data.id, num: 1 }], TextConfig.Item_Condition_Error, true)) {
                 return;
             }
             this._interactionInfo = data;

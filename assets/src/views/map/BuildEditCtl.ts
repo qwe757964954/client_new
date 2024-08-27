@@ -373,10 +373,11 @@ export class BuildEditCtl extends MapBaseCtl {
             this.cacheBuildingOperationData(BuildingOperationType.edit, building);
             building.saveData();
             this.nextStep();
-            this._mainScene.newBuildingFromBuilding(building);
+            // this._mainScene.newBuildingFromBuilding(building);
         } else {
             building.saveData();
         }
+        this._mainScene.newBuildingFromBuilding(building);
     }
     /**建筑回收事件 */
     onBuildingRecycle(building: BuildingModel): void {
