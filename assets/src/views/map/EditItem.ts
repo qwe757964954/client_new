@@ -53,6 +53,8 @@ export class EditItem extends Component {
     public tipToBuilt: Node = null;//去建造提示
     @property(Node)
     public btnSell: Node = null;//出售按钮
+    @property(Label)
+    public labelCount: Label = null;//数量
 
     private _data: EditItemInfo = null;//数据
     private _clickCall: Function = null;//点击回调
@@ -109,6 +111,7 @@ export class EditItem extends Component {
     public initData(info: EditItemInfo, clickCall: Function, isTouchCall: Function): void {
         this._clickCall = clickCall;
         this._longTouchCall = isTouchCall;
+        this.labelCount.string = info.count.toString();
         if (this._data == info) return;
         this._data = info;
         this.labelSize.string = ToolUtil.replace(TextConfig.Width_Height_Text, info.width, info.height);
@@ -120,6 +123,7 @@ export class EditItem extends Component {
         });
         this._uiTransform = this.node.getComponent(UITransform);
         this.btnSell.active = info.sell > 0;
+        this.labelCount.node.active = EditType.Land != info.type;
     }
     /** 点击 */
     public onItemClick(): void {
