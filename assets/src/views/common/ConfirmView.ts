@@ -1,4 +1,4 @@
-import { _decorator, Label, Node } from 'cc';
+import { _decorator, Label, Node, RichText } from 'cc';
 import { BasePopup } from '../../script/BasePopup';
 import CCUtil from '../../util/CCUtil';
 const { ccclass, property } = _decorator;
@@ -21,6 +21,9 @@ export class ConfirmView extends BasePopup {
     public btnClose: Node = null;//关闭
     @property(Label)
     public extraLabel: Label = null;//额外文字
+
+    @property(RichText)
+    public richText: Label = null;//富文本多种颜色
 
     private _sureCall: Function = null;
     private _cancelCall: Function = null;
@@ -62,6 +65,14 @@ export class ConfirmView extends BasePopup {
         this.extraLabel.string = content;
         this.extraLabel.node.active = true;
     }
+
+    showRichText(content: string) {
+        this.extraLabel.node.active = false;
+        this.label.node.active = false;
+        this.richText.node.active = true;
+        this.richText.string = content;
+    }
+
     // 设置关闭回调
     setCloseCall(call: Function) {
         this._closeCall = call;

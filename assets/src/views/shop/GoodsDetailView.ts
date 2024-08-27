@@ -3,7 +3,7 @@ import { EventType } from '../../config/EventType';
 import { TextConfig } from '../../config/TextConfig';
 import { EditInfo, EditType } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
-import { ViewsManager } from '../../manager/ViewsManager';
+import { ViewsMgr } from '../../manager/ViewsManager';
 import { User } from '../../models/User';
 import { ServiceMgr } from '../../net/ServiceManager';
 import { BasePopup } from '../../script/BasePopup';
@@ -35,6 +35,9 @@ export class GoodsDetailView extends BasePopup {
 
     @property({ type: Label, tooltip: "土地数" }) //contentNd
     public lblLand: Label = null;
+
+    @property(Label)
+    public hasNum:Label = null;
 
     @property({ type: Node, tooltip: "土地结点" })
     public ndLand: Node = null;
@@ -73,7 +76,9 @@ export class GoodsDetailView extends BasePopup {
     /** 初始化数据 */
     public initData(data: EditInfo) {
         this._data = data;
-
+        console.log(data);
+        console.log(User.buildingList);
+        console.log(User.landList);
         this.labelName.string = data.name;
         this.labelDesc.string = data.description;
         this.labelPrice.string = data.buy.toString();
@@ -92,10 +97,12 @@ export class GoodsDetailView extends BasePopup {
 
     onClickBuy() {
         let use_amout = "金币";
-        let content_str = `确认消耗${this._data.buy}个${use_amout}购买${this._data.name}吗？`;
-        ViewsManager.showConfirm(content_str, () => {
+        const contentStr = `<color=#000000>确认消耗<color=#ff0000>${this._data.buy}个${use_amout}</color><color=#000000>购买</color><color=#ff0000>${this._data.name}</color><color=#000000>吗？</color>`;
+        ViewsMgr.showConfirm("", () => {
             ServiceMgr.buildingService.reqBuyBuilding(this._data.id);
-        })
+        }).then((confirmView) => {
+            confirmView.showRichText(contentStr);
+        });
         
         // ServiceMgr.shopService.buyGood(this._data.id);
         // EventMgr.emit(EventType.New_Building, this._data);

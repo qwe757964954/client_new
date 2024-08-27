@@ -1,4 +1,4 @@
-import { Color, Graphics, Node, Rect, Vec3, instantiate, screen } from "cc";
+import { Color, Graphics, Node, Rect, Vec3, instantiate, isValid, screen } from "cc";
 import GlobalConfig from "../../GlobalConfig";
 import { EventType } from "../../config/EventType";
 import { MapConfig } from "../../config/MapConfig";
@@ -769,7 +769,7 @@ export class MapUICtl extends MainBaseCtl {
             return;
         }
         if (1 == data.type) {
-            ViewsMgr.showTip(TextConfig.Building_Shop_Buy_Success);
+            // ViewsMgr.showTip(TextConfig.Building_Shop_Buy_Success);
             data.insert_result.forEach((item) => {
                 let index = -1;
                 let tmpData = null;
@@ -783,6 +783,9 @@ export class MapUICtl extends MainBaseCtl {
                         break;
                     }
                 }
+                const buildInfo = DataMgr.editInfo.find(edit => isValid(edit) && edit.id === item.bid);
+                const contentStr = `<color=#ffffff>${TextConfig.Building_Shop_Buy_Success}<color=#ff0000>${buildInfo.name}</color>`;
+                ViewsMgr.showColorTip(contentStr);
                 if (index > -1) {
                     this._buyBuildingCacheAry.splice(index, 1);
                     this.addRecycleBuilding(tmpData);

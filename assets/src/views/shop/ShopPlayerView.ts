@@ -1,7 +1,7 @@
 import { _decorator, Button, Component, isValid, Label, Node, Sprite, v3 } from 'cc';
 import { EventType } from '../../config/EventType';
 import { ClothingType, ItemData } from '../../manager/DataMgr';
-import { ViewsManager } from '../../manager/ViewsManager';
+import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
 import { User } from '../../models/User';
 import CCUtil from '../../util/CCUtil';
@@ -113,15 +113,17 @@ export class ShopPlayerView extends Component {
         const needBuyClothings = this.findNeedBuyClothing();
         const totalCount = this.getTotalClothing();
         const useAmount = "金币";
-        const contentStr = `确认消耗 ${totalCount} 个 ${useAmount} 一键购买 吗？`;
+        // const contentStr = `确认消耗 ${totalCount} 个 ${useAmount} 一键购买 吗？`;
 
+        const contentStr = `<color=#000000>确认消耗<color=#ff0000>${totalCount}个${useAmount}</color><color=#000000>一键购买 吗?`;
         const buyInfo: BuyStoreInfo = {
             ids: needBuyClothings,
             nums: needBuyClothings.map(() => 1)
         };
-
-        ViewsManager.showConfirm(contentStr, () => {
+        ViewsMgr.showConfirm("", () => {
             EventMgr.dispatch(EventType.Shop_Buy_Store, buyInfo);
+        }).then((confirmView) => {
+            confirmView.showRichText(contentStr);
         });
     }
 }

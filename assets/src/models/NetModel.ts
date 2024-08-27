@@ -169,6 +169,7 @@ export class c2sBuildingCreate {
 /**新建建筑返回 */
 export class s2cBuildingCreate extends BaseRepPacket {
     idx: number;//建筑索引(前端使用)
+    bid: number;//建筑id
     id: number;//建筑唯一索引id
     status: number;//建筑状态 0:普通、1:建造中、2:建造完成、3:升级中、4:升级完成
 }

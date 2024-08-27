@@ -1,10 +1,9 @@
-import { _decorator, Label, Node, Sprite } from 'cc';
-import { BaseView } from '../../script/BaseView';
+import { _decorator, Component, Label, Node, Sprite } from 'cc';
 import CCUtil from '../../util/CCUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('CaleBagView')
-export class CaleBagView extends BaseView {
+export class CaleBagView extends Component {
     @property(Node)
     public reduce_btn: Node = null;
 
@@ -21,8 +20,8 @@ export class CaleBagView extends BaseView {
     private _selectListener: (num: number) => void = null;
     private _valMinMaxToGray: boolean = false;
 
-    protected initUI(): void {
-
+    protected start(): void {
+        this.initEvent();
     }
 
     setSelectListener(listener: (num: number) => void) {

@@ -203,11 +203,19 @@ export class ViewsManager {
         ViewsMgr.showAlert(content, callBack);
     }
     // 显示提示
-    public showTip(content: string, callBack?: Function) {
+    public showTip(content: string, callBack?: () => void) {
         this.showView(PrefabType.TipView, (node: Node) => {
-            node.getComponent(TipView).init(content, callBack);
+            node.getComponent(TipView).init(content, false,callBack);
         });
     }
+
+    // 显示带颜色提示  富文本提示
+    public showColorTip(content: string, callBack?: () => void) {
+        this.showView(PrefabType.TipView, (node: Node) => {
+            node.getComponent(TipView).init(content, true,callBack);
+        });
+    }
+
     /** 显示局部提示
      * @param content 提示内容
      * @param refNode 与提示相关联的节点
@@ -240,7 +248,7 @@ export class ViewsManager {
             node.getComponent(TipSmallView).init(content, pos, callBack);
         });
     }
-    static showTip(content: string, callBack?: Function) {
+    static showTip(content: string, callBack?: () => void) {
         ViewsMgr.showTip(content, callBack);
     }
 

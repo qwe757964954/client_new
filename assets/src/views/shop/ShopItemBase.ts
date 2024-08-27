@@ -1,6 +1,6 @@
 import { _decorator, Button, Label, Node, Sprite } from 'cc';
 import { EventType } from '../../config/EventType';
-import { ViewsManager } from '../../manager/ViewsManager';
+import { ViewsMgr } from '../../manager/ViewsManager';
 import CCUtil from '../../util/CCUtil';
 import { EventMgr } from '../../util/EventManager';
 import ListItem from '../../util/list/ListItem';
@@ -52,13 +52,14 @@ export abstract class ShopItemBase extends ListItem {
 
     private async onBuyClick() {
         const totalAmount = this.getPrice();
-        const itemName = this.getItemName();
-
-        const contentStr = `确认消耗 ${totalAmount} 个 ${itemName} 购买 ${this.lblName.string} 吗？`;
+        const itemName = this.getItemName();        
         const buyInfo: BuyStoreInfo = this.prepareBuyInfo();
 
-        ViewsManager.showConfirm(contentStr, () => {
+        const contentStr = `<color=#000000>确认消耗<color=#ff0000>${totalAmount}个${itemName}</color><color=#000000>购买</color><color=#ff0000>${this.lblName.string}</color><color=#000000>吗？</color>`;
+        ViewsMgr.showConfirm("", () => {
             EventMgr.dispatch(EventType.Shop_Buy_Store, buyInfo);
+        }).then((confirmView) => {
+            confirmView.showRichText(contentStr);
         });
     }
 
