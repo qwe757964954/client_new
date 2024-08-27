@@ -1163,7 +1163,7 @@
     },
     "component": "",
     "_componentId": "20a9f7HuuJDBrrokDKd1c8j",
-    "handler": "onLoadSuitStoreGridSelected",
+    "handler": "onShopSuitGridSelected",
     "customEventData": ""
   },
   {

@@ -1,6 +1,6 @@
-import { _decorator, Button, Component, Label, Node, Sprite, v3 } from 'cc';
+import { _decorator, Button, Component, isValid, Label, Node, Sprite, v3 } from 'cc';
 import { EventType } from '../../config/EventType';
-import { ItemData } from '../../manager/DataMgr';
+import { ClothingType, ItemData } from '../../manager/DataMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
 import { User } from '../../models/User';
@@ -31,13 +31,21 @@ export class ShopPlayerView extends Component {
     private _role: Node = null;
     private _shopClothing: { [key in TabTypeIds]?: ShopClothingInfo } = {};
 
+    private btnBuyComponent: Button = null;
+    private btnBuySprite: Sprite = null;
+
     start() {
-        this.purchase_btn.getComponent(Button).interactable = false;
+        this.initializeComponents();
+        this.initializeEvents();
         this.showRoleDress();
-        this.initEvents();
     }
 
-    initEvents() {
+    private initializeComponents() {
+        this.btnBuyComponent = this.purchase_btn.getComponent(Button);
+        this.btnBuySprite = this.purchase_btn.getComponent(Sprite);
+    }
+
+    private initializeEvents() {
         CCUtil.onBtnClick(this.purchase_btn, this.purchaseShopClothing.bind(this));
     }
 
@@ -48,23 +56,31 @@ export class ShopPlayerView extends Component {
     }
 
     public updatePlayerProps(shopClothing: { [key in TabTypeIds]?: ShopClothingInfo }, clothingId: number) {
-        console.log("updatePlayerProps",clothingId);
         this._shopClothing = shopClothing;
         this.changeClothings(clothingId);
+        this.updateClothingStatus();
+    }
 
+    public unInstallPlayerProps(shopClothing: { [key in TabTypeIds]?: ShopClothingInfo }, type: ClothingType) {
+        this._shopClothing = shopClothing;
+        this.resetClothings(type);
+        this.updateClothingStatus();
+    }
+
+    private updateClothingStatus() {
         const needBuyClothings = this.findNeedBuyClothing();
         this.clothing_number.string = `${needBuyClothings.length}件`;
-
+        
         const totalCount = this.getTotalClothing();
         this.clothing_amount.string = `${totalCount}`;
-        let canBuy = totalCount > 0 && User.coin > totalCount;
-        this.purchase_btn.getComponent(Button).interactable = canBuy;
-        this.purchase_btn.getComponent(Sprite).grayscale = !canBuy;
+
+        const canBuy = totalCount > 0 && User.coin >= totalCount;
+        this.btnBuyComponent.interactable = canBuy;
+        this.btnBuySprite.grayscale = !canBuy;
     }
 
     private getTotalClothing(): number {
-        const needBuyClothings = this.findNeedBuyClothing();
-        return needBuyClothings.reduce((total, clothingId) => {
+        return this.findNeedBuyClothing().reduce((total, clothingId) => {
             const goodsInfo: GoodsItemInfo = BagConfig.findGoodsItemInfo(clothingId);
             const itemDatas: ItemData[] = ObjectUtil.convertRewardData(goodsInfo.price);
             return total + itemDatas[0].num;
@@ -74,17 +90,23 @@ export class ShopPlayerView extends Component {
     private findNeedBuyClothing(): number[] {
         const shopClothingIds = Object.values(this._shopClothing)
             .map(item => item.userClothes)
-            .filter((id): id is number => id !== null);
-
-        const userClothesIds = Object.values(User.userClothes)
-            .filter((id): id is number => id !== null);
-
-        return shopClothingIds.filter(id => !userClothesIds.includes(id));
+            .filter((id): id is number => isValid(id));
+        return shopClothingIds;
+        // Filter out items that are already in user clothes
+        // const userClothesIds = Object.values(User.userClothes).filter((id): id is number => id !== null);
+        // return shopClothingIds.filter(id => !userClothesIds.includes(id));
     }
 
     public changeClothings(clothingId: number) {
         const roleModel = this._role.getComponent(RoleBaseModel);
         roleModel.changeClothing(clothingId);
+    }
+
+    public resetClothings(type: ClothingType) {
+        const clothing = User.userClothes.getClothings();
+        const id = clothing[type - 1];
+        const roleModel = this._role.getComponent(RoleBaseModel);
+        roleModel.changeClothing(id);
     }
 
     private purchaseShopClothing() {

@@ -53,6 +53,7 @@ export class MainUIView extends BaseView {
     private _mainRightActivity: MainRightActivity = null;//右侧活动
     /**初始化UI */
     initUI() {
+        console.log("user  initUI clothing",User.userClothes);
         BagServer.reqGetPlayerClothing();
         this.labelNick.string = User.nick;
         this.initViews();
