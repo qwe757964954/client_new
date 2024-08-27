@@ -1,10 +1,11 @@
-import { _decorator, Label, Node, Rect, Sprite, Vec3 } from 'cc';
+import { _decorator, Label, Node, Rect, Sprite, tween, UIOpacity, UITransform, Vec3 } from 'cc';
 import { MapConfig } from '../config/MapConfig';
 import { PrefabType } from '../config/PrefabType';
 import { TextConfig } from '../config/TextConfig';
 import { LoadManager } from '../manager/LoadManager';
 import { ViewsMgr } from '../manager/ViewsManager';
 import { ServiceMgr } from '../net/ServiceManager';
+import CCUtil from '../util/CCUtil';
 import { TimerMgr } from '../util/TimerMgr';
 import { ToolUtil } from '../util/ToolUtil';
 import { CloudConditionView } from '../views/map/CloudConditionView';
@@ -17,6 +18,7 @@ export class CloudModel extends BaseModel {
     private _label: Label = null;//文字
     private _unlockNode: Node = null;//解锁节点
     private _unlockTip: Node = null;//解锁提示
+    private _imgClock: Node = null;//解锁时钟
 
     // y从上往下，x从右往左
     private _x: number;//x格子坐标
@@ -99,8 +101,11 @@ export class CloudModel extends BaseModel {
         if (null != leftTime) {
             // console.log("set unlockTime", leftTime);
             this._unlockTime = ToolUtil.now() + leftTime;
+            CCUtil.setNodeOpacity(this._img?.node, 128);
             if (this._label)
                 this._label.node.active = true;
+            if (this._imgClock)
+                this._imgClock.active = true;
             if (leftTime > 0) {
                 this.clearTimer();
                 this._timer = TimerMgr.loop(this.updateBySec.bind(this), 1000);
@@ -108,8 +113,11 @@ export class CloudModel extends BaseModel {
             if (this._unlockTip) this._unlockTip.active = false;
             this.refreshTimeEx();
         } else {
+            CCUtil.setNodeOpacity(this._img?.node, 255);
             if (this._label)
                 this._label.node.active = false;
+            if (this._imgClock)
+                this._imgClock.active = false;
         }
     }
     /**清理格子 */
@@ -147,10 +155,24 @@ export class CloudModel extends BaseModel {
             if (this._label)
                 this._label.string = ToolUtil.getSecFormatStr(leftTime);
         } else {
-            if (this._label)
-                this._label.string = "已解锁";
             this._isUnlock = true;
+            this.refreshUIView();
+            this.showOpacityAnim();
         }
+    }
+    /**半透明动画 */
+    private showOpacityAnim() {
+        let uiOpacity = this._img?.getComponent(UIOpacity);
+        if (!uiOpacity) return;
+        let time = 2.0;
+        uiOpacity.opacity = 128;
+        tween(uiOpacity)
+            .to(time, { opacity: 255 })
+            .delay(0.5)
+            .to(time, { opacity: 128 })
+            .union()
+            .repeatForever()
+            .start();
     }
     /**显示UI */
     public showUIView() {
@@ -168,19 +190,25 @@ export class CloudModel extends BaseModel {
             if (null != this._unlockTime) {
                 if (this._unlockTime <= ToolUtil.now()) {
                     if (this._label) this._label.node.active = false;
+                    if (this._imgClock) this._imgClock.active = false;
                     if (this._unlockNode) this._unlockNode.active = true;
                 } else {
+                    CCUtil.setNodeOpacity(this._img?.node, 128);
                     if (this._label) this._label.node.active = true;
+                    if (this._imgClock) this._imgClock.active = true;
                     if (this._unlockNode) this._unlockNode.active = false;
                 }
                 if (this._unlockTip) this._unlockTip.active = false;
             } else {
                 if (this._label) this._label.node.active = false;
+                if (this._imgClock) this._imgClock.active = false;
                 if (this._unlockNode) this._unlockNode.active = false;
                 if (this._unlockTip) this._unlockTip.active = this._canUnlock;
             }
         } else {
+            CCUtil.setNodeOpacity(this._img?.node, 255);
             if (this._label) this._label.node.active = false;
+            if (this._imgClock) this._imgClock.active = false;
             if (this._unlockNode) this._unlockNode.active = false;
             if (this._unlockTip) this._unlockTip.active = false;
         }
@@ -191,6 +219,12 @@ export class CloudModel extends BaseModel {
         let path = ToolUtil.replace(cloudInfo.path, cloudInfo.pngs[this._showID]);
         LoadManager.loadSprite(path, this._img, true).then(() => {
             this._isLoadOver = true;
+
+            let transform = this._img.getComponent(UITransform);
+            let pos = new Vec3(0, transform.height, 0);
+            this._unlockNode.position = pos;
+            this._imgClock.position = pos;
+
             this.refreshTime();
             if (callBack) callBack();
         });
@@ -224,6 +258,13 @@ export class CloudModel extends BaseModel {
                 this._label = this._node.getChildByName("Label").getComponent(Label);
                 this._unlockNode = this._node.getChildByName("img_right");
                 this._unlockTip = this._node.getChildByName("img_unlock");
+                this._imgClock = this._node.getChildByName("img_clock");
+
+                // let transform = this._img.getComponent(UITransform);
+                // let pos = new Vec3(0, transform.height, 0);
+                // this._unlockNode.position = pos;
+                // this._imgClock.position = pos;
+
                 this.refreshUIView();
                 this.refreshTimeEx();
 

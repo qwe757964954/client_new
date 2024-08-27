@@ -14,6 +14,12 @@
 [Button could not be clicked after an exception is thrown while dispatching mouse/touch event](https://github.com/cocos/cocos-engine/pull/17032/files)
 ### websocket内存泄漏
 [Memory leak in WebSocket-okhttp.cpp](https://github.com/cocos/cocos-engine/pull/17164/files)
+### Camera截图渲染到sprite上的显示颠倒
+[fix sprite rt adaptation](https://github.com/cocos/cocos-engine/pull/16689/files)
+### performFunctionInCocosThread回调顺序变化
+[Fix the order of callback by performFunctionInCocosThread and add unit-test for it.](https://github.com/cocos/cocos-engine/pull/17543/files)
+### tween color
+[fix tween color](https://github.com/cocos/cocos-engine/pull/16090/files)
 
 ### <font color=FF0000> 注意： </font>第一次打开项目执行npm i，安装依赖的库
 

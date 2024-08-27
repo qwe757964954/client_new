@@ -1154,7 +1154,9 @@
     "btnClose": {
       "__id__": 18
     },
-    "btnSure": null,
+    "btnSure": {
+      "__id__": 23
+    },
     "_id": ""
   },
   {

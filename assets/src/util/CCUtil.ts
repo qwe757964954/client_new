@@ -1,4 +1,4 @@
-import { Button, Camera, Color, Director, EventKeyboard, EventTouch, Input, KeyCode, Layers, Node, NodeEventType, RenderTexture, SpriteFrame, UITransform, Vec3, Widget, director, gfx, input, isValid } from "cc";
+import { Button, Camera, Color, Director, EventKeyboard, EventTouch, Input, KeyCode, Layers, Node, NodeEventType, RenderTexture, SpriteFrame, UIOpacity, UITransform, Vec3, Widget, director, gfx, input, isValid } from "cc";
 import GlobalConfig from "../GlobalConfig";
 import { SoundMgr } from "../manager/SoundMgr";
 import { ToolUtil } from "./ToolUtil";
@@ -330,5 +330,13 @@ export default class CCUtil {
         nodes.forEach(node => {
             CCUtil.setNodeScale(node, scale);
         });
+    }
+    /**设置node的UIOpacity */
+    public static setNodeOpacity(node: Node, opacity: number) {
+        if (!node) return;
+        let uiOpacity = node.getComponent(UIOpacity);
+        if (uiOpacity) {
+            uiOpacity.opacity = opacity;
+        }
     }
 }

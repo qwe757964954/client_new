@@ -1,4 +1,4 @@
-import { _decorator, Component, Label, Sprite } from 'cc';
+import { _decorator, Component, Label, Node, Sprite } from 'cc';
 import CCUtil from '../../util/CCUtil';
 import { EffectUtil } from '../../util/EffectUtil';
 const { ccclass, property } = _decorator;
