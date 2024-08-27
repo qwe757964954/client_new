@@ -5,21 +5,27 @@ const { ccclass } = _decorator;
 
 @ccclass('BasePopupBase')
 export abstract class BasePopupBase extends BaseView {
-
-    private touchEndHandler: (evt: EventTouch) => void;
-    
+    private touchEndHandler: (evt: EventTouch) => void = null;
+    protected animatedNode: Node | null = null;
+    protected parent: Node | null = null;
     onDestroy(): void {
         super.onDestroy();
-        this.node.parent.destroy(); // Ensure parent is destroyed to prevent memory leaks
+        if(this.parent){
+            this.node.destroy();
+            return
+        }
+        if (this.node.parent) {
+            this.node.parent.destroy(); // Ensure parent is destroyed to prevent memory leaks
+        }
     }
 
-    start() {
-        this.initEvent();
-    }
-
-    async show(aniName?: string): Promise<void> {
+    async show(aniName?: string, parent?: Node): Promise<void> {
         this.initUI();
         await this.animateIn();
+
+        // if (aniName) {
+        //     await this.animateIn();
+        // }
     }
 
     abstract animateIn(): Promise<void>;
@@ -28,7 +34,7 @@ export abstract class BasePopupBase extends BaseView {
     closePop(): void {
         this.animateOut();
     }
-    
+
     enableClickBlankToClose(excludedNodes: Node[]): Promise<void> {
         return new Promise<void>((resolve) => {
             this.touchEndHandler = (evt: EventTouch) => {
@@ -49,6 +55,16 @@ export abstract class BasePopupBase extends BaseView {
         });
     }
 
+    unableClickBlankToClose() {
+        if (this.touchEndHandler) {
+            this.node.off(NodeEventType.TOUCH_END, this.touchEndHandler, this);
+            this.touchEndHandler = null;
+            console.log("Touch end handler successfully removed.");
+        } else {
+            console.log("No touch end handler to remove.");
+        }
+    }
+
     private isTouchOutsideExcludedNodes(touchPos: Vec3, excludedNodes: Node[]): boolean {
         return excludedNodes.every(node => {
             const uiTransform = node.getComponent(UITransform);
@@ -58,12 +74,5 @@ export abstract class BasePopupBase extends BaseView {
             }
             return true;
         });
-    }
-
-    unableClickBlankToClose() {
-        if (this.touchEndHandler) {
-            this.node.off(NodeEventType.TOUCH_END, this.touchEndHandler, this);
-            this.touchEndHandler = null;
-        }
     }
 }

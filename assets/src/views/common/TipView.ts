@@ -44,6 +44,7 @@ export class TipView extends Component {
 
     /** 根据 Label 更新背景大小 */
     private resetSize() {
+        this.label.updateRenderData();
         this.updateWidth(this.label.getComponent(UITransform).width);
     }
 

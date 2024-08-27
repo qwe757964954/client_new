@@ -38,7 +38,7 @@ export class FriendListView extends BasePopRight {
     private _applyList:ApplyList = null;
     private _blacklist:Blacklist = null;
     protected async initUI() {
-        this.enableClickBlankToClose([this.contentNd,this.leftView]);
+        this.onOpenFriendBlank();
         await this.initViews();
         this.setLeftTab();
         this.initData();
@@ -59,6 +59,7 @@ export class FriendListView extends BasePopRight {
             // [NetNotify.Classification_UserSystemMailDetail, this.onUserSystemMailDetail],
             // [NetNotify.Classification_UserSystemAwardGet, this.onUserSystemAwardGet],
             [EventType.Friend_Talk_Event, this.onFriendTalk],
+            [EventType.Open_Friend_Blank,this.onOpenFriendBlank],
         ]);
     }
     private async initViews() {
@@ -120,20 +121,27 @@ export class FriendListView extends BasePopRight {
     async onFriendClick(data:FriendListItemModel){
         console.log("onFriendClick.....",data);
         let node = await PopMgr.showPopFriend(PrefabType.FriendPlayerInfoView,this.leftView,"content");
+        this.unableClickBlankToClose();
         let script = node.getComponent(FriendPlayerInfoView);
         script.updateData(data);
     }
     async onFriendTalk(data:FriendListItemModel){
         console.log("onFriendTalk",data);
         let node = await PopMgr.showPopFriend(PrefabType.FriendTalkDialogView,this.leftView,"content");
+        this.unableClickBlankToClose();
         let script = node.getComponent(FriendTalkDialogView);
         script.init(data);
     }
+    onOpenFriendBlank(){
+        this.enableClickBlankToClose([this.contentNd]);
+    }
+
     closeClickEvent(){
         this.closePop();
     }
     async addFriendClickEvent(){
         await PopMgr.showPopFriend(PrefabType.FriendAddView,this.leftView,"content");
+        this.unableClickBlankToClose();
     }
     wechatInviteClickEvent(){
         ViewsMgr.showTip(TextConfig.Function_Tip2);

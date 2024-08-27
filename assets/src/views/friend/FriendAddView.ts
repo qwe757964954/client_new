@@ -1,10 +1,12 @@
 import { _decorator, EditBox, isValid, Node } from 'cc';
+import { EventType } from '../../config/EventType';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { DataFriendListResponse, FriendListItemModel, UserFriendData } from '../../models/FriendModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BasePopFriend } from '../../script/BasePopFriend';
 import { FdServer } from '../../service/FriendService';
 import CCUtil from '../../util/CCUtil';
+import { EventMgr } from '../../util/EventManager';
 import List from '../../util/list/List';
 import { ObjectUtil } from '../../util/ObjectUtil';
 import { FriendSearchItem } from './FriendSearchItem';
@@ -34,6 +36,9 @@ export class FriendAddView extends BasePopFriend {
     private _searchData:UserFriendData = null;
 
     protected initUI(): void {
+        this.enableClickBlankToClose([this.node.getChildByName("content")]).then(() => {
+            EventMgr.dispatch(EventType.Open_Friend_Blank);
+        });
         FdServer.reqUserRecommendFriendList();
     }
 
@@ -79,6 +84,7 @@ export class FriendAddView extends BasePopFriend {
 
     onCloseClickEvent(){
         console.log("onCloseClickEvent................................")
+        EventMgr.dispatch(EventType.Open_Friend_Blank);
         this.closePop();
     }
 

@@ -161,6 +161,8 @@ export const EventType = {
     Grade_Select_Event: "Grade_Select_Event",
     Bag_Player_Action_Event: "Bag_Player_Action_Event",
     Practic_Right_View_Hiden: "Practic_Right_View_Hiden",
+
+    Open_Friend_Blank: "Open_Friend_Blank",
 }
 
 export function itemEventKey(id: ItemID) {
