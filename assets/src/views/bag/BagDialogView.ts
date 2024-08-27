@@ -31,6 +31,7 @@ const { ccclass, property } = _decorator;
 export class BagDialogView extends BaseView {
     @property(Node) public btn_close: Node = null;
     @property(Node) public top_layout: Node = null;
+    @property(Node) public right:Node = null;
     @property({ type: List }) public propList: List = null;
     @property({ type: Prefab, tooltip: "物品预制体" }) public propPrefab: Prefab = null;
     @property({ type: Node, tooltip: "角色容器" }) public roleContainer: Node = null;
@@ -178,7 +179,7 @@ export class BagDialogView extends BaseView {
             this.changeClothings(clothingInfo.id);
         } else if (this._bagOperationId === BagOperationIds.UnOutfit) {
             this.unOutfitUpdateTypeMapping(clothingInfo);
-            this.removeClothing(clothingInfo.id);
+            this.removeClothing(clothingInfo);
         }
 
         this.updateAllLists();
@@ -205,9 +206,11 @@ export class BagDialogView extends BaseView {
         roleModel.changeClothing(clothingId);
     }
 
-    public removeClothing(clothingId: number) {
+    public removeClothing(clothingInfo: ClothingInfo) {
         const roleModel = this._role.getComponent(RoleBaseModel);
-        roleModel.removeClothing(clothingId);
+        const clothing = User.userClothes.getClothings();
+        const id = clothing[clothingInfo.type - 1];
+        roleModel.changeClothing(id);
     }
 
     private onLoadPropsGrid(item: Node, idx: number) {
@@ -229,6 +232,10 @@ export class BagDialogView extends BaseView {
 
     private onPropsGridSelected(item: Node, selectedId: number) {
         if (isValid(item) && selectedId >= 0) {
+            let itemPosition = this.right.getComponent(UITransform).convertToNodeSpaceAR(item.getWorldPosition());
+            itemPosition.x += 150;
+            itemPosition.y += 60;
+            this.op_list.node.setPosition(itemPosition);
             this._propsSelected = selectedId;
             this.onPropsSelected(this._propsDatas[selectedId]);
         }
@@ -238,6 +245,7 @@ export class BagDialogView extends BaseView {
         this._selectedItem = selData;
         this._opDatas = BagConfig.getItemCanOperations(selData);
         this.op_list.numItems = this._opDatas.length;
+        this.op_list.node.active = this._opDatas.length > 0;
     }
 
     private onLoadDressGrid(item: Node, idx: number) {
@@ -286,7 +294,7 @@ export class BagDialogView extends BaseView {
         }
 
         this.propList.numItems = this._propsDatas.length;
-        this.updatePropsSelected(0);
+        // this.updatePropsSelected(0);
     }
 
     private onOperationHorizontal(item: Node, idx: number) {
@@ -298,6 +306,7 @@ export class BagDialogView extends BaseView {
         if (isValid(item) && selectedId >= 0) {
             console.log("onOperationHorizontalSelected", selectedId);
             this.onOperationClick(this._opDatas[selectedId]);
+            this.op_list.node.active = false;
         }
     }
 
@@ -321,12 +330,15 @@ export class BagDialogView extends BaseView {
 
     private unOutfitUpdateTypeMapping(clothingInfo: ClothingInfo) {
         const { type, id } = clothingInfo;
+        User.userClothes.setClothing(null, type);
+        const clothing = User.userClothes.getClothings();
+        const userClothId = clothing[clothingInfo.type - 1];
         Object.values(this._bagClothing).forEach(info => {
             if (info.type === type) {
-                info.userClothes = null;
+                info.userClothes = userClothId;
             }
         });
-        User.userClothes.setClothing(null, type);
+        
     }
 
     private updatePropsSelected(selectedId: number) {
@@ -379,7 +391,7 @@ export class BagDialogView extends BaseView {
         this.dress_list.updateAll();
         this.propList.updateAll();
         this.op_list.updateAll();
-        this.updatePropsSelected(this._propsSelected);
+        // this.updatePropsSelected(this._propsSelected);
     }
 
     private onCloseView() {
