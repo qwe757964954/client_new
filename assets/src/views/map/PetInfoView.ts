@@ -1,4 +1,4 @@
-import { _decorator, Label, Layers, Node, ProgressBar, Vec3 } from 'cc';
+import { _decorator, Color, Label, Layers, Node, ProgressBar, Vec3 } from 'cc';
 import { EventType } from '../../config/EventType';
 import { TextConfig } from '../../config/TextConfig';
 import GlobalConfig from '../../GlobalConfig';
@@ -134,11 +134,15 @@ export class PetInfoView extends BaseComponent {
             this.btnUpgade.active = true;
             let petConfig = DataMgr.petConfig[this.pet.roleID][level];
             for (let i = 0; i < 6; i++) {
+                let rewardItem = this.rewardItems[i];
                 if (3 == i) {
-                    this.rewardItems[3].initByPng("map/img_token_gold/spriteFrame", petConfig.castleLevel);
+                    rewardItem.initByPng("map/img_token_gold/spriteFrame", petConfig.castleLevel);
+                    rewardItem.num.color = petConfig.castleLevel <= User.castleLevel ? Color.WHITE : Color.RED;
                 } else {
                     let idx = i < 3 ? i : i - 1;
-                    this.rewardItems[i].init(petConfig.upgradeNeed[idx]);
+                    let data = petConfig.upgradeNeed[idx];
+                    rewardItem.init(data);
+                    rewardItem.num.color = data.num <= User.getItem(data.id) ? Color.WHITE : Color.RED;
                 }
             }
         } else {

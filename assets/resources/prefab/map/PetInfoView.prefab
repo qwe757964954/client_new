@@ -1633,7 +1633,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 513.9072265625,
+      "width": 556.5634765625,
       "height": 54.4
     },
     "_anchorPoint": {
@@ -1669,7 +1669,7 @@
       "b": 255,
       "a": 255
     },
-    "_string": "心情分每小时会降低XXX点,记得多跟我互动-",
+    "_string": "心情值每10分钟降低5个点，记得多和我互动哦~",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 26,
@@ -2191,7 +2191,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -338.6,
+      "x": -356.069,
       "y": -206.66,
       "z": 0
     },
@@ -2268,7 +2268,7 @@
       "b": 255,
       "a": 255
     },
-    "_string": "8",
+    "_string": "0",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 22,
@@ -2350,7 +2350,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -240.393,
+      "x": -106.993,
       "y": -206.66,
       "z": 0
     },
@@ -2427,7 +2427,7 @@
       "b": 255,
       "a": 255
     },
-    "_string": "25",
+    "_string": "40",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 22,
@@ -2509,7 +2509,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 5.124,
+      "x": 75,
       "y": -206.66,
       "z": 0
     },
@@ -2586,7 +2586,7 @@
       "b": 255,
       "a": 255
     },
-    "_string": "50",
+    "_string": "70",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 22,
@@ -2668,7 +2668,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 219.897,
+      "x": 273.893,
       "y": -206.66,
       "z": 0
     },
@@ -2745,7 +2745,7 @@
       "b": 255,
       "a": 255
     },
-    "_string": "75",
+    "_string": "90",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 22,
@@ -4772,7 +4772,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -349.701,
+      "x": -340.829,
       "y": 373.901,
       "z": 0
     },
@@ -4813,7 +4813,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 18.34765625,
+      "width": 47.68359375,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -4849,11 +4849,11 @@
       "b": 255,
       "a": 255
     },
-    "_string": "/6",
+    "_string": "/6级",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 22,
-    "_fontSize": 22,
+    "_actualFontSize": 26,
+    "_fontSize": 26,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
     "_overflow": 0,
