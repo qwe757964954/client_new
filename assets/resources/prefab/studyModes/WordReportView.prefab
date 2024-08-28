@@ -3068,10 +3068,6 @@
     "condition_scroll": {
       "__id__": 61
     },
-    "roleModel": {
-      "__uuid__": "80fd3ca8-20bc-4718-91da-cbb70251a5e8",
-      "__expectedType__": "cc.Prefab"
-    },
     "role_node": {
       "__id__": 109
     },

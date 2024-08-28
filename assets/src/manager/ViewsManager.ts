@@ -5,6 +5,7 @@ import { RoleBaseModel } from "../models/RoleBaseModel";
 import CCUtil from "../util/CCUtil";
 import ImgUtil from "../util/ImgUtil";
 import { NodeUtil } from "../util/NodeUtil";
+import { JellyTransition } from "../views/adventure/sixModes/common/JellyTransition";
 import { ConfirmView } from "../views/common/ConfirmView";
 import { NavTitleView } from "../views/common/NavTitleView";
 import { PopView } from "../views/common/PopView";
@@ -480,6 +481,14 @@ export class ViewsManager {
             throw error; // 如果需要，将错误抛出到调用者
         }
     }
+
+    public async showJellyTransition(callback?: () => void){
+        let node = await this.showViewAsync(PrefabType.JellyTransition);
+        let script = node.getComponent(JellyTransition);
+        await script.createTransitionView();
+        script.showTransitionView(callback);
+    }
+
 }
 
 export const ViewsMgr = ViewsManager.instance;
