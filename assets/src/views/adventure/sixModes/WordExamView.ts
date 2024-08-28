@@ -80,9 +80,7 @@ export class WordExamView extends BaseModeView {
         this.fillList.numItems = this._fillLetters.length;
 
         this.initExamItem();
-
-        this.errorNumLabel.string = "闯关进度：" + this._wordIndex + "/" + this._wordsData.length;
-        this.timeLabel.string = "错误次数：" + this._errorNum;
+        this.topNode.updateLabelProcess(this._wordIndex,this._wordsData.length,this._errorNum);
     }
 
     onExamItemClick(e: Event) {
@@ -131,7 +129,7 @@ export class WordExamView extends BaseModeView {
                 // if (this._wrongWordList.indexOf(this._rightWordData) == -1 && !this._wrongMode && !this._errorWords[this._rightWordData.word]) {
                 this._errorNum++;
                 this._levelData.error_num = this._errorNum;
-                this.timeLabel.string = "错误次数：" + this._errorNum;
+                this.topNode.updateErrorNumber(this._errorNum);
 
                 // }
                 this._wrongWordList.push(this._rightWordData);

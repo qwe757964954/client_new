@@ -51,6 +51,7 @@ export const PrefabType = {
     MapPointItem: { path: "adventure/levelMap/MapPointItem", zindex: Hierarchy.POPUPLAYER, tips: "地图节点" },
     ExamReportView: { path: "studyModes/ExamReportView", zindex: Hierarchy.POPUPLAYER, tips: "测评模式结算界面" },
     WordBossView: { path: "studyModes/WordBossView", zindex: Hierarchy.POPUPLAYER, tips: "Boss关卡" },
+    JellyTransition: { path: "studyModes/common/JellyTransition", zindex: Hierarchy.POPUPLAYER, tips: "过渡动画" },
     LevelUpView: { path: "common/LevelUpView", zindex: Hierarchy.POPUPLAYER, tips: "升级界面" },
     MapProcessRewardView: { path: "adventure/common/MapProcessRewardView", componentName: "MapProcessRewardView", zindex: Hierarchy.POPUPLAYER, tips: "岛屿进度奖励展示" },
     MonsterModel: { path: "adventure/common/MonsterModel", componentName: "MonsterModel", zindex: Hierarchy.POPUPLAYER, tips: "怪物模型" },

@@ -14,7 +14,6 @@ import { TBServer } from '../../../service/TextbookService';
 import CCUtil from '../../../util/CCUtil';
 import { RecordApi } from '../../../util/third/RecordApi';
 import { RecordResponseData } from '../../../util/third/RecordModel';
-import { MonsterModel } from '../common/MonsterModel';
 import { BaseModeView, GameSourceType } from './BaseModeView';
 import { WordReportView } from './WordReportView';
 const { ccclass, property } = _decorator;
@@ -91,7 +90,7 @@ export class WordReadingView extends BaseModeView {
             // if (this._wrongWordList.indexOf(this._rightWordData) == -1 && !this._wrongMode && !this._errorWords[this._rightWordData.word]) {
             this._errorNum++;
             this._levelData.error_num = this._errorNum;
-            this.errorNumLabel.string = "错误次数：" + this._errorNum;
+            this.topNode.updateErrorNumber(this._errorNum);
             // }
             this._wrongWordList.push(this._rightWordData);
             // if (!this._wrongMode && this._wrongWordList.length >= 3) {
@@ -115,7 +114,7 @@ export class WordReadingView extends BaseModeView {
     //怪物死亡
     monsterDie() {
         this.reportResult();
-        this._monster.getComponent(MonsterModel).die().then(() => {
+        this.monsterView.monsterDie().then(() => {
             if (this._currentSubmitResponse.pass_flag == 1) {
                 this.gotoResult();
             }
@@ -255,6 +254,7 @@ export class WordReadingView extends BaseModeView {
             let nodeScript = node.getComponent(WordReportView);
             console.log('朗读模式完成', this._currentSubmitResponse);
             nodeScript.initData(this._currentSubmitResponse, this.gameMode, this._sourceType);
+            this.topNode.cancelTimeSchedule();
             this.node.parent.destroy();
         });
     }
