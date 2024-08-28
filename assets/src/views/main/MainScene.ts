@@ -1,4 +1,4 @@
-import { _decorator, Camera, Canvas, EventMouse, EventTouch, Layers, Node, Prefab, sp, UITransform, Vec3 } from 'cc';
+import { _decorator, Camera, Canvas, EventMouse, EventTouch, Label, Layers, Node, Prefab, sp, UITransform, Vec3 } from 'cc';
 import { EventType } from '../../config/EventType';
 import { MapStatus } from '../../config/MapConfig';
 import { PrefabType } from '../../config/PrefabType';
@@ -67,6 +67,17 @@ export class MainScene extends BaseComponent {
     public loadingNode: Node = null;//加载节点
     @property(sp.Skeleton)
     public loadingSp: sp.Skeleton = null;//加载动画
+
+    @property(Node)
+    public plOther: Node = null;
+    @property(Label)
+    public labelOther: Label = null;
+    @property(Node)
+    public btnBackSelf: Node = null;//返回按钮
+    @property(Node)
+    public btnGiveALike: Node = null;//点赞
+    @property(Node)
+    public otherTip: Node = null;
     /**=========================ui元素============================ */
     @property(Node)
     public sceneLayer: Node = null;//场景层
@@ -91,15 +102,10 @@ export class MainScene extends BaseComponent {
     private _loadCount: number = 0;//加载计数
     /**=========================事件handle============================ */
 
-    start() {
+    protected start() {
         SoundMgr.mainBgm();
         this.initData();
         this.initEvent();
-    }
-
-    protected onLoad(): void {
-        // let a;
-        // a.b.m = 1;
     }
 
     protected update(dt: number): void {

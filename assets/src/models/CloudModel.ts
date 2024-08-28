@@ -164,7 +164,7 @@ export class CloudModel extends BaseModel {
     private showOpacityAnim() {
         let uiOpacity = this._img?.getComponent(UIOpacity);
         if (!uiOpacity) return;
-        let time = 2.0;
+        let time = 1.0;
         uiOpacity.opacity = 128;
         tween(uiOpacity)
             .to(time, { opacity: 255 })

@@ -1,4 +1,5 @@
 import { Camera, Color, Layers, Node, Prefab, UITransform, Vec3, Widget, instantiate, isValid } from "cc";
+import { AlertParam, ConfirmParam, TipParam } from "../config/ClassConfig";
 import { Hierarchy, PrefabConfig, PrefabType } from "../config/PrefabType";
 import { RoleBaseModel } from "../models/RoleBaseModel";
 import CCUtil from "../util/CCUtil";
@@ -205,18 +206,37 @@ export class ViewsManager {
         return false;
     }
     // 显示提示弹框
-    public showAlert(content: string, callBack?: Function) {
+    public showAlert(content: string | AlertParam, callBack?: Function) {
         this.showView(PrefabType.PopView, (node: Node) => {
-            node.getComponent(PopView).init(content, callBack);
+            let view = node.getComponent(PopView);
+            if (content instanceof AlertParam) {
+                view.init(content.str, callBack);
+                if (content.extraStr && content.extraStr.length > 0) {
+                    view.showExtraLabel(content.extraStr);
+                }
+            }
+            else {
+                view.init(content, callBack);
+            }
         });
     }
-    static showAlert(content: string, callBack?: Function) {
+    static showAlert(content: string | AlertParam, callBack?: Function) {
         ViewsMgr.showAlert(content, callBack);
     }
     // 显示提示
-    public showTip(content: string, callBack?: () => void) {
+    public showTip(content: string | TipParam, callBack?: () => void) {
         this.showView(PrefabType.TipView, (node: Node) => {
-            node.getComponent(TipView).init(content, false, callBack);
+            let view = node.getComponent(TipView);
+            if (content instanceof TipParam) {
+                if (content.richStr && content.richStr.length > 0) {
+                    view.init(content.richStr, true, callBack);
+                } else {
+                    view.init(content.str, false, callBack);
+                }
+            }
+            else {
+                view.init(content, false, callBack);
+            }
         });
     }
 
@@ -264,10 +284,20 @@ export class ViewsManager {
     }
 
     // 显示确定弹窗
-    public async showConfirm(content: string, sureCall?: Function, cancelCall?: Function, sureStr?: string, cancelStr?: string, canClose: boolean = true) {
+    public async showConfirm(content: string | ConfirmParam, sureCall?: Function, cancelCall?: Function, sureStr?: string, cancelStr?: string, canClose: boolean = true) {
         let node: Node = await PopMgr.showPopup(PrefabType.ConfirmView);
         let nodeScript: ConfirmView = node.getComponent(ConfirmView);
-        nodeScript.getComponent(ConfirmView).init(content, sureCall, cancelCall, sureStr, cancelStr, canClose);
+        if (content instanceof ConfirmParam) {
+            nodeScript.init(content.str, sureCall, cancelCall, sureStr, cancelStr, canClose);
+            if (content.extraStr && content.extraStr.length > 0) {
+                nodeScript.showExtraLabel(content.extraStr);
+            }
+            if (content.richStr && content.richStr.length > 0) {
+                nodeScript.showRichText(content.richStr);
+            }
+        } else {
+            nodeScript.init(content, sureCall, cancelCall, sureStr, cancelStr, canClose);
+        }
         return nodeScript;
     }
     static showConfirm(content: string, sureCall?: Function, cancelCall?: Function, sureStr?: string, cancelStr?: string, canClose: boolean = true) {

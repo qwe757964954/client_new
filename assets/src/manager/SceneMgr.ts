@@ -29,6 +29,11 @@ class SceneManager {
         }
         director.loadScene(name, onLaunched, onUnloaded);
     }
+    /**去其他王国 */
+    public loadMainScene(userID: number) {
+        User.curMapUserID = userID;
+        director.loadScene(SceneType.MainScene);
+    }
 }
 
 export const SceneMgr = SceneManager.instance;

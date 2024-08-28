@@ -1,3 +1,4 @@
+import { AlertParam, ConfirmParam } from "../config/ClassConfig";
 import { EventType, itemEventKey } from "../config/EventType";
 import { ItemID } from "../export/ItemConfig";
 import { ClothingType, DataMgr, ItemData } from "../manager/DataMgr";
@@ -497,16 +498,20 @@ class UserModel {
         EventMgr.emit(EventType.Stamina_Timer_Update, time);
     }
     /**判断物品条件是否满足 */
-    public checkItems(data: ItemData[], tipStr: string = null, onlyTip: boolean = false): boolean {
+    public checkItems(data: ItemData[], tipParam: string | AlertParam | ConfirmParam = null): boolean {
         for (let i = 0; i < data.length; i++) {
             const item = data[i];
             let hasNum = this._itemAry[item.id] || 0;
             if (hasNum < item.num) {
-                if (tipStr) {
-                    if (onlyTip) {
-                        ViewsMgr.showAlert(ToolUtil.replace(tipStr, DataMgr.getItemInfo(item.id).name));
+                if (tipParam) {
+                    if (tipParam instanceof AlertParam) {
+                        tipParam.str = ToolUtil.replace(tipParam.str, DataMgr.getItemInfo(item.id).name);
+                        ViewsMgr.showAlert(tipParam);
+                    } else if (tipParam instanceof ConfirmParam) {
+                        tipParam.str = ToolUtil.replace(tipParam.str, DataMgr.getItemInfo(item.id).name);
+                        ViewsMgr.showConfirm(tipParam);
                     } else {
-                        ViewsMgr.showConfirm(ToolUtil.replace(tipStr, DataMgr.getItemInfo(item.id).name));
+                        ViewsMgr.showConfirm(ToolUtil.replace(tipParam, DataMgr.getItemInfo(item.id).name));
                     }
                 }
                 return false;

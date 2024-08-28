@@ -861,6 +861,7 @@ export class MapUICtl extends MainBaseCtl {
         if (editInfo.type != EditType.Decoration) {
             if (this.findBuildingBytypeID(editInfo.id)) return null;
         }
+        if (0 == this.findRecycleDataByBid(editInfo.id).length) return null;
         // console.log("newBuildingFromBuilding", gridInfo.x, gridInfo.y, width, height, isFlip);
         for (let i = 0; i < xAry.length; i++) {
             let x = gridInfo.x + xAry[i];

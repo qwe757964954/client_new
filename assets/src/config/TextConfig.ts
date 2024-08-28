@@ -18,7 +18,8 @@ export const TextConfig = {
     Ver_Text: "ver:{0}.{1}.{2}.{3}",
     Queue_Text: "{0}/{1}",
     Width_Height_Text: "{0}x{1}",
-    Item_Condition_Error: "非常抱歉，你的{0}道具不足哦～ （温馨提示：可以到商店购买哦）",
+    Item_Condition_Error: "非常抱歉，你的{0}道具不足哦～ ",
+    Item_Condition_Error2: "（温馨提示：可以到商店购买哦）",
     Item_Count_Text: "数量：{0}",
 
     Function_Tip: "开发中，敬请期待",

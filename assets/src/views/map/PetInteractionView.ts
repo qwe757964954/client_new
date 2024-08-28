@@ -1,4 +1,5 @@
 import { _decorator, color, Label, Node, Sprite, SpriteFrame, tween } from 'cc';
+import { AlertParam } from '../../config/ClassConfig';
 import { EventType } from '../../config/EventType';
 import { PetInteractionInfo, PetInteractionType } from '../../config/PetConfig';
 import { PrefabType } from '../../config/PrefabType';
@@ -128,7 +129,7 @@ export class PetInteractionView extends BaseComponent {
         CCUtil.offTouch(item);
         CCUtil.onTouch(item, () => {
             console.log("onTouch", data.type, data.id);
-            if (!User.checkItems([{ id: data.id, num: 1 }], TextConfig.Item_Condition_Error, true)) {
+            if (!User.checkItems([{ id: data.id, num: 1 }], new AlertParam(TextConfig.Item_Condition_Error, TextConfig.Item_Condition_Error2))) {
                 return;
             }
             this._interactionInfo = data;

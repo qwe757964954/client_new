@@ -13,6 +13,8 @@ export class PopView extends Component {
     public btnClose: Sprite = null;
     @property(Node)
     public btnSure: Node = null;
+    @property(Label)
+    public extraLabel: Label = null;//额外文字
 
     private _canClose: boolean = false;
     private _callBack: Function = null;//回调
@@ -57,6 +59,11 @@ export class PopView extends Component {
         EffectUtil.centerPopup(this.bg.node, () => {
             this._canClose = true;
         });
+    }
+    /** 显示额外文字 */
+    showExtraLabel(content: string) {
+        this.extraLabel.string = content;
+        this.extraLabel.node.active = true;
     }
 }
 

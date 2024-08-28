@@ -15,8 +15,7 @@ export class ToolUtil {
      */
     static replace(str: string, ...args: (string | number)[]): string {
         if (str === null || str === undefined) {
-            console.error("参数错误！");
-            return "";
+            return null;
         }
         return str.replace(/{(\d+)}/g, function (match, number) {
             return typeof args[number] != 'undefined' ? String(args[number]) : match;
