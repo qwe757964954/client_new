@@ -19,8 +19,8 @@ export class BasePopFriend extends BasePopupBase {
             this.animatedNode.position = startPosition;
 
             const { width: nodeWidth } = this.animatedNode.getComponent(UITransform)!;
-            const scale = this.animatedNode.getScale();
-            const finalPosition = new Vec3((width - nodeWidth * scale.x ) / 2 - 675, 0, 0);
+            const scaleX = this.animatedNode.getScale().x;
+            const finalPosition = new Vec3((width - nodeWidth * scaleX ) / 2 - 675, 0, 0);
 
             // const finalPosition = new Vec3((width - nodeWidth) / 2, 0, 0);
 
