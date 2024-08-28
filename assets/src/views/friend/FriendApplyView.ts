@@ -16,6 +16,10 @@ export class FriendApplyView extends BasePopFriend {
 
     private _userDatas:UserApplyModel[] = [];
 
+    protected initUI(): void {
+        this.enableClickBlankToClose([this.node.getChildByName("content")]);
+    }
+
     updateData(userDatas:UserApplyModel[]){
         this._userDatas = userDatas;
         this.applyList.numItems = userDatas.length;

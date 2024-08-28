@@ -100,6 +100,7 @@ export class PopupManager {
 
                 // Instantiate and add the prefab as a child node
                 let node = instantiate(prefab);
+                nd.addComponent(BlockInputEvents);
                 nd.addChild(node);
                 CCUtil.addWidget(nd, { left: 0, right: 0, top: 0, bottom: 0 });
 
