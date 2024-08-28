@@ -827,6 +827,7 @@ export class MapUICtl extends MainBaseCtl {
             let recycleData = this.getRecycleBuilding(data.id);
             if (null != recycleData) {
                 building.restoreRecycleData(recycleData);
+                EventMgr.emit(EventType.EditUIView_Refresh);
             }
         }
         return building;
