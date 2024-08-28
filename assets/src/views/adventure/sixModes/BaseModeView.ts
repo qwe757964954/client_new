@@ -82,9 +82,12 @@ export class BaseModeView extends BaseView {
     protected _curWordSubmitData: WordSubmitData = null; //当前单词提交数据
     start() {
         super.start();
-        this.offViewAdaptSize();
-        this.node.getChildByName("img_bg").addComponent(BlockInputEvents);
+        this.setupUI();
+    }
 
+    private setupUI() {
+        this.offViewAdaptSize();
+        this.node.getChildByName("img_bg")?.addComponent(BlockInputEvents);
         this._rightAniNode = new Node();
         this._rightAniNode.parent = this.node;
         this._rightAniNode.active = false;
@@ -96,84 +99,94 @@ export class BaseModeView extends BaseView {
 
     updateTextbookWords(wordsdata: UnitWordModel[], levelData: any) {
         this._levelData = levelData;
-        this._sourceType = this._levelData.source_type || (this._levelData.hasOwnProperty('big_id') ? GameSourceType.word_game : GameSourceType.classification);
+        this._sourceType = this.getSourceType(levelData);
         this.monsterView.updateSourceType(this._sourceType);
-        if (GameSourceType.classification === this._sourceType) {
-            let levelData = this._levelData as BookLevelConfig;
-            this._wordIndex = levelData.word_num - 1;
-            this._remainTime = Math.round(levelData.time_remaining);
 
-            if (isValid(levelData.error_word)) {
-                if (levelData.cur_game_mode === this.gameMode) {
-                    this._errorWords = levelData.error_word;
-                    for (const key in levelData.error_word) {
-                        if (levelData.error_word.hasOwnProperty(key)) {
-                            const found = wordsdata.find(item => item.w_id === key);
-                            if (found) {
-                                wordsdata.push(found);
-                            }
-                        }
-                    }
-                } else {
-                    this._wordIndex = 0;
-                    const uniqueWordList: UnitWordModel[] = Object.values(wordsdata.reduce((acc, curr) => {
-                        acc[curr.w_id] = curr;
-                        return acc;
-                    }, {}));
-                    wordsdata = uniqueWordList;
-                }
-            }
-            this._rightNum = this._wordIndex;
-        } else if (GameSourceType.word_game == this._sourceType) {
-            let levelData = this._levelData as GateData;
-            let progressData = levelData.progressData;
-            this._remainTime = Math.round((this._totalTime - progressData.cost_time) / 1000);
+        this.initializeWordIndexAndErrorWords(wordsdata, levelData);
 
-            if (progressData.game_mode === this.gameMode) {
-                this._wordIndex = progressData.word_num - 1;
-                this._rightNum = progressData.pass_num;
-                if (isValid(progressData.error_word)) {
-                    this._errorWords = progressData.error_word;
-                    for (const key in progressData.error_word) {
-                        if (progressData.error_word.hasOwnProperty(key)) {
-                            const found = wordsdata.find(item => item.w_id === key);
-                            if (found) {
-                                wordsdata.push(found);
-                            }
-                        }
-                    }
-                }
-            } else {
-                this._wordIndex = 0;
-                levelData.current_mode = this.gameMode;
-                levelData.progressData.error_word = null;
-                const uniqueWordList: UnitWordModel[] = Object.values(wordsdata.reduce((acc, curr) => {
-                    acc[curr.word] = curr;
-                    return acc;
-                }, {}));
-                wordsdata = uniqueWordList;
-            }
-
-        } else if (GameSourceType.review === this._sourceType || GameSourceType.reviewSpecial === this._sourceType ||
-            GameSourceType.errorWordbook == this._sourceType || GameSourceType.collectWordbook == this._sourceType) {
-            this._wordIndex = this._levelData.word_num;
-            this._rightNum = this._levelData.pass_num;
-            this._errorNum = this._levelData.error_num;
-            this.topNode.node.active = false;
-            this.btn_collect.active = false;
-            let bg = this.node.getChildByName("img_bg");
-            LoadManager.loadSprite("adventure/sixModes/study/img_bg2/spriteFrame", bg.getComponent(Sprite)).then(() => {
-                CCUtil.fillNodeScale(bg, GlobalConfig.WIN_SIZE.width, GlobalConfig.WIN_SIZE.height);
-            });
-        }
-
-        this.topNode.showCountdown(this._remainTime,this.gameMode);
+        this.topNode.showCountdown(this._remainTime, this.gameMode);
         this._errorNum = levelData.error_num;
         this.topNode.updateErrorNumber(this._errorNum);
+        
         return wordsdata;
     }
+    private getSourceType(levelData: any): GameSourceType {
+        if (levelData.source_type) return levelData.source_type;
+        return levelData.hasOwnProperty('big_id') ? GameSourceType.word_game : GameSourceType.classification;
+    }
 
+    private initializeWordIndexAndErrorWords(wordsdata: UnitWordModel[], levelData: any) {
+        if (this._sourceType === GameSourceType.classification) {
+            this.handleClassificationSource(wordsdata, levelData);
+        } else if (this._sourceType === GameSourceType.word_game) {
+            this.handleWordGameSource(wordsdata, levelData);
+        } else {
+            this.handleReviewAndBookSource(levelData);
+        }
+    }
 
+    private handleClassificationSource(wordsdata: UnitWordModel[], levelData: BookLevelConfig) {
+        this._wordIndex = levelData.word_num - 1;
+        this._remainTime = Math.round(levelData.time_remaining);
+
+        if (isValid(levelData.error_word)) {
+            this._errorWords = levelData.error_word;
+            this.updateWordsDataWithErrors(wordsdata, levelData.error_word);
+        } else {
+            this.resetWordData(wordsdata);
+        }
+
+        this._rightNum = this._wordIndex;
+    }
+
+    private handleWordGameSource(wordsdata: UnitWordModel[], levelData: GateData) {
+        let progressData = levelData.progressData;
+        this._remainTime = Math.round((this._totalTime - progressData.cost_time) / 1000);
+
+        if (progressData.game_mode === this.gameMode) {
+            this._wordIndex = progressData.word_num - 1;
+            this._rightNum = progressData.pass_num;
+            if (isValid(progressData.error_word)) {
+                this._errorWords = progressData.error_word;
+                this.updateWordsDataWithErrors(wordsdata, progressData.error_word);
+            }
+        } else {
+            this.resetWordData(wordsdata);
+            levelData.current_mode = this.gameMode;
+            levelData.progressData.error_word = null;
+        }
+    }
+
+    private resetWordData(wordsdata: UnitWordModel[]) {
+        this._wordIndex = 0;
+        const uniqueWordList:UnitWordModel[] = Object.values(wordsdata.reduce((acc, curr) => {
+            acc[curr.w_id] = curr;
+            return acc;
+        }, {}));
+        wordsdata = uniqueWordList;
+    }
+
+    private updateWordsDataWithErrors(wordsdata: UnitWordModel[], errorWords: any) {
+        for (const key in errorWords) {
+            if (errorWords.hasOwnProperty(key)) {
+                const found = wordsdata.find(item => item.w_id === key);
+                if (found) wordsdata.push(found);
+            }
+        }
+    }
+    private handleReviewAndBookSource(levelData: any) {
+        this._wordIndex = levelData.word_num;
+        this._rightNum = levelData.pass_num;
+        this._errorNum = levelData.error_num;
+        this.topNode.node.active = false;
+        this.btn_collect.active = false;
+        this.updateBackgroundImage();
+    }
+    private async updateBackgroundImage() {
+        const bg = this.node.getChildByName("img_bg");
+        await LoadManager.loadSprite("adventure/sixModes/study/img_bg2/spriteFrame", bg.getComponent(Sprite));
+        CCUtil.fillNodeScale(bg, GlobalConfig.WIN_SIZE.width, GlobalConfig.WIN_SIZE.height);
+    }
 
     updateConstTime() {
         this._costTime = Date.now();
