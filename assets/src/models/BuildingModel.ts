@@ -621,6 +621,10 @@ export class BuildingModel extends BaseModel {
     }
     /**是否点击到自己 像素点击，可能会出现性能问题*/
     public isTouchSelf(worldPos: Vec3): boolean {
+        if (this._isRemove) {
+            console.log("isTouchSelf model is remove");
+            return false;
+        }
         if (this._btnView && this._btnView.active) {
             let transform = this._btnView.getComponent(UITransform);
             let rect: Rect = new Rect(0, 0, transform.width, transform.height);
