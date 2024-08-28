@@ -25,7 +25,7 @@ export class BasePopFriend extends BasePopupBase {
             // const finalPosition = new Vec3((width - nodeWidth) / 2, 0, 0);
 
             this.animatedNode.active = true;
-
+            this.parent.setSiblingIndex(0);
             tween(this.animatedNode)
                 .to(0.3, { position: finalPosition }, { easing: easing.sineInOut })
                 .call(() => {

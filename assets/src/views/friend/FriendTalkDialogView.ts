@@ -1,11 +1,9 @@
 import { _decorator, EventTouch, isValid, Node, NodeEventType, UITransform } from 'cc';
-import { EventType } from '../../config/EventType';
 import { ChatDataItem, ChatMessageResponse, FriendListItemModel, SendMessageModel } from '../../models/FriendModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BasePopFriend } from '../../script/BasePopFriend';
 import { FdServer } from '../../service/FriendService';
 import CCUtil from '../../util/CCUtil';
-import { EventMgr } from '../../util/EventManager';
 import List from '../../util/list/List';
 import { ChatContentItem } from './ChatContentItem';
 import { ChatEmoteItem } from './ChatEmoteItem';
@@ -54,9 +52,7 @@ export class FriendTalkDialogView extends BasePopFriend {
     }
 
     protected initUI(): void {
-        this.enableClickBlankToClose([this.contentNd]).then(() => {
-            EventMgr.dispatch(EventType.Open_Friend_Blank);
-        });
+        this.enableClickBlankToClose([this.contentNd]);
         this.setMagicData();
     }
 
@@ -169,7 +165,6 @@ export class FriendTalkDialogView extends BasePopFriend {
     }
 
     private onCloseView(): void {
-        EventMgr.dispatch(EventType.Open_Friend_Blank);
         this.closePop();
     }
 }

@@ -12,11 +12,7 @@ export class FriendLeftTabView extends Component {
 
     private _clickListener:(click:number) => void = null;
 
-    protected start(): void {
-        
-    }
-
-    updateTabList(){
+    updateTabs(){
         this.listView.numItems = FriendTabInfos.length;
         this.listView.selectedId = 0;
     }

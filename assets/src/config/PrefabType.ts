@@ -189,6 +189,7 @@ export const PrefabType = {
     /*********************************************社交 start***********************************************************/
     FriendsDialogView: { path: "social/FriendsDialogView", componentName: "FriendsDialogView", zindex: Hierarchy.POPUPLAYER, tips: "好友界面" },
     FriendTalkDialogView: { path: "social/FriendTalkDialogView", componentName: "FriendTalkDialogView", zindex: Hierarchy.POPUPLAYER, tips: "好友聊天界面" },
+    FriendApplyView: { path: "social/FriendApplyView", componentName: "FriendApplyView", zindex: Hierarchy.POPUPLAYER, tips: "好友申请界面" },
     FriendLeftTabView: { path: "social/FriendLeftTabView", zindex: Hierarchy.POPUPLAYER, tips: "好友tab界面" },
     FriendList: { path: "social/ListViews/FriendList", zindex: Hierarchy.POPUPLAYER, tips: "好友list界面" },
     ApplyList: { path: "social/ListViews/ApplyList", zindex: Hierarchy.POPUPLAYER, tips: "好友apply界面" },

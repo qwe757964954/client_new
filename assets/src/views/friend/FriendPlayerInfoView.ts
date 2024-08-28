@@ -54,9 +54,7 @@ export class FriendPlayerInfoView extends BasePopFriend {
     private _propsData: ItemData[] = [];
 
     protected initUI(): void {
-        this.enableClickBlankToClose([this.node.getChildByName("content")]).then(()=>{
-            EventMgr.dispatch(EventType.Open_Friend_Blank);
-        });
+        this.enableClickBlankToClose([this.node.getChildByName("content")]);
         this.infoList.numItems = PlayerInfoResources.length;
     }
 
@@ -157,7 +155,6 @@ export class FriendPlayerInfoView extends BasePopFriend {
     }
 
     onHidenClick(){
-        EventMgr.dispatch(EventType.Open_Friend_Blank);
         this.closePop();
     }
 }

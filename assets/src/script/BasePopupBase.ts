@@ -19,6 +19,10 @@ export abstract class BasePopupBase extends BaseView {
         }
     }
 
+    start(): void {
+        this.viewAdaptScreen();
+    }
+
     async show(aniName?: string, parent?: Node): Promise<void> {
         this.initUI();
         await this.animateIn();
