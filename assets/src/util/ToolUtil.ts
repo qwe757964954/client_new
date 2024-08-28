@@ -163,6 +163,19 @@ export class ToolUtil {
             }
         }
     }
+    /**奖励合并 */
+    static mergeRewards(rewards: ItemData[]): ItemData[] {
+        let ary = [];
+        rewards.forEach(element => {
+            let item = ary.find(i => i.id == element.id);
+            if (item) {
+                item.num += element.num;
+            } else {
+                ary.push({ ...element });
+            }
+        });
+        return ary;
+    }
     /**判断数组是否变化 */
     static arrayIsChange(arr1: number[], arr2: number[]): boolean {
         if (arr1.length != arr2.length) return true;

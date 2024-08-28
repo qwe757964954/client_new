@@ -1076,7 +1076,7 @@ export class BuildingModel extends BaseModel {
             return;
         }
         if (!this._isLoadOver) return;
-        LoadManager.loadPrefab(PrefabType.ProduceItemView.path, this._node).then((node: Node) => {
+        LoadManager.loadPrefabOne(PrefabType.ProduceItemView.path, this._node).then((node: Node) => {
             let pos = new Vec3(this._building.node.position);
             pos.y += this._building.getComponent(UITransform).height;
             node.position = pos;
@@ -1089,6 +1089,7 @@ export class BuildingModel extends BaseModel {
     }
     /**隐藏生产物品 */
     public hideProduces() {
+        // console.trace("hideProduces", this._produceItemViewShow, this._produceItemView);
         if (!this._produceItemViewShow) return;
         this._produceItemViewShow = false;
         if (!this._produceItemView) {

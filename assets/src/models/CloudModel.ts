@@ -153,7 +153,7 @@ export class CloudModel extends BaseModel {
         let leftTime = this._unlockTime - ToolUtil.now();
         if (leftTime > 0) {
             if (this._label)
-                this._label.string = ToolUtil.getSecFormatStr(leftTime);
+                this._label.string = ToolUtil.secondsToTimeFormat(leftTime);
         } else {
             this._isUnlock = true;
             this.refreshUIView();
@@ -223,7 +223,10 @@ export class CloudModel extends BaseModel {
             let transform = this._img.getComponent(UITransform);
             let pos = new Vec3(0, transform.height, 0);
             this._unlockNode.position = pos;
+            pos.x = -20;
             this._imgClock.position = pos;
+            pos.x = 40;
+            this._label.node.position = pos;
 
             this.refreshTime();
             if (callBack) callBack();

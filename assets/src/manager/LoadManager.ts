@@ -294,8 +294,25 @@ class LoadManagerClass {
             });
         });
     }
-
-    /**button */
+    /**加载prefab（同一parent同名预制体同时只加载1次） */
+    public loadPrefabOne(path: string, parent: Node, isCache: boolean = false): Promise<any | undefined> {
+        return new Promise((resolve, reject) => {
+            let tmpName = "tmp_" + path.replaceAll("/", "_");
+            if (parent.getChildByName(tmpName)) {
+                return;
+            }
+            let tmpNode = new Node();
+            tmpNode.name = tmpName;
+            parent.addChild(tmpNode);
+            this.loadPrefab(path, parent, isCache).then((node: Node) => {
+                let tmp = parent.getChildByName(tmpName);
+                if (tmp) {
+                    tmp.destroy();
+                }
+                resolve(node);
+            });
+        });
+    }
 
     // 获取资源包名
     public getBundleName(uuid: string) {

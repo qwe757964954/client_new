@@ -1306,7 +1306,7 @@ export class MapUICtl extends MainBaseCtl {
             ViewsMgr.showAlert(data.msg);
             return;
         }
-        ViewsMgr.showRewards(data.explore_reward);
+        ViewsMgr.showRewards(ToolUtil.mergeRewards(data.explore_reward));
         User.petHasReward = false;
         this.checkPetShow();
         this.setCheckPetTimer(data.next_explore_second);
