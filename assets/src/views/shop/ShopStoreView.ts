@@ -85,8 +85,10 @@ export class ShopStoreView extends BaseView {
         } else if (id === TabTypeIds.ShopDressTotal) {
             this._itemsData = this.filterItems(editConfig, BagConfig.BagConfigInfo.goods_item_info);
         } else if (id === TabTypeIds.ShoSuitTotal) {
+            this._itemsData = this.filterItems(editConfig, BagConfig.BagConfigInfo.goods_item_info);
             this._suitItemsData = BagConfig.filterSuitData();
         }
+        
     }
 
     private filterItems(clothingConfigs: ClothingInfo[], goodsItems: GoodsItemInfo[]): ClothingInfo[] {
@@ -104,6 +106,9 @@ export class ShopStoreView extends BaseView {
             this.suit_list.numItems = this._suitItemsData.length;
         } else {
             this.store_list.numItems = this._itemsData.length;
+            this._shopPlayerView.shopClothing = this._shopClothing;
+            this._shopPlayerView.updateClothingStatus();
+            this.updateSelectProps();
         }
     }
 
@@ -123,6 +128,7 @@ export class ShopStoreView extends BaseView {
 
         ViewsManager.showTip(`成功购买 ${contentStr}`);
         console.log("onShopItemBuy", data);
+        this.updateData(this._curTabType);
     }
 
     public onLoadShopStoreGrid(item: Node, idx: number) {
@@ -142,7 +148,7 @@ export class ShopStoreView extends BaseView {
                 this._shopPlayerView.unInstallPlayerProps(this._shopClothing, info.type);
             } else {
                 clothing.userClothes = info.id;
-                this.updateSelectProps(info);
+                this.updateSelectProps();
                 this._shopPlayerView.updatePlayerProps(this._shopClothing, info.id);
             }
         });
@@ -164,6 +170,7 @@ export class ShopStoreView extends BaseView {
             let rightStatus = script.getRightStatus();
             if (rightStatus) {
                 this.handleSuitDeselection(data);
+                script.changeRightActive();
             } else {
                 this.handleSuitSelection(data);
             }
@@ -208,9 +215,12 @@ export class ShopStoreView extends BaseView {
         });
     }
 
-    private updateSelectProps(selectInfo: ClothingInfo) {
+    private updateSelectProps() {
+        let shopClothingIds = Object.values(this._shopClothing)
+            .map(item => item.userClothes)
+            .filter((id): id is number => isValid(id));
         this.updateListSelection(this.store_list, (script) => {
-            return script.data.type === selectInfo.type && script.data.id === selectInfo.id;
+            return shopClothingIds.includes(script.data.id) && !BagConfig.isExistInPackage(script.data.id);
         });
     }
 

@@ -5,6 +5,7 @@ import { RoleBaseModel } from "../models/RoleBaseModel";
 import CCUtil from "../util/CCUtil";
 import ImgUtil from "../util/ImgUtil";
 import { NodeUtil } from "../util/NodeUtil";
+import { ComboView } from "../views/adventure/sixModes/common/ComboView";
 import { JellyTransition } from "../views/adventure/sixModes/common/JellyTransition";
 import { ConfirmView } from "../views/common/ConfirmView";
 import { NavTitleView } from "../views/common/NavTitleView";
@@ -487,6 +488,12 @@ export class ViewsManager {
         let script = node.getComponent(JellyTransition);
         await script.createTransitionView();
         script.showTransitionView(callback);
+    }
+
+    public async showComboAnimation(comboNum:number){
+        let node = await this.showViewAsync(PrefabType.ComboView);
+        let script = node.getComponent(ComboView);
+        script.showComboAnimation(comboNum);
     }
 
 }

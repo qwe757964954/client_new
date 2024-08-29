@@ -29,7 +29,7 @@ export class ShopPlayerView extends Component {
     public purchase_btn: Node = null;
 
     private _role: Node = null;
-    private _shopClothing: { [key in TabTypeIds]?: ShopClothingInfo } = {};
+    public shopClothing: { [key in TabTypeIds]?: ShopClothingInfo } = {};
 
     private btnBuyComponent: Button = null;
     private btnBuySprite: Sprite = null;
@@ -56,18 +56,18 @@ export class ShopPlayerView extends Component {
     }
 
     public updatePlayerProps(shopClothing: { [key in TabTypeIds]?: ShopClothingInfo }, clothingId: number) {
-        this._shopClothing = shopClothing;
+        this.shopClothing = shopClothing;
         this.changeClothings(clothingId);
         this.updateClothingStatus();
     }
 
     public unInstallPlayerProps(shopClothing: { [key in TabTypeIds]?: ShopClothingInfo }, type: ClothingType) {
-        this._shopClothing = shopClothing;
+        this.shopClothing = shopClothing;
         this.resetClothings(type);
         this.updateClothingStatus();
     }
 
-    private updateClothingStatus() {
+    public updateClothingStatus() {
         const needBuyClothings = this.findNeedBuyClothing();
         this.clothing_number.string = `${needBuyClothings.length}件`;
         
@@ -88,13 +88,10 @@ export class ShopPlayerView extends Component {
     }
 
     private findNeedBuyClothing(): number[] {
-        const shopClothingIds = Object.values(this._shopClothing)
+        let shopClothingIds = Object.values(this.shopClothing)
             .map(item => item.userClothes)
             .filter((id): id is number => isValid(id));
-        return shopClothingIds;
-        // Filter out items that are already in user clothes
-        // const userClothesIds = Object.values(User.userClothes).filter((id): id is number => id !== null);
-        // return shopClothingIds.filter(id => !userClothesIds.includes(id));
+        return shopClothingIds.filter(id => !BagConfig.isExistInPackage(id.toString()));
     }
 
     public changeClothings(clothingId: number) {

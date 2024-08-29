@@ -13,6 +13,7 @@ import { WordDetailView } from '../../common/WordDetailView';
 import { BaseModeView } from './BaseModeView';
 import { WordSplitItem } from './items/WordSplitItem';
 import { WordMeaningView } from './WordMeaningView';
+
 const { ccclass, property } = _decorator;
 
 @ccclass('StudyModeView')
@@ -51,22 +52,19 @@ export class StudyModeView extends BaseModeView {
     @property({ type: Node, tooltip: "隐藏详情面板按钮" })
     btn_hideDetail: Node = null;
 
-    protected _spilitData: any = null;
-    protected _wordsData: UnitWordModel[] = null;
+    protected _splitData: any = null;
+    protected _wordsData: UnitWordModel[] = [];
     protected _wordIndex: number = 0;
     protected _splits: any[] = [];
-    protected _spliteItems: Node[] = [];
+    protected _splitItems: Node[] = [];
     protected _detailData: any = null;
     protected _levelData: any = null;
-    protected _getWordsEveId: string;
 
     protected _isSplitPlaying: boolean = false;
     protected _currentSplitIdx: number = 0;
     protected _isCombine: boolean = false;
-    protected _monster: Node = null;
     protected _nodePool: NodePool = new NodePool("wordSplitItem");
     private _isTweening: boolean = false;
-
     private _playingUrl: string = null;
 
     onLoad(): void {
@@ -74,26 +72,26 @@ export class StudyModeView extends BaseModeView {
         this.gameMode = GameMode.Study;
     }
 
-    async initData(wordsdata: UnitWordModel[], levelData: any) {
-        wordsdata = this.updateTextbookWords(wordsdata, levelData);
-        this._spilitData = await DataMgr.instance.getWordSplitConfig();
-        this.initWords(wordsdata);
+    async initData(wordsData: UnitWordModel[], levelData: any) {
+        wordsData = this.updateTextbookWords(wordsData, levelData);
+        this._splitData = await DataMgr.instance.getWordSplitConfig();
+        this._wordsData = wordsData;
+        this.initWords();
         this.initMonster();
     }
 
-    initWords(data: UnitWordModel[]) {
-        this._wordsData = data;
-        this._splits = this._wordsData.map(wordData => {
-            const splitData = this._spilitData[wordData.word];
-            return splitData ? splitData.split(" ") : (wordData.word.includes(" ") ? wordData.word.split(" ") : [wordData.word]);
-        });
+    initWords() {
+        this._splits = this._wordsData.map(wordData => 
+            this._splitData[wordData.word]?.split(" ") || 
+            (wordData.word.includes(" ") ? wordData.word.split(" ") : [wordData.word])
+        );
         this.showCurrentWord();
     }
 
     showCurrentWord() {
         super.updateConstTime();
         this._isCombine = false;
-        let wordData = this._wordsData[this._wordIndex];
+        const wordData = this._wordsData[this._wordIndex];
         this._rightWordData = wordData;
         this.wordLabel.string = this.wholeWordLabel.string = wordData.word;
         this.symbolLabel.string = wordData.symbol;
@@ -101,11 +99,14 @@ export class StudyModeView extends BaseModeView {
         this.splitNode.active = true;
         this.wholeWordNode.active = false;
 
-        const imgUrl = `${NetConfig.assertUrl}/imgs/words/${wordData.word}.jpg`;
-        RemoteImageManager.i.loadImage(imgUrl, this.wordImg);
+        RemoteImageManager.i.loadImage(
+            `${NetConfig.assertUrl}/imgs/words/${wordData.word}.jpg`, 
+            this.wordImg
+        );
 
-        const splitData = this._spilitData[wordData.word];
-        const phonics = splitData && !wordData.word.includes(" ") ? splitData.replace(/ /g, "·") : wordData.word;
+        const phonics = this._splitData[wordData.word] && !wordData.word.includes(" ") 
+            ? this._splitData[wordData.word].replace(/ /g, "·") 
+            : wordData.word;
 
         this.initSplitNode();
         this.initWordDetail(wordData);
@@ -115,14 +116,16 @@ export class StudyModeView extends BaseModeView {
     initSplitNode() {
         this.clearSplitItems();
         this._currentSplitIdx = 0;
-        const splits = this._splits[this._wordIndex].length ? this._splits[this._wordIndex] : [this._wordsData[this._wordIndex].word];
+        const splits = this._splits[this._wordIndex].length 
+            ? this._splits[this._wordIndex] 
+            : [this._wordsData[this._wordIndex].word];
 
         splits.forEach((split, i) => {
             const item = this.getSplitItem();
             item.getComponent(WordSplitItem).init(split);
             this.splitNode.addChild(item);
-            CCUtil.onTouch(item, this.onSplitItemClick.bind(this, item, i), this);
-            this._spliteItems.push(item);
+            CCUtil.onTouch(item, () => this.onSplitItemClick(item, i), this);
+            this._splitItems.push(item);
         });
     }
 
@@ -131,16 +134,16 @@ export class StudyModeView extends BaseModeView {
     }
 
     clearSplitItems() {
-        this._spliteItems.forEach(item => {
+        this._splitItems.forEach(item => {
             CCUtil.offTouch(item, this.onSplitItemClick, this);
             this._nodePool.put(item);
         });
-        this._spliteItems = [];
+        this._splitItems = [];
     }
 
     playWordSound() {
         const word = this._wordsData[this._wordIndex].word;
-        const wordSoundUrl = this._spilitData[word] !== undefined
+        const wordSoundUrl = this._splitData[word] 
             ? `/sounds/splitwords/${word}/${word}.wav`
             : `/sounds/glossary/words/en/${word}.wav`;
 
@@ -148,14 +151,17 @@ export class StudyModeView extends BaseModeView {
     }
 
     onSplitItemClick(item: Node, idx: number) {
-        if (this._isCombine) return;
-        if (idx != this._currentSplitIdx) {
-            item.getComponent(Shake).shakeNode();
+        if (this._isCombine || idx !== this._currentSplitIdx) {
+            if (idx !== this._currentSplitIdx) {
+                item.getComponent(Shake).shakeNode();
+            }
             return;
         }
-        if (this._playingUrl)
+        
+        if (this._playingUrl) {
             RemoteSoundMgr.stopSound(this._playingUrl);
-        // this._isSplitPlaying = true;
+        }
+        
         const wordSplitItem = item.getComponent(WordSplitItem);
         const splitWord = wordSplitItem.word;
         wordSplitItem.select();
@@ -164,10 +170,10 @@ export class StudyModeView extends BaseModeView {
         if (!this._splits[this._wordIndex].length) {
             url = `${NetConfig.assertUrl}/sounds/glossary/words/en/${this._wordsData[this._wordIndex].word}.wav`;
         }
+        
         this._playingUrl = url;
         this._currentSplitIdx++;
         RemoteSoundMgr.playSound(url).then(() => {
-            // this._isSplitPlaying = false;
             if (this._currentSplitIdx === this._splits[this._wordIndex].length) {
                 this.combineWord();
             }
@@ -176,10 +182,10 @@ export class StudyModeView extends BaseModeView {
 
     combineWord() {
         this._isCombine = true;
-        const total = this._spliteItems.length;
-        const halfIdx = (total % 2 === 0) ? (Math.ceil(total / 2) - 0.5) : ((total + 1) / 2 - 1);
+        const total = this._splitItems.length;
+        const halfIdx = total % 2 === 0 ? (total / 2) - 0.5 : (total - 1) / 2;
 
-        this._spliteItems.forEach((item, i) => {
+        this._splitItems.forEach((item, i) => {
             item.getComponent(Shake).stopShake();
             if (total % 2 !== 0 && i === halfIdx) return;
             const oldPos = item.position;
@@ -217,8 +223,8 @@ export class StudyModeView extends BaseModeView {
         super.modeOver();
         console.log('学习完成,跳转词意模式');
         this.showTransitionView(async () => {
-            const wordData = JSON.parse(JSON.stringify(this._wordsData));
-            const levelData = JSON.parse(JSON.stringify(this._levelData));
+            const wordData = [...this._wordsData];
+            const levelData = { ...this._levelData };
             let node = await ViewsMgr.showLearnView(PrefabType.WordMeaningView);
             node.getComponent(WordMeaningView).initData(wordData, levelData);
             this.node.parent.destroy();
@@ -239,10 +245,13 @@ export class StudyModeView extends BaseModeView {
         this.wordDetailNode.getComponent(WordDetailView).init(this._wordsData[this._wordIndex].word, this._detailData);
         this.mainNode.setPosition(pos.x, -360, 0);
         this._isTweening = true;
-        tween(this.mainNode).to(0.2, { position: new Vec3(pos.x, -100, 0) }).call(() => {
-            this._isTweening = false;
-            this.btn_hideDetail.angle = 0;
-        }).start();
+        tween(this.mainNode)
+            .to(0.2, { position: new Vec3(pos.x, -100, 0) })
+            .call(() => {
+                this._isTweening = false;
+                this.btn_hideDetail.angle = 0;
+            })
+            .start();
     }
 
     hideWordDetail() {
@@ -251,19 +260,18 @@ export class StudyModeView extends BaseModeView {
         this.wordDetailNode.active = false;
         const pos = this.mainNode.position;
         this._isTweening = true;
-        tween(this.mainNode).to(0.2, { position: new Vec3(pos.x, -360, 0) }).call(() => {
-            this._isTweening = false;
-            this.btn_hideDetail.angle = 180;
-        }).start();
+        tween(this.mainNode)
+            .to(0.2, { position: new Vec3(pos.x, -360, 0) })
+            .call(() => {
+                this._isTweening = false;
+                this.btn_hideDetail.angle = 180;
+            })
+            .start();
     }
 
     onWordDetailClick() {
         if (this._isTweening) return;
-        if (this.mainNode.position.y === -360) {
-            this.showWordDetail();
-        } else {
-            this.hideWordDetail();
-        }
+        this.mainNode.position.y === -360 ? this.showWordDetail() : this.hideWordDetail();
     }
 
     protected initEvent(): void {
@@ -274,8 +282,8 @@ export class StudyModeView extends BaseModeView {
     protected removeEvent(): void {
         super.removeEvent();
         CCUtil.offTouch(this.btn_hideDetail, this.onWordDetailClick, this);
-        this._spliteItems.forEach((item, i) => {
-            CCUtil.offTouch(item, this.onSplitItemClick.bind(this, item, i), this);
+        this._splitItems.forEach((item, i) => {
+            CCUtil.offTouch(item, () => this.onSplitItemClick(item, i), this);
         });
     }
 

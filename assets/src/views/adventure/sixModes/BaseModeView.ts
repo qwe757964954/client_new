@@ -1,13 +1,12 @@
 import { _decorator, BlockInputEvents, Button, isValid, Node, Sprite, Vec3 } from 'cc';
 import { EventType } from '../../../config/EventType';
+import { PrefabType } from '../../../config/PrefabType';
 import { TextConfig } from '../../../config/TextConfig';
-import { GameRes } from '../../../GameRes';
 import GlobalConfig from '../../../GlobalConfig';
 import { BookLevelConfig } from '../../../manager/DataMgr';
-import { inf_SpineAniCreate } from '../../../manager/InterfaceDefines';
 import { LoadManager } from '../../../manager/LoadManager';
+import { PopMgr } from '../../../manager/PopupManager';
 import { RemoteSoundMgr } from '../../../manager/RemoteSoundManager';
-import { SoundMgr } from '../../../manager/SoundMgr';
 import { ViewsManager, ViewsMgr } from '../../../manager/ViewsManager';
 import { AdventureCollectWordModel, AdventureResult, AdventureResultModel, GateData, WordsDetailData } from '../../../models/AdventureModel';
 import { s2cReviewPlanLongTimeWordSubmit, s2cReviewPlanSubmit, s2cWordbookWordSubmit } from '../../../models/NetModel';
@@ -20,6 +19,8 @@ import { TBServer } from '../../../service/TextbookService';
 import CCUtil from '../../../util/CCUtil';
 import { EventMgr } from '../../../util/EventManager';
 import { TopLabel } from '../common/TopLabel';
+import { ComboBestView } from './common/ComboBestView';
+import { ComboRightView } from './common/ComboRightView';
 import { MonsterView } from './common/MonsterView';
 const { ccclass, property } = _decorator;
 /**游戏来源 */
@@ -54,8 +55,6 @@ export class BaseModeView extends BaseView {
     @property(MonsterView)
     public monsterView: MonsterView = null;
 
-    private _rightAniNode: Node = null;
-
     protected _wordsData: UnitWordModel[] = null;
     protected _wordIndex: number = 0; //当前单词序号
     protected _detailData: WordsDetailData = null; //当前单词详情数据
@@ -88,9 +87,6 @@ export class BaseModeView extends BaseView {
     private setupUI() {
         this.offViewAdaptSize();
         this.node.getChildByName("img_bg")?.addComponent(BlockInputEvents);
-        this._rightAniNode = new Node();
-        this._rightAniNode.parent = this.node;
-        this._rightAniNode.active = false;
     }
 
     showTransitionView(callback: () => void) {
@@ -191,7 +187,7 @@ export class BaseModeView extends BaseView {
     updateConstTime() {
         this._costTime = Date.now();
     }
-    onInitModuleEvent() {
+    protected onInitModuleEvent() {
         console.log("onInitModuleEvent..base");
         this.addModelListener(NetNotify.Classification_ReportResult, this.onUpResult);
         this.addModelListener(NetNotify.Classification_Word, this.onClassificationWord);
@@ -204,11 +200,9 @@ export class BaseModeView extends BaseView {
         this.addModelListener(InterfacePath.c2sReviewPlanLongTimeWordSubmit, this.onRepReviewPlanLongTimeWordSubmit);
         this.addModelListener(InterfacePath.c2sWordbookWordSubmit, this.onRepWordbookWordSubmit);
     }
-    onGameSubmitResponse(data: GameSubmitResponse) {
+    private onGameSubmitResponse(data: GameSubmitResponse) {
         console.log("onGameSubmitResponse....", data);
         this._currentSubmitResponse = data;
-        this._currentSubmitResponse as GameSubmitResponse;
-        // this.checkResult();
         this.netReqOver();
     }
     async initMonster() {
@@ -227,80 +221,78 @@ export class BaseModeView extends BaseView {
     }
 
     //上报结果
-    reportResult() {
+    private reportResult() {
         console.log("上报结果");
-        if (GameSourceType.classification == this._sourceType) {
+        if (this._sourceType === GameSourceType.classification) {
             this._upResultSucce = true;
         }
     }
     //当前模式结束,跳转下一模式或结算
     protected modeOver() {
         this._isDoModeOver = true;
-        if (GameSourceType.classification == this._sourceType) {
-            let levelData = this._levelData as BookLevelConfig;
+        if (this._sourceType === GameSourceType.classification) {
+            const levelData = this._levelData as BookLevelConfig;
             levelData.word_num = 1;
         }
-        // ViewsMgr.closeConfirmView();
     }
 
-    //单个单词学习情况上报
-    onGameSubmit(word: string, isRight: boolean, wordData?: any, answer?: string) {
-        let submitData = new WordSubmitData();
+    protected onGameSubmit(word: string, isRight: boolean, wordData?: any, answer?: string) {
+        const submitData = new WordSubmitData();
         submitData.word = word;
         submitData.isRight = isRight;
         submitData.wordData = wordData;
         submitData.answer = answer;
         this._curWordSubmitData = submitData;
 
-        /**单词上报仅限教材单词 */
-        if (GameSourceType.word_game == this._sourceType) {
-            let levelData = this._levelData as GateData;
-            let costTime = Date.now() - this._costTime;
-            let params: AdventureResultModel = {
-                big_id: levelData.big_id,
-                small_id: levelData.small_id,
-                game_mode: levelData.current_mode,
-                cost_time: costTime,
-                status: isRight ? 1 : 0,
-                word: word
-            }
-            ServiceMgr.studyService.submitAdventureResult(params);
-            return;
+        const costTime = Date.now() - this._costTime;
+        switch (this._sourceType) {
+            case GameSourceType.word_game:
+                this.submitAdventureResult(word, isRight, costTime);
+                break;
+            case GameSourceType.classification:
+                this.submitGameResult(word, isRight, costTime);
+                break;
+            case GameSourceType.review:
+                ServiceMgr.studyService.reqReviewPlanSubmit(this._levelData.ws_id, wordData["wp_id"], word, answer, isRight ? 1 : 0, costTime);
+                break;
+            case GameSourceType.reviewSpecial:
+                ServiceMgr.studyService.reqReviewPlanLongTimeWordSubmit(wordData["wp_id"], word, answer, isRight ? 1 : 0, costTime);
+                break;
+            case GameSourceType.errorWordbook:
+            case GameSourceType.collectWordbook:
+                const wordType = this._sourceType === GameSourceType.errorWordbook ? "err" : "collect";
+                const m_id = this._sourceType === GameSourceType.errorWordbook ? wordData.e_id : wordData.cw_id;
+                ServiceMgr.wordbookSrv.reqWordSubmit(m_id, word, answer, isRight ? 1 : 0, costTime, wordType);
+                break;
         }
-        if (GameSourceType.classification == this._sourceType) {
-            let levelData: BookLevelConfig = this._levelData as BookLevelConfig;
-            let costTime = Date.now() - this._costTime;
-            console.log("costTime.....", costTime, this._costTime);
-            let data: GameSubmitModel = {
-                book_id: levelData.book_id,
-                unit_id: levelData.unit_id,
-                game_mode: this.gameMode,
-                cost_time: costTime,
-                word: word,
-                small_id: levelData.small_id,
-                status: isRight ? 1 : 0
-            }
-            console.log("reqGameSubmit.....", data);
-            TBServer.reqGameSubmit(data);
-            return;
-        }
-        if (GameSourceType.review == this._sourceType) {
-            let costTime = Date.now() - this._costTime;
-            ServiceMgr.studyService.reqReviewPlanSubmit(this._levelData.ws_id, wordData["wp_id"], word, answer, isRight ? 1 : 0, costTime);
-            return;
-        }
-        if (GameSourceType.reviewSpecial === this._sourceType) {
-            let costTime = Date.now() - this._costTime;
-            ServiceMgr.studyService.reqReviewPlanLongTimeWordSubmit(wordData["wp_id"], word, answer, isRight ? 1 : 0, costTime);
-            return;
-        }
-        if (GameSourceType.errorWordbook == this._sourceType || GameSourceType.collectWordbook == this._sourceType) {
-            let costTime = Date.now() - this._costTime;
-            let word_type = (GameSourceType.errorWordbook == this._sourceType) ? "err" : "collect";
-            let m_id = (GameSourceType.errorWordbook == this._sourceType) ? wordData.e_id : wordData.cw_id;
-            ServiceMgr.wordbookSrv.reqWordSubmit(m_id, word, answer, isRight ? 1 : 0, costTime, word_type);
-            return;
-        }
+    }
+
+    private submitAdventureResult(word: string, isRight: boolean, costTime: number) {
+        const levelData = this._levelData as GateData;
+        const params: AdventureResultModel = {
+            big_id: levelData.big_id,
+            small_id: levelData.small_id,
+            game_mode: levelData.current_mode,
+            cost_time: costTime,
+            status: isRight ? 1 : 0,
+            word: word
+        };
+        ServiceMgr.studyService.submitAdventureResult(params);
+    }
+
+    private submitGameResult(word: string, isRight: boolean, costTime: number) {
+        const levelData = this._levelData as BookLevelConfig;
+        const data: GameSubmitModel = {
+            book_id: levelData.book_id,
+            unit_id: levelData.unit_id,
+            game_mode: this.gameMode,
+            cost_time: costTime,
+            word: word,
+            small_id: levelData.small_id,
+            status: isRight ? 1 : 0
+        };
+        console.log("reqGameSubmit.....", data);
+        TBServer.reqGameSubmit(data);
     }
 
     //精灵攻击
@@ -351,44 +343,36 @@ export class BaseModeView extends BaseView {
 
     }
 
-    showRightSpAni() {
-        SoundMgr.correct();
-        this._rightAniNode.active = true;
-        let aniName = "";
-        if (this._comboNum == 1) {
-            aniName = "animation_2"
-        } else if (this._comboNum == 2) {
-            aniName = "animation_1"
-        } else if (this._comboNum > 2) {
-            aniName = Math.random() > 0.5 ? "animation_3" : "animation_4";
+    protected async showRightSpAni() {
+        console.log("showRightSpAni.....",this._comboNum,this.monsterView.node);
+        ViewsMgr.showComboAnimation(this._comboNum);
+        let rightView = this.monsterView.node.getChildByName("ComboRightView");
+        if(isValid(rightView)){
+            rightView.getComponent(ComboRightView).animateOut();
         }
-        let spinePrams: inf_SpineAniCreate = {
-            resConf: GameRes.Spine_Correct,
-            aniName: aniName,
-            trackIndex: 0,
-            parentNode: this._rightAniNode,
-            isLoop: false,
-            callEndFunc: () => {
-                this._rightAniNode.active = false;
-            }
-        }
-        this._rightAniNode.removeAllChildren();
-        EventMgr.dispatch(EventType.Sys_Ani_Play, spinePrams);
-    }
+        rightView = await PopMgr.showPopFriend(PrefabType.ComboRightView,this.monsterView.node,"content")
+        rightView.getComponent(ComboRightView).changeComboText(this._comboNum);
 
-    //获取单词详情
-    initWordDetail(word: UnitWordModel) {
-        if (GameSourceType.word_game == this._sourceType) { //大冒险关卡
-            ServiceMgr.studyService.getAdventureWord(word.w_id);
-        } else if (GameSourceType.classification == this._sourceType) { //教材单词关卡
-            TBServer.reqWordDetail(word.w_id);
-        } else if (GameSourceType.review == this._sourceType || GameSourceType.reviewSpecial === this._sourceType) {
-            // TBServer.reqWordDetail(word.w_id);
+        let bestView = this.monsterView.node.getChildByName("ComboBestView");
+        if(isValid(bestView)){
+            bestView.getComponent(ComboBestView).animateOut();
         }
-        this.setCollect(word.collect == 1 ? true : false);
+        bestView = await PopMgr.showPopFriend(PrefabType.ComboBestView,this.monsterView.node,"content")
+        bestView.getComponent(ComboBestView).changeComboText(this._comboNum);
+
+        
+    }
+    //获取单词详情
+    protected initWordDetail(word: UnitWordModel) {
+        if (this._sourceType === GameSourceType.word_game) {
+            ServiceMgr.studyService.getAdventureWord(word.w_id);
+        } else if (this._sourceType === GameSourceType.classification) {
+            TBServer.reqWordDetail(word.w_id);
+        }
+        this.setCollect(word.collect === 1);
     }
     protected onClassificationWord(data: WordsDetailData) {
-        if (data.code != 200) {
+        if (data.code !== 200) {
             console.error("获取单词详情失败", data.msg);
             this._detailData = null;
             return;
@@ -397,30 +381,23 @@ export class BaseModeView extends BaseView {
         this._detailData = data;
         this.setCollect(this._detailData.collect === 1);
     }
-
     protected onCollectWord(data: any) {
         console.log("onCollectWord", data);
-        this.setCollect(this._rightWordData.collect === 1);
-        if (this._rightWordData.collect) {
-            ViewsMgr.showTipSmall(TextConfig.Collect_Succ, this.btn_collect, new Vec3(0, 80, 0));
-        } else {
-            ViewsMgr.showTipSmall(TextConfig.Collect_Cancel, this.btn_collect, new Vec3(0, 80, 0));
-        }
+        this.updateCollectState();
     }
 
     protected onAdventureCollectWord(data: any) {
-        if (data.code != 200) {
+        if (data.code !== 200) {
             ViewsManager.showTip(data.msg);
             return;
         }
-        this.setCollect(this._rightWordData.collect === 1);
-        if (this._rightWordData.collect) {
-            ViewsMgr.showTipSmall(TextConfig.Collect_Succ, this.btn_collect, new Vec3(0, 80, 0));
-        } else {
-            ViewsMgr.showTipSmall(TextConfig.Collect_Cancel, this.btn_collect, new Vec3(0, 80, 0));
-        }
+        this.updateCollectState();
     }
-
+    private updateCollectState() {
+        this.setCollect(this._rightWordData.collect === 1);
+        const message = this._rightWordData.collect ? TextConfig.Collect_Succ : TextConfig.Collect_Cancel;
+        ViewsMgr.showTipSmall(message, this.btn_collect, new Vec3(0, 80, 0));
+    }
     protected initEvent(): void {
         console.log("initEvent");
         CCUtil.onTouch(this.btn_close.node, this.closeView, this);
@@ -433,28 +410,33 @@ export class BaseModeView extends BaseView {
         CCUtil.offTouch(this.btn_close.node, this.closeView, this);
     }
 
-    protected closeView() {
-        let str = TextConfig.WordMeaning_Exit_Tip1;
-        if (GameSourceType.review == this._sourceType || GameSourceType.reviewSpecial === this._sourceType) {
-            str = TextConfig.WordMeaning_Exit_Tip2;
-        }
-        ViewsMgr.showConfirm(str, () => {
+    private closeView() {
+        const tipText = this._sourceType === GameSourceType.review || this._sourceType === GameSourceType.reviewSpecial
+            ? TextConfig.WordMeaning_Exit_Tip2
+            : TextConfig.WordMeaning_Exit_Tip1;
+
+        ViewsMgr.showConfirm(tipText, () => {
             if (!this.node) return;
-            if (GameSourceType.classification == this._sourceType || GameSourceType.word_game == this._sourceType) {
-                EventMgr.dispatch(EventType.Exit_Island_Level);
-            } else if (GameSourceType.review == this._sourceType || GameSourceType.reviewSpecial === this._sourceType) {
-                EventMgr.emit(EventType.Wordbook_List_Refresh);// 通知
-                ServiceMgr.studyService.reqReviewPlan();//刷新复习规划
-            } else if (GameSourceType.errorWordbook == this._sourceType || GameSourceType.collectWordbook == this._sourceType) {
-                EventMgr.emit(EventType.Wordbook_List_Refresh);// 通知
-            }
+            this.handleExit();
             this.node.destroy();
         }).then((confirmView) => {
-            if (GameSourceType.word_game == this._sourceType || GameSourceType.classification == this._sourceType) {
+            if (this._sourceType === GameSourceType.word_game || this._sourceType === GameSourceType.classification) {
                 confirmView.showExtraLabel(TextConfig.Midway_Exit);
             }
         });
     }
+
+    private handleExit() {
+        if (this._sourceType === GameSourceType.classification || this._sourceType === GameSourceType.word_game) {
+            EventMgr.dispatch(EventType.Exit_Island_Level);
+        } else if (this._sourceType === GameSourceType.review || this._sourceType === GameSourceType.reviewSpecial) {
+            EventMgr.emit(EventType.Wordbook_List_Refresh);
+            ServiceMgr.studyService.reqReviewPlan();
+        } else if (this._sourceType === GameSourceType.errorWordbook || this._sourceType === GameSourceType.collectWordbook) {
+            EventMgr.emit(EventType.Wordbook_List_Refresh);
+        }
+    }
+
     onDestroy(): void {
         super.onDestroy();
         RemoteSoundMgr.clearAudio();
