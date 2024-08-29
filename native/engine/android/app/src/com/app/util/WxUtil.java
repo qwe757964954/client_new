@@ -13,7 +13,7 @@ import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 public class WxUtil {
-    public static final String APP_ID = "wxfeb3c47d2402f2ff";
+    public static final String APP_ID = "wx2de93b1490944010";
 
     // IWXAPI 是第三方app和微信通信的openApi接口
     private IWXAPI api;
