@@ -1,8 +1,8 @@
-import { _decorator, Button, Component, Label, Node, Sprite, Toggle } from 'cc';
-import { MyMedalInfo, SelectMedalInfo } from './AchieveDialogView';
+import { _decorator, Component, Label, Node, Sprite, Toggle } from 'cc';
+import { EventType } from '../../config/EventType';
 import { LoadManager } from '../../manager/LoadManager';
 import EventManager from '../../util/EventManager';
-import { EventType } from '../../config/EventType';
+import { MyMedalInfo, SelectMedalInfo } from './AchieveDialogView';
 const { ccclass, property } = _decorator;
 
 @ccclass('AcieveMedalItem')

@@ -3,7 +3,7 @@ import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { ArchConfig, DataMgr, ItemData, MedalConfig } from '../../manager/DataMgr';
-import { ViewsManager } from '../../manager/ViewsManager';
+import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import CCUtil from '../../util/CCUtil';
 import EventManager from '../../util/EventManager';
 import { ToolUtil } from '../../util/ToolUtil';

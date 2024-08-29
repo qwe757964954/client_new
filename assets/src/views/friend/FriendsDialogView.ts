@@ -1,5 +1,4 @@
 import { _decorator, Label, Node, Prefab } from 'cc';
-import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { ViewsMgr } from '../../manager/ViewsManager';
@@ -52,8 +51,6 @@ export class FriendsDialogView extends BasePopRight {
     async initUI() {
         await this.initViews();
         this.initData();
-        this.setFriendListSelect();
-        this.setEmailListSelect();
         this.enableClickBlankToClose([this.contentNd,this._rightPlayerInfo.node,this._leftTab.node]).then(()=>{
             
         });
@@ -61,16 +58,11 @@ export class FriendsDialogView extends BasePopRight {
     }
     protected onInitModuleEvent(): void {
         this.addModelListeners([
-            [NetNotify.Classification_UserFriendList, this.onUpdateFriendList],
-            [NetNotify.Classification_UserFriendApplyList, this.onUpdateApplyFriendList],
             [NetNotify.Classification_UserFriendSearch, this.onSearchFriendResult],
-            [NetNotify.Classification_UserFriendApplyModify, this.onUserFriendApplyModify],
             [NetNotify.Classification_UserDelFriendMessage, this.onUserDelFriendMessage],
             [NetNotify.Classification_UserSystemMailList, this.onUserSystemMailList],
             [NetNotify.Classification_UserSystemMailDetail, this.onUserSystemMailDetail],
             [NetNotify.Classification_UserSystemAwardGet, this.onUserSystemAwardGet],
-            [NetNotify.Classification_UserRecommendFriendList, this.onShowRecommendList],
-            [EventType.Friend_Talk_Event, this.onFriendTalk],
         ]);
     }
     private async initViews() {
@@ -79,16 +71,6 @@ export class FriendsDialogView extends BasePopRight {
                 prefabType: PrefabType.FriendLeftTabView,
                 initCallback: (node: Node) => this._leftTab = node.getComponent(FriendLeftTabView),
                 alignOptions: { isAlignTop: true, isAlignLeft: true, top: 129, left: -207 },
-                parentNode: this.contentNd
-            },
-            {
-                prefabType: PrefabType.FriendPlayerInfoView,
-                initCallback: (node: Node) => {
-                    node.setSiblingIndex(0);
-                    this._rightPlayerInfo = node.getComponent(FriendPlayerInfoView);
-                    this._rightPlayerInfo.showPos = this._rightPlayerInfo.node.position;
-                },
-                alignOptions: { isAlignVerticalCenter: true, isAlignRight: true, verticalCenter: 0, right: -25.394 },
                 parentNode: this.contentNd
             },
             {
@@ -122,24 +104,6 @@ export class FriendsDialogView extends BasePopRight {
         ));
     }
 
-    
-
-    private setFriendListSelect(){
-        this._fListView.setFriendSelectListener(this.onSelectFriend.bind(this));
-    }
-    private setEmailListSelect(){
-        this._fEmailView.setEmailListener(this.onSelectEmail.bind(this));
-    }
-    private onSelectFriend(data:FriendListItemModel){
-        this._selectedFriend = data;
-        this._rightPlayerInfo.showPlayerInfo(true);
-        this._rightPlayerInfo.updateData(data);
-    }
-
-    private onSelectEmail(data:SystemMailItem){
-        this._rightPlayerInfo.showPlayerInfo(true);
-        FdServer.reqUserSystemMailDetail(data.sm_id);
-    }
     private async onUserSystemAwardGet(response:UserSystemAwardResponse){
         console.log("onUserSystemAwardGet...",response);
         let propsData = ObjectUtil.convertAwardsToItemData(response.awards);
@@ -156,11 +120,6 @@ export class FriendsDialogView extends BasePopRight {
         this._fMsgView.node.active = false;
         this._fEmailView.node.active = false;
     }
-
-    
-
-    
-
     onUserSystemMailList(response:SystemMailListResponse){
         console.log("onUserSystemMailList", response);
         this._fEmailView.updateData(response.data);
@@ -178,12 +137,6 @@ export class FriendsDialogView extends BasePopRight {
         FdServer.reqUserSystemMailLis();
         FdServer.reqUserRecommendFriendList();
     }
-
-    
-
-    
-
-    
     onUserDelFriendMessage(response: any){
         FdServer.reqUserFriendList();
     }

@@ -1,7 +1,6 @@
 import { BlockInputEvents, Node, Prefab, _decorator, instantiate } from 'cc';
 import { PrefabConfig } from '../config/PrefabType';
 import { BasePopRight } from '../script/BasePopRight';
-import { BasePopStudy } from '../script/BasePopStudy';
 import { BasePopup } from '../script/BasePopup';
 import { BasePopupBase } from '../script/BasePopupBase';
 import CCUtil from '../util/CCUtil';
@@ -145,41 +144,6 @@ export class PopupManager {
                     try {
                         await popupComponent.show(aniName, parent);
                         resolve(node);
-                    } catch (animationError) {
-                        console.error(animationError);
-                        reject(animationError);
-                    }
-                } else {
-                    console.error(`Component ${viewConfig.componentName} not found`);
-                    reject(new Error(`Component ${viewConfig.componentName} not found`));
-                }
-            });
-        });
-    }
-
-    async showPopStudy(viewConfig: PrefabConfig, parent:Node,aniName: string): Promise<Node> {
-        return new Promise((resolve, reject) => {
-            // Load the prefab and instantiate it
-            ResLoader.instance.load(`prefab/${viewConfig.path}`, Prefab, async (err, prefab) => {
-                if (err) {
-                    console.error(err);
-                    reject(err);
-                    return;
-                }
-
-                // Instantiate and add the prefab as a child node
-                let node = instantiate(prefab);
-                parent.addChild(node);
-                node.addComponent(BlockInputEvents);
-                CCUtil.addWidget(parent, { left: 0, right: 0, top: 0, bottom: 0 });
-
-                // Retrieve the component and execute the show animation
-                let scpt: BasePopStudy = node.getComponent(viewConfig.componentName);
-
-                if (scpt) {
-                    try {
-                        scpt.show(aniName,parent); // Call the specific method for showing
-                        resolve(node); // Resolve after the animation completes
                     } catch (animationError) {
                         console.error(animationError);
                         reject(animationError);
