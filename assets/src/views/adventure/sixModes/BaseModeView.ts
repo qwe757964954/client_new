@@ -459,10 +459,6 @@ export class BaseModeView extends BaseView {
         super.onDestroy();
         RemoteSoundMgr.clearAudio();
     }
-
-    update(deltaTime: number) {
-
-    }
     /**是否收藏 */
     protected setCollect(isCollect: boolean) {
         this.btn_collect.getComponent(Sprite).grayscale = !isCollect
