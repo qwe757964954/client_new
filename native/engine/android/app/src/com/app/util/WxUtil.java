@@ -4,16 +4,30 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.util.Log;
 
+import com.app.Config;
+import com.nirvana.tools.core.EncryptUtils;
 import com.tencent.mm.opensdk.constants.ConstantsAPI;
 import com.tencent.mm.opensdk.diffdev.DiffDevOAuthFactory;
-import com.tencent.mm.opensdk.diffdev.IDiffDevOAuth;
+import com.tencent.mm.opensdk.diffdev.OAuthErrCode;
+import com.tencent.mm.opensdk.diffdev.OAuthListener;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Random;
+
 public class WxUtil {
     public static final String APP_ID = "wx2de93b1490944010";
+    public static final String APP_SECRET = "d635c3b72627fd4d6732020cb0f408a4";
 
     // IWXAPI 是第三方app和微信通信的openApi接口
     private IWXAPI api;
@@ -40,40 +54,95 @@ public class WxUtil {
         }, new IntentFilter(ConstantsAPI.ACTION_REFRESH_WXAPP));
     }
 
+    public boolean isInstalled(){
+        return api.isWXAppInstalled();
+    }
+
     public void login(){
         SendAuth.Req req = new SendAuth.Req();
         req.scope = "snsapi_userinfo";
-        req.state = "chuangci";
+        req.state = "newchuangcilogin";
         api.sendReq(req);
     }
 
-    public void getAuthQrcode(){
-//        String url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + Constant.WECHAT_APPID + "&secret=" + Constant.WECHAT_SECRET;
-//        Log.e(TAG, "url_1: " + url);
-//        String res = HttpsUtils.submitGetData(url, null);
-//        Log.e(TAG, "服务器返回: " + res);
-//
-//        //获取access_token
-//        String access_token = new JSONObject(res).getString("access_token");
-//        url = "https:api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=" + access_token + "&type=2";
-//        Log.e(TAG, "url_2: " + url);
-//
-//        res = HttpsUtils.submitGetData(url, null);
-//
-//        Log.e(TAG, "服务器返回: " + res);
-//        String ticket = new JSONObject(res).getString("ticket");
-//
-//        StringBuilder str = new StringBuilder();// 定义变长字符串
-//        // 随机生成数字，并添加到字符串
-//        for (int i = 0; i < 8; i++) {
-//            str.append(new Random().nextInt(10));
-//        }
-//        noncestr = str.toString();
-//        timeStamp = Long.toString(System.currentTimeMillis()).substring(0, 10);
-//        String string1 = String.format("appid=%s&noncestr=%s&sdk_ticket=%s&timestamp=%s", Constant.WECHAT_APPID, noncestr, ticket, timeStamp);
-//        sha = EncryptUtils.getSHA(string1);
-//        Log.e(TAG, "二维码验证方式" + sha);
-//        oauth.auth(Constant.WECHAT_APPID, "snsapi_userinfo", noncestr, timeStamp, sha, mOAuthListener);
-//        DiffDevOAuthFactory.getDiffDevOAuth().auth(APP_ID,"snsapi_userinfo")
+    private static class EncryptUtils {
+
+        public static String getSHA(String info) {
+            byte[] digesta = null;
+            try {
+                // 得到一个SHA-1的消息摘要
+                MessageDigest alga = MessageDigest.getInstance("SHA-1");
+                // 添加要进行计算摘要的信息
+                alga.update(info.getBytes());
+                // 得到该摘要
+                digesta = alga.digest();
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+            // 将摘要转为字符串
+            String rs = byte2hex(digesta);
+            return rs;
+        }
+
+        private static String byte2hex(byte[] b) {
+            String hs = "";
+            String stmp = "";
+            for (byte aB : b) {
+                stmp = (Integer.toHexString(aB & 0XFF));
+                if (stmp.length() == 1) {
+                    hs = hs + "0" + stmp;
+                } else {
+                    hs = hs + stmp;
+                }
+            }
+            return hs;
+        }
+    }
+
+    OAuthListener mOAuthListener = new OAuthListener() {
+        @Override
+        public void onAuthGotQrcode(String s, byte[] bytes) {
+            String ret = null;
+            ret = new String(bytes, StandardCharsets.ISO_8859_1);
+            TSBridge.wxLoginQrcodeResult(ret);
+        }
+
+        @Override
+        public void onQrcodeScanned() {
+
+        }
+
+        @Override
+        public void onAuthFinish(OAuthErrCode oAuthErrCode, String s) {
+            TSBridge.wxLoginQrcodeLoginResult(s);
+        }
+    };
+    public void getAuthQrcode() throws JSONException {
+        String url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + APP_ID + "&secret=" + APP_SECRET;
+        Log.d(Config.LOGTAG, "url_1: " + url);
+        String res = HttpClient.sendGeRequest(url);
+        Log.d(Config.LOGTAG, "服务器返回: " + res);
+
+        //获取access_token
+        String access_token = new JSONObject(res).getString("access_token");
+        url = "https:api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=" + access_token + "&type=2";
+        Log.d(Config.LOGTAG, "url_2: " + url);
+
+        res = HttpClient.sendGeRequest(url);
+
+        Log.d(Config.LOGTAG, "服务器返回: " + res);
+        String ticket = new JSONObject(res).getString("ticket");
+
+        StringBuilder str = new StringBuilder();// 定义变长字符串
+        // 随机生成数字，并添加到字符串
+        for (int i = 0; i < 8; i++) {
+            str.append(new Random().nextInt(10));
+        }
+        String noncestr = str.toString();
+        String timeStamp = Long.toString(System.currentTimeMillis()).substring(0, 10);
+        String string1 = String.format("appid=%s&noncestr=%s&sdk_ticket=%s&timestamp=%s", APP_ID, noncestr, ticket, timeStamp);
+        String sha = EncryptUtils.getSHA(string1);
+        Log.d(Config.LOGTAG, "二维码验证方式" + sha);
+        DiffDevOAuthFactory.getDiffDevOAuth().auth(APP_ID, "snsapi_userinfo", noncestr, timeStamp, sha, mOAuthListener);
     }
 }

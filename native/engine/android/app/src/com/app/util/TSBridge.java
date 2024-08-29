@@ -12,6 +12,7 @@ import com.cocos.game.AppActivity;
 import com.cocos.lib.CocosHelper;
 import com.cocos.lib.JsbBridge;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -23,6 +24,7 @@ public class TSBridge {
     static private AppActivity _activity = null;
     static private STUtil _stUtil = null;
     static private PhoneUtil _phoneUtil = null;
+    static private WxUtil _wxUtil = null;
     //其他接口初始化完成后调用
     static public void init(AppActivity activity){
         JsbBridge.setCallback(new JsbBridge.ICallback() {
@@ -35,6 +37,7 @@ public class TSBridge {
         _activity = activity;
         _stUtil = (STUtil)SDKWrapper.shared().getInterface("com.app.util.STUtil");
         _phoneUtil = (PhoneUtil)SDKWrapper.shared().getInterface("com.app.util.PhoneUtil");
+        _wxUtil = (WxUtil)SDKWrapper.shared().getInterface("com.app.util.WxUtil");
     }
     static public void tsToJava(String arg0, String arg1){
         _activity.runOnUiThread(new Runnable() {
@@ -62,6 +65,10 @@ public class TSBridge {
                         TSBridge.isWxInstalled();
                     }else if(arg0.equals("setLoginOpenType")){
                         TSBridge.setLoginOpenType(arg1);
+                    }else if(arg0.equals("wxLogin")){
+                        TSBridge.wxLogin();
+                    }else if(arg0.equals("wxLoginQrcode")){
+                        TSBridge.wxLoginQrcode();
                     }
                 }catch (Exception e){
                     ErrorData.upload("tsToJava:"+arg0, e.getMessage());
@@ -143,9 +150,19 @@ public class TSBridge {
         return Settings.Secure.getString(_activity.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
     static public void wxLogin() {
+        _wxUtil.login();
+    }
+    static public void wxLoginQrcode() throws JSONException {
+        _wxUtil.getAuthQrcode();
     }
     static public void wxLoginResult(String result){
         TSBridge.javaToTs("wxLoginResult", result);
+    }
+    static public void wxLoginQrcodeResult(String result){
+        TSBridge.javaToTs("wxLoginQrcodeResult", result);
+    }
+    static public void wxLoginQrcodeLoginResult(String result){
+        TSBridge.javaToTs("wxLoginQrcodeLoginResult", result);
     }
 //    static public void initPhoneLogin(){}
     static public void initPhoneLoginResult(String result){
@@ -170,7 +187,8 @@ public class TSBridge {
         loginOpenType = Integer.parseInt(typeStr);
     }
     static public void isWxInstalled(){
-
+        String ret = _wxUtil.isInstalled() ? "1":"0";
+        TSBridge.javaToTs("isWxInstalled",ret);
     }
     static public void isWxInstalledResult(String status){
         isWxInstall = Integer.parseInt(status) > 0;

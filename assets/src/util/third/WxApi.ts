@@ -7,24 +7,54 @@ export class WxApi {
     /**消息方法 */
     public static onNative(arg0: string, arg1?: string) {
         if ("isWxInstalledResult" === arg0) {
-            WxApi.isWxInstalledResult(arg1);
+            this.isWxInstalledResult(arg1);
+            return true;
+        } else if ("wxLoginResult" === arg0) {
+            this.wxLoginResult(arg1);
+            return true;
+        } else if ("wxLoginQrcodeResult" === arg0) {
+            this.wxLoginQrcodeResult(arg1);
+            return true;
+        } else if ("wxLoginQrcodeLoginResult" === arg0) {
+            this.wxLoginQrcodeLoginResult(arg1);
             return true;
         }
         return false;
-    }
-    // 微信登录
-    public static login() {
-
     }
     /**微信是否安装 */
     public static isWxInstalled() {
         native.bridge?.sendToNative("isWxInstalled");
     }
-    public static isWxInstalledResult(result: string) {
+    private static isWxInstalledResult(result: string) {
         let code = Number(result);
-        if (code > 0) {
-            WxApi.isWxInstall = true;
-        }
+        this.isWxInstall = code > 0;
+    }
+    /**微信登录 */
+    private static _wxLoginCallBack: Function = null;
+    public static wxLogin(callBack: Function) {
+        this._wxLoginCallBack = callBack;
+        native.bridge?.sendToNative("wxLogin");
+    }
+    private static wxLoginResult(result: string) {
+        if (null == this._wxLoginCallBack) return;
+        this._wxLoginCallBack(result);
+        this._wxLoginCallBack = null;
+    }
+    /**微信二维码登录 */
+    private static _wxLoginQrcodeCallBack: Function = null;
+    private static _wxLoginQrcodeImgCallBack: Function = null;
+    public static wxLoginQrcode(callBack: Function, imgCall: Function) {
+        this._wxLoginQrcodeCallBack = callBack;
+        this._wxLoginQrcodeImgCallBack = imgCall;
+        native.bridge?.sendToNative("wxLoginQrcode");
+    }
+    private static wxLoginQrcodeResult(result: string) {
+        if (null == this._wxLoginQrcodeImgCallBack) return;
+        this._wxLoginQrcodeImgCallBack(result);
+    }
+    private static wxLoginQrcodeLoginResult(result: string) {
+        if (null == this._wxLoginQrcodeCallBack) return;
+        this._wxLoginQrcodeCallBack(result);
     }
 }
 InterfaceUtil.registerOnNative(WxApi.onNative.bind(WxApi));

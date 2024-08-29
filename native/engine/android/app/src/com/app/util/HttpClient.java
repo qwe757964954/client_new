@@ -57,4 +57,48 @@ public class HttpClient {
         }
         return "";
     }
+
+    public static String sendGeRequest(String url) {
+        HttpURLConnection connection = null;
+
+        try {
+            // 创建URL对象
+            URL apiUrl = new URL(url);
+
+            // 打开连接
+            connection = (HttpURLConnection) apiUrl.openConnection();
+
+            // 设置请求方法为POST
+            connection.setRequestMethod("GET");
+
+            // 启用输入输出
+            connection.setDoOutput(true);
+
+            // 设置请求头
+//            connection.setRequestProperty("Content-Type", "application/json");
+//            connection.setRequestProperty("charset", "utf-8");
+
+            // 获取响应代码
+            int responseCode = connection.getResponseCode();
+
+            // 读取响应内容
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    (responseCode == HttpURLConnection.HTTP_OK) ? connection.getInputStream() : connection.getErrorStream()))) {
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+                return response.toString();
+            }
+
+        } catch (IOException e) {
+//            e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+        return "";
+    }
 }
