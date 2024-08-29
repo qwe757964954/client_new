@@ -1130,6 +1130,7 @@ export class MapUICtl extends MainBaseCtl {
         if (this._loadCount <= 0) {
             this._loadCount = 0;
             console.timeEnd("MapUICtl");
+            this.buildingRoleSort();
             if (this._callBack) {
                 this._callBack();
                 this._callBack = null;

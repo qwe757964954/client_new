@@ -436,6 +436,10 @@ class UserModel {
         return this._curMapUserID;
     }
 
+    public isInSelfMap(): boolean {
+        return this.curMapUserID === this.userID;
+    }
+
     public getItem(id: ItemID): number {
         if (this._itemAry.hasOwnProperty(id)) {
             return this._itemAry[id];

@@ -45,6 +45,18 @@ export class MainUIView extends BaseView {
     public btnStudy: Sprite = null;//学习
     @property(Label)
     public labelNick: Label = null;//昵称
+    @property(Node)
+    public plSelf: Node = null;
+    @property(Node)
+    public plOther: Node = null;
+    @property(Label)
+    public labelOtherNick: Label = null;
+    @property(Node)
+    public btnBackSelf: Node = null;//返回按钮
+    @property(Node)
+    public btnGiveALike: Node = null;//点赞
+    @property(Node)
+    public otherTip: Node = null;
 
     @property(Node)
     public operational_activities: Node = null;//
@@ -53,10 +65,19 @@ export class MainUIView extends BaseView {
     private _mainRightActivity: MainRightActivity = null;//右侧活动
     /**初始化UI */
     async initUI() {
-        BagServer.reqGetPlayerClothing();
-        this.labelNick.string = User.nick;
-        this.initViews();
-        ActServer.reqGetActivityInfo();
+        if (User.isInSelfMap()) {
+            this.initViews();
+            this.labelNick.string = User.nick;
+            BagServer.reqGetPlayerClothing();
+            ActServer.reqGetActivityInfo();
+            this.plSelf.active = true;
+            this.plOther.active = false;
+        } else {
+            this.labelOtherNick.string = "某某的王国";
+            this.plSelf.active = false;
+            this.plOther.active = true;
+            this.otherTip.active = false;
+        }
     }
 
     private async initViews() {
@@ -66,7 +87,7 @@ export class MainUIView extends BaseView {
                 isAlignRight: true,
                 bottom: -22.447,
                 right: 44.158
-            }, this.node.getChildByName("RightUp"))
+            }, this.plSelf.getChildByPath("RightUp"))
         ]);
     }
     //设置主场景
@@ -97,6 +118,8 @@ export class MainUIView extends BaseView {
         CCUtil.onTouch(this.btnTask, this.onClickTask, this);
         CCUtil.onTouch(this.btnTaskGo, this.onClickTaskGo, this);
         CCUtil.onTouch(this.btnStudy, this.onClickStudy, this);
+        CCUtil.onTouch(this.btnBackSelf, this.onClickBackSelf, this);
+        CCUtil.onTouch(this.btnGiveALike, this.onClickGiveALike, this);
         CCUtil.onBtnClick(this.btn_friend, this.onClickFriend.bind(this));
         CCUtil.onBtnClick(this.operational_activities, this.onClickOperationalActivities.bind(this));
     }
@@ -111,11 +134,14 @@ export class MainUIView extends BaseView {
         CCUtil.offTouch(this.btnShop, this.onClickShop, this);
         CCUtil.offTouch(this.btnTask, this.onClickTask, this);
         CCUtil.offTouch(this.btnTaskGo, this.onClickTaskGo, this);
+        CCUtil.offTouch(this.btnStudy, this.onClickStudy, this);
+        CCUtil.offTouch(this.btnBackSelf, this.onClickBackSelf, this);
+        CCUtil.offTouch(this.btnGiveALike, this.onClickGiveALike, this);
     }
     /**好友点击 */
     async onClickFriend() {
         // await ViewsMgr.showPopup(PrefabType.FriendsDialogView);
-        await PopMgr.showPopRight(PrefabType.FriendListView,"content");
+        await PopMgr.showPopRight(PrefabType.FriendListView, "content");
 
     }
     /**运营活动 */
@@ -132,7 +158,7 @@ export class MainUIView extends BaseView {
     }
     //菜单点击
     public async onClickMenu() {
-        let node = await PopMgr.showPopRight(PrefabType.MainRightActivity,"content");
+        let node = await PopMgr.showPopRight(PrefabType.MainRightActivity, "content");
         this._mainRightActivity = node.getComponent(MainRightActivity);
     }
     //复习计划点击
@@ -148,9 +174,9 @@ export class MainUIView extends BaseView {
     }
     //翻译查词点击
     public async onClickTranslate() {
-       const node = await ViewsMgr.showViewAsync(PrefabType.WordbookView);
-       const script:WordbookView = node.getComponent(WordbookView);
-       script.setTabSelected(WordbookType.translate);
+        const node = await ViewsMgr.showViewAsync(PrefabType.WordbookView);
+        const script: WordbookView = node.getComponent(WordbookView);
+        script.setTabSelected(WordbookType.translate);
         // ViewsManager.showTip(TextConfig.Function_Tip);
     }
     //编辑点击
@@ -175,13 +201,19 @@ export class MainUIView extends BaseView {
     //任务前往点击
     public onClickTaskGo() {
         console.log("onClickTaskGo");
-        // let a;
-        // a.b.m = 1;
-        ViewsMgr.showTip(TextConfig.Function_Tip);
+        // ViewsMgr.showTip(TextConfig.Function_Tip);
+        // SceneMgr.loadMainScene(1);
     }
     //学习点击
     public onClickStudy() {
         SceneMgr.loadScene(SceneType.WorldMapScene);
+    }
+    /**返回自己王国 */
+    private onClickBackSelf() {
+        SceneMgr.loadMainScene();
+    }
+    /**给我点赞 */
+    private onClickGiveALike() {
     }
 }
 

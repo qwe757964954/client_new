@@ -23,6 +23,7 @@ class SceneManager {
         if (name == SceneType.LoginScene) {
             if (runName != SceneType.LoadingScene) {
                 User.isAutoLogin = false;
+                User.curMapUserID = null;
                 User.resetData();
                 NetMgr.closeNet();
             }
@@ -30,7 +31,7 @@ class SceneManager {
         director.loadScene(name, onLaunched, onUnloaded);
     }
     /**去其他王国 */
-    public loadMainScene(userID: number) {
+    public loadMainScene(userID: number = null) {
         User.curMapUserID = userID;
         director.loadScene(SceneType.MainScene);
     }
