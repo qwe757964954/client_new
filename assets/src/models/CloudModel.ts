@@ -19,6 +19,7 @@ export class CloudModel extends BaseModel {
     private _unlockNode: Node = null;//解锁节点
     private _unlockTip: Node = null;//解锁提示
     private _imgClock: Node = null;//解锁时钟
+    private _btnSpeed: Node = null;//加速按钮
 
     // y从上往下，x从右往左
     private _x: number;//x格子坐标
@@ -106,6 +107,8 @@ export class CloudModel extends BaseModel {
                 this._label.node.active = true;
             if (this._imgClock)
                 this._imgClock.active = true;
+            if (this._btnSpeed)
+                this._btnSpeed.active = true;
             if (leftTime > 0) {
                 this.clearTimer();
                 this._timer = TimerMgr.loop(this.updateBySec.bind(this), 1000);
@@ -118,6 +121,8 @@ export class CloudModel extends BaseModel {
                 this._label.node.active = false;
             if (this._imgClock)
                 this._imgClock.active = false;
+            if (this._btnSpeed)
+                this._btnSpeed.active = false;
         }
     }
     /**清理格子 */
@@ -192,11 +197,13 @@ export class CloudModel extends BaseModel {
                     if (this._label) this._label.node.active = false;
                     if (this._imgClock) this._imgClock.active = false;
                     if (this._unlockNode) this._unlockNode.active = true;
+                    if (this._btnSpeed) this._btnSpeed.active = false;
                 } else {
                     CCUtil.setNodeOpacity(this._img?.node, 128);
                     if (this._label) this._label.node.active = true;
                     if (this._imgClock) this._imgClock.active = true;
                     if (this._unlockNode) this._unlockNode.active = false;
+                    if (this._btnSpeed) this._btnSpeed.active = true;
                 }
                 if (this._unlockTip) this._unlockTip.active = false;
             } else {
@@ -204,6 +211,7 @@ export class CloudModel extends BaseModel {
                 if (this._imgClock) this._imgClock.active = false;
                 if (this._unlockNode) this._unlockNode.active = false;
                 if (this._unlockTip) this._unlockTip.active = this._canUnlock;
+                if (this._btnSpeed) this._btnSpeed.active = false;
             }
         } else {
             CCUtil.setNodeOpacity(this._img?.node, 255);
@@ -211,6 +219,7 @@ export class CloudModel extends BaseModel {
             if (this._imgClock) this._imgClock.active = false;
             if (this._unlockNode) this._unlockNode.active = false;
             if (this._unlockTip) this._unlockTip.active = false;
+            if (this._btnSpeed) this._btnSpeed.active = false;
         }
     }
     //显示图片
@@ -262,6 +271,8 @@ export class CloudModel extends BaseModel {
                 this._unlockNode = this._node.getChildByName("img_right");
                 this._unlockTip = this._node.getChildByName("img_unlock");
                 this._imgClock = this._node.getChildByName("img_clock");
+                this._btnSpeed = this._node.getChildByName("btnSpeed");
+                CCUtil.onTouch(this._btnSpeed, this.onCloudClick, this);
 
                 // let transform = this._img.getComponent(UITransform);
                 // let pos = new Vec3(0, transform.height, 0);

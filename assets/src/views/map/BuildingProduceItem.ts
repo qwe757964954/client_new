@@ -72,15 +72,16 @@ export class BuildingProduceItem extends ListItem {
         this._buildingID = id;
         this._level = data.level;
 
+        if (data.produce && data.produce.length > 0) {
+            this.labelProduceNum.string = ToolUtil.replace(TextConfig.Prop_Show, data.produce[0].num);
+        }
+
         if (data.level > level) {
             let cbLevel = User.castleLevel;//城堡等级
             this.produceNode.active = false;
             this.lockNode.active = true;
             this.labelLock.string = data.unlock > cbLevel ? ToolUtil.replace(TextConfig.Produce_Lock1, data.unlock) : ToolUtil.replace(TextConfig.Produce_Lock2, data.unlock);
             return;
-        }
-        if (data.produce && data.produce.length > 0) {
-            this.labelProduceNum.string = ToolUtil.replace(TextConfig.Prop_Show, data.produce[0].num);
         }
         this.produceNode.active = true;
         this.lockNode.active = false;
