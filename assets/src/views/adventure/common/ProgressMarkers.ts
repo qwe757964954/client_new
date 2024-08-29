@@ -10,8 +10,6 @@ export class ProgressMarkers extends ListItem {
     @property(Node)
     public characterStudy: Node = null;
 
-    private static spriteFrameCache = new Map<string, SpriteFrame>();
-
     start() {
         // 初始化时的设置，如果有必要可以添加
     }
@@ -37,15 +35,7 @@ export class ProgressMarkers extends ListItem {
 
     private async loadSpriteFrame(url: string, spriteComponent: Sprite | null) {
         if (!spriteComponent) return;
-
-        // Check cache first
-        let spriteFrame = ProgressMarkers.spriteFrameCache.get(url);
-        if (!spriteFrame) {
-            spriteFrame = await ResLoader.instance.loadAsyncPromise<SpriteFrame>("resources", url, SpriteFrame) as SpriteFrame;
-            ProgressMarkers.spriteFrameCache.set(url, spriteFrame);
-        }
-
-        // Update sprite component
+        let spriteFrame = await ResLoader.instance.loadAsyncPromise<SpriteFrame>("resources", url, SpriteFrame) as SpriteFrame;
         if (spriteComponent) {
             spriteComponent.spriteFrame = spriteFrame;
         }
