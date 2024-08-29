@@ -8,7 +8,9 @@ import { EventMgr } from "../util/EventManager";
 
 
 export class WordbookService extends BaseControll {
-
+    constructor() {
+        super("WordbookService");
+    }
     protected onInitModuleEvent(): void {
         this.addModelListener(InterfacePath.c2sWordbookCorrectWord, this.onRepCorrectWord.bind(this));
     }

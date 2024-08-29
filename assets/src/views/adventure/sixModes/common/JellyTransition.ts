@@ -1,4 +1,4 @@
-import { _decorator, Component, easing, Node, tween, UIOpacity, UITransform, Vec3 } from 'cc';
+import { _decorator, CCFloat, Component, easing, Node, tween, UIOpacity, UITransform, Vec3 } from 'cc';
 import { PrefabType } from '../../../../config/PrefabType';
 import { ViewsMgr } from '../../../../manager/ViewsManager';
 import ImgUtil from '../../../../util/ImgUtil';
@@ -9,10 +9,10 @@ export class JellyTransition extends Component {
     @property(Node)
     public targetNode: Node = null; // 需要应用动画的目标节点
 
-    @property({ type: Number, tooltip: '动画持续时间' })
+    @property({ type: CCFloat, tooltip: '动画持续时间' })
     public duration: number = 0.5;
 
-    @property({ type: Number, tooltip: '缩放因子' })
+    @property({ type: CCFloat, tooltip: '缩放因子' })
     public scaleFactor: number = 1.2;
 
     // 创建过渡视图

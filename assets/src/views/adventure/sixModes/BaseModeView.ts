@@ -221,7 +221,7 @@ export class BaseModeView extends BaseView {
     }
 
     //上报结果
-    private reportResult() {
+    protected reportResult() {
         console.log("上报结果");
         if (this._sourceType === GameSourceType.classification) {
             this._upResultSucce = true;
