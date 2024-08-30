@@ -21,6 +21,7 @@ import { WordMeaningView } from '../adventure/sixModes/WordMeaningView';
 import { EducationLevel } from '../TextbookVocabulary/TextbookInfo';
 import { TextbookListView } from '../TextbookVocabulary/TextbookListView';
 import { ReviewAdjustPlanView } from './ReviewAdjustPlanView';
+import { ReviewEndView } from './ReviewEndView';
 import { ReviewPlanRuleView } from './ReviewPlanRuleView';
 import { ReviewRewardView } from './ReviewRewardView';
 import { ReviewWordListView } from './ReviewWordListView';
@@ -33,15 +34,14 @@ enum ReviewPlanDrawType {
     One = 1,//单抽
     Ten = 2,//十连抽
 }
-
 export class ReviewWordModel implements UnitWordModel {
-    book_id: string = null;
+    book_id?: string = null;
     cn: string = null;
-    phonic: string = null;
-    syllable: string = null;
+    phonic?: string = null;
+    syllable?: string = null;
     symbol: string = null;
     symbolus: string = null;
-    unit_id: string = null;
+    unit_id?: string = null;
     w_id: string = null;
     word: string = null;
     wp_id: string = null;
@@ -408,6 +408,7 @@ export class ReviewPlanView extends BaseComponent {
     /**复习规划状态与单词列表 */
     onRepReviewPlanStatus(data: s2cReviewPlanStatus) {
         console.log("onRepReviewPlanStatus", data);
+        if(ReviewEndView.isShowReviewEnded){return}
         if (200 != data.code) {
             ViewsMgr.showAlert(data.msg);
             return;

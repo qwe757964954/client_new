@@ -92,7 +92,10 @@ export class WordMeaningView extends BaseModeView {
         this._wordsCn = data.map(wordData => wordData.cn);
         this.showCurrentWord();
     }
-
+    protected onInitModuleEvent(): void {
+        super.onInitModuleEvent();
+        this.addModelListener(InterfacePath.c2sReviewPlanOption, this.onRepReviewPlanOption.bind(this));
+    }
     //显示当前单词
     showCurrentWord() {
         super.updateConstTime();
@@ -379,21 +382,21 @@ export class WordMeaningView extends BaseModeView {
         ViewsMgr.showView(PrefabType.ReviewEndView, (node: Node) => {
             const rewardList = data.reward_list;
             node.getComponent(ReviewEndView).init(this._levelData.souceType, rewardList);
-            this.node.destroy();
+            ViewsMgr.closeView(PrefabType.WordMeaningView);
         });
     }
     /** 处理词汇书模式 */
     private handleWordbookMode() {
         EventMgr.emit(EventType.Wordbook_List_Refresh); // 通知
         ViewsMgr.showAlert(TextConfig.All_level_Tip, () => {
-            this.node.destroy();
+            ViewsMgr.closeView(PrefabType.WordMeaningView);
         });
     }
     /** 处理复习规划特别模式 */
     private handleSpecialReviewMode() {
         ViewsMgr.showRewards(this._rewardList, () => {
             ServiceMgr.studyService.reqReviewPlan(); // 刷新复习规划
-            this.node.destroy();
+            ViewsMgr.closeView(PrefabType.WordMeaningView);
         });
     }
     /** 处理默认模式 */
@@ -404,7 +407,7 @@ export class WordMeaningView extends BaseModeView {
             console.log("过渡界面回调_________________________");
             const node = await ViewsMgr.showLearnView(PrefabType.WordPracticeView);
             node.getComponent(WordPracticeView).initData(wordData, levelData);
-            this.node.parent.destroy();
+            ViewsMgr.closeView(PrefabType.WordMeaningView);
         });
     }
 
@@ -420,27 +423,19 @@ export class WordMeaningView extends BaseModeView {
 
     protected initEvent(): void {
         super.initEvent();
-        CCUtil.onTouch(this.btn_more, this.showWordDetail, this);
-        CCUtil.onTouch(this.btn_hideDetail, this.hideWordDetail, this);
-        CCUtil.onTouch(this.wordSound, this.playWordSound, this);
-        CCUtil.onTouch(this.sentenceSound, this.playSentenceSound, this);
+        CCUtil.onBtnClick(this.btn_more, this.showWordDetail.bind(this));
+        CCUtil.onBtnClick(this.btn_hideDetail, this.hideWordDetail.bind(this));
+        CCUtil.onBtnClick(this.wordSound, this.playWordSound.bind(this));
+        CCUtil.onBtnClick(this.sentenceSound, this.playSentenceSound.bind(this));
         for (let i = 0; i < this.answerList.length; i++) {
             CCUtil.onTouch(this.answerList[i], this.onAnswerClick.bind(this, i), this);
         }
-
-        this.addModelListener(InterfacePath.c2sReviewPlanOption, this.onRepReviewPlanOption.bind(this));
     }
     protected removeEvent(): void {
         super.removeEvent();
-        CCUtil.offTouch(this.btn_more, this.showWordDetail, this);
-        CCUtil.offTouch(this.btn_hideDetail, this.hideWordDetail, this);
-        CCUtil.offTouch(this.wordSound, this.playWordSound, this);
-        CCUtil.offTouch(this.sentenceSound, this.playSentenceSound, this);
         for (let i = 0; i < this.answerList.length; i++) {
             CCUtil.offTouch(this.answerList[i], this.onAnswerClick.bind(this, i), this);
         }
-
-        this.removeModelListener(InterfacePath.c2sReviewPlanOption);
     }
     /**复习规划 题目选项 */
     onRepReviewPlanOption(data: s2cReviewPlanOption) {

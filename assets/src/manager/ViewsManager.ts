@@ -130,6 +130,7 @@ export class ViewsManager {
     public async showViewAsync(viewConfig: PrefabConfig): Promise<Node> {
         if (this.isExistView(viewConfig)) {
             console.log("View already exists", viewConfig.path);
+            ViewsMgr.closeView(viewConfig);
             return Promise.reject(new Error(`View already exists: ${viewConfig.path}`));
         }
 
@@ -146,8 +147,15 @@ export class ViewsManager {
             node.name = this.getNodeName(viewConfig.path);
 
             // Remove temporary node if it still exists
-            tmpNode.destroy();
-
+            let tmpNode = parent.getChildByName(this.getTmpNodeName(viewConfig.path));
+            if (tmpNode) {
+                // Remove temporary node
+                tmpNode.destroy();
+            }
+            else {
+                console.log("界面已经被移除", viewConfig.path);
+                node.destroy();
+            }
             return node;
         } catch (error) {
             console.error("Failed to load view", viewConfig.path, error);

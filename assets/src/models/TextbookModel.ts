@@ -187,13 +187,13 @@ export interface UnitStatusData extends BaseRepPacket {
 
 
 export interface UnitWordModel {
-    book_id: string;
+    book_id?: string;
     cn: string;
-    phonic: string;
-    syllable: string;
+    phonic?: string;
+    syllable?: string;
     symbol: string;
     symbolus: string;
-    unit_id: string;
+    unit_id?: string;
     w_id: string;
     word: string;
     big_id?: number;

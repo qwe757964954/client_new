@@ -81,10 +81,10 @@ export class StudyModeView extends BaseModeView {
     }
 
     initWords() {
-        this._splits = this._wordsData.map(wordData => 
-            this._splitData[wordData.word]?.split(" ") || 
-            (wordData.word.includes(" ") ? wordData.word.split(" ") : [wordData.word])
-        );
+        this._splits = this._wordsData.map(wordData => {
+            const splitData = this._splitData[wordData.word];
+            return splitData ? splitData.split(" ") : (wordData.word.includes(" ") ? wordData.word.split(" ") : [wordData.word]);
+        });
         this.showCurrentWord();
     }
 
