@@ -1,6 +1,7 @@
 /** 资源加载单例 */
 import { Asset, Component, EffectAsset, ImageAsset, JsonAsset, Material, Node, Prefab, Sprite, SpriteAtlas, SpriteFrame, TTFFont, Texture2D, assetManager, instantiate, isValid, resources, sp } from "cc";
 import { TimerMgr } from "../util/TimerMgr";
+import { ResLoader } from "./ResLoader";
 /**缓存资源信息 */
 class CacheInfo {
     private timer: number = 0;//定时器
@@ -269,7 +270,7 @@ class LoadManagerClass {
     /**加载并显示prefab */
     public loadPrefab(path: string, parent: Node, isCache: boolean = false): Promise<any | undefined> {
         return new Promise((resolve, reject) => {
-            resources.load("prefab/" + path, Prefab, (error: Error, assets: Prefab) => {
+            ResLoader.instance.load(`prefab/${path}`, Prefab, async (error, prefab) => {
                 if (error) {
                     console.log("loadShowPrefab->resource load failed:" + path + "," + error.message);
                     reject(error);
@@ -278,18 +279,18 @@ class LoadManagerClass {
                 //如果父节点不存或已经被销毁则直接返回
                 if (!parent || !isValid(parent, true)) {
                     // assets.addRef();
-                    this.addRefAsset(assets, isCache);
-                    LoadManager.releaseAsset(assets);
-                    // reject(new Error("parent is null or invalid"));
+                    this.addRefAsset(prefab, isCache);
+                    LoadManager.releaseAsset(prefab);
+                    reject(new Error("parent is null or invalid"));
                     return;
                 }
-                let node = instantiate(assets);
+                let node = instantiate(prefab);
                 parent.addChild(node);
                 node.once(Node.EventType.NODE_DESTROYED, () => {
-                    LoadManager.releaseAsset(assets);
+                    LoadManager.releaseAsset(prefab);
                 });
                 // assets.addRef();
-                this.addRefAsset(assets, isCache);
+                this.addRefAsset(prefab, isCache);
                 resolve(node);
             });
         });

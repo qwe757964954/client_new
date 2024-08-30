@@ -1,4 +1,4 @@
-import { _decorator, instantiate, Label, Node, NodePool, Prefab, Sprite, tween, UIOpacity, UITransform, Vec3 } from 'cc';
+import { _decorator, instantiate, Label, Node, Prefab, Sprite, tween, UIOpacity, UITransform, Vec3 } from 'cc';
 import { NetConfig } from '../../../config/NetConfig';
 import { PrefabType } from '../../../config/PrefabType';
 import { DataMgr } from '../../../manager/DataMgr';
@@ -8,6 +8,7 @@ import { ViewsManager, ViewsMgr } from '../../../manager/ViewsManager';
 import { GameMode } from '../../../models/AdventureModel';
 import { UnitWordModel } from '../../../models/TextbookModel';
 import CCUtil from '../../../util/CCUtil';
+import { PoolMgr } from '../../../util/PoolUtil';
 import { Shake } from '../../../util/Shake';
 import { WordDetailView } from '../../common/WordDetailView';
 import { BaseModeView } from './BaseModeView';
@@ -63,7 +64,6 @@ export class StudyModeView extends BaseModeView {
     protected _isSplitPlaying: boolean = false;
     protected _currentSplitIdx: number = 0;
     protected _isCombine: boolean = false;
-    protected _nodePool: NodePool = new NodePool("wordSplitItem");
     private _isTweening: boolean = false;
     private _playingUrl: string = null;
 
@@ -122,22 +122,24 @@ export class StudyModeView extends BaseModeView {
 
         splits.forEach((split, i) => {
             const item = this.getSplitItem();
-            item.getComponent(WordSplitItem).init(split);
+            let script = item.getComponent(WordSplitItem);
+            script.init(split);
+            script.index = i;
             this.splitNode.addChild(item);
-            CCUtil.onTouch(item, () => this.onSplitItemClick(item, i), this);
+            console.log("initSplitNode......",item);
+            CCUtil.onBtnClick(item, (btn) => {
+                this.onSplitItemClick(btn.node)
+            });
             this._splitItems.push(item);
         });
     }
 
     getSplitItem() {
-        return this._nodePool.get() || instantiate(this.wordSplitItem);
+        return PoolMgr.getNodeFromPool("wordSplitItem") || instantiate(this.wordSplitItem);
     }
 
     clearSplitItems() {
-        this._splitItems.forEach(item => {
-            CCUtil.offTouch(item, this.onSplitItemClick, this);
-            this._nodePool.put(item);
-        });
+        PoolMgr.recycleNodes("wordSplitItem", this._splitItems);
         this._splitItems = [];
     }
 
@@ -150,35 +152,39 @@ export class StudyModeView extends BaseModeView {
         return RemoteSoundMgr.playSound(`${NetConfig.assertUrl}${wordSoundUrl}`);
     }
 
-    onSplitItemClick(item: Node, idx: number) {
-        if (this._isCombine || idx !== this._currentSplitIdx) {
-            if (idx !== this._currentSplitIdx) {
+    onSplitItemClick(item: Node) {
+        let script = item.getComponent(WordSplitItem);
+        if (this._isCombine || script.index !== this._currentSplitIdx) {
+            if (script.index !== this._currentSplitIdx) {
                 item.getComponent(Shake).shakeNode();
             }
             return;
         }
-        
+    
         if (this._playingUrl) {
             RemoteSoundMgr.stopSound(this._playingUrl);
         }
-        
+    
         const wordSplitItem = item.getComponent(WordSplitItem);
         const splitWord = wordSplitItem.word;
         wordSplitItem.select();
-
+    
         let url = `${NetConfig.assertUrl}/sounds/splitwords/${this._wordsData[this._wordIndex].word}/${splitWord}.wav`;
         if (!this._splits[this._wordIndex].length) {
             url = `${NetConfig.assertUrl}/sounds/glossary/words/en/${this._wordsData[this._wordIndex].word}.wav`;
         }
-        
+    
         this._playingUrl = url;
-        this._currentSplitIdx++;
-        RemoteSoundMgr.playSound(url).then(() => {
+        // 播放音频但不等待其完成
+        RemoteSoundMgr.playSound(url,1000).finally(() => {
+            // 更新状态，不依赖于音频播放完成
+            this._currentSplitIdx++;
             if (this._currentSplitIdx === this._splits[this._wordIndex].length) {
                 this.combineWord();
             }
         });
     }
+    
 
     combineWord() {
         this._isCombine = true;
@@ -282,13 +288,10 @@ export class StudyModeView extends BaseModeView {
     protected removeEvent(): void {
         super.removeEvent();
         CCUtil.offTouch(this.btn_hideDetail, this.onWordDetailClick, this);
-        this._splitItems.forEach((item, i) => {
-            CCUtil.offTouch(item, () => this.onSplitItemClick(item, i), this);
-        });
     }
 
     onDestroy(): void {
         super.onDestroy();
-        this._nodePool.clear();
+        PoolMgr.getNodePool("wordSplitItem").clear()
     }
 }

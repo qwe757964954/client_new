@@ -131,19 +131,16 @@ export class ViewsManager {
         if (this.isExistView(viewConfig)) {
             console.log("View already exists", viewConfig.path);
             ViewsMgr.closeView(viewConfig);
-            return Promise.reject(new Error(`View already exists: ${viewConfig.path}`));
+            // return Promise.reject(new Error(`View already exists: ${viewConfig.path}`));
         }
-
-        console.log("Loading view", viewConfig.path);
         const parent = this.getParentNode(viewConfig.zindex);
         this.incrementLoadingState(viewConfig.path);
 
         const tmpNode = this.createTemporaryNode(viewConfig.path);
-        parent.addChild(tmpNode);
 
+        parent.addChild(tmpNode);
         try {
             const node = await LoadManager.loadPrefab(viewConfig.path, parent);
-            console.log("View loaded", viewConfig.path);
             node.name = this.getNodeName(viewConfig.path);
 
             // Remove temporary node if it still exists
@@ -185,6 +182,7 @@ export class ViewsManager {
     // 辅助方法: 增加加载状态
     private incrementLoadingState(path: string) {
         this._loadingPrefabMap[path] = (this._loadingPrefabMap[path] || 0) + 1;
+
     }
 
     // 辅助方法: 减少加载状态
@@ -492,14 +490,14 @@ export class ViewsManager {
     }
 
     public async showJellyTransition(callback?: () => void){
-        let node = await this.showViewAsync(PrefabType.JellyTransition);
+        let node = await this.showLearnView(PrefabType.JellyTransition);
         let script = node.getComponent(JellyTransition);
         await script.createTransitionView();
         script.showTransitionView(callback);
     }
 
     public async showComboAnimation(comboNum:number){
-        let node = await this.showViewAsync(PrefabType.ComboView);
+        let node = await this.showLearnView(PrefabType.ComboView);
         let script = node.getComponent(ComboView);
         script.showComboAnimation(comboNum);
     }

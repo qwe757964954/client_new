@@ -10,7 +10,7 @@ export class WordSplitItem extends Component {
     @property(Label)
     public lb_word: Label = null;
     public word: string = "";
-
+    public index:number = 0;
     init(str: string) {
         this.word = str;
         this.lb_word.string = str;
