@@ -1,5 +1,7 @@
-import { _decorator, Component, Node, Sprite } from 'cc';
+import { _decorator, Component, Node, Sprite, SpriteFrame, Texture2D } from 'cc';
 import CCUtil from '../../util/CCUtil';
+import { WxApi } from '../../util/third/WxApi';
+import { ToolUtil } from '../../util/ToolUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('QRCodeView')
@@ -26,7 +28,24 @@ export class QRCodeView extends Component {
         CCUtil.offTouch(this.btnBack, this.onBtnBackClick, this);
     }
     protected onEnable(): void {
-
+        WxApi.wxLoginQrcode((code) => {
+            console.log("wxLogin 1:", code);
+        }, (data: string) => {
+            let img = new Image();
+            img.onload = () => {
+                let texture = new Texture2D();
+                texture.reset({
+                    width: img.width,
+                    height: img.height
+                });
+                texture.uploadData(img, 0, 0);
+                let sp = new SpriteFrame();
+                sp.texture = texture;
+                this.qrcode.spriteFrame = sp;
+                CCUtil.fixNodeScale(this.qrcode.node, 300, 300);
+            };
+            img.src = ToolUtil.imgBase64(data);
+        });
     }
     protected onDisable(): void {
 

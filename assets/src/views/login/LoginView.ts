@@ -16,6 +16,7 @@ import { BaseComponent } from '../../script/BaseComponent';
 import GlobalService from '../../service/GlobalService';
 import CCUtil from '../../util/CCUtil';
 import StorageUtil from '../../util/StorageUtil';
+import { WxApi } from '../../util/third/WxApi';
 import { TimerMgr } from '../../util/TimerMgr';
 import { ToolUtil } from '../../util/ToolUtil';
 import { ActivationCodeView } from './ActivationCodeView';
@@ -77,6 +78,7 @@ export class LoginView extends BaseComponent {
     private _loopID: number = null;             // 验证码循环id
 
     start() {
+        WxApi.isWxInstalled();
         this.iniEvent();
         GlobalService.getInstance();
         this.connectServer();
@@ -149,7 +151,7 @@ export class LoginView extends BaseComponent {
         let privateHasCheck = StorageUtil.getData(PRIVATE_HAS_CHECK_KEY, "0") == "0" ? false : true;
         this.agreeToggle.isChecked = privateHasCheck;
         this.agreeTip.active = !privateHasCheck;
-        this.btnWxLogin.active = false;// 微信登录按钮
+        this.btnWxLogin.active = true;// 微信登录按钮
     }
 
 
@@ -337,24 +339,16 @@ export class LoginView extends BaseComponent {
     }
     /**微信登录 */
     wxLogin() {
-        console.log("wxLogin");
+        console.log("wxLogin", WxApi.isWxInstall);
+        if (WxApi.isWxInstall) {
+            WxApi.wxLogin((code) => {
+                console.log("wxLogin code = ", code);
+            });
+        } else {
+            this.showPlQRCode();
+        }
     }
 
-
-    // 老接口
-    // {
-    //     Code: 200,
-    //     LoginToken: 'EYjbz2vUDeLKiJOXlcjmB2DPBLrPBwuIoIiYmdi0lta0lta5ideXoJaZoJeXiIWIvxnLCKLKiJOYmdaYmZy5nx0=',
-    //     MemberToken: '200236951712631790',
-    //     Mobile: '13715061560',
-    //     Msg: '请求成功',
-    //     Path: 'Account.Login',
-    //     PlatType: 0,
-    //     SysType: 0,
-    //     WebPort: '8995',
-    //     WebSocketAddr: 'szxc.chuangciyingyu.com',
-    //     WebSocketPort: '8996'
-    // }
     // 登录成功回调
     loginSuc(obj) {
         console.log("loginSuc obj = ", obj);

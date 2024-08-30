@@ -27,7 +27,7 @@ export class WxApi {
     }
     private static isWxInstalledResult(result: string) {
         let code = Number(result);
-        this.isWxInstall = code > 0;
+        this.isWxInstall = (code > 0);
     }
     /**微信登录 */
     private static _wxLoginCallBack: Function = null;

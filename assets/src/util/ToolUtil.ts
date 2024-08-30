@@ -201,6 +201,15 @@ export class ToolUtil {
     static md5(str: string): string {
         return CryptoES.MD5(str).toString();
     }
+    /**base64 */
+    static base64(str: string): string {
+        let wordArray = CryptoES.enc.Latin1.parse(str);
+        return wordArray.toString(CryptoES.enc.Base64);
+        // return btoa(str);
+    }
+    static imgBase64(str: string): string {
+        return 'data:image/png;base64,' + this.base64(str);
+    }
 
     private static _countMap: { [key: string]: number } = {};
     /**统计key */

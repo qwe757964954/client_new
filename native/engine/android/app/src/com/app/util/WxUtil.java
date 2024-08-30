@@ -1,13 +1,16 @@
 package com.app.util;
 
+import static com.cocos.lib.GlobalObject.runOnUiThread;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.util.Base64;
 import android.util.Log;
 
 import com.app.Config;
-import com.nirvana.tools.core.EncryptUtils;
+import com.app.SDKWrapper;
 import com.tencent.mm.opensdk.constants.ConstantsAPI;
 import com.tencent.mm.opensdk.diffdev.DiffDevOAuthFactory;
 import com.tencent.mm.opensdk.diffdev.OAuthErrCode;
@@ -19,13 +22,12 @@ import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
-public class WxUtil {
+public class WxUtil implements SDKWrapper.SDKInterface{
     public static final String APP_ID = "wx2de93b1490944010";
     public static final String APP_SECRET = "d635c3b72627fd4d6732020cb0f408a4";
 
@@ -102,8 +104,8 @@ public class WxUtil {
     OAuthListener mOAuthListener = new OAuthListener() {
         @Override
         public void onAuthGotQrcode(String s, byte[] bytes) {
-            String ret = null;
-            ret = new String(bytes, StandardCharsets.ISO_8859_1);
+            String ret = new String(bytes, StandardCharsets.ISO_8859_1);
+//            String ret = Base64.encodeToString(bytes, Base64.DEFAULT);//convert base64
             TSBridge.wxLoginQrcodeResult(ret);
         }
 
@@ -117,32 +119,47 @@ public class WxUtil {
             TSBridge.wxLoginQrcodeLoginResult(s);
         }
     };
-    public void getAuthQrcode() throws JSONException {
-        String url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + APP_ID + "&secret=" + APP_SECRET;
-        Log.d(Config.LOGTAG, "url_1: " + url);
-        String res = HttpClient.sendGeRequest(url);
-        Log.d(Config.LOGTAG, "服务器返回: " + res);
+    public void getAuthQrcode() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
 
-        //获取access_token
-        String access_token = new JSONObject(res).getString("access_token");
-        url = "https:api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=" + access_token + "&type=2";
-        Log.d(Config.LOGTAG, "url_2: " + url);
+                String url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + APP_ID + "&secret=" + APP_SECRET;
+                String res = HttpClient.sendGeRequest(url);
+                //获取access_token
+                String access_token = null;
+                try {
+                    access_token = new JSONObject(res).getString("access_token");
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+                url = "https:api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=" + access_token + "&type=2";
 
-        res = HttpClient.sendGeRequest(url);
+                res = HttpClient.sendGeRequest(url);
+                String ticket = null;
+                try {
+                    ticket = new JSONObject(res).getString("ticket");
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
 
-        Log.d(Config.LOGTAG, "服务器返回: " + res);
-        String ticket = new JSONObject(res).getString("ticket");
+                StringBuilder str = new StringBuilder();// 定义变长字符串
+                // 随机生成数字，并添加到字符串
+                for (int i = 0; i < 8; i++) {
+                    str.append(new Random().nextInt(10));
+                }
+                String noncestr = str.toString();
+                String timeStamp = Long.toString(System.currentTimeMillis()).substring(0, 10);
+                String string1 = String.format("appid=%s&noncestr=%s&sdk_ticket=%s&timestamp=%s", APP_ID, noncestr, ticket, timeStamp);
+                String sha = EncryptUtils.getSHA(string1);
 
-        StringBuilder str = new StringBuilder();// 定义变长字符串
-        // 随机生成数字，并添加到字符串
-        for (int i = 0; i < 8; i++) {
-            str.append(new Random().nextInt(10));
-        }
-        String noncestr = str.toString();
-        String timeStamp = Long.toString(System.currentTimeMillis()).substring(0, 10);
-        String string1 = String.format("appid=%s&noncestr=%s&sdk_ticket=%s&timestamp=%s", APP_ID, noncestr, ticket, timeStamp);
-        String sha = EncryptUtils.getSHA(string1);
-        Log.d(Config.LOGTAG, "二维码验证方式" + sha);
-        DiffDevOAuthFactory.getDiffDevOAuth().auth(APP_ID, "snsapi_userinfo", noncestr, timeStamp, sha, mOAuthListener);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        DiffDevOAuthFactory.getDiffDevOAuth().auth(APP_ID, "snsapi_userinfo", noncestr, timeStamp, sha, mOAuthListener);
+                    }
+                });
+            }
+        }).start();
     }
 }

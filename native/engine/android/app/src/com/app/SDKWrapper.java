@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.app.util.ErrorData;
 
@@ -48,6 +49,7 @@ public final class SDKWrapper {
             if (serviceClasses == null) return;
             int length = serviceClasses.length;
             for (int i = 0; i < length; i++) {
+                Log.d(Config.LOGTAG,"loadSDKInterface:"+serviceClasses[i]);
                 instances.add((SDKInterface) Class.forName(serviceClasses[i]).newInstance());
             }
         } catch (Exception e) {

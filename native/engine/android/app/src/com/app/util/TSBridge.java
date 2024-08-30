@@ -44,7 +44,7 @@ public class TSBridge {
             @Override
             public void run() {
                 try{
-                    Log.e(Config.LOGTAG,"tsToJava："+arg0);
+                    Log.d(Config.LOGTAG,"tsToJava："+arg0);
                     if(arg0.equals("onRecord")){
                         TSBridge.onRecord(arg1);
                     }else if(arg0.equals("playRecord")){
@@ -78,7 +78,7 @@ public class TSBridge {
     }
     static public void javaToTs(String arg0, String arg1){
         try {
-            Log.e(Config.LOGTAG,"javaToTs："+arg0);
+            Log.d(Config.LOGTAG,"javaToTs："+arg0+";"+arg1);
             CocosHelper.runOnGameThread(new Runnable() {
                 @Override
                 public void run() {
@@ -150,9 +150,11 @@ public class TSBridge {
         return Settings.Secure.getString(_activity.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
     static public void wxLogin() {
+        if(null == _wxUtil) return;
         _wxUtil.login();
     }
-    static public void wxLoginQrcode() throws JSONException {
+    static public void wxLoginQrcode() {
+        if(null == _wxUtil) return;
         _wxUtil.getAuthQrcode();
     }
     static public void wxLoginResult(String result){
@@ -187,11 +189,8 @@ public class TSBridge {
         loginOpenType = Integer.parseInt(typeStr);
     }
     static public void isWxInstalled(){
+        if(null == _wxUtil) return;
         String ret = _wxUtil.isInstalled() ? "1":"0";
-        TSBridge.javaToTs("isWxInstalled",ret);
-    }
-    static public void isWxInstalledResult(String status){
-        isWxInstall = Integer.parseInt(status) > 0;
-        TSBridge.javaToTs("isWxInstalledResult", status);
+        TSBridge.javaToTs("isWxInstalledResult", ret);
     }
 }

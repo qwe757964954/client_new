@@ -40,7 +40,7 @@ public class ErrorData {
 
     public void upload(){
         try{
-            HttpClient.sendPostRequest("https://szxc.chuangciyingyu.com/act_record/",this.getJson());
+//            HttpClient.sendPostRequest("https://szxc.chuangciyingyu.com/act_record/",this.getJson());
         }catch (Exception e){
 
         }

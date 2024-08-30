@@ -1,4 +1,8 @@
 package com.app.util;
+import android.util.Log;
+
+import com.app.Config;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -45,6 +49,7 @@ public class HttpClient {
                 while ((line = reader.readLine()) != null) {
                     response.append(line);
                 }
+                reader.close();
                 return response.toString();
             }
 
@@ -62,22 +67,15 @@ public class HttpClient {
         HttpURLConnection connection = null;
 
         try {
+//            Log.d(Config.LOGTAG, "HttpClient sendGeRequest: " + url);
             // 创建URL对象
             URL apiUrl = new URL(url);
-
             // 打开连接
             connection = (HttpURLConnection) apiUrl.openConnection();
-
+            connection.setConnectTimeout(1000);
             // 设置请求方法为POST
             connection.setRequestMethod("GET");
-
-            // 启用输入输出
             connection.setDoOutput(true);
-
-            // 设置请求头
-//            connection.setRequestProperty("Content-Type", "application/json");
-//            connection.setRequestProperty("charset", "utf-8");
-
             // 获取响应代码
             int responseCode = connection.getResponseCode();
 
@@ -89,6 +87,8 @@ public class HttpClient {
                 while ((line = reader.readLine()) != null) {
                     response.append(line);
                 }
+//                Log.d(Config.LOGTAG, "HttpClient sendGeRequest result: " + response.toString());
+                reader.close();
                 return response.toString();
             }
 
