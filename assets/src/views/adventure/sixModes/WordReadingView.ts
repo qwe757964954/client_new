@@ -247,7 +247,7 @@ export class WordReadingView extends BaseModeView {
             console.log('朗读模式完成', this._currentSubmitResponse);
             nodeScript.initData(this._currentSubmitResponse, this.gameMode, this._sourceType);
             this.topNode.cancelTimeSchedule();
-            this.node.parent.destroy();
+            ViewsMgr.closeView(PrefabType.WordReadingView);
         });
     }
 

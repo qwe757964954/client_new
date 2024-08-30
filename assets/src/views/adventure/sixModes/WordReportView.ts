@@ -131,26 +131,25 @@ export class WordReportView extends BaseView {
 
     private gotoEvaluation() {
         console.log("测评模式");
-        this.node.destroy();
+        ViewsMgr.closeView(PrefabType.WordReportView);
         EventMgr.dispatch(EventType.Enter_Level_Test);
     }
 
     private onCloseClick() {
         EventMgr.dispatch(EventType.Exit_Island_Level);
-        this.node.destroy();
+        ViewsMgr.closeView(PrefabType.WordReportView);
     }
 
     private gotoNextLevel() {
         console.log("下一关卡");
         ViewsMgr.closeView(PrefabType.WordReportView);
-        this.node.destroy();
         EventMgr.dispatch(EventType.Goto_Textbook_Next_Level);
     }
 
     private gotoLevelList() {
         console.log("关卡列表");
         EventMgr.dispatch(EventType.Exit_Island_Level);
-        this.node.destroy();
+        ViewsMgr.closeView(PrefabType.WordReportView);
     }
 
     onInitModuleEvent() {
