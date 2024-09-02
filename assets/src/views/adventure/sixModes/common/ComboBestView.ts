@@ -22,7 +22,7 @@ export class ComboBestView extends BasePopStudy {
 
         tween(this.comboText.node)
             .sequence(scaleTween)
-            .call(() => opacityTween.start())
+            // .call(() => opacityTween.start())
             .start();
     }
 

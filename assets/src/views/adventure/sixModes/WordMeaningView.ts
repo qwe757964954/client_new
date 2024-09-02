@@ -382,21 +382,21 @@ export class WordMeaningView extends BaseModeView {
         ViewsMgr.showView(PrefabType.ReviewEndView, (node: Node) => {
             const rewardList = data.reward_list;
             node.getComponent(ReviewEndView).init(this._levelData.souceType, rewardList);
-            ViewsMgr.closeView(PrefabType.WordMeaningView);
+            this.node.destroy();
         });
     }
     /** 处理词汇书模式 */
     private handleWordbookMode() {
         EventMgr.emit(EventType.Wordbook_List_Refresh); // 通知
         ViewsMgr.showAlert(TextConfig.All_level_Tip, () => {
-            ViewsMgr.closeView(PrefabType.WordMeaningView);
+            this.node.destroy();
         });
     }
     /** 处理复习规划特别模式 */
     private handleSpecialReviewMode() {
         ViewsMgr.showRewards(this._rewardList, () => {
             ServiceMgr.studyService.reqReviewPlan(); // 刷新复习规划
-            ViewsMgr.closeView(PrefabType.WordMeaningView);
+            this.node.destroy();
         });
     }
     /** 处理默认模式 */
@@ -404,10 +404,9 @@ export class WordMeaningView extends BaseModeView {
         this.showTransitionView(async () => {
             const wordData = JSON.parse(JSON.stringify(this._wordsData));
             const levelData = JSON.parse(JSON.stringify(this._levelData));
-            console.log("过渡界面回调_________________________");
             const node = await ViewsMgr.showLearnView(PrefabType.WordPracticeView);
             node.getComponent(WordPracticeView).initData(wordData, levelData);
-            ViewsMgr.closeView(PrefabType.WordMeaningView);
+            this.node.destroy();
         });
     }
 

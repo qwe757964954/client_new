@@ -1,4 +1,4 @@
-import { BlockInputEvents, Node, Prefab, _decorator, instantiate } from 'cc';
+import { BlockInputEvents, Layers, Node, Prefab, _decorator, instantiate } from 'cc';
 import { PrefabConfig } from '../config/PrefabType';
 import { BasePopRight } from '../script/BasePopRight';
 import { BasePopup } from '../script/BasePopup';
@@ -60,6 +60,7 @@ export class PopupManager {
                 // Instantiate and add the prefab as a child node
                 let node = instantiate(prefab);
                 nd.addChild(node);
+                node.layer = Layers.Enum.UI_2D;
                 CCUtil.addWidget(nd, { left: 0, right: 0, top: 0, bottom: 0 });
 
                 // Retrieve the component and execute the show animation

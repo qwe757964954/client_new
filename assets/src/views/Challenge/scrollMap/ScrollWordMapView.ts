@@ -28,7 +28,7 @@ export class ScrollWordMapView extends BaseMapView {
         return nodeArr;
     }
 
-    protected gotoNextLevel() {
+    public gotoNextLevel() {
         const nextIndex = this._curLevelIndex + 1;
         if (nextIndex >= this._pointItems.length) {
             ViewsManager.showTip(TextConfig.All_level_Tip);

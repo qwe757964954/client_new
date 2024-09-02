@@ -7,7 +7,6 @@ import { inf_SpineAniCreate } from '../../../manager/InterfaceDefines';
 import { SoundMgr } from '../../../manager/SoundMgr';
 import { ViewsManager, ViewsMgr } from '../../../manager/ViewsManager';
 import { AdventureResult } from '../../../models/AdventureModel';
-import { RoleBaseModel } from '../../../models/RoleBaseModel';
 import { GameSubmitResponse } from '../../../models/TextbookModel';
 import { BaseView } from '../../../script/BaseView';
 import CCUtil from '../../../util/CCUtil';
@@ -159,8 +158,9 @@ export class WordReportView extends BaseView {
     private async initRolePlayer() {
         console.log("initRolePlayer 关卡列表");
         const role = await ViewsManager.addRoleToNode(this.role_node);
-        const roleModel = role.getComponent(RoleBaseModel);
-        roleModel.standby();
+        // const role = await ViewsManager.addRoleToNode(this.role_node);
+        // const roleModel = role.getComponent(RoleBaseModel);
+        // roleModel.standby();
     }
 
     onLoadRewardHorizontal(item: Node, idx: number) {

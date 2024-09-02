@@ -233,7 +233,7 @@ export class StudyModeView extends BaseModeView {
             const levelData = { ...this._levelData };
             let node = await ViewsMgr.showLearnView(PrefabType.WordMeaningView);
             node.getComponent(WordMeaningView).initData(wordData, levelData);
-            this.node.parent.destroy();
+            this.node.destroy();
         });
     }
 

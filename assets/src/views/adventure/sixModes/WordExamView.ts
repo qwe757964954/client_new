@@ -183,7 +183,7 @@ export class WordExamView extends BaseModeView {
             ViewsMgr.showView(PrefabType.ExamReportView, (node: Node) => {
                 let nodeScript = node.getComponent(ExamReportView);
                 nodeScript.initData(this._currentSubmitResponse, this._sourceType);
-                this.node.parent.destroy();
+                this.node.destroy();
             });
         }
     }

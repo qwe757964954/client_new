@@ -37,7 +37,6 @@ export abstract class BaseMapView extends BaseView {
         
     }
     onInitModuleEvent() {
-        this.addModelListener(EventType.Goto_Textbook_Next_Level, this.gotoNextLevel);
         this.addModelListener(EventType.Update_Curent_Level_Index, this.updateCurLevelIndex);
     }
     private compareUnitNames(a: UnitItemStatus, b: UnitItemStatus): number {
@@ -254,5 +253,5 @@ export abstract class BaseMapView extends BaseView {
         this._curLevelIndex = index;
     }
 
-    protected abstract gotoNextLevel(): void;
+    public abstract gotoNextLevel(): void;
 }

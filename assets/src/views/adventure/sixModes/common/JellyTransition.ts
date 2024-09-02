@@ -1,6 +1,4 @@
 import { _decorator, CCFloat, Component, easing, Node, tween, UIOpacity, UITransform, Vec3 } from 'cc';
-import { PrefabType } from '../../../../config/PrefabType';
-import { ViewsMgr } from '../../../../manager/ViewsManager';
 import ImgUtil from '../../../../util/ImgUtil';
 const { ccclass, property } = _decorator;
 
@@ -51,7 +49,8 @@ export class JellyTransition extends Component {
             .to(this.duration, { scale: originalScale }, { easing: easing.elasticIn })
             .call(() => {
                 dark.active = false;
-                ViewsMgr.closeView(PrefabType.JellyTransition);
+                this.node.destroy();
+                // ViewsMgr.closeView(PrefabType.JellyTransition);
                 callback?.(); // 调用回调函数
             })
             .start();

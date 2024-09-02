@@ -64,6 +64,7 @@ export class ViewsManager {
 
     // 显示学习视图
     public showLearnView(viewConfig: PrefabConfig): Promise<Node> {
+        return this.showViewAsync(viewConfig);
         const parent = this.getParentNode(viewConfig.zindex);
         const nodeName = this.getNodeName(viewConfig.path);
         const node = ImgUtil.create_2DNode(nodeName);
@@ -78,6 +79,7 @@ export class ViewsManager {
 
                 const prefabNode = instantiate(prefab);
                 node.addChild(prefabNode);
+                node.layer = Layers.Enum.UI_2D;
                 CCUtil.addWidget(node, { left: 0, right: 0, top: 0, bottom: 0 });
 
                 resolve(prefabNode);
@@ -134,6 +136,7 @@ export class ViewsManager {
             // return Promise.reject(new Error(`View already exists: ${viewConfig.path}`));
         }
         const parent = this.getParentNode(viewConfig.zindex);
+        console.log("showViewAsync exists", parent);
         this.incrementLoadingState(viewConfig.path);
 
         const tmpNode = this.createTemporaryNode(viewConfig.path);
@@ -146,7 +149,7 @@ export class ViewsManager {
             // Remove temporary node if it still exists
             let tmpNode = parent.getChildByName(this.getTmpNodeName(viewConfig.path));
             if (tmpNode) {
-                // Remove temporary node
+                console.log("Remove temporary node", tmpNode);
                 tmpNode.destroy();
             }
             else {

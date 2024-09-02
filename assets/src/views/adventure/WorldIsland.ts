@@ -60,6 +60,7 @@ export class WorldIsland extends BaseView {
             [InterfacePath.WordBossGame_Restart, this.onBossGameRestart.bind(this)],
             [InterfacePath.Island_Progress, this.onGetIslandProgress.bind(this)],
             [EventType.Exit_Island_Level, this.onExitIsland.bind(this)],
+            [EventType.Goto_Textbook_Next_Level, this.gotoNextLevel.bind(this)],
         ]);
     }
 
@@ -100,6 +101,9 @@ export class WorldIsland extends BaseView {
         }
         console.log("onGetIslandProgress.......",data);
         this.setPointsData(data);
+    }
+    gotoNextLevel(){
+        this.scrollMap.gotoNextLevel();
     }
     onExitIsland(){
         this._rightChallenge.hideView();

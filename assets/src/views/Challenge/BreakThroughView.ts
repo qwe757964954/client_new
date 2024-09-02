@@ -62,7 +62,7 @@ export class BreakThroughView extends BaseView {
         this.addModelListener(EventType.Exit_Island_Level, this.onExitIsland.bind(this));
         this.addModelListener(EventType.MapPoint_Click, this.gotoTextbookLevel.bind(this));
         this.addModelListener(EventType.Enter_Level_Test, this.gotoLevelTest.bind(this));
-        this.addModelListener(EventType.Goto_Module_Next_Level, this.gotoNextLevelTest.bind(this));
+        this.addModelListener(EventType.Goto_Textbook_Next_Level, this.gotoNextLevel);
     }
     initData(data: CurrentBookStatus, unitData: UnitListItemStatus) {
         this._bookData = data;
@@ -81,7 +81,10 @@ export class BreakThroughView extends BaseView {
     getUnitListStatus() {
         TBServer.reqUnitListStatus(this._bookData.book_id);
     }
-
+    gotoNextLevel(){
+        let levelData = this.scrollMap.gotoNextLevel();
+        this.gotoNextLevelTest(levelData);
+    }
     gotoNextLevelTest(data: GotoUnitLevel) {
         this._selectitemStatus = data.itemStatus;
         this._selectGate = data.gate;
@@ -135,17 +138,16 @@ export class BreakThroughView extends BaseView {
     }
 
     async openLearningView(wordData: VocabularyWordData, bookLevelData: BookLevelConfig, gameModel: GameMode) {
-
         const prefabType = GameStudyViewMap[gameModel];
         if (prefabType) {
             const node = await ViewsMgr.showLearnView(prefabType);
             let scpt: any = node.getComponent(prefabType.componentName); 
             scpt.initData(wordData.data, bookLevelData);
+            this._rightChallenge.hideView();
         }
     }
 
     onExitIsland() {
-        this._rightChallenge.hideView();
         this.getUnitListStatus();
     }
 
@@ -216,7 +218,6 @@ export class BreakThroughView extends BaseView {
         this.createNavigation(`${this._bookData.book_name} ${this._bookData.grade}`, this.top_layout, async () => {
             const node = await ViewsMgr.showLearnView(PrefabType.TextbookChallengeView);
             ViewsMgr.closeView(PrefabType.BreakThroughView);
-
         });
     }
 

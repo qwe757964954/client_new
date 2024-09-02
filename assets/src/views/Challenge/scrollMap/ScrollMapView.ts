@@ -5,6 +5,7 @@ import { ViewsManager } from '../../../manager/ViewsManager';
 import { UnitItemStatus } from '../../../models/TextbookModel';
 import { EventMgr } from '../../../util/EventManager';
 import { TextbookMapPointItem } from '../../adventure/levelmap/TextbookMapPointItem';
+import { GotoUnitLevel } from '../BreakThroughView';
 import { BaseMapView } from './BaseMapView';
 
 const { ccclass, property } = _decorator;
@@ -30,7 +31,7 @@ export class ScrollMapView extends BaseMapView {
         return nodeArr;
     }
 
-    protected gotoNextLevel() {
+    public gotoNextLevel() {
         const nextIndex = this._curLevelIndex + 1;
         if (nextIndex >= this._pointItems.length) {
             ViewsManager.showTip(TextConfig.All_level_Tip);
@@ -43,10 +44,13 @@ export class ScrollMapView extends BaseMapView {
         const data = item.data;
         const itemStatus = this._unitStatus.find(status => status.unit_name === data.big_id);
         const gate = itemStatus.gate_list[data.small_id - 1];
-        EventMgr.dispatch(EventType.Goto_Module_Next_Level, {
+        let dataLevel: GotoUnitLevel = {
             itemStatus,
             gate,
             isNext: true
-        });
+        };
+        return dataLevel;
+        EventMgr.dispatch(EventType.Goto_Module_Next_Level, );
+        
     }
 }

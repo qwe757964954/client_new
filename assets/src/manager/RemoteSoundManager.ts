@@ -1,6 +1,7 @@
 import { assetManager, AudioClip, AudioSource } from "cc";
 import { NetConfig } from "../config/NetConfig";
 import GlobalConfig from "../GlobalConfig";
+import { ResLoader } from "./ResLoader";
 
 class RemoteSoundManager {
     private _cacheAsset: Map<string, AudioSource> = new Map();
@@ -33,9 +34,8 @@ class RemoteSoundManager {
                     this._playList.delete(url);
                     reject(new Error('音频加载超时'));
                 }, timeoutDuration);
-
                 // 加载音频
-                assetManager.loadRemote(url, { audioLoadMode: AudioClip.AudioType.WEB_AUDIO }, (err, audioclip: AudioClip) => {
+                ResLoader.instance.loadRemote(url, { audioLoadMode: AudioClip.AudioType.WEB_AUDIO }, (err, audioclip: AudioClip) => {
                     clearTimeout(loadLimitTimer);
                     if (err) {
                         console.error("加载错误", err);

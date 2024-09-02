@@ -235,7 +235,7 @@ export class WordSpellView extends BaseModeView {
             console.log("过渡界面回调_________________________");
             let node = await ViewsMgr.showLearnView(PrefabType.WordReadingView);
             node.getComponent(WordReadingView).initData(wordData, levelData);
-            this.node.parent.destroy();
+            this.node.destroy();
         })
     }
 
