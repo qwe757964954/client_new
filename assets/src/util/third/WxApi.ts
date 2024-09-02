@@ -48,6 +48,10 @@ export class WxApi {
         this._wxLoginQrcodeImgCallBack = imgCall;
         native.bridge?.sendToNative("wxLoginQrcode");
     }
+    public static clearWxLoginQrcodeCallback() {
+        this._wxLoginQrcodeCallBack = null;
+        this._wxLoginQrcodeImgCallBack = null;
+    }
     private static wxLoginQrcodeResult(result: string) {
         if (null == this._wxLoginQrcodeImgCallBack) return;
         this._wxLoginQrcodeImgCallBack(result);

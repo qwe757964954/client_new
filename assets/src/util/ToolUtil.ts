@@ -80,6 +80,22 @@ export class ToolUtil {
         }
         return ret;
     }
+    /**随机n个字母 */
+    static getRandomLetters(n: number): string {
+        let ret = "";
+        for (let i = 0; i < n; i++) {
+            ret += String.fromCharCode(ToolUtil.getRandomInt(65, 90));
+        }
+        return ret;
+    }
+    /**随机n位数字 */
+    static getRandomNumbers(n: number): string {
+        let ret = "";
+        for (let i = 0; i < n; i++) {
+            ret += String.fromCharCode(ToolUtil.getRandomInt(48, 57));
+        }
+        return ret;
+    }
     static getRandomUniqueItemsIdx<T>(arr: T[], n: number): number[] {
         let ret: number[] = [];
         let tmpList = Array.from({ length: arr.length }, (_, x) => x);

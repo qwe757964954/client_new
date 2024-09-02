@@ -1,10 +1,11 @@
-import { _decorator, Button, EditBox, Label, Node, sys, Toggle } from 'cc';
+import { _decorator, Node, sys, Toggle } from 'cc';
 import { EventType } from '../../config/EventType';
 import { KeyConfig } from '../../config/KeyConfig';
 import { NetConfig } from '../../config/NetConfig';
-import { SceneType } from '../../config/PrefabType';
+import { PrefabType, SceneType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { DataMgr } from '../../manager/DataMgr';
+import { LoadManager } from '../../manager/LoadManager';
 import { SceneMgr } from '../../manager/SceneMgr';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { s2cAccountLogin, s2cGetPhoneCode } from '../../models/NetModel';
@@ -17,9 +18,11 @@ import GlobalService from '../../service/GlobalService';
 import CCUtil from '../../util/CCUtil';
 import StorageUtil from '../../util/StorageUtil';
 import { WxApi } from '../../util/third/WxApi';
-import { TimerMgr } from '../../util/TimerMgr';
-import { ToolUtil } from '../../util/ToolUtil';
 import { ActivationCodeView } from './ActivationCodeView';
+import { LoginAccountView } from './LoginAccountView';
+import { LoginCodeView } from './LoginCodeView';
+import { LoginMiddleBase } from './LoginMiddleBase';
+import { LoginRegisterView } from './LoginRegisterView';
 import { QRCodeView } from './QRCodeView';
 const { ccclass, property } = _decorator;
 
@@ -32,38 +35,10 @@ const LOGIN_INFO_KEY = "login_info_key";
 export class LoginView extends BaseComponent {
     @property(Node)
     public middle: Node = null;              // middle节点
-    @property(QRCodeView)
-    public plQRCode: QRCodeView = null;      // 二维码
-    @property(ActivationCodeView)
-    public plActivationCode: ActivationCodeView = null;      // 激活码
+    @property(Node)
+    public plMiddle: Node = null;             // middle节点
     @property(Node)
     public btnWxLogin: Node = null;          // 微信登录按钮
-
-    @property(Node)
-    public loginBox: Node = null;            // 账号密码节点
-    @property(EditBox)
-    public userNameEdit: EditBox = null;     // 用户名输入框
-    @property(EditBox)
-    public pwdEdit: EditBox = null;          // 密码输入框
-    @property(Node)
-    public btnAccountLogin: Node = null;     // 账号登录按钮
-    @property(Node)
-    public btnGoToPhoneCode: Node = null;    // 去手机号登录按钮
-
-    @property(Node)
-    public inputPhoneBox: Node = null;       // 手机号输入框节点
-    @property(EditBox)
-    public phoneEdit: EditBox = null;        // 手机号输入框
-    @property(EditBox)
-    public codeEdit: EditBox = null;         // 验证码输入框
-    @property(Button)
-    public btnCode: Button = null;          // 验证码获取按钮
-    @property(Label)
-    public codeTime: Label = null;           // 验证码倒计时
-    @property(Node)
-    public btnCodeLogin: Node = null;       // 验证码登录按钮
-    @property(Node)
-    public btnGoToAccount: Node = null;     // 去账号登录按钮
 
     @property(Toggle)
     public agreeToggle: Toggle = null;       // 隐私协议确认
@@ -74,56 +49,46 @@ export class LoginView extends BaseComponent {
     @property(Node)
     public agreeTip: Node = null;            // 提示节点
 
-    private _codeTime: number = 0;          // 验证码时间
-    private _loopID: number = null;             // 验证码循环id
+    private plQRCode: QRCodeView = null;      // 二维码
+    private plActivationCode: ActivationCodeView = null;      // 激活码
+    private plMiddleAry: Node[] = [];          // middle节点数组
 
-    start() {
+    protected start() {
         WxApi.isWxInstalled();
         this.iniEvent();
         GlobalService.getInstance();
         this.connectServer();
-        this.plQRCode.setBackCall(this.onPlQrCodeBack.bind(this));
-        this.plActivationCode.setCallFunc(this.onPlActivationCodeBack.bind(this), this.onActivationCodeActive.bind(this));
 
         this.checkToken();
         DataMgr.instance.initData();
     }
-    onDestroy(): void {
+    protected onDestroy(): void {
         this.removeEvent();
-        this.clearTimer();
     }
     //初始化事件
-    iniEvent() {
+    private iniEvent() {
         this.addEvent(InterfacePath.c2sAccountLogin, this.onAccountLogin.bind(this));
         this.addEvent(InterfacePath.c2sTokenLogin, this.onAccountLogin.bind(this));
         this.addEvent(InterfacePath.c2sPhoneCodeLogin, this.onAccountLogin.bind(this));
         this.addEvent(EventType.Socket_ReconnectFail, this.onSocketDis.bind(this));
 
         CCUtil.onTouch(this.btnWxLogin, this.wxLogin, this);
-        CCUtil.onTouch(this.btnAccountLogin, this.btnLoginClick, this);
         CCUtil.onTouch(this.btnAgree, this.btnUserAgreeClick, this);
         CCUtil.onTouch(this.btnPrivacy, this.btnPrivacyClick, this);
-        CCUtil.onTouch(this.btnGoToPhoneCode, this.btnGoToPhoneCodeClick, this);
-        CCUtil.onTouch(this.btnGoToAccount, this.btnGoToAccountClick, this);
+
         this.agreeToggle.node.on(Toggle.EventType.TOGGLE, this.onToggle, this);
-        CCUtil.onTouch(this.btnCode, this.btnPhoneCodeClick, this);
-        CCUtil.onTouch(this.btnCodeLogin, this.btnPhoneCodeLoginClick, this);
+
     }
     /**移除事件 */
-    removeEvent() {
+    private removeEvent() {
         this.clearEvent();
 
         CCUtil.offTouch(this.btnWxLogin, this.wxLogin, this);
-        CCUtil.offTouch(this.btnAccountLogin, this.btnLoginClick, this);
         CCUtil.offTouch(this.btnAgree, this.btnUserAgreeClick, this);
         CCUtil.offTouch(this.btnPrivacy, this.btnPrivacyClick, this);
-        CCUtil.offTouch(this.btnGoToPhoneCode, this.btnGoToPhoneCodeClick, this);
-        CCUtil.offTouch(this.btnGoToAccount, this.btnGoToAccountClick, this);
-        CCUtil.offTouch(this.btnCode, this.btnPhoneCodeClick, this);
-        CCUtil.offTouch(this.btnCodeLogin, this.btnPhoneCodeLoginClick, this);
     }
 
-    checkToken() {
+    private checkToken() {
         if (User.isAutoLogin) {
             let token = StorageUtil.getData(KeyConfig.Last_Login_Token, "");
             if (token && "" != token) {
@@ -136,135 +101,107 @@ export class LoginView extends BaseComponent {
         this.initUI();
     }
 
-    initUI() {
-        let account = StorageUtil.getData(KeyConfig.Last_Login_Account, "");
-        let password = StorageUtil.getData(KeyConfig.Last_Login_Pwd, "");
-        if (account && password) {
-            this.userNameEdit.string = account;
-            this.pwdEdit.string = password;
-        }
-
-        this.middle.active = true;
-        this.loginBox.active = true;
-        this.inputPhoneBox.active = false;
-        // 隐私协议
-        let privateHasCheck = StorageUtil.getData(PRIVATE_HAS_CHECK_KEY, "0") == "0" ? false : true;
-        this.agreeToggle.isChecked = privateHasCheck;
-        this.agreeTip.active = !privateHasCheck;
-        this.btnWxLogin.active = true;// 微信登录按钮
+    private initUI() {
+        this.showMiddleAcount(() => {
+            this.middle.active = true;
+            // 隐私协议
+            let privateHasCheck = StorageUtil.getData(PRIVATE_HAS_CHECK_KEY, "0") == "0" ? false : true;
+            this.agreeToggle.isChecked = privateHasCheck;
+            this.agreeTip.active = !privateHasCheck;
+            this.btnWxLogin.active = true;// 微信登录按钮
+        });
+    }
+    /**设置LoginMiddleBase */
+    private setLoginMiddleBase(view: LoginMiddleBase) {
+        view.agreeToggle = this.agreeToggle;
+        view.goToAccountCall = this.showMiddleAcount.bind(this);
+        view.goToCodeCall = this.showMiddlePhoneCode.bind(this);
+        view.goToRegisterCall = this.showMiddleRegister.bind(this);
     }
 
-
-
-    // 账号密码登录
-    btnLoginClick() {
-        let isChecked = this.agreeToggle.isChecked;
-        let userName = this.userNameEdit.string;
-        let pwd = this.pwdEdit.string;
-        if (!isChecked) {
-            ViewsMgr.showTip(TextConfig.Agree_Maksure_Tip);
-            return;
-        }
-        if (userName == "") {
-            ViewsMgr.showTip(TextConfig.Account_Null_Tip);
-            return;
-        }
-        if (pwd == "") {
-            ViewsMgr.showTip(TextConfig.Password_Null_Tip);
-            return;
-        }
-        this.accountLogin(userName, pwd);
-    }
     /**用户协议 */
-    btnUserAgreeClick() {
+    private btnUserAgreeClick() {
         sys.openURL(NetConfig.userAgreement);
     }
     /**隐私政策 */
-    btnPrivacyClick() {
+    private btnPrivacyClick() {
         sys.openURL(NetConfig.privacyPage);
     }
-    /**去手机号登录 */
-    btnGoToPhoneCodeClick() {
-        this.loginBox.active = false;
-        this.inputPhoneBox.active = true;
-    }
-    /**去账号登录 */
-    btnGoToAccountClick() {
-        this.loginBox.active = true;
-        this.inputPhoneBox.active = false;
-    }
-    /**清理定时器 */
-    clearTimer() {
-        if (this._loopID) {
-            TimerMgr.stopLoop(this._loopID);
-            this._loopID = null;
-        }
-    }
-    /**验证码 */
-    btnPhoneCodeClick() {
-        let phone = this.phoneEdit.string;
-        if ("" == phone) {
-            ViewsMgr.showTip(TextConfig.Phone_Null_Tip);
-            return;
-        }
-        if (this._codeTime > 0) {
-            return;
-        }
-        this._codeTime = 60;
-        this.codeTime.string = "(60s)";
-        this.btnCode.interactable = false;
-        this.clearTimer();
-        this._loopID = TimerMgr.loop(() => {
-            this._codeTime--;
-            this.codeTime.string = ToolUtil.replace(TextConfig.Get_Code_Time, this._codeTime);
-            if (this._codeTime < 0) {
-                this.clearTimer();
 
-                this.codeTime.string = TextConfig.Get_Code;
-                this.btnCode.interactable = true;
-            }
-        }, 1000);
-
-        ServiceMgr.accountService.reqGetPhoneCode(phone);
-    }
-    /**手机验证码登录 */
-    btnPhoneCodeLoginClick() {
-        let isChecked = this.agreeToggle.isChecked;
-        let phone = this.phoneEdit.string;
-        let code = this.codeEdit.string;
-        if (!isChecked) {
-            ViewsMgr.showTip(TextConfig.Agree_Maksure_Tip);
-            return;
-        }
-        if ("" == phone) {
-            ViewsMgr.showTip(TextConfig.Phone_Null_Tip);
-            return;
-        }
-        if ("" == code) {
-            ViewsMgr.showTip(TextConfig.Code_Null_Tip);
-            return;
-        }
-        this.mobileLogin(phone, code);
-    }
     // 隐私选中方法
-    onToggle(toggle: Toggle) {
+    private onToggle(toggle: Toggle) {
         StorageUtil.saveData(PRIVATE_HAS_CHECK_KEY, toggle.isChecked ? "1" : "0");
         this.agreeTip.active = !toggle.isChecked;
     }
+    /**显示账号密码登录 */
+    private showMiddleAcount(callBack?: Function) {
+        let isLoad = false;
+        for (let i = 0; i < 3; i++) {
+            const element = this.plMiddleAry[i];
+            if (element) {
+                element.active = 0 == i;
+            } else {
+                if (0 == i) {
+                    isLoad = true;
+                    LoadManager.loadPrefab(PrefabType.LoginAccountView.path, this.plMiddle).then((node: Node) => {
+                        this.plMiddleAry[0] = node;
+                        let view = node.getComponent(LoginAccountView);
+                        this.setLoginMiddleBase(view);
+                        if (callBack) callBack();
+                    });
+                }
+            }
+        }
+        if (!isLoad && callBack) callBack();
+    }
+    /**显示验证码登录 */
+    private showMiddlePhoneCode() {
+        for (let i = 0; i < 3; i++) {
+            const element = this.plMiddleAry[i];
+            if (element) {
+                element.active = 1 == i;
+            } else {
+                if (1 == i) {
+                    LoadManager.loadPrefab(PrefabType.LoginCodeView.path, this.plMiddle).then((node: Node) => {
+                        this.plMiddleAry[1] = node;
+                        let view = node.getComponent(LoginCodeView);
+                        this.setLoginMiddleBase(view);
+                    });
+                }
+            }
+        }
+    }
+    /**显示注册登录 */
+    private showMiddleRegister() {
+        for (let i = 0; i < 3; i++) {
+            const element = this.plMiddleAry[i];
+            if (element) {
+                element.active = 2 == i;
+            } else {
+                if (2 == i) {
+                    LoadManager.loadPrefab(PrefabType.LoginRegisterView.path, this.plMiddle).then((node: Node) => {
+                        this.plMiddleAry[2] = node;
+                        let view = node.getComponent(LoginRegisterView);
+                        this.setLoginMiddleBase(view);
+                    });
+                }
+            }
+        }
+    }
     /**二维码层返回 */
-    onPlQrCodeBack() {
+    private onPlQrCodeBack() {
         this.middle.active = true;
-        this.plQRCode.node.active = false;
-        this.plActivationCode.node.active = false;
+        if (this.plQRCode) this.plQRCode.node.active = false;
+        if (this.plActivationCode) this.plActivationCode.node.active = false;
     }
     /**激活码层返回 */
-    onPlActivationCodeBack() {
+    private onPlActivationCodeBack() {
         this.middle.active = true;
-        this.plQRCode.node.active = false;
-        this.plActivationCode.node.active = false;
+        if (this.plQRCode) this.plQRCode.node.active = false;
+        if (this.plActivationCode) this.plActivationCode.node.active = false;
     }
     /**激活码激活 */
-    onActivationCodeActive(code: string) {
+    private onActivationCodeActive(code: string) {
         if ("" == code) {
             ViewsMgr.showTip(TextConfig.ActivationCode_Null_Tip);
             return;
@@ -272,19 +209,30 @@ export class LoginView extends BaseComponent {
         ViewsMgr.showTip(TextConfig.Function_Tip);//TODO 激活码验证
     }
     /**显示二维码层 */
-    showPlQRCode() {
+    private showPlQRCode() {
         this.middle.active = false;
-        this.plQRCode.node.active = true;
-        this.plActivationCode.node.active = false;
+        LoadManager.loadPrefab(PrefabType.QRCodeView.path, this.node).then((node: Node) => {
+            this.plQRCode = node.getComponent(QRCodeView);
+            this.plQRCode.setBackCall(this.onPlQrCodeBack.bind(this));
+        });
+        if (this.plActivationCode) {
+            this.plActivationCode.node.active = false;
+        }
     }
     /**显示激活码层 */
-    showPlActivationCode() {
+    private showPlActivationCode() {
         this.middle.active = false;
-        this.plQRCode.node.active = false;
-        this.plActivationCode.node.active = true;
+        if (this.plQRCode) {
+            this.plQRCode.node.active = false;
+        }
+        LoadManager.loadPrefab(PrefabType.ActivationCodeView.path, this.node).then((node: Node) => {
+            this.plActivationCode = node.getComponent(ActivationCodeView);
+            this.plActivationCode.setCallFunc(this.onPlActivationCodeBack.bind(this), this.onActivationCodeActive.bind(this));
+        });
     }
+
     /**验证码结果 */
-    onRepGetPhoneCode(data: s2cGetPhoneCode) {
+    private onRepGetPhoneCode(data: s2cGetPhoneCode) {
         if (200 != data.code) {
             ViewsMgr.showTip(data.msg);
             return;
@@ -292,7 +240,7 @@ export class LoginView extends BaseComponent {
         ViewsMgr.showTip(TextConfig.Get_Code_Success);
     }
     /**登录结果 */
-    onAccountLogin(data: s2cAccountLogin) {
+    private onAccountLogin(data: s2cAccountLogin) {
         if (200 != data.code) {
             console.log("登录失败", data.msg);
             ViewsMgr.removeWaiting();
@@ -305,40 +253,28 @@ export class LoginView extends BaseComponent {
         SceneMgr.loadScene(SceneType.MainScene);
     }
     /**连接断开 */
-    onSocketDis() {
+    private onSocketDis() {
         ViewsMgr.removeWaiting();
     }
     /**连接服务器 */
-    connectServer() {
+    private connectServer() {
         NetMgr.connectNet();
     }
-    /**账号密码登录 */
-    accountLogin(account: string, pwd: string) {
-        console.log("accountLogin account = ", account, " pwd = ", pwd);
-        ViewsMgr.showWaiting();
-        User.account = account;
-        User.password = pwd;
-        User.loginType = LoginType.account;
-        ServiceMgr.accountService.accountLogin();
-    }
+
     /**token登录 */
-    tokenLogin(token: string) {
+    private tokenLogin(token: string) {
         ViewsMgr.showWaiting();
         User.memberToken = token;
         User.loginType = LoginType.token;
         ServiceMgr.accountService.tokenLogin();
     }
-    /**手机号验证码登录 */
-    mobileLogin(mobile: string, code: string) {
-        console.log("mobileLogin mobile = ", mobile, " code = ", code);
-        ServiceMgr.accountService.reqPhoneCodeLogin(mobile, code);
-    }
+
     /**手机号一键登录 */
-    mobileQuickLogin(mobile: string) {
+    private mobileQuickLogin(mobile: string) {
         console.log("mobileQuickLogin mobile = ", mobile);
     }
     /**微信登录 */
-    wxLogin() {
+    private wxLogin() {
         console.log("wxLogin", WxApi.isWxInstall);
         if (WxApi.isWxInstall) {
             WxApi.wxLogin((code) => {
@@ -347,37 +283,5 @@ export class LoginView extends BaseComponent {
         } else {
             this.showPlQRCode();
         }
-    }
-
-    // 登录成功回调
-    loginSuc(obj) {
-        console.log("loginSuc obj = ", obj);
-        if (!obj) {
-            console.log("loginSuc obj is null");
-            return false;
-        }
-        if (obj.Code != 200) {
-            console.log(obj.Msg);
-            return false;
-        }
-        if (obj.op_code == "disable") {
-            ViewsManager.showTip("账号已被禁用，请联系客服！");
-            return false;
-        } else if (obj.op_code == "die") {
-            ViewsManager.showTip("账号或密码错误！");
-            return false;
-        }
-        StorageUtil.saveData(LOGIN_INFO_KEY, JSON.stringify({
-            LoginToken: obj.LoginToken,
-            MemberToken: obj.MemberToken,
-            Mobile: obj.Mobile,
-            AccountName: this.userNameEdit.string,
-            LoginPwd: this.pwdEdit.string
-        }));
-
-        User.memberToken = obj["MemberToken"];
-        NetMgr.setServer(obj["WebSocketAddr"], obj["WebSocketPort"], obj["WebPort"]);
-        NetMgr.connectNet();
-        return true;
     }
 }

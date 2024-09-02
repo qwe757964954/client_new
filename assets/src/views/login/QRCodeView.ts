@@ -48,7 +48,7 @@ export class QRCodeView extends Component {
         });
     }
     protected onDisable(): void {
-
+        WxApi.clearWxLoginQrcodeCallback();
     }
     /**返回点击 */
     onBtnBackClick() {
