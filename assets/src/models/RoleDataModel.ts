@@ -183,13 +183,13 @@ export class RoleDataModel extends BaseModel {
     public initSelfRole() {
         this._isSelf = true;
         let roleID = User.roleID;
-        this.init(roleID, 1, RoleType.role, User.curMapUserID);
+        this.init(roleID, 1, RoleType.role, User.userID);
         this._clothings.setData(User.userClothes);
     }
     public initSelfPet() {
         this._isSelf = true;
         let petID = User.petID;
-        this.init(petID, User.petLevel, RoleType.sprite, User.curMapUserID);
+        this.init(petID, User.petLevel, RoleType.sprite, User.userID);
     }
 
     get pos() {

@@ -7,6 +7,7 @@ import { TextConfig } from "../../config/TextConfig";
 import { DataMgr, EditInfo, EditType } from "../../manager/DataMgr";
 import { SceneMgr } from "../../manager/SceneMgr";
 import { ViewsMgr } from "../../manager/ViewsManager";
+import { s2cGetPlayerClothing } from "../../models/BagModel";
 import { BaseModel } from "../../models/BaseModel";
 import { BgModel } from "../../models/BgModel";
 import { BuildingIDType, BuildingModel, BuildingOperationData, BuildingOperationType, BuildingState, RecycleData } from "../../models/BuildingModel";
@@ -14,10 +15,10 @@ import { CloudModel } from "../../models/CloudModel";
 import { GridModel } from "../../models/GridModel";
 import { LandModel } from "../../models/LandModel";
 import { MapSpModel } from "../../models/MapSpModel";
-import { s2cBuildingBuilt, s2cBuildingBuiltReward, s2cBuildingBuiltSpeed, s2cBuildingEditBatch, s2cBuildingInfoGet, s2cBuildingList, s2cBuildingListInfo, s2cBuildingProduceAdd, s2cBuildingProduceDelete, s2cBuildingProduceGet, s2cBuildingProduceSpeed, s2cBuildingUpgrade, s2cBuildingUpgradeReward, s2cBuildingUpgradeSpeed, s2cCloudUnlock, s2cCloudUnlockGet, s2cCloudUnlockSpeed, s2cPetGetReward, s2cPetInfoRep, s2cPetUpgrade, s2cSpeedWordsGet } from "../../models/NetModel";
+import { s2cBuildingBuilt, s2cBuildingBuiltReward, s2cBuildingBuiltSpeed, s2cBuildingEditBatch, s2cBuildingInfoGet, s2cBuildingList, s2cBuildingListInfo, s2cBuildingProduceAdd, s2cBuildingProduceDelete, s2cBuildingProduceGet, s2cBuildingProduceSpeed, s2cBuildingUpgrade, s2cBuildingUpgradeReward, s2cBuildingUpgradeSpeed, s2cCloudUnlock, s2cCloudUnlockGet, s2cCloudUnlockSpeed, s2cIslandAllUser, s2cIslandUserEnter, s2cIslandUserInfo, s2cPetGetReward, s2cPetInfoRep, s2cPetUpgrade, s2cSpeedWordsGet } from "../../models/NetModel";
 import { RoleType } from "../../models/RoleBaseModel";
 import { RoleDataModel } from "../../models/RoleDataModel";
-import { ClothingChangeInfo, User } from "../../models/User";
+import { ClothingChangeInfo, User, UserClothes } from "../../models/User";
 import { InterfacePath } from "../../net/InterfacePath";
 import { ServiceMgr } from "../../net/ServiceManager";
 import EventManager, { EventMgr } from "../../util/EventManager";
@@ -115,7 +116,8 @@ export class MapUICtl extends MainBaseCtl {
         this.initMap();
         this.initMapSpine();
 
-        ServiceMgr.buildingService.reqPetInfo(User.curMapUserID);
+        ServiceMgr.buildingService.reqEnterIsland(User.curMapUserID);
+        ServiceMgr.buildingService.reqPetInfo(User.userID);
         ServiceMgr.buildingService.reqBuildingList(User.curMapUserID);
         this._checkFirstRepTimer = TimerMgr.once(() => {
             this.clearFirstRepTimer();
@@ -166,6 +168,9 @@ export class MapUICtl extends MainBaseCtl {
         this.addEvent(InterfacePath.c2sCloudUnlockSpeed, this.onRepCloudUnlockSpeed.bind(this));
         this.addEvent(EventType.Role_Change_Slot, this.onRoleChangeSlot.bind(this));
         this.addEvent(EventType.Land_Need_Sort, this.landSort.bind(this));
+        this.addEvent(InterfacePath.Classification_GetPlayerClothing, this.onRepGetPlayerClothing.bind(this));
+        this.addEvent(InterfacePath.s2cIslandUserEnter, this.onRepIslandUserEnter.bind(this));
+        this.addEvent(InterfacePath.s2cIslandAllUser, this.onRepIslandAllUser.bind(this));
     }
     // 移除事件
     removeEvent() {
@@ -318,6 +323,7 @@ export class MapUICtl extends MainBaseCtl {
     // 初始化建筑
     initBuilding(list: s2cBuildingListInfo[]) {
         if (!list || list.length <= 0) return;
+        let isSelfMap = User.isInSelfMap();
         console.time("initBuilding");
         // list.push({ id: 1, bid: 3, x: 0, y: 0, direction: 0 });
         list.forEach(element => {
@@ -334,9 +340,11 @@ export class MapUICtl extends MainBaseCtl {
             let building = this.newBuilding(editInfo, element.x, element.y, 1 == element.direction, false);
             building.buildingID = element.id;
             building.buildingLevel = element.level;
-            building.setProducts(element.product_infos);
-            building.setBuiltData(element.construct_infos.remaining_seconds);
-            building.setUpgradeData(element.upgrade_infos.remaining_seconds);
+            if (isSelfMap) {
+                building.setProducts(element.product_infos);
+                building.setBuiltData(element.construct_infos.remaining_seconds);
+                building.setUpgradeData(element.upgrade_infos.remaining_seconds);
+            }
             building.buildingState = element.status;
 
             // if (BuildingIDType.castle == element.bid) {
@@ -347,11 +355,10 @@ export class MapUICtl extends MainBaseCtl {
         console.timeEnd("initBuilding");
     }
     /** 初始化角色 */
-    public initRole() {
-        if (!User.roleID) return;
-        console.time("initRole");
+    public initSelfRole() {
+        console.time("initSelfRole");
         // 角色
-        {
+        if (null != User.roleID) {
             let roleModel = new RoleDataModel();
             roleModel.initSelfRole();
             roleModel.parent = this._mainScene.buildingLayer;
@@ -377,7 +384,50 @@ export class MapUICtl extends MainBaseCtl {
             this._selfPet = roleModel;
             this.checkPetShow();
         }
-        console.timeEnd("initRole");
+        console.timeEnd("initSelfRole");
+    }
+    public initRole(info: s2cIslandUserInfo) {
+        let userID = info.visitor_id;
+        let roleID = info.role_id % 100;
+        if (null == userID) return;
+        for (let i = 0; i < this._roleModelAry.length; i++) {
+            const role = this._roleModelAry[i];
+            if (role.userID == userID) {
+                return;
+            }
+        }
+
+        {
+            let roleModel = new RoleDataModel();
+            roleModel.init(roleID, 1, RoleType.role, userID);
+            roleModel.parent = this._mainScene.buildingLayer;
+            let grid = this.getGridInfo(12, 12);
+            roleModel.grid = grid;
+            this.roleMove(roleModel);
+            this._roleModelAry.push(roleModel);
+
+            let clothings = new UserClothes();
+            clothings.hair = info.hair;
+            clothings.jewelry = info.jewelry;
+            clothings.coat = info.coat;
+            clothings.pants = info.pants;
+            clothings.shoes = info.shoes;
+            clothings.wings = info.wings;
+            clothings.hat = info.hat;
+            clothings.face = info.face;
+            roleModel.clothings = clothings;
+        }
+        {
+            let roleModel = new RoleDataModel();
+            roleModel.init(roleID, info.pet_level, RoleType.sprite, userID);
+            roleModel.parent = this._mainScene.buildingLayer;
+            let grid = this.getGridInfo(12, 12);
+            roleModel.grid = grid;
+            this.roleMove(roleModel);
+            this._roleModelAry.push(roleModel);
+            this.buildingRoleSort();
+        }
+        this.updateCameraVisible();
     }
     /**初始化乌云 */
     public initCloud(map: { [key: string]: number }) {
@@ -389,6 +439,7 @@ export class MapUICtl extends MainBaseCtl {
         let row = gridInfo.row;
         let cloudWidth = MapConfig.cloud.width;
         let index = -1;
+        let isSelfMap = User.isInSelfMap();
         for (let i = 0; i < col; i += cloudWidth) {
             for (let j = 0; j < row; j += cloudWidth) {
                 if (this.cloudIsUnlock(i, j)) continue;
@@ -401,6 +452,7 @@ export class MapUICtl extends MainBaseCtl {
                     leftTime = map[key];
                     if (leftTime < 0) continue;
                 }
+                if (!isSelfMap) leftTime = null;
                 let cloud = new CloudModel();
                 cloud.initData(i, j, cloudWidth, leftTime, this._mainScene.buildingLayer);
                 this._cloudModelAry.push(cloud);
@@ -529,6 +581,7 @@ export class MapUICtl extends MainBaseCtl {
     }
     /**点击到建筑 */
     getTouchBuilding(x: number, y: number) {
+        if (!User.isInSelfMap()) return null;
         let worldPos = this._mainScene.mapCamera.screenToWorld(new Vec3(x, y, 0));
         let children = this._lastSortChildren;//this._buidingModelAry;
         // for (let i = children.length - 1; i >= 0; i--) {
@@ -546,6 +599,7 @@ export class MapUICtl extends MainBaseCtl {
     }
     /**点击到乌云 */
     getTouchCloud(x: number, y: number) {
+        if (!User.isInSelfMap()) return null;
         let grid = this.getTouchGrid(x, y);
         return grid?.cloud;
     }
@@ -1149,7 +1203,7 @@ export class MapUICtl extends MainBaseCtl {
         console.time("onBuildingList");
         this.initBuilding(data.build_list);
         this.initLand(data.land_dict);
-        this.initRole();
+        this.initSelfRole();
         this.initCloud(data.cloud_dict);
 
         // this.updateCameraVisible();
@@ -1261,6 +1315,7 @@ export class MapUICtl extends MainBaseCtl {
             return;
         }
         let petInfo = data.pet_info;
+        if (petInfo.user_id != User.userID) return;
         User.moodScore = petInfo.mood;
         User.petID = User.roleID;
         User.petLevel = petInfo.level;
@@ -1590,6 +1645,7 @@ export class MapUICtl extends MainBaseCtl {
     }
     /**刷新乌云是否可以解锁状态 */
     refreshCloudUnlockState() {
+        if (!User.isInSelfMap()) return;
         this._cloudModelAry.forEach(cloud => {
             let width = cloud.width;
             let xAry = [0, width, 0, -width];
@@ -1603,5 +1659,68 @@ export class MapUICtl extends MainBaseCtl {
             }
             cloud.canUnlock = false;
         });
+    }
+    /**获取角色服装信息 */
+    onRepGetPlayerClothing(data: s2cGetPlayerClothing) {
+        if (200 != data.code) {
+            return;
+        }
+        for (let i = 0; i < this._roleModelAry.length; i++) {
+            const element = this._roleModelAry[i];
+            if (RoleType.role != element.roleType) continue;
+            if (data.d_user_id != element.roleID) continue;
+            let dress_info = data.dress_info;
+            let clothings = new UserClothes();
+            clothings.hair = dress_info.hair;
+            clothings.jewelry = dress_info.jewelry;
+            clothings.coat = dress_info.coat;
+            clothings.pants = dress_info.pants;
+            clothings.shoes = dress_info.shoes;
+            clothings.wings = dress_info.wings;
+            clothings.hat = dress_info.hat;
+            clothings.face = dress_info.face;
+            element.clothings = clothings;
+        }
+    }
+    /**小岛进出 */
+    onRepIslandUserEnter(data: s2cIslandUserEnter) {
+        console.log("onRepIslandUserEnter", User.curMapUserID);
+        if (data.visited_id != User.curMapUserID) return;
+        for (let i = 0; i < data.visitors_info.length; i++) {
+            const info = data.visitors_info[i];
+            if (0 == info.is_visit) {
+                this.onIslandRoleLeave(info);
+            } else {
+                if (info.visitor_id == User.userID) continue;
+                this.initRole(info);
+            }
+        }
+    }
+    /**小岛所有用户 */
+    onRepIslandAllUser(data: s2cIslandAllUser) {
+        console.log("onRepIslandAllUser", User.curMapUserID);
+        if (data.visited_id != User.curMapUserID) return;
+        for (let i = 0; i < data.visitors_info.length; i++) {
+            const info = data.visitors_info[i];
+            if (info.visitor_id == User.userID) continue;
+            this.initRole(info);
+        }
+    }
+    /**小岛用户离开 */
+    onIslandRoleLeave(data: s2cIslandUserInfo) {
+        console.log("onIslandRoleLeave", data);
+        let toFind = true;
+        while (toFind) {
+            toFind = false;
+            for (let i = 0; i < this._roleModelAry.length; i++) {
+                const role = this._roleModelAry[i];
+                if (role.userID == data.visitor_id) {
+                    this._roleModelAry.splice(i, 1);
+                    role.dispose();
+                    toFind = true;
+                    break;
+                }
+            }
+        }
     }
 }

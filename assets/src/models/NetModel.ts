@@ -49,6 +49,7 @@ export class s2cAccountLoginDetailExtra {
 export class s2cAccountLoginDetail {
     extra: s2cAccountLoginDetailExtra;//额外信息
     item_list: ItemData[];//物品列表
+    visited_id: number;//访问id
 }
 export class s2cAccountLogin extends BaseRepPacket {
     user_id: number;//用户id
@@ -106,6 +107,7 @@ export class s2cBuildingUpgradeInfo {
 /**建筑列表 */
 export class c2sBuildingList {
     command_id: string = InterfacePath.c2sBuildingList;
+    visited_id: number;//用户id
 }
 export class s2cBuildingListInfo {
     id: number;//建筑唯一索引id
@@ -125,6 +127,7 @@ export class s2cBuildingList extends BaseRepPacket {
     build_list: s2cBuildingListInfo[];//建筑列表
     land_dict: { [key: string]: number };//地块字典
     cloud_dict: { [key: string]: number };//乌云字典
+    b_user_id: number;//用户id
 }
 /**建筑批量操作 */
 export class c2sBuildingEditBatch {
@@ -253,24 +256,24 @@ export class s2cSpeedWordsGet extends BaseRepPacket {
     unlock_cloud: string;//乌云
     product_num: number;//生产索引
 }
-/**建筑卖出 */
-export class c2sBuildingSell {
-    // command_id: string = InterfacePath.c2sBuildingSell;
-    id: number;//建筑唯一索引id
-}
-/**建筑卖出返回 */
-export class s2cBuildingSell extends BaseRepPacket {
-    id: number;//建筑唯一索引id
-}
-/**建筑回收 */
-export class c2sBuildingRecycle {
-    command_id: string = InterfacePath.c2sBuildingRecycle;
-    id: number;//建筑唯一索引id
-}
-/**建筑回收返回 */
-export class s2cBuildingRecycle extends BaseRepPacket {
-    id: number;//建筑唯一索引id
-}
+// /**建筑卖出 */
+// export class c2sBuildingSell {
+//     // command_id: string = InterfacePath.c2sBuildingSell;
+//     id: number;//建筑唯一索引id
+// }
+// /**建筑卖出返回 */
+// export class s2cBuildingSell extends BaseRepPacket {
+//     id: number;//建筑唯一索引id
+// }
+// /**建筑回收 */
+// export class c2sBuildingRecycle {
+//     command_id: string = InterfacePath.c2sBuildingRecycle;
+//     id: number;//建筑唯一索引id
+// }
+// /**建筑回收返回 */
+// export class s2cBuildingRecycle extends BaseRepPacket {
+//     id: number;//建筑唯一索引id
+// }
 /**建筑建造 */
 export class c2sBuildingBuilt {
     command_id: string = InterfacePath.c2sBuildingBuilt;
@@ -548,7 +551,7 @@ export class s2cReviewPlanLongTimeWordSubmit extends BaseRepPacket {
 /**宠物信息 */
 export class c2sPetInfo {
     command_id: string = InterfacePath.c2sPetInfo;
-    p_user_id: number;//用户id
+    visited_id: number;//用户id
 }
 /**宠物信息返回 */
 export class s2cPetInfo {
@@ -566,7 +569,7 @@ export class s2cPetInfoRep extends BaseRepPacket {
 /**宠物互动 */
 export class c2sPetInteraction {
     private command_id: string = InterfacePath.c2sPetInteraction;
-    p_user_id: number;//用户id
+    visited_id: number;//用户id
     interact_id: number;//互动id
 }
 /**宠物互动返回 */
@@ -672,7 +675,50 @@ export class s2cWordbookWordDetail extends BaseRepPacket {
     similar_list: [];
     variant: WordVariantModel;
     structure: WordStructureModel;
-
+}
+/**小岛用户信息 */
+export class s2cIslandUserInfo {
+    visitor_id: number;
+    is_visit?: number;// 0离开小岛
+    user_id: number;
+    hair: number;
+    jewelry: number;
+    coat: number;
+    pants: number;
+    shoes: number;
+    wings: number;
+    hat: number;
+    face: number;
+    pet_level: number;
+    role_id: number;
+}
+/**进入小岛 */
+export class c2sEnterIsland {
+    command_id: string = InterfacePath.c2sEnterIsland;
+    visited_id: number;//小岛用户id
+}
+/**进入小岛返回 */
+export class s2cEnterIsland extends BaseRepPacket {
+    visited_id: number;//小岛用户id
+}
+/**退出小岛 */
+export class c2sExitIsland {
+    command_id: string = InterfacePath.c2sExitIsland;
+    visited_id: number;//小岛用户id
+}
+/**退出小岛返回 */
+export class s2cExitIsland extends BaseRepPacket {
+    visited_id: number;//小岛用户id
+}
+/**小岛用户进出 */
+export class s2cIslandUserEnter {
+    visited_id: number;
+    visitors_info: s2cIslandUserInfo[];//小岛用户进出
+}
+/**小岛所有用户 */
+export class s2cIslandAllUser {
+    visited_id: number;
+    visitors_info: s2cIslandUserInfo[];
 }
 
 /**********************************以上是新接口*************************************/

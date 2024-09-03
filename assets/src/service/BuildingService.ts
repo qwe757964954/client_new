@@ -1,6 +1,8 @@
 import { EventType } from "../config/EventType";
 import { BuildingData, RecycleData } from "../models/BuildingModel";
-import { c2sBuildingBuilt, c2sBuildingBuiltReward, c2sBuildingBuiltSpeed, c2sBuildingCreate, c2sBuildingEdit, c2sBuildingEditBatch, c2sBuildingInfoGet, c2sBuildingList, c2sBuildingProduceAdd, c2sBuildingProduceDelete, c2sBuildingProduceGet, c2sBuildingProduceSpeed, c2sBuildingRecycle, c2sBuildingSell, c2sBuildingUpgrade, c2sBuildingUpgradeReward, c2sBuildingUpgradeSpeed, c2sCloudUnlock, c2sCloudUnlockGet, c2sCloudUnlockSpeed, c2sLandUpdate, c2sPetGetReward, c2sPetInfo, c2sPetInteraction, c2sPetUpgrade, c2sSpeedWordsGet } from "../models/NetModel";
+import { c2sBuildingBuilt, c2sBuildingBuiltReward, c2sBuildingBuiltSpeed, c2sBuildingCreate, c2sBuildingEdit, c2sBuildingEditBatch, c2sBuildingInfoGet, c2sBuildingList, c2sBuildingProduceAdd, c2sBuildingProduceDelete, c2sBuildingProduceGet, c2sBuildingProduceSpeed, c2sBuildingUpgrade, c2sBuildingUpgradeReward, c2sBuildingUpgradeSpeed, c2sCloudUnlock, c2sCloudUnlockGet, c2sCloudUnlockSpeed, c2sEnterIsland, c2sExitIsland, c2sLandUpdate, c2sPetGetReward, c2sPetInfo, c2sPetInteraction, c2sPetUpgrade, c2sSpeedWordsGet, s2cEnterIsland, s2cExitIsland } from "../models/NetModel";
+import { User } from "../models/User";
+import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
 import { BaseControll } from "../script/BaseControll";
 import { EventMgr } from "../util/EventManager";
@@ -12,43 +14,45 @@ export class BuildingService extends BaseControll {
         super("BuildingService");
     }
     onInitModuleEvent() {
-        // this.addModelListener(InterfacePath.c2sBuildingList);
+        this.addModelListener(InterfacePath.c2sEnterIsland, this.repEnterIsland.bind(this));
+        this.addModelListener(InterfacePath.c2sExitIsland, this.repExitIsland.bind(this));
     }
     /**建筑列表 */
     reqBuildingList(userID: number) {
         console.log("reqBuildingList", userID);
         let para = new c2sBuildingList();
+        para.visited_id = userID;
         NetMgr.sendMsg(para);
     }
-    /**建筑编辑 */
-    reqBuildingEdit(id: number, x: number, y: number, isFlip: boolean = false, hide: number = 0) {
-        console.log("reqBuildingEdit", id, x, y, isFlip);
-        let para = new c2sBuildingEdit();
-        para.id = id;
-        para.x = x;
-        para.y = y;
-        para.direction = isFlip ? 1 : 0;
-        para.hide = hide;
-        NetMgr.sendMsg(para);
-    }
-    /**建筑回收 */
-    reqBuildingRecycle(id: number) {
-        console.log("reqBuildingRecycle", id);
-        let para = new c2sBuildingRecycle();
-        para.id = id;
-        NetMgr.sendMsg(para);
-    }
-    /**新建建筑 */
-    reqBuildingCreate(bid: number, x: number, y: number, idx: number, isFlip: boolean = false) {
-        console.log("reqBuildingCreate", bid, x, y, idx, isFlip);
-        let para = new c2sBuildingCreate();
-        para.bid = bid;
-        para.x = x;
-        para.y = y;
-        para.idx = idx;
-        para.direction = isFlip ? 1 : 0;
-        NetMgr.sendMsg(para);
-    }
+    // /**建筑编辑 */
+    // reqBuildingEdit(id: number, x: number, y: number, isFlip: boolean = false, hide: number = 0) {
+    //     console.log("reqBuildingEdit", id, x, y, isFlip);
+    //     let para = new c2sBuildingEdit();
+    //     para.id = id;
+    //     para.x = x;
+    //     para.y = y;
+    //     para.direction = isFlip ? 1 : 0;
+    //     para.hide = hide;
+    //     NetMgr.sendMsg(para);
+    // }
+    // /**建筑回收 */
+    // reqBuildingRecycle(id: number) {
+    //     console.log("reqBuildingRecycle", id);
+    //     let para = new c2sBuildingRecycle();
+    //     para.id = id;
+    //     NetMgr.sendMsg(para);
+    // }
+    // /**新建建筑 */
+    // reqBuildingCreate(bid: number, x: number, y: number, idx: number, isFlip: boolean = false) {
+    //     console.log("reqBuildingCreate", bid, x, y, idx, isFlip);
+    //     let para = new c2sBuildingCreate();
+    //     para.bid = bid;
+    //     para.x = x;
+    //     para.y = y;
+    //     para.idx = idx;
+    //     para.direction = isFlip ? 1 : 0;
+    //     NetMgr.sendMsg(para);
+    // }
     /**地块更新 */
     reqLandUpdate(map: { [key: string]: number }) {
         // console.log("reqLandUpdate", map);
@@ -64,13 +68,13 @@ export class BuildingService extends BaseControll {
         para.level = level;
         NetMgr.sendMsg(para);
     }
-    /**建筑卖出 */
-    reqBuildingSell(id: number) {
-        console.log("reqBuildingSell", id);
-        let para = new c2sBuildingSell();
-        para.id = id;
-        NetMgr.sendMsg(para);
-    }
+    // /**建筑卖出 */
+    // reqBuildingSell(id: number) {
+    //     console.log("reqBuildingSell", id);
+    //     let para = new c2sBuildingSell();
+    //     para.id = id;
+    //     NetMgr.sendMsg(para);
+    // }
     /**建筑生产队列添加 */
     reqBuildingProduceAdd(id: number, product_type: number[]) {
         console.log("reqBuildingProduceAdd", id, product_type);
@@ -114,14 +118,14 @@ export class BuildingService extends BaseControll {
     reqPetInfo(userID: number) {
         console.log("reqPetInfo", userID);
         let para = new c2sPetInfo();
-        para.p_user_id = userID;
+        para.visited_id = userID;
         NetMgr.sendMsg(para);
     }
     /**宠物互动 */
     reqPetInteraction(id: number, userID: number) {
         console.log("reqPetInteraction", id);
         let para = new c2sPetInteraction();
-        para.p_user_id = userID;
+        para.visited_id = userID;
         para.interact_id = id;
         NetMgr.sendMsg(para);
     }
@@ -194,7 +198,7 @@ export class BuildingService extends BaseControll {
     }
     /**建筑信息获取 */
     reqBuildingInfoGet(buildingID: number) {
-        console.log("repBuildingInfo", buildingID);
+        console.log("reqBuildingInfoGet", buildingID);
         let para = new c2sBuildingInfoGet();
         para.id = buildingID;
         NetMgr.sendMsg(para);
@@ -249,5 +253,36 @@ export class BuildingService extends BaseControll {
         para.answer = answer;
         para.product_num = product_num;
         NetMgr.sendMsg(para);
+    }
+
+    /**用户进入小岛 */
+    reqEnterIsland(bID: number) {
+        console.log("reqEnterIsland", bID);
+        let para = new c2sEnterIsland();
+        para.visited_id = bID;
+        NetMgr.sendMsg(para);
+    }
+    repEnterIsland(data: s2cEnterIsland) {
+        if (1601 == data.code) {
+            User.curMapDataUserID = null;
+            return;
+        }
+        if (200 != data.code) {
+            return;
+        }
+        User.curMapDataUserID = data.visited_id;
+    }
+    /**用户退出小岛 */
+    reqExitIsland(bID: number) {
+        console.log("reqExitIsland", bID);
+        let para = new c2sExitIsland();
+        para.visited_id = bID;
+        NetMgr.sendMsg(para);
+    }
+    repExitIsland(data: s2cExitIsland) {
+        if (200 != data.code) {
+            return;
+        }
+        User.curMapDataUserID = null;
     }
 }

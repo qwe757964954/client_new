@@ -36,14 +36,14 @@ export class PopView extends Component {
     // 初始化事件
     initEvent() {
         CCUtil.onTouch(this, this.onBtnCloseClick, this);
-        CCUtil.onTouch(this.btnClose, this.onBtnCloseClick, this);
-        CCUtil.onTouch(this.btnSure, this.onBtnCloseClick, this);
+        // CCUtil.onTouch(this.btnClose, this.onBtnCloseClick, this);
+        // CCUtil.onTouch(this.btnSure, this.onBtnCloseClick, this);
     }
     // 移除监听
     removeEvent() {
         CCUtil.offTouch(this, this.onBtnCloseClick, this);
-        CCUtil.offTouch(this.btnClose, this.onBtnCloseClick, this);
-        CCUtil.offTouch(this.btnSure, this.onBtnCloseClick, this);
+        // CCUtil.offTouch(this.btnClose, this.onBtnCloseClick, this);
+        // CCUtil.offTouch(this.btnSure, this.onBtnCloseClick, this);
     }
     // 关闭按钮点击
     onBtnCloseClick() {

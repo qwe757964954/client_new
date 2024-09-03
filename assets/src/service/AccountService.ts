@@ -10,6 +10,7 @@ import { c2sAccountInit, c2sAccountLogin, c2sGetPhoneCode, c2sPhoneCodeLogin, c2
 import { LoginType, User } from "../models/User";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
+import { ServiceMgr } from "../net/ServiceManager";
 import EventManager, { EventMgr } from "../util/EventManager";
 import StorageUtil from "../util/StorageUtil";
 
@@ -93,6 +94,16 @@ export default class AccountService {
             }
             if (User.memberToken) {
                 StorageUtil.saveData(KeyConfig.Last_Login_Token, User.memberToken);
+            }
+            let visited_id = data.detail?.visited_id;
+            if (User.curMapDataUserID != visited_id) {
+                if (null != visited_id) {
+                    ServiceMgr.buildingService.reqExitIsland(visited_id);
+                } else if (SceneType.MainScene == director.getScene().name) {
+                    ViewsManager.showAlert(TextConfig.Island_NotIn_Tip, () => {
+                        SceneMgr.loadMainScene();
+                    });
+                }
             }
         }
         else {

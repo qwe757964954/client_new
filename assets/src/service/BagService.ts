@@ -1,5 +1,5 @@
 import { ItemData } from "../manager/DataMgr";
-import { c2sBackpackItemSynthesis, c2sBreakdownBackpackItems, c2sGetPlayerClothing, c2sShopItemBuy, c2sUpdatePlayerClothing, DressInfoItem } from "../models/BagModel";
+import { c2sBackpackItemSynthesis, c2sBreakdownBackpackItems, c2sGetPlayerClothing, c2sShopItemBuy, c2sUpdatePlayerClothing, DressInfoItem, s2cGetPlayerClothing } from "../models/BagModel";
 import { User } from "../models/User";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
@@ -30,40 +30,43 @@ export default class _BagService extends BaseControll {
         ]);
     }
 
-    reqBreakdownBackpackItems(data:ItemData){
+    reqBreakdownBackpackItems(data: ItemData) {
         let param: c2sBreakdownBackpackItems = new c2sBreakdownBackpackItems();
         param.id = data.id;
         param.num = data.num;
         NetMgr.sendMsg(param);
     }
 
-    reqBackpackItemSynthesis(data:BackpackItemInfo){
+    reqBackpackItemSynthesis(data: BackpackItemInfo) {
         let param: c2sBackpackItemSynthesis = new c2sBackpackItemSynthesis();
         param.id = data.id;
         NetMgr.sendMsg(param);
     }
-    reqShopItemBuy(ids:number[],nums:number[]){
+    reqShopItemBuy(ids: number[], nums: number[]) {
         let param: c2sShopItemBuy = new c2sShopItemBuy();
         param.ids = ids;
         param.nums = nums;
         NetMgr.sendMsg(param);
     }
 
-    reqGetPlayerClothing(){
+    reqGetPlayerClothing(userID: number = null) {
         let param: c2sGetPlayerClothing = new c2sGetPlayerClothing();
+        if (null == userID) userID = User.userID;
+        param.visited_id = userID;
         NetMgr.sendMsg(param);
     }
-    reqUpdatePlayerClothing(data:DressInfoItem){
+    reqUpdatePlayerClothing(data: DressInfoItem) {
         const param = new c2sUpdatePlayerClothing(data);
         NetMgr.sendMsg(param);
     }
-    onGetPlayerClothing(data:any){
-        let dress_info = data.dress_info;
-        // 使用 setData 更新 User.userClothes
-        User.userClothes.setAssignData(dress_info);
+    onGetPlayerClothing(data: s2cGetPlayerClothing) {
+        if (null == data.d_user_id || data.d_user_id == User.userID) {
+            let dress_info = data.dress_info || {};
+            User.userClothes.setAssignData(dress_info);
+        }
         this.handleResponse(data, NetNotify.Classification_GetPlayerClothing);
     }
-    onUpdatePlayerClothing(data:any){
+    onUpdatePlayerClothing(data: any) {
         this.handleResponse(data, NetNotify.Classification_UpdatePlayerClothing);
     }
     onShopItemBuy(data: any) {

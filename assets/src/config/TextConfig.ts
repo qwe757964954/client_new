@@ -85,6 +85,7 @@ export const TextConfig = {
     Get_Code_Time: "({0}s)",
     Get_Code_Success: "获取验证码成功",
     ActivationCode_Null_Tip: "激活码不能为空",
+    Island_NotIn_Tip: "长时间未操作，已退出",
 
     US: "美",
     EN: "英",

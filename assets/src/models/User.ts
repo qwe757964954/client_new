@@ -223,7 +223,8 @@ class UserModel {
     private _staminaTimer: number = null;  // 体力恢复定时器
     private _staminaInterval: number = 180;  // 体力恢复间隔
 
-    private _curMapUserID: number = null;//当前所在地图用户id
+    private _curMapUserID: number = null;//当前所在地图用户id（操作）
+    private _curMapDataUserID: number = null;//当前所在地图用户id（数据）
 
 
     // 测试数据
@@ -434,6 +435,12 @@ class UserModel {
     public get curMapUserID(): number {
         if (null == this._curMapUserID) return this.userID;
         return this._curMapUserID;
+    }
+    public set curMapDataUserID(id: number) {
+        this._curMapDataUserID = id;
+    }
+    public get curMapDataUserID(): number {
+        return this._curMapDataUserID;
     }
 
     public isInSelfMap(): boolean {

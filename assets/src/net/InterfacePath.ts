@@ -10,14 +10,14 @@ export const InterfacePath = {
     c2sStaminaUpdate: "1301",//体力值更新
 
     c2sBuildingList: "2005",//建筑列表
-    c2sBuildingCreate: "2006",//新建建筑
-    c2sBuildingEdit: "2007",//建筑修改
+    // c2sBuildingCreate: "2006",//新建建筑
+    // c2sBuildingEdit: "2007",//建筑修改
     c2sBuildingEditBatch: "2006",//建筑批量操作
     c2sLandUpdate: "2007",//地块更新
     c2sSpeedWordsGet: "2008",//加速单词获取
     c2sBuildingInfoGet: "2009",//建筑信息获取
-    c2sBuildingSell: "2010",//建筑出售
-    c2sBuildingRecycle: "2011-",//建筑回收
+    // c2sBuildingSell: "2010",//建筑出售
+    // c2sBuildingRecycle: "2011-",//建筑回收
     c2sBuildingBuilt: "2011",//建筑建造
     c2sBuildingBuiltSpeed: "2012",//建筑建造加速
     c2sBuildingUpgrade: "2013",//建筑升级
@@ -31,9 +31,15 @@ export const InterfacePath = {
     c2sCloudUnlock: "2031",//乌云解锁
     c2sCloudUnlockGet: "2032",//乌云解锁领取
     c2sCloudUnlockSpeed: "2033",//乌云解锁加速
+    c2sEnterIsland: "2034",//进入小岛
+    c2sExitIsland: "2035",//退出小岛
 
     s2cAccountLogout: "10001",//登录被顶号返回
     s2cItemUpdate: "10002",//物品更新
+    s2cIslandUserEnter: "10006",//小岛用户进出
+    s2cPetInteraction: "10007",//宠物互动
+    s2cBuildingUpdate: "10008",//建筑有更新
+    s2cIslandAllUser: "10009",//小岛所有用户
     /***********************************************宠物相关start********************************************/
     c2sPetInfo: "2101", //宠物信息
     c2sPetInteraction: "2102", //宠物互动
@@ -71,7 +77,7 @@ export const InterfacePath = {
     GradeSkip_ExercisesList: "3120", //大冒险跳级题目列表
     GradeSkip_ExercisesSubmit: "3121", //跳级题目提交
     WordBossGame_Restart: "3122", //大冒险Boss关卡重玩
-    WordGameGradeModify:"3124", //大冒险_年级选择与修改
+    WordGameGradeModify: "3124", //大冒险_年级选择与修改
 
     Search_Word: "3215",//查询单词
     More_Word_Detail: "3301",//单词更多详情消息
