@@ -404,7 +404,7 @@ export class WordMeaningView extends BaseModeView {
         this.showTransitionView(async () => {
             const wordData = JSON.parse(JSON.stringify(this._wordsData));
             const levelData = JSON.parse(JSON.stringify(this._levelData));
-            const node = await ViewsMgr.showLearnView(PrefabType.WordPracticeView);
+            const node = await ViewsMgr.showViewAsync(PrefabType.WordPracticeView);
             node.getComponent(WordPracticeView).initData(wordData, levelData);
             this.node.destroy();
         });

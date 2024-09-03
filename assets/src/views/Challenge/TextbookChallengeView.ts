@@ -161,7 +161,7 @@ export class TextbookChallengeView extends BaseView {
     }
 
     private async showBreakThroughView() {
-        const node = await ViewsMgr.showLearnView(PrefabType.BreakThroughView);
+        const node = await ViewsMgr.showViewAsync(PrefabType.BreakThroughView);
         const script = node.getComponent(BreakThroughView);
         script.initData(this._bookData, this._unitListArr);
         ViewsMgr.closeView(PrefabType.TextbookChallengeView);

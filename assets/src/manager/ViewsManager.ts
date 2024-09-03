@@ -2,8 +2,6 @@ import { Camera, Color, Layers, Node, Prefab, UITransform, Vec3, Widget, instant
 import { AlertParam, ConfirmParam, TipParam } from "../config/ClassConfig";
 import { Hierarchy, PrefabConfig, PrefabType } from "../config/PrefabType";
 import { RoleBaseModel } from "../models/RoleBaseModel";
-import CCUtil from "../util/CCUtil";
-import ImgUtil from "../util/ImgUtil";
 import { NodeUtil } from "../util/NodeUtil";
 import { ComboView } from "../views/adventure/sixModes/common/ComboView";
 import { JellyTransition } from "../views/adventure/sixModes/common/JellyTransition";
@@ -31,6 +29,8 @@ export class ViewsManager {
     public loadingLayer: Node = null;
 
     private _loadingPrefabMap: { [key: string]: number } = {};
+
+    private viewStack: Node[] = []; 
 
     //单例
     private static _instance: ViewsManager = null;
@@ -62,28 +62,37 @@ export class ViewsManager {
 
     }
 
-    // 显示学习视图
-    public showLearnView(viewConfig: PrefabConfig): Promise<Node> {
-        return this.showViewAsync(viewConfig);
-        const parent = this.getParentNode(viewConfig.zindex);
-        const nodeName = this.getNodeName(viewConfig.path);
-        const node = ImgUtil.create_2DNode(nodeName);
-        parent.addChild(node);
+     /** Push a view onto the stack */
+     public async pushView(viewConfig: PrefabConfig): Promise<Node> {
+        // Show the view asynchronously
+        const node = await this.showViewAsync(viewConfig);
+        if (node) {
+            this.viewStack.push(node);
+            // Optionally, you might want to set the node active/inactive based on stack status
+            this.updateViewVisibility();
+        }
+        return node;
+    }
 
-        return new Promise((resolve, reject) => {
-            ResLoader.instance.load(`prefab/${viewConfig.path}`, Prefab, (err, prefab) => {
-                if (err) {
-                    console.error("Failed to load prefab:", err);
-                    return reject(err);
-                }
+    /** Pop the top view from the stack */
+    public async popView(): Promise<void> {
+        if (this.viewStack.length === 0) {
+            console.log("No view to pop");
+            return;
+        }
 
-                const prefabNode = instantiate(prefab);
-                node.addChild(prefabNode);
-                node.layer = Layers.Enum.UI_2D;
-                CCUtil.addWidget(node, { left: 0, right: 0, top: 0, bottom: 0 });
+        const nodeToPop = this.viewStack.pop();
+        if (nodeToPop) {
+            // Optionally perform any cleanup before destroying
+            nodeToPop.destroy();
+            this.updateViewVisibility();
+        }
+    }
 
-                resolve(prefabNode);
-            });
+    /** Handle the visibility of views based on stack status */
+    private updateViewVisibility() {
+        this.viewStack.forEach((view, index) => {
+            view.active = index === this.viewStack.length - 1;
         });
     }
 
@@ -133,19 +142,23 @@ export class ViewsManager {
         if (this.isExistView(viewConfig)) {
             console.log("View already exists", viewConfig.path);
             ViewsMgr.closeView(viewConfig);
+            this.decrementLoadingState(viewConfig.path);
+            return;
             // return Promise.reject(new Error(`View already exists: ${viewConfig.path}`));
         }
         const parent = this.getParentNode(viewConfig.zindex);
         console.log("showViewAsync exists", parent);
         this.incrementLoadingState(viewConfig.path);
+        let tmpNode = parent.getChildByName(this.getTmpNodeName(viewConfig.path));
+        if(!isValid(tmpNode)){
+            tmpNode = this.createTemporaryNode(viewConfig.path);
+            parent.addChild(tmpNode);
+        }
 
-        const tmpNode = this.createTemporaryNode(viewConfig.path);
-
-        parent.addChild(tmpNode);
         try {
             const node = await LoadManager.loadPrefab(viewConfig.path, parent);
             node.name = this.getNodeName(viewConfig.path);
-
+            node.layer = Layers.Enum.UI_2D;
             // Remove temporary node if it still exists
             let tmpNode = parent.getChildByName(this.getTmpNodeName(viewConfig.path));
             if (tmpNode) {
@@ -493,14 +506,14 @@ export class ViewsManager {
     }
 
     public async showJellyTransition(callback?: () => void){
-        let node = await this.showLearnView(PrefabType.JellyTransition);
+        let node = await this.showViewAsync(PrefabType.JellyTransition);
         let script = node.getComponent(JellyTransition);
         await script.createTransitionView();
         script.showTransitionView(callback);
     }
 
     public async showComboAnimation(comboNum:number){
-        let node = await this.showLearnView(PrefabType.ComboView);
+        let node = await this.showViewAsync(PrefabType.ComboView);
         let script = node.getComponent(ComboView);
         script.showComboAnimation(comboNum);
     }

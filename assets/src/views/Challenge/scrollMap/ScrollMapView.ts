@@ -1,9 +1,7 @@
 import { _decorator, Node } from 'cc';
-import { EventType } from '../../../config/EventType';
 import { TextConfig } from '../../../config/TextConfig';
 import { ViewsManager } from '../../../manager/ViewsManager';
 import { UnitItemStatus } from '../../../models/TextbookModel';
-import { EventMgr } from '../../../util/EventManager';
 import { TextbookMapPointItem } from '../../adventure/levelmap/TextbookMapPointItem';
 import { GotoUnitLevel } from '../BreakThroughView';
 import { BaseMapView } from './BaseMapView';
@@ -49,8 +47,6 @@ export class ScrollMapView extends BaseMapView {
             gate,
             isNext: true
         };
-        return dataLevel;
-        EventMgr.dispatch(EventType.Goto_Module_Next_Level, );
-        
+        return dataLevel;        
     }
 }

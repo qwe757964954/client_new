@@ -25,6 +25,8 @@ export abstract class BaseMapView extends BaseView {
     @property
     public moveOffset: number = 200;
 
+    private bgFrame:SpriteFrame = null;
+
     // @property([Vec2])
     myCoordinates: Vec2[] = [];
     protected _unitStatus: any[] = [];
@@ -32,9 +34,9 @@ export abstract class BaseMapView extends BaseView {
     protected _totalGrade = 0;
     protected _passGrade = 0;
     public _curLevelIndex:number = 0;
-    protected initUI(): void {
+    protected async initUI(): Promise<void> {
+        this.mapItemPrefab.addRef();
         this.offViewAdaptSize();
-        
     }
     onInitModuleEvent() {
         this.addModelListener(EventType.Update_Curent_Level_Index, this.updateCurLevelIndex);
@@ -153,17 +155,16 @@ export abstract class BaseMapView extends BaseView {
     }
 
     private async addMapBackground(): Promise<void> {
-        return new Promise<void>((resolve, reject) => {
-            ResLoader.instance.load("adventure/bg/long_background/bg_map_01/spriteFrame", SpriteFrame, (err, spriteFrame) => {
-                if (err) {
-                    return reject(err);
-                }
-                const mapCount = this.calculateMapsNeeded(this._totalGrade);
-                this.createBackgroundNodes(mapCount, spriteFrame)
-                    .forEach(bgNode => this.MapLayout.addChild(bgNode));
-                this.MapLayout.getComponent(Layout).updateLayout();
-                resolve();
-            });
+        return new Promise<void>(async (resolve, reject) => {
+            if(!this.bgFrame){
+                this.bgFrame = await ResLoader.instance.loadAsyncPromise<SpriteFrame>('adventure/bg/long_background/bg_map_01/spriteFrame', SpriteFrame);
+                this.bgFrame.addRef();
+            }
+            const mapCount = this.calculateMapsNeeded(this._totalGrade);
+            this.createBackgroundNodes(mapCount, this.bgFrame)
+                .forEach(bgNode => this.MapLayout.addChild(bgNode));
+            this.MapLayout.getComponent(Layout).updateLayout();
+            resolve();
         });
     }
 
@@ -252,6 +253,10 @@ export abstract class BaseMapView extends BaseView {
     public updateCurLevelIndex(index: number): void {
         this._curLevelIndex = index;
     }
-
+    onDestroy(){
+        super.onDestroy();
+        this.mapItemPrefab.decRef();
+        this.bgFrame.decRef();
+    }
     public abstract gotoNextLevel(): void;
 }

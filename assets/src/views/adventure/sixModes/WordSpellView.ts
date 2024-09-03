@@ -233,7 +233,7 @@ export class WordSpellView extends BaseModeView {
             let wordData = JSON.parse(JSON.stringify(this._wordsData));
             let levelData = JSON.parse(JSON.stringify(this._levelData));
             console.log("过渡界面回调_________________________");
-            let node = await ViewsMgr.showLearnView(PrefabType.WordReadingView);
+            let node = await ViewsMgr.showViewAsync(PrefabType.WordReadingView);
             node.getComponent(WordReadingView).initData(wordData, levelData);
             this.node.destroy();
         })

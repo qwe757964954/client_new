@@ -155,7 +155,7 @@ export class WordPracticeView extends BaseModeView {
             const wordData = [...this._wordsData];
             const levelData = { ...this._levelData };
             console.log("过渡界面回调_________________________");
-            const node = await ViewsMgr.showLearnView(PrefabType.WordSpellView);
+            const node = await ViewsMgr.showViewAsync(PrefabType.WordSpellView);
             node.getComponent(WordSpellView).initData(wordData, levelData);
             this.node.destroy();
         });

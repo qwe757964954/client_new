@@ -208,7 +208,7 @@ export class WorldMapView extends BaseView {
     private async openLearningView(wordData: UnitWordModel[], bookLevelData: GateData, gameMode: GameMode) {
         const prefabType = GameStudyViewMap[gameMode];
         if (prefabType) {
-            const node = await ViewsMgr.showLearnView(prefabType);
+            const node = await ViewsMgr.showViewAsync(prefabType);
             let scpt: any = node.getComponent(prefabType.componentName); 
             scpt.initData(wordData, bookLevelData);
         }
