@@ -173,7 +173,10 @@ export abstract class BaseMapView extends BaseView {
         for (let i = 0; i < mapCount; i++) {
             const bgNode = this.getBackgroundNode();
             bgNode.name = `bg_map_${i}`;
-            bgNode.addComponent(Sprite).spriteFrame = spriteFrame;
+            if(!isValid(bgNode.getComponent(Sprite))){
+                bgNode.addComponent(Sprite)
+            }
+            bgNode.getComponent(Sprite).spriteFrame = spriteFrame;
             const uiTrans = bgNode.getComponent(UITransform);
             uiTrans.anchorPoint = new Vec2(0.5, 0.5);
             bgNodes.push(bgNode);
