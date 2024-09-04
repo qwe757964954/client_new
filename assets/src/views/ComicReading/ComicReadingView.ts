@@ -51,24 +51,6 @@ export class ComicReadingView extends BaseView {
                 alignOptions:{},
                 parentNode: this.content_layout
             },
-            // {
-            //     prefabType: PrefabType.FriendList,
-            //     initCallback: (node: Node) => {
-            //         this._friendList = node.getComponent(FriendList);
-            //         this._friendList.setFriendSelectListener(this.onFriendClick.bind(this));
-            //     },
-            //     parentNode: this.contentNd
-            // },
-            // {
-            //     prefabType: PrefabType.ApplyList,
-            //     initCallback: (node: Node) => this._applyList = node.getComponent(ApplyList),
-            //     parentNode: this.contentNd
-            // },
-            // {
-            //     prefabType: PrefabType.Blacklist,
-            //     initCallback: (node: Node) => this._blacklist = node.getComponent(Blacklist),
-            //     parentNode: this.contentNd
-            // },
         ]
 
         await Promise.all(viewComponents.map(config => 
