@@ -9,6 +9,7 @@ import { BaseView } from '../../script/BaseView';
 import { TBServer } from '../../service/TextbookService';
 import CCUtil from '../../util/CCUtil';
 import { SelectWordView } from '../TextbookVocabulary/SelectWordView';
+import { TbConfig } from '../TextbookVocabulary/TextbookInfo';
 const { ccclass, property } = _decorator;
 
 /**大冒险 学习页面 何存发 2024年4月8日19:21:23 */
@@ -30,6 +31,7 @@ export class studyView extends BaseView {
     /**初始化ui */
     initUI() {
         this.offViewAdaptSize();
+        TbConfig.loadTextBookInfo();
     }
 
     onInitModuleEvent() {
