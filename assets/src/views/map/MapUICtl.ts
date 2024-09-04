@@ -1688,10 +1688,10 @@ export class MapUICtl extends MainBaseCtl {
         if (data.visited_id != User.curMapUserID) return;
         for (let i = 0; i < data.visitors_info.length; i++) {
             const info = data.visitors_info[i];
+            if (info.visitor_id == User.userID) continue;
             if (0 == info.is_visit) {
                 this.onIslandRoleLeave(info);
             } else {
-                if (info.visitor_id == User.userID) continue;
                 this.initRole(info);
             }
         }

@@ -202,7 +202,7 @@ export class MainUIView extends BaseView {
     public onClickTaskGo() {
         console.log("onClickTaskGo");
         // ViewsMgr.showTip(TextConfig.Function_Tip);
-        // SceneMgr.loadMainScene(1);
+        SceneMgr.loadMainScene(11);
     }
     //学习点击
     public onClickStudy() {

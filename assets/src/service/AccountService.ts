@@ -98,7 +98,9 @@ export default class AccountService {
             let visited_id = data.detail?.visited_id;
             if (User.curMapDataUserID != visited_id) {
                 if (null != visited_id) {
-                    ServiceMgr.buildingService.reqExitIsland(visited_id);
+                    if (visited_id != User.userID) {
+                        ServiceMgr.buildingService.reqExitIsland(visited_id);
+                    }
                 } else if (SceneType.MainScene == director.getScene().name) {
                     ViewsManager.showAlert(TextConfig.Island_NotIn_Tip, () => {
                         SceneMgr.loadMainScene();
