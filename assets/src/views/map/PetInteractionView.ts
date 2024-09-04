@@ -90,6 +90,8 @@ export class PetInteractionView extends BaseComponent {
         // this.showTye(PetInteractionType.eat);
         this._pet = pet;
 
+        this.btnInfo.active = pet.userID == User.userID;
+
         this.onMoodScoreUpdate();
         ServiceMgr.buildingService.reqPetInfo(pet.userID);
     }
