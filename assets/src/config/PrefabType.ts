@@ -275,7 +275,7 @@ export const PrefabType = {
 
     /*********************************************主题 start***********************************************************/
     SubjectView: { path: "theme/SubjectView", componentName: "SubjectView", zindex: Hierarchy.TIPLAYER, tips: "主题界面" },
-    PracticeView: { path: "theme/PracticeView", componentName: "PracticeView", zindex: Hierarchy.POPUPLAYER, tips: "主题文章列表界面" },
+    PracticeView: { path: "theme/PracticeView", componentName: "PracticeView", zindex: Hierarchy.TIPLAYER, tips: "主题文章列表界面" },
     ArticleView: { path: "theme/ArticleView", componentName: "ArticleView", zindex: Hierarchy.POPUPLAYER, tips: "AI阅读文章列表界面" },
     ComicController: { path: "theme/ComicController", componentName: "ComicController", zindex: Hierarchy.POPUPLAYER, tips: "漫画" },
     ReadArticleView: { path: "theme/ReadArticleView", componentName: "ReadArticleView", zindex: Hierarchy.POPUPLAYER, tips: "读文章" },
