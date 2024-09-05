@@ -38,9 +38,9 @@ export default class _TextbookInfo {
         return this._instance;
     }
     
-    constructor(){
-        this.loadTextBookInfo();
-    }
+    // constructor(){
+    //     this.loadTextBookInfo();
+    // }
 
     get ConfigInfo() {
         return this._ConfigInfo;
