@@ -111,7 +111,7 @@ export class WordCheckView extends BaseView {
             similar_list: data.similar_list,
             structure: data.structure,
             variant: data.variant,
-            collect_flag: this._searchWordItem.is_collect
+            collect: this._searchWordItem.is_collect
         };
     }
 
