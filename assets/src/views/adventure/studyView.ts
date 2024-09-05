@@ -72,6 +72,10 @@ export class studyView extends BaseView {
             case "pictureBook": //英文漫画阅读
                 ViewsMgr.showViewAsync(PrefabType.ComicReadingView);
                 break
+            case "phonics":  //音标拼读
+            case "symbol":
+                ViewsMgr.showView(PrefabType.PhonicsView);
+                break;
             default:
                 ViewsManager.showTip(TextConfig.Function_Tip);
                 break;

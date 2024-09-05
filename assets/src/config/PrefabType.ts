@@ -283,4 +283,8 @@ export const PrefabType = {
     PracticRightView: { path: "theme/PracticRightView", componentName: "PracticRightView", zindex: Hierarchy.TIPLAYER, tips: "右侧练习" },
     /*********************************************主题 end***********************************************************/
 
+    /*********************************************音标拼读 start***********************************************************/
+    PhonicsView: { path: "phonics/PhonicsView", componentName: "PhonicsView", zindex: Hierarchy.POPUPLAYER, tips: "音标拼读界面" },
+    /*********************************************音标拼读 end***********************************************************/
+
 }
