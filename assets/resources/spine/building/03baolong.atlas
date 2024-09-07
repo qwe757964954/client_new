@@ -1,0 +1,76 @@
+
+03baolong.png
+size: 148,315
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+bl01_0
+  rotate: false
+  xy: 91, 95
+  size: 38, 75
+  orig: 38, 75
+  offset: 0, 0
+  index: -1
+bl01_1
+  rotate: true
+  xy: 90, 2
+  size: 25, 32
+  orig: 25, 32
+  offset: 0, 0
+  index: -1
+bl01_2
+  rotate: true
+  xy: 91, 172
+  size: 63, 53
+  orig: 63, 53
+  offset: 0, 0
+  index: -1
+bl01_3
+  rotate: false
+  xy: 2, 12
+  size: 86, 68
+  orig: 86, 68
+  offset: 0, 0
+  index: -1
+bl01_4
+  rotate: false
+  xy: 2, 156
+  size: 87, 79
+  orig: 87, 79
+  offset: 0, 0
+  index: -1
+bl01_5
+  rotate: false
+  xy: 90, 29
+  size: 40, 31
+  orig: 40, 31
+  offset: 0, 0
+  index: -1
+bl01_6
+  rotate: true
+  xy: 131, 144
+  size: 26, 15
+  orig: 26, 15
+  offset: 0, 0
+  index: -1
+weilan_16
+  rotate: false
+  xy: 2, 82
+  size: 86, 72
+  orig: 86, 72
+  offset: 0, 0
+  index: -1
+weilan_17
+  rotate: false
+  xy: 90, 62
+  size: 48, 31
+  orig: 48, 31
+  offset: 0, 0
+  index: -1
+weilan_19
+  rotate: false
+  xy: 2, 237
+  size: 139, 76
+  orig: 139, 76
+  offset: 0, 0
+  index: -1

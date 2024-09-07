@@ -1,0 +1,34 @@
+
+01wuzi.png
+size: 222,70
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+WZ_0
+  rotate: false
+  xy: 153, 2
+  size: 23, 23
+  orig: 23, 23
+  offset: 0, 0
+  index: -1
+WZ_1
+  rotate: false
+  xy: 153, 27
+  size: 67, 41
+  orig: 67, 41
+  offset: 0, 0
+  index: -1
+WZ_2
+  rotate: true
+  xy: 2, 7
+  size: 61, 88
+  orig: 61, 88
+  offset: 0, 0
+  index: -1
+WZ_3
+  rotate: false
+  xy: 92, 4
+  size: 59, 64
+  orig: 59, 64
+  offset: 0, 0
+  index: -1

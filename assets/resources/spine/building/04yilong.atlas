@@ -1,0 +1,69 @@
+
+04yilong.png
+size: 352,134
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+weilan_0
+  rotate: false
+  xy: 126, 20
+  size: 83, 58
+  orig: 83, 58
+  offset: 0, 0
+  index: -1
+weilan_2
+  rotate: false
+  xy: 2, 3
+  size: 115, 58
+  orig: 115, 58
+  offset: 0, 0
+  index: -1
+weilan_3
+  rotate: false
+  xy: 2, 63
+  size: 122, 69
+  orig: 122, 69
+  offset: 0, 0
+  index: -1
+yl01_0
+  rotate: false
+  xy: 327, 20
+  size: 21, 37
+  orig: 21, 37
+  offset: 0, 0
+  index: -1
+yl01_1
+  rotate: true
+  xy: 211, 2
+  size: 55, 73
+  orig: 55, 73
+  offset: 0, 0
+  index: -1
+yl01_2
+  rotate: false
+  xy: 286, 2
+  size: 39, 55
+  orig: 39, 55
+  offset: 0, 0
+  index: -1
+yl01_3
+  rotate: false
+  xy: 211, 62
+  size: 22, 16
+  orig: 22, 16
+  offset: 0, 0
+  index: -1
+yl01_4
+  rotate: false
+  xy: 249, 59
+  size: 101, 73
+  orig: 101, 73
+  offset: 0, 0
+  index: -1
+yl01_5
+  rotate: true
+  xy: 126, 80
+  size: 52, 121
+  orig: 52, 121
+  offset: 0, 0
+  index: -1

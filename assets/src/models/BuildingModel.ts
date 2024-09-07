@@ -106,7 +106,8 @@ const defaultSpAnim = ["animation", "idle", "click"];
 
 //建筑模型
 export class BuildingModel extends BaseModel {
-    private _building: Sprite = null;//建筑
+    private _building: Sprite = null;//建筑节点
+    private _img: Sprite = null;//建筑图片
     private _graphics: Graphics = null;//格子图层
     private _sp: sp.Skeleton = null;//动画
     private _fence: Node = null;//围栏
@@ -636,7 +637,7 @@ export class BuildingModel extends BaseModel {
             }
         }
         // if (this._editInfo.id != 30) return false;//争对某类建筑测试
-        let transform = this._building.getComponent(UITransform);
+        let transform = this._img.getComponent(UITransform);
         let rect: Rect = new Rect(0, 0, transform.width, transform.height);
         rect.x = -transform.anchorX * transform.width;
         rect.y = -transform.anchorY * transform.height;
@@ -651,17 +652,17 @@ export class BuildingModel extends BaseModel {
         let x = Math.floor(pos.x + transform.anchorX * transform.width);
         let y = Math.floor(pos.y + transform.anchorY * transform.height);
         // console.log("isTouchSelf 2:", x, y);
-        if (Sprite.SizeMode.TRIMMED == this._building.sizeMode) {
-            let spriteFrame = this._building.spriteFrame;
+        if (Sprite.SizeMode.TRIMMED == this._img.sizeMode) {
+            let spriteFrame = this._img.spriteFrame;
             const size = spriteFrame.originalSize;
             const offset = spriteFrame.offset;
             x = x + offset.x + (size.width - rect.width) / 2;
             y = y + offset.y + (size.height - rect.height) / 2;
             // console.log("isTouchSelf 5:", x, y);
         }
-        // let spriteFrame = CaptureUtils.capture(this._building.node);
+        // let spriteFrame = CaptureUtils.capture(this._img.node);
         // let colors = CCUtil.readPixels(spriteFrame, pos.x, pos.y);
-        let colors = CCUtil.readPixel(this._building.spriteFrame, x, y);
+        let colors = CCUtil.readPixel(this._img.spriteFrame, x, y);
         return colors[3] >= 50;
     }
     /** 画格子区域 */
@@ -707,6 +708,13 @@ export class BuildingModel extends BaseModel {
             g.fill();
         }
     }
+    /**img底图是否显示 */
+    private isImgShow() {
+        let id = this._editInfo.id;
+        if (90 == id || 91 == id || 92 == id || 93 == id || 95 == id || 96 == id)
+            return false;
+        return true;
+    }
     /**显示与否 */
     public show(isShow: boolean, callBack?: Function) {
         if (this._node) {
@@ -724,7 +732,9 @@ export class BuildingModel extends BaseModel {
                 this._node = node;
                 this._node.active = this._isShow;
                 this._node.position = this._pos;
-                this._building = this._node.getComponentInChildren(Sprite);
+                let buildingNode = this._node.getChildByName("Building");
+                this._building = buildingNode.getComponent(Sprite);
+                this._img = this._building.getComponentInChildren(Sprite);
                 this.isFlip = this._isFlip;
                 this.fixImgPos();
                 this._sp = this._node.getComponentInChildren(sp.Skeleton);
@@ -737,10 +747,14 @@ export class BuildingModel extends BaseModel {
                 this.refreshUIView();
                 this.refreshBuildingShow();
 
-                LoadManager.loadSprite(DataMgr.getEditPng(this._editInfo), this._building, true).then(() => {
+                this._img.node.active = this.isImgShow();
+                LoadManager.loadSprite(DataMgr.getEditPng(this._editInfo), this._img, true).then(() => {
                     this._isLoadOver = true;
+                    let size = this._img.getComponent(UITransform).contentSize.clone();
+                    this._building.getComponent(UITransform).setContentSize(size);
                     if (callBack) callBack();
                 });
+
                 let animation = this._editInfo.animation;
                 if (animation && animation.length > 0) {
                     LoadManager.loadSpine(animation, this._sp).then(() => {
@@ -754,13 +768,14 @@ export class BuildingModel extends BaseModel {
 
                         if (this._editInfo.animpos) {
                             this._sp.node.position = this._editInfo.animpos;
-                        } else {
-                            let pos = this._building.node.position.clone();
-                            pos.x = 32;
-                            pos.y = 194;
-                            this._sp.node.position = pos;
-                            console.log("pos", pos.x, pos.y);
                         }
+                        // if (96 == this.editInfo.id) {
+                        //     let pos = this._building.node.position.clone();
+                        //     pos.x = -14;
+                        //     pos.y = 56;
+                        //     this._sp.node.position = pos;
+                        //     console.log("pos", pos.x, pos.y);
+                        // }
                     });
                 }
                 if (null != this._btnViewShowScale) {
