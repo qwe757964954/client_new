@@ -150,6 +150,7 @@ export const TextConfig = {
     ReviewPlan_book_text2: "切换教材",
 
     PetInteraction_Tip: "互动次数不足",
+    PetInteraction_Tip2: "谢谢你，我暂时还不需求哦～",
     PetMood_Add_Tip: "心情值+{0}",
     PetUpgrade_Tip: "升级成功",
     PetUpgrade_Castle_Error: "你的城堡等级不够，暂时还不能升级哦～",

@@ -143,9 +143,13 @@ export class PetInteractionView extends BaseComponent {
         if (img) LoadManager.loadSprite(propInfo.png, img);
         CCUtil.offTouch(item);
         CCUtil.onTouch(item, () => {
-            console.log("onTouch", data.type, data.id);
+            console.log("onTouch", data.type, data.id, User.moodScore);
             if (this._repBool.value) return;
             if (!User.checkItems([{ id: data.id, num: 1 }], new AlertParam(TextConfig.Item_Condition_Error, TextConfig.Item_Condition_Error2))) {
+                return;
+            }
+            if (User.moodScore >= 100) {
+                ViewsMgr.showAlert(TextConfig.PetInteraction_Tip2);
                 return;
             }
             this._repBool.value = true;
