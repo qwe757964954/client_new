@@ -326,7 +326,11 @@ export class BuildingModel extends BaseModel {
     public set isShowBaseColor(isShow: boolean) {
         this._isShowBaseColor = isShow;
         if (this._graphics) {
-            this._graphics.node.active = isShow;
+            if (this._btnView && this._btnView.active) {
+                this._graphics.node.active = true;
+            } else {
+                this._graphics.node.active = isShow;
+            }
         }
         // if (!this._btnView || !this._btnView.active) {
         //     if (isShow) {
@@ -395,6 +399,7 @@ export class BuildingModel extends BaseModel {
         this.topZIndex = true;
         this._node.setSiblingIndex(-1);//放到最高层
         this._graphics.node.active = true;//画图层显示
+        this.drawGridRect();
         this._building.color = new Color(255, 255, 255, 180);//半透明
         if (this._isShowBaseColor) {
             this._building.node.active = true;//建筑显示
