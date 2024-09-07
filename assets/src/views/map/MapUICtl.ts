@@ -1321,7 +1321,7 @@ export class MapUICtl extends MainBaseCtl {
         User.petLevel = petInfo.level;
         User.petHasReward = petInfo.has_reward;
 
-        this.checkPetShow();
+        // this.checkPetShow();
         this.setCheckPetTimer(petInfo.next_explore_second);
     }
     /**清理检测宠物定时器 */

@@ -1,4 +1,4 @@
-import { _decorator, color, Label, Node, Sprite, SpriteFrame, tween } from 'cc';
+import { _decorator, color, Label, Layers, Node, Sprite, SpriteFrame, tween, Vec3 } from 'cc';
 import { AlertParam } from '../../config/ClassConfig';
 import { EventType } from '../../config/EventType';
 import { PetInteractionInfo, PetInteractionType } from '../../config/PetConfig';
@@ -8,6 +8,7 @@ import { DataMgr } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
 import { ViewsMgr } from '../../manager/ViewsManager';
 import { s2cPetInfoRep, s2cPetInteraction, s2cPetUpgrade } from '../../models/NetModel';
+import { PetModel } from '../../models/PetModel';
 import { RoleDataModel } from '../../models/RoleDataModel';
 import { User } from '../../models/User';
 import { InterfacePath } from '../../net/InterfacePath';
@@ -15,6 +16,7 @@ import { ServiceMgr } from '../../net/ServiceManager';
 import { BaseComponent } from '../../script/BaseComponent';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
+import { NodeUtil } from '../../util/NodeUtil';
 import { ToolUtil } from '../../util/ToolUtil';
 import { PetInfoView } from './PetInfoView';
 const { ccclass, property } = _decorator;
@@ -47,6 +49,8 @@ export class PetInteractionView extends BaseComponent {
     public imgMood: Sprite = null;//心情img
     @property(Sprite)
     public img: Sprite = null;//互动img
+    @property(PetModel)
+    public petModel: PetModel = null;//宠物
 
     private _pet: RoleDataModel = null;//宠物
     private _data: PetInteractionInfo[] = null;//数据
@@ -89,8 +93,13 @@ export class PetInteractionView extends BaseComponent {
         this.frame.active = false;
         // this.showTye(PetInteractionType.eat);
         this._pet = pet;
-
         this.btnInfo.active = pet.userID == User.userID;
+
+        this.petModel.init(pet.roleID, pet.level);
+        this.petModel.show(true);
+        NodeUtil.setLayerRecursively(this.petModel.node, Layers.Enum.UI_2D);
+        this.fixPetSize();
+        this.petModel.show(false);
 
         this.onMoodScoreUpdate();
         ServiceMgr.buildingService.reqPetInfo(pet.userID);
@@ -142,6 +151,9 @@ export class PetInteractionView extends BaseComponent {
     }
     /**关闭按钮 */
     onCloseClick() {
+        if (this.frame.active) {
+            this._pet.isActive = true;
+        }
         if (this._removeCall) this._removeCall();
         this.node.destroy();
     }
@@ -156,6 +168,8 @@ export class PetInteractionView extends BaseComponent {
         this.plBtn.active = false;
         this.frame.active = true;
         this.bg.active = true;
+        this._pet.isActive = false;
+        this.petModel.show(true);
         this.showTye(type);
     }
     /**类型按钮 */
@@ -184,8 +198,8 @@ export class PetInteractionView extends BaseComponent {
             ViewsMgr.showAlert(data.msg);
             return;
         }
-        let petInfo = data.pet_info;
-        User.moodScore = petInfo.mood;
+        // let petInfo = data.pet_info;
+        // User.moodScore = petInfo.mood;//地图层监听了
     }
     /**心情分更新 */
     onMoodScoreUpdate() {
@@ -196,13 +210,15 @@ export class PetInteractionView extends BaseComponent {
         }
     }
     /**宠物升级 */
-    onRepPetUpgrade(data: s2cPetUpgrade) {
+    private onRepPetUpgrade(data: s2cPetUpgrade) {
         if (200 != data.code) {
             return;
         }
+        this.petModel.updateLevel(data.level);
+        this.fixPetSize();
     }
     /**宠物互动 */
-    onRepPetInteraction(data: s2cPetInteraction) {
+    private onRepPetInteraction(data: s2cPetInteraction) {
         ViewsMgr.removeWaiting();
         if (200 != data.code) {
             ViewsMgr.showAlert(data.msg);
@@ -221,6 +237,14 @@ export class PetInteractionView extends BaseComponent {
 
             this.listView.updateAll();
         }).start();
+    }
+    /**调整宠物大小 */
+    private fixPetSize() {
+        if (this.petModel.level <= 2) {//特殊处理，后面考虑走配置
+            this.petModel.node.scale = new Vec3(1.5, 1.5, 1.5);
+        } else {
+            this.petModel.node.scale = new Vec3(1, 1, 1);
+        }
     }
 }
 
