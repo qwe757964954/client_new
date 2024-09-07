@@ -1,4 +1,4 @@
-import { _decorator, color, Label, Layers, Node, Sprite, SpriteFrame, tween, Vec3 } from 'cc';
+import { _decorator, color, Label, Layers, Node, sp, Sprite, SpriteFrame, tween, Vec3 } from 'cc';
 import { AlertParam } from '../../config/ClassConfig';
 import { EventType } from '../../config/EventType';
 import { PetInteractionInfo, PetInteractionType } from '../../config/PetConfig';
@@ -17,6 +17,7 @@ import { BaseComponent } from '../../script/BaseComponent';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
 import { NodeUtil } from '../../util/NodeUtil';
+import { TimeOutBool } from '../../util/TimeOutBool';
 import { ToolUtil } from '../../util/ToolUtil';
 import { PetInfoView } from './PetInfoView';
 const { ccclass, property } = _decorator;
@@ -51,12 +52,15 @@ export class PetInteractionView extends BaseComponent {
     public img: Sprite = null;//互动img
     @property(PetModel)
     public petModel: PetModel = null;//宠物
+    @property(sp.Skeleton)
+    public sp: sp.Skeleton = null;//动画
 
     private _pet: RoleDataModel = null;//宠物
     private _data: PetInteractionInfo[] = null;//数据
     private _type: PetInteractionType = null;//类型
     private _removeCall: Function = null;//移除回调
     private _interactionInfo: PetInteractionInfo = null;//互动信息
+    private _repBool: TimeOutBool = new TimeOutBool(2000);//互动超时
 
     onLoad() {
         this.initEvent();
@@ -140,12 +144,13 @@ export class PetInteractionView extends BaseComponent {
         CCUtil.offTouch(item);
         CCUtil.onTouch(item, () => {
             console.log("onTouch", data.type, data.id);
+            if (this._repBool.value) return;
             if (!User.checkItems([{ id: data.id, num: 1 }], new AlertParam(TextConfig.Item_Condition_Error, TextConfig.Item_Condition_Error2))) {
                 return;
             }
+            this._repBool.value = true;
             this._interactionInfo = data;
             this.img.node.setWorldPosition(img.node.worldPosition);
-            ViewsMgr.showWaiting();
             ServiceMgr.buildingService.reqPetInteraction(data.id, this._pet.userID);
         });
     }
@@ -219,7 +224,7 @@ export class PetInteractionView extends BaseComponent {
     }
     /**宠物互动 */
     private onRepPetInteraction(data: s2cPetInteraction) {
-        ViewsMgr.removeWaiting();
+        this._repBool.clearTimer();
         if (200 != data.code) {
             ViewsMgr.showAlert(data.msg);
             return;
@@ -233,8 +238,15 @@ export class PetInteractionView extends BaseComponent {
         });
         tween(this.img.node).to(0.5, { worldPosition: this.node.worldPosition }).call(() => {
             this.img.node.active = false;
-            ViewsMgr.showTipSmall(ToolUtil.replace(TextConfig.PetMood_Add_Tip, this._interactionInfo.score), this.node);
 
+            this.sp.node.active = true;
+            console.log("onRepPetInteraction", this._interactionInfo.anim);
+            this.sp.setAnimation(0, this._interactionInfo.anim, false);
+            this.sp.setCompleteListener(() => {
+                this.sp.node.active = false;
+                ViewsMgr.showTipSmall(ToolUtil.replace(TextConfig.PetMood_Add_Tip, this._interactionInfo.score), this.node);
+                this._repBool.value = false;
+            });
             this.listView.updateAll();
         }).start();
     }
