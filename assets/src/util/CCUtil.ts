@@ -156,6 +156,7 @@ export default class CCUtil {
             offsetX = rect.x + px;
             offsetY = rect.y + rect.height - py;
         }
+        if (offsetX > rect.x + rect.width || offsetY > rect.y + rect.height) return buffer;
         // console.log("readPixels 2:", offsetX, offsetY, texture);
         // 以下获取像素方式在android上压缩纹理会崩溃
         /** RenderTexture.readPixels强制类型转换了，只能在web上使用，android上会崩溃 */
