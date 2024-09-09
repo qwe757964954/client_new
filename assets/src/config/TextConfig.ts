@@ -65,7 +65,7 @@ export const TextConfig = {
     Speed_Words_Exit_Tip3: "（中途退出后，本次制作不能再用单词加速哦）",
     Speed_Words_Exit_Tip4: "（中途退出后，本次扩张不能再用单词加速哦）",
     Speed_Words_Speed_Tip1: "（累计已加速{0}秒）",
-    Speed_Words_Speed_Tip2: "（恭喜你，累计加速{0}秒。",
+    Speed_Words_Speed_Tip2: "恭喜你，累计加速{0}秒。",
     Building_Success_Type1: "建造成功",
     Building_Success_Type2: "升级成功",
 
