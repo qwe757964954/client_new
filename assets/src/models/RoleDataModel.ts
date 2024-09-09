@@ -1,4 +1,4 @@
-import { Node, Rect, Sprite, SpriteFrame, Texture2D, Tween, TweenSystem, UITransform, Vec2, Vec3, sp, tween } from "cc";
+import { Label, Node, Rect, Sprite, SpriteFrame, Texture2D, Tween, TweenSystem, UITransform, Vec2, Vec3, sp, tween } from "cc";
 import { EventType } from "../config/EventType";
 import { MapConfig } from "../config/MapConfig";
 import { PrefabType } from "../config/PrefabType";
@@ -31,6 +31,7 @@ export class RoleDataModel extends BaseModel {
     /**公共 */
     private _role: sp.Skeleton = null;//角色
     private _spNode: Node = null;//sp节点
+    private _labelNick: Label = null;//昵称
 
     private _isSelf: boolean = false;//是否是自己
     private _x: number;//x格子坐标
@@ -50,6 +51,7 @@ export class RoleDataModel extends BaseModel {
     // private _isShowFlag2: boolean = false;//是否显示标记2(摄像机是否显示)
 
     private _userID: number;//用户id
+    private _nick: string;//昵称
     private _roleID: number;//角色id
     private _level: number;//等级
     private _roleType: RoleType = RoleType.none;//角色类型
@@ -166,12 +168,13 @@ export class RoleDataModel extends BaseModel {
         return this._roleType;
     }
     // 初始化
-    public init(roleID: number, level: number, roleType: RoleType, userID: number) {
+    public init(roleID: number, level: number, roleType: RoleType, userID: number, nick: string) {
         if (RoleType.none != this._roleType) return;
         this._roleType = roleType;
         this._roleID = roleID;
         this._level = level;
         this._userID = userID;
+        this._nick = nick;
         if (RoleType.role == roleType) {
             this._roleInfo = DataMgr.roleConfig[this._roleID];
             this._scale = MapConfig.roleScale;
@@ -183,13 +186,13 @@ export class RoleDataModel extends BaseModel {
     public initSelfRole() {
         this._isSelf = true;
         let roleID = User.roleID;
-        this.init(roleID, 1, RoleType.role, User.userID);
+        this.init(roleID, 1, RoleType.role, User.userID, User.nick);
         this._clothings.setData(User.userClothes);
     }
     public initSelfPet() {
         this._isSelf = true;
         let petID = User.petID;
-        this.init(petID, User.petLevel, RoleType.sprite, User.userID);
+        this.init(petID, User.petLevel, RoleType.sprite, User.userID, User.nick);
     }
 
     get pos() {
@@ -433,6 +436,13 @@ export class RoleDataModel extends BaseModel {
                     this._role = node.getComponentInChildren(sp.Skeleton);
                     this._spNode = node.getChildByName("spNode");
                     CCUtil.setNodeScale(this._spNode, this._scale);
+                    this._labelNick = node.getChildByName("nick").getComponent(Label);
+                    let nickBg = node.getChildByName("nickBg");
+                    if (null != this._nick) {
+                        this._labelNick.node.active = true;
+                        // nickBg.active = true;
+                        this._labelNick.string = RoleType.sprite == this._roleType ? (this._nick + "的精灵") : this._nick;
+                    }
                     if (this._giftNode && this._giftShow) {
                         this.showGift();
                     }

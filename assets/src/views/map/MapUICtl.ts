@@ -389,6 +389,7 @@ export class MapUICtl extends MainBaseCtl {
     public initRole(info: s2cIslandUserInfo) {
         let userID = info.visitor_id;
         let roleID = info.role_id % 100;
+        let nick = info.nick_name;
         if (null == userID) return;
         for (let i = 0; i < this._roleModelAry.length; i++) {
             const role = this._roleModelAry[i];
@@ -399,7 +400,7 @@ export class MapUICtl extends MainBaseCtl {
 
         {
             let roleModel = new RoleDataModel();
-            roleModel.init(roleID, 1, RoleType.role, userID);
+            roleModel.init(roleID, 1, RoleType.role, userID, nick);
             roleModel.parent = this._mainScene.buildingLayer;
             let grid = this.getGridInfo(12, 12);
             roleModel.grid = grid;
@@ -419,7 +420,7 @@ export class MapUICtl extends MainBaseCtl {
         }
         {
             let roleModel = new RoleDataModel();
-            roleModel.init(roleID, info.pet_level, RoleType.sprite, userID);
+            roleModel.init(roleID, info.pet_level, RoleType.sprite, userID, nick);
             roleModel.parent = this._mainScene.buildingLayer;
             let grid = this.getGridInfo(12, 12);
             roleModel.grid = grid;

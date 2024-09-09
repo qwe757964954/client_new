@@ -681,6 +681,7 @@ export class s2cIslandUserInfo {
     visitor_id: number;
     is_visit?: number;// 0离开小岛
     user_id: number;
+    nick_name: string;
     hair: number;
     jewelry: number;
     coat: number;
