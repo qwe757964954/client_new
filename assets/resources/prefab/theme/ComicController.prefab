@@ -2206,7 +2206,7 @@
     },
     "bounceDuration": 0.23,
     "brake": 0.5,
-    "elastic": true,
+    "elastic": false,
     "inertia": true,
     "horizontal": true,
     "vertical": true,
