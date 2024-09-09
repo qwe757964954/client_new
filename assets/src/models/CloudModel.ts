@@ -283,6 +283,7 @@ export class CloudModel extends BaseModel {
                 this._imgClock = this._node.getChildByName("img_clock");
                 this._btnSpeed = this._node.getChildByName("btnSpeed");
                 CCUtil.onTouch(this._btnSpeed, this.onCloudClick, this);
+                CCUtil.onTouch(this._unlockNode, this.onCloudClick, this);
 
                 // let transform = this._img.getComponent(UITransform);
                 // let pos = new Vec3(0, transform.height, 0);
