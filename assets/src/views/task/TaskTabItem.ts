@@ -78,7 +78,7 @@ export class TaskTabItem extends ListItem {
         this.scheduleOnce(()=>{
             this.sub_scroll.selectedId = -1;
             this.sub_scroll.selectedId = 0;
-        },0.1);
+        },0.02);
     }
 
     animateHeightChange(node: any, height: number) {
