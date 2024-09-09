@@ -4,8 +4,7 @@ import { LoadManager } from '../../manager/LoadManager';
 import CCUtil from '../../util/CCUtil';
 import { ObjectUtil } from '../../util/ObjectUtil';
 import { BagConfig } from '../bag/BagConfig';
-import { TabTypeIds } from '../task/TaskInfo';
-import { BuyStoreInfo, ShopClothingInfo } from './ShopInfo';
+import { BuyStoreInfo, ShopClothingMap } from './ShopInfo';
 import { ShopItemBase } from './ShopItemBase';
 
 const { ccclass } = _decorator;
@@ -14,7 +13,7 @@ const { ccclass } = _decorator;
 export class ShopStoreItem extends ShopItemBase {
     public data: ClothingInfo = null;
 
-    initData(data: ClothingInfo, shopInfo: { [key in TabTypeIds]?: ShopClothingInfo }) {
+    initData(data: ClothingInfo, shopInfo: ShopClothingMap) {
         this.data = data;
         this.lblName.string = data.name;
         this._shopClothing = shopInfo;

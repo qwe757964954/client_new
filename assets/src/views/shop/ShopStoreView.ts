@@ -11,7 +11,7 @@ import List from '../../util/list/List';
 import { BagConfig } from '../bag/BagConfig';
 import { CothingSuitInfo, GoodsItemInfo } from '../bag/BagInfo';
 import { TabTypeIds } from '../task/TaskInfo';
-import { BuyStoreInfo, clothingTypeMapping, ShopClothingInfo } from './ShopInfo';
+import { BuyStoreInfo, clothingTypeMapping, ShopClothingInfo, ShopClothingMap } from './ShopInfo';
 import { ShopPlayerView } from './ShopPlayerView';
 import { ShopStoreItem } from './ShopStoreItem';
 import { ShopSuitItem } from './ShopSuitItem';
@@ -31,7 +31,7 @@ export class ShopStoreView extends BaseView {
     private _suitItemsData: CothingSuitInfo[] = [];
     private clothingInfo: BuyStoreInfo = null;
     private _curTabType: TabTypeIds = null;
-    private _shopClothing: { [key in TabTypeIds]?: ShopClothingInfo } = {};
+    private _shopClothing: ShopClothingMap = {};
 
     protected async initUI() {
         this.offViewAdaptSize();

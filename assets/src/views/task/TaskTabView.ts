@@ -57,9 +57,11 @@ export class TaskTabView extends BaseView {
     }
 
     firstTabsUnselected(){
-        let item = this.tab_scroll.getItemByListId(0);
-        let item_script = item.getComponent(TaskTabItem);
-        item_script.selectEvent();
+        this.scheduleOnce(() => {
+            let item = this.tab_scroll.getItemByListId(0);
+            let item_script = item.getComponent(TaskTabItem);
+            item_script.selectEvent();
+        },0.15)
     }
 
     onDestroy(): void {

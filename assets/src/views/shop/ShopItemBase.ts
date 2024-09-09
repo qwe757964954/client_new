@@ -4,8 +4,7 @@ import { ViewsMgr } from '../../manager/ViewsManager';
 import CCUtil from '../../util/CCUtil';
 import { EventMgr } from '../../util/EventManager';
 import ListItem from '../../util/list/ListItem';
-import { TabTypeIds } from '../task/TaskInfo';
-import { BuyStoreInfo, ShopClothingInfo } from './ShopInfo';
+import { BuyStoreInfo, ShopClothingMap } from './ShopInfo';
 
 const { ccclass, property } = _decorator;
 
@@ -31,7 +30,7 @@ export abstract class ShopItemBase extends ListItem {
 
     protected btnBuyComponent: Button = null;
     protected btnBuySprite: Sprite = null;
-    protected _shopClothing: { [key in TabTypeIds]?: ShopClothingInfo } = {};
+    protected _shopClothing: ShopClothingMap = {};
 
     protected abstract getPrice(): number;
     protected abstract getItemName(): string;

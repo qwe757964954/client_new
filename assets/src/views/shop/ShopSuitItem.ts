@@ -5,8 +5,7 @@ import { RoleBaseModel } from '../../models/RoleBaseModel';
 import { ObjectUtil } from '../../util/ObjectUtil';
 import { BagConfig } from '../bag/BagConfig';
 import { CothingSuitInfo } from '../bag/BagInfo';
-import { TabTypeIds } from '../task/TaskInfo';
-import { BuyStoreInfo, ShopClothingInfo } from './ShopInfo';
+import { BuyStoreInfo, ShopClothingMap } from './ShopInfo';
 import { ShopItemBase } from './ShopItemBase';
 
 const { ccclass } = _decorator;
@@ -15,7 +14,7 @@ const { ccclass } = _decorator;
 export class ShopSuitItem extends ShopItemBase {
     private data: CothingSuitInfo = null;
     private _roleNode:Node = null;
-    async initData(data: CothingSuitInfo, shopInfo: { [key in TabTypeIds]?: ShopClothingInfo }) {
+    async initData(data: CothingSuitInfo, shopInfo: ShopClothingMap) {
         this.data = data;
         this._shopClothing = shopInfo;
         this.lblName.string = data.suit_title;
