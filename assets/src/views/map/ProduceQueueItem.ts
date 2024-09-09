@@ -1,4 +1,5 @@
 import { _decorator, Component, Label, Node, Sprite } from 'cc';
+import { ConfirmParam } from '../../config/ClassConfig';
 import { TextConfig } from '../../config/TextConfig';
 import { LoadManager } from '../../manager/LoadManager';
 import { ViewsMgr } from '../../manager/ViewsManager';
@@ -128,7 +129,7 @@ export class ProduceQueueItem extends Component {
         if (null == this._time) {
             return;
         }
-        ViewsMgr.showConfirm(TextConfig.Speed_Words_Tip3, () => {
+        ViewsMgr.showConfirm(new ConfirmParam(TextConfig.Speed_Words_Tip, TextConfig.Speed_Words_Tip3), () => {
             ServiceMgr.buildingService.reqSpeedWordsGet(this._buildingID, this._product_num);
         });
     }

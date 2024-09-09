@@ -64,6 +64,8 @@ export class ConfirmView extends BasePopup {
     showExtraLabel(content: string) {
         this.extraLabel.string = content;
         this.extraLabel.node.active = true;
+        this.extraLabel.updateRenderData();
+        CCUtil.fixNodeScale(this.extraLabel.node, 580, 31.5, true);
     }
 
     showRichText(content: string) {

@@ -1,4 +1,5 @@
 import { Color, Graphics, Node, Rect, Sprite, UITransform, Vec2, Vec3, _decorator, sp } from "cc";
+import { ConfirmParam } from "../config/ClassConfig";
 import { EventType } from "../config/EventType";
 import { MapConfig } from "../config/MapConfig";
 import { PrefabType } from "../config/PrefabType";
@@ -886,7 +887,7 @@ export class BuildingModel extends BaseModel {
         if (this._countdownFrame) {
             this._countdownFrame.init(sec, () => {
                 let str = BuildingState.building == this.buildingState ? TextConfig.Speed_Words_Tip1 : TextConfig.Speed_Words_Tip2;
-                ViewsMgr.showConfirm(str, () => {
+                ViewsMgr.showConfirm(new ConfirmParam(TextConfig.Speed_Words_Tip, str), () => {
                     ServiceMgr.buildingService.reqSpeedWordsGet(this.buildingID);
                 });
             }, () => {

@@ -1,4 +1,5 @@
 import { _decorator, Label, Node, Rect, Sprite, Tween, tween, UIOpacity, UITransform, Vec3 } from 'cc';
+import { ConfirmParam } from '../config/ClassConfig';
 import { MapConfig } from '../config/MapConfig';
 import { PrefabType } from '../config/PrefabType';
 import { TextConfig } from '../config/TextConfig';
@@ -327,7 +328,7 @@ export class CloudModel extends BaseModel {
             //     ServiceMgr.buildingService.reqCloudUnlock([ToolUtil.replace(TextConfig.Land_Key, this._x, this._y)]);
             // });
         } else {
-            ViewsMgr.showConfirm(TextConfig.Speed_Words_Tip4, () => {
+            ViewsMgr.showConfirm(new ConfirmParam(TextConfig.Speed_Words_Tip, TextConfig.Speed_Words_Tip4), () => {
                 ServiceMgr.buildingService.reqSpeedWordsGetEx(ToolUtil.replace(TextConfig.Land_Key, this._x, this._y));
             });
         }
