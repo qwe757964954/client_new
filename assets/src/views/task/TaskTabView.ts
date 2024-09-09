@@ -33,6 +33,8 @@ export class TaskTabView extends BaseView {
         item_sript.initPropsItem(this.tab_datas[idx]);
     }
 
+
+
     onTabListHorizontalSelected(item: any, selectedId: number, lastSelectedId: number, val: number) {
         if (!isValid(selectedId) || selectedId < 0 || !isValid(item)) { return; }
         let item_sript: TaskTabItem = item.getComponent(TaskTabItem);
@@ -53,6 +55,13 @@ export class TaskTabView extends BaseView {
             item_script.clearTabContent();
         }
     }
+
+    firstTabsUnselected(){
+        let item = this.tab_scroll.getItemByListId(0);
+        let item_script = item.getComponent(TaskTabItem);
+        item_script.selectEvent();
+    }
+
     onDestroy(): void {
         super.onDestroy();
         console.log("TaskTabView   onDestroy");

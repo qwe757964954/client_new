@@ -66,6 +66,7 @@ export class ShopUIView extends BaseView {
             this._tabView = node.getComponent(TaskTabView);
             this._tabView.setTabSelectClick(this.onTabSelect.bind(this));
             this._tabView.updateData(ShopTabInfos);
+            this._tabView.firstTabsUnselected();
         }, {
             isAlignTop: true,
             isAlignLeft: true,
