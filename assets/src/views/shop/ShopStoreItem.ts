@@ -23,7 +23,7 @@ export class ShopStoreItem extends ShopItemBase {
         const itemDatas: ItemData[] = ObjectUtil.convertRewardData(goodsInfo.price);
         const isExist = BagConfig.isExistInPackage(data.id.toString());
 
-        this.lblPrice.string = isExist ? "已存在" : `${itemDatas[0].num}`;
+        this.lblPrice.string = isExist ? "已拥有" : `${itemDatas[0].num}`;
         this.btnBuySprite.grayscale = isExist;
         this.btnBuyComponent.interactable = !isExist;
 

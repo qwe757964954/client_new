@@ -24,7 +24,7 @@ export class ShopSuitItem extends ShopItemBase {
 
         const [totalAmount, suitExist] = this.calculateSuitStatus(data.items, roleModel);
 
-        this.lblPrice.string = suitExist ? "已存在" : `${totalAmount}`;
+        this.lblPrice.string = suitExist ? "已拥有" : `${totalAmount}`;
         this.btnBuySprite.grayscale = suitExist;
         this.btnBuyComponent.interactable = !suitExist;
     }
