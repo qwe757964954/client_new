@@ -114,10 +114,10 @@ export class ShopStoreView extends BaseView {
             this.suit_list.numItems = this._suitItemsData.length;
         } else {
             this.store_list.numItems = this._itemsData.length;
-            this._shopPlayerView.shopClothing = this._shopClothing;
-            this._shopPlayerView.updateClothingStatus();
             this.updateSelectProps();
         }
+        this._shopPlayerView.shopClothing = this._shopClothing;
+        this._shopPlayerView.updateClothingStatus();
     }
 
     private onShopBuyStore(info: BuyStoreInfo) {
