@@ -1,7 +1,9 @@
 import { _decorator, Layout, Node } from 'cc';
+import { EventType } from '../../config/EventType';
 import { ItemData } from '../../manager/DataMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
+import { EventMgr } from '../../util/EventManager';
 import { ObjectUtil } from '../../util/ObjectUtil';
 import { BagConfig } from '../bag/BagConfig';
 import { CothingSuitInfo } from '../bag/BagInfo';
@@ -13,8 +15,9 @@ const { ccclass } = _decorator;
 @ccclass('ShopSuitItem')
 export class ShopSuitItem extends ShopItemBase {
     private data: CothingSuitInfo = null;
-    private _roleNode:Node = null;
-    async initData(data: CothingSuitInfo, shopInfo: ShopClothingMap) {
+    private _roleNode: Node = null;
+
+    async initData(data: CothingSuitInfo, shopInfo: ShopClothingMap): Promise<void> {
         this.data = data;
         this._shopClothing = shopInfo;
         this.lblName.string = data.suit_title;
@@ -34,21 +37,19 @@ export class ShopSuitItem extends ShopItemBase {
 
     private calculateSuitStatus(items: any[], roleModel: RoleBaseModel): [number, boolean] {
         let totalAmount = 0;
-        let suitExist = false;
+        let suitCount = 0;
 
-        for (const item of items) {
+        items.forEach(item => {
             roleModel.changeClothing(item.id);
             const itemDatas: ItemData[] = ObjectUtil.convertRewardData(item.price);
-            const isExist = BagConfig.isExistInPackage(item.id.toString());
-
-            if (isExist) {
-                suitExist = true;
+            if (BagConfig.isExistInPackage(item.id.toString())) {
+                suitCount++;
             } else {
                 totalAmount += itemDatas[0].num;
             }
-        }
+        });
 
-        return [totalAmount, suitExist];
+        return [totalAmount, suitCount === items.length];
     }
 
     protected getPrice(): number {
@@ -56,21 +57,23 @@ export class ShopSuitItem extends ShopItemBase {
     }
 
     protected getItemName(): string {
-        return "金币"; // Replace with dynamic logic if needed
+        return "金币"; // Static as the suit item does not have a specific item name
+    }
+
+    protected async gotoBuy(): Promise<void> {
+        EventMgr.dispatch(EventType.Shop_Buy_Suit_Detail, this.data);
     }
 
     protected prepareBuyInfo(): BuyStoreInfo {
         const ids: number[] = [];
         const nums: number[] = [];
 
-        for (const item of this.data.items) {
-            const isExist = BagConfig.isExistInPackage(item.id.toString());
-
-            if (!isExist) {
+        this.data.items.forEach(item => {
+            if (!BagConfig.isExistInPackage(item.id.toString())) {
                 ids.push(item.id);
                 nums.push(1);
             }
-        }
+        });
 
         return { ids, nums };
     }

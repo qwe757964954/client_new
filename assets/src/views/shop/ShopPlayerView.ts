@@ -47,7 +47,7 @@ export class ShopPlayerView extends Component {
     }
 
     private initializeEvents() {
-        CCUtil.onBtnClick(this.purchaseButtonNode, this.purchaseShopClothing.bind(this));
+        CCUtil.onBtnClick(this.purchaseButtonNode, this.onRoleClick.bind(this));
         CCUtil.onBtnClick(this.roleContainer, this.onRoleClick.bind(this));
     }
 
@@ -131,7 +131,7 @@ export class ShopPlayerView extends Component {
         });
     }
 
-    private async onRoleClick() {
+    public async onRoleClick() {
         if(!this._canBuy){
             ViewsMgr.showTip("购物车是空或金币不足");
             return;

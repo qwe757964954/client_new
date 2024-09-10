@@ -156,6 +156,7 @@ export const EventType = {
     Item_Props_Refresh: "Item_Props_Refresh",
 
     Shop_Buy_Store: "Shop_Buy_Store",
+    Shop_Buy_Suit_Detail: "Shop_Buy_Suit_Detail",
     Search_Word_Item_Detail: "Search_Word_Item_Detail",
     Word_Check_Item_Detail: "Word_Check_Item_Detail",
     Grade_Select_Event: "Grade_Select_Event",
