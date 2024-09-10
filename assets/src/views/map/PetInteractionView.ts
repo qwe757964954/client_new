@@ -61,6 +61,7 @@ export class PetInteractionView extends BaseComponent {
     private _removeCall: Function = null;//移除回调
     private _interactionInfo: PetInteractionInfo = null;//互动信息
     private _repBool: TimeOutBool = new TimeOutBool(2000);//互动超时
+    private _moodScore: number = 0;//心情分
 
     onLoad() {
         this.initEvent();
@@ -105,6 +106,9 @@ export class PetInteractionView extends BaseComponent {
         this.fixPetSize();
         this.petModel.show(false);
 
+        if (pet.userID == User.userID) {
+            this._moodScore = User.moodScore;
+        }
         this.onMoodScoreUpdate();
         ServiceMgr.buildingService.reqPetInfo(pet.userID);
     }
@@ -143,12 +147,12 @@ export class PetInteractionView extends BaseComponent {
         if (img) LoadManager.loadSprite(propInfo.png, img);
         CCUtil.offTouch(item);
         CCUtil.onTouch(item, () => {
-            console.log("onTouch", data.type, data.id, User.moodScore);
+            console.log("onTouch", data.type, data.id, this._moodScore);
             if (this._repBool.value) return;
             if (!User.checkItems([{ id: data.id, num: 1 }], new AlertParam(TextConfig.Item_Condition_Error, TextConfig.Item_Condition_Error2))) {
                 return;
             }
-            if (User.moodScore >= 100) {
+            if (this._moodScore >= 100) {
                 ViewsMgr.showAlert(TextConfig.PetInteraction_Tip2);
                 return;
             }
@@ -207,13 +211,15 @@ export class PetInteractionView extends BaseComponent {
             ViewsMgr.showAlert(data.msg);
             return;
         }
-        // let petInfo = data.pet_info;
-        // User.moodScore = petInfo.mood;//地图层监听了
+        let petInfo = data.pet_info;
+        this._moodScore = petInfo.mood;
+        this.onMoodScoreUpdate();
     }
     /**心情分更新 */
     onMoodScoreUpdate() {
-        this.labelMood.string = User.moodScore.toString();
-        let config = DataMgr.getMoodConfig(User.moodScore);
+        let score = this._moodScore;
+        this.labelMood.string = score.toString();
+        let config = DataMgr.getMoodConfig(score);
         if (config) {
             LoadManager.loadSprite(ToolUtil.getRandomItem(config.png), this.imgMood);
         }
@@ -234,7 +240,13 @@ export class PetInteractionView extends BaseComponent {
             return;
         }
         let petInfo = data.pet_info;
-        User.moodScore = petInfo.mood;
+        this._moodScore = petInfo.mood;
+        if (petInfo.user_id == User.userID) {
+            User.moodScore = petInfo.mood;
+        } else {
+            this.onMoodScoreUpdate();
+        }
+
 
         let propInfo = DataMgr.getItemInfo(this._interactionInfo.id);
         LoadManager.loadSprite(propInfo.png, this.img).then(() => {
