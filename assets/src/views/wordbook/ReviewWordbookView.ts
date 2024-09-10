@@ -1,4 +1,4 @@
-import { _decorator, EventTouch, Node } from 'cc';
+import { _decorator, EventTouch, Label, Node } from 'cc';
 import { EventType } from '../../config/EventType';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
@@ -122,6 +122,7 @@ export class ReviewWordbookView extends BaseComponent {
         let tabNode = this.btnShowCn.getChildByName("img_tab");
         this._showCnFlag = !tabNode.active;
         tabNode.active = this._showCnFlag;
+        this.btnShowCn.getComponentInChildren(Label).string = this._showCnFlag ? "隐藏释义" : "显示释义";
         this.list.updateAll();
     }
 
