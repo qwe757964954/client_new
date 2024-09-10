@@ -267,7 +267,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Label",
+    "_name": "title",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -583,7 +583,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "book_title",
+    "_name": "bookTitle",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -1816,7 +1816,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Label-002",
+    "_name": "total_word",
     "_objFlags": 512,
     "__editorExtras__": {},
     "_parent": {
@@ -1878,7 +1878,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 172.0107421875,
+      "width": 130.53515625,
       "height": 22.68
     },
     "_anchorPoint": {
@@ -1914,7 +1914,7 @@
       "b": 108,
       "a": 255
     },
-    "_string": "每个关卡约为5个单词",
+    "_string": "词书总词数 = 82",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 18,
@@ -3591,7 +3591,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -130.52197265625,
+      "x": -114.01611328125,
       "y": 0,
       "z": 0
     },
@@ -3632,7 +3632,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 90,
+      "width": 126,
       "height": 22.68
     },
     "_anchorPoint": {
@@ -3668,7 +3668,7 @@
       "b": 108,
       "a": 255
     },
-    "_string": "完成日期：",
+    "_string": "预计完成日期：",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 18,
@@ -3750,7 +3750,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -39.51123046875,
+      "x": -5.00537109375,
       "y": 0,
       "z": 0
     },
@@ -3909,7 +3909,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 45,
+      "x": 109.0107421875,
       "y": 0,
       "z": 0
     },
@@ -3950,7 +3950,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 77.0009765625,
+      "width": 136.0107421875,
       "height": 22.68
     },
     "_anchorPoint": {
@@ -3986,7 +3986,7 @@
       "b": 108,
       "a": 255
     },
-    "_string": " 预计每天",
+    "_string": "（每天5个单词）",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 18,
@@ -4054,7 +4054,7 @@
       "__id__": 151
     },
     "_children": [],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 171
@@ -4068,7 +4068,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 129.51123046875,
+      "x": 147.51123046875,
       "y": 0,
       "z": 0
     },
@@ -4218,7 +4218,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 351.0439453125,
+      "width": 354.0322265625,
       "height": 23
     },
     "_anchorPoint": {
@@ -4338,8 +4338,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 1778.0000000000002,
-      "height": 1000
+      "width": 1778,
+      "height": 1000.0000000000001
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -4370,19 +4370,22 @@
     "dayScroll": {
       "__id__": 148
     },
-    "book_title": {
+    "bookTitle": {
       "__id__": 26
     },
-    "saveBtn": {
+    "saveButton": {
       "__id__": 45
     },
-    "cancelBtn": {
+    "cancelButton": {
       "__id__": 59
     },
-    "time_tip": {
+    "totalWordLabel": {
+      "__id__": 76
+    },
+    "timeTip": {
       "__id__": 173
     },
-    "date_tip": {
+    "dateTip": {
       "__id__": 161
     },
     "_id": ""

@@ -10,7 +10,7 @@ import { TBServer } from '../../service/TextbookService';
 import { EventMgr } from '../../util/EventManager';
 import List from '../../util/list/List';
 import { RightNavView } from './RightNavView';
-import { PlanSaveData, SettingPlanView } from './SettingPlanView';
+import { PlanSaveData, SettingDataParam, SettingPlanView } from './SettingPlanView';
 import { TabContentItem } from './TabContentItem';
 import { TabTopView } from './TabTopView';
 const { ccclass, property } = _decorator;
@@ -62,7 +62,14 @@ export class SelectWordView extends BaseView {
         PopMgr.showPopup(PrefabType.SettingPlanView).then((node: Node)=>{
             let titleBookName = `${this._curBookName}${this._curGradeName}`
             let nodeScript:SettingPlanView = node.getComponent(SettingPlanView)
-            nodeScript.updateTitleName(titleBookName,data.gate_total,this.onSelectWordPlan.bind(this));
+            const param:SettingDataParam = {
+                bookName:titleBookName,
+                totalLevel:data.gate_total,
+                totalWords:0,
+                saveListener:this.onSelectWordPlan.bind(this),
+            }
+
+            nodeScript.updateTitleName(param);
         })
     }
 

@@ -3,151 +3,142 @@ import { BasePopup } from '../../script/BasePopup';
 import CCUtil from '../../util/CCUtil';
 import { ScrollViewExtra } from './picker/ScrollViewExtra';
 import { TextbookUtil } from './TextbookUtil';
+
 const { ccclass, property } = _decorator;
 
 export interface PlanSaveData {
-    left:string;
-    right:string;
-    isSave:boolean
+    left: string;
+    right: string;
+    isSave: boolean;
 }
 
+export interface SettingDataParam {
+    bookName: string;
+    totalLevel: number;
+    totalWords: number;
+    saveListener: (data: PlanSaveData) => void;
+}
 
 @ccclass('SettingPlanView')
 export class SettingPlanView extends BasePopup {
     @property(ScrollViewExtra)
-    public levelScroll:ScrollViewExtra = null;
+    public levelScroll: ScrollViewExtra = null;
+
     @property(ScrollViewExtra)
-    public dayScroll:ScrollViewExtra = null;
+    public dayScroll: ScrollViewExtra = null;
 
     @property(Label)
-    public book_title:Label = null;
+    public bookTitle: Label = null;
 
     @property(Node)
-    public saveBtn:Node = null;
+    public saveButton: Node = null;
 
     @property(Node)
-    public cancelBtn:Node = null;
+    public cancelButton: Node = null;
 
     @property(Label)
-    public time_tip:Label = null;
+    public totalWordLabel: Label = null;
 
     @property(Label)
-    public date_tip:Label = null;
+    public timeTip: Label = null;
 
-    private _levelSelect:number = 0;
-    private _daySelect:number = 0;
-    private _saveListener:(data:PlanSaveData)=>void = null;
-    private _totoal_level:number = 20;
+    @property(Label)
+    public dateTip: Label = null;
+
+    private _selectedLevel: number = 0;
+    private _selectedDay: number = 0;
+    private _settingData: SettingDataParam = null;
+
+    private static readonly NORMAL_DAY_LEVEL: number = 1;
+
     initUI() {
-        this.enableClickBlankToClose([this.node.getChildByName("small_dialog_bg")]).then(()=>{
-            // this.sendPlan();
-        });
+        this.enableClickBlankToClose([this.node.getChildByName("small_dialog_bg")]);
     }
+
     initEvent() {
-        CCUtil.onBtnClick(this.saveBtn, this.onClickSave.bind(this));
-        CCUtil.onBtnClick(this.cancelBtn, this.onClickCancel.bind(this));
+        CCUtil.onBtnClick(this.saveButton, this._onSaveClick.bind(this));
+        CCUtil.onBtnClick(this.cancelButton, this._onCancelClick.bind(this));
     }
 
     setLeftRightDatePick() {
-        this.levelScroll.initSelectCallFunc((selectedLevel: number) => {
-            this.handleLevelSelect(selectedLevel);
-        });
-
-        this.dayScroll.initSelectCallFunc((selectedDay: number) => {
-            this.handleDaySelect(selectedDay);
-        });
+        this.levelScroll.initSelectCallFunc(this._onLevelSelect.bind(this));
+        this.dayScroll.initSelectCallFunc(this._onDaySelect.bind(this));
     }
-    private handleLevelSelect(selectedLevel: number): void {
-        if (this._levelSelect === selectedLevel) {
-            this.updateDays(selectedLevel);
+
+    private _onLevelSelect(selectedLevel: number): void {
+        if (this._selectedLevel === selectedLevel) {
+            this._updateDays(selectedLevel);
             return;
         }
-        this._levelSelect = selectedLevel;
-        console.log("_leftSelect....", selectedLevel);
-        this.updateDays(selectedLevel);
-        this.updatePlanDate();
+        this._selectedLevel = selectedLevel;
+        this._updateDays(selectedLevel);
+        this._updatePlanDate();
     }
 
-    private handleDaySelect(selectedDay: number): void {
-        if (this._daySelect === selectedDay) {
+    private _onDaySelect(selectedDay: number): void {
+        if (this._selectedDay === selectedDay) {
             return;
         }
-        this._daySelect = selectedDay;
-        console.log("_rightSelect....", selectedDay);
-        this.updateLevels(selectedDay);
-        this.updatePlanDate();
+        this._selectedDay = selectedDay;
+        this._updateLevels(selectedDay);
+        this._updatePlanDate();
     }
 
-    private updatePlanDate(){
-        this.date_tip.string = TextbookUtil.getFormattedDate(this._daySelect);
-        this.time_tip.string = TextbookUtil.formatTotalMinutes(this._levelSelect);
+    private _updatePlanDate(): void {
+        this.dateTip.string = TextbookUtil.getFormattedDate(this._selectedDay);
+        this.timeTip.string = TextbookUtil.formatTotalMinutes(this._selectedLevel);
     }
 
-    private updateDays(selectedLevel: number): void {
-        const days = TextbookUtil.calculateDays(this._totoal_level, selectedLevel);
+    private _updateDays(selectedLevel: number): void {
+        const days = TextbookUtil.calculateDays(this._settingData.totalLevel, selectedLevel);
         this.dayScroll.scrollToNumber(`${days}`);
     }
 
-    private updateLevels(selectedDay: number): void {
-        const levels = TextbookUtil.calculateLevels(this._totoal_level, selectedDay);
+    private _updateLevels(selectedDay: number): void {
+        const levels = TextbookUtil.calculateLevels(this._settingData.totalLevel, selectedDay);
         this.levelScroll.scrollToNumber(`${levels}`);
     }
 
-    updateTitleName(title:string,total_level:number,saveListener:(data:PlanSaveData)=>void):void {
-        this._saveListener = saveListener;
-        this.book_title.string = title;
-        this._totoal_level = total_level;
-        this.levelScroll.setTotalLevel(total_level);
-        this.dayScroll.setTotalLevel(total_level);
-        console.log('this._totoal_level',this._totoal_level);
-        this.setLeftRightDatePick();
-        this.scheduleOnce(()=>{
-            if(this._totoal_level <= 5){
-                let days = TextbookUtil.calculateDays(this._totoal_level,this._totoal_level);
-                this.dayScroll.scrollToNumber(`${days}`)
-            }else{
-                let days = TextbookUtil.calculateDays(this._totoal_level,5);
-                console.log("days",days);
-                this.dayScroll.scrollToNumber(`${days}`)
-            }
-        },0.2)
+    updateTitleName(param: SettingDataParam): void {
+        this._settingData = param;
+        this.bookTitle.string = this._settingData.bookName;
+        this.totalWordLabel.string = `词书总单词数 = ${this._settingData.totalWords}`;
+        this.levelScroll.setTotalLevel(this._settingData.totalLevel);
+        this.dayScroll.setTotalLevel(this._settingData.totalLevel);
+        this.dateTip.string = TextbookUtil.getFormattedDate(this._settingData.totalLevel);
         
+        this.setLeftRightDatePick();
+        this.scheduleOnce(() => {
+            const days = TextbookUtil.calculateDays(this._settingData.totalLevel, SettingPlanView.NORMAL_DAY_LEVEL);
+            this.dayScroll.scrollToNumber(`${days}`);
+        }, 0.2);
     }
 
-    onLoadLeftVerticalList(item:Node, idx:number){
-        console.log("onLoadLeftVerticalList",item,idx);
-        let label = item.getComponent(Label);
-        // let indexNum = idx + 1;
-        let indexNum = idx + 0;
-        let bookImgUrl = `${indexNum}`;
-        label.string = bookImgUrl;
-    }   
-
-    onLoadRightVerticalList(item:Node, idx:number){
-        console.log("onLoadRightVerticalList",item,idx);
-        let label = item.getComponent(Label);
-        let indexNum = idx + 0;
-        let bookImgUrl = `${indexNum}`;
-        label.string = bookImgUrl;
+    onLoadLeftVerticalList(item: Node, idx: number): void {
+        const label = item.getComponent(Label);
+        label.string = `${idx}`;
     }
-    onClickCancel(){
-        console.log("onClickCancel");
+
+    onLoadRightVerticalList(item: Node, idx: number): void {
+        const label = item.getComponent(Label);
+        label.string = `${idx}`;
+    }
+
+    private _onCancelClick(): void {
         this.closePop();
     }
 
-    onClickSave(){
-        console.log("onClickSave");
+    private _onSaveClick(): void {
         this.closePop();
-        this.sendPlan();
+        this._sendPlan();
     }
-    sendPlan(){
-        let data:PlanSaveData = {
-            left:`${this._levelSelect}`,
-            right:`${this._daySelect}`,
-            isSave:true
-        }
-        this._saveListener?.(data);
+
+    private _sendPlan(): void {
+        const data: PlanSaveData = {
+            left: `${this._selectedLevel}`,
+            right: `${this._selectedDay}`,
+            isSave: true
+        };
+        this._settingData.saveListener?.(data);
     }
 }
-
-
