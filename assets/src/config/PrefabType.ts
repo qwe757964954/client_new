@@ -214,7 +214,7 @@ export const PrefabType = {
     FriendEmailView: { path: "social/FriendEmailView", zindex: Hierarchy.POPUPLAYER, tips: "好友邮件界面" },
     /*********************************************社交 End*************************************************************/
     /*********************************************背包 start***********************************************************/
-    BagView: { path: "bag/BagView", zindex: Hierarchy.TIPLAYER, tips: "背包界面" },
+    BagView: { path: "bag/BagView", zindex: Hierarchy.POPUPLAYER, tips: "背包界面" },
     BreakdownView: { path: "bag/BreakdownView", zindex: Hierarchy.TIPLAYER, componentName: "BreakdownView", tips: "分解栏" },
     CompositeBagView: { path: "bag/CompositeBagView", zindex: Hierarchy.TIPLAYER, componentName: "CompositeBagView", tips: "合成栏" },
     /*********************************************背包 end***********************************************************/
