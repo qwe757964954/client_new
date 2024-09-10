@@ -28,6 +28,9 @@ export abstract class ShopItemBase extends ListItem {
     @property({ type: Node, tooltip: "商品图标" })
     public icon: Node = null;
 
+    @property(Node)
+    public goldLayout: Node = null;
+
     protected btnBuyComponent: Button = null;
     protected btnBuySprite: Sprite = null;
     protected _shopClothing: ShopClothingMap = {};

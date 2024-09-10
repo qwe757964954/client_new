@@ -1,4 +1,4 @@
-import { _decorator, Button, Label, Node, Sprite, SpriteFrame } from 'cc';
+import { _decorator, Button, Label, Layout, Node, Sprite, SpriteFrame } from 'cc';
 import { EventType } from '../../config/EventType';
 import { TextConfig } from '../../config/TextConfig';
 import { EditInfo, EditType } from '../../manager/DataMgr';
@@ -29,6 +29,9 @@ export class GoodsDetailView extends BasePopup {
     public labelDesc: Label = null;//建筑描述
     @property(Label)
     public labelPrice: Label = null;//建筑价格
+
+    @property(Node)
+    public goldLayout: Node = null;
 
     @property({ type: Label, tooltip: "分数" })
     public lblScore: Label = null;
@@ -93,6 +96,9 @@ export class GoodsDetailView extends BasePopup {
         this.btnBuy.getComponent(Sprite).grayscale = not_buy;
         this.btnBuy.getComponent(Button).interactable = !not_buy;
         this.labelPrice.string = not_buy ? "达拥有上限" :data.buy.toString();
+
+        this.goldLayout.getChildByName("icon").active = !not_buy;
+        this.goldLayout.getComponent(Layout).updateLayout();
     }
 
     onClickBuy() {

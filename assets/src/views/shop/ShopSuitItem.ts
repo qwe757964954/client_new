@@ -1,4 +1,4 @@
-import { _decorator, Node } from 'cc';
+import { _decorator, Layout, Node } from 'cc';
 import { ItemData } from '../../manager/DataMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
 import { RoleBaseModel } from '../../models/RoleBaseModel';
@@ -27,6 +27,9 @@ export class ShopSuitItem extends ShopItemBase {
         this.lblPrice.string = suitExist ? "已拥有" : `${totalAmount}`;
         this.btnBuySprite.grayscale = suitExist;
         this.btnBuyComponent.interactable = !suitExist;
+
+        this.goldLayout.getChildByName("icon").active = !suitExist;
+        this.goldLayout.getComponent(Layout).updateLayout();
     }
 
     private calculateSuitStatus(items: any[], roleModel: RoleBaseModel): [number, boolean] {

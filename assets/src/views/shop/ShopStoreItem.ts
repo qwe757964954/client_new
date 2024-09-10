@@ -1,4 +1,4 @@
-import { _decorator, Sprite } from 'cc';
+import { _decorator, Layout, Sprite } from 'cc';
 import { ClothingInfo, ItemData } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
 import CCUtil from '../../util/CCUtil';
@@ -32,6 +32,8 @@ export class ShopStoreItem extends ShopItemBase {
         LoadManager.loadSprite(BagConfig.transformPath(itemInfo.png), sprIcon).then(() => {
             CCUtil.fixNodeScale(this.icon, 260, 260, true);
         });
+        this.goldLayout.getChildByName("icon").active = !isExist;
+        this.goldLayout.getComponent(Layout).updateLayout();
     }
 
     protected getPrice(): number {
