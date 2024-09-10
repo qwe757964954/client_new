@@ -34,7 +34,7 @@ export class ShopPlayerView extends Component {
 
     private btnBuyComponent: Button = null;
     private btnBuySprite: Sprite = null;
-
+    private _canBuy: boolean = true;
     start() {
         this.initializeComponents();
         this.initializeEvents();
@@ -77,9 +77,9 @@ export class ShopPlayerView extends Component {
         const totalCount = this.calculateTotalClothingCost();
         this.clothingAmountLabel.string = `${totalCount}`;
 
-        const canBuy = totalCount > 0 && User.coin >= totalCount;
-        this.btnBuyComponent.interactable = canBuy;
-        this.btnBuySprite.grayscale = !canBuy;
+        this._canBuy = totalCount > 0 && User.coin >= totalCount;
+        // this.btnBuyComponent.interactable = canBuy;
+        this.btnBuySprite.grayscale = !this._canBuy;
     }
 
     private calculateTotalClothingCost(): number {
@@ -110,6 +110,10 @@ export class ShopPlayerView extends Component {
     }
 
     private purchaseShopClothing() {
+        if(!this._canBuy){
+            ViewsMgr.showTip("购物车是空或金币不足");
+            return;
+        }
         const needBuyClothings = this.getNeedBuyClothingIds();
         const totalCount = this.calculateTotalClothingCost();
         const useAmount = "金币";
@@ -128,6 +132,10 @@ export class ShopPlayerView extends Component {
     }
 
     private async onRoleClick() {
+        if(!this._canBuy){
+            ViewsMgr.showTip("购物车是空或金币不足");
+            return;
+        }
         let node = await PopMgr.showPopup(PrefabType.ShopPlayerClothing);
         node.getComponent(ShopPlayerClothing).updateData(this.shopClothing);
     }

@@ -2,6 +2,7 @@ import { _decorator, isValid, Node } from 'cc';
 import { EventType } from '../../config/EventType';
 import { ClothingInfo, DataMgr } from '../../manager/DataMgr';
 import { ViewsMgr } from '../../manager/ViewsManager';
+import { NetNotify } from '../../net/NetNotify';
 import { BasePopup } from '../../script/BasePopup';
 import CCUtil from '../../util/CCUtil';
 import { EventMgr } from '../../util/EventManager';
@@ -30,6 +31,12 @@ export class ShopPlayerClothing extends BasePopup {
 
     protected initUI(): void {
         this.enableClickBlankToClose([this.node.getChildByName("content")]);
+    }
+
+    protected onInitModuleEvent(): void {
+        this.addModelListeners([
+            [NetNotify.Classification_ShopItemBuy, this.loadClothingItems.bind(this)],
+        ]);
     }
 
     public updateData(map: ShopClothingMap) {
