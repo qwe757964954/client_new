@@ -257,7 +257,10 @@ export class BuildingModel extends BaseModel {
         this._x = gridInfo.x;
         this._y = gridInfo.y;
         let gridPos = gridInfo.pos;
-        let pos = new Vec3(gridPos.x, gridPos.y - 0.5 * this._height * gridInfo.height, 0);
+        let i = this.width / 2;
+        let j = this.height / 2;
+        // let pos = new Vec3(gridPos.x, gridPos.y - 0.5 * this._height * gridInfo.height, 0);
+        let pos = new Vec3(gridPos.x + (j - i) * 0.5 * gridInfo.width, gridPos.y - (i + j) * 0.5 * gridInfo.height, 0);
         this.pos = pos;
         this.fixImgPos();
         if (!this.isNew && !this._dataGrids) {//初始化已有建筑
@@ -678,8 +681,12 @@ export class BuildingModel extends BaseModel {
         g.clear();
         let grids = this._grids;
         if (!grids || grids.length < 1) return;
-        let pos0 = grids[0].pos.clone();
-        pos0.y = pos0.y - 0.5 * this._height * grids[0].height;
+        let gridInfo = grids[0];
+        let pos0 = gridInfo.pos.clone();
+        let i = this.width / 2;
+        let j = this.height / 2;
+        pos0.x = pos0.x + (j - i) * 0.5 * gridInfo.width;
+        pos0.y = pos0.y - (i + j) * 0.5 * gridInfo.height;
         let isFill = false;
         grids.forEach(grid => {
             if (grid.isCanBuilding(this)) return;
