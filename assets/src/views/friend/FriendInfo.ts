@@ -24,3 +24,23 @@ export const PlayerInfoResources = [
 ];
 
 export const HeadIdMap = { "101": 101, "1101": 101, "102": 102, "1102": 102, "103": 103, "1103": 103 };
+
+
+export interface TalkInfo {
+    id: number;
+    cn: string;
+    en: string;
+}
+
+export const FriendTalkChats:TalkInfo[] = [
+    { id: 1, cn: "你好吗？",en:"Are you ok?"},
+    { id: 2, cn: "你好吗？",en:"Are you ok?"},
+    { id: 3, cn: "你好吗？",en:"Are you ok?"},
+    { id: 4, cn: "你好吗？",en:"Are you ok?"},
+    { id: 5, cn: "你好吗？",en:"Are you ok?"},
+    { id: 6, cn: "你好吗？",en:"Are you ok?"},
+    { id: 7, cn: "你好吗？",en:"Are you ok?"},
+    { id: 8, cn: "你好吗？",en:"Are you ok?"},
+    { id: 9, cn: "你好吗？",en:"Are you ok?"},
+    { id: 10, cn: "你好吗？",en:"Are you ok?"},
+];

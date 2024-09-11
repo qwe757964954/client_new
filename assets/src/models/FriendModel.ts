@@ -114,7 +114,7 @@ export interface ChatMessageResponse extends BaseRepPacket {
 }
 
 export class c2sUserMessageStatusUpdate {
-    command_id: string = InterfacePath.Classification_UserMessageStatusUpdate;//用户给好友发送消息
+    command_id: string = InterfacePath.Classification_UserMessageStatusUpdate;//用户与朋友消息更新为已读
     friend_id:number;
 }
 
