@@ -15,7 +15,7 @@ import { CloudModel } from "../../models/CloudModel";
 import { GridModel } from "../../models/GridModel";
 import { LandModel } from "../../models/LandModel";
 import { MapSpModel } from "../../models/MapSpModel";
-import { s2cBuildingBuilt, s2cBuildingBuiltReward, s2cBuildingBuiltSpeed, s2cBuildingEditBatch, s2cBuildingInfoGet, s2cBuildingList, s2cBuildingListInfo, s2cBuildingProduceAdd, s2cBuildingProduceDelete, s2cBuildingProduceGet, s2cBuildingProduceSpeed, s2cBuildingUpgrade, s2cBuildingUpgradeReward, s2cBuildingUpgradeSpeed, s2cCloudUnlock, s2cCloudUnlockGet, s2cCloudUnlockSpeed, s2cIslandAllUser, s2cIslandUserEnter, s2cIslandUserInfo, s2cPetGetReward, s2cPetInfoRep, s2cPetUpgrade, s2cSpeedWordsGet } from "../../models/NetModel";
+import { s2cBuildingBuilt, s2cBuildingBuiltReward, s2cBuildingBuiltSpeed, s2cBuildingEditBatch, s2cBuildingInfoGet, s2cBuildingList, s2cBuildingListInfo, s2cBuildingProduceAdd, s2cBuildingProduceDelete, s2cBuildingProduceGet, s2cBuildingProduceSpeed, s2cBuildingUpdate, s2cBuildingUpgrade, s2cBuildingUpgradeReward, s2cBuildingUpgradeSpeed, s2cCloudUnlock, s2cCloudUnlockGet, s2cCloudUnlockSpeed, s2cIslandAllUser, s2cIslandUserEnter, s2cIslandUserInfo, s2cPetGetReward, s2cPetInfoRep, s2cPetUpgrade, s2cSpeedWordsGet } from "../../models/NetModel";
 import { RoleType } from "../../models/RoleBaseModel";
 import { RoleDataModel } from "../../models/RoleDataModel";
 import { ClothingChangeInfo, User, UserClothes } from "../../models/User";
@@ -171,6 +171,7 @@ export class MapUICtl extends MainBaseCtl {
         this.addEvent(InterfacePath.Classification_GetPlayerClothing, this.onRepGetPlayerClothing.bind(this));
         this.addEvent(InterfacePath.s2cIslandUserEnter, this.onRepIslandUserEnter.bind(this));
         this.addEvent(InterfacePath.s2cIslandAllUser, this.onRepIslandAllUser.bind(this));
+        this.addEvent(InterfacePath.s2cBuildingUpdate, this.onRepBuildingUpdate.bind(this));
     }
     // 移除事件
     removeEvent() {
@@ -271,6 +272,23 @@ export class MapUICtl extends MainBaseCtl {
         let landWidth = defaultInfo.width;
         let g = this._mainScene.lineLayer.getComponent(Graphics);
         this._mainScene.lineLayer.active = false;
+        let isSelfMap = User.isInSelfMap();
+
+        // 特殊处理重置每块地块显示
+        if (this._landModelAry.length > 0) {
+            this._landModelAry.forEach(laneModel => {
+                let landInfo = defaultInfo;
+                if (map) {
+                    let key = ToolUtil.replace(TextConfig.Land_Key, laneModel.x, laneModel.y);
+                    if (map.hasOwnProperty(key)) {
+                        landInfo = DataMgr.instance.editInfo[map[key]];
+                    }
+                }
+                laneModel.landInfo = landInfo;
+            });
+            console.timeEnd("initLand");
+            return;
+        }
 
         for (let i = 0; i < col; i++) {
             for (let j = 0; j < row; j++) {
@@ -287,10 +305,13 @@ export class MapUICtl extends MainBaseCtl {
                         landInfo = DataMgr.instance.editInfo[map[key]];
                     }
                 }
-                User.addLand(landInfo.id);
                 laneModel.initData(i, j, landWidth, landInfo, this._mainScene.landLayer);
                 this.setLandGrid(laneModel, i, j);
                 this._landModelAry.push(laneModel);
+
+                if (isSelfMap) {
+                    User.addLand(landInfo.id);
+                }
 
                 let pos = gridInfo.pos;
                 g.lineWidth = 4;
@@ -323,11 +344,49 @@ export class MapUICtl extends MainBaseCtl {
     // 初始化建筑
     initBuilding(list: s2cBuildingListInfo[]) {
         if (!list || list.length <= 0) return;
+        if (this._buidingModelAry.length > 0) {
+            // 删除已经移除的
+            for (let i = this._buidingModelAry.length - 1; i >= 0; i--) {
+                let building = this._buidingModelAry[i];
+                if (null != list.find(element => 0 == element.hide && element.id == building.buildingID)) continue;
+                // building.sell(true);
+                building.resetGrids();
+                building.node.destroy();
+                building.dispose();
+                this._buidingModelAry.splice(i, 1);
+            }
+            // 移动还存在的
+            // 添加新的
+            this._recycleBuildingAry = [];
+            list.forEach(element => {
+                if (element.hide) {
+                    let recycleData = new RecycleData();
+                    recycleData.bid = element.bid;
+                    recycleData.data = BuildingModel.getBuildingDataByMsg(element);
+                    this.addRecycleBuilding(recycleData);
+                    return;
+                }
+                let building = this.findBuilding(element.id);
+                if (!building) {
+                    let editInfo = DataMgr.instance.editInfo[element.bid];
+                    building = this.newBuilding(editInfo, element.x, element.y, 1 == element.direction, false);
+                    building.buildingID = element.id;
+                } else {
+                    building.isFlip = 1 == element.direction;
+                    this.setBuildingGrid(building, element.x, element.y);
+                }
+                building.buildingLevel = element.level;
+                building.buildingState = element.status;
+            });
+            return;
+        }
         let isSelfMap = User.isInSelfMap();
         console.time("initBuilding");
         // list.push({ id: 1, bid: 3, x: 0, y: 0, direction: 0 });
         list.forEach(element => {
-            User.addBuilding(element.bid);
+            if (isSelfMap) {
+                User.addBuilding(element.bid);
+            }
 
             if (element.hide) {
                 let recycleData = new RecycleData();
@@ -358,7 +417,7 @@ export class MapUICtl extends MainBaseCtl {
     public initSelfRole() {
         console.time("initSelfRole");
         // 角色
-        if (null != User.roleID) {
+        if (null != User.roleID && null == this._selfRole) {
             let roleModel = new RoleDataModel();
             roleModel.initSelfRole();
             roleModel.parent = this._mainScene.buildingLayer;
@@ -371,7 +430,7 @@ export class MapUICtl extends MainBaseCtl {
             this._selfRole = roleModel;
         }
         // 精灵
-        if (null != User.petLevel) {
+        if (null != User.petLevel && null == this._selfPet) {
             let roleModel = new RoleDataModel();
             roleModel.initSelfPet();
             roleModel.parent = this._mainScene.buildingLayer;
@@ -433,6 +492,19 @@ export class MapUICtl extends MainBaseCtl {
     /**初始化乌云 */
     public initCloud(map: { [key: string]: number }) {
         if (!map) return;
+        // 删除不存在的
+        if (this._cloudModelAry.length > 0) {
+            for (let i = this._cloudModelAry.length - 1; i >= 0; i--) {
+                let cloud = this._cloudModelAry[i];
+                let key = ToolUtil.replace(TextConfig.Land_Key, cloud.x, cloud.y);
+                if (!map.hasOwnProperty(key) || map[key] < 0) continue;
+                cloud.clearGrids();
+                cloud.dispose();
+                this._cloudModelAry.splice(i, 1);
+            }
+            return;
+        }
+
         console.time("initCloud");
         // console.log("initCloud 1", i, this._landModelAry.length);
         let gridInfo = MapConfig.gridInfo;
@@ -1200,18 +1272,23 @@ export class MapUICtl extends MainBaseCtl {
     }
     /**建筑列表 */
     onBuildingList(data: s2cBuildingList) {
-        this.clearFirstRepTimer();
-        console.time("onBuildingList");
+        let isFirst = null != this._callBack;
+        if (isFirst) {
+            this.clearFirstRepTimer();
+            console.time("onBuildingList");
+        }
+
         this.initBuilding(data.build_list);
         this.initLand(data.land_dict);
         this.initSelfRole();
         this.initCloud(data.cloud_dict);
-
-        // this.updateCameraVisible();
         this.updateCameraVisible(true);
-        this._needLoadCallBack = false;
-        this.loadOverCall();
-        console.timeEnd("onBuildingList");
+
+        if (isFirst) {
+            this._needLoadCallBack = false;
+            this.loadOverCall();
+            console.timeEnd("onBuildingList");
+        }
     }
     /**查找建筑 */
     findBuilding(id: number) {
@@ -1723,5 +1800,10 @@ export class MapUICtl extends MainBaseCtl {
                 }
             }
         }
+    }
+    /**小岛建筑有变化 */
+    onRepBuildingUpdate(data: s2cBuildingUpdate) {
+        if (data.change_info.visited_id != User.curMapUserID) return;
+        ServiceMgr.buildingService.reqBuildingList(User.curMapUserID);
     }
 }

@@ -47,14 +47,6 @@ export const InterfacePath = {
     c2sPetGetReward: "2104", //宠物奖励领取
     /***********************************************宠物相关 end*********************************************/
 
-    /***********************************以上是新消息********************************************/
-    Account_Step: "Account.Step",
-    Account_Info: "Account.Info",
-    Account_Init: "Account.Init",
-    Prop_MyList: "Prop.MyList",    // 我的道具列表
-    Account_EditRealName: "Account.EditRealName",  // 修改名字
-    Account_StudyWord: "Account.StudyWord",  // 学生通关单词
-
     //大冒险学习模式相关
     Island_Status: "3100",  // 大冒险岛屿状态
     Island_Progress: "3101",  // 大冒险岛屿进度

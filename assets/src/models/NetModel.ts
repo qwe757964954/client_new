@@ -721,42 +721,9 @@ export class s2cIslandAllUser {
     visited_id: number;
     visitors_info: s2cIslandUserInfo[];
 }
-
-/**********************************以上是新接口*************************************/
-
-//新手引导
-export class c2sAccountStep {
-    Path: string = InterfacePath.Account_Step;
-    Step: number;//新手引导步骤
-}
-
-//用户信息
-export class c2sAccountInfo {
-    Path: string = InterfacePath.Account_Info;
-    AccountId: string;//用户id
-}
-
-//初始数据
-export class c2sAccountInit {
-    Path: string = InterfacePath.Account_Init;
-    MemberToken: string;//token
-}
-
-// 道具列表
-export class c2sPropMyList {
-    Path: string = InterfacePath.Prop_MyList;
-    ModuleId: number;   // 道具类型
-}
-
-// 修改名称
-export class c2sAccountEditRealName {
-    Path: string = InterfacePath.Account_EditRealName;
-    RealName: string;   // 名称
-}
-
-// 学生通关单词
-export class c2sAccountStudyWord {
-    Path: string = InterfacePath.Account_StudyWord;
+/**小岛建筑有变化 */
+export class s2cBuildingUpdate {
+    change_info: { visited_id: number, change: boolean };
 }
 
 /*****************************************************************************/

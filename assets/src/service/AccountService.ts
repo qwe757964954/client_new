@@ -6,7 +6,7 @@ import { TextConfig } from "../config/TextConfig";
 import { ItemData } from "../manager/DataMgr";
 import { SceneMgr } from "../manager/SceneMgr";
 import { ViewsManager } from "../manager/ViewsManager";
-import { c2sAccountInit, c2sAccountLogin, c2sGetPhoneCode, c2sPhoneCodeLogin, c2sTokenLogin, s2cAccountLogin, s2cItemUpdate } from "../models/NetModel";
+import { c2sAccountLogin, c2sGetPhoneCode, c2sPhoneCodeLogin, c2sTokenLogin, s2cAccountLogin, s2cItemUpdate } from "../models/NetModel";
 import { LoginType, User } from "../models/User";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
@@ -21,22 +21,11 @@ export default class AccountService {
     }
 
     addServerEvent() {
-        EventManager.on(InterfacePath.Account_Init, this.onAccountInit.bind(this));
         EventManager.on(InterfacePath.c2sAccountLogin, this.onAccountLogin.bind(this));
         EventManager.on(InterfacePath.c2sPhoneCodeLogin, this.onAccountLogin.bind(this));
         EventManager.on(InterfacePath.c2sTokenLogin, this.onAccountLogin.bind(this));
         EventManager.on(InterfacePath.s2cAccountLogout, this.onAccountLogout.bind(this));
         EventManager.on(InterfacePath.s2cItemUpdate, this.onItemUpdate.bind(this));
-    }
-
-    //账号初始化
-    accountInit() {
-        let para: c2sAccountInit = new c2sAccountInit();
-        para.MemberToken = User.memberToken;
-        NetMgr.sendMsg(para);
-    }
-    onAccountInit(data: any) {
-        console.log("AccountService onAccountInit", data);
     }
     /**账号登录 */
     accountLogin() {
