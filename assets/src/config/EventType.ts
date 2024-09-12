@@ -164,6 +164,7 @@ export const EventType = {
     Practic_Right_View_Hiden: "Practic_Right_View_Hiden",
 
     Open_Friend_Blank: "Open_Friend_Blank",
+    Req_Apply_Modify: "Req_Apply_Modify",
 }
 
 export function itemEventKey(id: ItemID) {

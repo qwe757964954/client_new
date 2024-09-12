@@ -70,6 +70,7 @@ export interface DataFriendApplyListResponse extends BaseRepPacket {
 
 export interface ApplyModifyModel {
     friend_id:number;
+    nick_name?:string;
     status:number;
 }
 

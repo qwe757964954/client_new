@@ -201,15 +201,15 @@ export const PrefabType = {
     /*********************************************单词本end***********************************************************/
     /*********************************************社交 start***********************************************************/
     FriendsDialogView: { path: "social/FriendsDialogView", componentName: "FriendsDialogView", zindex: Hierarchy.POPUPLAYER, tips: "好友界面" },
-    FriendTalkDialogView: { path: "social/FriendTalkDialogView", componentName: "FriendTalkDialogView", zindex: Hierarchy.TIPLAYER, tips: "好友聊天界面" },
-    FriendApplyView: { path: "social/FriendApplyView", componentName: "FriendApplyView", zindex: Hierarchy.TIPLAYER, tips: "好友申请界面" },
+    FriendTalkDialogView: { path: "social/FriendTalkDialogView", componentName: "FriendTalkDialogView", zindex: Hierarchy.POPUPLAYER, tips: "好友聊天界面" },
+    FriendApplyView: { path: "social/FriendApplyView", componentName: "FriendApplyView", zindex: Hierarchy.POPUPLAYER, tips: "好友申请界面" },
     FriendLeftTabView: { path: "social/FriendLeftTabView", zindex: Hierarchy.POPUPLAYER, tips: "好友tab界面" },
     FriendList: { path: "social/ListViews/FriendList", zindex: Hierarchy.POPUPLAYER, tips: "好友list界面" },
     ApplyList: { path: "social/ListViews/ApplyList", zindex: Hierarchy.POPUPLAYER, tips: "好友apply界面" },
     Blacklist: { path: "social/ListViews/Blacklist", zindex: Hierarchy.POPUPLAYER, tips: "好友Blacklist界面" },
     FriendPlayerInfoView: { path: "social/FriendPlayerInfoView", componentName: "FriendPlayerInfoView", zindex: Hierarchy.TIPLAYER, tips: "好友玩家信息界面" },
-    FriendListView: { path: "social/FriendListView", componentName: "FriendListView", zindex: Hierarchy.TIPLAYER, tips: "好友列表界面" },
-    FriendAddView: { path: "social/FriendAddView", componentName: "FriendAddView", zindex: Hierarchy.TIPLAYER, tips: "好友添加界面" },
+    FriendListView: { path: "social/FriendListView", componentName: "FriendListView", zindex: Hierarchy.POPUPLAYER, tips: "好友列表界面" },
+    FriendAddView: { path: "social/FriendAddView", componentName: "FriendAddView", zindex: Hierarchy.POPUPLAYER, tips: "好友添加界面" },
     FriendMessageView: { path: "social/FriendMessageView", zindex: Hierarchy.POPUPLAYER, tips: "好友消息界面" },
     FriendEmailView: { path: "social/FriendEmailView", zindex: Hierarchy.POPUPLAYER, tips: "好友邮件界面" },
     /*********************************************社交 End*************************************************************/

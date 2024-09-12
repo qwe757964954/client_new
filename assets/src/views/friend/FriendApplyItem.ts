@@ -1,8 +1,9 @@
 import { _decorator, Label, Node, Sprite } from 'cc';
+import { EventType } from '../../config/EventType';
 import { LoadManager } from '../../manager/LoadManager';
 import { ApplicationStatus, ApplyModifyModel, UserApplyModel } from '../../models/FriendModel';
-import { FdServer } from '../../service/FriendService';
 import CCUtil from '../../util/CCUtil';
+import { EventMgr } from '../../util/EventManager';
 import ListItem from '../../util/list/ListItem';
 import { HeadIdMap } from './FriendInfo';
 const { ccclass, property } = _decorator;
@@ -52,9 +53,10 @@ export class FriendApplyItem extends ListItem {
     private modifyApplicationStatus(status: ApplicationStatus): void {
         const param: ApplyModifyModel = {
             friend_id: this._data.user_id,
+            nick_name: this._data.nick_name,
             status
         };
-        FdServer.reqUserFriendApplyModify(param);
+        EventMgr.dispatch(EventType.Req_Apply_Modify,param);
     }
     
 }

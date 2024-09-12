@@ -1,7 +1,8 @@
 import { _decorator, Node } from 'cc';
+import { EventType } from '../../../config/EventType';
 import { ApplicationStatus, ApplyModifyModel, UserApplyModel } from '../../../models/FriendModel';
-import { FdServer } from '../../../service/FriendService';
 import CCUtil from '../../../util/CCUtil';
+import { EventMgr } from '../../../util/EventManager';
 import { HeadIdMap } from '../FriendInfo';
 import { BaseFriendListItem } from './BaseFriendListItem';
 const { ccclass, property } = _decorator;
@@ -33,24 +34,22 @@ export class ApplyListItem extends BaseFriendListItem {
         this.lblRealName.string = data.user_name;
     }
 
-    private async agreeBtnClick() {
-        await this.modifyApplicationStatus(ApplicationStatus.Approved);
+    private agreeBtnClick() {
+         this.modifyApplicationStatus(ApplicationStatus.Approved);
     }
 
-    private async rejectBtnClick() {
-        await this.modifyApplicationStatus(ApplicationStatus.Rejected);
+    private rejectBtnClick() {
+         this.modifyApplicationStatus(ApplicationStatus.Rejected);
     }
 
-    private async modifyApplicationStatus(status: ApplicationStatus) {
+    private modifyApplicationStatus(status: ApplicationStatus) {
+
         const param: ApplyModifyModel = {
             friend_id: this._data.user_id,
+            nick_name: this._data.nick_name,
             status
         };
-        try {
-            await FdServer.reqUserFriendApplyModify(param);
-        } catch (error) {
-            console.error(`Failed to modify application status: ${error.message}`);
-        }
+        EventMgr.dispatch(EventType.Req_Apply_Modify,param);
     }
 }
 

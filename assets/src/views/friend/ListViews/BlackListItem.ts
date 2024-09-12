@@ -1,5 +1,7 @@
 import { _decorator, Label, Node } from "cc";
+import { ConfirmParam } from "../../../config/ClassConfig";
 import { SceneMgr } from "../../../manager/SceneMgr";
+import { ViewsMgr } from "../../../manager/ViewsManager";
 import { FriendListItemModel, FriendOperationType } from "../../../models/FriendModel";
 import { FdServer } from "../../../service/FriendService";
 import CCUtil from "../../../util/CCUtil";
@@ -45,10 +47,9 @@ export class BlackListItem extends BaseFriendListItem {
     }
 
     private async exitBtnClick() {
-        try {
+        const contentStr = `<color=#000000>是否把<color=#ff0000>${this._data.nick_name}</color><color=#000000>移出黑名单</color>`;
+        ViewsMgr.showConfirm(new ConfirmParam("", "",contentStr), () => {
             FdServer.reqUserDelFriendMessage(this._data.friend_id, FriendOperationType.Restore);
-        } catch (error) {
-            console.error(`Failed to delete friend message: ${error.message}`);
-        }
+        });
     }
 }
