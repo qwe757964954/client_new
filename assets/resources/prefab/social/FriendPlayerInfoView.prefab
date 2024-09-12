@@ -930,8 +930,8 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -28.38600000000008,
-      "y": 0.2960000000000491,
+      "x": -88.477,
+      "y": 0.296,
       "z": 0
     },
     "_lrot": {
@@ -976,7 +976,7 @@
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
+      "x": 0,
       "y": 0.5
     },
     "_id": ""
@@ -1008,7 +1008,7 @@
       "a": 255
     },
     "_string": "id:898699",
-    "_horizontalAlign": 1,
+    "_horizontalAlign": 0,
     "_verticalAlign": 1,
     "_actualFontSize": 28,
     "_fontSize": 28,

@@ -64,10 +64,10 @@ export class FriendPlayerInfoView extends BasePopFriend {
     }
 
     private showRoleInfo(): void {
-        const { user_name, user_id } = this._data;
+        const { user_name,friend_id  } = this._data;
     
         this.labelName.string = `${user_name}的信息页`;
-        this.labelID.string = `id:${user_id}`;
+        this.labelID.string = `id:${friend_id}`;
     
         this.loadRoleModel();
         this.loadPetModel();
