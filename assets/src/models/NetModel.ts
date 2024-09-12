@@ -701,6 +701,8 @@ export class c2sEnterIsland {
 /**进入小岛返回 */
 export class s2cEnterIsland extends BaseRepPacket {
     visited_id: number;//小岛用户id
+    visited_nick_name: string;//小岛用户昵称
+    is_like: boolean;//是否点赞
 }
 /**退出小岛 */
 export class c2sExitIsland {
@@ -724,6 +726,22 @@ export class s2cIslandAllUser {
 /**小岛建筑有变化 */
 export class s2cBuildingUpdate {
     change_info: { visited_id: number, change: boolean };
+}
+/**小岛点赞 */
+export class c2sIslandGiveALike {
+    command_id: string = InterfacePath.c2sIslandGiveALike;
+    liked_id: number;//小岛用户id
+}
+/**小岛点赞返回 */
+export class s2cIslandLike extends BaseRepPacket {
+}
+/**小岛取消点赞 */
+export class c2sIslandUnGiveALike {
+    command_id: string = InterfacePath.c2sIslandUnGiveALike;
+    liked_id: number;//小岛用户id
+}
+/**小岛取消点赞返回 */
+export class s2cIslandUnLike extends BaseRepPacket {
 }
 
 /*****************************************************************************/

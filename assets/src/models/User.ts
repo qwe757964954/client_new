@@ -225,6 +225,8 @@ class UserModel {
 
     private _curMapUserID: number = null;//当前所在地图用户id（操作）
     private _curMapDataUserID: number = null;//当前所在地图用户id（数据）
+    public curMapUserNick: string = null;//当前所在地图用户昵称
+    public curMapUserGiveALike: boolean = false;//当前所在地图是否点赞
 
 
     // 测试数据

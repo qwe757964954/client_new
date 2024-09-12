@@ -7,7 +7,9 @@ import { SceneMgr } from '../../manager/SceneMgr';
 import { ViewsManager, ViewsMgr } from '../../manager/ViewsManager';
 import { ActivityInfoResponse } from '../../models/ActivityModel';
 import { User } from '../../models/User';
+import { InterfacePath } from '../../net/InterfacePath';
 import { NetNotify } from '../../net/NetNotify';
+import { ServiceMgr } from '../../net/ServiceManager';
 import { BaseView } from '../../script/BaseView';
 import { ActServer } from '../../service/ActivityService';
 import { BagServer } from '../../service/BagService';
@@ -63,6 +65,7 @@ export class MainUIView extends BaseView {
 
     private _mainScene: MainScene = null;//主场景
     private _mainRightActivity: MainRightActivity = null;//右侧活动
+    private _isGiveALike = false;//是否点赞
     /**初始化UI */
     async initUI() {
         if (User.isInSelfMap()) {
@@ -77,7 +80,13 @@ export class MainUIView extends BaseView {
             this.plSelf.active = false;
             this.plOther.active = true;
             this.otherTip.active = false;
+            this.updateIslandUI();
         }
+    }
+
+    private updateIslandUI() {
+        this.setIslandName(User.curMapUserNick);
+        this.setGiveALike(User.curMapUserGiveALike);
     }
 
     private async initViews() {
@@ -97,6 +106,7 @@ export class MainUIView extends BaseView {
     protected onInitModuleEvent() {
         this.addModelListeners([
             [NetNotify.Classification_GetActivityInfo, this.onGetActivityInfo.bind(this)],
+            [InterfacePath.c2sEnterIsland, this.repEnterIsland.bind(this)],
         ]);
     }
 
@@ -104,6 +114,10 @@ export class MainUIView extends BaseView {
         ActConfig.updateActivityInfoResponse(data);
         const { draw_activity, sign_activity } = ActConfig.activityInfoResponse;
         this.operational_activities.active = draw_activity || sign_activity;
+    }
+
+    private repEnterIsland() {
+        this.updateIslandUI();
     }
 
     //初始化事件
@@ -201,8 +215,7 @@ export class MainUIView extends BaseView {
     //任务前往点击
     public onClickTaskGo() {
         console.log("onClickTaskGo");
-        // ViewsMgr.showTip(TextConfig.Function_Tip);
-        SceneMgr.loadMainScene(11);
+        ViewsMgr.showTip(TextConfig.Function_Tip);
     }
     //学习点击
     public onClickStudy() {
@@ -212,8 +225,26 @@ export class MainUIView extends BaseView {
     private onClickBackSelf() {
         SceneMgr.loadMainScene();
     }
+    private setIslandName(name: string) {
+        if (null == name) return;
+        this.labelOtherNick.string = name + "的王国";
+    }
+    private setGiveALike(val: boolean) {
+        this._isGiveALike = val;
+        this.showGiveALike();
+    }
+    private showGiveALike() {
+        this.btnGiveALike.getComponentInChildren(Label).string = this._isGiveALike ? "已赞" : "点赞";
+    }
     /**给我点赞 */
     private onClickGiveALike() {
+        this._isGiveALike = !this._isGiveALike;
+        if (this._isGiveALike) {
+            ServiceMgr.buildingService.reqIslandGiveALike(User.curMapUserID);
+        } else {
+            ServiceMgr.buildingService.reqIslandUnGiveALike(User.curMapUserID);
+        }
+        this.showGiveALike();
     }
 }
 

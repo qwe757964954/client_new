@@ -33,6 +33,8 @@ export const InterfacePath = {
     c2sCloudUnlockSpeed: "2033",//乌云解锁加速
     c2sEnterIsland: "2034",//进入小岛
     c2sExitIsland: "2035",//退出小岛
+    c2sIslandGiveALike: "2036",//小岛点赞
+    c2sIslandUnGiveALike: "2037",//小岛取消点赞
 
     s2cAccountLogout: "10001",//登录被顶号返回
     s2cItemUpdate: "10002",//物品更新
