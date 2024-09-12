@@ -909,7 +909,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Label",
+    "_name": "id",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -3399,9 +3399,11 @@
     "roleInfoBox": {
       "__id__": 21
     },
-    "msgInfoBox": null,
     "labelName": {
       "__id__": 18
+    },
+    "labelID": {
+      "__id__": 36
     },
     "roleContainer": {
       "__id__": 28

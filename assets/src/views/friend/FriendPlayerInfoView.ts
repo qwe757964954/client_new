@@ -21,11 +21,11 @@ export class FriendPlayerInfoView extends BasePopFriend {
     @property(Node)
     public roleInfoBox: Node = null; // 角色信息容器
 
-    @property(Node)
-    public msgInfoBox: Node = null; // 消息信息容器
-
     @property(Label)
     public labelName: Label = null; // 名字标签
+
+    @property(Label)
+    public labelID: Label = null; // id
 
     @property({ type: Node, tooltip: "角色容器" })
     public roleContainer: Node = null;
@@ -63,8 +63,12 @@ export class FriendPlayerInfoView extends BasePopFriend {
         this.showRoleInfo();
     }
 
-    private showRoleInfo() {
-        // this.labelName.string = this._data.user_name;
+    private showRoleInfo(): void {
+        const { user_name, user_id } = this._data;
+    
+        this.labelName.string = `${user_name}的信息页`;
+        this.labelID.string = `id:${user_id}`;
+    
         this.loadRoleModel();
         this.loadPetModel();
     }

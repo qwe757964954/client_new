@@ -12,16 +12,13 @@ const { ccclass, property } = _decorator;
 
 @ccclass('FriendAddView')
 export class FriendAddView extends BasePopFriend {
-    @property({ type: FriendSearchItem}) //imgHead
-    public resultBox: FriendSearchItem = null;
+    @property({ type: List}) //imgHead
+    public resultList: List = null;
     @property({ type: List, tooltip: "推荐好友滚动列表" })
     public recommendList: List = null;
 
     @property({ type: Node, tooltip: "查找好友按钮" })
     public searchBtn: Node = null;
-
-    @property({ type: Node, tooltip: "添加好友按钮" })
-    public addBtn: Node = null;
 
     @property(Node)
     public closeBtn:Node = null;
@@ -31,7 +28,7 @@ export class FriendAddView extends BasePopFriend {
 
     private _recommendFriendDataList: FriendListItemModel[] = []; //我的推荐好友列表
 
-    private _searchData:UserFriendData = null;
+    private _searchDatas:FriendListItemModel[] = null;
 
     protected initUI(): void {
         this.enableClickBlankToClose([this.node.getChildByName("content")]);
@@ -40,7 +37,6 @@ export class FriendAddView extends BasePopFriend {
 
     protected initEvent(): void {
         CCUtil.onBtnClick(this.searchBtn,this.gotoSearch.bind(this));
-        // CCUtil.onBtnClick(this.addBtn,this.addFriend.bind(this));
         CCUtil.onBtnClick(this.closeBtn,this.onCloseClickEvent.bind(this));
     }
     protected onInitModuleEvent(): void {
@@ -71,31 +67,31 @@ export class FriendAddView extends BasePopFriend {
         FdServer.reqUserFriendSearch(search_id);
     }
 
-    addFriend(){
-        if(!isValid(this._searchData)){
-            return
-        }
-        FdServer.reqUserFriendAdd(this._searchData.user_id);
-    }
-
     onCloseClickEvent(){
         console.log("onCloseClickEvent................................")
         this.closePop();
     }
 
-    updateSearchData(friendData: UserFriendData){
-        this._searchData = friendData;
-        this.resultBox.node.active = true;
-        let item_script = this.resultBox.getComponent(FriendSearchItem);
-        item_script.initData(this._searchData);
-    }
     async onSearchFriendResult(response: UserFriendData) {
         this.updateSearchData(response);
     }
+
+    updateSearchData(friendData: UserFriendData){
+        console.log("onSearchFriendResult",friendData);
+        // this._searchData = friendData;
+        // let item_script = this.resultBox.getComponent(FriendSearchItem);
+        // item_script.initData(this._searchData);
+    }
+
+    onLoadSearchVertical(item:Node, idx:number){
+        let item_script = item.getComponent(FriendSearchItem);
+        let friendData: any = this._recommendFriendDataList[idx];
+        item_script.initData(friendData);
+    }
+
     /**更新推荐朋友列表 */
     onShowRecommendList(friendDatas: DataFriendListResponse) {
         console.log("onShowRecommendList",friendDatas);
-        this.resultBox.node.active = false;
         this._recommendFriendDataList = friendDatas.data;
         this.recommendList.numItems = this._recommendFriendDataList.length;
     }
