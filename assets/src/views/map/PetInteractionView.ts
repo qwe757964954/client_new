@@ -164,9 +164,7 @@ export class PetInteractionView extends BaseComponent {
     }
     /**关闭按钮 */
     onCloseClick() {
-        if (this.frame.active) {
-            this._pet.isActive = true;
-        }
+        this._pet.isActive = true;
         if (this._removeCall) this._removeCall();
         this.node.destroy();
     }
@@ -196,8 +194,9 @@ export class PetInteractionView extends BaseComponent {
             this.node.active = false;
             this._pet.isActive = false;
             node.getComponent(PetInfoView).init(this._pet.roleID, this._pet.level, () => {
-                this.node.active = true;
-                this._pet.isActive = true;
+                // this.node.active = true;
+                // this._pet.isActive = true;
+                this.onCloseClick();
             });
         });
     }
