@@ -2351,9 +2351,10 @@
     "lblRealName": {
       "__id__": 40
     },
-    "lblState": {
-      "__id__": 46
+    "levelTxt": {
+      "__id__": 64
     },
+    "stateIcon": null,
     "agreeBtn": {
       "__id__": 82
     },

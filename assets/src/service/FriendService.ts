@@ -1,5 +1,5 @@
 import { _decorator } from 'cc';
-import { ApplyModifyModel, c2sUserDelFriendMessage, c2sUserFriendAdd, c2sUserFriendApplyList, c2sUserFriendApplyModify, c2sUserFriendList, c2sUserFriendMessageList, c2sUserFriendSearch, c2sUserMessageStatusUpdate, c2sUserRecommendFriendList, c2sUserSendMessageFriend, c2sUserSystemAwardGet, c2sUserSystemMailDetail, c2sUserSystemMailList, SendMessageModel } from '../models/FriendModel';
+import { ApplyModifyModel, c2sUserDelFriendMessage, c2sUserFriendAdd, c2sUserFriendApplyList, c2sUserFriendApplyModify, c2sUserFriendList, c2sUserFriendMessageList, c2sUserFriendSearch, c2sUserMessageStatusUpdate, c2sUserRecommendFriendList, c2sUserSendMessageFriend, c2sUserSystemAwardGet, c2sUserSystemMailDetail, c2sUserSystemMailList, FriendActionType, FriendOperationType, SendMessageModel } from '../models/FriendModel';
 import { InterfacePath } from '../net/InterfacePath';
 import { NetMgr } from '../net/NetManager';
 import { NetNotify } from '../net/NetNotify';
@@ -42,8 +42,9 @@ export class _FriendService extends BaseControll {
 
     
 
-    reqUserFriendList(){
+    reqUserFriendList(status:FriendActionType){
         let param: c2sUserFriendList = new c2sUserFriendList();
+        param.status = status;
         NetMgr.sendMsg(param);
     }
 
@@ -70,9 +71,10 @@ export class _FriendService extends BaseControll {
         NetMgr.sendMsg(param);
     }
 
-    reqUserDelFriendMessage(friend_id:number){
+    reqUserDelFriendMessage(friend_id:number,status:FriendOperationType){
         let param: c2sUserDelFriendMessage = new c2sUserDelFriendMessage();
         param.friend_id = friend_id;
+        param.status = status;
         NetMgr.sendMsg(param);
     }
 
