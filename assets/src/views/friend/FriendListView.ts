@@ -4,7 +4,14 @@ import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { PopMgr } from '../../manager/PopupManager';
 import { ViewsMgr } from '../../manager/ViewsManager';
-import { ApplicationStatus, ApplyModifyModel, DataFriendApplyListResponse, DataFriendListResponse, FriendActionType, FriendListItemModel } from '../../models/FriendModel';
+import {
+    ApplicationStatus,
+    ApplyModifyModel,
+    DataFriendApplyListResponse,
+    DataFriendListResponse,
+    FriendActionType,
+    FriendListItemModel
+} from '../../models/FriendModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BasePopRight } from '../../script/BasePopRight';
 import { FdServer } from '../../service/FriendService';
@@ -42,7 +49,8 @@ export class FriendListView extends BasePopRight {
     private _applyList: ApplyList = null;
     private _blacklist: Blacklist = null;
     private _tabSelect: FriendTabType = FriendTabType.List;
-    private _applyInfo:ApplyModifyModel = null;
+    private _applyInfo: ApplyModifyModel = null;
+
     protected async initUI() {
         this.enableClickBlankToClose([this.contentNd]);
         await this.initViews();
@@ -63,7 +71,7 @@ export class FriendListView extends BasePopRight {
             [NetNotify.Classification_UserFriendApplyModify, this.onUserFriendApplyModify.bind(this)],
             [NetNotify.Classification_UserDelFriendMessage, this.onUserDelFriendMessage.bind(this)],
             [EventType.Friend_Talk_Event, this.onFriendTalk.bind(this)],
-            [EventType.Req_Apply_Modify,this.onReqApplyModify.bind(this)]
+            [EventType.Req_Apply_Modify, this.onReqApplyModify.bind(this)]
         ]);
     }
 
@@ -156,60 +164,58 @@ export class FriendListView extends BasePopRight {
         this._blacklist.node.active = false;
     }
 
-    private async onUpdateApplyFriendList(response: DataFriendApplyListResponse): Promise<void> {
+    private async onUpdateApplyFriendList(response: DataFriendApplyListResponse) {
         const { data } = response;
         this._applyList.updateData(data);
-    
-        if (data.length <= 0) {
+
+        if (data.length === 0) {
             this.leftView.removeAllChildren();
             return;
         }
-    
+
         let friendApplyViewNode = this.leftView.getChildByName("FriendApplyView");
-    
-        if (friendApplyViewNode) {
-            const script = friendApplyViewNode.getComponent(FriendApplyView);
-            script.updateData(data);
-        } else {
+        if (!friendApplyViewNode) {
             this.leftView.removeAllChildren();
             friendApplyViewNode = await PopMgr.showPopFriend(PrefabType.FriendApplyView, this.leftView, "content");
-            const script = friendApplyViewNode.getComponent(FriendApplyView);
-            script.updateData(data);
         }
+
+        const script = friendApplyViewNode.getComponent(FriendApplyView);
+        script.updateData(data);
     }
-    
 
     private onUpdateFriendList(friendDatas: DataFriendListResponse) {
+        const data = friendDatas.data;
         if (this._tabSelect === FriendTabType.List) {
-            this._friendList.updateData(friendDatas.data);
+            this._friendList.updateData(data);
         } else if (this._tabSelect === FriendTabType.Blacklist) {
-            this._blacklist.updateData(friendDatas.data);
+            this._blacklist.updateData(data);
         }
     }
 
     private onUserDelFriendMessage(response: any) {
-        if (this._tabSelect === FriendTabType.List) {
-            FdServer.reqUserFriendList(FriendActionType.List);
-        } else if (this._tabSelect === FriendTabType.Blacklist) {
-            FdServer.reqUserFriendList(FriendActionType.Blacklist);
-        }
+        const actionType = this._tabSelect === FriendTabType.List
+            ? FriendActionType.List
+            : FriendActionType.Blacklist;
+        FdServer.reqUserFriendList(actionType);
     }
-    onReqApplyModify(param: ApplyModifyModel){
+
+    private onReqApplyModify(param: ApplyModifyModel) {
         this._applyInfo = param;
         FdServer.reqUserFriendApplyModify(param);
     }
+
     private onUserFriendApplyModify(data: any) {
         const contentStr = this.createContentString();
-        console.log(contentStr);
         ViewsMgr.showColorTip(contentStr);
         FdServer.reqUserFriendApplyList();
     }
+
     private createContentString(): string {
         if (!this._applyInfo) return '';
 
         const { status, nick_name } = this._applyInfo;
         const action = status === ApplicationStatus.Approved ? '通过' : '删除';
-        const color = status === ApplicationStatus.Approved ? '#ff0000' : '#ff0000';
+        const color = '#ff0000'; // Assuming color is fixed
         return `<color=#ffffff>你已${action}<color=${color}>${nick_name}</color><color=#ffffff>的好友申请</color>`;
     }
 }
