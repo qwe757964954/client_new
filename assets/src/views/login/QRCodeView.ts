@@ -1,4 +1,6 @@
 import { _decorator, Component, Node, Sprite, SpriteFrame, Texture2D } from 'cc';
+import { TextConfig } from '../../config/TextConfig';
+import { ViewsMgr } from '../../manager/ViewsManager';
 import CCUtil from '../../util/CCUtil';
 import { WxApi } from '../../util/third/WxApi';
 import { ToolUtil } from '../../util/ToolUtil';
@@ -30,6 +32,7 @@ export class QRCodeView extends Component {
     protected onEnable(): void {
         WxApi.wxLoginQrcode((code) => {
             console.log("wxLogin 1:", code);
+            ViewsMgr.showTip(TextConfig.Function_Tip);
         }, (data: string) => {
             let img = new Image();
             img.onload = () => {

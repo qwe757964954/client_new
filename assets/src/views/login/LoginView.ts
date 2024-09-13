@@ -52,6 +52,7 @@ export class LoginView extends BaseComponent {
     private plQRCode: QRCodeView = null;      // 二维码
     private plActivationCode: ActivationCodeView = null;      // 激活码
     private plMiddleAry: Node[] = [];          // middle节点数组
+    private _isInitUI = false;                  // 是否初始化UI
 
     protected start() {
         WxApi.isWxInstalled();
@@ -102,6 +103,7 @@ export class LoginView extends BaseComponent {
     }
 
     private initUI() {
+        this._isInitUI = true;
         this.showMiddleAcount(() => {
             this.middle.active = true;
             // 隐私协议
@@ -255,6 +257,9 @@ export class LoginView extends BaseComponent {
     /**连接断开 */
     private onSocketDis() {
         ViewsMgr.removeWaiting();
+        // if (!this._isInitUI) {
+        //     this.initUI();
+        // }
     }
     /**连接服务器 */
     private connectServer() {
@@ -279,6 +284,7 @@ export class LoginView extends BaseComponent {
         if (WxApi.isWxInstall) {
             WxApi.wxLogin((code) => {
                 console.log("wxLogin code = ", code);
+                ViewsMgr.showTip(TextConfig.Function_Tip);
             });
         } else {
             this.showPlQRCode();

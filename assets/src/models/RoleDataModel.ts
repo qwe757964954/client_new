@@ -406,6 +406,7 @@ export class RoleDataModel extends BaseModel {
     /** 拖拽结束 */
     public onDragEnd(x: number, y: number) {
         this.node.position = new Vec3(x, y, 0);
+        this._zIndex = -y;
         this.standby();
         this.topZIndex = false;//取消置顶
     }
