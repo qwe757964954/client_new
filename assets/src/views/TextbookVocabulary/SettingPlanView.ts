@@ -110,6 +110,7 @@ export class SettingPlanView extends BasePopup {
         this.setLeftRightDatePick();
         this.scheduleOnce(() => {
             const days = TextbookUtil.calculateDays(this._settingData.totalLevel, SettingPlanView.NORMAL_DAY_LEVEL);
+            this._selectedLevel = SettingPlanView.NORMAL_DAY_LEVEL;
             this.dayScroll.scrollToNumber(`${days}`);
         }, 0.2);
     }
