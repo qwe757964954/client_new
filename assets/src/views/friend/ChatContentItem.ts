@@ -1,8 +1,9 @@
-import { _decorator, Component, Label, Node, size, Sprite, UITransform, v3, Vec3 } from 'cc';
+import { _decorator, Component, Label, Node, size, Sprite, UITransform, v3 } from 'cc';
 import { LoadManager } from '../../manager/LoadManager';
 import { ChatDataItem, FriendListItemModel } from '../../models/FriendModel';
 import { User } from '../../models/User';
 import { ObjectUtil } from '../../util/ObjectUtil';
+import { FriendConfig } from './FriendConfig';
 import { HeadIdMap } from './FriendInfo';
 const { ccclass, property } = _decorator;
 
@@ -14,7 +15,7 @@ export class ChatContentItem extends Component {
     @property({ type: Node, tooltip: "头像结点" })
     ndHead: Node = null;
 
-    @property({ type: Node, tooltip: "头像结点" })
+    @property({ type: Node, tooltip: "聊天背景结点" })
     bg: Node = null;
 
     @property({ type: Node, tooltip: "当前时间结点" })
@@ -26,44 +27,46 @@ export class ChatContentItem extends Component {
     @property({ type: Sprite, tooltip: "聊天图片精灵" })
     chatImg: Sprite = null;
 
+    @property(Node)
+    public shortCut: Node = null;
+
     static readonly HeadLeftX: number = -273;
     static readonly ChatIconLeftX: number = -10;
 
     async initData(data: ChatDataItem, friendInfo: FriendListItemModel) {
-        // 设置聊天时间
         this.lblTimeTxt.string = ObjectUtil.formatDateTime(data.create_time);
 
-        // 设置头像和聊天图标位置
         const isSelf = data.user_id === User.userID;
-        this.setHeadPosition(isSelf);
-        this.setChatIconPosition(isSelf);
+        this.updatePosition(isSelf);
 
-        // 设置头像
         const avatarId = isSelf ? User.avatarID : friendInfo.avatar;
         await this.loadAvatar(avatarId);
 
-        // 设置聊天内容
-        await this.loadChatIcon(data.message);
+        if (parseInt(data.message) < 100) {
+            await this.loadChatIcon(data.message);
+            this.chatImg.node.active = true;
+            this.shortCut.active = false;
+        } else {
+            this.chatImg.node.active = false;
+            this.shortCut.active = true;
+            this.updateShortCut(data.message);
+        }
     }
 
-    private setHeadPosition(isSelf: boolean) {
-        const posHead: Vec3 = this.ndHead.getPosition();
-        const newPosX = isSelf ? -ChatContentItem.HeadLeftX : ChatContentItem.HeadLeftX;
-        this.ndHead.setPosition(v3(newPosX, posHead.y, 0));
-    }
+    private updatePosition(isSelf: boolean) {
+        const xHead = isSelf ? -ChatContentItem.HeadLeftX : ChatContentItem.HeadLeftX;
+        const xChatIcon = isSelf ? -ChatContentItem.ChatIconLeftX : ChatContentItem.ChatIconLeftX;
 
-    private setChatIconPosition(isSelf: boolean) {
-        const posBqIcon: Vec3 = this.chatImg.node.position;
-        const newPosX = isSelf ? -ChatContentItem.ChatIconLeftX : ChatContentItem.ChatIconLeftX;
-        this.chatImg.node.setPosition(v3(newPosX, posBqIcon.y, 0));
+        this.ndHead.setPosition(v3(xHead, this.ndHead.position.y, 0));
+        this.chatImg.node.setPosition(v3(xChatIcon, this.chatImg.node.position.y, 0));
     }
 
     private async loadAvatar(avatarId: string | number) {
-        const avatar = HeadIdMap[avatarId] || 101; // Default to 101 if not found
+        const avatar = HeadIdMap[avatarId] || 101;
         const avatarPath = `friend/head_${avatar}/spriteFrame`;
 
         try {
-            await LoadManager.loadSprite(avatarPath, this.imgHead.getComponent(Sprite));
+            await LoadManager.loadSprite(avatarPath, this.imgHead);
         } catch (error) {
             console.error(`Failed to load avatar sprite: ${avatarPath}`, error);
         }
@@ -81,8 +84,18 @@ export class ChatContentItem extends Component {
     }
 
     private setChatIconSize(message: string) {
-        const parsedMessage = parseInt(message);
-        const newSize = parsedMessage < 100 ? size(166, 166) : size(236, 158);
+        const newSize = parseInt(message) < 100 ? size(166, 166) : size(236, 158);
         this.chatImg.node.getComponent(UITransform).setContentSize(newSize);
+    }
+
+    private updateShortCut(message: string) {
+        const shortCut = FriendConfig.shortcutInfo.find(info => info.id === parseInt(message));
+        if (shortCut) {
+            const { enText, cnText } = shortCut;
+            this.shortCut.getChildByName("enText").getComponent(Label).string = enText;
+            this.shortCut.getChildByName("cnText").getComponent(Label).string = cnText;
+        } else {
+            console.warn(`Shortcut info not found for message ID: ${message}`);
+        }
     }
 }

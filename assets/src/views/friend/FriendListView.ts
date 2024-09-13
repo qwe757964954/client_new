@@ -17,6 +17,7 @@ import { BasePopRight } from '../../script/BasePopRight';
 import { FdServer } from '../../service/FriendService';
 import CCUtil from '../../util/CCUtil';
 import { FriendApplyView } from './FriendApplyView';
+import { FriendConfig } from './FriendConfig';
 import { FriendTabType } from './FriendInfo';
 import { FriendLeftTabView } from './FriendLeftTabView';
 import { FriendPlayerInfoView } from './FriendPlayerInfoView';
@@ -52,6 +53,7 @@ export class FriendListView extends BasePopRight {
     private _applyInfo: ApplyModifyModel = null;
 
     protected async initUI() {
+        FriendConfig.loadShotCutInfo();
         this.enableClickBlankToClose([this.contentNd]);
         await this.initViews();
         this.setLeftTab();

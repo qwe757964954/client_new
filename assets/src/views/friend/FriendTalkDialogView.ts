@@ -1,4 +1,4 @@
-import { _decorator, EventTouch, isValid, Node, NodeEventType, UITransform } from 'cc';
+import { _decorator, EventTouch, isValid, Label, Node, NodeEventType, UITransform } from 'cc';
 import { ChatDataItem, ChatMessageResponse, FriendListItemModel, SendMessageModel } from '../../models/FriendModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BasePopFriend } from '../../script/BasePopFriend';
@@ -8,7 +8,7 @@ import List from '../../util/list/List';
 import { ChatContentItem } from './ChatContentItem';
 import { ChatEmoteItem } from './ChatEmoteItem';
 import { ChatTalkItem } from './ChatTalkItem';
-import { FriendTalkChats } from './FriendInfo';
+import { FriendConfig } from './FriendConfig';
 
 const { ccclass, property } = _decorator;
 
@@ -18,7 +18,7 @@ export class FriendTalkDialogView extends BasePopFriend {
     closeBtn: Node = null;
 
     @property({ type: Node, tooltip: "内容根结点" })
-    public contentNd: Node = null;
+    contentNd: Node = null;
 
     @property({ type: Node, tooltip: "发送表情按钮" })
     bqBtn: Node = null;
@@ -47,6 +47,9 @@ export class FriendTalkDialogView extends BasePopFriend {
     @property({ type: Node, tooltip: "表情区域" })
     bqContent: Node = null;
 
+    @property(Label)
+    nameLab: Label = null;
+
     private _bqList: number[] = [];
     private _magicList: number[] = [];
     private _selectFriend: FriendListItemModel = null;
@@ -54,8 +57,8 @@ export class FriendTalkDialogView extends BasePopFriend {
 
     init(friend: FriendListItemModel): void {
         this._selectFriend = friend;
-        FdServer.reqUserFriendMessageList(this._selectFriend.friend_id);
-        FdServer.reqUserMessageStatusUpdate(this._selectFriend.friend_id);
+        this.nameLab.string = this._selectFriend.nick_name;
+        this.requestFriendData();
     }
 
     protected initUI(): void {
@@ -77,6 +80,11 @@ export class FriendTalkDialogView extends BasePopFriend {
         CCUtil.onBtnClick(this.chatBtn, this.onChatBtnClick.bind(this));
     }
 
+    private requestFriendData(): void {
+        FdServer.reqUserFriendMessageList(this._selectFriend.friend_id);
+        FdServer.reqUserMessageStatusUpdate(this._selectFriend.friend_id);
+    }
+
     private async onUserFriendMessageList(response: ChatMessageResponse): Promise<void> {
         this._chatDatas = response.data;
         this.talkList.numItems = this._chatDatas.length;
@@ -86,20 +94,20 @@ export class FriendTalkDialogView extends BasePopFriend {
 
     private async setMagicData(): Promise<void> {
         this._bqList = [
-            ...Array.from({ length: 39 }, (_, i) => i + 1) // Generates numbers from 1 to 39
-                .filter(i => ![2, 3, 9, 12, 14].includes(i)), // Exclude specific numbers
-            ...Array.from({ length: 27 }, (_, i) => i + 100) // Generates numbers from 100 to 126
+            ...Array.from({ length: 39 }, (_, i) => i + 1).filter(i => ![2, 3, 9, 12, 14].includes(i)), 
+            ...Array.from({ length: 27 }, (_, i) => i + 100)
         ];
+        console.log('Magic list:', this._bqList);
     }
 
     private onUserMessageStatusUpdate(response: any): void {
-        console.log("onUserMessageStatusUpdate....", response);
+        console.log("User message status updated:", response);
         this.talkList.updateAll();
     }
 
-    private onUserSendMessageFriend(data: any): void {
+    private onUserSendMessageFriend(): void {
         this.bqContent.active = false;
-        FdServer.reqUserFriendMessageList(this._selectFriend.friend_id);
+        this.requestFriendData();
     }
 
     private onLoadMagicFaceVertical(item: Node, idx: number): void {
@@ -107,24 +115,21 @@ export class FriendTalkDialogView extends BasePopFriend {
         if (itemScript) itemScript.initData(this._magicList[idx]);
     }
 
-    private onMagicFaceVerticalSelected(item: any, selectedId: number): void {
-        if (isValid(selectedId) && selectedId >= 0 && isValid(item)) {
-            const param: SendMessageModel = {
-                friend_id: this._selectFriend.friend_id,
-                message: `${this._magicList[selectedId]}`
-            };
-            FdServer.reqUserSendMessageFriend(param);
+    private onMagicFaceVerticalSelected(item: Node, selectedId: number): void {
+        if (isValid(selectedId) && selectedId >= 0) {
+            this.sendMessage(this._magicList[selectedId]);
         }
     }
 
     private onLoadChatVertical(item: Node, idx: number): void {
         const itemScript = item.getComponent(ChatTalkItem);
-        if (itemScript) itemScript.initData(FriendTalkChats[idx]);
+        if (itemScript) itemScript.initData(FriendConfig.shortcutInfo[idx]);
     }
 
-    private onChatVerticalSelected(item: any, selectedId: number): void {
-        if (isValid(selectedId) && selectedId >= 0 && isValid(item)) {
-            console.log('onChatVerticalSelected', item, selectedId);
+    private onChatVerticalSelected(item: Node, selectedId: number): void {
+        if (isValid(selectedId) && selectedId >= 0) {
+            const shortcut = FriendConfig.shortcutInfo[selectedId];
+            this.sendMessage(shortcut.id);
         }
     }
 
@@ -147,7 +152,8 @@ export class FriendTalkDialogView extends BasePopFriend {
         this.bqSelectBox.active = false;
         this.talkSelectBox.active = true;
         this.setupClickToClose(this.talkSelectBox, this.bqContent);
-        this.talkSelectList.numItems = FriendTalkChats.length;
+        console.log('Shortcut info:', FriendConfig.shortcutInfo);
+        this.talkSelectList.numItems = FriendConfig.shortcutInfo.length;
     }
 
     private setupClickToClose(target: Node, content: Node): void {
@@ -164,6 +170,14 @@ export class FriendTalkDialogView extends BasePopFriend {
             }
         };
         content.on(NodeEventType.TOUCH_END, touchEndHandler, this);
+    }
+
+    private sendMessage(message: number | string): void {
+        const param: SendMessageModel = {
+            friend_id: this._selectFriend.friend_id,
+            message: `${message}`
+        };
+        FdServer.reqUserSendMessageFriend(param);
     }
 
     private onCloseView(): void {
