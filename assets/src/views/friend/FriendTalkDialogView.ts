@@ -97,7 +97,6 @@ export class FriendTalkDialogView extends BasePopFriend {
             ...Array.from({ length: 39 }, (_, i) => i + 1).filter(i => ![2, 3, 9, 12, 14].includes(i)), 
             ...Array.from({ length: 27 }, (_, i) => i + 100)
         ];
-        console.log('Magic list:', this._bqList);
     }
 
     private onUserMessageStatusUpdate(response: any): void {

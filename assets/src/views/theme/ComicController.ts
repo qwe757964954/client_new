@@ -1,4 +1,4 @@
-import { _decorator, Button, Label, Node, ScrollView, Sprite, SpriteFrame, UITransform } from 'cc';
+import { _decorator, Button, EventMouse, input, Input, Label, Node, ScrollView, Sprite, SpriteFrame, UITransform } from 'cc';
 import { BaseView } from '../../script/BaseView';
 import CCUtil from '../../util/CCUtil';
 const { ccclass, property } = _decorator;
@@ -44,6 +44,19 @@ export class ComicController extends BaseView {
         CCUtil.onBtnClick(this.previousPageButton, this.previousPage.bind(this));
         CCUtil.onBtnClick(this.zoomInButton, this.zoomIn.bind(this));
         CCUtil.onBtnClick(this.zoomOutButton, this.zoomOut.bind(this));
+        this.pageSprite.on(Node.EventType.MOUSE_WHEEL, this.onMouseScroll, this);
+    }
+
+    onDestroy(): void {
+        // Clean up event listeners to avoid memory leaks
+        input.off(Input.EventType.MOUSE_WHEEL, this.onMouseScroll, this);
+    }
+    private onMouseScroll(event: EventMouse): void {
+        if (event.getScrollY() > 0) {
+            this.zoomIn();
+        } else {
+            this.zoomOut();
+        }
     }
 
     private updatePage() {
@@ -60,19 +73,11 @@ export class ComicController extends BaseView {
         spriteTransform.width = 470;
         spriteTransform.height = 700;
         const scrollViewContentTransform = this.scrollView.content.getComponent(UITransform);
-        
-        this.pageSprite.setScale(this.zoomScale, this.zoomScale);
-        
+                
         const scaledWidth = spriteTransform.width * this.zoomScale;
         const scaledHeight = spriteTransform.height * this.zoomScale;
 
         scrollViewContentTransform.setContentSize(scaledWidth, scaledHeight);
-
-        const scrollViewSize = this.scrollView.node.getComponent(UITransform);
-        this.pageSprite.setPosition(
-            scrollViewSize.width / 2 - scaledWidth / 2,
-            scrollViewSize.height / 2 - scaledHeight / 2
-        );
     }
 
     nextPage() {
