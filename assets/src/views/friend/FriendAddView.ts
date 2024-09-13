@@ -85,7 +85,7 @@ export class FriendAddView extends BasePopFriend {
 
     onLoadSearchVertical(item:Node, idx:number){
         let item_script = item.getComponent(FriendSearchItem);
-        let friendData: any = this._recommendFriendDataList[idx];
+        let friendData: any = this._searchDatas[idx];
         item_script.initData(friendData);
     }
 
