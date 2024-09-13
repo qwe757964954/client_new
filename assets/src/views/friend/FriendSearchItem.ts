@@ -1,11 +1,9 @@
 import { _decorator, Component, Label, Node, Sprite } from 'cc';
-import { EventType } from '../../config/EventType';
 import { LoadManager } from '../../manager/LoadManager';
 import { SceneMgr } from '../../manager/SceneMgr';
 import { FriendListItemModel } from '../../models/FriendModel';
 import { FdServer } from '../../service/FriendService';
 import CCUtil from '../../util/CCUtil';
-import { EventMgr } from '../../util/EventManager';
 import { HeadIdMap } from './FriendInfo';
 const { ccclass, property } = _decorator;
 
@@ -44,7 +42,6 @@ export class FriendSearchItem extends Component {
     private registerEvents(): void {
         CCUtil.onBtnClick(this.btnAddFriend, this.onAddClick.bind(this));
         CCUtil.onBtnClick(this.kingdomBtn, this.onKingdomClick.bind(this));
-        CCUtil.onBtnClick(this.chatBtn, this.onChatClick.bind(this));
     }
 
     private async loadAvatar(avatarId: number): Promise<void> {
@@ -74,10 +71,6 @@ export class FriendSearchItem extends Component {
     }
 
     private onKingdomClick(){
-        SceneMgr.loadMainScene(this._data.friend_id);
-    }
-
-    private onChatClick(){
-        EventMgr.dispatch(EventType.Friend_Talk_Event, this._data);
+        SceneMgr.loadMainScene(this._data.user_id);
     }
 }
