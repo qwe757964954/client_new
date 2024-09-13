@@ -1,4 +1,4 @@
-import { _decorator, Button, EventMouse, input, Input, Label, Node, ScrollView, Sprite, SpriteFrame, UITransform } from 'cc';
+import { _decorator, Button, EventMouse, Label, Node, ScrollView, Sprite, SpriteFrame, UITransform } from 'cc';
 import { BaseView } from '../../script/BaseView';
 import CCUtil from '../../util/CCUtil';
 const { ccclass, property } = _decorator;
@@ -49,7 +49,7 @@ export class ComicController extends BaseView {
 
     onDestroy(): void {
         // Clean up event listeners to avoid memory leaks
-        input.off(Input.EventType.MOUSE_WHEEL, this.onMouseScroll, this);
+        this.pageSprite.off(Node.EventType.MOUSE_WHEEL, this.onMouseScroll, this);
     }
     private onMouseScroll(event: EventMouse): void {
         if (event.getScrollY() > 0) {
