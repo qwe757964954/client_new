@@ -1,6 +1,6 @@
 import { _decorator, EditBox, isValid, Node } from 'cc';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { DataFriendListResponse, FriendListItemModel, UserFriendData } from '../../models/FriendModel';
+import { DataFriendListResponse, FriendListItemModel } from '../../models/FriendModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BasePopFriend } from '../../script/BasePopFriend';
 import { FdServer } from '../../service/FriendService';
@@ -72,15 +72,15 @@ export class FriendAddView extends BasePopFriend {
         this.closePop();
     }
 
-    async onSearchFriendResult(response: UserFriendData) {
+
+    async onSearchFriendResult(response: DataFriendListResponse) {
         this.updateSearchData(response);
     }
 
-    updateSearchData(friendData: UserFriendData){
+    updateSearchData(friendData: DataFriendListResponse){
         console.log("onSearchFriendResult",friendData);
-        // this._searchData = friendData;
-        // let item_script = this.resultBox.getComponent(FriendSearchItem);
-        // item_script.initData(this._searchData);
+        this._searchDatas = friendData.data;
+        this.resultList.numItems = this._searchDatas.length;
     }
 
     onLoadSearchVertical(item:Node, idx:number){

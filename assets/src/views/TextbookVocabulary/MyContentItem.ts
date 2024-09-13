@@ -6,9 +6,6 @@ import ImgUtil from '../../util/ImgUtil';
 import ListItem from '../../util/list/ListItem';
 const { ccclass, property } = _decorator;
 
-
-  
-
 @ccclass('MyContentItem')
 export class MyContentItem extends ListItem {
     @property(Node)
