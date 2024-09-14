@@ -49,7 +49,7 @@ export class ComicController extends BaseView {
 
     onDestroy(): void {
         // Clean up event listeners to avoid memory leaks
-        this.pageSprite.off(Node.EventType.MOUSE_WHEEL, this.onMouseScroll, this);
+        // this.pageSprite.off(Node.EventType.MOUSE_WHEEL, this.onMouseScroll, this);
     }
     private onMouseScroll(event: EventMouse): void {
         if (event.getScrollY() > 0) {
