@@ -20,6 +20,7 @@ const ConfigPath = {
     ItemInfoConfig: "item_info",
     WordGameConfig: "word_game",
     RoleConfig: "role",
+    Phonics: "phonics"
 }
 
 //角色插槽
@@ -252,6 +253,18 @@ export class LandExtraInfo {
     pngs: string[];//图片
 }
 
+export class PhonicsConfigData {
+    symbol: string;
+    type: string;
+    url: string;
+    words?: string[];
+}
+
+export class PhonicsGameData {
+    content: string;
+    options: string[];
+}
+
 //数据管理器
 export class DataManager {
 
@@ -280,6 +293,8 @@ export class DataManager {
     public islandConfig: IslandData[] = []; //岛屿配置
     public monsterConfig: MonsterData[] = []; //岛屿怪物配置
     public islandGateConfig: IslandGateData[] = []; //岛屿学期配置
+
+    public phonicsConfig: any; //音标拼读配置
 
     private _isInit: boolean = false;
     public defaultLand: EditInfo = null;//默认地块
@@ -314,6 +329,7 @@ export class DataManager {
         await this.initHelpConfig();
         await this.initWordGameConfig();
         await this.initRoleConfig();
+        await this.initPhonicsConfig();
         console.timeEnd("DataMgr initData");
     }
     /** 初始化角色插槽 */
@@ -582,6 +598,30 @@ export class DataManager {
                 this.clothingConfig[obj.id] = obj;
             }
         }
+    }
+
+    //初始化音标拼读配置
+    public async initPhonicsConfig() {
+        let json = await LoadManager.loadJson(ConfigPath.Phonics);
+        this.phonicsConfig = json;
+    }
+
+    //获取音标配置
+    public getSymbolConfig(): PhonicsConfigData[] {
+        if (!this.phonicsConfig == null) return null;
+        return this.phonicsConfig.symbol;
+    }
+
+    //获取自然拼读配置
+    public getPhonicsConfig(): PhonicsConfigData[] {
+        if (!this.phonicsConfig == null) return null;
+        return this.phonicsConfig.phonics;
+    }
+
+    //获取拼读游戏配置
+    public getPhonicsGameConfig(): PhonicsGameData[] {
+        if (!this.phonicsConfig == null) return null;
+        return this.phonicsConfig.phonics_game;
     }
 
     //获取导学模式单词拆分配置

@@ -163,6 +163,11 @@ export const EventType = {
     Practic_Right_View_Hiden: "Practic_Right_View_Hiden",
 
     Open_Friend_Blank: "Open_Friend_Blank",
+
+    Symbol_Click: "Symbol_Click", //音标拼读音标点击
+    Phonics_Game_Item_Click: "Phonics_Game_Item_Click", //音标拼读tab选项点击
+    Phonics_Game_Opt_Click: "Phonics_Game_Opt_Click", //音标拼读游戏选项点击
+    Phonics_Game_Play_Click: "Phonics_Game_Play_Click" //拼读游戏开始
 }
 
 export function itemEventKey(id: ItemID) {

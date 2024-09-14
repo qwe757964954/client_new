@@ -4,35 +4,32 @@ import { EventMgr } from '../../../util/EventManager';
 import { EventType } from '../../../config/EventType';
 const { ccclass, property } = _decorator;
 
-@ccclass('SymbolItem')
-export class SymbolItem extends Component {
+@ccclass('PhoincsGameOptItem')
+export class PhoincsGameOptItem extends Component {
     @property(Sprite)
     public bg: Sprite = null;
     @property(Label)
-    public symbolLabel: Label = null;
-    @property(Node)
-    public rightIcon: Node = null;
+    public contentLabel: Label = null;
 
     @property(SpriteFrame)
     public whiteBg: SpriteFrame = null;
     @property(SpriteFrame)
     public greenBg: SpriteFrame = null;
 
-    private _data: any = null;
+    public data: string = null;
 
     protected onEnable(): void {
         CCUtil.onTouch(this.node, this.onClick, this);
     }
 
     onClick() {
-        if (!this._data) return;
-        EventMgr.dispatch(EventType.Symbol_Click, this._data);
+        if (!this.data) return;
+        EventMgr.dispatch(EventType.Phonics_Game_Opt_Click, this.data);
     }
 
-    setData(data: any) {
-        this.symbolLabel.string = data.symbol;
-        this.rightIcon.active = false;
-        this._data = data;
+    setData(data: string) {
+        this.data = data;
+        this.contentLabel.string = data;
         this.isSelect = false;
     }
 
@@ -44,14 +41,9 @@ export class SymbolItem extends Component {
         }
     }
 
-    public get data() {
-        return this._data;
-    }
-
     protected onDestroy(): void {
         CCUtil.offTouch(this.node, this.onClick, this);
     }
-
 }
 
 

@@ -1,39 +1,36 @@
 import { _decorator, Component, Label, Node, Sprite, SpriteFrame } from 'cc';
+import { PhonicsGameData } from '../../../manager/DataMgr';
 import CCUtil from '../../../util/CCUtil';
 import { EventMgr } from '../../../util/EventManager';
 import { EventType } from '../../../config/EventType';
 const { ccclass, property } = _decorator;
 
-@ccclass('SymbolItem')
-export class SymbolItem extends Component {
+@ccclass('PhonicsGameItem')
+export class PhonicsGameItem extends Component {
     @property(Sprite)
     public bg: Sprite = null;
     @property(Label)
-    public symbolLabel: Label = null;
-    @property(Node)
-    public rightIcon: Node = null;
+    public contentLabel: Label = null;
 
     @property(SpriteFrame)
     public whiteBg: SpriteFrame = null;
     @property(SpriteFrame)
     public greenBg: SpriteFrame = null;
 
-    private _data: any = null;
+    public data: PhonicsGameData = null;
 
     protected onEnable(): void {
         CCUtil.onTouch(this.node, this.onClick, this);
     }
 
     onClick() {
-        if (!this._data) return;
-        EventMgr.dispatch(EventType.Symbol_Click, this._data);
+        if (!this.data) return;
+        EventMgr.dispatch(EventType.Phonics_Game_Item_Click, this.data);
     }
 
-    setData(data: any) {
-        this.symbolLabel.string = data.symbol;
-        this.rightIcon.active = false;
-        this._data = data;
-        this.isSelect = false;
+    setData(data: PhonicsGameData) {
+        this.data = data;
+        this.contentLabel.string = data.content;
     }
 
     public set isSelect(val: boolean) {
@@ -44,14 +41,9 @@ export class SymbolItem extends Component {
         }
     }
 
-    public get data() {
-        return this._data;
-    }
-
     protected onDestroy(): void {
         CCUtil.offTouch(this.node, this.onClick, this);
     }
-
 }
 
 

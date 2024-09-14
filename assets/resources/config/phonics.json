@@ -1,0 +1,1728 @@
+{
+    "symbol": [
+        {
+            "symbol": "ʌ",
+            "type": "短元音",
+            "url": "1.mp4"
+        },
+        {
+            "symbol": "ɒ",
+            "type": "短元音",
+            "url": "2.mp4"
+        },
+        {
+            "symbol": "ə",
+            "type": "短元音",
+            "url": "3.mp4"
+        },
+        {
+            "symbol": "ɪ",
+            "type": "短元音",
+            "url": "4.mp4"
+        },
+        {
+            "symbol": "ʊ",
+            "type": "短元音",
+            "url": "5.mp4"
+        },
+        {
+            "symbol": "e",
+            "type": "短元音",
+            "url": "6.mp4"
+        },
+        {
+            "symbol": "æ",
+            "type": "短元音",
+            "url": "7.mp4"
+        },
+        {
+            "symbol": "ɑː",
+            "type": "长元音",
+            "url": "8.mp4"
+        },
+        {
+            "symbol": "ɔ:",
+            "type": "长元音",
+            "url": "9.mp4"
+        },
+        {
+            "symbol": "ɜː",
+            "type": "长元音",
+            "url": "10.mp4"
+        },
+        {
+            "symbol": "i:",
+            "type": "长元音",
+            "url": "11.mp4"
+        },
+        {
+            "symbol": "u:",
+            "type": "长元音",
+            "url": "12.mp4"
+        },
+        {
+            "symbol": "eɪ",
+            "type": "双元音",
+            "url": "13.mp4"
+        },
+        {
+            "symbol": "aɪ",
+            "type": "双元音",
+            "url": "14.mp4"
+        },
+        {
+            "symbol": "ɔɪ",
+            "type": "双元音",
+            "url": "15.mp4"
+        },
+        {
+            "symbol": "ɪə",
+            "type": "双元音",
+            "url": "16.mp4"
+        },
+        {
+            "symbol": "eə",
+            "type": "双元音",
+            "url": "17.mp4"
+        },
+        {
+            "symbol": "ʊə",
+            "type": "双元音",
+            "url": "18.mp4"
+        },
+        {
+            "symbol": "aʊ",
+            "type": "双元音",
+            "url": "19.mp4"
+        },
+        {
+            "symbol": "əʊ",
+            "type": "双元音",
+            "url": "20.mp4"
+        },
+        {
+            "symbol": "p",
+            "type": "清辅音",
+            "url": "21.mp4"
+        },
+        {
+            "symbol": "t",
+            "type": "清辅音",
+            "url": "22.mp4"
+        },
+        {
+            "symbol": "k",
+            "type": "清辅音",
+            "url": "23.mp4"
+        },
+        {
+            "symbol": "f",
+            "type": "清辅音",
+            "url": "24.mp4"
+        },
+        {
+            "symbol": "s",
+            "type": "清辅音",
+            "url": "25.mp4"
+        },
+        {
+            "symbol": "ʃ",
+            "type": "清辅音",
+            "url": "26.mp4"
+        },
+        {
+            "symbol": "tʃ",
+            "type": "清辅音",
+            "url": "27.mp4"
+        },
+        {
+            "symbol": "θ",
+            "type": "清辅音",
+            "url": "29.mp4"
+        },
+        {
+            "symbol": "b",
+            "type": "浊辅音",
+            "url": "31.mp4"
+        },
+        {
+            "symbol": "d",
+            "type": "浊辅音",
+            "url": "32.mp4"
+        },
+        {
+            "symbol": "g",
+            "type": "浊辅音",
+            "url": "33.mp4"
+        },
+        {
+            "symbol": "v",
+            "type": "浊辅音",
+            "url": "34.mp4"
+        },
+        {
+            "symbol": "z",
+            "type": "浊辅音",
+            "url": "35.mp4"
+        },
+        {
+            "symbol": "ʒ",
+            "type": "浊辅音",
+            "url": "36.mp4"
+        },
+        {
+            "symbol": "dʒ",
+            "type": "浊辅音",
+            "url": "37.mp4"
+        },
+        {
+            "symbol": "ð",
+            "type": "浊辅音",
+            "url": "39.mp4"
+        },
+        {
+            "symbol": "m",
+            "type": "鼻音",
+            "url": "41.mp4"
+        },
+        {
+            "symbol": "n",
+            "type": "鼻音",
+            "url": "42.mp4"
+        },
+        {
+            "symbol": "ŋ",
+            "type": "鼻音",
+            "url": "43.mp4"
+        },
+        {
+            "symbol": "h",
+            "type": "拟拼音",
+            "url": "44.mp4"
+        },
+        {
+            "symbol": "r",
+            "type": "拟拼音",
+            "url": "45.mp4"
+        },
+        {
+            "symbol": "l",
+            "type": "拟拼音",
+            "url": "46.mp4"
+        },
+        {
+            "symbol": "w",
+            "type": "半元音",
+            "url": "47.mp4"
+        },
+        {
+            "symbol": "j",
+            "type": "半元音",
+            "url": "48.mp4"
+        }
+    ],
+    "phonics": [
+        {
+            "symbol": "A",
+            "type": "26个字母",
+            "url": "letter/A.mp4",
+            "words": []
+        },
+        {
+            "symbol": "B",
+            "type": "26个字母",
+            "url": "letter/B.mp4",
+            "words": []
+        },
+        {
+            "symbol": "C",
+            "type": "26个字母",
+            "url": "letter/C.mp4",
+            "words": []
+        },
+        {
+            "symbol": "D",
+            "type": "26个字母",
+            "url": "letter/D.mp4",
+            "words": []
+        },
+        {
+            "symbol": "E",
+            "type": "26个字母",
+            "url": "letter/E.mp4",
+            "words": []
+        },
+        {
+            "symbol": "F",
+            "type": "26个字母",
+            "url": "letter/F.mp4",
+            "words": []
+        },
+        {
+            "symbol": "G",
+            "type": "26个字母",
+            "url": "letter/G.mp4",
+            "words": []
+        },
+        {
+            "symbol": "H",
+            "type": "26个字母",
+            "url": "letter/H.mp4",
+            "words": []
+        },
+        {
+            "symbol": "I",
+            "type": "26个字母",
+            "url": "letter/I.mp4",
+            "words": []
+        },
+        {
+            "symbol": "J",
+            "type": "26个字母",
+            "url": "letter/J.mp4",
+            "words": []
+        },
+        {
+            "symbol": "K",
+            "type": "26个字母",
+            "url": "letter/K.mp4",
+            "words": []
+        },
+        {
+            "symbol": "L",
+            "type": "26个字母",
+            "url": "letter/L.mp4",
+            "words": []
+        },
+        {
+            "symbol": "M",
+            "type": "26个字母",
+            "url": "letter/M.mp4",
+            "words": []
+        },
+        {
+            "symbol": "N",
+            "type": "26个字母",
+            "url": "letter/N.mp4",
+            "words": []
+        },
+        {
+            "symbol": "O",
+            "type": "26个字母",
+            "url": "letter/O.mp4",
+            "words": []
+        },
+        {
+            "symbol": "P",
+            "type": "26个字母",
+            "url": "letter/P.mp4",
+            "words": []
+        },
+        {
+            "symbol": "Q",
+            "type": "26个字母",
+            "url": "letter/Q.mp4",
+            "words": []
+        },
+        {
+            "symbol": "R",
+            "type": "26个字母",
+            "url": "letter/R.mp4",
+            "words": []
+        },
+        {
+            "symbol": "S",
+            "type": "26个字母",
+            "url": "letter/S.mp4",
+            "words": []
+        },
+        {
+            "symbol": "T",
+            "type": "26个字母",
+            "url": "letter/T.mp4",
+            "words": []
+        },
+        {
+            "symbol": "U",
+            "type": "26个字母",
+            "url": "letter/U.mp4",
+            "words": []
+        },
+        {
+            "symbol": "V",
+            "type": "26个字母",
+            "url": "letter/V.mp4",
+            "words": []
+        },
+        {
+            "symbol": "W",
+            "type": "26个字母",
+            "url": "letter/W.mp4",
+            "words": []
+        },
+        {
+            "symbol": "X",
+            "type": "26个字母",
+            "url": "letter/X.mp4",
+            "words": []
+        },
+        {
+            "symbol": "Y",
+            "type": "26个字母",
+            "url": "letter/Y.mp4",
+            "words": []
+        },
+        {
+            "symbol": "Z",
+            "type": "26个字母",
+            "url": "letter/Z.mp4",
+            "words": []
+        },
+        {
+            "symbol": "a",
+            "type": "短元音",
+            "url": "level1/a.mp4",
+            "words": [
+                "ant",
+                "ax",
+                "yak"
+            ]
+        },
+        {
+            "symbol": "ad",
+            "type": "短元音",
+            "url": "level3/ad.mp4",
+            "words": [
+                "dad",
+                "pad"
+            ]
+        },
+        {
+            "symbol": "ag",
+            "type": "短元音",
+            "url": "level3/ag.mp4",
+            "words": [
+                "bag",
+                "rag"
+            ]
+        },
+        {
+            "symbol": "am",
+            "type": "短元音",
+            "url": "level3/am.mp4",
+            "words": [
+                "ram",
+                "jam",
+                "dam"
+            ]
+        },
+        {
+            "symbol": "an",
+            "type": "短元音",
+            "url": "level3/an.mp4",
+            "words": [
+                "fan",
+                "man",
+                "pan"
+            ]
+        },
+        {
+            "symbol": "ap",
+            "type": "短元音",
+            "url": "level3/ap.mp4",
+            "words": [
+                "cap",
+                "map",
+                "nap"
+            ]
+        },
+        {
+            "symbol": "at",
+            "type": "短元音",
+            "url": "level3/at.mp4",
+            "words": [
+                "bat",
+                "rat",
+                "hat"
+            ]
+        },
+        {
+            "symbol": "e",
+            "type": "短元音",
+            "url": "level1/e.mp4",
+            "words": [
+                "web",
+                "egg",
+                "vet"
+            ]
+        },
+        {
+            "symbol": "ed",
+            "type": "短元音",
+            "url": "level3/ed.mp4",
+            "words": [
+                "red",
+                "bed"
+            ]
+        },
+        {
+            "symbol": "en",
+            "type": "短元音",
+            "url": "level3/en.mp4",
+            "words": [
+                "hen",
+                "pen"
+            ]
+        },
+        {
+            "symbol": "et",
+            "type": "短元音",
+            "url": "level3/et.mp4",
+            "words": [
+                "jet",
+                "net",
+                "wet"
+            ]
+        },
+        {
+            "symbol": "i",
+            "type": "短元音",
+            "url": "level1/i.mp4",
+            "words": [
+                "hip",
+                "zip",
+                "ink"
+            ]
+        },
+        {
+            "symbol": "ib",
+            "type": "短元音",
+            "url": "level3/ib.mp4",
+            "words": [
+                "bib",
+                "rib"
+            ]
+        },
+        {
+            "symbol": "id",
+            "type": "短元音",
+            "url": "level3/id.mp4",
+            "words": [
+                "kid",
+                "lid"
+            ]
+        },
+        {
+            "symbol": "ig",
+            "type": "短元音",
+            "url": "level3/ig.mp4",
+            "words": [
+                "wig",
+                "big",
+                "dig"
+            ]
+        },
+        {
+            "symbol": "in",
+            "type": "短元音",
+            "url": "level3/in.mp4",
+            "words": [
+                "pin",
+                "win",
+                "bin"
+            ]
+        },
+        {
+            "symbol": "ip",
+            "type": "短元音",
+            "url": "level3/ip.mp4",
+            "words": [
+                "lip",
+                "tip",
+                "sip"
+            ]
+        },
+        {
+            "symbol": "it",
+            "type": "短元音",
+            "url": "level3/it.mp4",
+            "words": [
+                "pit",
+                "hit"
+            ]
+        },
+        {
+            "symbol": "ix",
+            "type": "短元音",
+            "url": "level3/ix.mp4",
+            "words": [
+                "six",
+                "mix"
+            ]
+        },
+        {
+            "symbol": "o",
+            "type": "短元音",
+            "url": "level1/o.mp4",
+            "words": [
+                "fox",
+                "log",
+                "ox"
+            ]
+        },
+        {
+            "symbol": "op",
+            "type": "短元音",
+            "url": "level3/op.mp4",
+            "words": [
+                "top",
+                "mop",
+                "hop"
+            ]
+        },
+        {
+            "symbol": "ot",
+            "type": "短元音",
+            "url": "level3/ot.mp4",
+            "words": [
+                "pot",
+                "hot",
+                "dot"
+            ]
+        },
+        {
+            "symbol": "u",
+            "type": "短元音",
+            "url": "level1/u.mp4",
+            "words": [
+                "umbrella",
+                "sun",
+                "hug"
+            ]
+        },
+        {
+            "symbol": "ub",
+            "type": "短元音",
+            "url": "level3/ub.mp4",
+            "words": [
+                "cub",
+                "tub"
+            ]
+        },
+        {
+            "symbol": "ud",
+            "type": "短元音",
+            "url": "level3/ud.mp4",
+            "words": [
+                "bud",
+                "mud"
+            ]
+        },
+        {
+            "symbol": "ug",
+            "type": "短元音",
+            "url": "level3/ug.mp4",
+            "words": [
+                "bug",
+                "rug",
+                "mug"
+            ]
+        },
+        {
+            "symbol": "um",
+            "type": "短元音",
+            "url": "level3/um.mp4",
+            "words": [
+                "gum",
+                "hum"
+            ]
+        },
+        {
+            "symbol": "un",
+            "type": "短元音",
+            "url": "level3/un.mp4",
+            "words": [
+                "bun",
+                "run",
+                "fun"
+            ]
+        },
+        {
+            "symbol": "up",
+            "type": "短元音",
+            "url": "level3/up.mp4",
+            "words": [
+                "pup",
+                "cup"
+            ]
+        },
+        {
+            "symbol": "ut",
+            "type": "短元音",
+            "url": "level3/ut.mp4",
+            "words": [
+                "nut",
+                "hut",
+                "cut"
+            ]
+        },
+        {
+            "symbol": "a",
+            "type": "短元音",
+            "url": "level1/a.mp4",
+            "words": [
+                "panda",
+                "gorilla",
+                "banana"
+            ]
+        },
+        {
+            "symbol": "e",
+            "type": "短元音",
+            "url": "level1/e.mp4",
+            "words": [
+                "chicken"
+            ]
+        },
+        {
+            "symbol": "i",
+            "type": "短元音",
+            "url": "level1/i.mp4",
+            "words": [
+                "pencil"
+            ]
+        },
+        {
+            "symbol": "o-1",
+            "type": "短元音",
+            "url": "level1/o.mp4",
+            "words": [
+                "monkey",
+                "love",
+                "son"
+            ]
+        },
+        {
+            "symbol": "o-2",
+            "type": "短元音",
+            "url": "level1/o.mp4",
+            "words": [
+                "lemon"
+            ]
+        },
+        {
+            "symbol": "u",
+            "type": "短元音",
+            "url": "level1/u.mp4",
+            "words": [
+                "surprise"
+            ]
+        },
+        {
+            "symbol": "ea",
+            "type": "短元音",
+            "url": "level3/ea.mp4",
+            "words": [
+                "bread",
+                "head"
+            ]
+        },
+        {
+            "symbol": "er",
+            "type": "短元音",
+            "url": "level3/er.mp4",
+            "words": [
+                "teacher",
+                "sister"
+            ]
+        },
+        {
+            "symbol": "or",
+            "type": "短元音",
+            "url": "level3/or.mp4",
+            "words": [
+                "doctor",
+                "tractor"
+            ]
+        },
+        {
+            "symbol": "oo",
+            "type": "短元音",
+            "url": "level3/oo.mp4",
+            "words": [
+                "book",
+                "foot"
+            ]
+        },
+        {
+            "symbol": "u",
+            "type": "短元音",
+            "url": "level1/u.mp4",
+            "words": [
+                "bush",
+                "pull"
+            ]
+        },
+        {
+            "symbol": "y",
+            "type": "短元音",
+            "url": "level1/y.mp4",
+            "words": [
+                "candy",
+                "happy"
+            ]
+        },
+        {
+            "symbol": "g",
+            "type": "辅音",
+            "url": "level1/g.mp4",
+            "words": [
+                "giraffe",
+                "orange",
+                "giant"
+            ]
+        },
+        {
+            "symbol": "ce",
+            "type": "辅音",
+            "url": "level2/ce.mp4",
+            "words": [
+                "rice",
+                "cell phone",
+                "ice cream"
+            ]
+        },
+        {
+            "symbol": "ve",
+            "type": "辅音",
+            "url": "level2/ve.mp4",
+            "words": [
+                "glove",
+                "live"
+            ]
+        },
+        {
+            "symbol": "se",
+            "type": "辅音",
+            "url": "level2/se.mp4",
+            "words": [
+                "rose",
+                "jeans",
+                "cheese"
+            ]
+        },
+        {
+            "symbol": "a",
+            "type": "长元音",
+            "url": "level1/a.mp4",
+            "words": [
+                "acorn",
+                "baby",
+                "elvator"
+            ]
+        },
+        {
+            "symbol": "e",
+            "type": "长元音",
+            "url": "level1/e.mp4",
+            "words": [
+                "he",
+                "she"
+            ]
+        },
+        {
+            "symbol": "i",
+            "type": "长元音",
+            "url": "level1/i.mp4",
+            "words": [
+                "tiger",
+                "child"
+            ]
+        },
+        {
+            "symbol": "o",
+            "type": "长元音",
+            "url": "level1/o.mp4",
+            "words": [
+                "cold",
+                "hotel"
+            ]
+        },
+        {
+            "symbol": "u",
+            "type": "长元音",
+            "url": "level1/u.mp4",
+            "words": [
+                "uniform",
+                "music"
+            ]
+        },
+        {
+            "symbol": "a_e",
+            "type": "长元音",
+            "url": "level4/a-e.mp4",
+            "words": [
+                "tape",
+                "cape",
+                "cane"
+            ]
+        },
+        {
+            "symbol": "i_e",
+            "type": "长元音",
+            "url": "level4/i-e.mp4",
+            "words": [
+                "kite",
+                "pine",
+                "rice"
+            ]
+        },
+        {
+            "symbol": "o_e",
+            "type": "长元音",
+            "url": "level4/o-e.mp4",
+            "words": [
+                "home",
+                "bone",
+                "cone"
+            ]
+        },
+        {
+            "symbol": "u_e",
+            "type": "长元音",
+            "url": "level4/u-e.mp4",
+            "words": [
+                "cube",
+                "mute",
+                "cute"
+            ]
+        },
+        {
+            "symbol": "ai",
+            "type": "长元音",
+            "url": "level4/ai.mp4",
+            "words": [
+                "rain",
+                "nail",
+                "tail"
+            ]
+        },
+        {
+            "symbol": "ay",
+            "type": "长元音",
+            "url": "level4/ay.mp4",
+            "words": [
+                "bay",
+                "day",
+                "say"
+            ]
+        },
+        {
+            "symbol": "ea",
+            "type": "长元音",
+            "url": "level4/ea.mp4",
+            "words": [
+                "leaf",
+                "eat",
+                "sea"
+            ]
+        },
+        {
+            "symbol": "ee",
+            "type": "长元音",
+            "url": "level4/ee.mp4",
+            "words": [
+                "bee",
+                "feet",
+                "seed"
+            ]
+        },
+        {
+            "symbol": "ey",
+            "type": "长元音",
+            "url": "level4/ey.mp4",
+            "words": [
+                "key",
+                "money"
+            ]
+        },
+        {
+            "symbol": "ie",
+            "type": "长元音",
+            "url": "level4/-ie.mp4",
+            "words": [
+                "pie",
+                "tie",
+                "lie"
+            ]
+        },
+        {
+            "symbol": "igh",
+            "type": "长元音",
+            "url": "level4/igh.mp4",
+            "words": [
+                "light",
+                "night",
+                "high"
+            ]
+        },
+        {
+            "symbol": "y",
+            "type": "长元音",
+            "url": "level4/-y.mp4",
+            "words": [
+                "spy",
+                "sky",
+                "cry"
+            ]
+        },
+        {
+            "symbol": "oa",
+            "type": "长元音",
+            "url": "level4/oa.mp4",
+            "words": [
+                "boat",
+                "coat",
+                "road"
+            ]
+        },
+        {
+            "symbol": "ow",
+            "type": "长元音",
+            "url": "level4/ow.mp4",
+            "words": [
+                "bow",
+                "row",
+                "yellow"
+            ]
+        },
+        {
+            "symbol": "ew",
+            "type": "长元音",
+            "url": "level4/ew.mp4",
+            "words": [
+                "new",
+                "dew"
+            ]
+        },
+        {
+            "symbol": "oo",
+            "type": "长元音",
+            "url": "level5/oo.mp4",
+            "words": [
+                "moon",
+                "zoo",
+                "food"
+            ]
+        },
+        {
+            "symbol": "ue",
+            "type": "长元音",
+            "url": "level4/ue.mp4",
+            "words": [
+                "blue",
+                "glue",
+                "clue"
+            ]
+        },
+        {
+            "symbol": "ui",
+            "type": "长元音",
+            "url": "level4/ui.mp4",
+            "words": [
+                "fruit",
+                "suit"
+            ]
+        },
+        {
+            "symbol": "ar",
+            "type": "长元音",
+            "url": "level5/ar.mp4",
+            "words": [
+                "car",
+                "farm",
+                "park"
+            ]
+        },
+        {
+            "symbol": "ir",
+            "type": "长元音",
+            "url": "level5/ir.mp4",
+            "words": [
+                "bird",
+                "girl"
+            ]
+        },
+        {
+            "symbol": "ur",
+            "type": "长元音",
+            "url": "level5/ur.mp4",
+            "words": [
+                "nurse",
+                "purple"
+            ]
+        },
+        {
+            "symbol": "oi",
+            "type": "长元音",
+            "url": "level5/oi.mp4",
+            "words": [
+                "coin",
+                "soil"
+            ]
+        },
+        {
+            "symbol": "oy",
+            "type": "长元音",
+            "url": "level5/oy.mp4",
+            "words": [
+                "toy",
+                "boy"
+            ]
+        },
+        {
+            "symbol": "ou",
+            "type": "长元音",
+            "url": "level5/ou.mp4",
+            "words": [
+                "mouse",
+                "house"
+            ]
+        },
+        {
+            "symbol": "ow",
+            "type": "长元音",
+            "url": "level5/ow.mp4",
+            "words": [
+                "cow",
+                "brown"
+            ]
+        },
+        {
+            "symbol": "au",
+            "type": "长元音",
+            "url": "level5/au.mp4",
+            "words": [
+                "sauce",
+                "august"
+            ]
+        },
+        {
+            "symbol": "aw",
+            "type": "长元音",
+            "url": "level5/aw.mp4",
+            "words": [
+                "prawn",
+                "draw"
+            ]
+        },
+        {
+            "symbol": "oar",
+            "type": "长元音",
+            "url": "level5/oar.mp4",
+            "words": [
+                "roar",
+                "board"
+            ]
+        },
+        {
+            "symbol": "or",
+            "type": "长元音",
+            "url": "level5/or.mp4",
+            "words": [
+                "horse",
+                "fork"
+            ]
+        },
+        {
+            "symbol": "air",
+            "type": "长元音",
+            "url": "level5/air.mp4",
+            "words": [
+                "chair",
+                "hair"
+            ]
+        },
+        {
+            "symbol": "are",
+            "type": "长元音",
+            "url": "level5/are.mp4",
+            "words": [
+                "square",
+                "share"
+            ]
+        },
+        {
+            "symbol": "ear",
+            "type": "长元音",
+            "url": "level5/ear.mp4",
+            "words": [
+                "bear",
+                "pear"
+            ]
+        },
+        {
+            "symbol": "ear",
+            "type": "长元音",
+            "url": "level5/ear.mp4",
+            "words": [
+                "ear",
+                "clear"
+            ]
+        },
+        {
+            "symbol": "eer",
+            "type": "长元音",
+            "url": "level5/eer.mp4",
+            "words": [
+                "deer",
+                "cheer"
+            ]
+        },
+        {
+            "symbol": "tr",
+            "type": "复合字母",
+            "url": "level2/tr-.mp4",
+            "words": [
+                "truck",
+                "tree"
+            ]
+        },
+        {
+            "symbol": "dr",
+            "type": "复合字母",
+            "url": "level2/dr-.mp4",
+            "words": [
+                "drum",
+                "dress"
+            ]
+        },
+        {
+            "symbol": "ch",
+            "type": "复合字母",
+            "url": "level2/ch.mp4",
+            "words": [
+                "chick",
+                "lunch"
+            ]
+        },
+        {
+            "symbol": "tch",
+            "type": "复合字母",
+            "url": "level2/tch.mp4",
+            "words": [
+                "watch",
+                "catch"
+            ]
+        },
+        {
+            "symbol": "sh",
+            "type": "复合字母",
+            "url": "level2/sh.mp4",
+            "words": [
+                "shell",
+                "fish",
+                "ship"
+            ]
+        },
+        {
+            "symbol": "wh",
+            "type": "复合字母",
+            "url": "level2/wh.mp4",
+            "words": [
+                "whale",
+                "white"
+            ]
+        },
+        {
+            "symbol": "th",
+            "type": "复合字母",
+            "url": "level2/th.mp4",
+            "words": [
+                "three",
+                "teeth",
+                "think"
+            ]
+        },
+        {
+            "symbol": "th",
+            "type": "复合字母",
+            "url": "level2/th.mp4",
+            "words": [
+                "this",
+                "that",
+                "father"
+            ]
+        },
+        {
+            "symbol": "ph",
+            "type": "复合字母",
+            "url": "level2/ph.mp4",
+            "words": [
+                "phone",
+                "dolphin"
+            ]
+        },
+        {
+            "symbol": "ck",
+            "type": "复合字母",
+            "url": "level2/ck.mp4",
+            "words": [
+                "duck",
+                "rocket"
+            ]
+        },
+        {
+            "symbol": "kn",
+            "type": "复合字母",
+            "url": "level2/kn-.mp4",
+            "words": [
+                "knife",
+                "knee"
+            ]
+        },
+        {
+            "symbol": "mb",
+            "type": "复合字母",
+            "url": "level2/-mb.mp4",
+            "words": [
+                "lamb",
+                "comb"
+            ]
+        },
+        {
+            "symbol": "rh",
+            "type": "复合字母",
+            "url": "level2/rh.mp4",
+            "words": [
+                "rhino"
+            ]
+        },
+        {
+            "symbol": "st",
+            "type": "复合字母",
+            "url": "level2/st.mp4",
+            "words": [
+                "whist",
+                "castle"
+            ]
+        },
+        {
+            "symbol": "wr",
+            "type": "复合字母",
+            "url": "level2/wr-.mp4",
+            "words": [
+                "write",
+                "wrong"
+            ]
+        },
+        {
+            "symbol": "bl",
+            "type": "字母组合",
+            "url": "level2/bl-.mp4",
+            "words": [
+                "black",
+                "blanket"
+            ]
+        },
+        {
+            "symbol": "br",
+            "type": "字母组合",
+            "url": "level2/br-.mp4",
+            "words": [
+                "broom",
+                "bride"
+            ]
+        },
+        {
+            "symbol": "cl",
+            "type": "字母组合",
+            "url": "level2/cl-.mp4",
+            "words": [
+                "clock",
+                "club"
+            ]
+        },
+        {
+            "symbol": "cr",
+            "type": "字母组合",
+            "url": "level2/cr-.mp4",
+            "words": [
+                "crab",
+                "crocodile"
+            ]
+        },
+        {
+            "symbol": "fl",
+            "type": "字母组合",
+            "url": "level2/fl-.mp4",
+            "words": [
+                "fly",
+                "flag"
+            ]
+        },
+        {
+            "symbol": "gl",
+            "type": "字母组合",
+            "url": "level2/gl-.mp4",
+            "words": [
+                "globe",
+                "glass"
+            ]
+        },
+        {
+            "symbol": "fr",
+            "type": "字母组合",
+            "url": "level2/fr-.mp4",
+            "words": [
+                "frog",
+                "friday"
+            ]
+        },
+        {
+            "symbol": "gr",
+            "type": "字母组合",
+            "url": "level2/gr-.mp4",
+            "words": [
+                "green",
+                "grass"
+            ]
+        },
+        {
+            "symbol": "pl",
+            "type": "字母组合",
+            "url": "level2/pl-.mp4",
+            "words": [
+                "plate",
+                "play"
+            ]
+        },
+        {
+            "symbol": "sc",
+            "type": "字母组合",
+            "url": "level2/sc-.mp4",
+            "words": [
+                "scale",
+                "school"
+            ]
+        },
+        {
+            "symbol": "sk",
+            "type": "字母组合",
+            "url": "level2/sk.mp4",
+            "words": [
+                "skunk",
+                "desk"
+            ]
+        },
+        {
+            "symbol": "sl",
+            "type": "字母组合",
+            "url": "level2/sl-.mp4",
+            "words": [
+                "slide",
+                "sleep"
+            ]
+        },
+        {
+            "symbol": "sm",
+            "type": "字母组合",
+            "url": "level2/sm-.mp4",
+            "words": [
+                "smile",
+                "smoke"
+            ]
+        },
+        {
+            "symbol": "sn",
+            "type": "字母组合",
+            "url": "level2/sn-.mp4",
+            "words": [
+                "snake",
+                "snow"
+            ]
+        },
+        {
+            "symbol": "sp",
+            "type": "字母组合",
+            "url": "level2/sp-.mp4",
+            "words": [
+                "spoon",
+                "spot"
+            ]
+        },
+        {
+            "symbol": "st",
+            "type": "字母组合",
+            "url": "level2/st.mp4",
+            "words": [
+                "stop",
+                "stamp",
+                "fast"
+            ]
+        },
+        {
+            "symbol": "sw",
+            "type": "字母组合",
+            "url": "level2/sw-.mp4",
+            "words": [
+                "swing",
+                "swim"
+            ]
+        },
+        {
+            "symbol": "qu",
+            "type": "字母组合",
+            "url": "level2/qu-.mp4",
+            "words": [
+                "queen",
+                "quilt"
+            ]
+        },
+        {
+            "symbol": "wa",
+            "type": "字母组合",
+            "url": "level2/wa-.mp4",
+            "words": [
+                "water",
+                "walk"
+            ]
+        },
+        {
+            "symbol": "mp",
+            "type": "字母组合",
+            "url": "level2/-mp.mp4",
+            "words": [
+                "lamp",
+                "camp"
+            ]
+        },
+        {
+            "symbol": "nd",
+            "type": "字母组合",
+            "url": "level2/-nd.mp4",
+            "words": [
+                "wind",
+                "hand"
+            ]
+        },
+        {
+            "symbol": "lt",
+            "type": "字母组合",
+            "url": "level2/-lt.mp4",
+            "words": [
+                "belt",
+                "adult"
+            ]
+        },
+        {
+            "symbol": "ng",
+            "type": "字母组合",
+            "url": "level2/-ng.mp4",
+            "words": [
+                "king",
+                "long"
+            ]
+        },
+        {
+            "symbol": "nk",
+            "type": "字母组合",
+            "url": "level2/-nk.mp4",
+            "words": [
+                "bank",
+                "pink"
+            ]
+        },
+        {
+            "symbol": "nt",
+            "type": "字母组合",
+            "url": "level2/-nt.mp4",
+            "words": [
+                "tent",
+                "paint"
+            ]
+        },
+        {
+            "symbol": "all",
+            "type": "字母组合",
+            "url": "level2/-all.mp4",
+            "words": [
+                "ball",
+                "tall"
+            ]
+        },
+        {
+            "symbol": "ous",
+            "type": "字母组合",
+            "url": "level2/-ous.mp4",
+            "words": [
+                "famous",
+                "dangerous"
+            ]
+        },
+        {
+            "symbol": "spl",
+            "type": "字母组合",
+            "url": "level2/spl-.mp4",
+            "words": [
+                "splash",
+                "splint"
+            ]
+        },
+        {
+            "symbol": "spr",
+            "type": "字母组合",
+            "url": "level2/spr-.mp4",
+            "words": [
+                "spray",
+                "spring"
+            ]
+        },
+        {
+            "symbol": "squ",
+            "type": "字母组合",
+            "url": "level2/squ-.mp4",
+            "words": [
+                "squid",
+                "square"
+            ]
+        },
+        {
+            "symbol": "str",
+            "type": "字母组合",
+            "url": "level2/str-.mp4",
+            "words": [
+                "string",
+                "strong"
+            ]
+        },
+        {
+            "symbol": "ful",
+            "type": "字母组合",
+            "url": "level2/-ful.mp4",
+            "words": [
+                "beautiful",
+                "helpful"
+            ]
+        },
+        {
+            "symbol": "sion",
+            "type": "字母组合",
+            "url": "level2/-sion.mp4",
+            "words": [
+                "television",
+                "excursion"
+            ]
+        },
+        {
+            "symbol": "sure",
+            "type": "字母组合",
+            "url": "level2/-sure.mp4",
+            "words": [
+                "treasure",
+                "measure"
+            ]
+        },
+        {
+            "symbol": "tion",
+            "type": "字母组合",
+            "url": "level2/-tion.mp4",
+            "words": [
+                "station",
+                "competition"
+            ]
+        },
+        {
+            "symbol": "ture",
+            "type": "字母组合",
+            "url": "level2/-ture.mp4",
+            "words": [
+                "picture",
+                "nature"
+            ]
+        }
+    ],
+    "phonics_game": [
+        {
+            "content": "at",
+            "options": [
+                "c",
+                "f",
+                "b",
+                "r"
+            ]
+        },
+        {
+            "content": "ap",
+            "options": [
+                "t",
+                "g",
+                "m",
+                "n"
+            ]
+        },
+        {
+            "content": "ad",
+            "options": [
+                "p",
+                "d",
+                "g",
+                "h"
+            ]
+        },
+        {
+            "content": "et",
+            "options": [
+                "j",
+                "w",
+                "g",
+                "n"
+            ]
+        },
+        {
+            "content": "ip",
+            "options": [
+                "z",
+                "s",
+                "t",
+                "d"
+            ]
+        },
+        {
+            "content": "og",
+            "options": [
+                "f",
+                "d",
+                "l",
+                "j"
+            ]
+        },
+        {
+            "content": "en",
+            "options": [
+                "h",
+                "p",
+                "m",
+                "t"
+            ]
+        },
+        {
+            "content": "ag",
+            "options": [
+                "b",
+                "t",
+                "h",
+                "r"
+            ]
+        },
+        {
+            "content": "an",
+            "options": [
+                "p",
+                "b",
+                "c",
+                "m"
+            ]
+        }
+    ]
+}
