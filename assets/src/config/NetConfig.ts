@@ -1,3 +1,4 @@
+import { sys } from "cc";
 import DebugConfig from "../DebugConfig";
 
 let baseUrl = "https://hksm.chuangciyingyu.com:9191"; //老账号中台地址
@@ -29,6 +30,7 @@ class NetCfg {
 
     public server = "39.108.215.220";//webscoket服务器
     public port = 9803;//webscoket端口
+    public versionCheck = "http://39.108.215.220:9801/version";//版本检测
 
     public checkNotice;//公告检测
     public tokenLogin;//token登录
@@ -37,7 +39,6 @@ class NetCfg {
     public smsLogin;//短信登录
     public wechatLogin;//微信登录
     public accountLogin;//账号密码登录
-    public versionCheck;//版本检测
 
     private getCurrentUrl() {
         return this.currentUrl;
@@ -52,12 +53,18 @@ class NetCfg {
         this.smsLogin = this.currentUrl + "/api/smslogin";//短信登录
         this.wechatLogin = this.currentUrl + "/api/wechatlogin";//微信登录
         this.accountLogin = this.currentUrl + "/api/account_login";//账号密码登录
-        this.versionCheck = "http://39.108.215.220:9801/version";//版本检测
     }
     public converToDebug() {
         if (!DebugConfig.TEST_SERVER) return;
+        if (sys.isBrowser) {
+            this.assertUrl = "http://192.168.1.58:9001/assets";
+        }
+        this.versionCheck = "http://192.168.1.67:40001/version";
         this.server = "192.168.1.67";
-        this.port = 9803;
+        // this.port = 9803;
+        // this.versionCheck = "http://192.168.1.67:40001/version";
+        // this.server = "192.168.1.67";
+        this.port = 40003;
         /**林景 */
         // this.server = "192.168.1.164";
         // this.port = 9803;
