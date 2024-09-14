@@ -17,11 +17,12 @@ export class BasePopRight extends BasePopupBase {
             const { width } = view.getVisibleSize();
             const startY = this.animatedNode.getPosition().y;
             const scaleX = this.animatedNode.getScale().x;
+            const selfScaleX = this.node.getScale().x;
             const startPosition = new Vec3(width, startY, 0);
             this.animatedNode.position = startPosition;
 
             const { width: nodeWidth } = this.animatedNode.getComponent(UITransform)!;
-            const finalPosition = new Vec3((width - nodeWidth * scaleX) / 2, startY, 0);
+            const finalPosition = new Vec3((width - nodeWidth * scaleX * selfScaleX) / 2, startY, 0);
 
             this.animatedNode.active = true;
 

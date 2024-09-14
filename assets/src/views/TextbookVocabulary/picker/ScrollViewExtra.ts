@@ -21,7 +21,7 @@ export class ScrollViewExtra extends Component {
     private listData: string[] = [];
     private contentY: number = null;
     private _selectCallFunc: (select_num: number) => void = null;
-
+    private numberString:string = "";
     onLoad(): void {
         this.node.off(Node.EventType.MOUSE_WHEEL);
     }
@@ -58,7 +58,6 @@ export class ScrollViewExtra extends Component {
         this.updateListSelectChildren();
         this.setSelectChildIndex(0);
     }
-
     private updateListSelectChildren() {
         const itemHeight = this.listViewExtra.itemHeight;
         this.selectChildren = this.listViewExtra.itemList
@@ -66,6 +65,7 @@ export class ScrollViewExtra extends Component {
                 const jsItem = itemNode.getComponent(DateListItemNew);
                 const itemPos = this.listViewExtra.getPositionInView(itemNode);
                 const absY = Math.abs(itemPos.y);
+
                 if (jsItem.labNum.string.trim() !== "") {
                     return { itemNode, absY };
                 }
@@ -74,15 +74,23 @@ export class ScrollViewExtra extends Component {
             .filter(item => item !== null)
             .sort((a, b) => a.absY - b.absY)
             .map(({ itemNode }) => itemNode);
-        console.log("updateListSelectChildren",this.selectChildren)
+
+        console.log("updateListSelectChildren", this.selectChildren);
+
+        if (this.selectChildren.length === 0) {
+            this.selectChildIndex = -1;
+            return;
+        }
+
         this.selectChildIndex = this.selectChildren.findIndex(itemNode => {
             const itemPos = this.listViewExtra.getPositionInView(itemNode);
-            console.log("itemPos.y.....",itemPos.y,itemHeight)
-            console.log(Math.abs(itemPos.y) < itemHeight / 2)
+            console.log("itemPos.y.....", itemPos.y, itemHeight);
             return Math.abs(itemPos.y) < itemHeight / 2;
         });
 
+        console.log("Selected item index:", this.selectChildIndex);
     }
+
 
     private getScrollChildOffset(): number {
         this.updateListSelectChildren();
@@ -95,8 +103,15 @@ export class ScrollViewExtra extends Component {
 
         return Math.round(offset / itemHeight) * itemHeight;
     }
-
     private setSelectChildIndex(idx: number) {
+        if (idx < 0 || idx >= this.selectChildren.length) {
+            console.warn(`Invalid index: ${idx}`);
+            if (this._selectCallFunc) {
+                this._selectCallFunc(parseInt(this.numberString));
+            }
+            return;
+        }
+
         this.selectChildren.forEach((itemNode, i) => {
             const jsItem = itemNode.getComponent(DateListItemNew);
             jsItem.labNum.color = i === idx ? Color.WHITE : new Color("#843C2F");
@@ -126,7 +141,7 @@ export class ScrollViewExtra extends Component {
         }
         this.contentY = this.scrollView.content.getPosition().y;
     }
-
+    
     private onScrollEnd() {
         const offset = this.getScrollChildOffset();
         console.log("onScrollEnd.....",offset);
@@ -138,19 +153,32 @@ export class ScrollViewExtra extends Component {
             this.scrollView.scrollToOffset(new math.Vec2(this.scrollView.getScrollOffset().x, this.nowOffsetY), 0.2);
         }
     }
-
     scrollToNumber(numberString: string) {
+        this.numberString = numberString;
         const index = this.listData.findIndex(item => item === numberString);
         if (index !== -1) {
             this.updateListSelectChildren();
-            const scrollOffset = this.scrollView.getScrollOffset();
             let count = index-1;
-            let targetPosition = this.listViewExtra.getVerticalPosition(count);
-            const duration = Math.abs(index - this.selectChildIndex) * 0.08;
-            console.log("-targetPosition.y.........",index,-targetPosition.y/this.listViewExtra.itemHeight,numberString);
-            this.scrollView.scrollToOffset(new math.Vec2(scrollOffset.x, -targetPosition.y), duration);
+            // Ensure the item height is correctly calculated
+            const itemHeight = this.listViewExtra.itemHeight;
+            const targetPositionY = itemHeight * count;
+
+            // Get current scroll offset
+            const scrollOffset = this.scrollView.getScrollOffset();
+
+            // Calculate the scroll duration based on the distance
+            const distance = Math.abs(targetPositionY - scrollOffset.y);
+            const duration = Math.min((distance / itemHeight) * 0.08, 2); // Cap the max duration for smoother scrolling
+
+            console.log(`Scrolling to ${numberString} at index ${index}. Target position: ${targetPositionY}`);
+            console.log(`Current scroll offset: ${scrollOffset.y}`);
+            console.log(`Calculated duration: ${duration}`);
+
+            // Smoothly scroll to the target position
+            this.scrollView.scrollToOffset(new math.Vec2(scrollOffset.x, targetPositionY), duration);
         } else {
             console.error(`Item with number ${numberString} not found.`);
         }
     }
+
 }
