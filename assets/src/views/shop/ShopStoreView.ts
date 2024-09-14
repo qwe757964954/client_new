@@ -11,7 +11,7 @@ import List from '../../util/list/List';
 import { BagConfig } from '../bag/BagConfig';
 import { CothingSuitInfo, GoodsItemInfo } from '../bag/BagInfo';
 import { TabTypeIds } from '../task/TaskInfo';
-import { BuyStoreInfo, clothingTypeMapping, ShopClothingInfo } from './ShopInfo';
+import { BuyStoreInfo, clothingTypeMapping, ShopClothingInfo, ShopClothingMap } from './ShopInfo';
 import { ShopPlayerView } from './ShopPlayerView';
 import { ShopStoreItem } from './ShopStoreItem';
 import { ShopSuitItem } from './ShopSuitItem';
@@ -31,7 +31,7 @@ export class ShopStoreView extends BaseView {
     private _suitItemsData: CothingSuitInfo[] = [];
     private clothingInfo: BuyStoreInfo = null;
     private _curTabType: TabTypeIds = null;
-    private _shopClothing: { [key in TabTypeIds]?: ShopClothingInfo } = {};
+    private _shopClothing: ShopClothingMap = {};
 
     protected async initUI() {
         this.offViewAdaptSize();
@@ -61,6 +61,7 @@ export class ShopStoreView extends BaseView {
         this.addModelListeners([
             [NetNotify.Classification_ShopItemBuy, this.onShopItemBuy.bind(this)],
             [EventType.Shop_Buy_Store, this.onShopBuyStore.bind(this)],
+            [EventType.Shop_Buy_Suit_Detail, this.onShopBuyDetail.bind(this)],
         ]);
     }
 
@@ -82,13 +83,12 @@ export class ShopStoreView extends BaseView {
         if (clothingType !== undefined) {
             const filteredItems = this.filterItems(editConfig, BagConfig.BagConfigInfo.goods_item_info);
             this._itemsData = filteredItems.filter(item => item.type === clothingType);
-        } else if (id === TabTypeIds.ShopDressTotal) {
+        } else {
             this._itemsData = this.filterItems(editConfig, BagConfig.BagConfigInfo.goods_item_info);
-        } else if (id === TabTypeIds.ShoSuitTotal) {
-            this._itemsData = this.filterItems(editConfig, BagConfig.BagConfigInfo.goods_item_info);
-            this._suitItemsData = BagConfig.filterSuitData();
+            if (id === TabTypeIds.ShoSuitTotal) {
+                this._suitItemsData = BagConfig.filterSuitData();
+            }
         }
-        
     }
 
     private filterItems(clothingConfigs: ClothingInfo[], goodsItems: GoodsItemInfo[]): ClothingInfo[] {
@@ -99,22 +99,42 @@ export class ShopStoreView extends BaseView {
     public async updateData(id: TabTypeIds) {
         this._curTabType = id;
         await this.getBuildItems(id);
+        this.toggleLists();
+        this.updateListItems();
+    }
+
+    private toggleLists() {
         const isSuit = this._curTabType === TabTypeIds.ShoSuitTotal;
         this.suit_list.node.active = isSuit;
         this.store_list.node.active = !isSuit;
-        if (isSuit) {
+    }
+
+    private updateListItems() {
+        if (this._curTabType === TabTypeIds.ShoSuitTotal) {
             this.suit_list.numItems = this._suitItemsData.length;
         } else {
             this.store_list.numItems = this._itemsData.length;
-            this._shopPlayerView.shopClothing = this._shopClothing;
-            this._shopPlayerView.updateClothingStatus();
             this.updateSelectProps();
         }
+        this._shopPlayerView.shopClothing = this._shopClothing;
+        this._shopPlayerView.updateClothingStatus();
     }
 
     private onShopBuyStore(info: BuyStoreInfo) {
         this.clothingInfo = info;
         BagServer.reqShopItemBuy(info.ids, info.nums);
+    }
+
+    private onShopBuyDetail(data: CothingSuitInfo) {
+        data.items.forEach(item => {
+            const clothInfo = this._itemsData.find(dinfo => dinfo.id === item.id);
+            if (clothInfo) {
+                const clothing = this.findByType(clothInfo.type);
+                clothing.userClothes = clothInfo.id;
+                this._shopPlayerView.updatePlayerProps(this._shopClothing, clothInfo.id);
+            }
+        });
+        this._shopPlayerView.onRoleClick();
     }
 
     private onShopItemBuy(data: any) {
@@ -133,46 +153,55 @@ export class ShopStoreView extends BaseView {
 
     public onLoadShopStoreGrid(item: Node, idx: number) {
         const itemScript = item.getComponent(ShopStoreItem);
-        const data = this._itemsData[idx];
-        itemScript.initData(data, this._shopClothing);
+        if (itemScript) {
+            const data = this._itemsData[idx];
+            itemScript.initData(data, this._shopClothing);
+        }
     }
 
     public onShopStoreGridSelected(item: Node, selectedId: number, lastSelectedId: number, val: number) {
         this.handleGridSelection(item, selectedId, this._itemsData, (info) => {
-            let clothing = this.findByType(info.type);
-            let script = item.getComponent(ShopStoreItem);
-            let rightStatus = script.getRightStatus();
-            if (rightStatus) {
-                script.changeRightActive();
-                clothing.userClothes = null;
-                this._shopPlayerView.unInstallPlayerProps(this._shopClothing, info.type);
-            } else {
-                clothing.userClothes = info.id;
-                this.updateSelectProps();
-                this._shopPlayerView.updatePlayerProps(this._shopClothing, info.id);
+            const clothing = this.findByType(info.type);
+            if (clothing) {
+                const script = item.getComponent(ShopStoreItem);
+                if (script) {
+                    const rightStatus = script.getRightStatus();
+                    if (rightStatus) {
+                        script.changeRightActive();
+                        clothing.userClothes = null;
+                        this._shopPlayerView.unInstallPlayerProps(this._shopClothing, info.type);
+                    } else {
+                        clothing.userClothes = info.id;
+                        this.updateSelectProps();
+                        this._shopPlayerView.updatePlayerProps(this._shopClothing, info.id);
+                    }
+                }
             }
         });
     }
 
     public onLoadSuitStoreGrid(item: Node, idx: number) {
         const itemScript = item.getComponent(ShopSuitItem);
-        const data = this._suitItemsData[idx];
-        itemScript.initData(data, this._shopClothing);
+        if (itemScript) {
+            const data = this._suitItemsData[idx];
+            itemScript.initData(data, this._shopClothing);
+        }
     }
 
     public onShopSuitGridSelected(item: Node, selectedId: number, lastSelectedId: number, val: number) {
         this.handleGridSelection(item, selectedId, this._suitItemsData, (data) => {
-            const suitExist = BagConfig.isExistGoodsInPackage(data.items);
-            if (suitExist) {
+            if (BagConfig.isExistGoodsInPackage(data.items)) {
                 return;
             }
-            let script = item.getComponent(ShopSuitItem);
-            let rightStatus = script.getRightStatus();
-            if (rightStatus) {
-                this.handleSuitDeselection(data);
-                script.changeRightActive();
-            } else {
-                this.handleSuitSelection(data);
+            const script = item.getComponent(ShopSuitItem);
+            if (script) {
+                const rightStatus = script.getRightStatus();
+                if (rightStatus) {
+                    this.handleSuitDeselection(data);
+                    script.changeRightActive();
+                } else {
+                    this.handleSuitSelection(data);
+                }
             }
         });
     }
@@ -188,24 +217,29 @@ export class ShopStoreView extends BaseView {
     }
 
     private handleSuitDeselection(data: CothingSuitInfo) {
-        for (const item of data.items) {
+        data.items.forEach(item => {
             const clothInfo = this._itemsData.find(dinfo => dinfo.id === item.id);
-            let clothing = this.findByType(clothInfo.type);
-            clothing.userClothes = null;
-            this._shopPlayerView.unInstallPlayerProps(this._shopClothing, clothInfo.id);
-        }
+            if (clothInfo) {
+                const clothing = this.findByType(clothInfo.type);
+                if (clothing) {
+                    clothing.userClothes = null;
+                    this._shopPlayerView.unInstallPlayerProps(this._shopClothing, clothInfo.id);
+                }
+            }
+        });
     }
 
     private handleSuitSelection(data: CothingSuitInfo) {
-        for (const item of data.items) {
-            const isExist = BagConfig.isExistInPackage(item.id.toString());
-            if (!isExist) {
-                const clothInfo = this._itemsData.find(dinfo => dinfo.id === item.id);
-                let clothing = this.findByType(clothInfo.type);
-                clothing.userClothes = clothInfo.id;
-                this._shopPlayerView.updatePlayerProps(this._shopClothing, clothInfo.id);
+        data.items.forEach(item => {
+            const clothInfo = this._itemsData.find(dinfo => dinfo.id === item.id);
+            if (clothInfo) {
+                const clothing = this.findByType(clothInfo.type);
+                if (clothing) {
+                    clothing.userClothes = clothInfo.id;
+                    this._shopPlayerView.updatePlayerProps(this._shopClothing, clothInfo.id);
+                }
             }
-        }
+        });
         this.updateSuitSelectProps(data);
     }
 
@@ -216,7 +250,7 @@ export class ShopStoreView extends BaseView {
     }
 
     private updateSelectProps() {
-        let shopClothingIds = Object.values(this._shopClothing)
+        const shopClothingIds = Object.values(this._shopClothing)
             .map(item => item.userClothes)
             .filter((id): id is number => isValid(id));
         this.updateListSelection(this.store_list, (script) => {
@@ -229,10 +263,8 @@ export class ShopStoreView extends BaseView {
         for (let i = 0; i < total; i++) {
             const node = list.getItemByListId(i);
             const script = node.getComponent(ShopStoreItem) || node.getComponent(ShopSuitItem);
-            if (predicate(script)) {
-                script.updateRightActive(true);
-            } else {
-                script.updateRightActive(false);
+            if (script) {
+                script.updateRightActive(predicate(script));
             }
         }
     }

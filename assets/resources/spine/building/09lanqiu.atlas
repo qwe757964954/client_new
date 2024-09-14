@@ -1,0 +1,118 @@
+
+09lanqiu.png
+size: 200,122
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+09lq_0
+  rotate: false
+  xy: 174, 28
+  size: 19, 22
+  orig: 19, 22
+  offset: 0, 0
+  index: -1
+09lq_1
+  rotate: false
+  xy: 172, 16
+  size: 13, 10
+  orig: 13, 10
+  offset: 0, 0
+  index: -1
+09lq_10
+  rotate: true
+  xy: 146, 18
+  size: 14, 11
+  orig: 14, 11
+  offset: 0, 0
+  index: -1
+09lq_11
+  rotate: true
+  xy: 173, 94
+  size: 26, 25
+  orig: 26, 25
+  offset: 0, 0
+  index: -1
+09lq_12
+  rotate: true
+  xy: 128, 6
+  size: 12, 11
+  orig: 12, 11
+  offset: 0, 0
+  index: -1
+09lq_2
+  rotate: false
+  xy: 128, 34
+  size: 44, 39
+  orig: 44, 39
+  offset: 0, 0
+  index: -1
+09lq_3
+  rotate: true
+  xy: 141, 3
+  size: 13, 9
+  orig: 13, 9
+  offset: 0, 0
+  index: -1
+09lq_4
+  rotate: true
+  xy: 187, 16
+  size: 10, 9
+  orig: 10, 9
+  offset: 0, 0
+  index: -1
+09lq_5
+  rotate: false
+  xy: 174, 52
+  size: 21, 21
+  orig: 21, 21
+  offset: 0, 0
+  index: -1
+09lq_6
+  rotate: true
+  xy: 173, 75
+  size: 17, 25
+  orig: 17, 25
+  offset: 0, 0
+  index: -1
+09lq_7
+  rotate: true
+  xy: 159, 8
+  size: 11, 10
+  orig: 11, 10
+  offset: 0, 0
+  index: -1
+09lq_8
+  rotate: true
+  xy: 128, 75
+  size: 45, 43
+  orig: 45, 43
+  offset: 0, 0
+  index: -1
+09lq_9
+  rotate: false
+  xy: 159, 21
+  size: 11, 11
+  orig: 11, 11
+  offset: 0, 0
+  index: -1
+caochang_10
+  rotate: false
+  xy: 2, 2
+  size: 124, 118
+  orig: 124, 118
+  offset: 0, 0
+  index: -1
+caochang_8
+  rotate: false
+  xy: 128, 20
+  size: 16, 12
+  orig: 16, 12
+  offset: 0, 0
+  index: -1
+caochang_9
+  rotate: false
+  xy: 128, 20
+  size: 16, 12
+  orig: 16, 12
+  offset: 0, 0
+  index: -1

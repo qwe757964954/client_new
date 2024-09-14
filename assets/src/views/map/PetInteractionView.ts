@@ -1,4 +1,4 @@
-import { _decorator, color, Label, Node, Sprite, SpriteFrame, tween } from 'cc';
+import { _decorator, color, Label, Layers, Node, sp, Sprite, SpriteFrame, tween, Vec3 } from 'cc';
 import { AlertParam } from '../../config/ClassConfig';
 import { EventType } from '../../config/EventType';
 import { PetInteractionInfo, PetInteractionType } from '../../config/PetConfig';
@@ -8,6 +8,7 @@ import { DataMgr } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
 import { ViewsMgr } from '../../manager/ViewsManager';
 import { s2cPetInfoRep, s2cPetInteraction, s2cPetUpgrade } from '../../models/NetModel';
+import { PetModel } from '../../models/PetModel';
 import { RoleDataModel } from '../../models/RoleDataModel';
 import { User } from '../../models/User';
 import { InterfacePath } from '../../net/InterfacePath';
@@ -15,6 +16,8 @@ import { ServiceMgr } from '../../net/ServiceManager';
 import { BaseComponent } from '../../script/BaseComponent';
 import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
+import { NodeUtil } from '../../util/NodeUtil';
+import { TimeOutBool } from '../../util/TimeOutBool';
 import { ToolUtil } from '../../util/ToolUtil';
 import { PetInfoView } from './PetInfoView';
 const { ccclass, property } = _decorator;
@@ -47,12 +50,18 @@ export class PetInteractionView extends BaseComponent {
     public imgMood: Sprite = null;//心情img
     @property(Sprite)
     public img: Sprite = null;//互动img
+    @property(PetModel)
+    public petModel: PetModel = null;//宠物
+    @property(sp.Skeleton)
+    public sp: sp.Skeleton = null;//动画
 
     private _pet: RoleDataModel = null;//宠物
     private _data: PetInteractionInfo[] = null;//数据
     private _type: PetInteractionType = null;//类型
     private _removeCall: Function = null;//移除回调
     private _interactionInfo: PetInteractionInfo = null;//互动信息
+    private _repBool: TimeOutBool = new TimeOutBool(2000);//互动超时
+    private _moodScore: number = 0;//心情分
 
     onLoad() {
         this.initEvent();
@@ -89,9 +98,17 @@ export class PetInteractionView extends BaseComponent {
         this.frame.active = false;
         // this.showTye(PetInteractionType.eat);
         this._pet = pet;
-
         this.btnInfo.active = pet.userID == User.userID;
 
+        this.petModel.init(pet.roleID, pet.level);
+        this.petModel.show(true);
+        NodeUtil.setLayerRecursively(this.petModel.node, Layers.Enum.UI_2D);
+        this.fixPetSize();
+        this.petModel.show(false);
+
+        if (pet.userID == User.userID) {
+            this._moodScore = User.moodScore;
+        }
         this.onMoodScoreUpdate();
         ServiceMgr.buildingService.reqPetInfo(pet.userID);
     }
@@ -130,18 +147,24 @@ export class PetInteractionView extends BaseComponent {
         if (img) LoadManager.loadSprite(propInfo.png, img);
         CCUtil.offTouch(item);
         CCUtil.onTouch(item, () => {
-            console.log("onTouch", data.type, data.id);
+            console.log("onTouch", data.type, data.id, this._moodScore);
+            if (this._repBool.value) return;
             if (!User.checkItems([{ id: data.id, num: 1 }], new AlertParam(TextConfig.Item_Condition_Error, TextConfig.Item_Condition_Error2))) {
                 return;
             }
+            if (this._moodScore >= 100) {
+                ViewsMgr.showAlert(TextConfig.PetInteraction_Tip2);
+                return;
+            }
+            this._repBool.value = true;
             this._interactionInfo = data;
             this.img.node.setWorldPosition(img.node.worldPosition);
-            ViewsMgr.showWaiting();
             ServiceMgr.buildingService.reqPetInteraction(data.id, this._pet.userID);
         });
     }
     /**关闭按钮 */
     onCloseClick() {
+        this._pet.isActive = true;
         if (this._removeCall) this._removeCall();
         this.node.destroy();
     }
@@ -156,6 +179,8 @@ export class PetInteractionView extends BaseComponent {
         this.plBtn.active = false;
         this.frame.active = true;
         this.bg.active = true;
+        this._pet.isActive = false;
+        this.petModel.show(true);
         this.showTye(type);
     }
     /**类型按钮 */
@@ -169,8 +194,9 @@ export class PetInteractionView extends BaseComponent {
             this.node.active = false;
             this._pet.isActive = false;
             node.getComponent(PetInfoView).init(this._pet.roleID, this._pet.level, () => {
-                this.node.active = true;
-                this._pet.isActive = true;
+                // this.node.active = true;
+                // this._pet.isActive = true;
+                this.onCloseClick();
             });
         });
     }
@@ -185,31 +211,41 @@ export class PetInteractionView extends BaseComponent {
             return;
         }
         let petInfo = data.pet_info;
-        User.moodScore = petInfo.mood;
+        this._moodScore = petInfo.mood;
+        this.onMoodScoreUpdate();
     }
     /**心情分更新 */
     onMoodScoreUpdate() {
-        this.labelMood.string = User.moodScore.toString();
-        let config = DataMgr.getMoodConfig(User.moodScore);
+        let score = this._moodScore;
+        this.labelMood.string = score.toString();
+        let config = DataMgr.getMoodConfig(score);
         if (config) {
             LoadManager.loadSprite(ToolUtil.getRandomItem(config.png), this.imgMood);
         }
     }
     /**宠物升级 */
-    onRepPetUpgrade(data: s2cPetUpgrade) {
+    private onRepPetUpgrade(data: s2cPetUpgrade) {
         if (200 != data.code) {
             return;
         }
+        this.petModel.updateLevel(data.level);
+        this.fixPetSize();
     }
     /**宠物互动 */
-    onRepPetInteraction(data: s2cPetInteraction) {
-        ViewsMgr.removeWaiting();
+    private onRepPetInteraction(data: s2cPetInteraction) {
+        this._repBool.clearTimer();
         if (200 != data.code) {
             ViewsMgr.showAlert(data.msg);
             return;
         }
         let petInfo = data.pet_info;
-        User.moodScore = petInfo.mood;
+        this._moodScore = petInfo.mood;
+        if (petInfo.user_id == User.userID) {
+            User.moodScore = petInfo.mood;
+        } else {
+            this.onMoodScoreUpdate();
+        }
+
 
         let propInfo = DataMgr.getItemInfo(this._interactionInfo.id);
         LoadManager.loadSprite(propInfo.png, this.img).then(() => {
@@ -217,10 +253,25 @@ export class PetInteractionView extends BaseComponent {
         });
         tween(this.img.node).to(0.5, { worldPosition: this.node.worldPosition }).call(() => {
             this.img.node.active = false;
-            ViewsMgr.showTipSmall(ToolUtil.replace(TextConfig.PetMood_Add_Tip, this._interactionInfo.score), this.node);
 
+            this.sp.node.active = true;
+            console.log("onRepPetInteraction", this._interactionInfo.anim);
+            this.sp.setAnimation(0, this._interactionInfo.anim, false);
+            this.sp.setCompleteListener(() => {
+                this.sp.node.active = false;
+                ViewsMgr.showTipSmall(ToolUtil.replace(TextConfig.PetMood_Add_Tip, this._interactionInfo.score), this.node);
+                this._repBool.value = false;
+            });
             this.listView.updateAll();
         }).start();
+    }
+    /**调整宠物大小 */
+    private fixPetSize() {
+        if (this.petModel.level <= 2) {//特殊处理，后面考虑走配置
+            this.petModel.node.scale = new Vec3(1.5, 1.5, 1.5);
+        } else {
+            this.petModel.node.scale = new Vec3(1, 1, 1);
+        }
     }
 }
 

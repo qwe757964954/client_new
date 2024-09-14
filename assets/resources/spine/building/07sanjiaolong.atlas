@@ -1,0 +1,83 @@
+
+07sanjiaolong.png
+size: 493,102
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+sjl01_0
+  rotate: true
+  xy: 2, 4
+  size: 96, 94
+  orig: 96, 94
+  offset: 0, 0
+  index: -1
+sjl01_1
+  rotate: false
+  xy: 402, 39
+  size: 25, 61
+  orig: 25, 61
+  offset: 0, 0
+  index: -1
+sjl01_2
+  rotate: false
+  xy: 429, 45
+  size: 34, 55
+  orig: 34, 55
+  offset: 0, 0
+  index: -1
+sjl01_3
+  rotate: true
+  xy: 247, 4
+  size: 15, 38
+  orig: 15, 38
+  offset: 0, 0
+  index: -1
+sjl01_4
+  rotate: true
+  xy: 170, 6
+  size: 94, 75
+  orig: 94, 75
+  offset: 0, 0
+  index: -1
+sjl01_5
+  rotate: false
+  xy: 402, 2
+  size: 32, 35
+  orig: 32, 35
+  offset: 0, 0
+  index: -1
+sjl01_6
+  rotate: false
+  xy: 465, 75
+  size: 25, 25
+  orig: 25, 25
+  offset: 0, 0
+  index: -1
+sjl01_7
+  rotate: true
+  xy: 464, 5
+  size: 38, 27
+  orig: 38, 27
+  offset: 0, 0
+  index: -1
+weilan_11
+  rotate: false
+  xy: 247, 21
+  size: 153, 79
+  orig: 153, 79
+  offset: 0, 0
+  index: -1
+weilan_8
+  rotate: true
+  xy: 436, 2
+  size: 41, 26
+  orig: 41, 26
+  offset: 0, 0
+  index: -1
+weilan_9
+  rotate: true
+  xy: 98, 4
+  size: 96, 70
+  orig: 96, 70
+  offset: 0, 0
+  index: -1

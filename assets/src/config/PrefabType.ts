@@ -121,6 +121,7 @@ export const PrefabType = {
     ShopBuildView: { path: "shop/ShopBuildView", zindex: Hierarchy.POPUPLAYER, tips: "商城建筑模块" },
     ShopPlayerView: { path: "shop/ShopPlayerView", zindex: Hierarchy.POPUPLAYER, tips: "商店玩家" },
     ShopStoreView: { path: "shop/ShopStoreView", zindex: Hierarchy.POPUPLAYER, tips: "形象商店模块" },
+    ShopPlayerClothing: { path: "shop/ShopPlayerClothing", componentName: "ShopPlayerClothing",zindex: Hierarchy.TIPLAYER, tips: "玩家服装显示" },
     ShopDecorationView: { path: "shop/ShopDecorationView", zindex: Hierarchy.POPUPLAYER, tips: "装饰模块" },
     DebrisAreaView: { path: "shop/DebrisAreaView", zindex: Hierarchy.POPUPLAYER, tips: "碎片区模块" },
     GoodsDetailView: { path: "shop/GoodsDetailView", componentName: "GoodsDetailView", zindex: Hierarchy.TIPLAYER, tips: "商品详情" },
@@ -200,20 +201,20 @@ export const PrefabType = {
     /*********************************************单词本end***********************************************************/
     /*********************************************社交 start***********************************************************/
     FriendsDialogView: { path: "social/FriendsDialogView", componentName: "FriendsDialogView", zindex: Hierarchy.POPUPLAYER, tips: "好友界面" },
-    FriendTalkDialogView: { path: "social/FriendTalkDialogView", componentName: "FriendTalkDialogView", zindex: Hierarchy.TIPLAYER, tips: "好友聊天界面" },
-    FriendApplyView: { path: "social/FriendApplyView", componentName: "FriendApplyView", zindex: Hierarchy.TIPLAYER, tips: "好友申请界面" },
+    FriendTalkDialogView: { path: "social/FriendTalkDialogView", componentName: "FriendTalkDialogView", zindex: Hierarchy.POPUPLAYER, tips: "好友聊天界面" },
+    FriendApplyView: { path: "social/FriendApplyView", componentName: "FriendApplyView", zindex: Hierarchy.POPUPLAYER, tips: "好友申请界面" },
     FriendLeftTabView: { path: "social/FriendLeftTabView", zindex: Hierarchy.POPUPLAYER, tips: "好友tab界面" },
     FriendList: { path: "social/ListViews/FriendList", zindex: Hierarchy.POPUPLAYER, tips: "好友list界面" },
     ApplyList: { path: "social/ListViews/ApplyList", zindex: Hierarchy.POPUPLAYER, tips: "好友apply界面" },
     Blacklist: { path: "social/ListViews/Blacklist", zindex: Hierarchy.POPUPLAYER, tips: "好友Blacklist界面" },
     FriendPlayerInfoView: { path: "social/FriendPlayerInfoView", componentName: "FriendPlayerInfoView", zindex: Hierarchy.TIPLAYER, tips: "好友玩家信息界面" },
-    FriendListView: { path: "social/FriendListView", componentName: "FriendListView", zindex: Hierarchy.TIPLAYER, tips: "好友列表界面" },
-    FriendAddView: { path: "social/FriendAddView", componentName: "FriendAddView", zindex: Hierarchy.TIPLAYER, tips: "好友添加界面" },
+    FriendListView: { path: "social/FriendListView", componentName: "FriendListView", zindex: Hierarchy.POPUPLAYER, tips: "好友列表界面" },
+    FriendAddView: { path: "social/FriendAddView", componentName: "FriendAddView", zindex: Hierarchy.POPUPLAYER, tips: "好友添加界面" },
     FriendMessageView: { path: "social/FriendMessageView", zindex: Hierarchy.POPUPLAYER, tips: "好友消息界面" },
     FriendEmailView: { path: "social/FriendEmailView", zindex: Hierarchy.POPUPLAYER, tips: "好友邮件界面" },
     /*********************************************社交 End*************************************************************/
     /*********************************************背包 start***********************************************************/
-    BagView: { path: "bag/BagView", zindex: Hierarchy.TIPLAYER, tips: "背包界面" },
+    BagView: { path: "bag/BagView", zindex: Hierarchy.POPUPLAYER, tips: "背包界面" },
     BreakdownView: { path: "bag/BreakdownView", zindex: Hierarchy.TIPLAYER, componentName: "BreakdownView", tips: "分解栏" },
     CompositeBagView: { path: "bag/CompositeBagView", zindex: Hierarchy.TIPLAYER, componentName: "CompositeBagView", tips: "合成栏" },
     /*********************************************背包 end***********************************************************/
@@ -235,7 +236,7 @@ export const PrefabType = {
     /*********************************************每周任务 End*************************************************************/
 
     MainNotifyView: { path: "map/MainNotifyView", componentName: "MainNotifyView", zindex: Hierarchy.POPUPLAYER, tips: "任务奖励界面" },
-    MainRightActivity: { path: "map/MainRightActivity", componentName: "MainRightActivity", zindex: Hierarchy.TIPLAYER, tips: "主界面右侧活动" },
+    MainRightActivity: { path: "map/MainRightActivity", componentName: "MainRightActivity", zindex: Hierarchy.POPUPLAYER, tips: "主界面右侧活动" },
     /*********************************************收集 start***********************************************************/
     CollectView: { path: "collect/CollectView", zindex: Hierarchy.POPUPLAYER, tips: "成就徽章" },
     AchievementMedalsView: { path: "collect/AchievementMedalsView", zindex: Hierarchy.POPUPLAYER, tips: "成就徽章" },
@@ -275,7 +276,7 @@ export const PrefabType = {
 
     /*********************************************主题 start***********************************************************/
     SubjectView: { path: "theme/SubjectView", componentName: "SubjectView", zindex: Hierarchy.TIPLAYER, tips: "主题界面" },
-    PracticeView: { path: "theme/PracticeView", componentName: "PracticeView", zindex: Hierarchy.POPUPLAYER, tips: "主题文章列表界面" },
+    PracticeView: { path: "theme/PracticeView", componentName: "PracticeView", zindex: Hierarchy.TIPLAYER, tips: "主题文章列表界面" },
     ArticleView: { path: "theme/ArticleView", componentName: "ArticleView", zindex: Hierarchy.POPUPLAYER, tips: "AI阅读文章列表界面" },
     ComicController: { path: "theme/ComicController", componentName: "ComicController", zindex: Hierarchy.POPUPLAYER, tips: "漫画" },
     ReadArticleView: { path: "theme/ReadArticleView", componentName: "ReadArticleView", zindex: Hierarchy.POPUPLAYER, tips: "读文章" },

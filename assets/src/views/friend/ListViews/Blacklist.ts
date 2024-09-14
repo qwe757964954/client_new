@@ -1,5 +1,5 @@
 import { _decorator, Component, isValid, Node } from 'cc';
-import { UserApplyModel } from '../../../models/FriendModel';
+import { FriendListItemModel } from '../../../models/FriendModel';
 import List from '../../../util/list/List';
 import { BlackListItem } from './BlackListItem';
 const { ccclass, property } = _decorator;
@@ -8,21 +8,21 @@ const { ccclass, property } = _decorator;
 export class Blacklist extends Component {
     @property({ type: List, tooltip: "好友滚动列表" })
     public ListView: List = null;
-    private _applyDataList: UserApplyModel[] = []; //我的好友列表
+    private _DataList: FriendListItemModel[] = []; //我的好友列表
     protected start(): void {
         
     }
     onLoadFriendVertical(item:Node, idx:number){
         let item_script = item.getComponent(BlackListItem);
-        // let friendData: UserApplyModel = this._applyDataList[idx];
-        // item_script.initData(friendData);
+        let friendData: FriendListItemModel = this._DataList[idx];
+        item_script.initData(friendData);
     }
 
-    updateData(friendDatas?: UserApplyModel[]){
+    updateData(friendDatas?: FriendListItemModel[]){
         console.log("updateData  ApplyList....",friendDatas);
-        this._applyDataList = friendDatas;
+        this._DataList = friendDatas;
         this.node.active = true;
-        this.ListView.numItems = 6;
+        this.ListView.numItems = this._DataList.length;
     }
     onFriendVerticalSelected(item:  any, selectedId: number, lastSelectedId: number, val: number) {
         if(!isValid(selectedId) || selectedId < 0 || !isValid(item)){return;}

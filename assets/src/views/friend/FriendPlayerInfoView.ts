@@ -1,15 +1,14 @@
-import { _decorator, Button, Label, Node, Sprite, UITransform } from 'cc';
+import { _decorator, Label, Node, UITransform } from 'cc';
 import { EventType } from '../../config/EventType';
 import { TextConfig } from '../../config/TextConfig';
 import { ItemData } from '../../manager/DataMgr';
 import { ViewsManager } from '../../manager/ViewsManager';
-import { FriendListItemModel, SystemMailItem } from '../../models/FriendModel';
+import { FriendListItemModel, FriendOperationType, SystemMailItem } from '../../models/FriendModel';
 import { BasePopFriend } from '../../script/BasePopFriend';
 import { FdServer } from '../../service/FriendService';
 import CCUtil from '../../util/CCUtil';
 import { EventMgr } from '../../util/EventManager';
 import List from '../../util/list/List';
-import { ObjectUtil } from '../../util/ObjectUtil';
 import { RewardItem } from '../common/RewardItem';
 import { PlayerInfoResources } from './FriendInfo';
 import { ScoreItem } from './ListViews/ScoreItem';
@@ -22,14 +21,11 @@ export class FriendPlayerInfoView extends BasePopFriend {
     @property(Node)
     public roleInfoBox: Node = null; // 角色信息容器
 
-    @property(Node)
-    public msgInfoBox: Node = null; // 消息信息容器
-
     @property(Label)
     public labelName: Label = null; // 名字标签
 
     @property(Label)
-    public labeStatus: Label = null; // 状态标签
+    public labelID: Label = null; // id
 
     @property({ type: Node, tooltip: "角色容器" })
     public roleContainer: Node = null;
@@ -38,16 +34,19 @@ export class FriendPlayerInfoView extends BasePopFriend {
     public petContainer: Node = null;
 
     @property(List)
-    public awardList: List = null; // 奖励列表
+    public badgeList: List = null; // 奖励列表
 
     @property(List)
     public infoList: List = null; // 人物信息
 
     @property(Node)
-    public reciveBtn: Node = null; // 接收按钮
+    public btnHide: Node = null;
 
     @property(Node)
-    public btnHide: Node = null; // 删除好友按钮
+    public deleteBtn: Node = null; // 删除
+
+    @property(Node)
+    public backListBtn: Node = null; // 黑名单
 
     private _data: FriendListItemModel = null;
     private _msgData: SystemMailItem = null;
@@ -64,46 +63,15 @@ export class FriendPlayerInfoView extends BasePopFriend {
         this.showRoleInfo();
     }
 
-    updateMessageData(data: SystemMailItem) {
-        this._msgData = data;
-        this.showMessageInfo();
-    }
-
-    private showRoleInfo() {
-        // this.setActiveView(true);
-        // this.labelName.string = this._data.user_name;
+    private showRoleInfo(): void {
+        const { user_name,friend_id  } = this._data;
+    
+        this.labelName.string = `${user_name}的信息页`;
+        this.labelID.string = `id:${friend_id}`;
+    
         this.loadRoleModel();
         this.loadPetModel();
     }
-
-    private showMessageInfo() {
-        this.setActiveView(false);
-        const fromLabel = this.getChildLabelByName(this.msgInfoBox, "fromTxt");
-        fromLabel.string = this._msgData.title;
-        const msgLabel = this.getChildLabelByName(this.msgInfoBox, "msgTxt");
-        msgLabel.string = this._msgData.content;
-
-        this._propsData = ObjectUtil.convertAwardsToItemData(this._msgData.awards);
-        this.awardList.numItems = this._propsData.length;
-
-        const isReceived = this._msgData.status === 1;
-        this.setButtonState(this.reciveBtn, !isReceived);
-    }
-
-    private setActiveView(showRoleInfo: boolean) {
-        this.roleInfoBox.active = showRoleInfo;
-        this.msgInfoBox.active = !showRoleInfo;
-    }
-
-    private getChildLabelByName(parentNode: Node, name: string): Label {
-        return parentNode.getChildByName(name).getComponent(Label);
-    }
-
-    private setButtonState(buttonNode: Node, isActive: boolean) {
-        buttonNode.getComponent(Sprite).grayscale = !isActive;
-        buttonNode.getComponent(Button).interactable = isActive;
-    }
-
     private async loadRoleModel() {
         this.roleContainer.removeAllChildren();
         const role = await ViewsManager.addRoleToNode(this.roleContainer);
@@ -117,8 +85,9 @@ export class FriendPlayerInfoView extends BasePopFriend {
     }
 
     protected initEvent(): void {
-        // this.registerButtonEvent(this.reciveBtn, this.onReceiveClick);
         this.registerButtonEvent(this.btnHide, this.onHidenClick);
+        this.registerButtonEvent(this.deleteBtn, this.onDeleteClick);
+        this.registerButtonEvent(this.backListBtn, this.onBacklistClick);
     }
 
     private registerButtonEvent(buttonNode: Node, callback: () => void) {
@@ -134,11 +103,13 @@ export class FriendPlayerInfoView extends BasePopFriend {
     }
 
     private onDeleteClick() {
-        FdServer.reqUserDelFriendMessage(this._data.friend_id);
+        FdServer.reqUserDelFriendMessage(this._data.friend_id,FriendOperationType.Delete);
+        this.closePop();
     }
 
-    private onReceiveClick() {
-        FdServer.reqUserSystemAwardGet(this._msgData.sm_id);
+    private onBacklistClick() {
+        FdServer.reqUserDelFriendMessage(this._data.friend_id,FriendOperationType.Blacklist);
+        this.closePop();
     }
 
     onLoadRewardVertical(item: Node, idx: number) {

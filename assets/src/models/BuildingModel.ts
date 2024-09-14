@@ -1,4 +1,5 @@
 import { Color, Graphics, Node, Rect, Sprite, UITransform, Vec2, Vec3, _decorator, sp } from "cc";
+import { ConfirmParam } from "../config/ClassConfig";
 import { EventType } from "../config/EventType";
 import { MapConfig } from "../config/MapConfig";
 import { PrefabType } from "../config/PrefabType";
@@ -106,7 +107,8 @@ const defaultSpAnim = ["animation", "idle", "click"];
 
 //建筑模型
 export class BuildingModel extends BaseModel {
-    private _building: Sprite = null;//建筑
+    private _building: Sprite = null;//建筑节点
+    private _img: Sprite = null;//建筑图片
     private _graphics: Graphics = null;//格子图层
     private _sp: sp.Skeleton = null;//动画
     private _fence: Node = null;//围栏
@@ -255,7 +257,10 @@ export class BuildingModel extends BaseModel {
         this._x = gridInfo.x;
         this._y = gridInfo.y;
         let gridPos = gridInfo.pos;
-        let pos = new Vec3(gridPos.x, gridPos.y - 0.5 * this._height * gridInfo.height, 0);
+        let i = this.width / 2;
+        let j = this.height / 2;
+        // let pos = new Vec3(gridPos.x, gridPos.y - 0.5 * this._height * gridInfo.height, 0);
+        let pos = new Vec3(gridPos.x + (j - i) * 0.5 * gridInfo.width, gridPos.y - (i + j) * 0.5 * gridInfo.height, 0);
         this.pos = pos;
         this.fixImgPos();
         if (!this.isNew && !this._dataGrids) {//初始化已有建筑
@@ -325,7 +330,11 @@ export class BuildingModel extends BaseModel {
     public set isShowBaseColor(isShow: boolean) {
         this._isShowBaseColor = isShow;
         if (this._graphics) {
-            this._graphics.node.active = isShow;
+            if (this._btnView && this._btnView.active) {
+                this._graphics.node.active = true;
+            } else {
+                this._graphics.node.active = isShow;
+            }
         }
         // if (!this._btnView || !this._btnView.active) {
         //     if (isShow) {
@@ -394,6 +403,7 @@ export class BuildingModel extends BaseModel {
         this.topZIndex = true;
         this._node.setSiblingIndex(-1);//放到最高层
         this._graphics.node.active = true;//画图层显示
+        this.drawGridRect();
         this._building.color = new Color(255, 255, 255, 180);//半透明
         if (this._isShowBaseColor) {
             this._building.node.active = true;//建筑显示
@@ -636,7 +646,7 @@ export class BuildingModel extends BaseModel {
             }
         }
         // if (this._editInfo.id != 30) return false;//争对某类建筑测试
-        let transform = this._building.getComponent(UITransform);
+        let transform = this._img.getComponent(UITransform);
         let rect: Rect = new Rect(0, 0, transform.width, transform.height);
         rect.x = -transform.anchorX * transform.width;
         rect.y = -transform.anchorY * transform.height;
@@ -651,17 +661,17 @@ export class BuildingModel extends BaseModel {
         let x = Math.floor(pos.x + transform.anchorX * transform.width);
         let y = Math.floor(pos.y + transform.anchorY * transform.height);
         // console.log("isTouchSelf 2:", x, y);
-        if (Sprite.SizeMode.TRIMMED == this._building.sizeMode) {
-            let spriteFrame = this._building.spriteFrame;
+        if (Sprite.SizeMode.TRIMMED == this._img.sizeMode) {
+            let spriteFrame = this._img.spriteFrame;
             const size = spriteFrame.originalSize;
             const offset = spriteFrame.offset;
             x = x + offset.x + (size.width - rect.width) / 2;
             y = y + offset.y + (size.height - rect.height) / 2;
             // console.log("isTouchSelf 5:", x, y);
         }
-        // let spriteFrame = CaptureUtils.capture(this._building.node);
+        // let spriteFrame = CaptureUtils.capture(this._img.node);
         // let colors = CCUtil.readPixels(spriteFrame, pos.x, pos.y);
-        let colors = CCUtil.readPixel(this._building.spriteFrame, x, y);
+        let colors = CCUtil.readPixel(this._img.spriteFrame, x, y);
         return colors[3] >= 50;
     }
     /** 画格子区域 */
@@ -671,8 +681,12 @@ export class BuildingModel extends BaseModel {
         g.clear();
         let grids = this._grids;
         if (!grids || grids.length < 1) return;
-        let pos0 = grids[0].pos.clone();
-        pos0.y = pos0.y - 0.5 * this._height * grids[0].height;
+        let gridInfo = grids[0];
+        let pos0 = gridInfo.pos.clone();
+        let i = this.width / 2;
+        let j = this.height / 2;
+        pos0.x = pos0.x + (j - i) * 0.5 * gridInfo.width;
+        pos0.y = pos0.y - (i + j) * 0.5 * gridInfo.height;
         let isFill = false;
         grids.forEach(grid => {
             if (grid.isCanBuilding(this)) return;
@@ -707,6 +721,13 @@ export class BuildingModel extends BaseModel {
             g.fill();
         }
     }
+    /**img底图是否显示 */
+    private isImgShow() {
+        let id = this._editInfo.id;
+        if (90 == id || 91 == id || 92 == id || 93 == id || 95 == id || 96 == id)
+            return false;
+        return true;
+    }
     /**显示与否 */
     public show(isShow: boolean, callBack?: Function) {
         if (this._node) {
@@ -724,7 +745,9 @@ export class BuildingModel extends BaseModel {
                 this._node = node;
                 this._node.active = this._isShow;
                 this._node.position = this._pos;
-                this._building = this._node.getComponentInChildren(Sprite);
+                let buildingNode = this._node.getChildByName("Building");
+                this._building = buildingNode.getComponent(Sprite);
+                this._img = this._building.getComponentInChildren(Sprite);
                 this.isFlip = this._isFlip;
                 this.fixImgPos();
                 this._sp = this._node.getComponentInChildren(sp.Skeleton);
@@ -737,10 +760,14 @@ export class BuildingModel extends BaseModel {
                 this.refreshUIView();
                 this.refreshBuildingShow();
 
-                LoadManager.loadSprite(DataMgr.getEditPng(this._editInfo), this._building, true).then(() => {
+                this._img.node.active = this.isImgShow();
+                LoadManager.loadSprite(DataMgr.getEditPng(this._editInfo), this._img, true).then(() => {
                     this._isLoadOver = true;
+                    let size = this._img.getComponent(UITransform).contentSize.clone();
+                    this._building.getComponent(UITransform).setContentSize(size);
                     if (callBack) callBack();
                 });
+
                 let animation = this._editInfo.animation;
                 if (animation && animation.length > 0) {
                     LoadManager.loadSpine(animation, this._sp).then(() => {
@@ -754,13 +781,14 @@ export class BuildingModel extends BaseModel {
 
                         if (this._editInfo.animpos) {
                             this._sp.node.position = this._editInfo.animpos;
-                        } else {
-                            let pos = this._building.node.position.clone();
-                            pos.x = 32;
-                            pos.y = 194;
-                            this._sp.node.position = pos;
-                            console.log("pos", pos.x, pos.y);
                         }
+                        // if (96 == this.editInfo.id) {
+                        //     let pos = this._building.node.position.clone();
+                        //     pos.x = -14;
+                        //     pos.y = 56;
+                        //     this._sp.node.position = pos;
+                        //     console.log("pos", pos.x, pos.y);
+                        // }
                     });
                 }
                 if (null != this._btnViewShowScale) {
@@ -866,7 +894,7 @@ export class BuildingModel extends BaseModel {
         if (this._countdownFrame) {
             this._countdownFrame.init(sec, () => {
                 let str = BuildingState.building == this.buildingState ? TextConfig.Speed_Words_Tip1 : TextConfig.Speed_Words_Tip2;
-                ViewsMgr.showConfirm(str, () => {
+                ViewsMgr.showConfirm(new ConfirmParam(TextConfig.Speed_Words_Tip, str), () => {
                     ServiceMgr.buildingService.reqSpeedWordsGet(this.buildingID);
                 });
             }, () => {

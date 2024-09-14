@@ -2513,17 +2513,18 @@
     "lblRealName": {
       "__id__": 40
     },
-    "kingdom_btn": {
+    "levelTxt": {
+      "__id__": 70
+    },
+    "stateIcon": null,
+    "kingdomBtn": {
       "__id__": 76
     },
-    "exit_btn": {
+    "exitBtn": {
       "__id__": 88
     },
     "friendship": {
       "__id__": 52
-    },
-    "levelTxt": {
-      "__id__": 70
     },
     "_id": ""
   },

@@ -2108,7 +2108,7 @@
   {
     "__type__": "cc.Node",
     "_name": "chat_btn",
-    "_objFlags": 0,
+    "_objFlags": 512,
     "__editorExtras__": {},
     "_parent": {
       "__id__": 1
@@ -2118,7 +2118,7 @@
         "__id__": 87
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 93
@@ -2162,7 +2162,7 @@
   {
     "__type__": "cc.Node",
     "_name": "chat_icon",
-    "_objFlags": 0,
+    "_objFlags": 512,
     "__editorExtras__": {},
     "_parent": {
       "__id__": 86
@@ -2408,7 +2408,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 268.958,
+      "x": 356.471,
       "y": 2.5,
       "z": 0
     },
@@ -2684,7 +2684,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 183.896,
+      "x": 271.409,
       "y": 2.5,
       "z": 0
     },
@@ -2987,6 +2987,12 @@
     },
     "btnAddFriend": {
       "__id__": 110
+    },
+    "kingdomBtn": {
+      "__id__": 98
+    },
+    "chatBtn": {
+      "__id__": 86
     },
     "level_txt": {
       "__id__": 80

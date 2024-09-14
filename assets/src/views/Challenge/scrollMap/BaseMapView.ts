@@ -229,10 +229,10 @@ export abstract class BaseMapView extends BaseView {
 
     private getViewBounds(nodePos: Vec3, visibleSize: Size) {
         return {
-            left: nodePos.x - visibleSize.width,
-            right: nodePos.x + visibleSize.width,
-            top: nodePos.y + visibleSize.height,
-            bottom: nodePos.y - visibleSize.height
+            left: -visibleSize.width,
+            right:  visibleSize.width,
+            top:  visibleSize.height,
+            bottom: - visibleSize.height
         };
     }
 

@@ -1,4 +1,5 @@
-import { _decorator, Label, Node, Rect, Sprite, tween, UIOpacity, UITransform, Vec3 } from 'cc';
+import { _decorator, Label, Node, Rect, Sprite, Tween, tween, UIOpacity, UITransform, Vec3 } from 'cc';
+import { ConfirmParam } from '../config/ClassConfig';
 import { MapConfig } from '../config/MapConfig';
 import { PrefabType } from '../config/PrefabType';
 import { TextConfig } from '../config/TextConfig';
@@ -34,6 +35,7 @@ export class CloudModel extends BaseModel {
     private _timer: number = null;//定时器
     private _uiNodeShow: boolean = true;//是否显示
     private _canUnlock: boolean = false;//是否可以解锁
+    private _tweenAct: Tween<UIOpacity> = null;//半透明动画
     public get unlockTime(): number {
         return this._unlockTime;
     }
@@ -162,22 +164,29 @@ export class CloudModel extends BaseModel {
         } else {
             this._isUnlock = true;
             this.refreshUIView();
-            this.showOpacityAnim();
+            // this.showOpacityAnim();
         }
     }
     /**半透明动画 */
     private showOpacityAnim() {
+        if (this._tweenAct) return;
         let uiOpacity = this._img?.getComponent(UIOpacity);
         if (!uiOpacity) return;
         let time = 1.0;
         uiOpacity.opacity = 128;
-        tween(uiOpacity)
+        this._tweenAct = tween(uiOpacity)
             .to(time, { opacity: 255 })
             .delay(0.5)
             .to(time, { opacity: 128 })
             .union()
             .repeatForever()
             .start();
+    }
+    /**停止半透明动画 */
+    private stopOpacityAnim() {
+        if (!this._tweenAct) return;
+        this._tweenAct.stop();
+        this._tweenAct = null;
     }
     /**显示UI */
     public showUIView() {
@@ -198,6 +207,7 @@ export class CloudModel extends BaseModel {
                     if (this._imgClock) this._imgClock.active = false;
                     if (this._unlockNode) this._unlockNode.active = true;
                     if (this._btnSpeed) this._btnSpeed.active = false;
+                    this.showOpacityAnim();
                 } else {
                     CCUtil.setNodeOpacity(this._img?.node, 128);
                     if (this._label) this._label.node.active = true;
@@ -214,6 +224,7 @@ export class CloudModel extends BaseModel {
                 if (this._btnSpeed) this._btnSpeed.active = false;
             }
         } else {
+            this.stopOpacityAnim();
             CCUtil.setNodeOpacity(this._img?.node, 255);
             if (this._label) this._label.node.active = false;
             if (this._imgClock) this._imgClock.active = false;
@@ -273,6 +284,7 @@ export class CloudModel extends BaseModel {
                 this._imgClock = this._node.getChildByName("img_clock");
                 this._btnSpeed = this._node.getChildByName("btnSpeed");
                 CCUtil.onTouch(this._btnSpeed, this.onCloudClick, this);
+                CCUtil.onTouch(this._unlockNode, this.onCloudClick, this);
 
                 // let transform = this._img.getComponent(UITransform);
                 // let pos = new Vec3(0, transform.height, 0);
@@ -316,7 +328,7 @@ export class CloudModel extends BaseModel {
             //     ServiceMgr.buildingService.reqCloudUnlock([ToolUtil.replace(TextConfig.Land_Key, this._x, this._y)]);
             // });
         } else {
-            ViewsMgr.showConfirm(TextConfig.Speed_Words_Tip4, () => {
+            ViewsMgr.showConfirm(new ConfirmParam(TextConfig.Speed_Words_Tip, TextConfig.Speed_Words_Tip4), () => {
                 ServiceMgr.buildingService.reqSpeedWordsGetEx(ToolUtil.replace(TextConfig.Land_Key, this._x, this._y));
             });
         }

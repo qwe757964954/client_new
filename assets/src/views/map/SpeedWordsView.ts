@@ -1,4 +1,5 @@
 import { _decorator, Label, Node, Sprite } from 'cc';
+import { ConfirmParam } from '../../config/ClassConfig';
 import { TextConfig } from '../../config/TextConfig';
 import { LoadManager } from '../../manager/LoadManager';
 import { RemoteSoundMgr } from '../../manager/RemoteSoundManager';
@@ -334,7 +335,7 @@ export class SpeedWordsView extends BaseComponent {
                 str = TextConfig.Speed_Words_Exit_Tip3;
             }
         }
-        ViewsMgr.showConfirm(str, () => {
+        ViewsMgr.showConfirm(new ConfirmParam(TextConfig.Speed_Words_Exit_Tip, str), () => {
             this.endAnswer();
         });
     }

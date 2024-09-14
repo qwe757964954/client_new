@@ -1,0 +1,76 @@
+
+06jianlong.png
+size: 178,391
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+jl01_0
+  rotate: false
+  xy: 2, 123
+  size: 94, 77
+  orig: 94, 77
+  offset: 0, 0
+  index: -1
+jl01_1
+  rotate: true
+  xy: 68, 22
+  size: 21, 57
+  orig: 21, 57
+  offset: 0, 0
+  index: -1
+jl01_2
+  rotate: false
+  xy: 146, 37
+  size: 30, 62
+  orig: 30, 62
+  offset: 0, 0
+  index: -1
+jl01_3
+  rotate: false
+  xy: 79, 45
+  size: 65, 54
+  orig: 65, 54
+  offset: 0, 0
+  index: -1
+jl01_4
+  rotate: false
+  xy: 2, 55
+  size: 75, 66
+  orig: 75, 66
+  offset: 0, 0
+  index: -1
+jl01_5
+  rotate: true
+  xy: 127, 12
+  size: 23, 27
+  orig: 23, 27
+  offset: 0, 0
+  index: -1
+jl01_6
+  rotate: false
+  xy: 2, 2
+  size: 64, 51
+  orig: 64, 51
+  offset: 0, 0
+  index: -1
+weilan_12
+  rotate: true
+  xy: 101, 101
+  size: 108, 74
+  orig: 108, 74
+  offset: 0, 0
+  index: -1
+weilan_14
+  rotate: true
+  xy: 101, 211
+  size: 178, 75
+  orig: 178, 75
+  offset: 0, 0
+  index: -1
+weilan_15
+  rotate: true
+  xy: 2, 202
+  size: 187, 97
+  orig: 187, 97
+  offset: 0, 0
+  index: -1

@@ -1240,8 +1240,11 @@
             "type": 3,
             "baseColor": "#91e353b4",
             "png": "caochang05_yumaoqiu",
-            "animation": "",
-            "animpos": [],
+            "animation": "08yumaoqiu",
+            "animpos": [
+                0,
+                112
+            ],
             "description": "",
             "function": ""
         },
@@ -1257,8 +1260,11 @@
             "type": 3,
             "baseColor": "#91e353b4",
             "png": "caochang08_zuqiu",
-            "animation": "",
-            "animpos": [],
+            "animation": "10zuqiu",
+            "animpos": [
+                0,
+                154
+            ],
             "description": "",
             "function": ""
         },
@@ -1274,8 +1280,11 @@
             "type": 3,
             "baseColor": "#91e353b4",
             "png": "caochang10_lanqiu",
-            "animation": "",
-            "animpos": [],
+            "animation": "09lanqiu",
+            "animpos": [
+                0,
+                192
+            ],
             "description": "",
             "function": ""
         },
@@ -1546,8 +1555,11 @@
             "type": 3,
             "baseColor": "#91e353b4",
             "png": "konglong02_xunlong",
-            "animation": "",
-            "animpos": [],
+            "animation": "05hongseshicaolong",
+            "animpos": [
+                0,
+                36
+            ],
             "description": "",
             "function": ""
         },
@@ -1563,8 +1575,11 @@
             "type": 3,
             "baseColor": "#91e353b4",
             "png": "konglong02_yilong",
-            "animation": "",
-            "animpos": [],
+            "animation": "04yilong",
+            "animpos": [
+                -6,
+                42
+            ],
             "description": "",
             "function": ""
         },
@@ -1580,8 +1595,11 @@
             "type": 3,
             "baseColor": "#91e353b4",
             "png": "konglong02_youlong",
-            "animation": "",
-            "animpos": [],
+            "animation": "02xiaolong",
+            "animpos": [
+                0,
+                36
+            ],
             "description": "",
             "function": ""
         },
@@ -1597,8 +1615,11 @@
             "type": 3,
             "baseColor": "#91e353b4",
             "png": "konglong03_bawanglong",
-            "animation": "",
-            "animpos": [],
+            "animation": "03baolong",
+            "animpos": [
+                -14,
+                50
+            ],
             "description": "",
             "function": ""
         },
@@ -1631,8 +1652,11 @@
             "type": 3,
             "baseColor": "#91e353b4",
             "png": "konglong03_jianlong",
-            "animation": "",
-            "animpos": [],
+            "animation": "06jianlong",
+            "animpos": [
+                -24,
+                52
+            ],
             "description": "",
             "function": ""
         },
@@ -1648,8 +1672,11 @@
             "type": 3,
             "baseColor": "#91e353b4",
             "png": "konglong03_sanjiaolong",
-            "animation": "",
-            "animpos": [],
+            "animation": "07sanjiaolong",
+            "animpos": [
+                -14,
+                56
+            ],
             "description": "",
             "function": ""
         },
@@ -1682,8 +1709,11 @@
             "type": 2,
             "baseColor": "#91e353b4",
             "png": "konglong05_longtouwu",
-            "animation": "",
-            "animpos": [],
+            "animation": "01wuzi",
+            "animpos": [
+                0,
+                140
+            ],
             "description": "",
             "function": ""
         },

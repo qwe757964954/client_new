@@ -1,4 +1,4 @@
-import { _decorator, Component, easing, instantiate, Layout, Node, Prefab, sp, tween, UITransform, Vec3 } from 'cc';
+import { _decorator, Component, easing, instantiate, Node, Prefab, sp, tween, Vec3 } from 'cc';
 import { ItemData } from '../../manager/DataMgr';
 import { LoadManager } from '../../manager/LoadManager';
 import CCUtil from '../../util/CCUtil';
@@ -24,7 +24,9 @@ export class RewardView extends Component {
     @property(Node)
     public frame: Node = null;//奖励层
     @property(Node)
-    public layout: Node = null;//奖励列表
+    public layout: Node = null;//奖励列表（一行）
+    @property(Node)
+    public layout2: Node = null;//奖励列表（两行）
     @property(Prefab)
     public rewardItem: Prefab = null;//奖励模版
     @property(sp.Skeleton)
@@ -71,9 +73,10 @@ export class RewardView extends Component {
         }
 
         let length = Math.min(data.length, 12);
+        let layout = length > 6 ? this.layout2 : this.layout;
         for (let i = 0; i < length; i++) {
             let item = instantiate(this.rewardItem);
-            this.layout.addChild(item);
+            layout.addChild(item);
             item.getComponent(RewardItem).init(data[i]);
 
             let index = i;
@@ -86,12 +89,6 @@ export class RewardView extends Component {
                 }
             }).start();
         }
-        this.layout.getComponent(Layout).updateLayout();
-        let layout_width = (this.layout.getComponent(UITransform).height + this.layout.getComponent(Layout).spacingX) * length;
-        if (layout_width > Layout_Max_Width) {
-            layout_width = Layout_Max_Width;
-        }
-        this.layout.getComponent(UITransform).width = layout_width;
         LoadManager.loadSpine(spConfig2.path, this.spYanHua).then(() => {
             this.spYanHua.setAnimation(0, spConfig2.anim[0], true);
         });

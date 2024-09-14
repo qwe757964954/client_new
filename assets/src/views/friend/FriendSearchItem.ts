@@ -1,5 +1,6 @@
 import { _decorator, Component, Label, Node, Sprite } from 'cc';
 import { LoadManager } from '../../manager/LoadManager';
+import { SceneMgr } from '../../manager/SceneMgr';
 import { FriendListItemModel } from '../../models/FriendModel';
 import { FdServer } from '../../service/FriendService';
 import CCUtil from '../../util/CCUtil';
@@ -23,6 +24,12 @@ export class FriendSearchItem extends Component {
     @property({ type: Node, tooltip: "添加朋友按钮" })
     btnAddFriend: Node = null;
 
+    @property({ type: Node, tooltip: "王国分" })
+    kingdomBtn: Node = null;
+
+    @property({ type: Node, tooltip: "聊天" })
+    chatBtn: Node = null;
+
     @property(Label)
     public level_txt:Label = null;
 
@@ -34,6 +41,7 @@ export class FriendSearchItem extends Component {
 
     private registerEvents(): void {
         CCUtil.onBtnClick(this.btnAddFriend, this.onAddClick.bind(this));
+        CCUtil.onBtnClick(this.kingdomBtn, this.onKingdomClick.bind(this));
     }
 
     private async loadAvatar(avatarId: number): Promise<void> {
@@ -60,5 +68,9 @@ export class FriendSearchItem extends Component {
         // 添加朋友的逻辑
         console.log(`Add friend clicked for: ${this._data.user_id}`);
         FdServer.reqUserFriendAdd(this._data.user_id);
+    }
+
+    private onKingdomClick(){
+        SceneMgr.loadMainScene(this._data.user_id);
     }
 }

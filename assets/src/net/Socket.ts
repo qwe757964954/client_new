@@ -84,14 +84,28 @@ export class Socket {
             this.openFun();
         }
     }
+    private arrayBufferToString(buffer: ArrayBuffer): string {
+        // let start = performance.now();
+        // let decoder = new TextDecoder('utf-8');//android转换失败
+        // let data = decoder.decode(buffer);
+        let byteArray = new Uint8Array(buffer);
+        let chunkSize = 65535; // 分块大小，可以根据需要调整
+        let data = '';
+        for (let i = 0; i < byteArray.length; i += chunkSize) {
+            let chunk = byteArray.slice(i, i + chunkSize);
+            data += String.fromCharCode.apply(null, chunk);
+        }
+        // let end = performance.now();
+        // console.log("arrayBufferToString", end - start);
+        return data;
+    }
     private onMessage(msg) {
         // console.log("onMessage", msg);
         this.noRecvMsgTimes = 0;
         let buffer: any = msg.data;
         if (!buffer) { return; }
         if (buffer instanceof ArrayBuffer) {
-            // console.log("onMessage data ArrayBuffer");
-            let data = String.fromCharCode.apply(null, new Uint8Array(buffer));
+            let data = this.arrayBufferToString(buffer);
             if (this.recvFun) {
                 this.recvFun(data);
             }

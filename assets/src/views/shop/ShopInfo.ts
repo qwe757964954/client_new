@@ -86,3 +86,5 @@ export interface BuyStoreInfo{
     ids:number[];
     nums:number[];
 }
+
+export type ShopClothingMap = { [key in TabTypeIds]?: ShopClothingInfo };

@@ -33,6 +33,8 @@ export const InterfacePath = {
     c2sCloudUnlockSpeed: "2033",//乌云解锁加速
     c2sEnterIsland: "2034",//进入小岛
     c2sExitIsland: "2035",//退出小岛
+    c2sIslandGiveALike: "2036",//小岛点赞
+    c2sIslandUnGiveALike: "2037",//小岛取消点赞
 
     s2cAccountLogout: "10001",//登录被顶号返回
     s2cItemUpdate: "10002",//物品更新
@@ -46,14 +48,6 @@ export const InterfacePath = {
     c2sPetUpgrade: "2103", //宠物升级
     c2sPetGetReward: "2104", //宠物奖励领取
     /***********************************************宠物相关 end*********************************************/
-
-    /***********************************以上是新消息********************************************/
-    Account_Step: "Account.Step",
-    Account_Info: "Account.Info",
-    Account_Init: "Account.Init",
-    Prop_MyList: "Prop.MyList",    // 我的道具列表
-    Account_EditRealName: "Account.EditRealName",  // 修改名字
-    Account_StudyWord: "Account.StudyWord",  // 学生通关单词
 
     //大冒险学习模式相关
     Island_Status: "3100",  // 大冒险岛屿状态

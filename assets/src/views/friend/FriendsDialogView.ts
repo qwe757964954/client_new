@@ -2,7 +2,7 @@ import { _decorator, Label, Node, Prefab } from 'cc';
 import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { ViewsMgr } from '../../manager/ViewsManager';
-import { FriendListItemModel, SystemMailItem, SystemMailListResponse, UserFriendData, UserSystemAwardResponse } from '../../models/FriendModel';
+import { FriendListItemModel, SystemMailListResponse, UserFriendData, UserSystemAwardResponse } from '../../models/FriendModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BasePopRight } from '../../script/BasePopRight';
 import { FdServer } from '../../service/FriendService';
@@ -61,7 +61,6 @@ export class FriendsDialogView extends BasePopRight {
             [NetNotify.Classification_UserFriendSearch, this.onSearchFriendResult],
             [NetNotify.Classification_UserDelFriendMessage, this.onUserDelFriendMessage],
             [NetNotify.Classification_UserSystemMailList, this.onUserSystemMailList],
-            [NetNotify.Classification_UserSystemMailDetail, this.onUserSystemMailDetail],
             [NetNotify.Classification_UserSystemAwardGet, this.onUserSystemAwardGet],
         ]);
     }
@@ -110,10 +109,6 @@ export class FriendsDialogView extends BasePopRight {
         ViewsMgr.showRewards(propsData);
         FdServer.reqUserSystemMailLis();
     }
-    private async onUserSystemMailDetail(data:SystemMailItem){
-        console.log("onUserSystemMailDetail...",data);
-        this._rightPlayerInfo.updateMessageData(data);
-    }
     hidenAllFriendView(){
         this._fListView.node.active = false;
         this._fAddView.node.active = false;
@@ -132,13 +127,11 @@ export class FriendsDialogView extends BasePopRight {
         CCUtil.onBtnClick(this.closeBtn, this.onCloseView.bind(this));
     }
     initData() {
-        FdServer.reqUserFriendList();
         FdServer.reqUserFriendApplyList();
         FdServer.reqUserSystemMailLis();
         FdServer.reqUserRecommendFriendList();
     }
     onUserDelFriendMessage(response: any){
-        FdServer.reqUserFriendList();
     }
     onCloseView() {
         this.closePop();

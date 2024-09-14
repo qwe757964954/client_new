@@ -236,7 +236,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": -0.944,
-      "y": -92.121,
+      "y": 133.527,
       "z": 0
     },
     "_lrot": {
@@ -356,8 +356,8 @@
     ],
     "value": {
       "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
+      "x": -0.001,
+      "y": -270.925,
       "z": 0
     }
   },
@@ -486,8 +486,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 100,
-      "height": 100
+      "width": 200,
+      "height": 600
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1651,13 +1651,13 @@
     "roleContainer": {
       "__id__": 8
     },
-    "clothing_number": {
+    "clothingNumberLabel": {
       "__id__": 50
     },
-    "clothing_amount": {
+    "clothingAmountLabel": {
       "__id__": 38
     },
-    "purchase_btn": {
+    "purchaseButtonNode": {
       "__id__": 58
     },
     "_id": ""

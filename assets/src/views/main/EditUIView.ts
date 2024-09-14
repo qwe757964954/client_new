@@ -1,6 +1,7 @@
-import { _decorator, color, EventTouch, Label, Node, ScrollView, Sprite, SpriteFrame, tween, UITransform, Vec2 } from 'cc';
+import { _decorator, color, EventTouch, Label, Node, ScrollView, Sprite, SpriteFrame, tween, UITransform, Vec2, Vec3 } from 'cc';
 import { EventType } from '../../config/EventType';
 import { TextConfig } from '../../config/TextConfig';
+import GlobalConfig from '../../GlobalConfig';
 import { DataMgr, EditInfo, EditType, EditTypeInfo, ThemeInfo } from '../../manager/DataMgr';
 import { BuildingIDType, BuildingState } from '../../models/BuildingModel';
 import { BaseComponent } from '../../script/BaseComponent';
@@ -50,6 +51,12 @@ export class EditUIView extends BaseComponent {
     public imgBaseColor2: Sprite = null;//底格颜色图片2
     @property([SpriteFrame])
     public spriteFramesBaseColor: SpriteFrame[] = [];//底格颜色图片资源
+    @property(Node)
+    public plFrame: Node = null;//框
+    @property(Node)
+    public btnPull: Node = null;//拉伸按钮
+    @property(Node)
+    public plTitle: Node = null;//标题层
 
     private _mainScene: MainScene = null;//主场景
     private _editType: EditType = null;//编辑类型
@@ -62,14 +69,18 @@ export class EditUIView extends BaseComponent {
     private _themesData: ThemeInfo[] = null;//主题数据
 
     private _uiTransform: UITransform = null;
+    private _framePos: Vec3 = new Vec3();
     private _tmpPos: Vec2 = new Vec2();
     private _longTouchEditItemData: EditInfo = null;//长按编辑项
     private _isBuilding: boolean = false;//是否正在建造
+    private _frameIsPull: boolean = false;//框是否拉伸
+    private _frameIsMove: boolean = false;//框是否移动
 
     //设置主场景
     public set mainScene(mainScene: MainScene) {
         this._mainScene = mainScene;
-        this._uiTransform = this.node.getComponent(UITransform);
+        this._uiTransform = this.plFrame.getComponent(UITransform);
+        this.plFrame.getPosition(this._framePos);
         this.initEditType();
         this.initTheme();
         // this.showEditType(EditType.Null);
@@ -85,6 +96,7 @@ export class EditUIView extends BaseComponent {
         CCUtil.onTouch(this.plBaseColor, this.onBaseColorClick, this);
         CCUtil.onTouch(this.btnTheme, this.onBtnThemeClick, this);
         CCUtil.onTouch(this.plTouch, this.onTouchLayerClick, this);
+        CCUtil.onTouch(this.btnPull, this.onBtnPullClick, this);
 
         this.addEvent(EventType.EditUIView_Refresh, this.onRefresh.bind(this));
         this.addEvent(EventType.Building_Step_Update, this.updateStep.bind(this));
@@ -339,17 +351,17 @@ export class EditUIView extends BaseComponent {
     }
     /**初始化点击事件 */
     initTouchEvent() {
-        this.node.on(Node.EventType.TOUCH_START, this.onTouchStart, this);
-        this.node.on(Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
-        this.node.on(Node.EventType.TOUCH_END, this.onTouchEnd, this);
-        this.node.on(Node.EventType.TOUCH_CANCEL, this.onTouchCancel, this);
+        this.plFrame.on(Node.EventType.TOUCH_START, this.onTouchStart, this);
+        this.plFrame.on(Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
+        this.plFrame.on(Node.EventType.TOUCH_END, this.onTouchEnd, this);
+        this.plFrame.on(Node.EventType.TOUCH_CANCEL, this.onTouchCancel, this);
     }
     /**移除点击事件 */
     removeTouchEvent() {
-        this.node.off(Node.EventType.TOUCH_START, this.onTouchStart, this);
-        this.node.off(Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
-        this.node.off(Node.EventType.TOUCH_END, this.onTouchEnd, this);
-        this.node.off(Node.EventType.TOUCH_CANCEL, this.onTouchCancel, this);
+        this.plFrame.off(Node.EventType.TOUCH_START, this.onTouchStart, this);
+        this.plFrame.off(Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
+        this.plFrame.off(Node.EventType.TOUCH_END, this.onTouchEnd, this);
+        this.plFrame.off(Node.EventType.TOUCH_CANCEL, this.onTouchCancel, this);
     }
     /* 点击开始 **/
     onTouchStart(e: EventTouch) {
@@ -411,6 +423,21 @@ export class EditUIView extends BaseComponent {
             return false;
         }
         return true;
+    }
+    /** 按钮-拉伸 */
+    private onBtnPullClick() {
+        if (this._frameIsMove) return;
+        this._frameIsMove = true;
+        this._frameIsPull = !this._frameIsPull;
+        this.plTitle.active = !this._frameIsPull;
+        let pos = this._framePos.clone();
+        if (this._frameIsPull) {
+            pos.y = - GlobalConfig.WIN_SIZE.height * 0.5 - this._uiTransform.height * 0.5;
+        }
+        this.btnPull.getComponentInChildren(Label).string = this._frameIsPull ? "拉伸" : "收起";
+        tween(this.plFrame).to(0.2, { position: pos }).call(() => {
+            this._frameIsMove = false;
+        }).start();
     }
 }
 

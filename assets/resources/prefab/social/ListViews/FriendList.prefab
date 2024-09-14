@@ -510,7 +510,7 @@
     "selectedEvent": {
       "__id__": 25
     },
-    "repeatEventSingle": false,
+    "repeatEventSingle": true,
     "_id": ""
   },
   {

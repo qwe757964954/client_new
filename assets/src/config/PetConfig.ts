@@ -11,6 +11,7 @@ export class PetInteractionInfo {
     id: number;//道具id
     type: PetInteractionType;//交互方式
     score: number;//得分
+    anim: string;//动画
 }
 /**心情类型 */
 export enum PetMoodType {

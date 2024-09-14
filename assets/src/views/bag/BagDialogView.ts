@@ -19,7 +19,7 @@ import { RewardItem } from '../common/RewardItem';
 import { ShopClothingInfo } from '../shop/ShopInfo';
 import { BagConfig } from './BagConfig';
 import { BagDressItem } from './BagDressItem';
-import { ActionModel, ActionType, BackpackItemInfo, BagGressItemIds, BagGressItems, BagGressTypeMap, BagItemType, BagOperationData, BagOperationIds, BagTabIds, BagTabNames } from './BagInfo';
+import { ActionModel, ActionType, BackpackItemInfo, BagGressItem, BagGressItemIds, BagGressItems, BagGressTypeMap, BagItemType, BagOperationData, BagOperationIds, BagTabIds, BagTabNames } from './BagInfo';
 import { BagOperrationItem } from './BagOperrationItem';
 import { BagTabItem } from './BagTabItem';
 import { BreakdownView } from './BreakdownView';
@@ -31,7 +31,8 @@ const { ccclass, property } = _decorator;
 export class BagDialogView extends BaseView {
     @property(Node) public btn_close: Node = null;
     @property(Node) public top_layout: Node = null;
-    @property(Node) public right:Node = null;
+    @property(Node) public right: Node = null;
+    @property(Node) public left: Node = null;
     @property({ type: List }) public propList: List = null;
     @property({ type: Prefab, tooltip: "物品预制体" }) public propPrefab: Prefab = null;
     @property({ type: Node, tooltip: "角色容器" }) public roleContainer: Node = null;
@@ -68,35 +69,24 @@ export class BagDialogView extends BaseView {
     }
     onBagPlayerAction(model: ActionModel) {
         const roleModel = this._role.getComponent(RoleModel);
-        switch (model.type) {
-            case ActionType.Idle:
-                roleModel.idle();
-                break;
-            case ActionType.Wave:
-                roleModel.waved();
-                break;
-            case ActionType.Walk:
-                roleModel.walk();
-                break;
-            case ActionType.Run:
-                roleModel.run();
-                break;
-            case ActionType.Jump:
-                roleModel.jump();
-                break;
-            case ActionType.Die:
-                roleModel.die();
-                break;
-            default:
-                break;
-        }
+        const actions: { [key: number]: () => void } = {
+            [ActionType.Idle]: () => roleModel.idle(),
+            [ActionType.Wave]: () => roleModel.waved(),
+            [ActionType.Walk]: () => roleModel.walk(),
+            [ActionType.Run]: () => roleModel.run(),
+            [ActionType.Jump]: () => roleModel.jump(),
+            [ActionType.Die]: () => roleModel.die(),
+        };
+
+        const action = actions[model.type];
+        if (action) action();
     }
-    async initUI() {
+    protected async initUI() {
         console.log("User.userClothes.....", User.userClothes);
         await BagConfig.loadBagConfigInfo();
         this.updateBagClothingMapping();
         this.initAmount();
-        this.showRoleDress();
+        await this.showRoleDress();
         this.tabList.numItems = BagTabNames.length;
         this.tabList.selectedId = 0;
         this.dress_list.numItems = BagGressItems.length;
@@ -156,7 +146,7 @@ export class BagDialogView extends BaseView {
         const itemInfo = BagConfig.findBackpackItemInfo(this._breakdownInfo.id);
         const decomposeItems = ObjectUtil.convertRewardData(BagConfig.findBreakdownItems(this._breakdownInfo));
         const tipMsg = `你成功把${this._breakdownInfo.num}个${itemInfo.name}分解了，获得` +
-            decomposeItems.map((itemData) => {
+            decomposeItems.map(itemData => {
                 const itemInfo = BagConfig.findBackpackItemInfo(itemData.id);
                 const itemQuantity = itemData.num * this._breakdownInfo.num;
                 itemData.num = itemQuantity;
@@ -232,10 +222,7 @@ export class BagDialogView extends BaseView {
 
     private onPropsGridSelected(item: Node, selectedId: number) {
         if (isValid(item) && selectedId >= 0) {
-            let itemPosition = this.right.getComponent(UITransform).convertToNodeSpaceAR(item.getWorldPosition());
-            itemPosition.x += 150;
-            itemPosition.y += 60;
-            this.op_list.node.setPosition(itemPosition);
+            this.adjustItemPosition(item, selectedId, 'props');
             this._propsSelected = selectedId;
             this.onPropsSelected(this._propsDatas[selectedId]);
         }
@@ -255,7 +242,29 @@ export class BagDialogView extends BaseView {
 
     private onDressGridSelected(item: Node, selectedId: number) {
         if (isValid(item) && selectedId >= 0) {
-            console.log("onDressGridSelected", selectedId);
+            this.adjustItemPosition(item, selectedId, 'dress');
+            const data: BagGressItem = BagGressItems[selectedId];
+            const userClothes = this._bagClothing[data.id].userClothes;
+            const arrayData = BagConfig.convertItemArrayData(User.itemAry);
+            const filteredItems = BagConfig.filterBagItems(arrayData);
+
+            this._selectedItem = filteredItems.find(item => item.id === userClothes);
+            this._opDatas = BagConfig.getItemCanOperations(this._selectedItem);
+            this.op_list.numItems = this._opDatas.length;
+            this.op_list.node.active = this._opDatas.length > 0;
+        }
+    }
+
+    private adjustItemPosition(item: Node, selectedId: number, listType: 'props' | 'dress') {
+        if (isValid(item) && selectedId >= 0) {
+            let itemPosition = this.right.getComponent(UITransform).convertToNodeSpaceAR(item.getWorldPosition());
+            if (listType === 'props') {
+                itemPosition.x += (selectedId + 1) % 6 === 0 ? -150 : 150;
+            } else if (listType === 'dress') {
+                itemPosition.x += 150;
+            }
+            itemPosition.y += 60;
+            this.op_list.node.setPosition(itemPosition);
         }
     }
 
@@ -338,11 +347,9 @@ export class BagDialogView extends BaseView {
                 info.userClothes = userClothId;
             }
         });
-        
     }
 
     private updatePropsSelected(selectedId: number) {
-        this.propList.selectedId = -1;
         this.propList.selectedId = selectedId;
     }
 
@@ -361,30 +368,23 @@ export class BagDialogView extends BaseView {
         }
     }
 
-    private onOperationClick(data: BagOperationData) {
+    private async onOperationClick(data: BagOperationData) {
         this._bagOperationId = data.id;
         const clothingInfo = this.findInfoById(this._selectedItem.id);
 
-        switch (data.id) {
-            case BagOperationIds.Outfit:
-                if (clothingInfo) {
-                    this.reqUpdateClothingInfo(clothingInfo.type, clothingInfo.id);
-                }
-                break;
-            case BagOperationIds.UnOutfit:
-                if (clothingInfo) {
-                    this.reqUpdateClothingInfo(clothingInfo.type, 0);
-                }
-                break;
-            case BagOperationIds.Disassemble:
-                this.onDisassemble();
-                break;
-            case BagOperationIds.Combine:
-                this.onComposite();
-                break;
-            default:
-                break;
-        }
+        const operationActions: { [key: number]: () => void } = {
+            [BagOperationIds.Outfit]: () => {
+                if (clothingInfo) this.reqUpdateClothingInfo(clothingInfo.type, clothingInfo.id);
+            },
+            [BagOperationIds.UnOutfit]: () => {
+                if (clothingInfo) this.reqUpdateClothingInfo(clothingInfo.type, 0);
+            },
+            [BagOperationIds.Disassemble]: () => this.onDisassemble(),
+            [BagOperationIds.Combine]: () => this.onComposite()
+        };
+
+        const action = operationActions[data.id];
+        if (action) await action();
     }
 
     private updateAllLists() {

@@ -5,7 +5,7 @@ import { DataMgr, EditInfo } from "../../manager/DataMgr";
 import { ViewsManager } from "../../manager/ViewsManager";
 import { BuildingModel, BuildingOperationData, BuildingOperationType } from "../../models/BuildingModel";
 import { GridModel } from "../../models/GridModel";
-import { c2sBuildingCreate, c2sBuildingEdit, s2cBuildingCreate, s2cBuildingEdit, s2cBuildingEditBatch, s2cBuildingRecycle, s2cBuildingSell } from "../../models/NetModel";
+import { c2sBuildingCreate, c2sBuildingEdit, s2cBuildingCreate, s2cBuildingEdit, s2cBuildingEditBatch } from "../../models/NetModel";
 import { User } from "../../models/User";
 import { InterfacePath } from "../../net/InterfacePath";
 import { ServiceMgr } from "../../net/ServiceManager";
@@ -37,10 +37,10 @@ export class BuildEditCtl extends MapBaseCtl {
     }
     // 初始化事件
     initEvent() {
-        this.addEvent(InterfacePath.c2sBuildingEdit, this.onBuildingEdit.bind(this));
-        this.addEvent(InterfacePath.c2sBuildingCreate, this.onBuildingCreate.bind(this));
-        this.addEvent(InterfacePath.c2sBuildingSell, this.onRepBuildingSell.bind(this));
-        this.addEvent(InterfacePath.c2sBuildingRecycle, this.onRepBuildingRecycle.bind(this));
+        // this.addEvent(InterfacePath.c2sBuildingEdit, this.onBuildingEdit.bind(this));
+        // this.addEvent(InterfacePath.c2sBuildingCreate, this.onBuildingCreate.bind(this));
+        // this.addEvent(InterfacePath.c2sBuildingSell, this.onRepBuildingSell.bind(this));
+        // this.addEvent(InterfacePath.c2sBuildingRecycle, this.onRepBuildingRecycle.bind(this));
         this.addEvent(InterfacePath.c2sBuildingEditBatch, this.onRepBuildingEditBatch.bind(this));
 
         this.addEvent(EventType.Building_Save, this.onBuildingSave.bind(this));
@@ -70,15 +70,15 @@ export class BuildEditCtl extends MapBaseCtl {
         }
     }
     /**建筑卖出返回 */
-    onRepBuildingSell(data: s2cBuildingSell) {
-        if (this._mainScene.getMapCtl() != this) return;
-        if (200 != data.code) {
-            ViewsManager.showAlert(data.msg);
-            return;
-        }
-        let building = this._mainScene.findBuilding(data.id);
-        building?.sell(true);
-    }
+    // onRepBuildingSell(data: s2cBuildingSell) {
+    //     if (this._mainScene.getMapCtl() != this) return;
+    //     if (200 != data.code) {
+    //         ViewsManager.showAlert(data.msg);
+    //         return;
+    //     }
+    //     let building = this._mainScene.findBuilding(data.id);
+    //     building?.sell(true);
+    // }
     /** 建筑创建返回 */
     onBuildingCreate(data: s2cBuildingCreate) {
         if (this._mainScene.getMapCtl() != this) return;
@@ -96,15 +96,15 @@ export class BuildEditCtl extends MapBaseCtl {
         }
     }
     /**建筑回收返回 */
-    onRepBuildingRecycle(data: s2cBuildingRecycle) {
-        if (this._mainScene.getMapCtl() != this) return;
-        if (200 != data.code) {
-            ViewsManager.showAlert(data.msg);
-            return;
-        }
-        let building = this._mainScene.findBuilding(data.id);
-        building?.recycle();
-    }
+    // onRepBuildingRecycle(data: s2cBuildingRecycle) {
+    //     if (this._mainScene.getMapCtl() != this) return;
+    //     if (200 != data.code) {
+    //         ViewsManager.showAlert(data.msg);
+    //         return;
+    //     }
+    //     let building = this._mainScene.findBuilding(data.id);
+    //     building?.recycle();
+    // }
     /**建筑批量修改返回 */
     onRepBuildingEditBatch(data: s2cBuildingEditBatch) {
         if (1 == data.type) {
@@ -369,6 +369,7 @@ export class BuildEditCtl extends MapBaseCtl {
     }
     /**建筑保存事件 */
     onBuildingSave(building: BuildingModel): void {
+        let isNew = building.isNew;
         if (building.isDataChange()) {
             this.cacheBuildingOperationData(BuildingOperationType.edit, building);
             building.saveData();
@@ -377,7 +378,8 @@ export class BuildEditCtl extends MapBaseCtl {
         } else {
             building.saveData();
         }
-        this._mainScene.newBuildingFromBuilding(building);
+        if (isNew)
+            this._mainScene.newBuildingFromBuilding(building);
     }
     /**建筑回收事件 */
     onBuildingRecycle(building: BuildingModel): void {

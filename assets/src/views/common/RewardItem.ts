@@ -1,4 +1,4 @@
-import { _decorator, Color, Enum, Label, Node, Sprite, UITransform } from 'cc';
+import { _decorator, Color, Enum, Label, Node, Sprite } from 'cc';
 import { DEV } from 'cc/env';
 import { itemEventKey } from '../../config/EventType';
 import { ItemID } from '../../export/ItemConfig';
@@ -38,6 +38,8 @@ export class RewardItem extends ListItem {
     public labelNum: Label = null;//需要数量
     @property(Label)
     public labelUserNum: Label = null;//已有数量
+    @property(Node)
+    public plLabel: Node = null;//数量层
 
     public _type: RewardItemType = RewardItemType.Normal;
     @property({ type: Enum(RewardItemType), tooltip: DEV && "奖励显示类型" })
@@ -111,16 +113,13 @@ export class RewardItem extends ListItem {
     }
     private showCountLabel() {
         if (RewardItemNumType.Normal == this._numType) {
-            this.labelNum.node.active = false;
-            this.labelUserNum.node.active = false;
+            this.plLabel.active = false;
             this.num.node.active = true;
             this.num.string = this._itemCount.toString();
         } else {
-            this.labelNum.node.active = true;
-            this.labelUserNum.node.active = true;
+            this.plLabel.active = true;
             this.num.node.active = false;
             this.labelNum.string = "/" + this._itemCount.toString();
-            this.labelNum.updateRenderData();
             let userCount = User.getItem(this._itemID);
             if (userCount >= this._itemCount) {
                 this.labelUserNum.color = new Color(labelColors[0]);
@@ -132,10 +131,6 @@ export class RewardItem extends ListItem {
             } else {
                 this.labelUserNum.string = userCount.toString();
             }
-            let width = this.labelNum.node.getComponent(UITransform).width;
-            let pos = this.labelNum.node.position.clone();
-            pos.x = pos.x - width;
-            this.labelUserNum.node.position = pos;
             this.initItemEvent();
         }
     }

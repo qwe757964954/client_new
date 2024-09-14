@@ -1796,7 +1796,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -235,
+      "x": 0,
       "y": 39,
       "z": 0
     },
@@ -1952,7 +1952,7 @@
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0,
+      "x": 0.5,
       "y": 0.5
     },
     "_id": ""
@@ -2038,7 +2038,7 @@
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0,
+      "x": 0.5,
       "y": 0.5
     },
     "_id": ""
@@ -2183,7 +2183,7 @@
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0,
+      "x": 0.5,
       "y": 0.5
     },
     "_id": ""
@@ -2206,7 +2206,7 @@
     },
     "bounceDuration": 0.23,
     "brake": 0.5,
-    "elastic": true,
+    "elastic": false,
     "inertia": true,
     "horizontal": true,
     "vertical": true,

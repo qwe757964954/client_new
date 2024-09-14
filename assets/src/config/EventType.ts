@@ -156,6 +156,7 @@ export const EventType = {
     Item_Props_Refresh: "Item_Props_Refresh",
 
     Shop_Buy_Store: "Shop_Buy_Store",
+    Shop_Buy_Suit_Detail: "Shop_Buy_Suit_Detail",
     Search_Word_Item_Detail: "Search_Word_Item_Detail",
     Word_Check_Item_Detail: "Word_Check_Item_Detail",
     Grade_Select_Event: "Grade_Select_Event",
@@ -167,7 +168,8 @@ export const EventType = {
     Symbol_Click: "Symbol_Click", //音标拼读音标点击
     Phonics_Game_Item_Click: "Phonics_Game_Item_Click", //音标拼读tab选项点击
     Phonics_Game_Opt_Click: "Phonics_Game_Opt_Click", //音标拼读游戏选项点击
-    Phonics_Game_Play_Click: "Phonics_Game_Play_Click" //拼读游戏开始
+    Phonics_Game_Play_Click: "Phonics_Game_Play_Click", //拼读游戏开始
+    Req_Apply_Modify: "Req_Apply_Modify",
 }
 
 export function itemEventKey(id: ItemID) {

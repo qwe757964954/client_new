@@ -8,18 +8,18 @@ const { ccclass, property } = _decorator;
 export class ApplyList extends Component {
     @property({ type: List, tooltip: "好友滚动列表" })
     public ListView: List = null;
-    private _applyDataList: UserApplyModel[] = []; //我的好友列表
+    private _DataList: UserApplyModel[] = []; //我的好友列表
     protected start(): void {
     }
     onLoadFriendVertical(item:Node, idx:number){
         let item_script = item.getComponent(ApplyListItem);
-        let friendData: UserApplyModel = this._applyDataList[idx];
+        let friendData: UserApplyModel = this._DataList[idx];
         item_script.initData(friendData);
     }
 
     updateData(friendDatas: UserApplyModel[]){
         console.log("updateData  ApplyList....",friendDatas);
-        this._applyDataList = friendDatas;
+        this._DataList = friendDatas;
         this.node.active = true;
         this.ListView.numItems = friendDatas.length;
     }

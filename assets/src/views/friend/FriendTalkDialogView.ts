@@ -1,4 +1,4 @@
-import { _decorator, EventTouch, isValid, Node, NodeEventType, UITransform } from 'cc';
+import { _decorator, EventTouch, isValid, Label, Node, NodeEventType, UITransform } from 'cc';
 import { ChatDataItem, ChatMessageResponse, FriendListItemModel, SendMessageModel } from '../../models/FriendModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BasePopFriend } from '../../script/BasePopFriend';
@@ -7,6 +7,8 @@ import CCUtil from '../../util/CCUtil';
 import List from '../../util/list/List';
 import { ChatContentItem } from './ChatContentItem';
 import { ChatEmoteItem } from './ChatEmoteItem';
+import { ChatTalkItem } from './ChatTalkItem';
+import { FriendConfig } from './FriendConfig';
 
 const { ccclass, property } = _decorator;
 
@@ -16,7 +18,7 @@ export class FriendTalkDialogView extends BasePopFriend {
     closeBtn: Node = null;
 
     @property({ type: Node, tooltip: "内容根结点" })
-    public contentNd: Node = null;
+    contentNd: Node = null;
 
     @property({ type: Node, tooltip: "发送表情按钮" })
     bqBtn: Node = null;
@@ -24,14 +26,20 @@ export class FriendTalkDialogView extends BasePopFriend {
     @property({ type: Node, tooltip: "发送消息按钮" })
     sendBtn: Node = null;
 
-    @property({ type: Node, tooltip: "热点区域" })
-    hotAreaBox: Node = null;
+    @property({ type: Node, tooltip: "聊天按钮" })
+    chatBtn: Node = null;
 
     @property({ type: Node, tooltip: "表情选择区域" })
     bqSelectBox: Node = null;
 
     @property({ type: List, tooltip: "表情选择列表" })
-    selectList: List = null;
+    bqSelectList: List = null;
+
+    @property({ type: Node, tooltip: "快捷语选择区域" })
+    talkSelectBox: Node = null;
+
+    @property({ type: List, tooltip: "快捷语选择列表" })
+    talkSelectList: List = null;
 
     @property({ type: List, tooltip: "聊天列表" })
     talkList: List = null;
@@ -39,25 +47,23 @@ export class FriendTalkDialogView extends BasePopFriend {
     @property({ type: Node, tooltip: "表情区域" })
     bqContent: Node = null;
 
+    @property(Label)
+    nameLab: Label = null;
+
     private _bqList: number[] = [];
     private _magicList: number[] = [];
     private _selectFriend: FriendListItemModel = null;
-    private _friendDataList: FriendListItemModel[] = [];
     private _chatDatas: ChatDataItem[] = [];
-    private _currentFriendSelected: number = 0;
 
     init(friend: FriendListItemModel): void {
         this._selectFriend = friend;
-        FdServer.reqUserFriendMessageList(this._selectFriend.friend_id);
+        this.nameLab.string = this._selectFriend.nick_name;
+        this.requestFriendData();
     }
 
     protected initUI(): void {
         this.enableClickBlankToClose([this.contentNd]);
         this.setMagicData();
-    }
-
-    set currentFriendSelected(selected: number) {
-        this._currentFriendSelected = selected;
     }
 
     protected onInitModuleEvent(): void {
@@ -71,7 +77,12 @@ export class FriendTalkDialogView extends BasePopFriend {
     protected initEvent(): void {
         CCUtil.onBtnClick(this.closeBtn, this.onCloseView.bind(this));
         CCUtil.onBtnClick(this.bqBtn, this.onBqBtnClick.bind(this));
-        CCUtil.onBtnClick(this.sendBtn, this.onSendBtnClick.bind(this));
+        CCUtil.onBtnClick(this.chatBtn, this.onChatBtnClick.bind(this));
+    }
+
+    private requestFriendData(): void {
+        FdServer.reqUserFriendMessageList(this._selectFriend.friend_id);
+        FdServer.reqUserMessageStatusUpdate(this._selectFriend.friend_id);
     }
 
     private async onUserFriendMessageList(response: ChatMessageResponse): Promise<void> {
@@ -82,86 +93,90 @@ export class FriendTalkDialogView extends BasePopFriend {
     }
 
     private async setMagicData(): Promise<void> {
-        this._bqList = [];
-        for (let i = 1; i <= 40; i++) {
-            if ([2, 3, 9, 12, 14].includes(i)) continue;
-            this._bqList.push(i);
-        }
-        for (let i = 100; i < 127; i++) {
-            this._bqList.push(i);
-        }
+        this._bqList = [
+            ...Array.from({ length: 39 }, (_, i) => i + 1).filter(i => ![2, 3, 9, 12, 14].includes(i)), 
+            ...Array.from({ length: 27 }, (_, i) => i + 100)
+        ];
     }
 
     private onUserMessageStatusUpdate(response: any): void {
-        console.log("onUserMessageStatusUpdate....", response);
-        this._friendDataList[this._currentFriendSelected].unread_count = 0;
+        console.log("User message status updated:", response);
         this.talkList.updateAll();
     }
-    onUserSendMessageFriend(data:any){
+
+    private onUserSendMessageFriend(): void {
         this.bqContent.active = false;
-        FdServer.reqUserFriendMessageList(this._selectFriend.friend_id);
+        this.requestFriendData();
     }
-    private onFriendListVerticalSelected(item: any, selectedId: number, lastSelectedId: number, val: number): void {
-        if (!isValid(selectedId) || selectedId < 0 || !isValid(item)) return;
-        this._selectFriend = this._friendDataList[selectedId];
-        this._currentFriendSelected = selectedId;
-        FdServer.reqUserFriendMessageList(this._selectFriend.friend_id);
-        if (this._selectFriend.unread_count > 0) {
-            FdServer.reqUserMessageStatusUpdate(this._selectFriend.friend_id);
+
+    private onLoadMagicFaceVertical(item: Node, idx: number): void {
+        const itemScript = item.getComponent(ChatEmoteItem);
+        if (itemScript) itemScript.initData(this._magicList[idx]);
+    }
+
+    private onMagicFaceVerticalSelected(item: Node, selectedId: number): void {
+        if (isValid(selectedId) && selectedId >= 0) {
+            this.sendMessage(this._magicList[selectedId]);
         }
     }
 
-    private onloadMagicFaceVertical(item: Node, idx: number): void {
-        const itemScript = item.getComponent(ChatEmoteItem);
-        itemScript.initData(this._magicList[idx]);
+    private onLoadChatVertical(item: Node, idx: number): void {
+        const itemScript = item.getComponent(ChatTalkItem);
+        if (itemScript) itemScript.initData(FriendConfig.shortcutInfo[idx]);
     }
 
-    private onMagicFaceVerticalSelected(item: any, selectedId: number, lastSelectedId: number, val: number): void {
-        if (!isValid(selectedId) || selectedId < 0 || !isValid(item)) return;
-        const param: SendMessageModel = {
-            friend_id: this._selectFriend.friend_id,
-            message: `${this._magicList[selectedId]}`
-        };
-        FdServer.reqUserSendMessageFriend(param);
+    private onChatVerticalSelected(item: Node, selectedId: number): void {
+        if (isValid(selectedId) && selectedId >= 0) {
+            const shortcut = FriendConfig.shortcutInfo[selectedId];
+            this.sendMessage(shortcut.id);
+        }
     }
 
-    private onloadChatContentListVertical(item: Node, idx: number): void {
+    private onLoadChatContentListVertical(item: Node, idx: number): void {
         const itemScript = item.getComponent(ChatContentItem);
-        itemScript.initData(this._chatDatas[idx], this._selectFriend);
+        if (itemScript) itemScript.initData(this._chatDatas[idx], this._selectFriend);
     }
 
     private async onBqBtnClick(): Promise<void> {
         this.bqContent.active = true;
-        this.magicClickBlankToClose();
+        this.bqSelectBox.active = true;
+        this.talkSelectBox.active = false;
+        this.setupClickToClose(this.bqSelectBox, this.bqContent);
         this._magicList = this._bqList.filter(num => num < 100);
-        this.selectList.numItems = this._magicList.length;
+        this.bqSelectList.numItems = this._magicList.length;
     }
 
-    private async onSendBtnClick(): Promise<void> {
+    private async onChatBtnClick(): Promise<void> {
         this.bqContent.active = true;
-        this.magicClickBlankToClose();
-        this._magicList = this._bqList.filter(num => num >= 100);
-        this.selectList.numItems = this._magicList.length;
+        this.bqSelectBox.active = false;
+        this.talkSelectBox.active = true;
+        this.setupClickToClose(this.talkSelectBox, this.bqContent);
+        console.log('Shortcut info:', FriendConfig.shortcutInfo);
+        this.talkSelectList.numItems = FriendConfig.shortcutInfo.length;
     }
 
-    private magicClickBlankToClose(): void {
+    private setupClickToClose(target: Node, content: Node): void {
         const touchEndHandler = (evt: EventTouch) => {
             const startPos = evt.getUIStartLocation();
             const endPos = evt.getUILocation();
             const subPos = endPos.subtract(startPos);
             if (Math.abs(subPos.x) < 15 && Math.abs(subPos.y) < 15) {
-                let needClose = true;
-                const uiTransform = this.bqSelectBox.getComponent(UITransform);
-                if (uiTransform && uiTransform.getBoundingBoxToWorld().contains(startPos)) {
-                    needClose = false;
-                }
-                if (needClose) {
-                    this.bqContent.off(NodeEventType.TOUCH_END, touchEndHandler, this);
-                    this.bqContent.active = false;
+                const uiTransform = target.getComponent(UITransform);
+                if (uiTransform && !uiTransform.getBoundingBoxToWorld().contains(startPos)) {
+                    content.off(NodeEventType.TOUCH_END, touchEndHandler, this);
+                    content.active = false;
                 }
             }
         };
-        this.bqContent.on(NodeEventType.TOUCH_END, touchEndHandler, this);
+        content.on(NodeEventType.TOUCH_END, touchEndHandler, this);
+    }
+
+    private sendMessage(message: number | string): void {
+        const param: SendMessageModel = {
+            friend_id: this._selectFriend.friend_id,
+            message: `${message}`
+        };
+        FdServer.reqUserSendMessageFriend(param);
     }
 
     private onCloseView(): void {

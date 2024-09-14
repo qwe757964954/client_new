@@ -2791,26 +2791,23 @@
     "lblRealName": {
       "__id__": 40
     },
-    "state_icon": {
+    "levelTxt": {
+      "__id__": 76
+    },
+    "stateIcon": {
       "__id__": 55
     },
-    "kingdom_btn": {
-      "__id__": 82
-    },
-    "chat_btn": {
+    "chatBtn": {
       "__id__": 94
+    },
+    "kingdomBtn": {
+      "__id__": 82
     },
     "ndRedPoint": {
       "__id__": 106
     },
     "blacklist": {
       "__id__": 61
-    },
-    "friendship": {
-      "__id__": 52
-    },
-    "levelTxt": {
-      "__id__": 76
     },
     "_id": ""
   },

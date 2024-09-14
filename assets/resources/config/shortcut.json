@@ -1,0 +1,54 @@
+{
+    "shortcut": [
+        {
+            "id": 100,
+            "cnText": "你好",
+            "enText": "Hello"
+        },
+        {
+            "id": 101,
+            "cnText": "谢谢",
+            "enText": "Thank you"
+        },
+        {
+            "id": 102,
+            "cnText": "没关系",
+            "enText": "No problem"
+        },
+        {
+            "id": 103,
+            "cnText": "对不起",
+            "enText": "Sorry"
+        },
+        {
+            "id": 104,
+            "cnText": "再见",
+            "enText": "Goodbye"
+        },
+        {
+            "id": 105,
+            "cnText": "请",
+            "enText": "Please"
+        },
+        {
+            "id": 106,
+            "cnText": "好的",
+            "enText": "Okay"
+        },
+        {
+            "id": 107,
+            "cnText": "我不明白",
+            "enText": " I don’t understand"
+        },
+        {
+            "id": 108,
+            "cnText": "你好吗？",
+            "enText": "How are you?"
+        },
+        {
+            "id": 109,
+            "cnText": "请等一下",
+            "enText": "Please wait a moment"
+        }
+    ]
+}

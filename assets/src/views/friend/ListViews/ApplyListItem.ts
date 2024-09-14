@@ -1,64 +1,55 @@
-import { _decorator, Label, Node, Sprite } from 'cc';
-import { LoadManager } from '../../../manager/LoadManager';
+import { _decorator, Node } from 'cc';
+import { EventType } from '../../../config/EventType';
 import { ApplicationStatus, ApplyModifyModel, UserApplyModel } from '../../../models/FriendModel';
-import { FdServer } from '../../../service/FriendService';
 import CCUtil from '../../../util/CCUtil';
-import ListItem from '../../../util/list/ListItem';
+import { EventMgr } from '../../../util/EventManager';
 import { HeadIdMap } from '../FriendInfo';
+import { BaseFriendListItem } from './BaseFriendListItem';
 const { ccclass, property } = _decorator;
+// ApplyListItem Class
 
 @ccclass('ApplyListItem')
-export class ApplyListItem extends ListItem {
-    @property({ type: Sprite, tooltip: "底层背景" })
-    imgBg: Sprite = null;
-
-    @property({ type: Sprite, tooltip: "头像图片精灵" })
-    imgHead: Sprite = null;
-
-    @property({ type: Label, tooltip: "朋友名字标签" })
-    lblRealName: Label = null;
-
-    @property({ type: Label, tooltip: "状态标签" })
-    lblState: Label = null;
+export class ApplyListItem extends BaseFriendListItem {
+    @property(Node)
+    public agreeBtn: Node = null;
 
     @property(Node)
-    public agreeBtn:Node = null;
-    @property(Node)
-    public rejectBtn:Node = null;
-    _data: UserApplyModel = null;
+    public rejectBtn: Node = null;
+
+    private _data: UserApplyModel = null;
 
     protected start(): void {
         this.initEvent();
     }
-    initEvent(){
-        CCUtil.onBtnClick(this.agreeBtn,this.agreeBtnClick.bind(this));
-        CCUtil.onBtnClick(this.rejectBtn,this.rejectBtnClick.bind(this));
+
+    private initEvent() {
+        CCUtil.onBtnClick(this.agreeBtn, this.agreeBtnClick.bind(this));
+        CCUtil.onBtnClick(this.rejectBtn, this.rejectBtnClick.bind(this));
     }
+
     async initData(data: UserApplyModel) {
         this._data = data;
-        let avatar: number = HeadIdMap[data.avatar];
-        let avatarPath: string = "friend/head_" + avatar + "/spriteFrame";
-        await LoadManager.loadSprite(avatarPath, this.imgHead.getComponent(Sprite)).then(() => { },
-            (error) => {
-                // console.log("loadShowSprite->resource load failed:" + this._data.icon.skin + "," + error.message);
-            });
+        const avatar = HeadIdMap[data.avatar];
+        await this.setAvatar(avatar);
         this.lblRealName.string = data.user_name;
-        // this.lblRedTip.string = data.unread_count + "";
-    }
-    agreeBtnClick(){
-        this.modifyApplicationStatus(ApplicationStatus.Approved);
-    }
-    rejectBtnClick(){
-        this.modifyApplicationStatus(ApplicationStatus.Rejected);
     }
 
-    private modifyApplicationStatus(status: ApplicationStatus): void {
+    private agreeBtnClick() {
+         this.modifyApplicationStatus(ApplicationStatus.Approved);
+    }
+
+    private rejectBtnClick() {
+         this.modifyApplicationStatus(ApplicationStatus.Rejected);
+    }
+
+    private modifyApplicationStatus(status: ApplicationStatus) {
+
         const param: ApplyModifyModel = {
             friend_id: this._data.user_id,
+            nick_name: this._data.nick_name,
             status
         };
-        FdServer.reqUserFriendApplyModify(param);
+        EventMgr.dispatch(EventType.Req_Apply_Modify,param);
     }
 }
-
 

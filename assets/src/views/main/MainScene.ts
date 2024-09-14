@@ -304,7 +304,7 @@ export class MainScene extends BaseComponent {
     /** 角色拖动开始 */
     onRoleDragStart(role: RoleDataModel) {
         if (!role) return;
-        console.log("onRoleDragStart", role);
+        // console.log("onRoleDragStart", role);
         role.onDragStart();
         this._mapUICtl.buildingRoleSort();
     }
@@ -320,7 +320,7 @@ export class MainScene extends BaseComponent {
         // console.log("onRoleDragEnd", role);
         let pos = role.pos;
         let grid = this._mapUICtl.getGridByPos(pos.x, pos.y);
-        if (grid && !grid.cloud) {
+        if (grid && !grid.cloud && !grid.building) {
             role.onDragEnd(pos.x, pos.y);
         } else {
             ViewsManager.showTip(TextConfig.Role_Text2);

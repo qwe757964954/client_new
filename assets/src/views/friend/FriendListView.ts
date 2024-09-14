@@ -4,12 +4,20 @@ import { PrefabType } from '../../config/PrefabType';
 import { TextConfig } from '../../config/TextConfig';
 import { PopMgr } from '../../manager/PopupManager';
 import { ViewsMgr } from '../../manager/ViewsManager';
-import { DataFriendApplyListResponse, DataFriendListResponse, FriendListItemModel } from '../../models/FriendModel';
+import {
+    ApplicationStatus,
+    ApplyModifyModel,
+    DataFriendApplyListResponse,
+    DataFriendListResponse,
+    FriendActionType,
+    FriendListItemModel
+} from '../../models/FriendModel';
 import { NetNotify } from '../../net/NetNotify';
 import { BasePopRight } from '../../script/BasePopRight';
 import { FdServer } from '../../service/FriendService';
 import CCUtil from '../../util/CCUtil';
 import { FriendApplyView } from './FriendApplyView';
+import { FriendConfig } from './FriendConfig';
 import { FriendTabType } from './FriendInfo';
 import { FriendLeftTabView } from './FriendLeftTabView';
 import { FriendPlayerInfoView } from './FriendPlayerInfoView';
@@ -17,57 +25,64 @@ import { FriendTalkDialogView } from './FriendTalkDialogView';
 import { ApplyList } from './ListViews/ApplyList';
 import { Blacklist } from './ListViews/Blacklist';
 import { FriendList } from './ListViews/FriendList';
+
 const { ccclass, property } = _decorator;
 
 @ccclass('FriendListView')
 export class FriendListView extends BasePopRight {
     @property(Node)
-    public contentNd: Node = null;
-    @property(Node)
-    public leftView: Node = null;
-    @property(Node)
-    public wechatInvite: Node = null;
+    private contentNd: Node = null;
 
     @property(Node)
-    public addFriend: Node = null;
+    private leftView: Node = null;
 
     @property(Node)
-    public closeIcon: Node = null;
+    private wechatInvite: Node = null;
 
-    private _leftTab:FriendLeftTabView = null;
-    private _friendList:FriendList = null;
-    private _applyList:ApplyList = null;
-    private _blacklist:Blacklist = null;
+    @property(Node)
+    private addFriend: Node = null;
+
+    @property(Node)
+    private closeIcon: Node = null;
+
+    private _leftTab: FriendLeftTabView = null;
+    private _friendList: FriendList = null;
+    private _applyList: ApplyList = null;
+    private _blacklist: Blacklist = null;
+    private _tabSelect: FriendTabType = FriendTabType.List;
+    private _applyInfo: ApplyModifyModel = null;
+
     protected async initUI() {
+        FriendConfig.loadShotCutInfo();
         this.enableClickBlankToClose([this.contentNd]);
         await this.initViews();
         this.setLeftTab();
         this.initData();
     }
+
     protected initEvent(): void {
-        CCUtil.onBtnClick(this.closeIcon,this.closeClickEvent.bind(this));
-        CCUtil.onBtnClick(this.addFriend,this.addFriendClickEvent.bind(this));
-        CCUtil.onBtnClick(this.wechatInvite,this.wechatInviteClickEvent.bind(this));
+        CCUtil.onBtnClick(this.closeIcon, this.closeClickEvent.bind(this));
+        CCUtil.onBtnClick(this.addFriend, this.addFriendClickEvent.bind(this));
+        CCUtil.onBtnClick(this.wechatInvite, this.wechatInviteClickEvent.bind(this));
     }
 
     protected onInitModuleEvent(): void {
         this.addModelListeners([
-            [NetNotify.Classification_UserFriendList, this.onUpdateFriendList],
-            [NetNotify.Classification_UserFriendApplyList, this.onUpdateApplyFriendList],
-            [NetNotify.Classification_UserFriendApplyModify, this.onUserFriendApplyModify],
-            [NetNotify.Classification_UserDelFriendMessage, this.onUserDelFriendMessage],
-            // [NetNotify.Classification_UserSystemMailList, this.onUserSystemMailList],
-            // [NetNotify.Classification_UserSystemMailDetail, this.onUserSystemMailDetail],
-            // [NetNotify.Classification_UserSystemAwardGet, this.onUserSystemAwardGet],
-            [EventType.Friend_Talk_Event, this.onFriendTalk],
+            [NetNotify.Classification_UserFriendList, this.onUpdateFriendList.bind(this)],
+            [NetNotify.Classification_UserFriendApplyList, this.onUpdateApplyFriendList.bind(this)],
+            [NetNotify.Classification_UserFriendApplyModify, this.onUserFriendApplyModify.bind(this)],
+            [NetNotify.Classification_UserDelFriendMessage, this.onUserDelFriendMessage.bind(this)],
+            [EventType.Friend_Talk_Event, this.onFriendTalk.bind(this)],
+            [EventType.Req_Apply_Modify, this.onReqApplyModify.bind(this)]
         ]);
     }
+
     private async initViews() {
         const viewComponents = [
             {
                 prefabType: PrefabType.FriendLeftTabView,
                 initCallback: (node: Node) => this._leftTab = node.getComponent(FriendLeftTabView),
-                alignOptions: { isAlignTop: true,isAlignHorizontalCenter:true, top: 116.002,horizontalCenter:0},
+                alignOptions: { isAlignTop: true, isAlignHorizontalCenter: true, top: 116.002, horizontalCenter: 0 },
                 parentNode: this.contentNd
             },
             {
@@ -87,87 +102,122 @@ export class FriendListView extends BasePopRight {
                 prefabType: PrefabType.Blacklist,
                 initCallback: (node: Node) => this._blacklist = node.getComponent(Blacklist),
                 parentNode: this.contentNd
-            },
-        ]
+            }
+        ];
 
-        await Promise.all(viewComponents.map(config => 
-            this.initViewComponent(config.prefabType, config.initCallback, config.alignOptions, config.parentNode)
+        await Promise.all(viewComponents.map(({ prefabType, initCallback, alignOptions, parentNode }) =>
+            this.initViewComponent(prefabType, initCallback, alignOptions, parentNode)
         ));
     }
-    initData() {
-        // FdServer.reqUserSystemMailLis();
-        // 
+
+    private initData() {
+        // Initialize data if needed
     }
-    private setLeftTab(){
+
+    private setLeftTab() {
         this._leftTab.setTabClickListener(this.onClickTab.bind(this));
         this._leftTab.updateTabs();
     }
-    onClickTab(click:FriendTabType) {
-        this.hidenAllFrinedList();
-        
-        switch (click) {
-            case FriendTabType.List:// 好友列表
-                FdServer.reqUserFriendList();
+
+    private async onClickTab(tabType: FriendTabType) {
+        this.hideAllFriendLists();
+        this._tabSelect = tabType;
+
+        switch (tabType) {
+            case FriendTabType.List:
+                FdServer.reqUserFriendList(FriendActionType.List);
                 break;
-            case FriendTabType.Apply: //好友申请列表
+            case FriendTabType.Apply:
                 FdServer.reqUserFriendApplyList();
                 break;
-            case FriendTabType.Blacklist: // 好友消息通知
-                this._blacklist.updateData();
+            case FriendTabType.Blacklist:
+                FdServer.reqUserFriendList(FriendActionType.Blacklist);
                 break;
         }
     }
 
-    async onFriendClick(data:FriendListItemModel){
-        console.log("onFriendClick.....",data);
-        let node = await PopMgr.showPopFriend(PrefabType.FriendPlayerInfoView,this.leftView,"content");
-        let script = node.getComponent(FriendPlayerInfoView);
+    private async onFriendClick(data: FriendListItemModel) {
+        const node = await PopMgr.showPopFriend(PrefabType.FriendPlayerInfoView, this.leftView, "content");
+        const script = node.getComponent(FriendPlayerInfoView);
         script.updateData(data);
     }
-    async onFriendTalk(data:FriendListItemModel){
-        console.log("onFriendTalk",data);
-        let node = await PopMgr.showPopFriend(PrefabType.FriendTalkDialogView,this.leftView,"content");
-        let script = node.getComponent(FriendTalkDialogView);
+
+    private async onFriendTalk(data: FriendListItemModel) {
+        const node = await PopMgr.showPopFriend(PrefabType.FriendTalkDialogView, this.leftView, "content");
+        const script = node.getComponent(FriendTalkDialogView);
         script.init(data);
     }
 
-    closeClickEvent(){
+    private closeClickEvent() {
         this.closePop();
     }
-    async addFriendClickEvent(){
-        await PopMgr.showPopFriend(PrefabType.FriendAddView,this.leftView,"content");
+
+    private async addFriendClickEvent() {
+        await PopMgr.showPopFriend(PrefabType.FriendAddView, this.leftView, "content");
     }
-    wechatInviteClickEvent(){
+
+    private wechatInviteClickEvent() {
         ViewsMgr.showTip(TextConfig.Function_Tip2);
     }
 
-    hidenAllFrinedList(){
+    private hideAllFriendLists() {
         this._friendList.node.active = false;
         this._applyList.node.active = false;
         this._blacklist.node.active = false;
     }
 
-    /**更新申请好友列表 */
-    async onUpdateApplyFriendList(response: DataFriendApplyListResponse) {
-        console.log("onUpdateApplyFriendList", response);
-        this._applyList.updateData(response.data);
-        this.leftView.removeAllChildren();
-        let node = await PopMgr.showPopFriend(PrefabType.FriendApplyView,this.leftView,"content");
-        let script = node.getComponent(FriendApplyView);
-        script.updateData(response.data);
+    private async onUpdateApplyFriendList(response: DataFriendApplyListResponse) {
+        const { data } = response;
+        this._applyList.updateData(data);
+
+        if (data.length === 0) {
+            this.leftView.removeAllChildren();
+            return;
+        }
+
+        let friendApplyViewNode = this.leftView.getChildByName("FriendApplyView");
+        if (!friendApplyViewNode) {
+            this.leftView.removeAllChildren();
+            friendApplyViewNode = await PopMgr.showPopFriend(PrefabType.FriendApplyView, this.leftView, "content");
+        }
+
+        const script = friendApplyViewNode.getComponent(FriendApplyView);
+        script.updateData(data);
     }
-    /**更新朋友列表 */
-    onUpdateFriendList(friendDatas: DataFriendListResponse) {
-        this._friendList.updateData(friendDatas.data);
+
+    private onUpdateFriendList(friendDatas: DataFriendListResponse) {
+        const data = friendDatas.data;
+        if (this._tabSelect === FriendTabType.List) {
+            this._friendList.updateData(data);
+        } else if (this._tabSelect === FriendTabType.Blacklist) {
+            this._blacklist.updateData(data);
+        }
     }
-    
-    
-    onUserDelFriendMessage(response: any){
-        FdServer.reqUserFriendList();
+
+    private onUserDelFriendMessage(response: any) {
+        const actionType = this._tabSelect === FriendTabType.List
+            ? FriendActionType.List
+            : FriendActionType.Blacklist;
+        FdServer.reqUserFriendList(actionType);
     }
-    onUserFriendApplyModify(data:any){
+
+    private onReqApplyModify(param: ApplyModifyModel) {
+        this._applyInfo = param;
+        FdServer.reqUserFriendApplyModify(param);
+    }
+
+    private onUserFriendApplyModify(data: any) {
+        const contentStr = this.createContentString();
+        ViewsMgr.showColorTip(contentStr);
         FdServer.reqUserFriendApplyList();
     }
+
+    private createContentString(): string {
+        if (!this._applyInfo) return '';
+
+        const { status, nick_name } = this._applyInfo;
+        const action = status === ApplicationStatus.Approved ? '通过' : '删除';
+        const color = '#ff0000'; // Assuming color is fixed
+        return `<color=#ffffff>你已${action}<color=${color}>${nick_name}</color><color=#ffffff>的好友申请</color>`;
+    }
 }
-
-

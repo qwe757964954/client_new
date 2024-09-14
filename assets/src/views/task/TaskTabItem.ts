@@ -66,10 +66,11 @@ export class TaskTabItem extends ListItem {
         this.animateHeightChange(this.node, this._start_height);
     }
 
-    updateSelectTabContent(){
+    updateSelectTabContent(noshow: boolean = false){
         let to_numItems = this._showSubItem ? this._tab_info.subTabItems.length : 0;
         this.sub_scroll.numItems = to_numItems;
         let calculate_height = to_numItems * sub_item_height;
+
         this.animateHeightChange(this.sub_scroll.scrollView, calculate_height);
         this.animateHeightChange(this.sub_scroll.scrollView.view, calculate_height);
         this.animateHeightChange(this.node, calculate_height + this._start_height);
@@ -78,13 +79,13 @@ export class TaskTabItem extends ListItem {
         this.scheduleOnce(()=>{
             this.sub_scroll.selectedId = -1;
             this.sub_scroll.selectedId = 0;
-        },0.1);
+        },0.055);
     }
 
     animateHeightChange(node: any, height: number) {
         if (node && node.isValid) {
             tween(node.getComponent(UITransform))
-                .to(0.1, { height: height })
+                .to(0.05, { height: height })
                 .call(() => {
                     
                 }).start();
@@ -95,7 +96,7 @@ export class TaskTabItem extends ListItem {
     animateRotation(node: Node, toAngles: number) {
         if (node && node.isValid) {
             tween(node)
-                .to(0.1, { eulerAngles: v3(0, 0, toAngles) })
+                .to(0.05, { eulerAngles: v3(0, 0, toAngles) })
                 .start();
         }
     }

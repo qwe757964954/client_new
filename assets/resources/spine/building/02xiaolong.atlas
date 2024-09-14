@@ -1,0 +1,48 @@
+
+02xiaolong.png
+size: 197,87
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+xl01_0
+  rotate: true
+  xy: 122, 4
+  size: 41, 32
+  orig: 41, 32
+  offset: 0, 0
+  index: -1
+xl01_1
+  rotate: false
+  xy: 180, 64
+  size: 15, 21
+  orig: 15, 21
+  offset: 0, 0
+  index: -1
+xl01_2
+  rotate: false
+  xy: 161, 54
+  size: 17, 31
+  orig: 17, 31
+  offset: 0, 0
+  index: -1
+xl01_3
+  rotate: true
+  xy: 122, 47
+  size: 38, 37
+  orig: 38, 37
+  offset: 0, 0
+  index: -1
+xl01_4
+  rotate: true
+  xy: 156, 4
+  size: 41, 32
+  orig: 41, 32
+  offset: 0, 0
+  index: -1
+xl01_5
+  rotate: false
+  xy: 2, 2
+  size: 118, 83
+  orig: 118, 83
+  offset: 0, 0
+  index: -1

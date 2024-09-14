@@ -681,6 +681,7 @@ export class s2cIslandUserInfo {
     visitor_id: number;
     is_visit?: number;// 0离开小岛
     user_id: number;
+    nick_name: string;
     hair: number;
     jewelry: number;
     coat: number;
@@ -700,6 +701,8 @@ export class c2sEnterIsland {
 /**进入小岛返回 */
 export class s2cEnterIsland extends BaseRepPacket {
     visited_id: number;//小岛用户id
+    visited_nick_name: string;//小岛用户昵称
+    is_like: boolean;//是否点赞
 }
 /**退出小岛 */
 export class c2sExitIsland {
@@ -720,42 +723,25 @@ export class s2cIslandAllUser {
     visited_id: number;
     visitors_info: s2cIslandUserInfo[];
 }
-
-/**********************************以上是新接口*************************************/
-
-//新手引导
-export class c2sAccountStep {
-    Path: string = InterfacePath.Account_Step;
-    Step: number;//新手引导步骤
+/**小岛建筑有变化 */
+export class s2cBuildingUpdate {
+    change_info: { visited_id: number, change: boolean };
 }
-
-//用户信息
-export class c2sAccountInfo {
-    Path: string = InterfacePath.Account_Info;
-    AccountId: string;//用户id
+/**小岛点赞 */
+export class c2sIslandGiveALike {
+    command_id: string = InterfacePath.c2sIslandGiveALike;
+    liked_id: number;//小岛用户id
 }
-
-//初始数据
-export class c2sAccountInit {
-    Path: string = InterfacePath.Account_Init;
-    MemberToken: string;//token
+/**小岛点赞返回 */
+export class s2cIslandLike extends BaseRepPacket {
 }
-
-// 道具列表
-export class c2sPropMyList {
-    Path: string = InterfacePath.Prop_MyList;
-    ModuleId: number;   // 道具类型
+/**小岛取消点赞 */
+export class c2sIslandUnGiveALike {
+    command_id: string = InterfacePath.c2sIslandUnGiveALike;
+    liked_id: number;//小岛用户id
 }
-
-// 修改名称
-export class c2sAccountEditRealName {
-    Path: string = InterfacePath.Account_EditRealName;
-    RealName: string;   // 名称
-}
-
-// 学生通关单词
-export class c2sAccountStudyWord {
-    Path: string = InterfacePath.Account_StudyWord;
+/**小岛取消点赞返回 */
+export class s2cIslandUnLike extends BaseRepPacket {
 }
 
 /*****************************************************************************/

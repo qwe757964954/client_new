@@ -12,7 +12,7 @@ import { TBServer } from '../../service/TextbookService';
 import StorageUtil from '../../util/StorageUtil';
 import { ChallengeLeftView } from '../TextbookVocabulary/ChallengeLeftView';
 import { ChallengeRemindView, IChallengeRemindData } from '../TextbookVocabulary/ChallengeRemindView';
-import { SettingPlanView } from '../TextbookVocabulary/SettingPlanView';
+import { SettingDataParam, SettingPlanView } from '../TextbookVocabulary/SettingPlanView';
 import { TextbookListView } from '../TextbookVocabulary/TextbookListView';
 import { WordCheckView } from '../TextbookVocabulary/WordCheckView';
 import { BreakThroughView } from './BreakThroughView';
@@ -157,7 +157,14 @@ export class TextbookChallengeView extends BaseView {
         const node = await PopMgr.showPopup(PrefabType.SettingPlanView);
         const script = node.getComponent(SettingPlanView);
         const titleBookName = `${this._bookData.book_name}${this._bookData.grade}`;
-        script.updateTitleName(titleBookName, this._planData.gate_total - this._planData.gate_pass_total,this.onSelectWordPlan.bind(this));
+        const param:SettingDataParam = {
+            bookName:titleBookName,
+            totalLevel:this._planData.gate_total - this._planData.gate_pass_total,
+            totalWords:this._bookData.total_word_num,
+            saveListener:this.onSelectWordPlan.bind(this),
+        }
+
+        script.updateTitleName(param);
     }
 
     private async showBreakThroughView() {

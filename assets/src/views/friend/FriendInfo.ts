@@ -24,3 +24,10 @@ export const PlayerInfoResources = [
 ];
 
 export const HeadIdMap = { "101": 101, "1101": 101, "102": 102, "1102": 102, "103": 103, "1103": 103 };
+
+
+export interface ShortcutInfo {
+    id: number;
+    cnText: string;
+    enText: string;
+}

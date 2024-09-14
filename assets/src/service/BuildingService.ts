@@ -1,6 +1,6 @@
 import { EventType } from "../config/EventType";
 import { BuildingData, RecycleData } from "../models/BuildingModel";
-import { c2sBuildingBuilt, c2sBuildingBuiltReward, c2sBuildingBuiltSpeed, c2sBuildingCreate, c2sBuildingEdit, c2sBuildingEditBatch, c2sBuildingInfoGet, c2sBuildingList, c2sBuildingProduceAdd, c2sBuildingProduceDelete, c2sBuildingProduceGet, c2sBuildingProduceSpeed, c2sBuildingUpgrade, c2sBuildingUpgradeReward, c2sBuildingUpgradeSpeed, c2sCloudUnlock, c2sCloudUnlockGet, c2sCloudUnlockSpeed, c2sEnterIsland, c2sExitIsland, c2sLandUpdate, c2sPetGetReward, c2sPetInfo, c2sPetInteraction, c2sPetUpgrade, c2sSpeedWordsGet, s2cEnterIsland, s2cExitIsland } from "../models/NetModel";
+import { c2sBuildingBuilt, c2sBuildingBuiltReward, c2sBuildingBuiltSpeed, c2sBuildingCreate, c2sBuildingEdit, c2sBuildingEditBatch, c2sBuildingInfoGet, c2sBuildingList, c2sBuildingProduceAdd, c2sBuildingProduceDelete, c2sBuildingProduceGet, c2sBuildingProduceSpeed, c2sBuildingUpgrade, c2sBuildingUpgradeReward, c2sBuildingUpgradeSpeed, c2sCloudUnlock, c2sCloudUnlockGet, c2sCloudUnlockSpeed, c2sEnterIsland, c2sExitIsland, c2sIslandGiveALike, c2sIslandUnGiveALike, c2sLandUpdate, c2sPetGetReward, c2sPetInfo, c2sPetInteraction, c2sPetUpgrade, c2sSpeedWordsGet, s2cEnterIsland, s2cExitIsland } from "../models/NetModel";
 import { User } from "../models/User";
 import { InterfacePath } from "../net/InterfacePath";
 import { NetMgr } from "../net/NetManager";
@@ -258,18 +258,25 @@ export class BuildingService extends BaseControll {
     /**用户进入小岛 */
     reqEnterIsland(bID: number) {
         console.log("reqEnterIsland", bID);
+        User.curMapUserNick = null;
+        User.curMapUserGiveALike = false;
         let para = new c2sEnterIsland();
         para.visited_id = bID;
         NetMgr.sendMsg(para);
+
     }
     repEnterIsland(data: s2cEnterIsland) {
         if (1601 == data.code) {
             User.curMapDataUserID = null;
+            User.curMapUserNick = data.visited_nick_name;
+            User.curMapUserGiveALike = data.is_like;
             return;
         }
         if (200 != data.code) {
             return;
         }
+        User.curMapUserNick = data.visited_nick_name;
+        User.curMapUserGiveALike = data.is_like;
         User.curMapDataUserID = data.visited_id;
     }
     /**用户退出小岛 */
@@ -284,5 +291,19 @@ export class BuildingService extends BaseControll {
             return;
         }
         User.curMapDataUserID = null;
+    }
+    /**小岛点赞 */
+    reqIslandGiveALike(likeID: number) {
+        console.log("reqIslandGiveALike", likeID);
+        let para = new c2sIslandGiveALike();
+        para.liked_id = likeID;
+        NetMgr.sendMsg(para);
+    }
+    /**小岛取消点赞 */
+    reqIslandUnGiveALike(likeID: number) {
+        console.log("reqIslandUnGiveALike", likeID);
+        let para = new c2sIslandUnGiveALike();
+        para.liked_id = likeID;
+        NetMgr.sendMsg(para);
     }
 }
