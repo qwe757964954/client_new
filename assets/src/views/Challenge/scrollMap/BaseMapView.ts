@@ -247,10 +247,10 @@ export abstract class BaseMapView extends BaseView {
     }
 
     private isItemOutOfBounds(itemBounds: any, viewBounds: any) {
-        return itemBounds.right <= viewBounds.left || 
-               itemBounds.left >= viewBounds.right || 
-               itemBounds.top <= viewBounds.bottom || 
-               itemBounds.bottom >= viewBounds.top;
+        return itemBounds.right <= viewBounds.left*2 || 
+               itemBounds.left >= viewBounds.right*2 || 
+               itemBounds.top <= viewBounds.bottom*2 || 
+               itemBounds.bottom >= viewBounds.top*2;
     }
 
     public updateCurLevelIndex(index: number): void {
