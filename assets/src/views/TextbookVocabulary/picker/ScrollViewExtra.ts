@@ -74,11 +74,14 @@ export class ScrollViewExtra extends Component {
             .filter(item => item !== null)
             .sort((a, b) => a.absY - b.absY)
             .map(({ itemNode }) => itemNode);
-
+        console.log("updateListSelectChildren",this.selectChildren)
         this.selectChildIndex = this.selectChildren.findIndex(itemNode => {
             const itemPos = this.listViewExtra.getPositionInView(itemNode);
+            console.log("itemPos.y.....",itemPos.y,itemHeight)
+            console.log(Math.abs(itemPos.y) < itemHeight / 2)
             return Math.abs(itemPos.y) < itemHeight / 2;
         });
+
     }
 
     private getScrollChildOffset(): number {
@@ -126,6 +129,8 @@ export class ScrollViewExtra extends Component {
 
     private onScrollEnd() {
         const offset = this.getScrollChildOffset();
+        console.log("onScrollEnd.....",offset);
+        console.log("onScrollEnd.....2",Math.abs(this.nowOffsetY - this.scrollView.getScrollOffset().y));
         if (Math.abs(this.nowOffsetY - this.scrollView.getScrollOffset().y) < 0.01) {
             this.setSelectChildIndex(this.selectChildIndex);
         } else {
@@ -139,9 +144,11 @@ export class ScrollViewExtra extends Component {
         if (index !== -1) {
             this.updateListSelectChildren();
             const scrollOffset = this.scrollView.getScrollOffset();
-            const targetOffset = (index - 1) * this.listViewExtra.itemHeight;
+            let count = index-1;
+            let targetPosition = this.listViewExtra.getVerticalPosition(count);
             const duration = Math.abs(index - this.selectChildIndex) * 0.08;
-            this.scrollView.scrollToOffset(new math.Vec2(scrollOffset.x, targetOffset), duration);
+            console.log("-targetPosition.y.........",index,-targetPosition.y/this.listViewExtra.itemHeight,numberString);
+            this.scrollView.scrollToOffset(new math.Vec2(scrollOffset.x, -targetPosition.y), duration);
         } else {
             console.error(`Item with number ${numberString} not found.`);
         }

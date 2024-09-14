@@ -91,11 +91,13 @@ export class SettingPlanView extends BasePopup {
 
     private _updateDays(selectedLevel: number): void {
         const days = TextbookUtil.calculateDays(this._settingData.totalLevel, selectedLevel);
+        console.log("_updateDays.....",this._settingData.totalLevel,selectedLevel,days);
         this.dayScroll.scrollToNumber(`${days}`);
     }
 
     private _updateLevels(selectedDay: number): void {
         const levels = TextbookUtil.calculateLevels(this._settingData.totalLevel, selectedDay);
+        console.log("_updateLevels.....",this._settingData.totalLevel,selectedDay,levels);
         this.levelScroll.scrollToNumber(`${levels}`);
     }
 

@@ -12,28 +12,28 @@ export class DateListView extends Component {
     public itemPrefab: Prefab = null; 
 
     @property({ type: CCInteger })
-    direction: number = 1; // 1 for vertical, others for horizontal
+    direction: number = 1;
 
     @property({ type: CCInteger })
-    spawnCount: number = 1; // Number of items to spawn
+    spawnCount: number = 1;
 
     @property({ type: CCFloat })
-    spacingY: number = 0; // Vertical spacing
+    spacingY: number = 0;
 
     @property({ type: CCFloat })
-    spacingX: number = 0; // Horizontal spacing
+    spacingX: number = 0;
 
     @property({ type: CCFloat })
-    itemHeight: number = 0; // Item height
+    itemHeight: number = 0;
 
     @property({ type: CCFloat })
-    itemWidth: number = 0; // Item width
+    itemWidth: number = 0;
 
     @property({ type: CCInteger })
-    colNum: number = 0; // Number of columns for vertical layout
+    colNum: number = 0;
 
     @property({ type: CCInteger })
-    rowNum: number = 0; // Number of rows for horizontal layout
+    rowNum: number = 0;
 
     private initialized = false;
     private dataList: any[] = [];
@@ -43,7 +43,6 @@ export class DateListView extends Component {
     private updateInterval: number = 0.05;
     private lastContentPos: Vec3 = new Vec3();
     private bufferZone: Vec3 = new Vec3();
-    private callback: Function = null;
     public itemList: Node[] = [];
     private obj:any = null;
     onLoad(): void {}
@@ -63,7 +62,6 @@ export class DateListView extends Component {
 
         this.initialize();
         this.initialized = true;
-        this.callback = null;
     }
 
     removeAllItems() {
@@ -111,7 +109,7 @@ export class DateListView extends Component {
         this.itemList.push(item);
     }
 
-    private getVerticalPosition(index: number): Vec3 {
+    public getVerticalPosition(index: number): Vec3 {
         const row = Math.floor(index / this.colNum);
         const col = index % this.colNum;
         const x = (this.itemWidth + this.spacingX) * (-(this.colNum - 1) / 2 + col);
@@ -259,7 +257,7 @@ export class DateListView extends Component {
         this.totalCount = this.dataList.length;
         this.initialize();
     }
-
+    
     onDestroy() {
         // this.removeAllItems();
     }
