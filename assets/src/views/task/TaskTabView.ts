@@ -61,7 +61,7 @@ export class TaskTabView extends BaseView {
             let item = this.tab_scroll.getItemByListId(0);
             let item_script = item.getComponent(TaskTabItem);
             item_script.selectEvent();
-        },0.03)
+        },0.05)
     }
 
     onDestroy(): void {
