@@ -14,15 +14,19 @@ export class TaskTabView extends BaseView {
     public tab_datas: TaskTabInfo[] = [];
 
     private callSelectCallback: (info: TaskTabInfo) => void = null;
-
+    private noShow:boolean = false;
     protected initUI(): void {
         this.offViewAdaptSize();
     }
 
     updateData(tabs: TaskTabInfo[], selectId: number = 0) {
         this.tab_datas = tabs;
+        this.noShow = selectId === -1;
         this.tab_scroll.numItems = this.tab_datas.length;
-        this.tab_scroll.selectedId = selectId;
+        this.tab_scroll.selectedId = 0;
+        if(this.noShow) {
+            this.firstTabsUnselected();
+        }
     }
 
     setTabSelectClick(callBack: (info: TaskTabInfo) => void) {
@@ -61,7 +65,7 @@ export class TaskTabView extends BaseView {
             let item = this.tab_scroll.getItemByListId(0);
             let item_script = item.getComponent(TaskTabItem);
             item_script.selectEvent();
-        },0.05)
+        },0.1)
     }
 
     onDestroy(): void {

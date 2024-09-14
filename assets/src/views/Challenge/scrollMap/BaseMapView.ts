@@ -229,10 +229,10 @@ export abstract class BaseMapView extends BaseView {
 
     private getViewBounds(nodePos: Vec3, visibleSize: Size) {
         return {
-            left: nodePos.x - visibleSize.width,
-            right: nodePos.x + visibleSize.width,
-            top: nodePos.y + visibleSize.height,
-            bottom: nodePos.y - visibleSize.height
+            left: -visibleSize.width,
+            right:  visibleSize.width,
+            top:  visibleSize.height,
+            bottom: - visibleSize.height
         };
     }
 
@@ -247,10 +247,10 @@ export abstract class BaseMapView extends BaseView {
     }
 
     private isItemOutOfBounds(itemBounds: any, viewBounds: any) {
-        return itemBounds.right <= viewBounds.left*2 || 
-               itemBounds.left >= viewBounds.right*2 || 
-               itemBounds.top <= viewBounds.bottom*2 || 
-               itemBounds.bottom >= viewBounds.top*2;
+        return itemBounds.right <= viewBounds.left || 
+               itemBounds.left >= viewBounds.right || 
+               itemBounds.top <= viewBounds.bottom || 
+               itemBounds.bottom >= viewBounds.top;
     }
 
     public updateCurLevelIndex(index: number): void {
